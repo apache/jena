@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -30,12 +31,12 @@ public final class PeekReader extends Reader
     // Possibly because BufferedReader internally are synchronized, possibly
     // because this is so stripped down the JIT does a better job. 
     
-    static final int CB_SIZE = 8*1024 ;
+    static final int CB_SIZE = 16*1024 ;
     static final byte CHAR0 = (char)0 ;
     static final int  EOF = -1 ;
     static final int  UNSET = -2 ;
     
-    private char[] chars = new char[CB_SIZE];
+    private final char[] chars ;
     
     private int buffLen = 0 ;
     private int idx = 0 ;
@@ -68,7 +69,11 @@ public final class PeekReader extends Reader
         this(in, CB_SIZE) ;
     }
     
-    PeekReader(Reader in, int buffSize)
+    /** Testing */
+    static PeekReader make(String x)                { return new PeekReader(new StringReader(x)) ; }
+    static PeekReader make(String x, int buffSize) { return new PeekReader(new StringReader(x), buffSize) ; }
+    
+    private PeekReader(Reader in, int buffSize)
     {
         this.chars = new char[buffSize];
         this.in = in;
@@ -164,7 +169,7 @@ public final class PeekReader extends Reader
         
     }
 
-    public boolean eof()   { return currChar == EOF ; }
+    public final boolean eof()   { return currChar == EOF ; }
 }
 
 

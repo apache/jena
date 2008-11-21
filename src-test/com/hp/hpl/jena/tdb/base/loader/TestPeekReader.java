@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.tdb.base.loader;
 
-import java.io.StringReader;
-
-import com.hp.hpl.jena.tdb.base.loader.PeekReader;
-
-
 import org.junit.Test;
 import test.BaseTest;
 
@@ -106,8 +101,7 @@ public class TestPeekReader extends BaseTest
     
     private PeekReader make(String contents, int size)
     {
-        StringReader r = new StringReader(contents) ;
-        return new PeekReader(r,size) ;
+        return PeekReader.make(contents, size) ;
     }
     
 }

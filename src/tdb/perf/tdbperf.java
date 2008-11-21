@@ -8,9 +8,7 @@ package tdb.perf;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +19,6 @@ import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -30,7 +27,14 @@ import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.CountingSink;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.BulkLoader;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+import com.hp.hpl.jena.tdb.store.NodeTableFactory;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.util.FileUtils;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -117,23 +121,34 @@ public class tdbperf extends CmdSub
             List<String> files = Arrays.asList(args) ;
             for ( String fn : files )
             {
-                InputStream in = null ;
-                if ( fn.equals("-") || fn.equals("--") )
+//                InputStream in = null ;
+//                if ( fn.equals("-") || fn.equals("--") )
+//                {
+//                    System.out.println("Parse: stdin") ;
+//                    in = System.in ;
+//                }
+//                else
+//                {
+//                    System.out.println("Parse: "+fn) ;
+//                    try { in = new FileInputStream(fn) ; } 
+//                    catch (FileNotFoundException ex)
+//                    {
+//                        ex.printStackTrace();
+//                        break ;
+//                    }
+//                }
+//                NodeTupleReader.read(sink, in, fn) ;
+                
+                String $ = null ;
+                try
                 {
-                    System.out.println("Parse: stdin") ;
-                    in = System.in ;
-                }
-                else
+                    $ = FileUtils.readWholeFileAsUTF8(fn) ;
+                } catch (IOException ex)
                 {
-                    System.out.println("Parse: "+fn) ;
-                    try { in = new FileInputStream(fn) ; } 
-                    catch (FileNotFoundException ex)
-                    {
-                        ex.printStackTrace();
-                        break ;
-                    }
+                    ex.printStackTrace();
+                    break ;
                 }
-                NodeTupleReader.read(sink, in, fn) ;
+                NodeTupleReader.read(sink, $, fn) ;
                 long x = timer.readTimer() ;
             }
             long x = timer.endTimer() ;

@@ -225,9 +225,18 @@ public class BulkLoader
 
     // --------
     
+    /** Tick point for messages during loading of data */
+    public static int LoadTickPoint = 50000 ;
+    /** Tick point for messages during secodnary index creation */
+    public static long IndexTickPoint = 100000 ;
+    
+    private static long quantum2 = 5*IndexTickPoint ;
+
+
+    
     private long loadOne(Model model, String s)
     {
-        GraphLoadMonitor monitor = new GraphLoadMonitor(50000, false) ;
+        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
         if ( showProgress )
             model.getGraph().getEventManager().register(monitor) ;
         if ( ! s.equals("-") )
@@ -363,9 +372,6 @@ public class BulkLoader
 
     private static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
     {
-        long quantum = 100000 ;
-        long quantum2 = 5*quantum ;
-
         Timer timer = new Timer() ;
         long cumulative = 0 ;
         long c = 0 ;
@@ -382,7 +388,7 @@ public class BulkLoader
             }
             c++ ;
             cumulative++ ;
-            if ( printTiming && tickPoint(cumulative,quantum) )
+            if ( printTiming && tickPoint(cumulative,IndexTickPoint) )
             {
                 long t = timer.readTimer() ;
                 long batchTime = t-last ;

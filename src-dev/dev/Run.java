@@ -9,35 +9,33 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+import com.hp.hpl.jena.tdb.store.NodeTableFactory;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
 
@@ -56,19 +54,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
+        tdb.perf.tdbperf.main("load", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;
         
-        // FileOps.clearDirectory("DB") ;
-        // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
-        
-        GraphTDB g = setup() ;
-        BulkLoader b = new BulkLoader(g, true) ;
-        List<String> files = new ArrayList<String>() ;
-        files.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
-        b.load(files) ;
-        System.exit(0) ;
-        
-        //tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o . ?s ?p ?o }") ;
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
         
         

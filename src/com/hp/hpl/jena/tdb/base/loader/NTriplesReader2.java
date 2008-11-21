@@ -8,10 +8,12 @@ package com.hp.hpl.jena.tdb.base.loader;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.shared.JenaException;
 
 /** Jena reader interface to the bulk loader */
 public class NTriplesReader2 implements RDFReader
@@ -19,7 +21,11 @@ public class NTriplesReader2 implements RDFReader
     @Override
     public void read(Model model, String url)
     { 
-        NodeTupleReader.read(model.getGraph(), url) ;
+        InputStream in ;
+
+        try { in = (new URL(url)).openStream() ; }
+        catch (Exception e) { throw new JenaException(e); }
+        NodeTupleReader.read(model.getGraph(), in, url) ;
     }
 
     @Override
