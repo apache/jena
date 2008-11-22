@@ -8,7 +8,7 @@ package dev;
 
 public class Dev
 {
-    // ==== 0.8.0 "quads"
+    // ==== 0.7.0 "quads"
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
