@@ -1,24 +1,59 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.index.mem;
 
-import com.hp.hpl.jena.graph.Node;
+import iterator.IteratorConcat;
 
-public interface NodeTable
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import lib.DS;
+
+public class IndexMultiValue<K, V>
 {
-    NodeId storeNode(Node node) ;               // Store the node, reusing existing
-    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
+    private Map<K, Set<V>> map = DS.map() ;
+    
+    public IndexMultiValue() {}
+    
+    public Set<V> get(K key)
+    { 
+        return map.get(key) ;
+    }
+    
+    public void put(K key, V value)
+    { 
+        Set<V> x = map.get(key) ;
+        if ( x == null )
+        {
+            x = DS.set() ;
+            map.put(key, x) ;
+        }
+        if ( ! x.contains(value) )
+            x.add(value) ;
+    }
+    
+    public Iterator<V> flatten()
+    {
+        IteratorConcat<V> all = new IteratorConcat<V>() ;
+        for ( K k : map.keySet() )
+        {
+            Set<V> x =  map.get(k) ;
+            all.add(x.iterator()) ;
+        }
+        return all ;
+    }
+    
+    public int size() { return map.size() ; }
+    public boolean isEmpty() { return map.isEmpty() ; }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

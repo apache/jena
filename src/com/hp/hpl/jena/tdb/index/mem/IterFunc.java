@@ -4,47 +4,69 @@
  * [See end of file]
  */
 
-package lib;
+package com.hp.hpl.jena.tdb.index.mem;
+
+import iterator.IteratorConcat;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import iterator.NullIterator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lib.DS;
 
-/** Datastructure factory - allows indirecly to other implementations */ 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
-public class DS
+
+public class IterFunc
 {
-    private DS() {}
+    static public Iterator<Triple> noTriples() { return new NullIterator<Triple>() ; }
     
-    public static <X> Set<X> set() { return new HashSet<X>(); }  
-    public static <X> Set<X> set(int initialSize) { return new HashSet<X>(initialSize); }  
-    public static <X> Set<X> set(Set<X> other) { return new HashSet<X>(other); }  
-
-    // Trove for sets
-//    public static <X> Set<X> set() { return new gnu.trove.THashSet<X>(); }  
-//    public static <X> Set<X> set(int initialSize) { return new gnu.trove.THashSet<X>(initialSize); }  
-//    public static <X> Set<X> set(Set<X> other) { return new gnu.trove.THashSet<X>(other); }  
+    static public <K1, K2, K3, V> Iterator<V> flatten(Index3<K1, K2, K3, V> idx)
+    {
+        if ( idx == null )
+            return DS.nothing() ;
+        return idx.flatten() ;
+    }
     
-    public static <K, V> Map<K,V> map() { return new HashMap<K,V>(); }  
-    public static <K, V> Map<K,V> map(int initialSize) { return new HashMap<K,V>(initialSize); }  
-    public static <K, V> Map<K,V> map(Map<K,V> other) { return new HashMap<K,V>(other); }  
-
-    public static <T> Iterator<T> nothing() { return new NullIterator<T>() ; }
+    static public <K1, K2, V> Iterator<V> flatten(Index2<K1, K2, V> idx)
+    {
+        if ( idx == null )
+            return DS.nothing() ;
+        return idx.flatten() ;
+    }
     
-    public static <T> List<T> list() { return new ArrayList<T>(); }  
-    public static <T> List<T> list(int initialSize) { return new ArrayList<T>(initialSize); }  
-    public static <T> List<T> list(List<T> other) { return new ArrayList<T>(other); }
+    static public <K1, K2, V> Iterator<V> flattenII(Index<K1, Index<K2, V>> idx)
+    {
+        if ( idx == null )
+            return new ArrayList<V>().iterator() ;
+        
+        IteratorConcat<V> all = new IteratorConcat<V>() ;
+        
+        for ( K1 n : idx.keys() )
+        {
+            Index<K2, V> x = idx.get(n) ;
+            all.add(x.values().iterator()) ;
+        }
+        return all ;
+    }
 
-    // Trove for maps
-//  public static <K, V> Map<K,V> map() { return new gnu.trove.THashMap<K,V>(); }  
-//  public static <K, V> Map<K,V> map(int initialSize) { return new gnu.trove.THashMap<K,V>(initialSize); }  
-//  public static <K, V> Map<K,V> map(Map<K,V> other) { return new gnu.trove.THashMap<K,V>(other); }  
+    static public Iterator<Triple> flattenIL(Index<Node, List<Triple>> idx)
+    {
+        if ( idx == null )
+            return DS.nothing() ;
+        
+        IteratorConcat<Triple> all = new IteratorConcat<Triple>() ;
+        
+        for ( Node n : idx.keys() )
+        {
+            List<Triple> x = idx.get(n) ;
+            all.add(x.iterator()) ;
+        }
+        return all ;
+    }
 }
 
 /*

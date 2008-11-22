@@ -254,6 +254,20 @@ public final class TupleIndexRecord implements TupleIndex
         index.sync(force) ;
     }
 
+    public RangeIndex getRangeIndex()       { return index ; } 
+    
+    @Override
+    public boolean isEmpty()
+    {
+        return index.isEmpty() ;
+    }
+
+    @Override
+    public long size()
+    {
+        return index.size() ;
+    }
+
     @Override
     public int getTupleLength()
     {

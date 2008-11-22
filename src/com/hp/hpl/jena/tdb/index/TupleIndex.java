@@ -38,6 +38,10 @@ public interface TupleIndex extends Sync, Closeable
     public int weight(Tuple<NodeId> pattern) ;
 
     public int getTupleLength() ;
+
+    public long size() ;
+
+    public boolean isEmpty() ;
 }
 
 /*

@@ -1,24 +1,48 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.index.mem;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
-public interface NodeTable
+import lib.DS;
+
+
+public final class Index<K, V> 
 {
-    NodeId storeNode(Node node) ;               // Store the node, reusing existing
-    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
+    private Map<K,V> map = DS.map() ;
+    
+    Index() {}
+    
+    public V get(K key) { return map.get(key) ; }
+    public boolean put(K key, V value)
+    {
+        V v = map.put(key, value) ;
+        return ( v == null || v == value ) ;
+    }
+    
+    public boolean remove(K key)
+    { 
+        V v = map.remove(key) ;
+        return ( v != null ) ;
+    }
+    
+    public int size() { return map.size() ; }
+    public boolean isEmpty() { return map.isEmpty() ; }
+    
+    public Collection<V> values() { return map.values() ; }
+    public Set<K> keys() { return map.keySet() ; }
+    
+    
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

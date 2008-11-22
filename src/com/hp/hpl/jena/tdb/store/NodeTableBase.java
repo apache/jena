@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
 
-public abstract class NodeTableBase implements NodeTable
+public class NodeTableBase implements NodeTable
 {
     // Assumes an ObjectFile and an Indexer, which may be an Index but allows
     // this to be overriden for a direct use of BDB.
@@ -42,7 +42,7 @@ public abstract class NodeTableBase implements NodeTable
     protected NodeTableBase() {}
     
     // Combined into one constructor.
-    protected NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this() ;
         init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;

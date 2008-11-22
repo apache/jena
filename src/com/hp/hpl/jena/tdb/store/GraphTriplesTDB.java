@@ -126,7 +126,13 @@ public class GraphTriplesTDB extends GraphBase implements GraphTDB
         return super.getCapabilities() ;
     }
     
-    /** Reorder processor - may be null, for "none" */
+    @Override
+    public boolean isEmpty()        { return tripleTable.isEmpty() ; }
+    
+    @Override
+    public int graphBaseSize()      { return (int)tripleTable.size() ; }
+
+        /** Reorder processor - may be null, for "none" */
     @Override
     public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
     

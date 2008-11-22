@@ -8,20 +8,22 @@ package dev;
 
 public class Dev
 {
-    // Tuple reader and checking IRIs (with IRI caching)
-    
+    // ==== 0.8.0 "quads"
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
-    //   Command lise and dataset vs graph
+    //   Command line and dataset vs graph
+    // Documentation
+    //   Dataset assembler
+    //   Commands
+    // ====
+    
     // OpRange - OpIndex - generative stream of possibilities.
 
     // ---- Tuple reader tests
     // [incremental]
     // Checking, N-ary and non-RDF.
     // Prefix mapping?  Migrate to a dump format.
-    
-    // InMemory version.  TupleIndex[base] > TupleIndexRecord, TupleIndexMem 
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 

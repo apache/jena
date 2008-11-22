@@ -17,6 +17,11 @@ public class NodeTableFactory
             return new NodeTableIndex(indexBuilder) ;
         return new NodeTableIndex(indexBuilder, location) ;
     }
+    
+    public static NodeTable createSink(IndexBuilder indexBuilder, Location location)
+    {
+        return new NodeTableSink() ;
+    }
 }
 
 /*

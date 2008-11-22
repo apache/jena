@@ -77,6 +77,10 @@ public class NodeTupleTable implements Sync, Closeable
      */ 
     public final Location getLocation() { return tupleTable.getLocation() ; }
     
+    public boolean isEmpty()        { return tupleTable.isEmpty() ; }
+    
+    public long size()              { return tupleTable.size() ; }
+    
     @Override
     public final void close()
     {

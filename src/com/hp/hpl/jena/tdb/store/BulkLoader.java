@@ -8,38 +8,34 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import lib.ArrayUtils;
 import lib.MapUtils;
 import lib.Tuple;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemWriter;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.*;
 import com.hp.hpl.jena.sparql.util.Timer;
-import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.FileManager;
 
 
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
@@ -336,6 +332,9 @@ public class BulkLoader
         Timer timer = new Timer() ;
         timer.startTimer() ;
         TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
+        
+//        RangeIndex rIdx = ((TupleIndexRecord)primary).getRangeIndex() ;
+//        rIdx.iterator() ;
         
         for ( TupleIndex index : secondaryIndexes )
         {

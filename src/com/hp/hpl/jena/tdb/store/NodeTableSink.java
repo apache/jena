@@ -8,13 +8,40 @@ package com.hp.hpl.jena.tdb.store;
 
 import com.hp.hpl.jena.graph.Node;
 
-public interface NodeTable
+import com.hp.hpl.jena.tdb.TDBException;
+
+/** Sink node table */
+public class NodeTableSink implements NodeTable
 {
-    NodeId storeNode(Node node) ;               // Store the node, reusing existing
-    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
+    long id = 0 ;
+    @Override
+    public void close()
+    {}
+
+    @Override
+    public NodeId nodeIdForNode(Node node)
+    {
+        throw new TDBException("NodeTableSink.nodeIdForNode") ;
+    }
+
+    @Override
+    public Node retrieveNodeByNodeId(NodeId id)
+    {
+        throw new TDBException("NodeTableSink.retrieveNodeByNodeId") ;
+    }
+
+    @Override
+    public NodeId storeNode(Node node)
+    {
+        NodeId nid = NodeId.create(id) ;
+        id++ ;
+        return nid ;
+    }
+
+    @Override
+    public void sync(boolean force)
+    {}
+
 }
 
 /*

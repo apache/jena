@@ -7,6 +7,8 @@
 package tdb.perf;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +16,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import lib.ColumnMap;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
@@ -21,21 +24,22 @@ import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
 import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.CountingSink;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexMem;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.BulkLoader;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.NodeTable;
-import com.hp.hpl.jena.tdb.store.NodeTableFactory;
-import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.store.*;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -82,6 +86,12 @@ public class tdbperf extends CmdSub
         {
             TDB.init();
             GraphTDB g = setup1() ;
+            
+            TupleIndex[] z = g.getNodeTupleTable().getTupleTable().getIndexes() ;
+//            z[0] = new TupleIndexMem(3, new ColumnMap("SPO", "SPO")) ;
+            z[1] = new TupleIndexMem(3, new ColumnMap("SPO", "POS")) ;
+            z[2] = new TupleIndexMem(3, new ColumnMap("SPO", "OSP")) ;
+            
             BulkLoader b = new BulkLoader(g, true) ;
             b.load(Arrays.asList(args)) ;
             System.exit(0) ;
@@ -94,7 +104,20 @@ public class tdbperf extends CmdSub
             IndexBuilder indexBuilder = IndexBuilder.mem() ;
             Location location = null ;
 
-            NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+            //NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+            
+            // Empty index and node file
+            //NodeTable nodeTable = NodeTableFactory.createSink(indexBuilder, location) ;
+            // Memory index, empty object file.
+            
+            ObjectFile objectFile = new ObjectFileSink() ;
+            RecordFactory nr = FactoryGraphTDB.nodeRecordFactory ;
+            
+            
+            Index nodeToId = IndexBuilder.mem().newIndex(null, nr , "FOO") ;
+            NodeTable nodeTable =
+                //new NodeTableSink() ;
+                new NodeTableBase(nodeToId, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
 
             TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
             ReorderTransformation transform = ReorderLib.identity() ;

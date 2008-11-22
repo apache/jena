@@ -4,47 +4,73 @@
  * [See end of file]
  */
 
-package lib;
+package com.hp.hpl.jena.tdb.index.mem;
 
-import iterator.NullIterator;
+import iterator.IteratorConcat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-/** Datastructure factory - allows indirecly to other implementations */ 
+import lib.DS;
 
-public class DS
+import com.hp.hpl.jena.graph.Node;
+
+/** Index of (K1, K2) -> List of V */
+
+public class Index2<K1, K2, V>
 {
-    private DS() {}
+    private Map<K1, Index<K2, List<V>>> map = DS.map() ;
     
-    public static <X> Set<X> set() { return new HashSet<X>(); }  
-    public static <X> Set<X> set(int initialSize) { return new HashSet<X>(initialSize); }  
-    public static <X> Set<X> set(Set<X> other) { return new HashSet<X>(other); }  
-
-    // Trove for sets
-//    public static <X> Set<X> set() { return new gnu.trove.THashSet<X>(); }  
-//    public static <X> Set<X> set(int initialSize) { return new gnu.trove.THashSet<X>(initialSize); }  
-//    public static <X> Set<X> set(Set<X> other) { return new gnu.trove.THashSet<X>(other); }  
+    public Index2() {}
     
-    public static <K, V> Map<K,V> map() { return new HashMap<K,V>(); }  
-    public static <K, V> Map<K,V> map(int initialSize) { return new HashMap<K,V>(initialSize); }  
-    public static <K, V> Map<K,V> map(Map<K,V> other) { return new HashMap<K,V>(other); }  
-
-    public static <T> Iterator<T> nothing() { return new NullIterator<T>() ; }
+    public Index<K2, List<V>> get(Node key1) { return map.get(key1) ; }
     
-    public static <T> List<T> list() { return new ArrayList<T>(); }  
-    public static <T> List<T> list(int initialSize) { return new ArrayList<T>(initialSize); }  
-    public static <T> List<T> list(List<T> other) { return new ArrayList<T>(other); }
-
-    // Trove for maps
-//  public static <K, V> Map<K,V> map() { return new gnu.trove.THashMap<K,V>(); }  
-//  public static <K, V> Map<K,V> map(int initialSize) { return new gnu.trove.THashMap<K,V>(initialSize); }  
-//  public static <K, V> Map<K,V> map(Map<K,V> other) { return new gnu.trove.THashMap<K,V>(other); }  
+    public List<V> get(K1 key1, K2 key2) { return map.get(key1).get(key2) ; }
+    
+    public void put(K1 key1, K2 key2, V value)
+    { 
+        Index<K2, List<V>> x = map.get(key1) ;
+        if ( x == null )
+        {
+            x = new Index<K2, List<V>>() ;
+            map.put(key1, x) ;
+        }
+        
+        List<V> z = x.get(key2) ;
+        if ( z == null )
+        {
+            z = DS.list() ;
+            x.put(key2, z) ;
+        }
+        z.add(value) ;
+    }
+    
+    public void remove(K1 key1, K2 key2)
+    {
+        Index<K2, List<V>> x = map.get(key1) ;
+        if ( x == null )
+            return ;
+        x.remove(key2) ;
+    }
+    
+    public Iterator<V> flatten()
+    {
+        IteratorConcat<V> all = new IteratorConcat<V>() ;
+        for ( K1 k1 : map.keySet() )
+        {
+            Index<K2, List<V>> x =  map.get(k1) ;
+            for ( K2 k2 : x.keys() )
+            {
+                List<V> y = x.get(k2) ;
+                all.add(y.iterator()) ;
+            }
+        }
+        return all ;
+    }
+    
+    public int size() { return map.size() ; }
+    public boolean isEmpty() { return map.isEmpty() ; }
 }
 
 /*

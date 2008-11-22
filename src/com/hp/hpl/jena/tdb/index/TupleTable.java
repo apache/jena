@@ -168,6 +168,10 @@ public class TupleTable implements Sync, Closeable
         }
     }
 
+    public boolean isEmpty()        { return indexes[0].isEmpty() ; }
+    
+    public long size()              { return indexes[0].size() ; }
+    
     /** Location for this tuple table (if persistent) */
     public Location getLocation()                       { return location ; }
     
