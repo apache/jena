@@ -130,7 +130,7 @@ public class GraphTriplesTDB extends GraphBase implements GraphTDB
     @Override
     public int graphBaseSize()      { return (int)tripleTable.size() ; }
 
-        /** Reorder processor - may be null, for "none" */
+    /** Reorder processor - may be null, for "none" */
     @Override
     public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
     
