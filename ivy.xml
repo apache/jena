@@ -31,17 +31,17 @@
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.4"/>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.6"/>
 
     <!-- Additional for development : logging implementation -->
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
-    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
+    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
     <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"/> 
 
     <!-- Log4j 1.2.15 referes to inaccessible modules as excluded below. -->
     <!-- Alternative.
-    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
+    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
       <exclude org="log4j" module="log4j"/>
     </dependency>
     
