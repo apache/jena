@@ -55,7 +55,6 @@ public class SDBConnection
     private boolean thisLogSQLStatements = logSQLStatements ;
     private boolean thisLogSQLQueries    = logSQLQueries ;
     
-
     public SDBConnection(DataSource ds) throws SQLException
     {
         this(ds.getConnection()) ;

@@ -4,67 +4,47 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.sql;
+package com.hp.hpl.jena.sdb.util;
 
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.sql.DataSource;
+import com.hp.hpl.jena.sparql.util.ALog;
 
-/** A simple datasource that uses SDBConnectionDesc and hence works with the SDB assembler descriptions */ 
-
-public class DataSourceSDB implements DataSource
+/** A Pool of objects, blocking on empty */ 
+public class PoolBase<T> implements Pool<T>
 {
-    private static PrintWriter printWriter = new PrintWriter(System.out) ; 
-    private SDBConnectionDesc sdbConnDesc ;
+    BlockingQueue<T> pool = new LinkedBlockingQueue<T>();   // Unlimited
     
-    public DataSourceSDB(SDBConnectionDesc sdbConnDesc)
+    public PoolBase() {} 
+    //public PoolBase(int maxSize) { this.maxSize = maxSize ; }
+    
+    public void put(T item)
     {
-        this.sdbConnDesc = sdbConnDesc ;
+        try
+        {
+            pool.put(item) ;
+        } catch (InterruptedException ex)
+        {
+            ALog.fatal(this, "InterruptedException", ex) ;
+            return ;
+        }
     }
     
-    public Connection getConnection() throws SQLException
-    {
-        return getConnection(null, null) ;
+    /** Get an item from the pool - block if the pool is empty */
+    public T get()              
+    { 
+        try
+        {
+            return pool.take();
+        } catch (InterruptedException ex)
+        {
+            ALog.fatal(this, "InterruptedException", ex) ;
+            return null ;
+        }
     }
-
-    public Connection getConnection(String username, String password) throws SQLException
-    {
-        // All the work!
-        return SDBConnectionFactory.create(sdbConnDesc).getSqlConnection() ;
-    }
-
-    public PrintWriter getLogWriter() throws SQLException
-    { return printWriter ; }
-
-    public void setLogWriter(PrintWriter out) throws SQLException
-    { printWriter = out ; }
-
     
-    public int getLoginTimeout() throws SQLException
-    {
-        // 0 means default to "system timeout"
-        return 0 ;
-    }
-
-
-    public void setLoginTimeout(int seconds) throws SQLException
-    {
-        // Ignore.  Efficiently.
-    }
-
-    public boolean isWrapperFor(Class<? > iface) throws SQLException
-    {
-        // We do not wrap anything.
-        return false ;
-    }
-
-    public <T> T unwrap(Class<T> iface) throws SQLException
-    {
-        throw new SQLException("Not wrapped: "+iface.getCanonicalName()) ;
-    }
-
+    public boolean isEmpty()    { return pool.size() == 0 ; } 
 }
 
 /*
