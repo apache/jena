@@ -15,9 +15,12 @@ import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.ReificationStyle;
+
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -41,19 +44,22 @@ import dev.opt.TransformIndexJoin;
 
 public class Run
 {
-    static String divider = "" ;
+    static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()
     {
         if ( nextDivider != null )
             System.out.println(nextDivider) ;
-        nextDivider = "" ;
+        nextDivider = divider ;
     }
 
     static { CmdUtils.setLog4j() ; }
  
     public static void main(String ... args) throws IOException
     {
+        reification() ;
+        
+        
         tdb.perf.tdbperf.main("load", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
@@ -64,6 +70,46 @@ public class Run
         rewrite() ; System.exit(0) ;
     }
     
+    private static void reification()
+    {
+        FileOps.clearDirectory("DB") ;
+        divider() ;
+        Model m = ModelFactory.createDefaultModel(ReificationStyle.Standard) ;
+        
+        m = TDBFactory.createModel("DB") ;
+        
+        m.setNsPrefixes(PrefixMapping.Standard) ;
+        
+        Resource r1 = m.createResource("http://example/r1") ;
+        Resource r2 = m.createResource("http://example/r2") ;
+        Property p1 = m.createProperty("http://example/p1") ;
+        Property p2 = m.createProperty("http://example/p2") ;
+        Literal lit1 = m.createLiteral("ABC") ;
+        Literal lit2 = m.createLiteral("XYZ") ;
+        
+        Statement stmt1 = m.createStatement(r1, p1, lit1) ;
+        Statement stmt2 = m.createStatement(r1, p2, lit2) ;
+        m.createReifiedStatement(stmt1) ;
+        m.createReifiedStatement(stmt2) ;
+        
+        RSIterator rsIter = m.listReifiedStatements() ;
+        while(rsIter.hasNext())
+        {
+            ReifiedStatement rs = rsIter.nextRS() ;
+            System.out.println(rs) ;
+        }
+        
+        divider() ;
+        m.write(System.out, "TTL") ;
+        m.close();
+        divider() ;
+        m = TDBFactory.createModel("DB") ;
+        m.write(System.out, "TTL") ;
+        divider() ;
+        
+        System.exit(0) ;
+    }
+
     private static GraphTDB setup()
     {
         // Setup a graph - for experimental alternatives.

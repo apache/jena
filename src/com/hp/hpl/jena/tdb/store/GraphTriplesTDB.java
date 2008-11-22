@@ -9,18 +9,18 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Iterator;
 
 import lib.Tuple;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
+
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
@@ -29,8 +29,6 @@ import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that uses a triple table */
 public class GraphTriplesTDB extends GraphBase implements GraphTDB
@@ -135,6 +133,14 @@ public class GraphTriplesTDB extends GraphBase implements GraphTDB
         /** Reorder processor - may be null, for "none" */
     @Override
     public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
+    
+//    @Override
+//    protected Reifier constructReifier()
+//    {
+//        ReificationWrapperGraph g = new ReificationWrapperGraph(this, ReificationStyle.Standard) ;
+//        return new ReificationWrapper(g, ReificationStyle.Standard) ;
+//        
+//    }
     
     @Override
     public Tuple<Node> asTuple(Triple triple)

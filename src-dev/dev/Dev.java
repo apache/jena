@@ -16,6 +16,8 @@ public class Dev
     // Documentation
     //   Dataset assembler
     //   Commands
+    // Reification
+    //   GraphTriplesTDB and GraphNamedTDB
     // ====
     
     // OpRange - OpIndex - generative stream of possibilities.
