@@ -22,14 +22,15 @@
 ##     sdb:sdbType        "h2:file" ;
 ##     sdb:sdbName        "DB/H2" ;
 
-##      sdb:sdbHost        "localhost" ;
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/derby" ;
+     sdb:sdbHost        "localhost" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/derby" ;
+     sdb:poolSize       1 ;
 
-    ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
-    sdb:sdbType       "MySQL" ;
-    sdb:sdbHost       "localhost" ;
-    sdb:sdbName       "SDB" ;
+##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
+##     sdb:sdbType       "MySQL" ;
+##     sdb:sdbHost       "localhost" ;
+##     sdb:sdbName       "SDB" ;
 
 ##     sdb:sdbType        "postgresql" ;
 ##     sdb:sdbHost        "localhost" ;
