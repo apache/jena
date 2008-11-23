@@ -8,11 +8,18 @@ package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.*;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.util.Pool;
+import com.hp.hpl.jena.sdb.util.PoolBase;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -22,6 +29,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 
 public class SDBConnectionFactory
 {
+    private static Log log = LogFactory.getLog(SDBConnectionFactory.class) ;
     public static SDBConnection create(SDBConnectionDesc desc){ return worker(desc) ; }
 
     public static SDBConnection create(String configFile)
@@ -61,10 +69,69 @@ public class SDBConnectionFactory
     
     // --------
     
+    public static void clearConnectionPool()
+    {
+        Set<String> keys = new HashSet<String>(map.keySet()) ; 
+        
+        for ( String k : keys )
+            clearConnectionPool(k) ;
+        map.clear() ;
+    }
+    
+    public static void clearConnectionPool(SDBConnectionDesc desc)
+    {
+        clearConnectionPool(desc.getJdbcURL()) ;
+    }
+    
+    private static void clearConnectionPool(String key)
+    {
+        Pool<SDBConnection> pool = map.remove(key) ;
+        if ( pool != null  )
+        {
+            Collection<SDBConnection> x = pool.getAll() ;
+            for ( SDBConnection c : x )
+            {
+                c.setPool(null) ;
+                c.close() ;
+            }
+        }
+    }
+    
+    // JDBC URL to connection pool.
+    // Assume JDBC URL is unique enough.
+    static Map<String, Pool<SDBConnection>> map = new HashMap <String, Pool<SDBConnection>>() ;
+    
     /** Create a new SDB connection from the description. */ 
     private static SDBConnection worker(SDBConnectionDesc desc)
     {
+        int poolSize = desc.getPoolSize() ;
+        String jdbcURL = desc.getJdbcURL() ;
+        
+        if ( poolSize <= 0 || jdbcURL == null )
+            return makeSDBConnection(desc) ;
+
+        // Pool.
+        Pool<SDBConnection> pool = map.get(jdbcURL) ;
+        if ( pool == null  )
+        {
+            pool = new PoolBase<SDBConnection>() ; 
+            
+            // Fill pool.
+            for ( int i = 0 ; i < poolSize ; i++ )
+            {
+                SDBConnection c = makeSDBConnection(desc) ;
+                c.setPool(pool) ;
+                pool.put(c) ;
+            }
+            map.put(jdbcURL, pool) ;
+        }
+        return pool.get();
+    }
+
+    private static SDBConnection makeSDBConnection(SDBConnectionDesc desc)
+    {
         java.sql.Connection sqlConnection = createSqlConnection(desc) ;
+        // Only place a new SDBConnection is made from a description.
         SDBConnection c = new SDBConnection(sqlConnection, desc.getJdbcURL()) ;
         if ( desc.getLabel() != null )
             c.setLabel(desc.getLabel()) ;
@@ -72,7 +139,7 @@ public class SDBConnectionFactory
             c.setLabel(desc.getJdbcURL()) ;
         return c ;
     }
-
+    
     /** Create a new, plain JDBC SQL connection from the description. */ 
     public static Connection createSqlConnection(SDBConnectionDesc desc)
     {

@@ -12,18 +12,21 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.shared.StoreList;
-import com.hp.hpl.jena.sdb.util.Pair;
+
+import com.hp.hpl.jena.util.junit.TestFactoryManifest;
+
 import com.hp.hpl.jena.sparql.core.DataFormat;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestException;
 import com.hp.hpl.jena.sparql.junit.SurpressedTest;
 import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-import com.hp.hpl.jena.util.junit.TestFactoryManifest;
+
+import com.hp.hpl.jena.query.Syntax;
+
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryTestSDBFactory extends TestFactoryManifest
 {
@@ -38,32 +41,32 @@ public class QueryTestSDBFactory extends TestFactoryManifest
     
     public static void make(TestSuite ts, String storeList, String manifestFile)
     {
-        for ( Pair<String, Store> p : StoreList.stores(storeList) )
+        for ( Pair<String, StoreDesc> p : StoreList.stores(storeList) )
         {
             String label = p.car();
-            Store store = p.cdr() ;
+            StoreDesc storeDesc = p.cdr() ;
             if ( label != null && !label.equals("") )
                 label = label+" - " ;
-            TestSuite ts2 = make(store, manifestFile, label) ;
+            TestSuite ts2 = make(storeDesc, manifestFile, label) ;
             ts.addTest(ts2) ;
         }
     }
     
-    static public TestSuite make(Store store, String manifestFile, String testRootName) 
+    static public TestSuite make(StoreDesc storeDesc, String manifestFile, String testRootName) 
     {
-        QueryTestSDBFactory f = new QueryTestSDBFactory(store, testRootName) ;
+        QueryTestSDBFactory f = new QueryTestSDBFactory(storeDesc, testRootName) ;
         TestSuite ts = f.process(manifestFile) ;
         if ( testRootName != null )
             ts.setName(testRootName+ts.getName()) ;
         return ts ;
     }
 
-    Store store ;
+    StoreDesc storeDesc ;
     private String testRootName ;
     
-    private QueryTestSDBFactory(Store store, String testRootName)
+    private QueryTestSDBFactory(StoreDesc storeDesc, String testRootName)
     {
-        this.store = store ;
+        this.storeDesc = storeDesc ;
         this.testRootName = testRootName ;
     }
     
@@ -97,7 +100,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             if ( testItem.getTestType() != null )
             {
                 if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                    test = new QueryTestSDB(store, testName, results, testItem) ;
+                    test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
                 
                 if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
                     test = new SurpressedTest(testName, results, testItem) ;
@@ -107,7 +110,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             }
             // Default 
             if ( test == null )
-                test = new QueryTestSDB(store, testName, results, testItem) ;
+                test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
 
             Resource action2 = testItem.getAction() ;
             if ( action2.hasProperty(TestManifestX.option))

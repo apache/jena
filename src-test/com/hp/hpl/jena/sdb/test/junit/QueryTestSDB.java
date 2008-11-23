@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -31,14 +32,15 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 public class QueryTestSDB extends EarlTestCase
 {
     public static boolean VERBOSE = false ;
-    Store store ;
+    StoreDesc storeDesc ;
+    Store store = null ;
     TestItem item ;
     private static Log log = LogFactory.getLog(QueryTestSDB.class) ; 
     
-    public QueryTestSDB(Store store, String testName, EarlReport report, TestItem item)
+    public QueryTestSDB(StoreDesc desc, String testName, EarlReport report, TestItem item)
     {
         super(testName, item.getURI(), report) ;
-        this.store = store ;
+        this.storeDesc = desc ;
         this.item = item ;
     }
 
@@ -50,7 +52,7 @@ public class QueryTestSDB extends EarlTestCase
     static List<String> lastNamedLoaded = new ArrayList<String>() ;
     
     boolean skipThisTest = false ;
-    
+
     @Override
     public void setUp()
     { 
@@ -68,9 +70,16 @@ public class QueryTestSDB extends EarlTestCase
         @SuppressWarnings("unchecked")
         final List<String> filenamesNamed = item.getNamedGraphURIs() ;
         
-        // Same as last time - skip.
-        if ( lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )
-            return ;
+        try {
+            store = StoreList.testStore(storeDesc) ;
+        } catch (Exception ex)
+        {
+            ex.printStackTrace(System.err) ;
+        }
+
+      // Same as last time - skip.
+      if ( ! StoreList.inMem(store) && lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )
+          return ;
 
         // Truncate outside a transaction.
         store.getTableFormatter().truncate() ;
@@ -93,6 +102,9 @@ public class QueryTestSDB extends EarlTestCase
     @Override
     public void tearDown()
     { 
+        store.getConnection().close() ;
+        store.close() ;
+        store = null ;
         currentTestName = null ;
     }
 

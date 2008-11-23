@@ -14,6 +14,7 @@ import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 public abstract class CmdArgsDB extends CmdGeneral
@@ -43,10 +44,11 @@ public abstract class CmdArgsDB extends CmdGeneral
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
     
-    protected ModStore getModStore()    { return modStore  ; }
-    protected ModTime  getModTime()     { return modTime ; }
-    protected ModLogSQL  getModDBlog()  { return modLogSQL ; }
-    protected Store    getStore()       { return modStore.getStore() ; }
+    protected ModStore  getModStore()   { return modStore  ; }
+    protected ModTime   getModTime()    { return modTime ; }
+    protected ModLogSQL getModDBlog()   { return modLogSQL ; }
+    protected StoreDesc getStoreDesc()  { return modStore.getStoreDesc() ; }
+    protected Store     getStore()      { return modStore.getStore() ; }
     
     protected abstract void execCmd(List<String> positionalArgs) ;
     

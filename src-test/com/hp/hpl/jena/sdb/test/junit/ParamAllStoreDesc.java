@@ -15,7 +15,6 @@ import org.junit.runners.Parameterized.Parameters;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.shared.StoreList;
 import com.hp.hpl.jena.sdb.test.SDBTestSetup;
 import com.hp.hpl.jena.sdb.util.Pair;
 

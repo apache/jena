@@ -13,9 +13,9 @@ import java.util.List;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.shared.StoreList;
 import com.hp.hpl.jena.sdb.test.SDBTestSetup;
 import com.hp.hpl.jena.sdb.util.Pair;
 
@@ -24,9 +24,9 @@ import com.hp.hpl.jena.sdb.util.Pair;
 public abstract class ParamAllStores
 {
     // Make into Object[]{String,Store} lists just for JUnit. 
-    static Transform<Pair<String, Store>, Object[]> fix = new Transform<Pair<String, Store>, Object[]>()
+    static Transform<Pair<String, StoreDesc>, Object[]> fix = new Transform<Pair<String, StoreDesc>, Object[]>()
     {
-        public Object[] convert(Pair<String, Store> item)
+        public Object[] convert(Pair<String, StoreDesc> item)
         { return new Object[]{item.car(), item.cdr()} ; }
     } ;
 
@@ -35,7 +35,7 @@ public abstract class ParamAllStores
     static Collection<Object[]> data = null ;
     static 
     {
-        List<Pair<String, Store>> x = new ArrayList<Pair<String, Store>>() ;
+        List<Pair<String, StoreDesc>> x = new ArrayList<Pair<String, StoreDesc>>() ;
         x.addAll(StoreList.stores(SDBTestSetup.storeList)) ;
         x.addAll(StoreList.stores(SDBTestSetup.storeListSimple)) ;
         data = Iter.iter(x).map(fix).toList() ;

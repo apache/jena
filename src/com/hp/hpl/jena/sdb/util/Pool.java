@@ -5,15 +5,17 @@
 
 package com.hp.hpl.jena.sdb.util ;
 
+import java.util.Collection;
+
 public interface Pool<T>
 {
-
-    public abstract void put(T item) ;
+    public Collection<T> getAll() ;
+    public void put(T item) ;
 
     /** Get an item from the pool - may return null if the pool is empty or block depending on implementation */
-    public abstract T get() ;
+    public T get() ;
 
-    public abstract boolean isEmpty() ;
+    public boolean isEmpty() ;
 
 }
 /*

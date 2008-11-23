@@ -68,6 +68,7 @@ public class AssemblerVocab
     
     // The JDBC URL written out long form.  Overrides the above.
     public static final Property pJDBC               = Vocab.property(NS, "jdbcURL") ;
+    public static final Property pPoolSize           = Vocab.property(NS, "poolSize") ;
     public static final Property pSDBuser            = Vocab.property(NS, "sdbUser") ;
     public static final Property pSDBpassword        = Vocab.property(NS, "sdbPassword") ;
     

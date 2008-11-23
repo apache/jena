@@ -12,6 +12,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
@@ -27,6 +28,7 @@ public class SDBConnectionDesc
     private String driver    = null ;
     private String jdbcURL   = null ;
     private String label     = null ;
+    private int    poolSize  = 0 ;      // Less then 1 means no pool.
     
     public String rdbType    = null ;    // ModelRDB specific
     
@@ -101,6 +103,27 @@ public class SDBConnectionDesc
 
     public void setLabel(String label)
     { this.label = label ; }
+
+    public int getPoolSize()
+    { return poolSize ; }
+    
+    public void setPoolSize(int size)
+    { poolSize = size ; }
+
+    public void setPoolSize(String str)
+    { 
+        if ( str == null )
+        {
+            poolSize = 0 ;
+            return ;
+        }
+        try {
+            poolSize = Integer.parseInt(str) ;
+        } catch (NumberFormatException ex)
+        {
+            ALog.warn(this, "Can't parse as integer: "+str) ;
+        }
+    }
 
     public String getName()
     { return name ; }

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.shared;
+package com.hp.hpl.jena.sdb.test.junit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,23 +61,35 @@ public class StoreList
     {
         public Pair<String, Store> convert(Pair<String, StoreDesc> pair)
         {
-            Store store = StoreFactory.create(pair.cdr()) ;
-            // HSQL and H2 (in memory) need formatting
-            // Better woudl be to know in memory/on disk
-            // Relies on StoreDesc getting the label correctly (SDBConnectionFactory)
-            String jdbcURL = store.getConnection().getJdbcURL() ;
-            boolean isInMem =  (jdbcURL==null ? false : jdbcURL.contains(":mem:") ) ;
-            if ( formatStores || isInMem )
-                store.getTableFormatter().create() ;
+            Store store = testStore(pair.cdr()) ;
             return new Pair<String, Store>(pair.car(), store) ;
         }
     } ;
     
-    public static List<Pair<String, Store>> stores(String fn)
+    public static Store testStore(StoreDesc desc)
+    {
+        Store store = StoreFactory.create(desc) ;
+        // HSQL and H2 (in memory) need formatting
+        // Better would be to know in memory/on disk
+        // Relies on StoreDesc getting the label correctly (SDBConnectionFactory)
+        String jdbcURL = store.getConnection().getJdbcURL() ;
+        boolean isInMem =  (jdbcURL==null ? false : jdbcURL.contains(":mem:") ) ;
+        if ( formatStores || inMem(store) )
+            store.getTableFormatter().create() ;
+        return store ;
+    }
+    
+    public static boolean inMem(Store store)
+    {
+        String jdbcURL = store.getConnection().getJdbcURL() ;
+        return  jdbcURL==null ? false : jdbcURL.contains(":mem:") ;
+    }
+    
+    public static List<Pair<String, StoreDesc>> stores(String fn)
     {
         List<Pair<String, String>> x = storesByQuery(fn) ;
-        //List<Pair<String, StoreDesc>> y = Iter.iter(x).map(t1).toList() ;
-        List<Pair<String, Store>> z = Iter.iter(x).map(t1).map(t2).toList() ;
+        List<Pair<String, StoreDesc>> z = Iter.iter(x).map(t1).toList() ;
+        //List<Pair<String, Store>> z = Iter.iter(x).map(t1).map(t2).toList() ;
         return z ;
     }
     

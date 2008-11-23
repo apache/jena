@@ -34,6 +34,7 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
         sDesc.setPassword( GraphUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ) ;
         sDesc.setDriver(   GraphUtils.getStringValue(root, AssemblerVocab.pDriver) ) ;
         sDesc.setJdbcURL(  GraphUtils.getStringValue(root, AssemblerVocab.pJDBC) ) ;
+        sDesc.setPoolSize( GraphUtils.getStringValue(root, AssemblerVocab.pPoolSize) ) ;
         sDesc.setRdbType(  GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ) ;
         sDesc.setLabel(    GraphUtils.getStringValue(root, RDFS.label) ) ;
         

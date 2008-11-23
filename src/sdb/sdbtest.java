@@ -90,7 +90,7 @@ public class sdbtest extends CmdArgsDB
         }
         
         TestSuite ts = new TestSuite() ;
-        ts.addTest(QueryTestSDBFactory.make(getStore(), manifest, null)) ;
+        ts.addTest(QueryTestSDBFactory.make(super.getStoreDesc(), manifest, null)) ;
         
         if ( true )
             // PostgreSQL gets upset with comments in comments??

@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -44,7 +47,14 @@ public class PoolBase<T> implements Pool<T>
         }
     }
     
-    public boolean isEmpty()    { return pool.size() == 0 ; } 
+    public boolean isEmpty()    { return pool.size() == 0 ; }
+
+    public Collection<T> getAll()
+    {
+        Set<T> x = new HashSet<T>() ;
+        pool.drainTo(x) ;
+        return x ;
+   }
 }
 
 /*

@@ -51,8 +51,7 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
-        
-        sdb.sdbconfig.main("--sdb=sdb.ttl", "--create", "-dbName=test2-hash") ;
+        sdb.sdbtest.main("--sdb=sdb.ttl", "testing/manifest-sdb.ttl") ;
         System.exit(0) ;
         
         //TestStores2Connections1.main(argv) ;

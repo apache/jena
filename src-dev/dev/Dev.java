@@ -6,9 +6,12 @@
 
 package dev;
 
-
 public class Dev
 {
+    // Pool.
+    // Pool tests or conmvert test suite to use a pool.
+    // Documentation
+    
     // QueryEngineSDB.init ; enable some static optimizations.
     
     // Testing: SDBTestAll does not include the model tests yet because they are not linked to the store description files
