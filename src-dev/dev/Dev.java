@@ -26,6 +26,7 @@ public class Dev
     // [incremental]
     // Checking, N-ary and non-RDF.
     // Prefix mapping?  Migrate to a dump format.
+    // Byte version.
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 
