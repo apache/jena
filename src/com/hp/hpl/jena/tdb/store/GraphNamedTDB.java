@@ -53,8 +53,7 @@ public class GraphNamedTDB extends GraphTDBBase
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
         this.getEventManager().register(new UpdateListener(this)) ;
     }
-    
-    
+
 //    @Override
 //    public QueryHandler queryHandler()
 //    { return queryHandler ; }

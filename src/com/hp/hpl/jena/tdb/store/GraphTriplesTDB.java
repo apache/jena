@@ -81,8 +81,13 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public boolean isEmpty()        { return tripleTable.isEmpty() ; }
     
-    @Override
-    public int graphBaseSize()      { return (int)tripleTable.size() ; }
+    // B+Trees don't (yet) have a proper size
+//    @Override
+//    public int graphBaseSize()
+//    {
+//        return (int)tripleTable.size() ;
+//    }
+        
 
     @Override
     public Tuple<Node> asTuple(Triple triple)

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -35,13 +36,11 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
     @Override
     public final ReorderTransformation getReorderTransform()  { return reorderTransform ; }
     
-//    @Override
-//    protected Reifier constructReifier()
-//    {
-//        ReificationWrapperGraph g = new ReificationWrapperGraph(this, ReificationStyle.Standard) ;
-//        return new ReificationWrapper(g, ReificationStyle.Standard) ;
-//        
-//    }
+    @Override
+    protected Reifier constructReifier()
+    {
+        return new Reifier2(this) ;
+    }
     
     // Simply convert from Iterator<Triple> to ExtendedIterator
     public static class MapperIterator extends NiceIterator

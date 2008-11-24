@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *  appear in the underlying graph for storing all triples). 
  */
 
-public class TDBReifier implements Reifier
+public class Reifier2 implements Reifier
 {
     private final static String qs = "PREFIX rdf: <"+RDF.getURI()+">\n" +
     		"SELECT * \n" +
@@ -53,7 +53,7 @@ public class TDBReifier implements Reifier
     private final DatasetGraph ds  ;
     private final QueryEngineFactory factory ;
 
-    public TDBReifier(Graph graph)
+    public Reifier2(Graph graph)
     {
         this.graph = graph ;
         this.ds = new DataSourceGraphImpl(graph) ;
@@ -85,20 +85,28 @@ public class TDBReifier implements Reifier
     @Override
     public ExtendedIterator allNodes(Triple triple)
     {
-        QueryIterator qIter = nodesReifTriple(triple) ;
+        QueryIterator qIter = nodesReifTriple(null, triple) ;
         return new MapperToNode(qIter, reifNodeVar) ;
     }
     
-    private QueryIterator nodesReifTriple(TripleMatch t)
+    private QueryIterator nodesReifTriple(Node node, TripleMatch triple)
     {
         Binding b = null ;
         
-        if ( t != null )
+        if ( node == Node.ANY )
+            node = null ;
+        
+        if ( node != null || triple != null )
         {
             b = new BindingMap() ;
-            b.add(Var.alloc("S"), t.getMatchSubject()) ;
-            b.add(Var.alloc("P"), t.getMatchPredicate()) ;
-            b.add(Var.alloc("O"), t.getMatchObject()) ;
+            if ( node != null )
+                bind(b, reifNodeVar, node) ; 
+            if ( triple != null )
+            {
+                bind(b, varS, triple.getMatchSubject()) ;
+                bind(b, varP, triple.getMatchPredicate()) ;
+                bind(b, varO, triple.getMatchObject()) ;
+            }
         }
         
         Plan plan = factory.create(op, ds, b, null) ;
@@ -106,6 +114,13 @@ public class TDBReifier implements Reifier
         return qIter ;
     }
     
+    private static void bind(Binding b, Var var, Node node)
+    {
+        if ( node == null || node == Node.ANY )
+            return ;
+        b.add(var, node) ;
+    }
+
     @Override
     public void close()
     {}
@@ -129,7 +144,7 @@ public class TDBReifier implements Reifier
     @Override
     public ExtendedIterator find(TripleMatch match)
     {
-        QueryIterator qIter = nodesReifTriple(match) ; 
+        QueryIterator qIter = nodesReifTriple(null, match) ; 
         // To ExtendedIterator.
         return new MapperToTriple(qIter) ;
     }
@@ -190,7 +205,7 @@ public class TDBReifier implements Reifier
     @Override
     public boolean hasTriple(Triple triple)
     {
-        QueryIterator qIter = nodesReifTriple(triple) ; 
+        QueryIterator qIter = nodesReifTriple(null, triple) ; 
         boolean b = qIter.hasNext() ;
         qIter.close();
         return b ;
@@ -227,16 +242,27 @@ public class TDBReifier implements Reifier
         if ( node == null )
             node = Node.ANY ;
         
-        graph.getBulkUpdateHandler().remove(node, RDF.Nodes.type, RDF.Nodes.Statement) ;
-        graph.getBulkUpdateHandler().remove(node, RDF.Nodes.subject, triple.getSubject()) ;
-        graph.getBulkUpdateHandler().remove(node, RDF.Nodes.predicate, triple.getPredicate()) ;
-        graph.getBulkUpdateHandler().remove(node, RDF.Nodes.object, triple.getObject()) ;
+        QueryIterator qIter = nodesReifTriple(node, triple) ;
+        for ( ; qIter.hasNext() ; )
+        {
+            Binding b = qIter.nextBinding() ;
+            b.get(varS) ;
+            
+//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.type, RDF.Nodes.Statement) ;
+//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.subject, triple.getSubject()) ;
+//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.predicate, triple.getPredicate()) ;
+//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.object, triple.getObject()) ;
+            
+        }
+        
+        
     }
 
     @Override
     public int size()
     {
-        return -1 ;
+        // Will be counted by the graph.size() directly.
+        return 0 ;
     }
 
     @Override

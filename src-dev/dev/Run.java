@@ -104,6 +104,7 @@ public class Run
         m.close();
         divider() ;
         m = TDBFactory.createModel("DB") ;
+        m.setNsPrefixes(PrefixMapping.Standard) ;
         m.write(System.out, "TTL") ;
         divider() ;
         
