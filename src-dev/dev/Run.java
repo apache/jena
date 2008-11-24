@@ -57,7 +57,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        //reification() ;
+        reification() ;
         
         
         tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;

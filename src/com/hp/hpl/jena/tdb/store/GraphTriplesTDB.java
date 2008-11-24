@@ -12,57 +12,39 @@ import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
-import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
-import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that uses a triple table */
-public class GraphTriplesTDB extends GraphBase implements GraphTDB
+public class GraphTriplesTDB extends GraphTDBBase
 {
     //public NodeTupleTable getNodeTupleTable() ;
     
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
-    private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
-    private final ReorderTransformation reorderTransform  ;
-
     public GraphTriplesTDB(TripleTable tripleTable,
                     ReorderTransformation reorderTransform,
                     Location location)
     {
+        super(reorderTransform) ;
+        
         this.tripleTable = tripleTable ;
-        this.reorderTransform = reorderTransform ;
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
         this.getEventManager().register(new UpdateListener(this)) ;
     }
-    
-    
-    @Override
-    public QueryHandler queryHandler()
-    { return queryHandler ; }
-    
-    @Override
-    public TransactionHandler getTransactionHandler()
-    { return transactionHandler ; }
     
     @Override
     public void performAdd( Triple t ) 
@@ -96,52 +78,12 @@ public class GraphTriplesTDB extends GraphBase implements GraphTDB
         return new MapperIterator(iter) ;
     }
 
-    // Simply convert from Iterator<Triple> to ExtendedIterator
-    static class MapperIterator extends NiceIterator
-    {
-        private final Iterator<Triple> iter ;
-        MapperIterator(Iterator<Triple> iter) { this.iter = iter ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Triple next() { return iter.next(); }
-    }
-    
-    @Override
-    public Capabilities getCapabilities()
-    {
-        if ( capabilities == null )
-            capabilities = new Capabilities(){
-                public boolean sizeAccurate() { return true; }
-                public boolean addAllowed() { return true ; }
-                public boolean addAllowed( boolean every ) { return true; } 
-                public boolean deleteAllowed() { return true ; }
-                public boolean deleteAllowed( boolean every ) { return true; } 
-                public boolean canBeEmpty() { return true; }
-                public boolean iteratorRemoveAllowed() { return false; } /* ** */
-                public boolean findContractSafe() { return false; }
-                public boolean handlesLiteralTyping() { return false; } /* ** */
-            } ; 
-        
-        return super.getCapabilities() ;
-    }
-    
     @Override
     public boolean isEmpty()        { return tripleTable.isEmpty() ; }
     
     @Override
     public int graphBaseSize()      { return (int)tripleTable.size() ; }
 
-    /** Reorder processor - may be null, for "none" */
-    @Override
-    public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
-    
-//    @Override
-//    protected Reifier constructReifier()
-//    {
-//        ReificationWrapperGraph g = new ReificationWrapperGraph(this, ReificationStyle.Standard) ;
-//        return new ReificationWrapper(g, ReificationStyle.Standard) ;
-//        
-//    }
-    
     @Override
     public Tuple<Node> asTuple(Triple triple)
     {

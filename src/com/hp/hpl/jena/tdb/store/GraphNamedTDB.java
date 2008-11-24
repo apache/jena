@@ -9,15 +9,12 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Iterator;
 
 import lib.Tuple;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDB;
@@ -31,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that projects a graph from a quad table */
-public class GraphNamedTDB extends GraphBase implements GraphTDB
+public class GraphNamedTDB extends GraphTDBBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
@@ -42,6 +39,7 @@ public class GraphNamedTDB extends GraphBase implements GraphTDB
 
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
     {
+        super(transform) ;
         this.dataset = dataset ;
         this.quadTable = dataset.getQuadTable() ;
         this.graphNode = graphName ;
@@ -113,29 +111,6 @@ public class GraphNamedTDB extends GraphBase implements GraphTDB
             return q.getTriple() ;
         }
     }
-    
-    @Override
-    public Capabilities getCapabilities()
-    {
-        if ( capabilities == null )
-            capabilities = new Capabilities(){
-                public boolean sizeAccurate() { return true; }
-                public boolean addAllowed() { return true ; }
-                public boolean addAllowed( boolean every ) { return true; } 
-                public boolean deleteAllowed() { return true ; }
-                public boolean deleteAllowed( boolean every ) { return true; } 
-                public boolean canBeEmpty() { return true; }
-                public boolean iteratorRemoveAllowed() { return false; } /* ** */
-                public boolean findContractSafe() { return false; }
-                public boolean handlesLiteralTyping() { return false; } /* ** */
-            } ; 
-        
-        return super.getCapabilities() ;
-    }
-    
-    /** Reorder processor - may be null, for "none" */
-    @Override
-    public final ReorderTransformation getReorderTransform()      { return transform ; }
     
     @Override
     public final Location getLocation()                           { return dataset.getLocation() ; }
