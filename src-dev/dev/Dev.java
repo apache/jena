@@ -11,6 +11,7 @@ public class Dev
     // Pool.
     // Pool tests or conmvert test suite to use a pool.
     // Documentation
+    // Better key for the pool?
     
     // QueryEngineSDB.init ; enable some static optimizations.
     
