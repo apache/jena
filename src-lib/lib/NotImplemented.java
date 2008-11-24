@@ -1,35 +1,19 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package lib;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
-
-// Jena normal tests
-public class TestGraphBTreeMem extends AbstractTestGraphTDB
+public class NotImplemented extends InternalError
 {
-    public TestGraphBTreeMem()
-    {
-        this("GraphBTree") ;
-    }
-    
-    protected TestGraphBTreeMem(String name) { super(name) ; }
-
-    // Insert tests from AbstractTestGraph here to debug
-    
-    // In-memory testing
-    @Override
-    public Graph getGraph() { return GraphTDBFactoryTest.createBTreeMem() ; }
+    public NotImplemented(String msg) { super(msg) ; }
+    public NotImplemented(String msg, Throwable th) { super(msg, th) ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

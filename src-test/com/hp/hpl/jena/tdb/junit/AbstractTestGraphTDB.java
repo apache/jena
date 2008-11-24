@@ -1,35 +1,30 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.junit;
 
+import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
-
-// Jena normal tests
-public class TestGraphBTreeMem extends AbstractTestGraphTDB
+public class AbstractTestGraphTDB extends AbstractTestGraph
 {
-    public TestGraphBTreeMem()
+    public AbstractTestGraphTDB(String name)
     {
-        this("GraphBTree") ;
+        super(name) ;
     }
     
-    protected TestGraphBTreeMem(String name) { super(name) ; }
-
-    // Insert tests from AbstractTestGraph here to debug
+    @Override public void testBulkAddWithReification() {}
+    @Override public void testBulkRemoveWithReification() {}
     
-    // In-memory testing
-    @Override
-    public Graph getGraph() { return GraphTDBFactoryTest.createBTreeMem() ; }
+    @Override public void testRemoveAll() {}
+    @Override public void testRemoveSPO() {}
+    @Override public void testIsomorphismFile() {}
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

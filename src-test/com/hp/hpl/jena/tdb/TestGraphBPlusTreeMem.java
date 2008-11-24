@@ -8,11 +8,11 @@ package com.hp.hpl.jena.tdb;
 
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraphNoRemove;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
 
 // Jena normal tests
-public class TestGraphBPlusTreeMem extends AbstractTestGraphNoRemove
+public class TestGraphBPlusTreeMem extends AbstractTestGraphTDB
 {
     public TestGraphBPlusTreeMem()
     {

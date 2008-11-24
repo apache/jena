@@ -18,6 +18,9 @@ public class Dev
     //   Commands
     // Reification
     //   GraphTriplesTDB and GraphNamedTDB
+    // BulkHandler
+    // TupleTable.size - at least an isEmpty 
+    //   Not just an empty block manager.
     // ====
     
     // OpRange - OpIndex - generative stream of possibilities.

@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Reifier;
@@ -26,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.util.iterator.NullIterator;
@@ -91,14 +96,14 @@ public class Reifier2 implements Reifier
     
     private QueryIterator nodesReifTriple(Node node, TripleMatch triple)
     {
-        Binding b = null ;
+        Binding b = BindingRoot.create() ;
         
         if ( node == Node.ANY )
             node = null ;
         
         if ( node != null || triple != null )
         {
-            b = new BindingMap() ;
+            b = new BindingMap(b) ;
             if ( node != null )
                 bind(b, reifNodeVar, node) ; 
             if ( triple != null )
@@ -144,15 +149,17 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator find(TripleMatch match)
     {
-        QueryIterator qIter = nodesReifTriple(null, match) ; 
-        // To ExtendedIterator.
-        return new MapperToTriple(qIter) ;
+        // Filter non-reficiations?
+        return graph.find(match) ; 
+//        QueryIterator qIter = nodesReifTriple(null, match) ; 
+//        // To ExtendedIterator.
+//        return new MapperToTriple(qIter) ;
     }
 
     @Override
-    public ExtendedIterator findEither(TripleMatch m, boolean showHidden)
+    public ExtendedIterator findEither(TripleMatch match, boolean showHidden)
     {
-        return new NullIterator() ;
+        return graph.find(match) ;
     }
 
     @Override
@@ -192,7 +199,6 @@ public class Reifier2 implements Reifier
     {
         if ( ! graph.contains(node, RDF.Nodes.type, RDF.Nodes.Statement))
             return false ;
-
         if ( ! graph.contains(node, RDF.Nodes.subject, Node.ANY) )
             return false ;
         if ( ! graph.contains(node, RDF.Nodes.predicate, Node.ANY) )
@@ -205,21 +211,35 @@ public class Reifier2 implements Reifier
     @Override
     public boolean hasTriple(Triple triple)
     {
-        QueryIterator qIter = nodesReifTriple(null, triple) ; 
-        boolean b = qIter.hasNext() ;
-        qIter.close();
-        return b ;
+        if ( ! graph.contains(Node.ANY, RDF.Nodes.subject, triple.getSubject()) )
+            return false ;
+        if ( ! graph.contains(Node.ANY, RDF.Nodes.predicate, triple.getPredicate()) )
+            return false ;
+        if ( ! graph.contains(Node.ANY, RDF.Nodes.object, triple.getObject()) )
+            return false ;
+        return true ;
+//        QueryIterator qIter = nodesReifTriple(null, triple) ; 
+//        boolean b = qIter.hasNext() ;
+//        qIter.close();
+//        return b ;
     }
 
     @Override
     public Node reifyAs(Node node, Triple triple)
     {
+        // If there alread was a node, it is replaced.  YUK.
+        
         if ( node == null )
             node = Node.createAnon() ;
         else
         {
-            if ( hasTriple(node) )
+            Triple t = getTriple(node) ; 
+            
+            if ( t != null && ! t.equals(triple) )
                 throw new AlreadyReifiedException(node) ;
+            
+            
+            
         }
         
         graph.add(new Triple(node, RDF.Nodes.type, RDF.Nodes.Statement)) ;
@@ -243,21 +263,22 @@ public class Reifier2 implements Reifier
             node = Node.ANY ;
         
         QueryIterator qIter = nodesReifTriple(node, triple) ;
-        for ( ; qIter.hasNext() ; )
-        {
-            Binding b = qIter.nextBinding() ;
-            b.get(varS) ;
-            
-//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.type, RDF.Nodes.Statement) ;
-//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.subject, triple.getSubject()) ;
-//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.predicate, triple.getPredicate()) ;
-//          graph.getBulkUpdateHandler().remove(node, RDF.Nodes.object, triple.getObject()) ;
-            
-        }
-        
-        
+        Set<Triple> triples = new HashSet<Triple>();
+        triplesToZap(triples, node, RDF.Nodes.type, RDF.Nodes.Statement) ;
+        triplesToZap(triples, node, RDF.Nodes.subject, triple.getSubject()) ;
+        triplesToZap(triples, node, RDF.Nodes.predicate, triple.getPredicate()) ;
+        triplesToZap(triples, node, RDF.Nodes.object, triple.getObject()) ;
+        for ( Triple t : triples )
+            graph.delete(t) ;
     }
 
+    private void triplesToZap(Collection<Triple> acc, Node s, Node p , Node o)
+    {
+        ExtendedIterator iter = graph.find(s,p,o) ;
+        while(iter.hasNext())
+            acc.add((Triple)iter.next()) ;
+    }
+    
     @Override
     public int size()
     {

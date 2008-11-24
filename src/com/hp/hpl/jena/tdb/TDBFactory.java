@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import lib.NotImplemented;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -50,11 +50,11 @@ public class TDBFactory
 
         @Override
         public Dataset createDataset(Location location)
-        { throw new ARQNotImplemented("Dataset/PGraph") ; }
+        { throw new NotImplemented("Dataset/PGraph") ; }
 
         @Override
         public Dataset createDataset()
-        { throw new ARQNotImplemented("Dataset/PGraph") ; }
+        { throw new NotImplemented("Dataset/PGraph") ; }
     };
 
     // Standard implementation factory

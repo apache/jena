@@ -33,8 +33,8 @@ public class GraphTriplesTDB extends GraphTDBBase
     
     private final TripleTable tripleTable ;
     public GraphTriplesTDB(TripleTable tripleTable,
-                    ReorderTransformation reorderTransform,
-                    Location location)
+                           ReorderTransformation reorderTransform,
+                           Location location)
     {
         super(reorderTransform) ;
         
@@ -75,7 +75,7 @@ public class GraphTriplesTDB extends GraphTDBBase
         Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        return new MapperIterator(iter) ;
+        return new MapperIteratorTriples(iter) ;
     }
 
     @Override

@@ -25,7 +25,6 @@ import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase
@@ -92,24 +91,10 @@ public class GraphNamedTDB extends GraphTDBBase
         if ( iter == null )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
         
-        return new MapperIterator(graphNode, iter) ;
+        return new MapperIteratorQuads(graphNode, iter) ;
     }
 
-    // Simply convert from Iterator<Quad> to ExtendedIterator
-    static class MapperIterator extends NiceIterator
-    {
-        private final Iterator<Quad> iter ;
-        private final Node graphNode ;
-        MapperIterator(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Triple next()
-        { 
-            Quad q = iter.next();
-            if ( ! q.getGraph().equals(graphNode))
-                throw new InternalError("GraphNamed: Quads from unexpected graph") ;
-            return q.getTriple() ;
-        }
-    }
+  
     
     @Override
     public final Location getLocation()                           { return dataset.getLocation() ; }

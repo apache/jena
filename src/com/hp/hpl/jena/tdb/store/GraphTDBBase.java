@@ -9,17 +9,20 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public abstract class GraphTDBBase extends GraphBase implements GraphTDB
+import dev.GraphBase2;
+
+public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
@@ -42,13 +45,31 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
         return new Reifier2(this) ;
     }
     
-    // Simply convert from Iterator<Triple> to ExtendedIterator
-    public static class MapperIterator extends NiceIterator
+    // Convert from Iterator<Triple> to ExtendedIterator
+    static class MapperIteratorTriples extends NiceIterator
     {
         private final Iterator<Triple> iter ;
-        MapperIterator(Iterator<Triple> iter) { this.iter = iter ; }
+        MapperIteratorTriples(Iterator<Triple> iter) { this.iter = iter ; }
         @Override public boolean hasNext() { return iter.hasNext() ; } 
         @Override public Triple next() { return iter.next(); }
+        @Override public void remove() { iter.remove(); }
+    }
+    
+    // Convert from Iterator<Quad> to ExtendedIterator
+    static class MapperIteratorQuads extends NiceIterator
+    {
+        private final Iterator<Quad> iter ;
+        private final Node graphNode ;
+        MapperIteratorQuads(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
+        @Override public boolean hasNext() { return iter.hasNext() ; } 
+        @Override public Triple next()
+        { 
+            Quad q = iter.next();
+            if ( ! q.getGraph().equals(graphNode))
+                throw new InternalError("GraphNamed: Quads from unexpected graph") ;
+            return q.getTriple() ;
+        }
+        @Override public void remove() { iter.remove(); }
     }
     
     @Override

@@ -1,35 +1,50 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb;
 
-
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
+import com.hp.hpl.jena.graph.test.AbstractTestReifier;
+import com.hp.hpl.jena.shared.ReificationStyle;
 
-// Jena normal tests
-public class TestGraphBTreeMem extends AbstractTestGraphTDB
+public class TestReifier2 extends AbstractTestReifier
 {
-    public TestGraphBTreeMem()
+    public TestReifier2()
     {
-        this("GraphBTree") ;
+        super("Reifier2") ;
     }
-    
-    protected TestGraphBTreeMem(String name) { super(name) ; }
 
-    // Insert tests from AbstractTestGraph here to debug
-    
-    // In-memory testing
     @Override
-    public Graph getGraph() { return GraphTDBFactoryTest.createBTreeMem() ; }
+    public Graph getGraph()
+    {
+        return TDBFactory.createGraph() ;
+    }
+
+    @Override
+    public Graph getGraph(ReificationStyle style)
+    {
+        return TDBFactory.createGraph() ;
+    }
+
+    // Meaningless (e.g. other styles)
+    @Override public void testIntercept() {}
+    @Override public void testMinimalExplode() {}
+    @Override public void testReificationTriplesConvenient() {}
+    
+    @Override public void testStyle() { assertSame( Standard, getGraph( Standard ).getReifier().getStyle() ); }    
+    @Override public void testReificationQuadletsMinimal() {}
+    @Override public void testManifestQuadsConvenient() {}
+    @Override public void testManifestQuadsMinimal() {}
+    
+    @Override public void testBulkClearReificationTriples() {}
+    @Override public void testBulkClearReificationTriples2() {}
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

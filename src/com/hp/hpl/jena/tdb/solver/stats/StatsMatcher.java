@@ -29,7 +29,7 @@ import java.util.Map;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import lib.NotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -268,7 +268,7 @@ public final class StatsMatcher
         {
             //SPO, SP and SO
         }
-        throw new ARQNotImplemented() ;
+        throw new NotImplemented("StatsMatcher.addPattern") ;
     }
     
     private static void check(Pattern pattern)

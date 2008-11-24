@@ -4,20 +4,71 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.junit;
+package com.hp.hpl.jena.tdb.store;
 
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import java.util.Iterator;
+import java.util.List;
 
-public class AbstractTestGraphNoRemove extends AbstractTestGraph
+import com.hp.hpl.jena.graph.BulkUpdateHandler;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+public class BulkUpdateHandlerTDB implements BulkUpdateHandler
 {
-    public AbstractTestGraphNoRemove(String name)
-    {
-        super(name) ;
-    }
-    
-    @Override public void testRemoveAll() {}
-    @Override public void testRemoveSPO() {}
-    @Override public void testIsomorphismFile() {}
+
+    @Override
+    public void add(Triple[] triples)
+    {}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void add(List triples)
+    {}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void add(Iterator it)
+    {}
+
+    @Override
+    public void add(Graph g)
+    {}
+
+    @Override
+    public void add(Graph g, boolean withReifications)
+    {}
+
+    @Override
+    public void delete(Triple[] triples)
+    {}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void delete(List triples)
+    {}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void delete(Iterator it)
+    {}
+
+    @Override
+    public void delete(Graph g)
+    {}
+
+    @Override
+    public void delete(Graph g, boolean withReifications)
+    {}
+
+    @Override
+    public void remove(Node s, Node p, Node o)
+    {}
+
+    @Override
+    public void removeAll()
+    {}
+
 }
 
 /*
