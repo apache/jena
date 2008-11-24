@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: ReificationWrapper.java,v 1.1 2008-11-21 15:28:18 chris-dollin Exp $
+ 	$Id: ReificationWrapper.java,v 1.2 2008-11-24 14:12:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.test.TestReificationWrapper;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -28,19 +27,9 @@ public class ReificationWrapper implements Reifier
         this.base = this.graph.getBase(); 
         }
     
-    static final Map1 getSubject = new Map1() 
-        {
-        public Object map1( Object t ) { return ((Triple) t).getSubject(); }
-        };
-    
-    static final Map1 getObject = new Map1() 
-        {
-        public Object map1( Object t ) { return ((Triple) t).getObject(); }
-        };
-    
     public ExtendedIterator allNodes()
         { // TODO needs constraining for :subject :object etc
-        return base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( getSubject );
+        return base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( Triple.getSubject );
         }
     
     public ExtendedIterator allNodes( Triple t )
@@ -62,9 +51,7 @@ public class ReificationWrapper implements Reifier
         { return showHidden == style.conceals() ? find( m ) : NullIterator.instance; }
     
     public ExtendedIterator findExposed( TripleMatch m )
-        {
-        return find( m );
-        }
+        { return find( m ); }
     
     public Graph getParentGraph()
         { return graph; }
@@ -101,7 +88,7 @@ public class ReificationWrapper implements Reifier
     
     private void checkQuadElementFree( Node n, Node predicate, Node object )
         {
-        List L = base.find( n, predicate, Node.ANY ).mapWith( getObject ).toList();
+        List L = base.find( n, predicate, Node.ANY ).mapWith( Triple.getObject ).toList();
         if (L.size() == 0) return;
         if (L.size() == 1 && L.get( 0 ).equals( object )) return;
         throw new CannotReifyException( n );
@@ -119,7 +106,7 @@ public class ReificationWrapper implements Reifier
         { throw new BrokenException( "this reifier operation" ); }
     
     public int size()
-        { return style.conceals() ? 0: count( findQuadlets() ); }
+        { return style.conceals() ? 0: countQuadlets(); }
     
     int count( ExtendedIterator find )
         { 
@@ -129,49 +116,52 @@ public class ReificationWrapper implements Reifier
         }
     
     int countConcealed()
-        { return style.conceals() ? count( findQuadlets() ) : 0; }
-    
-    ExtendedIterator findQuadlets()
-        { 
-        return
-            base.find( Node.ANY, RDF.Nodes.subject, Node.ANY )
-            .andThen( base.find( Node.ANY, RDF.Nodes.predicate, Node.ANY ) )
-            .andThen( base.find( Node.ANY, RDF.Nodes.object, Node.ANY ) )
-            .andThen( base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ) )
+        { return style.conceals() ? countQuadlets() : 0; }
+
+    private int countQuadlets()
+        {
+        return 
+            count(  base.find( Node.ANY, RDF.Nodes.subject, Node.ANY ) )
+            + count( base.find( Node.ANY, RDF.Nodes.predicate, Node.ANY ) )
+            + count( base.find( Node.ANY, RDF.Nodes.object, Node.ANY ) )
+            + count( base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ) )
             ;
         }
     
     public boolean hasTriple( Triple t )
         { // CHECK: there's one match AND it matches the triple t.
-        Node R = TestReificationWrapper.node( "?r" ),  S = TestReificationWrapper.node( "?s" ), P = TestReificationWrapper.node( "?p" ), O = TestReificationWrapper.node( "?o" );
-        Query q = new Query()
-            .addMatch( R, RDF.Nodes.subject, S )
-            .addMatch( R, RDF.Nodes.predicate, P )
-            .addMatch( R, RDF.Nodes.object, O );
-        List bindings = base.queryHandler().prepareBindings( q, new Node[] {R, S, P, O} ).executeBindings().toList();
-        return bindings.size() == 1 && t.equals( tripleFrom( (Domain) bindings.get( 0 ) ) );
+        Node X = Query.X,  S = Query.S, P = Query.P, O = Query.O;
+        Query q = quadsQuery( Query.X );
+        List bindings = base.queryHandler().prepareBindings( q, new Node[] {X, S, P, O} ).executeBindings().toList();
+        return bindings.size() == 1 && t.equals( tripleFromRSPO( (Domain) bindings.get( 0 ) ) );
         }
     
-    private Triple tripleFrom( Domain domain )
+    private Triple tripleFromRSPO( Domain domain )
         { 
         return Triple.create
-            ( (Node) domain.get(1), (Node) domain.get(2), (Node) domain.get(3) );
+            ( domain.getElement(1), domain.getElement(2), domain.getElement(3) );
         }
     
     public Triple getTriple( Node n )
         {
-        Node S = TestReificationWrapper.node( "?s" ), P = TestReificationWrapper.node( "?p" ), O = TestReificationWrapper.node( "?o" );
-        Query q = new Query()
-            .addMatch( n, RDF.Nodes.subject, S )
-            .addMatch( n, RDF.Nodes.predicate, P )
-            .addMatch( n, RDF.Nodes.object, O )
-            .addMatch( n, RDF.Nodes.type, RDF.Nodes.Statement );
+        Node S = Query.S, P = Query.P, O = Query.O;
+        Query q = quadsQuery( n );
         List bindings = base.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
-        return bindings.size() == 1 ? triple( (Domain) bindings.get(0) ) : null;
+        return bindings.size() == 1 ? tripleFromSPO( (Domain) bindings.get(0) ) : null;
         }
     
-    private Triple triple( Domain d )
-        { return Triple.create( d.getElement( 0 ), d.getElement( 1 ), d.getElement( 2 ) ); }
+    private static Query quadsQuery( Node subject )
+        {
+        return new Query()
+            .addMatch( subject, RDF.Nodes.subject, Query.S )
+            .addMatch( subject, RDF.Nodes.predicate, Query.P )
+            .addMatch( subject, RDF.Nodes.object, Query.O )
+            .addMatch( subject, RDF.Nodes.type, RDF.Nodes.Statement )
+            ;
+        }
+    
+    private Triple tripleFromSPO( Domain d )
+        { return Triple.create( d.getElement(0), d.getElement(1), d.getElement(2) ); }
     
     private static boolean isReificationTriple( Triple t )
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.23 2008-01-02 12:05:33 andy_seaborne Exp $
+  $Id: TestTriple.java,v 1.24 2008-11-24 14:12:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -252,6 +252,14 @@ public class TestTriple extends GraphTestBase
         Triple t1 = Triple.create( "eg://domain.dom/spoo#a b c" );
         assertEquals( "spoo:a @eh:/b eh:/c", t1.toString( pm ) );
         }
+    
+    public void testTripleMaps()
+        {
+        assertEquals( node( "x" ), Triple.getSubject.map1( Triple.create( "x P z" ) ) );
+        assertEquals( node( "P" ), Triple.getPredicate.map1( Triple.create( "x P z" ) ) );
+        assertEquals( node( "z" ), Triple.getObject.map1( Triple.create( "x P z" ) ) );
+        }
+    
 
     }
 /*
