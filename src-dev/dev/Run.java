@@ -57,10 +57,10 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        reification() ;
+        //reification() ;
         
         
-        tdb.perf.tdbperf.main("load", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;
+        tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
         

@@ -127,19 +127,19 @@ public final class PeekReader extends Reader
     // Ensure the buffer is not empty, or boolean eof is set
     private void fill()
     {
-        try {
-            if ( idx >= buffLen )
-            {
+        if ( idx >= buffLen )
+        {
+            try {
                 int x = in.read(chars) ;
                 idx = 0 ;
                 if ( x <= 0 )
                     currChar = EOF ;
                 buffLen = x ;
             }
-        }
-        catch(IOException ex)
-        {
-            ex.printStackTrace(System.err) ;
+            catch(IOException ex)
+            {
+                ex.printStackTrace(System.err) ;
+            }
         }
     }
 
@@ -148,8 +148,7 @@ public final class PeekReader extends Reader
         int ch = currChar ;
         if ( ch == EOF )
             return EOF ;
-        
-        
+
         fill() ;
         if ( !eof() )
         {
@@ -166,7 +165,6 @@ public final class PeekReader extends Reader
                 colNum++;
         }
         return ch ;
-        
     }
 
     public final boolean eof()   { return currChar == EOF ; }
