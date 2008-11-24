@@ -6,6 +6,11 @@
 
 package dev;
 
+import java.io.StringWriter;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphMatcher;
@@ -408,31 +413,39 @@ public abstract class GraphBase2 implements GraphWithPerform
      */
 
     @Override
-    public String toString() 
-    { return toString( (closed ? "closed " : ""), this ); }
-
-    /**
-           Answer a human-consumable representation of <code>that</code>. The 
-           string <code>prefix</code> will appear near the beginning of the string. Nodes
-           may be prefix-compressed using <code>that</code>'s prefix-mapping. This
-           default implementation will display all the triples exposed by the graph (ie
-           including reification triples if it is Standard).
-     */
-    public static String toString( String prefix, Graph that )
+    public String toString()
     {
-        PrefixMapping pm = that.getPrefixMapping();
-        StringBuffer b = new StringBuffer( prefix + " {" );
-        String gap = "";
-        ClosableIterator it = GraphUtil.findAll( that );
-        while (it.hasNext()) 
-        {
-            b.append( gap );
-            gap = "; ";
-            b.append( ((Triple) it.next()).toString( pm ) );
-        } 
-        b.append( "}" );
-        return b.toString();
+        Model m = ModelFactory.createModelForGraph(this) ;
+        m.setNsPrefixes(PrefixMapping.Standard) ;
+        StringWriter w = new StringWriter() ;
+        m.write(w, "TTL") ;
+        return w.toString() ;
     }
+//    
+//    { return toString( (closed ? "closed " : ""), this ); }
+//
+//    /**
+//           Answer a human-consumable representation of <code>that</code>. The 
+//           string <code>prefix</code> will appear near the beginning of the string. Nodes
+//           may be prefix-compressed using <code>that</code>'s prefix-mapping. This
+//           default implementation will display all the triples exposed by the graph (ie
+//           including reification triples if it is Standard).
+//     */
+//    public static String toString( String prefix, Graph that )
+//    {
+//        PrefixMapping pm = that.getPrefixMapping();
+//        StringBuffer b = new StringBuffer( prefix + " {" );
+//        String gap = "";
+//        ClosableIterator it = GraphUtil.findAll( that );
+//        while (it.hasNext()) 
+//        {
+//            b.append( gap );
+//            gap = "; ";
+//            b.append( ((Triple) it.next()).toString( pm ) );
+//        } 
+//        b.append( "}" );
+//        return b.toString();
+//    }
 
 }
 

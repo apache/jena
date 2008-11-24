@@ -197,31 +197,33 @@ public class Reifier2 implements Reifier
     @Override
     public boolean hasTriple(Node node)
     {
-        if ( ! graph.contains(node, RDF.Nodes.type, RDF.Nodes.Statement))
-            return false ;
-        if ( ! graph.contains(node, RDF.Nodes.subject, Node.ANY) )
-            return false ;
-        if ( ! graph.contains(node, RDF.Nodes.predicate, Node.ANY) )
-            return false ;
-        if ( ! graph.contains(node, RDF.Nodes.object, Node.ANY) )
-            return false ;
-        return true ;
+        return getTriple(node) != null ;
     }
 
     @Override
     public boolean hasTriple(Triple triple)
     {
-        if ( ! graph.contains(Node.ANY, RDF.Nodes.subject, triple.getSubject()) )
-            return false ;
-        if ( ! graph.contains(Node.ANY, RDF.Nodes.predicate, triple.getPredicate()) )
-            return false ;
-        if ( ! graph.contains(Node.ANY, RDF.Nodes.object, triple.getObject()) )
-            return false ;
-        return true ;
-//        QueryIterator qIter = nodesReifTriple(null, triple) ; 
-//        boolean b = qIter.hasNext() ;
-//        qIter.close();
-//        return b ;
+//        if ( ! graph.contains(Node.ANY, RDF.Nodes.subject, triple.getSubject()) )
+//            return false ;
+//        if ( ! graph.contains(Node.ANY, RDF.Nodes.predicate, triple.getPredicate()) )
+//            return false ;
+//        if ( ! graph.contains(Node.ANY, RDF.Nodes.object, triple.getObject()) )
+//            return false ;
+//        return true ;
+        QueryIterator qIter = nodesReifTriple(null, triple) ;
+        try {
+            
+            
+            if ( ! qIter.hasNext() )
+                return false ;
+            // Fragments?
+            
+            System.out.println(qIter.nextBinding() );
+            if ( qIter.hasNext() )
+                // Over specified
+                return false ;
+            return true ;
+        } finally { qIter.close(); }
     }
 
     @Override
@@ -289,16 +291,32 @@ public class Reifier2 implements Reifier
     @Override
     public Triple getTriple(Node node)
     {
-        Node S = getNode(node, RDF.Nodes.subject) ;
-        if ( S == null )
-            return null ; 
-        Node P = getNode(node, RDF.Nodes.predicate) ;
-        if ( P == null )
-            return null ; 
-        Node O = getNode(node, RDF.Nodes.object) ;
-        if ( O == null )
-            return null ; 
-        return new Triple(S,P,O) ;
+        
+        QueryIterator qIter = nodesReifTriple(node, null) ;
+        try {
+            if ( ! qIter.hasNext() )
+                return null ;
+            Binding b = qIter.nextBinding() ;
+            if ( qIter.hasNext() )
+                // Over specificied
+                return null ;
+            // Just right
+            Node S = b.get(varS) ;
+            Node P = b.get(varP) ;
+            Node O = b.get(varO) ;
+            return new Triple(S,P,O) ;
+        } finally { qIter.close() ; }
+//        
+//        Node S = getNode(node, RDF.Nodes.subject) ;
+//        if ( S == null )
+//            return null ; 
+//        Node P = getNode(node, RDF.Nodes.predicate) ;
+//        if ( P == null )
+//            return null ; 
+//        Node O = getNode(node, RDF.Nodes.object) ;
+//        if ( O == null )
+//            return null ; 
+//        return new Triple(S,P,O) ;
     }
 
     private Node getNode(Node S, Node P)
