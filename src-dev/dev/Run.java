@@ -89,8 +89,11 @@ public class Run
         
         Statement stmt1 = m.createStatement(r1, p1, lit1) ;
         Statement stmt2 = m.createStatement(r1, p2, lit2) ;
-        m.createReifiedStatement(stmt1) ;
-        m.createReifiedStatement(stmt2) ;
+        ReifiedStatement rs1 = m.createReifiedStatement(stmt1) ;
+        ReifiedStatement rs2 = m.createReifiedStatement(stmt2) ;
+        
+        Resource r = m.getAnyReifiedStatement(stmt2) ;
+        System.out.println("r = "+r) ;
         
         RSIterator rsIter = m.listReifiedStatements() ;
         while(rsIter.hasNext())

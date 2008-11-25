@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.shared.AlreadyReifiedException;
+import com.hp.hpl.jena.shared.CannotReifyException;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -33,7 +34,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /** A Reifier that only support one style Standard (intercept, no conceal 
@@ -52,6 +52,14 @@ public class Reifier2 implements Reifier
     private final static Var varS = Var.alloc("S") ; 
     private final static Var varP = Var.alloc("P") ; 
     private final static Var varO = Var.alloc("O") ; 
+    
+    private final Node rdfType      = RDF.Nodes.type ;
+    private final Node statement    = RDF.Nodes.Statement ;
+    private final Node subject      = RDF.Nodes.subject ;
+    private final Node predicate    = RDF.Nodes.predicate ;
+    private final Node object       = RDF.Nodes.object ;
+    
+    
 
     //private static ReificationStyle style = new ReificationStyle(false, false) ;
     private final Graph graph ;
@@ -68,7 +76,7 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator allNodes()
     {
-        // Or use graph.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ) -> project subject
+        // Or use graph.find( Node.ANY, rdfType, statement ) -> project subject
         return allNodes(null) ;
     }
 
@@ -163,9 +171,9 @@ public class Reifier2 implements Reifier
     }
 
     @Override
-    public ExtendedIterator findExposed(TripleMatch m)
+    public ExtendedIterator findExposed(TripleMatch match)
     {
-        return new NullIterator() ;
+        return graph.find(match) ;
     }
 
     @Override
@@ -203,33 +211,31 @@ public class Reifier2 implements Reifier
     @Override
     public boolean hasTriple(Triple triple)
     {
-//        if ( ! graph.contains(Node.ANY, RDF.Nodes.subject, triple.getSubject()) )
+//        if ( ! graph.contains(Node.ANY, subject, triple.getSubject()) )
 //            return false ;
-//        if ( ! graph.contains(Node.ANY, RDF.Nodes.predicate, triple.getPredicate()) )
+//        if ( ! graph.contains(Node.ANY, predicate, triple.getPredicate()) )
 //            return false ;
-//        if ( ! graph.contains(Node.ANY, RDF.Nodes.object, triple.getObject()) )
+//        if ( ! graph.contains(Node.ANY, object, triple.getObject()) )
 //            return false ;
 //        return true ;
         QueryIterator qIter = nodesReifTriple(null, triple) ;
         try {
-            
-            
             if ( ! qIter.hasNext() )
                 return false ;
-            // Fragments?
-            
-            System.out.println(qIter.nextBinding() );
+            Binding b = qIter.nextBinding() ;
+            Node x = b.get(reifNodeVar) ;
             if ( qIter.hasNext() )
                 // Over specified
                 return false ;
-            return true ;
+            // This check there are no fragments
+            return getTriple(x) != null ;
         } finally { qIter.close(); }
     }
 
     @Override
     public Node reifyAs(Node node, Triple triple)
     {
-        // If there alread was a node, it is replaced.  YUK.
+        // If there already was a node, it is replaced.  YUK.
         
         if ( node == null )
             node = Node.createAnon() ;
@@ -239,16 +245,22 @@ public class Reifier2 implements Reifier
             
             if ( t != null && ! t.equals(triple) )
                 throw new AlreadyReifiedException(node) ;
-            
-            
-            
+            if ( t != null )
+                // Already there
+                return node ;
         }
         
-        graph.add(new Triple(node, RDF.Nodes.type, RDF.Nodes.Statement)) ;
-        graph.add(new Triple(node, RDF.Nodes.subject, triple.getSubject())) ;
-        graph.add(new Triple(node, RDF.Nodes.predicate, triple.getPredicate())) ;
-        graph.add(new Triple(node, RDF.Nodes.object, triple.getObject())) ;
+        // CannotReifyException
+        // addWithCheck that node/predicate does not already exist
+        graph.add(new Triple(node, rdfType, statement)) ;
+        graph.add(new Triple(node, subject, triple.getSubject())) ;
+        graph.add(new Triple(node, predicate, triple.getPredicate())) ;
+        graph.add(new Triple(node, object, triple.getObject())) ;
 
+        // Check it's a well-formed reification by Jena's uniqueness rules 
+        Triple t = getTriple(node) ;
+        if ( t == null )
+            throw new CannotReifyException(node) ;
         return node ;
     }
 
@@ -266,10 +278,10 @@ public class Reifier2 implements Reifier
         
         QueryIterator qIter = nodesReifTriple(node, triple) ;
         Set<Triple> triples = new HashSet<Triple>();
-        triplesToZap(triples, node, RDF.Nodes.type, RDF.Nodes.Statement) ;
-        triplesToZap(triples, node, RDF.Nodes.subject, triple.getSubject()) ;
-        triplesToZap(triples, node, RDF.Nodes.predicate, triple.getPredicate()) ;
-        triplesToZap(triples, node, RDF.Nodes.object, triple.getObject()) ;
+        triplesToZap(triples, node, rdfType, statement) ;
+        triplesToZap(triples, node, subject, triple.getSubject()) ;
+        triplesToZap(triples, node, predicate, triple.getPredicate()) ;
+        triplesToZap(triples, node, object, triple.getObject()) ;
         for ( Triple t : triples )
             graph.delete(t) ;
     }
@@ -306,17 +318,6 @@ public class Reifier2 implements Reifier
             Node O = b.get(varO) ;
             return new Triple(S,P,O) ;
         } finally { qIter.close() ; }
-//        
-//        Node S = getNode(node, RDF.Nodes.subject) ;
-//        if ( S == null )
-//            return null ; 
-//        Node P = getNode(node, RDF.Nodes.predicate) ;
-//        if ( P == null )
-//            return null ; 
-//        Node O = getNode(node, RDF.Nodes.object) ;
-//        if ( O == null )
-//            return null ; 
-//        return new Triple(S,P,O) ;
     }
 
     private Node getNode(Node S, Node P)

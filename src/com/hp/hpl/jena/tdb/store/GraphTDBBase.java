@@ -15,12 +15,12 @@ import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.tdb.graph.GraphBase2;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-import dev.GraphBase2;
 
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {

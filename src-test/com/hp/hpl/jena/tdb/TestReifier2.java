@@ -29,19 +29,24 @@ public class TestReifier2 extends AbstractTestReifier
         return TDBFactory.createGraph() ;
     }
 
-    // Meaningless (e.g. other styles)
+    // Standard only.
+    @Override public void testStyle() { assertSame( Standard, getGraph( Standard ).getReifier().getStyle() ); }
+    
+    // Other styles.
     @Override public void testIntercept() {}
     @Override public void testMinimalExplode() {}
     @Override public void testReificationTriplesConvenient() {}
     
-    @Override public void testStyle() { assertSame( Standard, getGraph( Standard ).getReifier().getStyle() ); }    
     @Override public void testReificationQuadletsMinimal() {}
     @Override public void testManifestQuadsConvenient() {}
     @Override public void testManifestQuadsMinimal() {}
+    @Override public void testHiddenVsReificationMinimal() {}
+    @Override public void testHiddenVsReificationConvenient() {}
     
-    // We don't support iterator remove.
+    // We don't support iterator remove yet.
     @Override public void testBulkClearReificationTriples() {}
     @Override public void testBulkClearReificationTriples2() {}
+    
 }
 
 /*

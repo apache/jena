@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.graph;
 
 import java.io.StringWriter;
 

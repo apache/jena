@@ -78,8 +78,8 @@ public class GraphTriplesTDB extends GraphTDBBase
         return new MapperIteratorTriples(iter) ;
     }
 
-    @Override
-    public boolean isEmpty()        { return tripleTable.isEmpty() ; }
+//    @Override
+//    public boolean isEmpty()        { return tripleTable.isEmpty() ; }
     
     // B+Trees don't (yet) have a proper size
 //    @Override
