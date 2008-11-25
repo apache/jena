@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.graph.GraphBase2;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
+import com.hp.hpl.jena.tdb.graph.Reifier2;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 

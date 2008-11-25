@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -31,6 +31,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TDB
 {
+    // Internal logging
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     /** Logger for general information */ 
@@ -41,7 +42,9 @@ public class TDB
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
-    /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO */
+    /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
+     * An appropriate loggin gconfiguration is also required
+     */
     public static void setExecutionLogging(boolean state)
     {
         TDB.getContext().set(SystemTDB.symLogExec, state) ;
@@ -68,7 +71,6 @@ public class TDB
         initialized = true ;
 
         // TDB uses a custom OpCompiler.
-        //QueryEngineTDB.register() ;
         
         VocabTDB.init();
         QueryEngineTDB.register() ;
@@ -96,7 +98,7 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
         
-        // Wire in the TDB stage generator which wil make TDB work whether
+        // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used.
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;

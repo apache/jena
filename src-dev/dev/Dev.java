@@ -11,7 +11,8 @@ public class Dev
     // ==== 0.7.0 "quads"
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
-    //   Command line and dataset vs graph
+    // Tests
+    //   Quads, including substitution cases.
     // Documentation
     //   Dataset assembler
     //   Commands

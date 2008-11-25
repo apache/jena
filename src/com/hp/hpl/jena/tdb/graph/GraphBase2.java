@@ -24,7 +24,6 @@ import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.shared.DeleteDeniedException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.tdb.store.Reifier2;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 

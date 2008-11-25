@@ -35,6 +35,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import static com.hp.hpl.jena.tdb.sys.Names.* ;
 
+/** Low-level factory for things TDB. See {@link com.hp.hpl.jena.tdb.TDBFactory} for the usual application API */
 public class FactoryGraphTDB
 {
     // For this class

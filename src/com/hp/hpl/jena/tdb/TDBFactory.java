@@ -21,9 +21,10 @@ import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 //import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
+/** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
 {
-    /** Low level interface to maker of the actual implementation of TDB graphs */ 
+    /** Interface to maker of the actual implementations of TDB graphs and datasets */ 
     public interface ImplFactory 
     {
         /** Make a memory implementation of a TDB graph (memory graphs are for testing, not efficiency) */
@@ -88,7 +89,7 @@ public class TDBFactory
         return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
     }
     
-    /** Read the file and assembler a model, of type TDB persistent graph */ 
+    /** Read the file and assembler a graph, of type TDB persistent graph */ 
     public static Graph assembleGraph(String assemblerFile)
     {
         Model m = assembleModel(assemblerFile) ;
@@ -103,10 +104,19 @@ public class TDBFactory
     }
     
     /** Create a model, at the given location */
+    public static Model createModel(Location loc)
+    {
+        return ModelFactory.createModelForGraph(createGraph(loc)) ;
+    }
+
+    /** Create a model, at the given location */
     public static Model createModel(String dir)
     {
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
     }
+
+    /** Create a graph, at the given location */
+    public static Graph createGraph(Location loc)       { return _createGraph(loc) ; }
 
     /** Create a graph, at the given location */
     public static Graph createGraph(String dir)
@@ -114,15 +124,6 @@ public class TDBFactory
         Location loc = new Location(dir) ;
         return createGraph(loc) ;
     }
-    
-    /** Create a model, at the given location */
-    public static Model createModel(Location loc)
-    {
-        return ModelFactory.createModelForGraph(createGraph(loc)) ;
-    }
-
-    /** Create a graph, at the given location */
-    public static Graph createGraph(Location loc)       { return _createGraph(loc) ; }
     
     /** Create a TDB model backed by an in-memory block manager. For testing. */  
     public static Model createModel()
@@ -152,7 +153,11 @@ public class TDBFactory
         return factory.createGraph(loc) ;
     }
 
-    /** Set the implementation factory */
+    /** Set the implementation factory.  Not normally needed - only systems that wish
+     * to create usually combinations of indexes and ndoe tables need to use this call.
+     * A detailed knowledge of how TDB works, and internal assumptions, is needed to
+     * create full functional TDB graphs or datasets.  Beware    
+     */
     public static void setImplFactory(ImplFactory f) { factory = f ; }
 }
 

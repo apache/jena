@@ -9,6 +9,8 @@ package tdb.cmdline;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.Log;
+
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
@@ -31,6 +33,7 @@ import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class ModTDBDataset extends ModDataset
@@ -91,10 +94,14 @@ public class ModTDBDataset extends ModDataset
         if (  modAssembler.getAssemblerFile() != null )
         {
             Dataset thing = null ;
+            
             try {
                 thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB) ;
+                if ( thing != null && ! ( thing.asDatasetGraph() instanceof DatasetGraphTDB ) )
+                        Log.warn(this, "Unexpected: Not a TDB dataset for type DatasetTDB");
+                
                 if ( thing == null )
-                    // Should use assembler inheritance but how do we assert the subclass relationship in a program. 
+                    // Should use assembler inheritance but how do we assert the subclass relationship in a program?
                     thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
             }
             catch (ARQException ex)     { throw ex; }

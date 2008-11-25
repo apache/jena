@@ -95,6 +95,8 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! ( execCxt.getDataset() instanceof DatasetGraphTDB ) )
             return super.execute(quadPattern, input) ;
         
+        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
+
         if ( quadPattern.isDefaultGraph() )
         {
             // Quad.defaultGraphNode
@@ -113,6 +115,7 @@ public class OpExecutorTDB extends OpExecutor
             return execute(new OpBGP(bgp), input) ;
 
         // **** Optimize the basic pattern.
+        // Substitution needed?
         
         boolean doingUnion = false ;
         if ( gn.equals(Quad.unionGraph) )
@@ -122,7 +125,6 @@ public class OpExecutorTDB extends OpExecutor
             gn = VarAlloc.getVarAllocator().allocVar() ;
         }
         
-        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
         if ( doingUnion )
         {
