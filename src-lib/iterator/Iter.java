@@ -238,13 +238,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter ;
     }
     
-    public static <T> Iterable<T> append(Iterable<T> iter1, Iterable<T> iter2)
+    public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {
-        return new Iterator2<T>(iterator(iter1), iterator(iter2));
+        return Iterator2.create(iterator(iter1), iterator(iter2));
     }
 
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
-    { return new Iterator2<T>(iter1, iter2); }
+    { return Iterator2.create(iter1, iter2); }
 
     private static <T> Iterator<T> iterator(Iterable<T> iter) { return (iter==null) ? null : iter.iterator() ; }
     
@@ -358,6 +358,9 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter1.append(iter2) ;
     }
 
+    // The class.
+    // Consider merging in a 
+    
     private Iterator<T> iterator ;
     private Iter(Iterator<T> iterator) { this.iterator = iterator ; }
     
@@ -408,7 +411,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
     public Iter<T> append(Iterator<? extends T> iter)
     {
-        return new Iter<T>(new Iterator2<T>(iterator, iter)) ;
+        // Cosider having a "concat" slot in Iter
+        return new Iter<T>(Iterator2.create(iterator, iter)) ;
     }
 
     public String asString() { return asString(iterator) ; }

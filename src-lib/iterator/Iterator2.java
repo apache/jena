@@ -20,12 +20,25 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;
 
-    public Iterator2(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
+    @SuppressWarnings("unchecked")
+    public static <T> Iterator<T> create(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
+    {
+        if ( iter1 == null )
+            return (Iterator<T>)iter2 ;
+        
+        if ( iter2 == null )
+            return (Iterator<T>)iter1 ;
+        
+        return new Iterator2<T>(iter1, iter2) ;
+    }
+    
+    private Iterator2(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
     {
         this.iter1 = iter1 ;
         this.iter2 = iter2 ;
     }
 
+    @Override
     public boolean hasNext()
     {
         if ( iter1 != null )
@@ -44,6 +57,7 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
         return false ; 
     }
 
+    @Override
     public T next()
     {
         if ( ! hasNext() )
@@ -55,6 +69,7 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
         throw new Error("Iterator2.next") ;
     }
 
+    @Override
     public void remove()
     { 
         if ( iter1 != null )
@@ -70,6 +85,7 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
         throw new NoSuchElementException("Iterator2.remove") ;
     }
 
+    @Override
     public Iterator<T> iterator()
     {
         return this ;

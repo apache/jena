@@ -31,7 +31,7 @@ public class TestAlg
     @Test
     public void append_1()
     {
-        Iterator<String> iter = Iter.append(data1, data0).iterator() ;
+        Iterator<String> iter = Iter.append(data1, data0) ;
         test(iter, "a") ;
     }
         
@@ -39,14 +39,14 @@ public class TestAlg
     @Test
     public void append_2()
     {
-        Iterator<String> iter = Iter.append(data0, data1).iterator() ;
+        Iterator<String> iter = Iter.append(data0, data1) ;
         test(iter, "a") ;
     }
         
     @Test
     public void append_3()
     {
-        Iterator<String> iter = Iter.append(data1, data2).iterator() ;
+        Iterator<String> iter = Iter.append(data1, data2) ;
         test(iter, "a", "x", "y", "z") ;
     }
 
