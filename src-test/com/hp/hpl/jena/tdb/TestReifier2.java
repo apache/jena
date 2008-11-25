@@ -39,6 +39,7 @@ public class TestReifier2 extends AbstractTestReifier
     @Override public void testManifestQuadsConvenient() {}
     @Override public void testManifestQuadsMinimal() {}
     
+    // We don't support iterator remove.
     @Override public void testBulkClearReificationTriples() {}
     @Override public void testBulkClearReificationTriples2() {}
 }
