@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.35 2008-11-21 11:55:00 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.36 2008-11-25 15:44:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.db.impl.DBReifier;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -26,7 +25,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     protected static final ReificationStyle Standard = ReificationStyle.Standard;
     protected static final ReificationStyle Convenient = ReificationStyle.Convenient;
 
-    protected static final Triple ALL = Triple.create( "?? ?? ??" );
+    protected static final Triple ALL = Triple.ANY;
     
     public AbstractTestReifier( String name )
         { super( name ); }
@@ -41,6 +40,12 @@ public abstract class AbstractTestReifier extends GraphTestBase
         graphAdd( result, facts );
         return result;
         }
+
+    /**
+        Answer true iff g's reifier has style Standard.
+    */
+    private boolean isStandard( Graph g )
+        { return g.getReifier().getStyle() == Standard; }
         
     /**
         Answer the empty graph if cond is false, otherwise the graph with the given facts.
@@ -52,19 +57,13 @@ public abstract class AbstractTestReifier extends GraphTestBase
         { return graphWithUnless( !cond, facts ); }
             
     public void testGetGraphNotNull()
-        {
-        assertNotNull( getGraph( Minimal )  );
-        }
+        { assertNotNull( getGraph()  ); }
     
     public void testGotGraphReifierNotNull()
-        {
-        assertNotNull( getGraph( Minimal ).getReifier() );
-        }
+        { assertNotNull( getGraph().getReifier() ); }
     
     public void testGotGraphReifierStyleNotNull()
-        {
-        assertNotNull( getGraph( Minimal ).getReifier().getStyle() );
-        }
+        { assertNotNull( getGraph().getReifier().getStyle() ); }
     
     public void testStyle()
         {
@@ -177,17 +176,20 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testOverspecificationSuppressesReification()
         {
-        Graph g = getGraph( Standard );
-        Reifier r = g.getReifier();
-        graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
-        assertEquals( triple( "A P O" ), r.getTriple( node( "x" ) ) );
-        try 
-            { graphAdd( g, "x rdf:subject BOOM" ); 
-            assertEquals( null, r.getTriple( node( "x" ) ) ); }
-        catch (AlreadyReifiedException e) 
+        Graph g = getGraph();
+        if (isStandard( g ))
             {
-            if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
-            else throw e;
+            Reifier r = g.getReifier();
+            graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
+            assertEquals( triple( "A P O" ), r.getTriple( node( "x" ) ) );
+            try 
+                { graphAdd( g, "x rdf:subject BOOM" ); 
+                assertEquals( null, r.getTriple( node( "x" ) ) ); }
+            catch (AlreadyReifiedException e) 
+                {
+                if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
+                else throw e;
+                }
             }
         }
     
@@ -206,63 +208,65 @@ public abstract class AbstractTestReifier extends GraphTestBase
         testReificationClash( "x rdf:object OO" );
         }
         
-    /**
-     * @param clashingStatement
-     */
     protected void testReificationClash( String clashingStatement )
         {
-        Graph g = getGraph( Standard );
-        Triple SPO = Triple.create( "S P O" );
-        g.getReifier().reifyAs( node( "x" ), SPO );
-        assertTrue( g.getReifier().hasTriple( SPO ) );
-        try
-            {
-            graphAdd( g,  clashingStatement );
-            assertEquals( null, g.getReifier().getTriple( node( "x" ) ) );
-            // System.err.println( ">> tRC: clashing = " + clashingStatement );
-            assertFalse( g.getReifier().hasTriple( SPO ) );
-            }
-        catch (AlreadyReifiedException e)
-            {
-            if (g.getReifier() instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
-            else throw e;
+        Graph g = getGraph();
+        if (isStandard( g ))
+            {            
+            Triple SPO = Triple.create( "S P O" );
+            g.getReifier().reifyAs( node( "x" ), SPO );
+            assertTrue( g.getReifier().hasTriple( SPO ) );
+            try
+                {
+                graphAdd( g,  clashingStatement );
+                assertEquals( null, g.getReifier().getTriple( node( "x" ) ) );
+                // System.err.println( ">> tRC: clashing = " + clashingStatement );
+                assertFalse( g.getReifier().hasTriple( SPO ) );
+                }
+            catch (AlreadyReifiedException e)
+                {
+                if (g.getReifier() instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
+                else throw e;
+                }
             }
         }
 
-    public void testManifestQuadsStandard()
-        { testManifestQuads( Standard ); }
-        
-    public void testManifestQuadsConvenient()
-        { testManifestQuads( Convenient ); }
-        
-    public void testManifestQuadsMinimal()
-        { testManifestQuads( Minimal ); }
+//    public void testManifestQuadsStandard()
+//        { testManifestQuads( Standard ); }
+//        
+//    public void testManifestQuadsConvenient()
+//        { testManifestQuads( Convenient ); }
+//        
+//    public void testManifestQuadsMinimal()
+//        { testManifestQuads( Minimal ); }
         
     /**
         Test that reifying a triple explicitly has some effect on the graph only for Standard
         reifiers.
      */
-    public void testManifestQuads( ReificationStyle style )
+    public void testManifestQuads()
         {
-        Graph g = getGraph( style );   
-        Reifier r = g.getReifier();
+        Graph g = getGraph();   
+        Reifier r = g.getReifier(); 
+        ReificationStyle style = r.getStyle(); 
         r.reifyAs( node( "A" ), triple( "S P O" ) );
         String reified = "A rdf:type rdf:Statement; A rdf:subject S; A rdf:predicate P; A rdf:object O";
         assertIsomorphic( graphWithIf( style == Standard, reified ), g );
         }
         
-    public void testHiddenVsReificationMinimal()
-        { testHiddenVsReification( Minimal ); }
+//    public void testHiddenVsReificationMinimal()
+//        { testHiddenVsReification( Minimal ); }
+//        
+//    public void testHiddenVsStandard()
+//        { testHiddenVsReification( Standard ); }
+//        
+//    public void testHiddenVsReificationConvenient()
+//        { testHiddenVsReification( Convenient ); }
         
-    public void testHiddenVsStandard()
-        { testHiddenVsReification( Standard ); }
-        
-    public void testHiddenVsReificationConvenient()
-        { testHiddenVsReification( Convenient ); }
-        
-    public void testHiddenVsReification( ReificationStyle style )
+    public void testHiddenVsReification()
         {
-        Graph g = getGraph( style );
+        Graph g = getGraph();
+        ReificationStyle style = g.getReifier().getStyle();
         Reifier r = g.getReifier();
         r.reifyAs( node( "A" ), triple( "S P O" ) );
         assertEquals( style == Standard, r.findEither( ALL, false ).hasNext() );    
@@ -361,25 +365,31 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseA()
         {
-        Graph G = getGraph( Standard );
-        Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( Triple.create( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
-        G.getReifier().reifyAs( X, Triple.create( a, b, c ) ); 
+        Graph G = getGraph();
+        if (isStandard( G ))
+            {
+            Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
+            G.add( Triple.create( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
+            G.getReifier().reifyAs( X, Triple.create( a, b, c ) ); 
+            }
         }
         
     public void testKevinCaseB()
         {
-        Graph G = getGraph( Standard );
-        Node X = node( "x" ), Y = node( "y" );
-        Node a = node( "a" ), b = node( "b" ), c = node( "c" );
-        G.add( Triple.create( X, RDF.Nodes.subject, Y ) );
-        try
+        Graph G = getGraph();
+        if (isStandard( G ))
             {
-            G.getReifier().reifyAs( X, Triple.create( a, b, c ) );
-            fail( "X already has subject Y: cannot make it a" );
+            Node X = node( "x" ), Y = node( "y" );
+            Node a = node( "a" ), b = node( "b" ), c = node( "c" );
+            G.add( Triple.create( X, RDF.Nodes.subject, Y ) );
+            try
+                {
+                G.getReifier().reifyAs( X, Triple.create( a, b, c ) );
+                fail( "X already has subject Y: cannot make it a" );
+                }
+            catch (CannotReifyException e)
+                { pass(); }
             }
-        catch (CannotReifyException e)
-            { pass(); }
         }
 
     /**
@@ -412,42 +422,44 @@ public abstract class AbstractTestReifier extends GraphTestBase
             
 	public void testQuadRemove()
 		{
-		Graph g = getGraph( Standard );
-		assertEquals( 0, g.size() );
-	
-		Triple s = Triple.create( "x rdf:subject s" );
-		Triple p = Triple.create( "x rdf:predicate p" );
-		Triple o = Triple.create( "x rdf:object o" );
-		Triple t = Triple.create( "x rdf:type rdf:Statement");
-		g.add(s); g.add(p); g.add(o); g.add(t);
-		assertEquals( 4, g.size() );
-
-		g.delete(s); g.delete(p); g.delete(o); g.delete(t);
-		assertEquals( 0, g.size() );
+		Graph g = getGraph();
+		if (isStandard( g ))
+		    {
+    		assertEquals( 0, g.size() );
+    		Triple s = Triple.create( "x rdf:subject s" );
+    		Triple p = Triple.create( "x rdf:predicate p" );
+    		Triple o = Triple.create( "x rdf:object o" );
+    		Triple t = Triple.create( "x rdf:type rdf:Statement");
+    		g.add(s); g.add(p); g.add(o); g.add(t);
+    		assertEquals( 4, g.size() );
+    		g.delete(s); g.delete(p); g.delete(o); g.delete(t);
+    		assertEquals( 0, g.size() );
+		    }
 		}
 
     public void testReifierSize()
         {
-        Graph g = getGraph();
-        Reifier r = g.getReifier();
-        assertEquals( 0, r.size() );
+        assertEquals( 0, getGraph().getReifier().size() );
         }
     
     public void testEmpty()
         {
-        Graph g = getGraph( Standard );
-        assertTrue( g.isEmpty() );
-        graphAdd( g, "x rdf:type rdf:Statement" ); assertFalse( g.isEmpty() );
-        graphAdd( g, "x rdf:subject Deconstruction" ); assertFalse( g.isEmpty() );
-        graphAdd( g, "x rdf:predicate rdfs:subTypeOf" ); assertFalse( g.isEmpty() );
-        graphAdd( g, "x rdf:object LiteraryCriticism" ); assertFalse( g.isEmpty() );
+        Graph g = getGraph();
+        if (g.getReifier().getStyle() != Convenient)
+            {
+            assertTrue( g.isEmpty() );
+            graphAdd( g, "x rdf:type rdf:Statement" ); assertFalse( g.isEmpty() );
+            graphAdd( g, "x rdf:subject Deconstruction" ); assertFalse( g.isEmpty() );
+            graphAdd( g, "x rdf:predicate rdfs:subTypeOf" ); assertFalse( g.isEmpty() );
+            graphAdd( g, "x rdf:object LiteraryCriticism" ); assertFalse( g.isEmpty() );
+            }
         }
     
     public void testReifierEmptyFind()
         {
-        Graph g = getGraph( Standard );
+        Graph g = getGraph();
         Reifier r = g.getReifier();
-        assertEquals( CollectionFactory.createHashedSet(), iteratorToSet( r.findExposed( triple( "?? ?? ??" ) ) ) );
+        assertEquals( tripleSet( "" ), r.findExposed( Triple.ANY ).toSet() );
         }
 
     public void testReifierFindSubject()
@@ -464,21 +476,25 @@ public abstract class AbstractTestReifier extends GraphTestBase
     
     public void testReifierFindFilter()
         { 
-        Graph g = getGraph( Standard );
+        Graph g = getGraph();
         Reifier r = g.getReifier();
         graphAdd( g, "s rdf:subject S" );
-        assertEquals( tripleSet( "" ), iteratorToSet( r.findExposed( triple( "s otherPredicate S" ) ) ) );
+        assertEquals( tripleSet( "" ), r.findExposed( triple( "s otherPredicate S" ) ).toSet() );
         }
 
     protected void testReifierFind( String triples )
         { testReifierFind( triples, "?? ?? ??" ); }
-    
+
+    /**
+        Only applies to style Standard.
+    */
     protected void testReifierFind( String triples, String pattern )
         {
-        Graph g = getGraph( Standard );
+        Graph g = getGraph();
         Reifier r = g.getReifier();
         graphAdd( g, triples );
-        assertEquals(  tripleSet( triples ), iteratorToSet( r.findExposed( triple( pattern ) ) ) );
+        if (r.getStyle() == Standard)
+            assertEquals(  tripleSet( triples ), r.findExposed( triple( pattern ) ).toSet() );
         }
 
     public void testQuintetBug()
