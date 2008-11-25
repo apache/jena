@@ -36,7 +36,7 @@ public interface Dataset
     /** Get the lock for this dataset */
     public Lock getLock() ;
     
-    /** Get the daatset in graph form */
+    /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 
 }
 

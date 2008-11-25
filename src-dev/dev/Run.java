@@ -37,13 +37,24 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        String[] x = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+        String[] x1 = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
             " ASK {",
             "FILTER bound(?test)",
             "LET (?x := afn:now())" ,
             "}"
         } ;
+        String[] x = {"PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                      "PREFIX geom:  <http://www.w3.org/2003/01/geo/wgs84_pos#>",
+                      "PREFIX owl:   <http://www.w3.org/2002/07/owl#>",
+                      "PREFIX geo: <java:org.geospatialweb.arqext.>",
+                      "select ?ouri" ,
+                      "{      ?ouri owl:sameAs   ?guri .",
+                      "       ?ouri geo:nearby( 44.88 2.23 30000.0 )",
+                      "}"} ;
         String qs = StringUtils.join("\n", x) ;
+        
+        
+
         
         Query query = QueryFactory.create(qs,Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query) ;

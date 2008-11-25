@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.MapFilter;
 import com.hp.hpl.jena.util.iterator.MapFilterIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
-/**Wrapper around a DatasetGraph. See also DataSourceImpl.
+/** Wrapper around a DatasetGraph. See also DataSourceImpl.
  * 
  * @author Andy Seaborne
  */
