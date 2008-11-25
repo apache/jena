@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.14 2008-03-14 15:17:23 chris-dollin Exp $
+# $Id: contributions.n3,v 1.15 2008-11-25 09:47:23 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -126,5 +126,14 @@
     ; ct:link "http://poseidon.elet.polimi.it/ca/?page_id=59"
     ; ct:linkTitle "Micro Jena"
     ; ct:licence "as per Jena"
+    .
+
+[]
+    dc:creator "Marco Neumann and Taylor Cowan"
+    ; dc:name "GeoSpatialWeb"
+    ; dc:description "This projects adds geo-spatial predicates and reasoning features to Jena property functions."
+    ; ct:link "http://code.google.com/p/geospatialweb/"
+    ; ct:linkTitle "GeoSpatialWeb"
+    ; ct:licence "GNU GPL License"
     .
 
