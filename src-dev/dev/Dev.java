@@ -11,18 +11,13 @@ public class Dev
     // ==== 0.7.0 "quads"
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
-    //   Quad loader.
     //   Command line and dataset vs graph
     // Documentation
     //   Dataset assembler
     //   Commands
-    // Reification
-    //   GraphTriplesTDB and GraphNamedTDB
-    // BulkHandler
-    // TupleTable.size - at least an isEmpty 
-    //   Not just an empty block manager.
     // ====
     
+    // Quad loader.
     // OpRange - OpIndex - generative stream of possibilities.
 
     // ---- Tuple reader tests
@@ -31,7 +26,10 @@ public class Dev
     // Prefix mapping?  Migrate to a dump format.
     // Byte version.
     
-    // ---- Reopenable BlockMgrs (and the object file?) 
+    // ---- BlockMgrs
+    // Reopenable BlockMgrs (and the object file?) 
+    // TupleTable.size - at least an isEmpty 
+    //   Not just an empty block manager.
 
     // Cheap parsing of Node table.
     // [incremental]

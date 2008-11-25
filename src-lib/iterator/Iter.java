@@ -427,6 +427,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public Iterator<T>  iterator() { return iterator ; }
     
     // ---- Iterator
+    
+    //----
+    // Could merge in concatenated iterators - if used a lot there is reducable cost.
+    // Just putting in a slot is free (?) because objects of one or two slots have
+    // the same memory allocation.
+    // And .. be an iterator framework for extension
+    
     public boolean hasNext()    { return iterator.hasNext() ; }
 
     public T next()             { return iterator.next() ; }
