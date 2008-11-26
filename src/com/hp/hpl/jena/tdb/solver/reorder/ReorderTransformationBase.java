@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 
 
 /** Machinary */
@@ -39,27 +40,13 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
         
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        List<Triple> triples = NodeLib.tripleList(pattern) ;
+
+        // Could merge into the conversion step to do the rewrite WRT an Binding.
+        // Or done here as a second pass mutate of PatternTriples
 
         // Convert to a mutable form (that allows things like "TERM")
         List<PatternTriple> components = toList(map(triples, convert)) ;
-        
-        // Could merge into the conversion step to do the rewrite WRT an Binding.
-        // Or done here as a second pass mutate of PatternTriples
-        // Currently done early in the reorder code which is cleaner. 
-//        Binding b = new BindingMap() ;
-//        if ( b != null )
-//        {
-//            @SuppressWarnings("unchecked")
-//            Iterator<Var> iter = (Iterator<Var>)b.vars() ;
-//            for ( ; iter.hasNext() ; )
-//            {
-//                Var v = iter.next() ;
-//                Node n = b.get(v) ;
-//                update(v, n, components) ;
-//            }
-//        }
 
         // Allow subclasses to get in (e.g. static reordering).
         components = modifyComponents(components) ;

@@ -114,7 +114,7 @@ public class OpExecutorTDB extends OpExecutor
             // Explicit name for the default graph
             return execute(new OpBGP(bgp), input) ;
 
-        // **** Optimize the basic pattern.
+        // XXX **** Optimize the basic pattern.
         // Substitution needed?
         
         boolean doingUnion = false ;
@@ -178,7 +178,6 @@ public class OpExecutorTDB extends OpExecutor
         return optimizeExecute(graph, input, opBGP.getPattern(), opFilter.getExprs(), execCxt) ;
     }
 
-    // XXX Need super class of GraphTDB and NamedGraph
     public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, 
                                                 ExprList exprs, ExecutionContext execCxt)
     {
