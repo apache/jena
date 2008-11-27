@@ -130,6 +130,9 @@ public class SolverLib
             @Override
             public BindingNodeId convert(Binding binding)
             {
+                if ( binding instanceof BindingTDB )
+                    return ((BindingTDB)binding).getBindingId() ;
+                
                 BindingNodeId b = new BindingNodeId() ;
                 @SuppressWarnings("unchecked")
                 Iterator<Var> vars = (Iterator<Var>)binding.vars() ;

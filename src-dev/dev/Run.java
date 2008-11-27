@@ -57,6 +57,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        namedGraphs() ;        
+        
         reification() ;
         
         
@@ -153,22 +155,27 @@ public class Run
 //        Node n[] = { Quad.unionGraph } ;
 //        String str[] = { "unionGraph" } ;
         
-        for ( int i = 0 ; i < n.length ; i++ )
-        {
-            Node g = n[i] ;
-            String label = str[i] ;
-            System.out.println("**** "+label) ;
-            QuerySolutionMap qs = new QuerySolutionMap() ;
-            if ( g != null )
-                qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
-            query("SELECT * { GRAPH ?g { ?s <http://example/d1/lang> ?o } }", ds, qs) ;
-        }
+//        System.out.println("**** default graph") ;
+//        query("SELECT * { ?s ?p ?o }", ds) ;
+//        
+//        for ( int i = 0 ; i < n.length ; i++ )
+//        {
+//            Node g = n[i] ;
+//            String label = str[i] ;
+//            System.out.println("**** "+label) ;
+//            QuerySolutionMap qs = new QuerySolutionMap() ;
+//            if ( g != null )
+//                qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
+//            query("SELECT * { GRAPH ?g { ?s <http://example/d1/lang> ?o } }", ds, qs) ;
+//        }
+//        
+//        SSE.write(ds) ;
+//
+//        System.out.println("**** Named graph") ;
+//        Model modelNamed = ds.getNamedModel("http://example/d1/") ;
+//        query("SELECT * { ?s <http://example/d1/lang> ?o }", modelNamed) ;
         
-        SSE.write(ds) ;
-
-        System.out.println("**** Named graph") ;
-        Model modelNamed = ds.getNamedModel("http://example/d1/") ;
-        query("SELECT * { ?s <http://example/d1/lang> ?o }", modelNamed) ;
+        query("SELECT * { ?s ?p ?o GRAPH ?g { ?s1 ?p1 ?o} }", ds) ;
         
         System.exit(0) ;
     }

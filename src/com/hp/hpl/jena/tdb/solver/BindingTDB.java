@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
@@ -58,9 +59,22 @@ public class BindingTDB extends BindingBase
         return idBinding.containsKey(var) ;
     }
     
+    public BindingNodeId getBindingId() { return idBinding ; }
+    
     public NodeId getNodeId(Var var)
     {
-        return idBinding.get(var) ;
+        
+        NodeId id = idBinding.get(var) ;
+        if ( id != null )
+            return id ;
+        
+        if ( parent == null )
+            return null ; 
+
+        // Maybe in the parent.
+        if ( parent instanceof BindingTDB )
+            return ((BindingTDB)parent).getNodeId(var) ;
+        return null ;
     }
     
     @Override
@@ -99,6 +113,18 @@ public class BindingTDB extends BindingBase
     @Override
     protected void checkAdd1(Var var, Node node)
     { throw new UnsupportedOperationException() ; }
+    
+    @Override
+    protected void format(StringBuffer sbuff, Var var)
+    {
+        NodeId id = idBinding.get(var) ;
+        String extra = "" ;
+        if ( id != null )
+            extra = "/"+id ;
+        Node node = get(var) ;
+        String tmp = FmtUtils.stringForObject(node) ;
+        sbuff.append("( ?"+var.getVarName()+extra+" = "+tmp+" )") ;
+    }
 }
 
 /*
