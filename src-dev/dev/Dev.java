@@ -12,9 +12,8 @@ public class Dev
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
     //   Generalised the pattern stuff.
-    //   SolverLib.convFromBinding - materializes nodes unnecessarily if BindingTDB.
     // Tests
-    //   Quads, including substitution cases.
+    //   Quads
     // Documentation
     //   Dataset assembler
     //   Commands

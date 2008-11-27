@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
@@ -54,7 +55,7 @@ public class SolverLib
         /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
+        List<Triple> triples = NodeLib.tripleList(pattern) ;
         @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
         
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
@@ -74,7 +75,7 @@ public class SolverLib
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
+        List<Triple> triples = NodeLib.tripleList(pattern) ;
         @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
         NodeTable nodeTable = ds.getQuadTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
@@ -88,7 +89,6 @@ public class SolverLib
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
-
     
     private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
                                                  Tuple<Node> tuple, ExecutionContext execCxt)
