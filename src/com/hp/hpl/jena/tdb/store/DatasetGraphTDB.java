@@ -13,14 +13,11 @@ import java.util.Iterator;
 
 import lib.Tuple;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
-
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.Sync;
@@ -52,13 +49,13 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     }
 
     @Override
-    public Graph getDefaultGraph()
+    public GraphTDB getDefaultGraph()
     {
         return defaultGraph ;
     }
 
     @Override
-    public Graph getGraph(Node graphNode)
+    public GraphTDB getGraph(Node graphNode)
     {
         return new GraphNamedTDB(this, graphNode, transform);
     }
@@ -66,6 +63,8 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     @Override
     public Lock getLock()   { return lock ; }
 
+    public ReorderTransformation getTransform()   { return transform ; }
+    
     @Override
     public Iterator<Node> listGraphNodes()
     {

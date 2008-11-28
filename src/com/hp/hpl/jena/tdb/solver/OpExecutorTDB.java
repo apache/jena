@@ -96,26 +96,16 @@ public class OpExecutorTDB extends OpExecutor
             return super.execute(quadPattern, input) ;
         
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-
-        if ( quadPattern.isDefaultGraph() )
-        {
-            // Quad.defaultGraphNode
-            // Easy case.
-            OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
-            return execute(opBGP, input) ;  
-        }
-        
         BasicPattern bgp = quadPattern.getBasicPattern() ;
-        
         Node gn = quadPattern.getGraphNode() ;
-        // Special graph node names.
-        
-        if ( gn.equals(Quad.defaultGraphIRI ))
-            // Explicit name for the default graph
-            return execute(new OpBGP(bgp), input) ;
 
-        // XXX **** Optimize the basic pattern.
-        // Substitution needed?
+        if ( quadPattern.isDefaultGraph() || gn.equals(Quad.defaultGraphIRI) )
+            // Easy case : default graph, either outside GRAPH or using the "name" of the default graph
+            return optimizeExecute(ds.getDefaultGraph(), input, bgp, null, execCxt) ;
+        
+        // Not the default graph - will be going to the quad table backing the dataset.
+        
+        // Other special graph node names.
         
         boolean doingUnion = false ;
         if ( gn.equals(Quad.unionGraph) )
@@ -123,6 +113,15 @@ public class OpExecutorTDB extends OpExecutor
             doingUnion = true ;
             // Name for the union of named graphs
             gn = VarAlloc.getVarAllocator().allocVar() ;
+        }
+        
+        // TEMP: Filters were not considered.
+        ReorderTransformation transform = ds.getTransform() ;
+        if ( transform != null )
+        {
+            QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
+            input = peek ; // Original input now invalid.
+            bgp = reorder(bgp, peek, transform) ;
         }
         
         QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
@@ -171,6 +170,8 @@ public class OpExecutorTDB extends OpExecutor
         
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
             return super.execute(opFilter, input) ;
+        
+        //if ( is OpQuadPattern )
 
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
@@ -229,6 +230,19 @@ public class OpExecutorTDB extends OpExecutor
         // There would be issues of nested (graph ...)
         // but this is only a (filter (bgp...)) at most
         return QC.execute(op, peek, ec2) ;
+    }
+    
+    private static BasicPattern reorder(BasicPattern pattern, QueryIterPeek peek, ReorderTransformation transform)
+    {
+        if ( transform != null )
+        {
+            BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
+            // Calculate the reordering based on the substituted pattern.
+            ReorderProc proc = transform.reorderIndexes(pattern2) ;
+            // Then reorder original patten
+            pattern = proc.reorder(pattern) ; 
+        }
+        return pattern ;
     }
     
     private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;

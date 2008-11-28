@@ -44,9 +44,10 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeType;
 
-
 public class NodeLib
 {
+    // ---- Node <->String
+
     public static String encode(Node node)  { return encode(node, null) ; }
 
     public static String encode(Node node, PrefixMapping pmap)
@@ -74,6 +75,8 @@ public class NodeLib
             throw ex ;
         }
     }
+    
+    // ----
     
     /** Get the triples in the form of a List<Triple> */
     public static List<Triple> tripleList(OpBGP opBGP)
