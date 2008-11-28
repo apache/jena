@@ -4,11 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.graph;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestReifier;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class TestReifier2 extends AbstractTestReifier
 {

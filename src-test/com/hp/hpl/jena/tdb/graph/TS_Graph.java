@@ -4,59 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.graph.Graph;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.junit.GraphLocation;
-import com.hp.hpl.jena.tdb.store.TS_Store;
-
-/** Programmatic tests on persistent graph */
-public class TestPGraph extends AbstractTestGraph2
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestReifier2.class
+})
+public class TS_Graph
 {
-    static GraphLocation graphLocation = null ;
-    
-    @BeforeClass public static void beforeClass()
-    {
-        graphLocation = new GraphLocation(new Location(TS_Store.testArea), TDBFactory.pgraphFactory) ;
-        graphLocation.clearDirectory() ; 
-        graphLocation.createGraph() ;
-    }
-    
-    @AfterClass public static void afterClass()
-    { 
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-    }
-    
 
-    Graph graph = null ;
-    @Before public void before()
-    { 
-        //graphLocation.clearGraph() ;
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-        graphLocation.createGraph() ;
-        graph = graphLocation.getGraph() ;
-    }
-            
-            
-    @After public void after()   
-    { }
-    
-    @Override
-    protected Graph emptyGraph()
-    {
-        return graph ;
-    }
 }
 
 /*

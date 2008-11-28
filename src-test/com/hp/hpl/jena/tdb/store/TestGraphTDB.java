@@ -33,7 +33,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     
     @AfterClass public static void afterClass()
     { 
-        graphLocation.releaseGraph() ;
+        graphLocation.release() ;
         graphLocation.clearDirectory() ;
     }
     
@@ -41,8 +41,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     Graph graph = null ;
     @Before public void before()
     { 
-        //graphLocation.clearGraph() ;
-        graphLocation.releaseGraph() ;
+        graphLocation.release() ;
         graphLocation.clearDirectory() ;
         graphLocation.createGraph() ;
         graph = graphLocation.getGraph() ;

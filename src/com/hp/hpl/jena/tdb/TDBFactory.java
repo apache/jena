@@ -11,6 +11,9 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import lib.NotImplemented;
+
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -32,8 +35,8 @@ public class TDBFactory
         /** Make a TDB graph with persistent data at the location */
         public Graph createGraph(Location loc) ;
         
-        public Dataset createDataset() ;
-        public Dataset createDataset(Location location) ;
+        public DatasetGraph createDatasetGraph() ;
+        public DatasetGraph createDatasetGraph(Location location) ;
     }
 
     static ImplFactory factory = null ;
@@ -50,11 +53,11 @@ public class TDBFactory
         { return PGraphFactory.create(loc) ; }
 
         @Override
-        public Dataset createDataset(Location location)
+        public DatasetGraph createDatasetGraph(Location location)
         { throw new NotImplemented("Dataset/PGraph") ; }
 
         @Override
-        public Dataset createDataset()
+        public DatasetGraph createDatasetGraph()
         { throw new NotImplemented("Dataset/PGraph") ; }
     };
 
@@ -70,12 +73,12 @@ public class TDBFactory
         { return FactoryGraphTDB.createGraph(loc) ; }
 
         @Override
-        public Dataset createDataset(Location location)
-        { return FactoryGraphTDB.createDataset(location) ; }
+        public DatasetGraph createDatasetGraph(Location location)
+        { return FactoryGraphTDB.createDatasetGraph(location) ; }
 
         @Override
-        public Dataset createDataset()
-        { return FactoryGraphTDB.createDatasetMem() ; }
+        public DatasetGraph createDatasetGraph()
+        { return FactoryGraphTDB.createDatasetGraphMem() ; }
     };
     
     static { 
@@ -136,11 +139,11 @@ public class TDBFactory
     
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)
-    { return factory.createDataset(location) ; }
+    { return new DatasetImpl(factory.createDatasetGraph(location)) ; }
     
     /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
     public static Dataset createDataset()
-    { return factory.createDataset() ; }
+    { return new DatasetImpl(factory.createDatasetGraph()) ; }
 
     // Point at which actual graphs are made.
     

@@ -7,6 +7,15 @@
     rdfs:label "Quads and quad patterns" ;
     mf:entries
     ( 
+       [  mf:name    "Quad-1" ;
+          mf:action
+            [ qt:query  <quad-01.rq> ;
+              qt:data       <data-dft.ttl> ;
+              qt:graphData  <data-1.ttl> ;
+              qt:graphData  <data-2.ttl> ;
+             ]
+      ]
+
         ## GRAPH
 
         ## Union of named graphs, explicitly named default graph

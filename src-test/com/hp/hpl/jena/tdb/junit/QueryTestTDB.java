@@ -38,6 +38,7 @@ public class QueryTestTDB extends EarlTestCase
 {
     private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class) ;
     static Model model = null ;
+    static Dataset dataset = null ;
 
     boolean skipThisTest = false ;
     TestItem item ;
@@ -95,6 +96,9 @@ public class QueryTestTDB extends EarlTestCase
         
         for ( String fn : current )
             load(model, fn) ;
+        
+//        for ( String fn : named )
+//            loadNamed(model, fn) ;
     }
     
     

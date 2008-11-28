@@ -20,6 +20,7 @@ import com.hp.hpl.jena.tdb.base.file.TS_File;
 import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
 import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
@@ -53,7 +54,8 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     
     TS_Solver.class,
     TS_Sys.class,
-    TS_TDB.class
+    TS_Graph.class,
+    TS_TDB.class,
 } )
 
 public class TS_Main

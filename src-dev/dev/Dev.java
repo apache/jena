@@ -10,17 +10,17 @@ public class Dev
 {
     // ==== 0.7.0 "quads"
     // Scripted test slow?
-    //   Optimization of quad patterns - optimize associated BGP
-    //   (filter (quads...))
-    //   Generalised the pattern stuff.
     // Tests
     //   Quads
     // Documentation
     //   Dataset assembler
     //   Commands
     // ====
-    
-    // Quad loader.
+
+    // Quads:
+    //   Quad loader.
+    //   Generalised the pattern stuff.
+    //   (filter (quads...))
     // OpRange - OpIndex - generative stream of possibilities.
 
     // ---- Tuple reader tests
@@ -31,6 +31,8 @@ public class Dev
     
     // ---- BlockMgrs
     // Reopenable BlockMgrs (and the object file?) 
+    //   Needed?  SPO close followed by linear scans only.
+    //   Reopne the whole graph (??)
     // TupleTable.size - at least an isEmpty 
     //   Not just an empty block manager.
 

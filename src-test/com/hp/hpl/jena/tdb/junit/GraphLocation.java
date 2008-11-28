@@ -16,11 +16,14 @@ import lib.FileOps;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
 /** Manage a graph at a fixed location */
 public class GraphLocation
@@ -28,6 +31,7 @@ public class GraphLocation
     private Location loc = null ;
     private Graph graph = null ;
     private Model model = null ;
+    private DatasetGraphTDB dsg = null ;
     private ImplFactory factory ;
     
     public GraphLocation(Location loc, TDBFactory.ImplFactory factory)
@@ -41,6 +45,14 @@ public class GraphLocation
     public Graph getGraph() { return graph ; }
     
     public Model getModel() { return model ; }
+    
+    public Dataset createDataset() 
+    {
+        if ( dsg != null )
+            throw new TDBTestException("dataset already in use") ;
+        dsg = (DatasetGraphTDB)factory.createDatasetGraph(loc) ;
+        return new DatasetImpl(dsg) ;
+    }
     
     public Graph createGraph()
     {
@@ -64,13 +76,19 @@ public class GraphLocation
         }
     }
 
-    public void releaseGraph()
+    public void release()
     {
         if ( graph != null )
         {
             graph.close();
             graph = null ;
             model = null ;
+        }
+
+        if ( dsg != null )
+        {
+            dsg.close();
+            dsg = null ;
         }
     }
 }

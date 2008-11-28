@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
@@ -91,27 +92,41 @@ public class FactoryGraphTDB
     
     
     /** Create or connect a TDB dataset */ 
-    public static Dataset createDataset(Location location)
+    public static DatasetGraph createDatasetGraph(Location location)
     {
-        return createDataset(IndexBuilder.get(), location, tripleIndexes, quadIndexes) ;
+        return createDatasetGraph(IndexBuilder.get(), location, tripleIndexes, quadIndexes) ;
     }
 
     /** Create or connect a TDB dataset in-memory - for testing */ 
-    public static Dataset createDatasetMem()
+    public static DatasetGraph createDatasetGraphMem()
     {
-        return createDataset(IndexBuilder.mem(), null, tripleIndexes, quadIndexes) ;
+        return createDatasetGraph(IndexBuilder.mem(), null, tripleIndexes, quadIndexes) ;
     }
 
 
-    /** Create or connect a TDB dataset*/
-    public static Dataset createDataset(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
+    /** Create or connect a TDB dataset (graph-level) */
+    public static DatasetGraph createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
     {
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadDesc) ;
-        return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
+        //return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
+        return new DatasetGraphTDB(triples, quads, null, location) ;
     }
 
+    /** Create or connect a TDB dataset */
+    public static Dataset createDataset(Location location)
+    {
+        return new DatasetImpl(createDatasetGraph(location)) ;
+    }
+
+    /** Create or connect a TDB dataset (in-memory - for testing) */
+    public static Dataset createDatasetMem()
+    {
+        return new DatasetImpl(createDatasetGraphMem()) ;
+    }
+
+    
     // ---- Process
     public static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
                                         Location location, String primary, String...descs)

@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
     TestGraphBPlusTreeMem2.class,
     TestGraphBTreeMem.class,
     TestGraphBTreeMem2.class
+     
 })
 
 public class TS_TDB
