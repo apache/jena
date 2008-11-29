@@ -49,7 +49,6 @@ public class DataSourceImpl implements DataSource
     public DataSourceImpl(DatasetGraph dSetGraph)
     { 
         // Must clone.
-        this.dsg = new DataSourceGraphImpl(dSetGraph) ; 
     }
     
     public DataSourceImpl(Model model)
@@ -138,6 +137,12 @@ public class DataSourceImpl implements DataSource
 
 //  -------
 //  Cache models wrapping graph
+
+    public void close()
+    {
+        dsg.close() ;
+        cache = null ;
+    }
 
     private void removeFromCache(Graph graph)
     {

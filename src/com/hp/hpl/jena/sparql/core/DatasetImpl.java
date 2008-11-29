@@ -63,6 +63,12 @@ public class DatasetImpl implements Dataset
         return dsg.containsGraph(Node.createURI(uri)) ;
     }
 
+    public void close()
+    {
+        cache = null ;
+        dsg.close();
+    }
+
     public Iterator listNames()
     { 
         MapFilter mapper = new MapFilter(){

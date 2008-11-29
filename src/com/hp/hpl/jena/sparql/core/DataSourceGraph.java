@@ -17,6 +17,8 @@ public interface DataSourceGraph extends DatasetGraph
     public void addGraph(Node graphName, Graph graph) ;
     
     public Graph removeGraph(Node graphName) ;
+    
+    public void close() ;
 }
 /*
  * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP

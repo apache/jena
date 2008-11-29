@@ -177,6 +177,19 @@ public class DataSourceGraphImpl implements DataSourceGraph
         s = s + "}" ;
         return s ;
     }
+
+    public void close()
+    {
+        if ( getDefaultGraph() != null )
+            getDefaultGraph().close() ;
+        
+        for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
+        {
+            Node graphName = (Node)iter.next() ;
+            Graph g = getGraph(graphName) ;
+            g.close();
+        }
+    }
 }
 
 /*

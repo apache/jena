@@ -27,7 +27,8 @@ public interface DatasetGraph
     
     /** Get the size (number of graphs) - maybe -1 for unknown */ 
     public int size() ;
-
+    
+    public void close() ;
 }
 /*
  * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP

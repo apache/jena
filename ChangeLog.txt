@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.6
 
++ Added .close() to Dataset and GraphStore for those implementations that
+  need to make changes permanent or release system resources.  
+
 + Clean internal extensions points for TDB
 
 + Put misc support code in for TDB
