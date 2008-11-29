@@ -14,12 +14,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.store.TestGraphTDB;
+import com.hp.hpl.jena.tdb.store.TS_Store;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestGraphTDB.class,
+    TS_Store.class
 })
 
 public class TS_Dev extends TestBase

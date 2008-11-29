@@ -13,11 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.TS_Store;
-
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
@@ -31,13 +26,15 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 
 import com.hp.hpl.jena.query.*;
 
-// Reuses the same model each time. 
-// Run last - leaves the persistent area with data in it (debugging or fix this 'feature').
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 
 public class QueryTestTDB extends EarlTestCase
 {
+    // Chnaged to using in-memory graphs/datasets because this is testing the query
+    // processing.  Physical graph/datsets is in package "store". 
+    
     private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class) ;
-    static Model model = null ;
     static Dataset dataset = null ;
 
     boolean skipThisTest = false ;
@@ -45,7 +42,6 @@ public class QueryTestTDB extends EarlTestCase
     private ImplFactory factory ;
  
     // Track what's currently loaded in the GraphLocation
-    static GraphLocation graphLocation = null ;
     private static List<String> currentDefaultGraphs = null ;
     private static List<String> currentNamedGraphs = null ;
 
@@ -59,16 +55,14 @@ public class QueryTestTDB extends EarlTestCase
     
     @Override public void setUp()
     {
-        //if ( graphLocation == null )
-        {
-            graphLocation = new GraphLocation(new Location(TS_Store.testArea), factory) ;
-            graphLocation.clearDirectory() ; 
-            graphLocation.createGraph() ;
-            model = graphLocation.getModel() ;
-        }
+        dataset = TDBFactory.createDataset() ;
+        setupData() ;
     }
     
-    @Override public void tearDown() { model.close() ; }
+    @Override public void tearDown()
+    { 
+        if ( dataset != null ) dataset.close() ; 
+    }
     
     public void setupData()
     {
@@ -81,24 +75,16 @@ public class QueryTestTDB extends EarlTestCase
              compareLists(named, currentNamedGraphs) )
             return ;
         
-        if ( named != null && named.size() > 0 )
-            throw new TDBTestException("No named graphs yet") ;
-        
         if ( current == null )
             throw new TDBTestException("No default graphs given") ;
 
-        //graphLocation.clearGraph() ;
-        
-//        List<Statement> stmts = new ArrayList<Statement>() ;
-//        StmtIterator sIter = model.listStatements() ;
-//        while(sIter.hasNext()) { stmts.add(sIter.nextStatement()) ; }
-//        model.remove(stmts) ;
+        //graphLocation.clear() ;
         
         for ( String fn : current )
-            load(model, fn) ;
+            load(dataset.getDefaultModel(), fn) ;
         
-//        for ( String fn : named )
-//            loadNamed(model, fn) ;
+        for ( String fn : named )
+            load(dataset.getNamedModel(fn), fn) ;
     }
     
     
@@ -110,11 +96,6 @@ public class QueryTestTDB extends EarlTestCase
             log.info(this.getName()+" : Skipped") ;
             return ;
         }
-        
-        setupData() ;
-        
-//        if ( item.getDefaultGraphURIs().size() != 1 || item.getNamedGraphURIs().size() != 0 )
-//            fail("Only one data graph supported") ;
         
         Query query = QueryFactory.read(item.getQueryFile()) ;
         
@@ -145,7 +126,7 @@ public class QueryTestTDB extends EarlTestCase
         
         // ---- Second, execute in persistent graph
 
-        Dataset ds2 = DatasetFactory.create(model) ;
+        Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
         QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2) ;
         rs = qExec2.execSelect() ;
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
@@ -170,7 +151,7 @@ public class QueryTestTDB extends EarlTestCase
     {
         FileManager.get().readModel(model, fn) ;
     }
-
+    
     private static boolean compareLists(List<String> list1, List<String> list2)
     {
         if ( list1 == null )

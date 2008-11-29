@@ -6,20 +6,24 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import iterator.Filter;
+import iterator.Iter;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Reifier;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
+
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.AlreadyReifiedException;
 import com.hp.hpl.jena.shared.CannotReifyException;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
@@ -32,9 +36,9 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
 
 /** A Reifier that only support one style Standard (intercept, no conceal 
  *  -- and intercept is a no-op anyway because all triples 
@@ -53,11 +57,11 @@ public class Reifier2 implements Reifier
     private final static Var varP = Var.alloc("P") ; 
     private final static Var varO = Var.alloc("O") ; 
     
-    private final Node rdfType      = RDF.Nodes.type ;
-    private final Node statement    = RDF.Nodes.Statement ;
-    private final Node subject      = RDF.Nodes.subject ;
-    private final Node predicate    = RDF.Nodes.predicate ;
-    private final Node object       = RDF.Nodes.object ;
+    private final static Node rdfType      = RDF.Nodes.type ;
+    private final static Node statement    = RDF.Nodes.Statement ;
+    private final static Node subject      = RDF.Nodes.subject ;
+    private final static Node predicate    = RDF.Nodes.predicate ;
+    private final static Node object       = RDF.Nodes.object ;
     
     
 
@@ -157,7 +161,7 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator find(TripleMatch match)
     {
-        // Filter non-reficiations?
+        // Filter non-reificiations?
         return graph.find(match) ; 
 //        QueryIterator qIter = nodesReifTriple(null, match) ; 
 //        // To ExtendedIterator.
@@ -170,10 +174,25 @@ public class Reifier2 implements Reifier
         return graph.find(match) ;
     }
 
+    
+    static Filter<Triple> filterReif = new Filter<Triple>() {
+        @Override
+        public boolean accept(Triple triple)
+        {
+            return triple.getPredicate().equals(subject) ||
+                   triple.getPredicate().equals(predicate) ||
+                   triple.getPredicate().equals(object) ||
+                   ( triple.getPredicate().equals(rdfType) && triple.getObject().equals(statement) ) ;
+        }} ; 
+
     @Override
     public ExtendedIterator findExposed(TripleMatch match)
     {
-        return graph.find(match) ;
+        ExtendedIterator it = graph.find(match) ;
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> it2 = (Iterator<Triple>)it ;
+        it2 = Iter.filter(it2, filterReif) ;
+        return WrappedIterator.create(it2) ;
     }
 
     @Override
