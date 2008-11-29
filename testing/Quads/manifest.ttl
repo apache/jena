@@ -15,13 +15,17 @@
               qt:graphData  <data-2.ttl> ;
              ]
       ]
-
-        ## GRAPH
+       [  mf:name    "Quad-2" ;
+          mf:action
+            [ qt:query  <quad-02.rq> ;
+              qt:data       <data-dft.ttl> ;
+              qt:graphData  <data-1.ttl> ;
+              qt:graphData  <data-2.ttl> ;
+             ]
+      ]
 
         ## Union of named graphs, explicitly named default graph
-
         ## Complex patterns.
-
 
 ##       [  mf:name    "Basic 00" ;
 ##          mf:action

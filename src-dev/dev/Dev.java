@@ -9,9 +9,9 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
+    // Commands
     // Documentation
     //   Dataset assembler
-    //   Commands
     // ====
 
     // Quads:

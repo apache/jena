@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+PREFIX sys: <urn:x-arq:>
+
+SELECT *
+{
+  ?s ?p ?x
+   GRAPH ?g {?s1 ?p1 ?x }
+}

@@ -80,12 +80,13 @@ public class ModTDBDataset extends ModDataset
     {
         if ( useMemory )
             return TDBFactory.createGraph() ;
+        return getDataset().getDefaultModel().getGraph() ; 
         
-        if ( modAssembler.getAssemblerFile() != null )
-            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
-        if ( modAssembler.getLocation() != null )
-            return TDBFactory.createGraph(modAssembler.getLocation()) ;
-        throw new CmdException("Don't know how to make the TDB graph") ;
+//        if ( modAssembler.getAssemblerFile() != null )
+//            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
+//        if ( modAssembler.getLocation() != null )
+//            return TDBFactory.createGraph(modAssembler.getLocation()) ;
+//        throw new CmdException("Don't know how to make the TDB graph") ;
     }
     
     @Override
@@ -94,7 +95,7 @@ public class ModTDBDataset extends ModDataset
         if (  modAssembler.getAssemblerFile() != null )
         {
             Dataset thing = null ;
-            
+            // Two variants: plain dataset with a TDB graph or a TDB dataset.
             try {
                 thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB) ;
                 if ( thing != null && ! ( thing.asDatasetGraph() instanceof DatasetGraphTDB ) )
