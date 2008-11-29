@@ -126,14 +126,18 @@ public abstract class BlockMgrFile extends BlockMgrBase
     final 
     public void close()
     {
-        try {
-            force() ;
-            channel.close();
-            out.close();
-            channel = null ;
-            out = null ;
-        } catch (IOException ex)
-        { throw new BlockException(ex) ; }
+        if ( out != null )
+        {
+            
+            try {
+                force() ;
+                channel.close();
+                out.close();
+                channel = null ;
+                out = null ;
+            } catch (IOException ex)
+            { throw new BlockException(ex) ; }
+        }
     }
 }
 

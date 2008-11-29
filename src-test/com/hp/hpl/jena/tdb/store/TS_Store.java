@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
     TestNodeId.class,
     TestTripleTable.class,
     TestGraphTDB.class,
+    TestDatasetTDB.class,
     GraphTDBTestSuite.class
 } )
 public class TS_Store

@@ -46,6 +46,12 @@ public class GraphLocation
     
     public Model getModel() { return model ; }
     
+    public Dataset getDataset()
+    { 
+        if ( dsg == null ) return null ;
+        return new DatasetImpl(dsg) ;
+    }
+    
     public Dataset createDataset() 
     {
         if ( dsg != null )

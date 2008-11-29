@@ -9,10 +9,6 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
-    // Scripted test slow?
-    // Tests
-    //   Quads
-    //   store.dataset tests
     // Documentation
     //   Dataset assembler
     //   Commands
