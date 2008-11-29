@@ -75,6 +75,9 @@ public class DatasetStoreGraph implements DatasetGraph
     }
     
     public int size() { return -1 ; }
+
+    public void close()
+    { store.close(); }
 }
 
 /*

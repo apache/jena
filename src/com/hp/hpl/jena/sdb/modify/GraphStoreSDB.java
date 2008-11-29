@@ -96,6 +96,9 @@ public class GraphStoreSDB implements GraphStore
         // Delete all triples.
         g.getBulkUpdateHandler().removeAll() ;
     }
+    
+    public void close()
+    { store.close(); }
 
 }
 
