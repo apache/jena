@@ -39,8 +39,7 @@ public class Dev
     // [incremental]
     
     // ---- Assembler and configuration
-    //      Configuring the built-in constants.
-    //      Setting options (globally, per model)
+    //      Setting options (per graph)
     //      Variable indexes
     
     // ---- Materialized views
@@ -53,15 +52,8 @@ public class Dev
     
     // ---- Loader - traverse of SPO via a direct block mgr?
     //   For quads
-    //   ** Close indexes not in use in a given phase
-    //  GraphTDB.primaryTraverse() -> Iterator<Tuple<NodeId>>??
-    //    Do properly : reopenable indexes (under the triple index)
-    //      Reopenable block mgr's .passivate/.activate
-    //    Open second index on same
-    //    - shared formatting with GraphLoadMonitor
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
-    //   ** Write stats (where to hook in to get unique?)
     // ---- 32 bit mode.
     // ARC Cache Scheme
 
@@ -70,13 +62,6 @@ public class Dev
     //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
     
     // ------------------------------------------
-    
-    // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
-    // Weak references and more space.
-    // ARC policy
-    
-    // ---- Node Table
-    //     Compression?
     
     // ---- Graph
     // QueryHandler to access subjectsFor etc. 
