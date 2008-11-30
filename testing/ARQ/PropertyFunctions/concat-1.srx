@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="z"/>
+  </head>
+  <results>
+    <result>
+      <binding name="z">
+        <literal>x-http://example.org/z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="z">
+        <literal>x-1</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

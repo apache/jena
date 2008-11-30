@@ -79,4 +79,32 @@
               qt:data   <data.ttl> ] ;
         mf:result  <assign-04.ttl>
       ]
+      [ mf:name    "Assign 5" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-05.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-05.srx>
+      ]
+      [ mf:name    "Assign 6" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-06.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-06.srx>
+      ]
+      [ mf:name    "Assign 7" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-07.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-07.srx>
+      ]
+      [ mf:name    "Assign 8" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-08.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-08.srx>
+      ]
     ).

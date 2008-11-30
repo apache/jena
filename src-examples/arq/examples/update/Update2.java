@@ -33,7 +33,6 @@ public class Update2
         // Load a file into a named graph - NB order of arguments (both strings).
         UpdateLoad load = new UpdateLoad("etc/update-data.ttl", graphName) ;
         
-        
         // Add the two operations and execute the request
         req.addUpdate(c) ;
         req.addUpdate(load) ;

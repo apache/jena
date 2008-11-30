@@ -1,0 +1,70 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "ARQ - Scripts (Reference Query Engine)" ;
+    mfx:include (
+    	## Syntax tests are in <Syntax/manifest-syntax.ttl>
+    	## but called by a different test suite for separate
+    	## testing runs
+
+        <Basic/manifest.ttl>
+        <BasicPatterns/manifest.n3>
+
+        <Optional/manifest.ttl>
+        <Union/manifest.ttl>
+
+        <Algebra/manifest.ttl>
+        <Optimization/manifest.ttl>
+
+        <Select/manifest.ttl>
+        <Construct/manifest.ttl>
+        <Describe/manifest.ttl>
+        <Ask/manifest.ttl>
+
+        <Dataset/manifest.n3>
+
+        <Bound/manifest.n3>
+        <Expr/manifest.ttl>
+
+        <Expr/manifest.ttl>
+        <Expr1/manifest.n3>
+        <Expr2/manifest.n3>
+        <ExprBuiltIns/manifest.ttl>
+        <ExprDatatypes/manifest.ttl>
+        <ExprEquals/manifest.n3>
+        <ExprRegex/manifest.ttl>
+    	<OpenWorld/manifest.ttl>
+
+        <Function/manifest.ttl>
+## Property functions not covered by the reference query engine.
+##        <PropertyFunctions/manifest.ttl>
+        <TypePromotion/manifest.ttl>
+
+        <OrderBy/manifest.ttl> # DAWG tests/data/sort
+        <ValueTesting/manifest.n3>
+        <SolutionSeq/manifest.ttl>
+
+        <Planning/manifest.ttl>
+
+        <General/manifest.ttl>
+
+        <Distinct/manifest.ttl>
+        <Sort/manifest.ttl>
+## More property functions
+##        <Examples/manifest.ttl>
+
+    ## Engines
+        <EngineRef/manifest.ttl>
+        <EngineMain/manifest.ttl>
+
+    ## ARQ extensions
+        <Assign/manifest.ttl>
+        <GroupBy/manifest.ttl>
+        <SubQuery/manifest.ttl>
+        <Paths/manifest.ttl>
+    ) .
+

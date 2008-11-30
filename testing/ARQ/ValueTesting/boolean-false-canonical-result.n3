@@ -1,4 +1,4 @@
-# $Id: boolean-false-canonical-result.n3,v 1.10 2008-06-04 09:54:09 andy_seaborne Exp $
+# $Id: boolean-false-canonical-result.n3,v 1.11 2008-11-30 20:29:30 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .

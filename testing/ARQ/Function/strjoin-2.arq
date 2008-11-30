@@ -1,0 +1,7 @@
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT * { 
+    let ( ?X := afn:strjoin(",") )
+    let ( ?Y := afn:strjoin(",", 'a') )
+ }

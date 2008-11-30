@@ -1,0 +1,9 @@
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX :           <http://example.org/>
+
+SELECT ?z
+{
+    [] :p ?v .
+    [] :q ?x .
+    ?z apf:concat (?x "-" ?v) .
+}

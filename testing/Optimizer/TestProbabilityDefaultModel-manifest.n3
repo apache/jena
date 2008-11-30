@@ -8,7 +8,7 @@
 # testing/Optimizer/Test-data.n3
 # 	
 # Author: Markus Stocker
-# Version: $Id: TestProbabilityDefaultModel-manifest.n3,v 1.4 2008-06-04 09:54:15 andy_seaborne Exp $
+# Version: $Id: TestProbabilityDefaultModel-manifest.n3,v 1.5 2008-11-30 20:29:45 andy_seaborne Exp $
 # ---------------------------------------------
 	
 <http://jena.hpl.hp.com/ARQo/test/#TJ001> 

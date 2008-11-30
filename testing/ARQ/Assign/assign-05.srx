@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="v"/>
+    <variable name="more"/>
+    <variable name="more2"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example/x7</uri>
+      </binding>
+      <binding name="v">
+        <literal>2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x6</uri>
+      </binding>
+      <binding name="v">
+        <literal>a</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
+      </binding>
+      <binding name="more">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">105</literal>
+      </binding>
+      <binding name="more2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">205</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x4</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+      <binding name="more">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">104</literal>
+      </binding>
+      <binding name="more2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">204</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x3</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="more">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">103</literal>
+      </binding>
+      <binding name="more2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">203</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+      <binding name="more">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">102</literal>
+      </binding>
+      <binding name="more2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">202</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+      <binding name="more">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">101</literal>
+      </binding>
+      <binding name="more2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">201</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>
