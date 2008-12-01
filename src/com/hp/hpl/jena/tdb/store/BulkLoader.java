@@ -8,34 +8,38 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import lib.ArrayUtils;
 import lib.MapUtils;
 import lib.Tuple;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemWriter;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Timer;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
@@ -123,7 +127,7 @@ public class BulkLoader
         {
             statsStart(model) ;
             now("-- Start data phase") ;
-            count += loadOne(model, url) ;
+            count += loadOne(model, url, showProgress) ;
             now("-- Finish data phase") ;
             statsFinish(model) ;
         }
@@ -230,7 +234,7 @@ public class BulkLoader
 
 
     
-    private long loadOne(Model model, String s)
+    private static long loadOne(Model model, String s, boolean showProgress)
     {
         GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
         if ( showProgress )
@@ -454,6 +458,27 @@ public class BulkLoader
             System.out.print(" : ") ;
         }
         System.out.println(StringUtils.str(new Date())) ;
+    }
+    
+    
+    // --------
+    
+    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
+    {
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        long count = 0 ;
+        
+        for ( String s : urls )
+        {
+            if ( showProgress ) 
+                System.out.printf("Load: %s\n", s) ;
+            count += loadOne(model, s, showProgress) ;
+        }
+        long time = timer.endTimer() ;
+        
+        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
+        model.close();
     }
     
     

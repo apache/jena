@@ -48,10 +48,14 @@ public abstract class CmdTDB extends CmdARQ
         return (GraphTDB)tdbDatasetAssembler.getGraph() ;
     }
     
-    protected DatasetGraphTDB getDataset()
+    protected DatasetGraphTDB getDatasetGraph()
     {
-        Dataset ds = tdbDatasetAssembler.getDataset() ;
-        return (DatasetGraphTDB)ds.asDatasetGraph() ;
+        return (DatasetGraphTDB)getDataset().asDatasetGraph() ;
+    }
+
+    protected Dataset getDataset()
+    {
+        return tdbDatasetAssembler.getDataset() ;
     }
     
     @Override

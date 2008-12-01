@@ -17,13 +17,10 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.util.FileManager;
 
 public class tdbloader extends CmdTDB
 {
@@ -108,26 +105,9 @@ public class tdbloader extends CmdTDB
         }
         else
         {
-            Timer timer = new Timer() ;
-            // Named graph.
-            Graph graph = super.getDataset().getGraph(graphName) ;
-            Model m = ModelFactory.createModelForGraph(graph) ;
-            for ( String url : urls )
-            {
-                timer.startTimer() ;
-                FileManager.get().readModel(m, url) ;
-                long time = timer.endTimer() ;
-                //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
-                System.out.printf("Time for load: %.2fs\n", time/1000.0) ;
-            }
-            
+            Model model = getDataset().getNamedModel(graphName.getURI()) ;
+            BulkLoader.loadSimple(model, urls, timing) ;
         }
-    }
-    
-    
-    private void loadNamed()
-    {
-        
     }
 }
 
