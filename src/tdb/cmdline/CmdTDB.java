@@ -9,9 +9,11 @@ package tdb.cmdline;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -44,6 +46,12 @@ public abstract class CmdTDB extends CmdARQ
     protected GraphTDB getGraph()
     {
         return (GraphTDB)tdbDatasetAssembler.getGraph() ;
+    }
+    
+    protected DatasetGraphTDB getDataset()
+    {
+        Dataset ds = tdbDatasetAssembler.getDataset() ;
+        return (DatasetGraphTDB)ds.asDatasetGraph() ;
     }
     
     @Override

@@ -16,17 +16,23 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 public class tdbloader extends CmdTDB
 {
-    ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
-    ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
-    ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
-    ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
+//    private static final ArgDecl argGraphDeafult = new ArgDecl(ArgDecl.NoValue, "default") ;
+    
+    private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
+    private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
+    private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
+    private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     
     private boolean timing = true ;
     private boolean doInParallel = false ;
@@ -56,10 +62,8 @@ public class tdbloader extends CmdTDB
         doInParallel = super.contains(argParallel) ;
         doIncremental = super.contains(argIncremental) ;
         generateStats = super.contains(argStats) ;
-        if ( super.contains(argNamedGraph) )
-            graphName = Node.createURI(super.getValue(argNamedGraph)) ; 
-        if ( graphName != null )
-            throw new IllegalArgumentException("Named graphs not supported yet") ;
+        if ( contains(argNamedGraph) )
+            graphName = Node.createURI(getValue(argNamedGraph)) ; 
     }
     
     @Override
@@ -86,16 +90,44 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        Graph graph = getGraph() ;
-        if ( graph instanceof PGraph )
+        
+        
+        if ( graphName == null )
         {
-            Log.warn(this, "Old PGraph") ;
-            BulkLoader1 loader = new BulkLoader1((PGraph)graph, timing, doInParallel, doIncremental, generateStats) ;
+            Graph graph = getGraph() ;
+            if ( graph instanceof PGraph )
+            {
+                Log.warn(this, "Old PGraph") ;
+                BulkLoader1 loader = new BulkLoader1((PGraph)graph, timing, doInParallel, doIncremental, generateStats) ;
+                loader.load(urls) ;
+                return ;
+            }
+            
+            BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
             loader.load(urls) ;
-            return ;
         }
-        BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
-        loader.load(urls) ;
+        else
+        {
+            Timer timer = new Timer() ;
+            // Named graph.
+            Graph graph = super.getDataset().getGraph(graphName) ;
+            Model m = ModelFactory.createModelForGraph(graph) ;
+            for ( String url : urls )
+            {
+                timer.startTimer() ;
+                FileManager.get().readModel(m, url) ;
+                long time = timer.endTimer() ;
+                //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
+                System.out.printf("Time for load: %.2fs\n", time/1000.0) ;
+            }
+            
+        }
+    }
+    
+    
+    private void loadNamed()
+    {
+        
     }
 }
 
