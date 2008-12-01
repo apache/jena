@@ -14,7 +14,6 @@ import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
@@ -29,13 +28,11 @@ public class tdbloader extends CmdTDB
     private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
     private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
-    private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     
     private boolean timing = true ;
     private boolean doInParallel = false ;
     private boolean doIncremental = false ;
     private boolean generateStats = false ;
-    private Node graphName = null ;
     
     static public void main(String... argv)
     { 
@@ -46,7 +43,7 @@ public class tdbloader extends CmdTDB
     protected tdbloader(String[] argv)
     {
         super(argv) ;
-        super.add(argNamedGraph, "--graph=IRI", "Load a named graph") ;
+        
         super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
         super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
         super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
@@ -59,8 +56,6 @@ public class tdbloader extends CmdTDB
         doInParallel = super.contains(argParallel) ;
         doIncremental = super.contains(argIncremental) ;
         generateStats = super.contains(argStats) ;
-        if ( contains(argNamedGraph) )
-            graphName = Node.createURI(getValue(argNamedGraph)) ; 
     }
     
     @Override
@@ -87,8 +82,6 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        
-        
         if ( graphName == null )
         {
             Graph graph = getGraph() ;
@@ -105,7 +98,7 @@ public class tdbloader extends CmdTDB
         }
         else
         {
-            Model model = getDataset().getNamedModel(graphName.getURI()) ;
+            Model model = getModel() ;
             BulkLoader.loadSimple(model, urls, timing) ;
         }
     }

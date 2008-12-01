@@ -10,31 +10,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.Log;
-
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModDataset;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.shared.JenaException;
-
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -59,36 +57,36 @@ public class ModTDBDataset extends ModDataset
         modAssembler.processArgs(cmdLine) ;
     }        
 
-    private Model model = null ;
-    private Graph graph = null ;
-    
-    public Model getModel()
-    {
-        if ( model == null )
-            model = ModelFactory.createModelForGraph(getGraph()) ;
-        return model ;
-    }
-    
-    public Graph getGraph()
-    {
-        if ( graph == null )
-            graph = createGraph() ;
-        return graph ;
-    }
-    
-    public Graph createGraph()
-    {
-        if ( useMemory )
-            return TDBFactory.createGraph() ;
-        return getDataset().getDefaultModel().getGraph() ; 
-        
-//        if ( modAssembler.getAssemblerFile() != null )
-//            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
-//        if ( modAssembler.getLocation() != null )
-//            return TDBFactory.createGraph(modAssembler.getLocation()) ;
-//        throw new CmdException("Don't know how to make the TDB graph") ;
-    }
-    
+//    private Model model = null ;
+//    private Graph graph = null ;
+//    
+//    public Model getModel()
+//    {
+//        if ( model == null )
+//            model = ModelFactory.createModelForGraph(getGraph()) ;
+//        return model ;
+//    }
+//    
+//    public Graph getGraph()
+//    {
+//        if ( graph == null )
+//            graph = createGraph() ;
+//        return graph ;
+//    }
+//    
+//    public Graph createGraph()
+//    {
+//        if ( useMemory )
+//            return TDBFactory.createGraph() ;
+//        return getDataset().getDefaultModel().getGraph() ; 
+//        
+////        if ( modAssembler.getAssemblerFile() != null )
+////            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
+////        if ( modAssembler.getLocation() != null )
+////            return TDBFactory.createGraph(modAssembler.getLocation()) ;
+////        throw new CmdException("Don't know how to make the TDB graph") ;
+//    }
+//    
     @Override
     public Dataset createDataset()
     {

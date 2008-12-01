@@ -6,6 +6,7 @@
 
 package tdb.cmdline;
 
+import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
 
@@ -20,7 +21,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public abstract class CmdTDB extends CmdARQ
 {
     // CmdTDB acts on a single graph
-    private GraphTDB graph = null ; 
+    private GraphTDB graph = null ;
+    private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
+    protected String graphName = null ;
     
     protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
     
@@ -28,6 +31,7 @@ public abstract class CmdTDB extends CmdARQ
     {
         super(argv) ;
         init() ;
+        super.add(argNamedGraph, "--graph=IRI", "Load a named graph") ;
         super.addModule(tdbDatasetAssembler) ;
         super.modVersion.addClass(TDB.class) ;
     }
@@ -38,14 +42,28 @@ public abstract class CmdTDB extends CmdARQ
         ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }
     
+    @Override
+    protected void processModulesAndArgs()
+    {
+        super.processModulesAndArgs() ;
+        if ( contains(argNamedGraph) )
+            graphName = getValue(argNamedGraph) ; 
+    }
+    
     protected Model getModel()
     {
-        return tdbDatasetAssembler.getModel() ;
+        if ( graphName != null )
+            return tdbDatasetAssembler.getDataset().getNamedModel(graphName) ;
+        else
+            return tdbDatasetAssembler.getDataset().getDefaultModel() ;
     }
     
     protected GraphTDB getGraph()
     {
-        return (GraphTDB)tdbDatasetAssembler.getGraph() ;
+        if ( graphName != null )
+            return (GraphTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
+        else
+            return (GraphTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
     }
     
     protected DatasetGraphTDB getDatasetGraph()

@@ -75,12 +75,12 @@ public class BulkLoader
 
     public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
-        // Bulk loading restricted to tripel indexes
+        // Bulk loading restricted to triple indexes
         // Assumes that the NodeTupleTable is 3-way at the moment
         this.graph = graph ;
         this.nodeTupleTable = graph.getNodeTupleTable() ;
         
-        if ( graph.isEmpty() && nodeTupleTable.getTupleTable().getTupleLen() != 3 )
+        if ( nodeTupleTable.getTupleTable().getTupleLen() != 3 )
             throw new TDBException("BulkLoader: Bulk mode only works on 3-tuples") ;
         
         this.showProgress = showProgress ;
