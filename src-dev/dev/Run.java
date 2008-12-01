@@ -58,7 +58,7 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         
-        tdb.tdbdump.main("--tdb=tdb.ttl", "--graph=http://localhost/g1") ; 
+        tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
         
         namedGraphs() ;        
         

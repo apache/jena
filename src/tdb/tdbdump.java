@@ -49,7 +49,7 @@ public class tdbdump extends CmdTDB
     protected void exec()
     {
         Model model = getModel() ;
-        String format = modFormat.getFormat("N3-TRIPLES") ;
+        String format = modFormat.getFormat("N-TRIPLES") ;
         model.write(System.out, format) ;
     }
 
