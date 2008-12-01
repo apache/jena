@@ -16,6 +16,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import com.hp.hpl.jena.graph.*;
@@ -171,7 +172,10 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator findEither(TripleMatch match, boolean showHidden)
     {
-        return graph.find(match) ;
+        if ( showHidden )
+            return new NullIterator() ;
+        else
+            return graph.find(match) ;
     }
 
     

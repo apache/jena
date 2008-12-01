@@ -37,6 +37,7 @@ public class TestReifier2 extends AbstractTestReifier
     @Override public void testIntercept() {}
     @Override public void testMinimalExplode() {}
     @Override public void testReificationTriplesConvenient() {}
+    @Override public void testDynamicHiddenTriples() {}
     
     @Override public void testReificationQuadletsMinimal() {}
     @Override public void testManifestQuadsConvenient() {}
