@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.15 2008-11-25 09:47:23 chris-dollin Exp $
+# $Id: contributions.n3,v 1.16 2008-12-02 10:36:48 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -24,15 +24,6 @@
     ; dc:name "OWL Tidy"
     ; dc:description "report causes of syntactic non-conformance in OWL"
     ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
-    ; ct:linkTitle "jena files page"
-    ; ct:licence "as per Jena"
-    .
-
-[]
-    dc:creator "Andy Seaborne"
-    ; dc:name "ARQ"
-    ; dc:description "implementation of SPARQL for Jena"
-    ; ct:link "http://jena.sourceforge.net/ARQ/"
     ; ct:linkTitle "jena files page"
     ; ct:licence "as per Jena"
     .
