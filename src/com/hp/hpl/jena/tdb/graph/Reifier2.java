@@ -63,10 +63,7 @@ public class Reifier2 implements Reifier
     private final static Node subject      = RDF.Nodes.subject ;
     private final static Node predicate    = RDF.Nodes.predicate ;
     private final static Node object       = RDF.Nodes.object ;
-    
-    
 
-    //private static ReificationStyle style = new ReificationStyle(false, false) ;
     private final Graph graph ;
     private final DatasetGraph ds  ;
     private final QueryEngineFactory factory ;
@@ -81,7 +78,6 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator allNodes()
     {
-        // Or use graph.find( Node.ANY, rdfType, statement ) -> project subject
         return allNodes(null) ;
     }
 
@@ -162,7 +158,6 @@ public class Reifier2 implements Reifier
     @Override
     public ExtendedIterator find(TripleMatch match)
     {
-        // Filter non-reificiations?
         return graph.find(match) ; 
 //        QueryIterator qIter = nodesReifTriple(null, match) ; 
 //        // To ExtendedIterator.
@@ -234,13 +229,6 @@ public class Reifier2 implements Reifier
     @Override
     public boolean hasTriple(Triple triple)
     {
-//        if ( ! graph.contains(Node.ANY, subject, triple.getSubject()) )
-//            return false ;
-//        if ( ! graph.contains(Node.ANY, predicate, triple.getPredicate()) )
-//            return false ;
-//        if ( ! graph.contains(Node.ANY, object, triple.getObject()) )
-//            return false ;
-//        return true ;
         QueryIterator qIter = nodesReifTriple(null, triple) ;
         try {
             if ( ! qIter.hasNext() )
@@ -250,7 +238,7 @@ public class Reifier2 implements Reifier
             if ( qIter.hasNext() )
                 // Over specified
                 return false ;
-            // This check there are no fragments
+            // This checks there are no fragments
             return getTriple(x) != null ;
         } finally { qIter.close(); }
     }
@@ -258,8 +246,6 @@ public class Reifier2 implements Reifier
     @Override
     public Node reifyAs(Node node, Triple triple)
     {
-        // If there already was a node, it is replaced.  YUK.
-        
         if ( node == null )
             node = Node.createAnon() ;
         else
@@ -273,8 +259,6 @@ public class Reifier2 implements Reifier
                 return node ;
         }
         
-        // CannotReifyException
-        // addWithCheck that node/predicate does not already exist
         graph.add(new Triple(node, rdfType, statement)) ;
         graph.add(new Triple(node, subject, triple.getSubject())) ;
         graph.add(new Triple(node, predicate, triple.getPredicate())) ;
@@ -319,7 +303,6 @@ public class Reifier2 implements Reifier
     @Override
     public int size()
     {
-        // Will be counted by the graph.size() directly.
         return 0 ;
     }
 
