@@ -22,6 +22,10 @@ public class Dev
     //   (filter (quads...))
     // OpRange - OpIndex - generative stream of possibilities.
 
+    // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node
+    //   ObjectFile: need to get BB.
+    // Logical/physical id experiment
+    
     // ---- Tuple reader tests
     // [incremental]
     // Checking, N-ary and non-RDF.
@@ -43,6 +47,8 @@ public class Dev
     //      Variable indexes
     
     // ---- Materialized views
+    // Key->Action paradigm
+    //   Simple pattern keys (property, 2P). 
     
     // ---- Range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
     //      Given NodeId structure, should be doable for ints and dates.
