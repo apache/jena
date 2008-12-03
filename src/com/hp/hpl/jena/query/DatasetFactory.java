@@ -13,6 +13,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
@@ -200,6 +201,9 @@ public class DatasetFactory
     public static Dataset assemble(Model model)
     {
         Resource r = GraphUtils.findRootByType(model, DataSourceAssembler.getType()) ;
+        if ( r == null )
+            throw new ARQException("No root found for type <"+DataSourceAssembler.getType()+">") ;
+        
         return assemble(r) ;
     }
         
