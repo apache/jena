@@ -26,11 +26,11 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeTable;
-import com.hp.hpl.jena.tdb.store.NodeTupleTable;
 
 /** Utilities used within the TDB BGP solver */
 public class SolverLib

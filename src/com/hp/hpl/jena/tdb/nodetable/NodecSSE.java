@@ -4,25 +4,63 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import lib.Tuple;
+import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.graph.Graph;
+import lib.Bytes;
+
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-// XXX Until a better name comes along ... this ought to be GraphTDB and GraphTDB ought to be GraphSingleTDB and GraphNamed opught to be GraphQuadTDB
-public interface GraphTDB extends Graph, Sync, Reorderable
+/** Simple encoder/decoder for nodes that uses the SSE string encoding.
+ *  The encoding is a length (4 bytes) and a UTF-8 string.
+ *  
+ *  Note that this is not compatible with UTF-8 strings written with
+ *  the standard Java mechanism {@link java.io.DataInput DataInput}/
+ *  {@link java.io.DataOutput DataOutput} because they are limited to
+ *  64K bytes of UTF-8 data (2 byte length code).
+ */
+
+public class NodecSSE implements Nodec
 {
-    public NodeTupleTable getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
-    public Location getLocation() ; 
-    
+    @Override
+    public void encode(Node node, ByteBuffer bb, int idx)
+    {
+        //SSE.write(node) + bNodes.
+        // Node -> String
+        String str ;
+        if ( node.isBlank() )
+            str = "_:"+node.getBlankNodeLabel() ;
+        else 
+            str = FmtUtils.stringForNode(node, (PrefixMapping)null) ;
+        if ( idx != 0 )
+        {
+            bb.position(idx) ;
+            bb = bb.slice() ;
+        }
+        // String -> bytes
+
+        bb.position(4) ;
+        Bytes.toByteBuffer(str, bb) ;
+        bb.position(0) ;
+        bb.putInt(idx) ;
+    }
+
+    @Override
+    public Node decode(ByteBuffer bb, int idx)
+    {
+        int x = bb.getInt(idx) ;
+        // Get string.
+        bb.position(idx+4) ;
+        // Bytes -> String 
+        String str = Bytes.fromByteBuffer(bb) ;
+        // String -> Node
+        return SSE.parseNode(str) ;
+    }
+
 }
 
 /*

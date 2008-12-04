@@ -4,42 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
+import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.graph.Node;
 
-public class NodeTableIndex extends NodeTableBase
+/** Encode/decode for Nodes into bytes */
+public interface Nodec
 {
-    // Disk version
-    public NodeTableIndex(IndexBuilder factory, Location loc)
-    {
-        super() ;
-        Index nodeToId = factory.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-            
-        // Data file.
-        ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(Names.nodesData));
-        init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
-    }
+    /** Encode the node into the byte buffer, starting at the given offset. */ 
+    public void encode(Node node, ByteBuffer bb, int idx) ;
     
-    // Memory version - testing.
-    public NodeTableIndex(IndexBuilder factory)
-    {
-        super() ;
-        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-        
-        ObjectFile objects = new ObjectFileMem() ;
-        init(nodeToId, objects, 100, 100) ;
-    }
+    /** Decode the node from the byte buffer, starting at the given offset. */
+    public Node decode(ByteBuffer bb, int idx) ; 
+    
+    /** Simple encoder/decoder for nodes that uses the SSE string encoding.
+     */
+    public static Nodec nodecSSE = new NodecSSE() ;
+ 
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

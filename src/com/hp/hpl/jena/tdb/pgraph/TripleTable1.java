@@ -27,8 +27,8 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeTable;
 
 /** A Triple table.  There is no persistent table, it is all held in the
  *  indexes and the node table. 

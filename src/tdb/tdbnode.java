@@ -12,9 +12,9 @@ import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeTable;
 
 public class tdbnode extends CmdTDB
 {

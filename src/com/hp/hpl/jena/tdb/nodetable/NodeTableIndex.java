@@ -4,19 +4,43 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.graph.Node;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
-public interface NodeTable
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
+
+public class NodeTableIndex extends NodeTableBase
 {
-    NodeId storeNode(Node node) ;               // Store the node, reusing existing
-    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
+    // Disk version
+    public NodeTableIndex(IndexBuilder factory, Location loc)
+    {
+        super() ;
+        Index nodeToId = factory.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
+            
+        // Data file.
+        ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(Names.nodesData));
+        init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
+    }
+    
+    // Memory version - testing.
+    public NodeTableIndex(IndexBuilder factory)
+    {
+        super() ;
+        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
+        
+        ObjectFile objects = new ObjectFileMem() ;
+        init(nodeToId, objects, 100, 100) ;
+    }
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

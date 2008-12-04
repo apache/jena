@@ -19,8 +19,8 @@ import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.store.NodeTable;
-import com.hp.hpl.jena.tdb.store.NodeTableIndex;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableIndex;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {

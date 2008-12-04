@@ -4,25 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import lib.Tuple;
-
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
-// XXX Until a better name comes along ... this ought to be GraphTDB and GraphTDB ought to be GraphSingleTDB and GraphNamed opught to be GraphQuadTDB
-public interface GraphTDB extends Graph, Sync, Reorderable
+public interface NodeTable
 {
-    public NodeTupleTable getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
-    public Location getLocation() ; 
-    
+    NodeId storeNode(Node node) ;               // Store the node, reusing existing
+    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
+    Node retrieveNodeByNodeId(NodeId id) ;
+    void sync(boolean force) ;
+    void close() ;
 }
 
 /*

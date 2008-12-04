@@ -34,9 +34,9 @@ import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Machinary to implement the Jena interfaces.

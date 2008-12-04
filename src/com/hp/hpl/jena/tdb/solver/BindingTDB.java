@@ -18,8 +18,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeTable;
 
 /** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 

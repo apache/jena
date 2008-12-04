@@ -4,25 +4,34 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import lib.Tuple;
+import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 
-// XXX Until a better name comes along ... this ought to be GraphTDB and GraphTDB ought to be GraphSingleTDB and GraphNamed opught to be GraphQuadTDB
-public interface GraphTDB extends Graph, Sync, Reorderable
+public class NodecBinary implements Nodec
 {
-    public NodeTupleTable getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
-    public Location getLocation() ; 
+    private static byte codeNull        = 0 ;
+    private static byte codeURI         = 1 ;
+    private static byte codeBNode       = 2 ;
+    private static byte codeLiteral     = 3 ;
+    private static byte codeLiteralLang = 4 ;
+    private static byte codeLiteralDT   = 5 ;
     
+    @Override
+    public void encode(Node node, ByteBuffer bb, int idx)
+    {}
+
+    @Override
+    public Node decode(ByteBuffer bb, int idx)
+    {
+        return null ;
+    }
+    
+    private void encode(String s, ByteBuffer bb, int idx)
+    {
+    }
 }
 
 /*

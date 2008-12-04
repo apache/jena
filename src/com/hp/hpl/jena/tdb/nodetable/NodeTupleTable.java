@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 import static java.lang.String.format ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Closeable;
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 
 /** Support code to group tuple table and node table */ 

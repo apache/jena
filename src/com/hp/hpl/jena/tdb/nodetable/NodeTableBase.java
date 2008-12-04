@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
@@ -21,6 +21,8 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.store.Hash;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class NodeTableBase implements NodeTable
 {

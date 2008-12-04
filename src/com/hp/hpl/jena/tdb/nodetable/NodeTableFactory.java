@@ -4,44 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 
-import com.hp.hpl.jena.tdb.TDBException;
-
-/** Sink node table */
-public class NodeTableSink implements NodeTable
+public class NodeTableFactory
 {
-    long id = 0 ;
-    @Override
-    public void close()
-    {}
-
-    @Override
-    public NodeId nodeIdForNode(Node node)
+    public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
-        throw new TDBException("NodeTableSink.nodeIdForNode") ;
+        if ( location == null )
+            return new NodeTableIndex(indexBuilder) ;
+        return new NodeTableIndex(indexBuilder, location) ;
     }
-
-    @Override
-    public Node retrieveNodeByNodeId(NodeId id)
+    
+    public static NodeTable createSink(IndexBuilder indexBuilder, Location location)
     {
-        throw new TDBException("NodeTableSink.retrieveNodeByNodeId") ;
+        return new NodeTableSink() ;
     }
-
-    @Override
-    public NodeId storeNode(Node node)
-    {
-        NodeId nid = NodeId.create(id) ;
-        id++ ;
-        return nid ;
-    }
-
-    @Override
-    public void sync(boolean force)
-    {}
-
 }
 
 /*

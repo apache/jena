@@ -14,6 +14,8 @@ public class Dev
     //   Dataset assembler
     // ====
 
+    // ==== Persistent Prefixes
+    
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
     
     // Quads:
