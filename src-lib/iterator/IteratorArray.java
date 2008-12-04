@@ -6,19 +6,35 @@
 
 package iterator;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class,
-    TestIterator.class,
-    TestIteratorArray.class
-} )
-
-public class TS_Iterator
+/** Iterator over a Java base array */
+public final class IteratorArray<T> implements Iterator<T>
 {
+    int idx = 0 ;
+    T[] array ;
+    
+    public IteratorArray(T[] array)
+    { this.array = array ; }
 
+    @Override
+    public boolean hasNext()
+    {
+       return ( idx >= 0 && idx < array.length ) ;
+    }
+
+    @Override
+    public T next()
+    {
+        if ( ! hasNext() )
+            throw new NoSuchElementException() ; 
+        return array[idx++] ;
+    }
+
+    @Override
+    public void remove()
+    { throw new UnsupportedOperationException("ArrayIterator") ; }
 }
 
 /*

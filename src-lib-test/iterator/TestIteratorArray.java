@@ -6,19 +6,56 @@
 
 package iterator;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class,
-    TestIterator.class,
-    TestIteratorArray.class
-} )
+import org.junit.Test;
+import test.BaseTest;
 
-public class TS_Iterator
+public class TestIteratorArray extends BaseTest
 {
+    @Test public void arrayIterator_1()
+    {
+        String[] a = { } ;
+        Iterator<String> iter = new IteratorArray<String>(a) ;
+        assertFalse(iter.hasNext()) ;
+        assertFalse(iter.hasNext()) ;
+    }
 
+    @Test public void arrayIterator_2()
+    {
+        String[] a = { "a" } ;
+        Iterator<String> iter = new IteratorArray<String>(a) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("a", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+
+    
+    @Test public void arrayIterator_3()
+    {
+        String[] a = { "a", "b", "c"} ;
+        Iterator<String> iter = new IteratorArray<String>(a) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("a", iter.next()) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("b", iter.next()) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals("c", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void arrayIterator_4()
+    {
+        String[] a = { "a" } ;
+        Iterator<String> iter = new IteratorArray<String>(a) ;
+        assertEquals("a", iter.next()) ;
+        try { iter.next() ; fail("Expected NoSuchElementException") ; }
+        catch (NoSuchElementException ex) {}
+    }
+    
 }
 
 /*
