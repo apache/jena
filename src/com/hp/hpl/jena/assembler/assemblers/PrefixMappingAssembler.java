@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: PrefixMappingAssembler.java,v 1.8 2008-01-02 12:09:36 andy_seaborne Exp $
+ 	$Id: PrefixMappingAssembler.java,v 1.9 2008-12-05 14:53:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -21,13 +21,14 @@ public class PrefixMappingAssembler extends AssemblerBase implements Assembler
     public static PrefixMapping getPrefixes( Assembler a, Resource root, PrefixMapping result )
         {
         setSimplePrefixes( root, result );
-        setIncludedPrefixes( a, root, result );
+        includePrefixesFor( a, root, result, JA.includes );
+        includePrefixesFor( a, root, result, JA.prefixMapping );
         return result;
         }
 
-    private static void setIncludedPrefixes( Assembler a, Resource root, PrefixMapping result )
+    private static void includePrefixesFor( Assembler a, Resource root, PrefixMapping result, Property includeUsing )
         {
-        for (StmtIterator it = root.listProperties( JA.includes ); it.hasNext();)
+        for (StmtIterator it = root.listProperties( includeUsing ); it.hasNext();)
             {
             Statement s = it.nextStatement();
             PrefixMapping sub = (PrefixMapping) a.open( getResource( s ) );

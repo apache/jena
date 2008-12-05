@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.22 2008-01-24 16:00:14 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.23 2008-12-05 14:53:36 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -29,7 +29,7 @@ public class AssemblerHelp
     /**
         A useful constant for <code>listStatements(S, P, O)</code>. 
     */
-    protected static Property ANY = null;
+    protected static final Property ANY = null;
     
     /**
         Answer a Resource .equals() to <code>root</code>, but in the expanded

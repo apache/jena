@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.19 2008-10-09 14:24:37 chris-dollin Exp $
+ 	$Id: JA.java,v 1.20 2008-12-05 14:53:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -192,6 +192,8 @@ public class JA
     public static final Property likeBuiltinSpec = property( "likeBuiltinSpec" );
 
     public static final Resource SinglePrefixMapping = resource( "SinglePrefixMapping");
+    
+    public static final Property prefixMapping = property( "prefixMapping" );
 
     public static Model getSchema()
         { // inline packagename to avoid clash with /our/ FileManager.
