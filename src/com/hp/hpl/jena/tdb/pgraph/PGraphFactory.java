@@ -82,7 +82,7 @@ public class PGraphFactory
         TripleIndex triplesOSP = new TripleIndex(indexOSP, idxOSP) ;
      
         // Creates the object file as a file-backed one. 
-        NodeTable nodeTable = new NodeTableIndex(factory, location) ;
+        NodeTable nodeTable = new NodeTableIndex(factory, location, Names.nodesData) ;
         
         ReorderTransformation reorder = chooseOptimizer(location) ;
 

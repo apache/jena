@@ -79,7 +79,7 @@ public class TupleTable implements Sync, Closeable
         if ( tupleLen != t.size() )
             throw new TDBException(String.format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
 
-        for ( int i = 0 ; i < tupleLen ; i++ )
+        for ( int i = 0 ; i < indexes.length ; i++ )
         {
             if ( indexes[i] == null ) continue ;
             if ( ! indexes[i].delete(t) )

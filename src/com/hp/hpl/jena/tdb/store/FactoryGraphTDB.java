@@ -62,7 +62,7 @@ public class FactoryGraphTDB
     /** Create a TDB graph using a specifc index builder - mainly for testing */
     public static GraphTriplesTDB createGraph(IndexBuilder indexBuilder, Location location)
     {
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location, Names.nodesData) ;
         TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;
         return new GraphTriplesTDB(table, transform, location) ;
@@ -109,7 +109,7 @@ public class FactoryGraphTDB
     /** Create or connect a TDB dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
     {
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location, Names.nodesData) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadDesc) ;
         //return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
@@ -146,7 +146,7 @@ public class FactoryGraphTDB
     /** Testing */
     static TripleTable createTripleTableMem()
     {
-        NodeTable nodeTable = NodeTableFactory.create(IndexBuilder.mem(), null) ;
+        NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createTripleTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
     }
 
@@ -159,7 +159,7 @@ public class FactoryGraphTDB
     /** Testing */
     static QuadTable createQuadTableMem()
     {
-        NodeTable nodeTable = NodeTableFactory.create(IndexBuilder.mem(), null) ;
+        NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
     }
     

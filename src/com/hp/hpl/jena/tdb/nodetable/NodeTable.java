@@ -11,7 +11,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public interface NodeTable
 {
-    NodeId storeNode(Node node) ;               // Store the node, reusing existing
+    NodeId storeNode(Node node) ;               // Store the node
     NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
     Node retrieveNodeByNodeId(NodeId id) ;
     void sync(boolean force) ;

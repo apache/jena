@@ -4,43 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.nodetable;
+package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.tdb.graph.TestPrefixMappingPersistent;
+import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.sys.Names;
-
-public class NodeTableIndex extends NodeTableBase
+public class TestPrefixMappingTDB extends TestPrefixMappingPersistent
 {
-    // Disk version
-    public NodeTableIndex(IndexBuilder factory, Location loc, String tableName)
+
+    static PrefixMapping theMapping = new PrefixMappingTDB("http://graph/") ;
+    @Override
+    protected PrefixMapping create()
     {
-        super() ;
-        Index nodeToId = factory.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-            
-        // Data file.
-        ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(tableName));
-        init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
+        return theMapping ;
     }
-    
-    // Memory version - testing.
-    public NodeTableIndex(IndexBuilder factory)
-    {
-        super() ;
-        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-        
-        ObjectFile objects = new ObjectFileMem() ;
-        init(nodeToId, objects, 100, 100) ;
-    }
+
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

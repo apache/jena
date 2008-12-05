@@ -15,12 +15,10 @@ import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
-
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -37,7 +35,9 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
@@ -57,7 +57,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        
+        prefixes() ; System.exit(0) ;
         tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
         
         namedGraphs() ;        
@@ -74,6 +74,21 @@ public class Run
         System.exit(0) ;
         rewrite() ; System.exit(0) ;
     }
+    
+    private static void prefixes()
+    {
+       PrefixMapping pmap = new PrefixMappingTDB("http://graph/") ;
+       pmap.setNsPrefix("x", "http://example/") ;
+       String x = pmap.expandPrefix("x:foo") ;
+       System.out.println(x) ;
+       pmap.setNsPrefix("x", "http://example/ns#") ;
+       String x2 = pmap.expandPrefix("x:foo") ;
+       System.out.println(x2) ;
+       System.out.println("<<End>>") ;
+       System.exit(0) ;
+        
+    }
+    
     
     private static void reification()
     {
@@ -126,7 +141,7 @@ public class Run
         IndexBuilder indexBuilder = IndexBuilder.mem() ;
         Location location = null ;
         
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location, Names.nodesData) ;
         
         TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
         ReorderTransformation transform = ReorderLib.identity() ;

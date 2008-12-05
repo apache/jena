@@ -11,11 +11,16 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 
 public class NodeTableFactory
 {
-    public static NodeTable create(IndexBuilder indexBuilder, Location location)
+    public static NodeTable create(IndexBuilder indexBuilder, Location location, String tableName)
     {
         if ( location == null )
             return new NodeTableIndex(indexBuilder) ;
-        return new NodeTableIndex(indexBuilder, location) ;
+        return new NodeTableIndex(indexBuilder, location, tableName) ;
+    }
+    
+    public static NodeTable createMem(IndexBuilder indexBuilder)
+    {
+        return new NodeTableIndex(indexBuilder) ;
     }
     
     public static NodeTable createSink(IndexBuilder indexBuilder, Location location)
