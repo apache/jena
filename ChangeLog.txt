@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+
+==== ARQ 2.7
+
+
 ==== ARQ 2.6
 
 + Added .close() to Dataset and GraphStore for those implementations that
