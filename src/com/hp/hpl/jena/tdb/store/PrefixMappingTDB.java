@@ -21,6 +21,7 @@ import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
 import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class PrefixMappingTDB extends PrefixMappingPersistent
 {
@@ -42,8 +43,8 @@ public class PrefixMappingTDB extends PrefixMappingPersistent
     {
         // Cache?
         super(graphName) ;
-        String prefixNodeTableName = "prefixes.dat" ; 
-        nodes = NodeTableFactory.create(indexBuilder, location, prefixNodeTableName, 10, 10) ;
+        
+        nodes = NodeTableFactory.create(indexBuilder, location, Names.prefixesData, Names.indexPrefix2Id, 10, 10) ;
         TupleIndex primary = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(location, factory, "prefixIdx")) ;
         TupleIndex[] indexes = { primary } ;
         // Single index on the three columns.

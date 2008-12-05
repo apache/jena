@@ -19,7 +19,6 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.sys.Names;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
@@ -43,7 +42,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
     {
         String location = getAsStringValue(root, pNodeIndex) ;
         if ( location != null )
-            return NodeTableFactory.create(IndexBuilder.get(), new Location(location), Names.nodesData) ;
+            return NodeTableFactory.create(IndexBuilder.get(), new Location(location)) ;
         
         String nodeIndex = getAsStringValue(root, pNodeIndex) ;
         String nodeData = getAsStringValue(root, pNodeData) ;

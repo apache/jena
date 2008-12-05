@@ -13,15 +13,14 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.sys.Names;
 
 public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableIndex(IndexBuilder factory, Location loc, String tableName, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableIndex(IndexBuilder indexBuilder, Location loc, String tableName, String nodeTableIdxName, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super() ;
-        Index nodeToId = factory.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
+        Index nodeToId = indexBuilder.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, nodeTableIdxName) ;
             
         // Data file.
         ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(tableName));
@@ -33,7 +32,7 @@ public class NodeTableIndex extends NodeTableBase
     public NodeTableIndex(IndexBuilder factory)
     {
         super() ;
-        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
+        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, "") ;
         
         ObjectFile objects = new ObjectFileMem() ;
         init(nodeToId, objects, 100, 100) ;

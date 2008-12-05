@@ -38,7 +38,6 @@ import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
@@ -178,7 +177,7 @@ public class Run
         IndexBuilder indexBuilder = IndexBuilder.mem() ;
         Location location = null ;
         
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location, Names.nodesData) ;
+        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         
         TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
         ReorderTransformation transform = ReorderLib.identity() ;

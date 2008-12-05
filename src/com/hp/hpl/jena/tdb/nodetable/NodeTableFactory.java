@@ -8,22 +8,26 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NodeTableFactory
 {
-    public static NodeTable create(IndexBuilder indexBuilder, Location location, String tableName)
+    public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
-        return  create(indexBuilder, location, tableName,
+        return  create(indexBuilder, location, 
+                       Names.nodesData, Names.indexId2Node,
                        SystemTDB.Node2NodeIdCacheSize,
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
 
-    public static NodeTable create(IndexBuilder indexBuilder, Location location, String tableName, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public static NodeTable create(IndexBuilder indexBuilder, Location location, 
+                                   String tableName, String nodeTableIdxName,
+                                   int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         if ( location == null )
             return new NodeTableIndex(indexBuilder) ;
-        return new NodeTableIndex(indexBuilder, location, tableName, nodeToIdCacheSize, idToNodeCacheSize) ;
+        return new NodeTableIndex(indexBuilder, location, tableName, nodeTableIdxName, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
     

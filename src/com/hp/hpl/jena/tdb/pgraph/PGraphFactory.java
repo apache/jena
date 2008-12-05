@@ -67,22 +67,23 @@ public class PGraphFactory
     }
     
     /** Create a graph backed with storage at a particular location using a system of indexes */
-    public static PGraph create(IndexBuilder factory, Location location)
+    public static PGraph create(IndexBuilder indexBuilder, Location location)
     {
         if ( location == null )
             log.warn("Null location") ;
         
-        RangeIndex idxSPO = factory.newRangeIndex(location, PGraph.indexRecordFactory, indexSPO) ;
+        RangeIndex idxSPO = indexBuilder.newRangeIndex(location, PGraph.indexRecordFactory, indexSPO) ;
         TripleIndex triplesSPO = new TripleIndex(indexSPO, idxSPO) ;
 
-        RangeIndex idxPOS = factory.newRangeIndex(location, PGraph.indexRecordFactory, indexPOS) ;
+        RangeIndex idxPOS = indexBuilder.newRangeIndex(location, PGraph.indexRecordFactory, indexPOS) ;
         TripleIndex triplesPOS = new TripleIndex(indexPOS, idxPOS) ;
 
-        RangeIndex idxOSP = factory.newRangeIndex(location, PGraph.indexRecordFactory, indexOSP) ;
+        RangeIndex idxOSP = indexBuilder.newRangeIndex(location, PGraph.indexRecordFactory, indexOSP) ;
         TripleIndex triplesOSP = new TripleIndex(indexOSP, idxOSP) ;
      
         // Creates the object file as a file-backed one. 
-        NodeTable nodeTable = new NodeTableIndex(factory, location, Names.nodesData,
+        NodeTable nodeTable = new NodeTableIndex(indexBuilder, location, 
+                                                 Names.nodesData, Names.indexId2Node,
                                                  SystemTDB.Node2NodeIdCacheSize,
                                                  SystemTDB.NodeId2NodeCacheSize) ;
         

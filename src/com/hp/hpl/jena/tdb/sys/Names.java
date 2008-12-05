@@ -30,6 +30,12 @@ public class Names
     public static final String nodesData        = "nodes.dat" ;
     public static final String indexNode2Id     = "node2id";
     public static final String indexId2Node     = "id2node";
+
+    /** Prefixes file */
+    public static final String prefixesData     = "prefixes.dat" ;
+    public static final String indexPrefix2Id   = "prefix2id";
+    //public static final String indexId2Prefix   = "id2prefix";
+
     
     /** Optimizer / stats */
     public static final String optStats         = "stats.opt";
