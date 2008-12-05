@@ -1,6 +1,8 @@
 Release Notes
 =============
-==== post Jena 2.5.5
+==== Jena 2.5.8
+
+==== Jena 2.5.7
 
 Database layer:
    o Compatibility fixes for PostgreSQL 8.3 (no schema changes)  
@@ -10,17 +12,19 @@ ReasonerFactoryAssembler
     o Now takes note of ja:schema properties & binds such a schema
       to the reasoners that the factory produces.
 
-Typed literals:
-    o Fixed bug in retrieval of decimal values with trailing fractional
-      zeros by canonicalizing values after parsing and improving
-      canonicalization.
-      
 Reasoners:
     o Modified @include processing and Rule.rulesFromURL to support 
       FileManager redirects.
     o Fixed problem withLPTopGoalIterator which caused one extra level
       of lookahead in some circumstances.
     
+==== Jena 2.5.6 
+
+Typed literals:
+    o Fixed bug in retrieval of decimal values with trailing fractional
+      zeros by canonicalizing values after parsing and improving
+      canonicalization.
+      
 ==== Jena 2.5.5
 
 Jar changes:
