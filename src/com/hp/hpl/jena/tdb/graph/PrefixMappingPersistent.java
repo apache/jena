@@ -8,10 +8,12 @@ package com.hp.hpl.jena.tdb.graph;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.lib.Sync;
 
 /** A persistence layer for a PrefixMapping */ 
 
-public abstract class PrefixMappingPersistent extends PrefixMappingImpl
+public abstract class PrefixMappingPersistent extends PrefixMappingImpl implements Closeable, Sync
 {
     private String graphName ; 
 
@@ -71,6 +73,7 @@ public abstract class PrefixMappingPersistent extends PrefixMappingImpl
 
     private String decode(String prefix)
     { return prefix.substring(0, prefix.length()-1) ; }
+    
 }
 
 /*

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 public class TestPrefixMappingTDB extends TestPrefixMappingPersistent
 {
 
-    static PrefixMapping theMapping = new PrefixMappingTDB("http://graph/") ;
+    static PrefixMapping theMapping = PrefixMappingTDB.mem("http://graph/") ;
     @Override
     protected PrefixMapping create()
     {

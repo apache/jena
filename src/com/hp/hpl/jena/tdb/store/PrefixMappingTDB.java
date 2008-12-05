@@ -12,6 +12,7 @@ import lib.ColumnMap;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.PrefixMappingPersistent;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -23,22 +24,38 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 
 public class PrefixMappingTDB extends PrefixMappingPersistent
 {
-    NodeTable nodes ;
-    TupleTable index ;
-    static ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
+    private final NodeTable nodes ;
+    private final TupleTable index ;
+    static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
+    static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    public PrefixMappingTDB(String graphName)
+    // Testing version
+    static PrefixMappingTDB mem(String graphName)
+    {
+        NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
+        TupleIndex primary = new TupleIndexRecord(3, colMap, factory, IndexBuilder.mem().newRangeIndex(null, factory, "prefixIdx")) ;
+        return new PrefixMappingTDB(graphName, nodeTable, primary, null) ;
+    }
+
+    
+    public PrefixMappingTDB(String graphName, IndexBuilder indexBuilder, Location location)
     {
         // Cache?
         super(graphName) ;
-        nodes = NodeTableFactory.createMem(IndexBuilder.mem()) ;
-        RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-
-        TupleIndex primary = new TupleIndexRecord(3, colMap, factory, IndexBuilder.mem().newRangeIndex(null, factory, "prefixIdx")) ;
+        String prefixNodeTableName = "prefixes.dat" ; 
+        nodes = NodeTableFactory.create(indexBuilder, location, prefixNodeTableName, 10, 10) ;
+        TupleIndex primary = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(location, factory, "prefixIdx")) ;
         TupleIndex[] indexes = { primary } ;
-        
         // Single index on the three columns.
-        index = new TupleTable(3, indexes, factory, null) ;
+        index = new TupleTable(3, indexes, factory, location) ;
+    }
+    
+    private PrefixMappingTDB(String graphName, NodeTable nodeTable, TupleIndex primary, Location location)
+    {
+        super(graphName) ;
+        TupleIndex[] indexes = { primary } ;
+        nodes = nodeTable ;
+        index = new TupleTable(3, indexes, factory, location) ; 
     }
     
     @Override
@@ -85,7 +102,21 @@ public class PrefixMappingTDB extends PrefixMappingPersistent
         NodeId id3 = (uri==null) ? NodeId.NodeIdAny : nodes.nodeIdForNode(Node.createURI(uri)) ;
         return new Tuple<NodeId>(id1, id2, id3) ;
     }
-    
+
+
+    @Override
+    public void close()
+    {
+        if ( nodes != null ) nodes.close() ;
+        if ( index != null ) index.close() ;
+    }
+
+    @Override
+    public void sync(boolean force)
+    { 
+        if ( nodes != null ) nodes.sync(force) ;
+        if ( index != null ) index.sync(force) ;
+    }
 }
 
 /*

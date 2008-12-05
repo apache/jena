@@ -12,9 +12,8 @@ public class Dev
     // Commands
     // Documentation
     //   Dataset assembler
+    // Prefixes
     // ====
-
-    // ==== Persistent Prefixes
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
     
