@@ -27,14 +27,14 @@ public class Names
     public static final String extHashBucketExt = "dat" ;
     
     /** Node file */
-    public static final String nodesData        = "nodes.dat" ;
-    public static final String indexNode2Id     = "node2id";
-    public static final String indexId2Node     = "id2node";
+    public static final String nodesData        = "nodes.dat" ;     // Node table
+    public static final String indexNode2Id     = "node2id";        // Extensible hash table for node to id 
+    public static final String indexId2Node     = "id2node";        // Index for node(hash) to 
 
     /** Prefixes file */
-    public static final String prefixesData     = "prefixes.dat" ;
-    public static final String indexPrefix2Id   = "prefix2id";
-    public static final String indexId2Prefix   = "id2prefix";
+    public static final String prefixesData     = "prefixes.dat" ;  // Prefix node table 
+    public static final String indexPrefix2Id   = "prefix2id";      // Prefix node table for index Node/hash->id
+    public static final String indexId2Prefix   = "id2prefix";      // Primary key on the prefixes table. 
 
     
     /** Optimizer / stats */

@@ -58,8 +58,9 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        prefixes() ; System.exit(0) ;
-        tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
+        //prefixes() ; System.exit(0) ;
+        tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ; System.exit(0) ;
+        //tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
         
         namedGraphs() ;        
         
@@ -89,14 +90,13 @@ public class Run
         
         Location location = new Location("DB2") ;
         FileOps.clearDirectory("DB2") ;
-        
-//        Dataset ds = TDBFactory.createDataset() ;
-//        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
-//        PrefixMapping pmap = dsg.getPrefixes().getPrefixMapping(graphName) ;
-        
-        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
         String graphName = "http://graph/" ;
-        PrefixMapping pmap = dsp.getPrefixMapping(graphName) ;
+        Dataset ds = TDBFactory.createDataset(location) ;
+        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
+        PrefixMapping pmap = dsg.getPrefixes().getPrefixMapping(graphName) ;
+        
+//        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
+//        PrefixMapping pmap = dsp.getPrefixMapping(graphName) ;
         
         pmap.setNsPrefix("x", "http://example/") ;
         
@@ -109,7 +109,7 @@ public class Run
         System.out.println("** >>") ;
         printPrefixMapping(pmap) ;
         System.out.println("<<End>>") ;
-        dsp.close() ;
+//        dsp.close() ;
     }
 
     private static void prefixes2()
