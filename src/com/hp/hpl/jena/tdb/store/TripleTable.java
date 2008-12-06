@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.lib.TupleLib.tuple;
 import iterator.NullIterator;
+import iterator.Transform;
 
 import java.util.Iterator;
 
@@ -15,7 +15,9 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Closeable;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
@@ -27,57 +29,86 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 
 /** TripleTable - a collection of TupleIndexes for 3-tuples
  *  together with a node table.
-*   Normally, based on 3 indexes (SPO, POS, OSP) but other
-*   indexing structures can be configured.
-*   The node table form can map to and from NodeIds (longs)
-*/
+ *   Normally, based on 3 indexes (SPO, POS, OSP) but other
+ *   indexing structures can be configured.
+ *   The node table form can map to and from NodeIds (longs)
+ */
 
-public class TripleTable extends NodeTupleTable implements Sync, Closeable
+public class TripleTable implements Sync, Closeable
 {
+    final NodeTupleTable table ;
+    
     public TripleTable(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
     {
-        super(3, indexes, indexRecordFactory, nodeTable, location) ;
+        table = new NodeTupleTable(3, indexes, nodeTable) ;
     }
     
     public boolean add( Triple triple ) 
     { 
-        return tupleTable.add(tuple(triple, nodeTable)) ;
+        return table.addRow(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
     public boolean delete( Triple triple ) 
     { 
-        return tupleTable.delete(tuple(triple, nodeTable)) ;
+        return table.deleteRow(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
-    /** Find by node. */
+    /** Find matching triples */
     public Iterator<Triple> find(Node s, Node p, Node o)
     {
-        NodeId subj = idForNode(s) ;
-        if ( subj == NodeId.NodeDoesNotExist )
+        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o) ;
+        if ( iter == null )
             return new NullIterator<Triple>() ;
-        
-        NodeId pred = idForNode(p) ;
-        if ( pred == NodeId.NodeDoesNotExist )
-            return new NullIterator<Triple>() ;
-        
-        NodeId obj = idForNode(o) ;
-        if ( obj == NodeId.NodeDoesNotExist )
-            return new NullIterator<Triple>() ;
+        Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter) ;
+        return iter2 ;
+    }
+    
+    private static Transform<Tuple<Node>, Triple> action = new Transform<Tuple<Node>, Triple>(){
+        @Override
+        public Triple convert(Tuple<Node> item)
+        {
+            return new Triple(item.get(0), item.get(1), item.get(2)) ;
+        }} ; 
+    
+    public NodeTupleTable getNodeTupleTable() { return table ; }
 
-        Iterator<Tuple<NodeId>> _iter = find(subj, pred, obj) ;
-        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
-        return iter ;
-    }
+    @Override
+    public void sync(boolean force)
+    { table.sync(force) ; }
+
+    @Override
+    public void close()
+    { table.close() ; }
     
-    
-    /** Find by NodeId. */
-    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
-    {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
-        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
-        return iter ;
-    }
+//    /** Find by node. */
+//    public Iterator<Triple> find(Node s, Node p, Node o)
+//    {
+//        NodeId subj = idForNode(s) ;
+//        if ( subj == NodeId.NodeDoesNotExist )
+//            return new NullIterator<Triple>() ;
+//        
+//        NodeId pred = idForNode(p) ;
+//        if ( pred == NodeId.NodeDoesNotExist )
+//            return new NullIterator<Triple>() ;
+//        
+//        NodeId obj = idForNode(o) ;
+//        if ( obj == NodeId.NodeDoesNotExist )
+//            return new NullIterator<Triple>() ;
+//
+//        Iterator<Tuple<NodeId>> _iter = find(subj, pred, obj) ;
+//        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
+//        return iter ;
+//    }
+//    
+//    
+//    /** Find by NodeId. */
+//    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
+//    {
+//        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
+//        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
+//        return iter ;
+//    }
 
 }
 

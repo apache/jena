@@ -9,6 +9,7 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
+import java.util.Map;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
@@ -101,9 +102,24 @@ public class Run
         pmap2.setNsPrefix("ns", "http://ns/#") ;
         System.out.println(pmap1.expandPrefix("ns:bar")) ;
         System.out.println(pmap2.expandPrefix("ns:bar")) ;
+        
+        System.out.println("1 >>") ;
+        printPrefixMapping(pmap1) ;
+
+        System.out.println("2 >>") ;
+        printPrefixMapping(pmap2) ;
+        
         System.out.println("<<End>>") ;
         pmap1.close() ;
         pmap2.close() ;
+    }
+    
+    private static void printPrefixMapping(PrefixMapping pmap)
+    {
+        @SuppressWarnings("unchecked")
+        Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
+        for ( String k : x.keySet() )
+            System.out.println(k+" : "+x.get(k)) ;
     }
     
     private static void prefixes1()
@@ -119,8 +135,11 @@ public class Run
         String x = pmap.expandPrefix("x:foo") ;
         System.out.println(x) ;
         pmap.setNsPrefix("x", "http://example/ns#") ;
+        pmap.setNsPrefix("y", "http://example/y#") ;
         String x2 = pmap.expandPrefix("x:foo") ;
         System.out.println(x2) ;
+        System.out.println("** >>") ;
+        printPrefixMapping(pmap) ;
         System.out.println("<<End>>") ;
         pmap.close() ;
     }

@@ -5,15 +5,22 @@
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
-import static java.lang.String.format ;
+import static java.lang.String.format;
+import iterator.NullIterator;
+
+import java.util.Iterator;
+
+import lib.Tuple;
+
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Closeable;
+
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 
@@ -21,10 +28,9 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class NodeTupleTable implements Sync, Closeable
 {
     protected final NodeTable nodeTable ;
-    protected final Location location ;
     protected final TupleTable tupleTable ;
     
-    public NodeTupleTable(int N, TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
+    public NodeTupleTable(int N, TupleIndex[] indexes, NodeTable nodeTable)
     {
         if ( indexes.length == 0 || indexes[0] == null )
             throw new TDBException("A primary index is required") ;
@@ -35,10 +41,70 @@ public class NodeTupleTable implements Sync, Closeable
                                               N, index.getLabel(), index.getTupleLength() )) ;   
         }
         
-        this.tupleTable = new TupleTable(N, indexes, indexRecordFactory, location) ;
+        this.tupleTable = new TupleTable(N, indexes) ;
         this.nodeTable = nodeTable ;
-        this.location = location ;
     }
+    
+    public boolean addRow(Node...nodes)
+    {
+        NodeId n[] = new NodeId[nodes.length] ;
+        for ( int i = 0 ; i < nodes.length ; i++ )
+            n[i] = storeNode(nodes[i]) ;
+        
+        Tuple<NodeId> t = new Tuple<NodeId>(n) ;
+        return tupleTable.add(t) ;
+    }
+    
+    public boolean deleteRow(Node...nodes)
+    {
+        NodeId n[] = new NodeId[nodes.length] ;
+        for ( int i = 0 ; i < nodes.length ; i++ )
+        {
+            NodeId id = idForNode(nodes[i]) ;
+            if ( id == NodeId.NodeDoesNotExist )
+                return false ;
+            n[i] = id ;
+        }
+        
+        Tuple<NodeId> t = new Tuple<NodeId>(n) ;
+        return tupleTable.delete(t) ;
+    }
+    
+    /** Find by node. */
+    public Iterator<Tuple<Node>> find(Node...nodes)
+    {
+        Iterator<Tuple<NodeId>> _iter = findAsNodeIds(nodes) ;
+        if ( _iter == null )
+            return new NullIterator<Tuple<Node>>() ;
+        Iterator<Tuple<Node>> iter = TupleLib.convertToNodes(nodeTable, _iter) ;
+        return iter ;
+    }
+    
+    /** Find by node - returnan iterator of NodeIds. Can return "null" for not found as well as NullIterator" */
+    public Iterator<Tuple<NodeId>> findAsNodeIds(Node...nodes)
+    {
+        NodeId n[] = new NodeId[nodes.length] ;
+        
+        for ( int i = 0 ; i < nodes.length ; i++ )
+        {
+            NodeId id = idForNode(nodes[i]) ;
+            if ( id == NodeId.NodeDoesNotExist )
+                return null ;
+            n[i] = id ;
+        }
+
+        return find(n) ;
+    }
+    
+    
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(NodeId...ids)
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(ids) ;
+        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
+        return iter ;
+    }
+
     
     // ==== Node
 
@@ -71,12 +137,6 @@ public class NodeTupleTable implements Sync, Closeable
     
     /** Return the node table */
     public final NodeTable getNodeTable()   { return nodeTable ; }
-    
-    /** Return the location of for the indexes of this triple table.
-     *  Usually, all the indexes are in the same location.   
-     *  May be null (e.g. in-memory testing) 
-     */ 
-    public final Location getLocation() { return tupleTable.getLocation() ; }
     
     public boolean isEmpty()        { return tupleTable.isEmpty() ; }
     

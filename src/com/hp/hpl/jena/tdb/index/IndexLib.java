@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import iterator.Iter;
+import iterator.Transform;
+
 import java.util.Iterator;
 
 import lib.Tuple;
 
-import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class IndexLib
@@ -18,16 +22,16 @@ public class IndexLib
     @Deprecated
     public static Iterator<Tuple<NodeId>> tuples(RangeIndex index)
     {
-        return TupleLib.tuplesRaw(index.iterator()) ;
+        return tuplesRaw(index.iterator()) ;
     }
-    
+
     @Deprecated
     public static void print(RangeIndex index)
     {
         print(tuples(index)) ;
     }
- 
-    
+
+
     public static void print(Iterator<Tuple<NodeId>> iter)
     {
         for ( int i = 0 ; iter.hasNext() ; i++ )
@@ -36,6 +40,30 @@ public class IndexLib
             System.out.printf("%2d: %s\n", i, tuple) ;
         } 
     }
+
+    @Deprecated
+    public static Iterator<Tuple<NodeId>> tuplesRaw(Iterator<Record> iter)
+    {
+        Transform<Record, Tuple<NodeId>> transform = new Transform<Record, Tuple<NodeId>>() {
+            @Override
+            public Tuple<NodeId> convert(Record item)
+            {
+                return tuplesRaw(item) ;
+            }} ; 
+            return Iter.map(iter, transform) ;
+    }
+    // ----
+
+    @Deprecated
+    public static Tuple<NodeId> tuplesRaw(Record e)
+    {
+        // In index native order
+        NodeId x = NodeLib.getNodeId(e, 0) ;
+        NodeId y = NodeLib.getNodeId(e, NodeId.SIZE) ;
+        NodeId z = NodeLib.getNodeId(e, 2*NodeId.SIZE) ;
+        return new Tuple<NodeId>(x, y, z) ;
+    }
+
 }
 
 /*

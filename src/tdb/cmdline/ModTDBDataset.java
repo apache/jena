@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.util.FileManager;
@@ -108,7 +109,6 @@ public class ModTDBDataset extends ModDataset
             catch (Exception ex)
             { throw new CmdException("Error creating", ex) ; }
             return thing ;
-            
         }
         
         if ( modAssembler.getLocation() == null )
@@ -121,6 +121,13 @@ public class ModTDBDataset extends ModDataset
         return DatasetFactory.create(model) ;
     }
     
+    public Location getLocation()
+    {
+        List<String> x = locations() ;
+        if ( x.size() == 0 )
+            return null ;
+        return new Location(x.get(0)) ;
+    }
     
     public List<String> locations()
     {

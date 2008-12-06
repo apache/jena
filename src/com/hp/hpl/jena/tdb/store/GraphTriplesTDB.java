@@ -28,8 +28,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /** A graph implementation that uses a triple table */
 public class GraphTriplesTDB extends GraphTDBBase
 {
-    //public NodeTupleTable getNodeTupleTable() ;
-    
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
@@ -37,7 +35,7 @@ public class GraphTriplesTDB extends GraphTDBBase
                            ReorderTransformation reorderTransform,
                            Location location)
     {
-        super(reorderTransform) ;
+        super(reorderTransform, location) ;
         
         this.tripleTable = tripleTable ;
         
@@ -97,10 +95,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     }
 
     @Override
-    public NodeTupleTable getNodeTupleTable()           { return tripleTable   ; }
-    
-    @Override
-    public Location getLocation()                       { return tripleTable.getLocation() ; }
+    public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
     
     @Override
     final public void close()

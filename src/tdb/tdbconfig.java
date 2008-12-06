@@ -7,6 +7,7 @@
 package tdb;
 
 import java.util.List;
+import java.util.Map;
 
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
@@ -16,19 +17,23 @@ import arq.cmdline.ModVersion;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
 {
-    static final String CMD_CLEAN   = "clean" ;
-    static final String CMD_HELP    = "help" ;
-    static final String CMD_STATS   = "stats" ;
-    static final String CMD_NODES   = "nodes" ;
-    static final String CMD_INFO    = "info" ;
+    static final String CMD_CLEAN       = "clean" ;
+    static final String CMD_HELP        = "help" ;
+    static final String CMD_STATS       = "stats" ;
+    static final String CMD_NODES       = "nodes" ;
+    static final String CMD_INFO        = "info" ;
+    static final String CMD_PREFIXES    = "prefixes" ;
     
     static public void main(String... argv)
     {
@@ -52,8 +57,37 @@ public class tdbconfig extends CmdSub
         
         super.addSubCommand(CMD_INFO, new Exec()
         { @Override public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
+        
+        super.addSubCommand(CMD_PREFIXES, new Exec()
+        { @Override public void exec(String[] argv) { new SubPrefixes(argv).mainRun() ; } }) ;
 
         
+    }
+    
+    static class SubPrefixes extends CmdTDB
+    {
+        public SubPrefixes(String ... argv)
+        {
+            super(argv) ;
+            //super.addModule(modSymbol) ;
+        }
+
+        @Override
+        protected String getSummary()
+        {
+            return "tdbconfig prefixes" ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            Location location = getLocation() ;
+            PrefixMappingTDB pmap = new PrefixMappingTDB("", IndexBuilder.get(), location) ;
+            @SuppressWarnings("unchecked")
+            Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
+            for ( String k : x.keySet() )
+                System.out.println(k+" : "+x.get(k)) ;
+        }
     }
     
     // Subcommand : help

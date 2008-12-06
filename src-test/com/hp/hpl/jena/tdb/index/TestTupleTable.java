@@ -39,7 +39,7 @@ public class TestTupleTable extends BaseTest
         TupleIndex idxPOS = TestTupleIndexRecord.create("POS") ;
         TupleIndex idxOSP = TestTupleIndexRecord.create("OSP") ;
         TupleIndex x[] = { idxSPO, idxPOS, idxOSP } ;
-        TupleTable table = new TupleTable(3, x, TestTupleIndexRecord.factory, null) ;
+        TupleTable table = new TupleTable(3, x) ;
         return table ;
     }
     

@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import iterator.Iter;
 import iterator.Transform;
 
@@ -19,6 +18,7 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Quad;
 
 import com.hp.hpl.jena.tdb.TDBException;
@@ -27,34 +27,33 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-
 public class TupleLib
 {
-    @Deprecated
-    public static Iterator<Tuple<NodeId>> tuplesRaw(Iterator<Record> iter)
+    public static  Iterator<Tuple<Node>> convertToNodes(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
-        Transform<Record, Tuple<NodeId>> transform = new Transform<Record, Tuple<NodeId>>() {
+        Transform<Tuple<NodeId>, Tuple<Node>> action =  new Transform<Tuple<NodeId>, Tuple<Node>>(){
             @Override
-            public Tuple<NodeId> convert(Record item)
+            public Tuple<Node> convert(Tuple<NodeId> item)
             {
-                return TupleLib.tuplesRaw(item) ;
-            }} ; 
-        return Iter.map(iter, transform) ;
+                return tupleNodes(nodeTable, item) ;
+            }} ;
+        return Iter.map(iter, action) ;
     }
-    // ----
     
-    // TO GO
-    @Deprecated
-    public static Tuple<NodeId> tuplesRaw(Record e)
+    public static Iterator<Tuple<NodeId>> convertToNodeId(final NodeTable nodeTable, Iterator<Tuple<Node>> iter)
     {
-        // In index native order
-        NodeId x = NodeLib.getNodeId(e, 0) ;
-        NodeId y = NodeLib.getNodeId(e, SizeOfNodeId) ;
-        NodeId z = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
-        return new Tuple<NodeId>(x, y, z) ;
+        Transform<Tuple<Node>, Tuple<NodeId>> action =  new Transform<Tuple<Node>, Tuple<NodeId>>(){
+            @Override
+            public Tuple<NodeId> convert(Tuple<Node> item)
+            {
+                return tupleNodeIds(nodeTable, item) ;
+            }} ;
+        return Iter.map(iter, action) ;
     }
     
-    public static  Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
+    //@Deprecated
+    //Leave - bypasses extrat step in Tuple<NodeId> -> Tuple<Node> -> Triple
+    public static Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Triple> action =  new Transform<Tuple<NodeId>, Triple>(){
             @Override
@@ -65,7 +64,8 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
-    public static  Iterator<Quad> convertToQuads(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
+    //@Deprecated
+    public static Iterator<Quad> convertToQuads(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Quad> action =  new Transform<Tuple<NodeId>, Quad>(){
             @Override
@@ -76,6 +76,24 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
+    public static Tuple<Node> tupleNodes(NodeTable nodeTable, Tuple<NodeId> ids) 
+    {
+        int N = ids.size() ;
+        Node[] n = new Node[N] ;
+        for ( int i = 0 ; i < N ; i++ )
+            n[i] = nodeTable.retrieveNodeByNodeId(ids.get(i)) ;
+        return new Tuple<Node>(n) ;
+    }
+    
+    public static Tuple<NodeId> tupleNodeIds(NodeTable nodeTable, Tuple<Node> nodes) 
+    {
+        int N = nodes.size() ;
+        NodeId[] n = new NodeId[N] ;
+        for ( int i = 0 ; i < N ; i++ )
+            n[i] = nodeTable.nodeIdForNode(nodes.get(i)) ;
+            
+        return new Tuple<NodeId>(n) ;
+    }
 
     @Deprecated
     public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
@@ -114,40 +132,40 @@ public class TupleLib
     
     // ---- Tuples, Triples and Quads
 
-    /** Triple to Tuple, not remapped by a ColumnMap. */
-    public static Tuple<NodeId> tuple(Triple t, NodeTable nodeTable)
-    {
-        Node s = t.getSubject() ;
-        Node p = t.getPredicate() ;
-        Node o = t.getObject() ;
-
-        NodeId x = nodeTable.storeNode(s) ;
-        NodeId y = nodeTable.storeNode(p) ;
-        NodeId z = nodeTable.storeNode(o) ;
-        return new Tuple<NodeId>(x, y, z) ;  
-    }
-
-    /** Quad to Tuple, not remapped by a ColumnMap. */
-    public static Tuple<NodeId> tuple(Quad quad, NodeTable nodeTable)
-    {
-        return tuple(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), nodeTable) ;
-    }
-    
-    /** Quad 9as graph node and triple) to Tuple, not remapped by a ColumnMap. */
-    public static Tuple<NodeId> tuple(Node g, Triple t, NodeTable nodeTable)
-    {
-        return tuple(g, t.getSubject(), t.getPredicate(), t.getObject(), nodeTable) ;
-    }
-    
-    public static Tuple<NodeId> tuple(Node g, Node s, Node p, Node o, NodeTable nodeTable)
-    {
-        NodeId gId = nodeTable.storeNode(g) ;
-        NodeId sId = nodeTable.storeNode(s) ;
-        NodeId pId = nodeTable.storeNode(p) ;
-        NodeId oId = nodeTable.storeNode(o) ;
-        
-        return new Tuple<NodeId>(gId, sId, pId, oId) ;  
-    }
+//    /** Triple to Tuple, not remapped by a ColumnMap. */
+//    public static Tuple<NodeId> tuple(Triple t, NodeTable nodeTable)
+//    {
+//        Node s = t.getSubject() ;
+//        Node p = t.getPredicate() ;
+//        Node o = t.getObject() ;
+//
+//        NodeId x = nodeTable.storeNode(s) ;
+//        NodeId y = nodeTable.storeNode(p) ;
+//        NodeId z = nodeTable.storeNode(o) ;
+//        return new Tuple<NodeId>(x, y, z) ;  
+//    }
+//
+//    /** Quad to Tuple, not remapped by a ColumnMap. */
+//    public static Tuple<NodeId> tuple(Quad quad, NodeTable nodeTable)
+//    {
+//        return tuple(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), nodeTable) ;
+//    }
+//    
+//    /** Quad (as graph node and triple) to Tuple, not remapped by a ColumnMap. */
+//    public static Tuple<NodeId> tuple(Node g, Triple t, NodeTable nodeTable)
+//    {
+//        return tuple(g, t.getSubject(), t.getPredicate(), t.getObject(), nodeTable) ;
+//    }
+//    
+//    public static Tuple<NodeId> tuple(Node g, Node s, Node p, Node o, NodeTable nodeTable)
+//    {
+//        NodeId gId = nodeTable.storeNode(g) ;
+//        NodeId sId = nodeTable.storeNode(s) ;
+//        NodeId pId = nodeTable.storeNode(p) ;
+//        NodeId oId = nodeTable.storeNode(o) ;
+//        
+//        return new Tuple<NodeId>(gId, sId, pId, oId) ;  
+//    }
     
     // ---- Tuples and Records
     public static Tuple<NodeId> tuple(Record r, ColumnMap cMap)

@@ -12,20 +12,22 @@ import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
+
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase
@@ -39,7 +41,7 @@ public class GraphNamedTDB extends GraphTDBBase
 
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
     {
-        super(transform) ;
+        super(transform, dataset.getLocation()) ;
         this.dataset = dataset ;
         this.quadTable = dataset.getQuadTable() ;
         this.graphNode = graphName ;
@@ -95,11 +97,6 @@ public class GraphNamedTDB extends GraphTDBBase
         return new MapperIteratorQuads(graphNode, iter) ;
     }
 
-  
-    
-    @Override
-    public final Location getLocation()                           { return dataset.getLocation() ; }
-    
     public final Node getGraphNode()                              { return graphNode ; }
 
     @Override
@@ -115,8 +112,8 @@ public class GraphNamedTDB extends GraphTDBBase
     public NodeTupleTable getNodeTupleTable()
     {
         if ( graphNode == null )
-            return dataset.getDefaultTripleTableTable() ;
-        return dataset.getQuadTable() ;
+            return dataset.getDefaultTripleTableTable().getNodeTupleTable() ;
+        return dataset.getQuadTable().getNodeTupleTable() ;
     }
 
     public final DatasetGraphTDB   getDataset()                               { return dataset ; }

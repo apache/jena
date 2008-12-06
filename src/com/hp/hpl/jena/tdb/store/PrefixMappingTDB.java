@@ -48,7 +48,7 @@ public class PrefixMappingTDB extends PrefixMappingPersistent
         TupleIndex primary = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(location, factory, "prefixIdx")) ;
         TupleIndex[] indexes = { primary } ;
         // Single index on the three columns.
-        index = new TupleTable(3, indexes, factory, location) ;
+        index = new TupleTable(3, indexes) ;
     }
     
     private PrefixMappingTDB(String graphName, NodeTable nodeTable, TupleIndex primary, Location location)
@@ -56,7 +56,7 @@ public class PrefixMappingTDB extends PrefixMappingPersistent
         super(graphName) ;
         TupleIndex[] indexes = { primary } ;
         nodes = nodeTable ;
-        index = new TupleTable(3, indexes, factory, location) ; 
+        index = new TupleTable(3, indexes) ; 
     }
     
     @Override

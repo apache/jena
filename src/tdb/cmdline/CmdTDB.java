@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -56,6 +57,11 @@ public abstract class CmdTDB extends CmdARQ
             return tdbDatasetAssembler.getDataset().getNamedModel(graphName) ;
         else
             return tdbDatasetAssembler.getDataset().getDefaultModel() ;
+    }
+    
+    protected Location getLocation()
+    {
+        return tdbDatasetAssembler.getLocation() ;
     }
     
     protected GraphTDB getGraph()

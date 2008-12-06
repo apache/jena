@@ -76,14 +76,15 @@ public class SolverLib
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         List<Triple> triples = NodeLib.tripleList(pattern) ;
+        NodeTupleTable nodeTuples = ds.getQuadTable().getNodeTupleTable() ;
         @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
-        NodeTable nodeTable = ds.getQuadTable().getNodeTable() ;
+        NodeTable nodeTable = nodeTuples.getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
         {
             Tuple<Node> tuple = new Tuple<Node>(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(ds.getQuadTable(), chain, tuple, execCxt) ;
+            chain = solve(nodeTuples, chain, tuple, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;

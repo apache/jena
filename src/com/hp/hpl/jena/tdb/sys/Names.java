@@ -34,7 +34,7 @@ public class Names
     /** Prefixes file */
     public static final String prefixesData     = "prefixes.dat" ;
     public static final String indexPrefix2Id   = "prefix2id";
-    //public static final String indexId2Prefix   = "id2prefix";
+    public static final String indexId2Prefix   = "id2prefix";
 
     
     /** Optimizer / stats */

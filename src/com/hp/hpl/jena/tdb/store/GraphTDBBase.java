@@ -15,6 +15,8 @@ import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.core.Quad;
+
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphBase2;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
@@ -28,17 +30,22 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private final ReorderTransformation reorderTransform  ;
+    private final Location location ;
 
 
-    public GraphTDBBase(ReorderTransformation transformation)
+    public GraphTDBBase(ReorderTransformation transformation, Location location)
     { 
         super() ;
         this.reorderTransform = transformation ;
+        this.location = location ;
     }
     
     /** Reorder processor - may be null, for "none" */
     @Override
-    public final ReorderTransformation getReorderTransform()  { return reorderTransform ; }
+    public final ReorderTransformation getReorderTransform()    { return reorderTransform ; }
+    
+    @Override
+    public final Location getLocation()                         { return location ; }
     
     @Override
     protected Reifier constructReifier()

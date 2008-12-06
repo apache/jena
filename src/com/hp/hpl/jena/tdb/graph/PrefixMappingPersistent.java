@@ -8,7 +8,9 @@ package com.hp.hpl.jena.tdb.graph;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
 import com.hp.hpl.jena.sparql.core.Closeable;
+
 import com.hp.hpl.jena.tdb.lib.Sync;
 
 /** A persistence layer for a PrefixMapping */ 
@@ -25,6 +27,10 @@ public abstract class PrefixMappingPersistent extends PrefixMappingImpl implemen
         catch (Throwable th) { }
     }
 
+//    @Override 
+//    public Map<String, String> getNsPrefixMap()
+//    { return super.getNsPrefixMap() ; }
+    
     @Override
     protected void set(String prefix, String uri)
     {

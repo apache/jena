@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.lib.TupleLib.tuple;
 import iterator.NullIterator;
+import iterator.Transform;
 
 import java.util.Iterator;
 
@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.Quad;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
@@ -31,62 +32,66 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
  *  together with a node table.
  */
 
-public class QuadTable extends NodeTupleTable implements Sync, Closeable
+public class QuadTable implements Sync, Closeable
 {
-
+    final NodeTupleTable table ;
+    
     public QuadTable(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
     {
-        super(4, indexes, indexRecordFactory, nodeTable, location);
+        table = new NodeTupleTable(4, indexes, nodeTable);
     }
 
     /** Add a quad - return true if it was added, false if it already existed */
     public boolean add( Quad quad ) 
     { 
-        return tupleTable.add(tuple(quad, nodeTable)) ;
+        return table.addRow(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Add a quad (as graph node and triple) - return true if it was added, false if it already existed */
     public boolean add( Node gn, Triple triple ) 
     { 
-        return tupleTable.add(tuple(gn, triple, nodeTable)) ;
+        return table.addRow(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public boolean delete( Quad quad ) 
     { 
-        return tupleTable.delete(tuple(quad, nodeTable)) ;
+        return table.deleteRow(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Delete a quad (as graph node and triple) - return true if it was deleted, false if it didn't exist */
     public boolean delete( Node gn, Triple triple ) 
     { 
-        return tupleTable.delete(tuple(gn, triple, nodeTable)) ;
+        return table.deleteRow(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
-    /** Find by node. */
+    /** Find matching quads */
     public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     {
-        NodeId graph = idForNode(g) ;
-        if ( graph == NodeId.NodeDoesNotExist )
+        Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(g, s, p, o) ;
+        if ( iter == null )
             return new NullIterator<Quad>() ;
-        
-        NodeId subj = idForNode(s) ;
-        if ( subj == NodeId.NodeDoesNotExist )
-            return new NullIterator<Quad>() ;
-
-        NodeId pred = idForNode(p) ;
-        if ( pred == NodeId.NodeDoesNotExist )
-            return new NullIterator<Quad>() ;
-
-        NodeId obj = idForNode(o) ;
-        if ( obj == NodeId.NodeDoesNotExist )
-            return new NullIterator<Quad>() ;
-
-        Tuple<NodeId> tuple = new Tuple<NodeId>(graph, subj, pred, obj) ;
-        Iterator<Tuple<NodeId>> _iter = tupleTable.find(tuple) ;
-        Iterator<Quad> iter = TupleLib.convertToQuads(nodeTable, _iter) ;
-        return iter ;
+        Iterator<Quad> iter2 = TupleLib.convertToQuads(table.getNodeTable(), iter) ;
+        return iter2 ;
     }
+    
+    private static Transform<Tuple<Node>, Quad> action = new Transform<Tuple<Node>, Quad>(){
+        @Override
+        public Quad convert(Tuple<Node> item)
+        {
+            return new Quad(item.get(0), item.get(1), item.get(2), item.get(3)) ;
+        }} ; 
+    
+    
+    public NodeTupleTable getNodeTupleTable() { return table ; }
+
+    @Override
+    public void sync(boolean force)
+    { table.sync(force) ; }
+
+    @Override
+    public void close()
+    { table.close() ; }
 }
 
 /*

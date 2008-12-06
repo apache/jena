@@ -68,7 +68,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     @Override
     public Iterator<Node> listGraphNodes()
     {
-        Iterator<Tuple<NodeId>> x = quadTable.getTupleTable().getIndex(0).all() ;
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
         Transform<Tuple<NodeId>, NodeId> project = new Transform<Tuple<NodeId>, NodeId>()
         {
             @Override
@@ -78,7 +78,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
             }
         } ;
         Iterator<NodeId> z =  Iter.iter(x).map(project).distinct() ;
-        return NodeLib.nodes(quadTable.getNodeTable(), z) ;
+        return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
 
     @Override

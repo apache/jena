@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.store.NodeId;
@@ -26,24 +25,22 @@ public class TupleTable implements Sync, Closeable
     private static Logger log = LoggerFactory.getLogger(TupleTable.class) ;
     
     private final TupleIndex[] indexes ;
-    private final Location location ;
+    //private final Location location ;
 
     private int tupleLen ;
     private RecordFactory factory ;
     
-    public TupleTable(int tupleLen, TupleIndex[] indexes, RecordFactory factory, Location location)
+    public TupleTable(int tupleLen, TupleIndex[] indexes)
     {
         this.tupleLen = tupleLen ;
         this.indexes = indexes ;
-        this.factory = factory ;
-        this.location = location ;
+        //this.location = location ;
         if ( indexes[0] == null )
             throw new TDBException("TupleTable: no primary index") ;
         for ( TupleIndex index : indexes )
         {
             if ( index != null && index.getTupleLength() != tupleLen )
                 throw new TDBException("Incompatible index: "+index.getLabel()) ;
-
         }
         
     }
@@ -174,9 +171,6 @@ public class TupleTable implements Sync, Closeable
     {
         return indexes[0].size() ;
     }
-    
-    /** Location for this tuple table (if persistent) */
-    public Location getLocation()                       { return location ; }
     
     /** Get i'th index */ 
     public TupleIndex getIndex(int i)                   { return indexes[i] ; }
