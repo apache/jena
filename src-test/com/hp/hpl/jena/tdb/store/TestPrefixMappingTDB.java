@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import org.junit.Test;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.tdb.graph.TestPrefixMapping2;
@@ -18,6 +20,26 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     protected PrefixMapping create()
     {
         return datasetPrefixes.getPrefixMapping() ;
+    }
+
+    @Test public void multiple1()
+    {
+        DatasetPrefixes prefixes = DatasetPrefixes.testing() ;
+        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
+        pmap1.setNsPrefix("x", "http://foo/") ;
+        assertNull(pmap2.getNsPrefixURI("x")) ;
+        assertNotNull(pmap1.getNsPrefixURI("x")) ;
+    }
+    
+    @Test public void multiple2()
+    {
+        DatasetPrefixes prefixes = DatasetPrefixes.testing() ;
+        PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
+        PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
+        pmap1.setNsPrefix("x", "http://foo/") ;
+        assertNotNull(pmap2.getNsPrefixURI("x")) ;
+        assertNotNull(pmap1.getNsPrefixURI("x")) ;
     }
 
 }

@@ -13,8 +13,7 @@ public class Dev
     // Documentation
     //   Dataset assembler
     // Prefixes
-    //   Initial full read.
-    //   Iterator over all if not read yet.
+    //  Test setup with datset and standalone graph
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
