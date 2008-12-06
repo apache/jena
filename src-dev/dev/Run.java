@@ -203,7 +203,8 @@ public class Run
         
         TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
         ReorderTransformation transform = ReorderLib.identity() ;
-        GraphTDB g = new GraphTriplesTDB(table, transform, location) ;
+        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+        GraphTDB g = new GraphTriplesTDB(table, prefixes, transform, location) ;
         return g ;
     }
 

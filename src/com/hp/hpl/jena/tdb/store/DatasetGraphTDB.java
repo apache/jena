@@ -39,7 +39,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
         this.quadTable = quadTable ;
         this.transform = transform ;
         this.prefixes = prefixes ;
-        defaultGraph = new GraphTriplesTDB(tripleTable, transform, location) ;
+        defaultGraph = new GraphTriplesTDB(tripleTable, prefixes, transform, location) ;
     }
     
     public QuadTable getQuadTable()                 { return quadTable ; }

@@ -12,8 +12,6 @@ public class Dev
     // Commands
     // Documentation
     //   Dataset assembler
-    // Prefixes
-    //  Test setup with datset and standalone graph
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 

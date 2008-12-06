@@ -65,7 +65,8 @@ public class FactoryGraphTDB
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;
-        return new GraphTriplesTDB(table, transform, location) ;
+        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+        return new GraphTriplesTDB(table, prefixes, transform, location) ;
     }  
     
     

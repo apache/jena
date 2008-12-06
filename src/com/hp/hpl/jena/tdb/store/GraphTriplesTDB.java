@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
-import lib.NotImplemented;
 import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -19,6 +20,7 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
@@ -26,7 +28,6 @@ import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that uses a triple table - free-standing graph or deafult graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
@@ -34,13 +35,17 @@ public class GraphTriplesTDB extends GraphTDBBase
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
+    private final DatasetPrefixes prefixes ;
+    
     public GraphTriplesTDB(TripleTable tripleTable,
+                           DatasetPrefixes prefixes,
                            ReorderTransformation reorderTransform,
                            Location location)
     {
         super(reorderTransform, location) ;
         
         this.tripleTable = tripleTable ;
+        this.prefixes = prefixes ;
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -100,10 +105,11 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
     
+    
     @Override
     protected PrefixMapping createPrefixMapping()
     {
-        throw new NotImplemented("GraphTriplesTDB.createPrefixMapping") ;
+        return prefixes.getPrefixMapping() ;
     }
 
     @Override
