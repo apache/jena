@@ -14,16 +14,18 @@ import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -82,11 +84,16 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             Location location = getLocation() ;
-            PrefixMappingTDB pmap = new PrefixMappingTDB("", IndexBuilder.get(), location) ;
-            @SuppressWarnings("unchecked")
-            Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
-            for ( String k : x.keySet() )
-                System.out.println(k+" : "+x.get(k)) ;
+            DatasetPrefixes prefixes = new DatasetPrefixes(location) ; 
+            for ( String gn : prefixes.graphNames() )
+            {
+                System.out.println("Graph: "+gn) ;
+                PrefixMapping pmap = prefixes.getPrefixMapping(gn) ;
+                @SuppressWarnings("unchecked")
+                Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
+                for ( String k : x.keySet() )
+                    System.out.println("  "+k+" : "+x.get(k)) ;
+            }
         }
     }
     

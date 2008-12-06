@@ -24,7 +24,7 @@ import com.hp.hpl.jena.tdb.graph.Reifier2;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-
+/** General operations for TDB graphs (free-satnding graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;

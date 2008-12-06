@@ -11,21 +11,16 @@ import java.io.StringWriter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.AllCapabilities;
-import com.hp.hpl.jena.graph.impl.GraphMatcher;
-import com.hp.hpl.jena.graph.impl.GraphWithPerform;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
-import com.hp.hpl.jena.graph.impl.SimpleEventManager;
-import com.hp.hpl.jena.graph.impl.SimpleTransactionHandler;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.shared.AddDeniedException;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.shared.DeleteDeniedException;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public abstract class GraphBase2 implements GraphWithPerform
 {
@@ -171,9 +166,15 @@ public abstract class GraphBase2 implements GraphWithPerform
            Subclasses are unlikely to want to modify this.
      */
     public PrefixMapping getPrefixMapping()
-    { return pm; }
+    { 
+        if ( pm == null )
+            pm = createPrefixMapping() ;
+        return pm;
+    }
 
-    protected PrefixMapping pm = new PrefixMappingImpl();
+    private PrefixMapping pm = null ;
+
+    protected abstract PrefixMapping createPrefixMapping() ;
 
     /**
          Add a triple, and notify the event manager. Subclasses should not need to

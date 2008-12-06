@@ -17,6 +17,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -64,6 +65,12 @@ public class GraphNamedTDB extends GraphTDBBase
 //    public TransactionHandler getTransactionHandler()
 //    { return transactionHandler ; }
     
+    @Override
+    protected PrefixMapping createPrefixMapping()
+    {
+        return null ;
+    }
+
     @Override
     public void performAdd( Triple t ) 
     { 

@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import lib.ColumnMap;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 
@@ -31,10 +30,16 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public class DatasetPrefixes implements Closeable, Sync
 {
+    static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     private final NodeTupleTable nodeTupleTable ;
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
+    
+    public DatasetPrefixes(Location location)
+    {
+        this(IndexBuilder.get(), location) ;
+    }
     
     public DatasetPrefixes(IndexBuilder indexBuilder, Location location)
     {
@@ -68,6 +73,15 @@ public class DatasetPrefixes implements Closeable, Sync
         nodeTupleTable.addRow(g,p,u) ;
     }
 
+    public Set<String> graphNames()
+    {
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find((Node)null, null, null) ;
+        Set <String> x = new HashSet<String>() ;
+        for ( ; iter.hasNext() ; )
+            x.add(iter.next().get(0).getURI()) ;
+        return x ;
+    }
+    
     public synchronized String readPrefix(String graphName, String prefix)
     {
         Node g = Node.createURI(graphName) ; 
@@ -127,6 +141,55 @@ public class DatasetPrefixes implements Closeable, Sync
     public void sync(boolean force)
     { 
         nodeTupleTable.sync(force) ;
+    }
+
+    /** Return a PrefixMapping for the unamed graph */ 
+    public PrefixMapping getPrefixMapping()
+    { return getPrefixMapping(unamedGraphURI) ; }
+    
+    /** Return a PrefixMapping for a named graph */ 
+    public PrefixMapping getPrefixMapping(String graphName)
+    { return new Projection(graphName) ; }
+    
+    // A view of the table.
+    class Projection extends PrefixMappingImpl
+    {
+        private String graphName ; 
+        Projection(String graphName) { this.graphName = graphName ; }
+
+        @Override 
+        public Map<String, String> getNsPrefixMap()
+        {
+            return readPrefixMap(graphName) ;
+            //return super.getNsPrefixMap() ;
+        }
+
+        @Override
+        protected void set(String prefix, String uri)
+        {
+            super.set(prefix, uri) ;
+            insertPrefix(graphName, prefix, uri) ;
+        }
+
+        @Override
+        protected String get(String prefix)
+        {
+            String x = super.get(prefix) ;
+            if ( x !=  null )
+                return x ;
+            // In case it has been updated.
+            return readPrefix(graphName, prefix) ;
+        }
+
+        @Override
+        public PrefixMapping removeNsPrefix(String prefix)
+        {
+            String uri = super.getNsPrefixURI(prefix) ;
+            if ( uri != null )
+                removeFromPrefixMap(graphName, prefix, uri) ;
+            super.removeNsPrefix(prefix) ;
+            return this ; 
+        }
     }
 }
 

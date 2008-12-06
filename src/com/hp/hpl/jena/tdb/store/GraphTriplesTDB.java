@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import lib.NotImplemented;
 import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -25,7 +28,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-/** A graph implementation that uses a triple table */
+/** A graph implementation that uses a triple table - free-standing graph or deafult graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
@@ -97,6 +100,12 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
     
+    @Override
+    protected PrefixMapping createPrefixMapping()
+    {
+        throw new NotImplemented("GraphTriplesTDB.createPrefixMapping") ;
+    }
+
     @Override
     final public void close()
     {

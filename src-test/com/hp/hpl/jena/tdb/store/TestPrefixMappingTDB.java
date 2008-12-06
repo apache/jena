@@ -7,17 +7,17 @@
 package com.hp.hpl.jena.tdb.store;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.tdb.graph.TestPrefixMappingPersistent;
-import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
 
-public class TestPrefixMappingTDB extends TestPrefixMappingPersistent
+import com.hp.hpl.jena.tdb.graph.TestPrefixMapping2;
+
+public class TestPrefixMappingTDB extends TestPrefixMapping2
 {
-
-    static PrefixMapping theMapping = PrefixMappingTDB.mem("http://graph/") ;
+    static DatasetPrefixes datasetPrefixes = DatasetPrefixes.testing() ; 
+    
     @Override
     protected PrefixMapping create()
     {
-        return theMapping ;
+        return datasetPrefixes.getPrefixMapping() ;
     }
 
 }

@@ -15,31 +15,31 @@ import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.graph.PrefixMappingPersistent;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.PrefixMappingTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.tdb.store.*;
 
 import dev.opt.TransformIndexJoin;
 
@@ -84,24 +84,51 @@ public class Run
         
     }
     
+    private static void prefixes1()
+    {
+        
+        Location location = new Location("DB2") ;
+        FileOps.clearDirectory("DB2") ;
+        
+//        Dataset ds = TDBFactory.createDataset() ;
+//        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
+//        PrefixMapping pmap = dsg.getPrefixes().getPrefixMapping(graphName) ;
+        
+        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
+        String graphName = "http://graph/" ;
+        PrefixMapping pmap = dsp.getPrefixMapping(graphName) ;
+        
+        pmap.setNsPrefix("x", "http://example/") ;
+        
+        String x = pmap.expandPrefix("x:foo") ;
+        System.out.println("x:foo ==> "+x) ;
+        pmap.setNsPrefix("x", "http://example/ns#") ;
+        pmap.setNsPrefix("y", "http://example/y#") ;
+        String x2 = pmap.expandPrefix("x:foo") ;
+        System.out.println("x:foo ==> "+x2) ;
+        System.out.println("** >>") ;
+        printPrefixMapping(pmap) ;
+        System.out.println("<<End>>") ;
+        dsp.close() ;
+    }
+
     private static void prefixes2()
     {
         Location location = new Location("DB2") ;
-        
-        String graphName1 = "http://graph/" ;
-        String graphName2 = "http://graph/anotherGraph#" ;
-        
-        PrefixMappingPersistent pmap1 = new PrefixMappingTDB(graphName1, IndexBuilder.get(), location) ;
-        PrefixMappingPersistent pmap2 = new PrefixMappingTDB(graphName2, IndexBuilder.get(), location) ;
 
+        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
+        String graphName = "http://graph/" ;
+        PrefixMapping pmap1 = dsp.getPrefixMapping(graphName) ;
+        PrefixMapping pmap2 = dsp.getPrefixMapping() ;
+        
         System.out.println("1: "+pmap1.expandPrefix("x:foo")) ;
         System.out.println("2: "+pmap2.expandPrefix("x:foo")) ;
         
         String x2 = pmap1.expandPrefix("x:foo") ;
         
         pmap2.setNsPrefix("ns", "http://ns/#") ;
-        System.out.println(pmap1.expandPrefix("ns:bar")) ;
-        System.out.println(pmap2.expandPrefix("ns:bar")) ;
+        System.out.println("1: ns:bar ==> "+pmap1.expandPrefix("ns:bar")) ;
+        System.out.println("2: ns:bar ==> "+pmap2.expandPrefix("ns:bar")) ;
         
         System.out.println("1 >>") ;
         printPrefixMapping(pmap1) ;
@@ -110,8 +137,7 @@ public class Run
         printPrefixMapping(pmap2) ;
         
         System.out.println("<<End>>") ;
-        pmap1.close() ;
-        pmap2.close() ;
+        dsp.close() ;
     }
     
     private static void printPrefixMapping(PrefixMapping pmap)
@@ -121,29 +147,6 @@ public class Run
         for ( String k : x.keySet() )
             System.out.println(k+" : "+x.get(k)) ;
     }
-    
-    private static void prefixes1()
-    {
-        
-        Location location = new Location("DB2") ;
-        FileOps.clearDirectory("DB2") ;
-        
-        String graphName = "http://graph/" ;
-        PrefixMappingPersistent pmap = new PrefixMappingTDB(graphName, IndexBuilder.get(), location) ;
-        pmap.setNsPrefix("x", "http://example/") ;
-        
-        String x = pmap.expandPrefix("x:foo") ;
-        System.out.println(x) ;
-        pmap.setNsPrefix("x", "http://example/ns#") ;
-        pmap.setNsPrefix("y", "http://example/y#") ;
-        String x2 = pmap.expandPrefix("x:foo") ;
-        System.out.println(x2) ;
-        System.out.println("** >>") ;
-        printPrefixMapping(pmap) ;
-        System.out.println("<<End>>") ;
-        pmap.close() ;
-    }
-    
     
     private static void reification()
     {

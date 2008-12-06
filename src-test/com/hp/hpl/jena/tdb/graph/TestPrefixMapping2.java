@@ -11,9 +11,8 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-public abstract class TestPrefixMappingPersistent extends BaseTest
+public abstract class TestPrefixMapping2 extends BaseTest
 {
-    static final String hsql = "jdbc:hsqldb:mem:aname" ;
     static final String defaultPrefixURI  = "" ;
 
     protected abstract PrefixMapping create() ; 

@@ -112,8 +112,9 @@ public class FactoryGraphTDB
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadDesc) ;
+        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
         //return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
-        return new DatasetGraphTDB(triples, quads, null, location) ;
+        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }
 
     /** Create or connect a TDB dataset */
