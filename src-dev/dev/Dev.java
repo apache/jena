@@ -9,17 +9,24 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
+    // Test of union default graph etc.
+    // tdb:unionDefaultGraph -- enable quad mode?
+    // Sort out file naming.
     // Commands
     // Documentation
     //   Dataset assembler
+    //   Symbol settings.
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
     
     // Quads:
+    //   Filter placement : (filter (quads...))
     //   Quad loader.
     //   Generalised the pattern stuff.
-    //   (filter (quads...))
+    //   Dataset management
+    //   Tidy OpExecutorTDB.execute(quads)
+
     // OpRange - OpIndex - generative stream of possibilities.
 
     // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node
@@ -52,9 +59,6 @@ public class Dev
     
     // ---- Range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
     //      Given NodeId structure, should be doable for ints and dates.
-    
-    // ---- Quads
-    //       dataset management
     
     // ---- Loader - traverse of SPO via a direct block mgr?
     //   For quads

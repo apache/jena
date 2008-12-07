@@ -39,6 +39,8 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
@@ -73,7 +75,8 @@ public class OpExecutorTDB extends OpExecutor
         { return OpLabel.create(executeNow, opBGP) ; }
     } ;
     
-    private boolean isForTDB ;
+    private final boolean isForTDB ;
+    private final boolean isUnionDefaultGraph ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-execute process  
@@ -81,6 +84,7 @@ public class OpExecutorTDB extends OpExecutor
     {
         super(execCxt) ;
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
+        isUnionDefaultGraph = execCxt.getContext().isTrue(TDB.symUnionDefaultGraph) ;
     }
 
     @Override
@@ -98,23 +102,38 @@ public class OpExecutorTDB extends OpExecutor
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         BasicPattern bgp = quadPattern.getBasicPattern() ;
         Node gn = quadPattern.getGraphNode() ;
+        
+        // ---- Default graph in storage
+        boolean isDefaultGraph = false ;
+        
+        if ( gn.equals(Quad.defaultGraphIRI) )
+            isDefaultGraph = true ;
+        if ( ! isUnionDefaultGraph && quadPattern.isDefaultGraph() ) 
+            isDefaultGraph = true ;
 
-        if ( quadPattern.isDefaultGraph() || gn.equals(Quad.defaultGraphIRI) )
-            // Easy case : default graph, either outside GRAPH or using the "name" of the default graph
-            return optimizeExecute(ds.getDefaultGraph(), input, bgp, null, execCxt) ;
-        
-        // Not the default graph - will be going to the quad table backing the dataset.
-        
-        // Other special graph node names.
-        
-        boolean doingUnion = false ;
-        if ( gn.equals(Quad.unionGraph) )
+        if ( isDefaultGraph )
         {
-            doingUnion = true ;
-            // Name for the union of named graphs
-            gn = VarAlloc.getVarAllocator().allocVar() ;
+            // Storage defauklt graph 
+            // Either outside GRAPH (no implicit union) or using the "name" of the default graph
+            return optimizeExecute(ds.getDefaultGraph(), input, bgp, null, execCxt) ;
         }
         
+        // ---- Union (RDF Merge) of named graphs
+        boolean doingUnion = false ;
+        
+        if ( isUnionDefaultGraph && quadPattern.isDefaultGraph() ) 
+            // Implicit: default graph is union of named graphs 
+            doingUnion = true ;
+        
+        if ( gn.equals(Quad.unionGraph) )
+            // Explicit name of the union of named graphs
+            doingUnion = true ;
+        
+        if ( doingUnion )
+            // Name for the union of named graphs
+            gn = VarAlloc.getVarAllocator().allocVar() ;
+        
+        // ----
         // TEMP: Filters were not considered.
         ReorderTransformation transform = ds.getTransform() ;
         if ( transform != null )
@@ -141,6 +160,9 @@ public class OpExecutorTDB extends OpExecutor
     {
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
+        
+        if ( isUnionDefaultGraph )
+            return execute(new OpQuadPattern(Quad.unionGraph, opBGP.getPattern()), input) ; 
         
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         return optimizeExecute(graph, input, opBGP.getPattern(), null, execCxt) ;

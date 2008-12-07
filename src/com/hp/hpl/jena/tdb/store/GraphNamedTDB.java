@@ -50,6 +50,8 @@ public class GraphNamedTDB extends GraphTDBBase
         
         if ( graphName == null )
             throw new TDBException("GraphNamedTDB: Null graph name") ; 
+        if ( ! graphName.isURI() )
+            throw new TDBException("GraphNamedTDB: Graph name not a URI") ; 
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -68,7 +70,7 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     protected PrefixMapping createPrefixMapping()
     {
-        return null ;
+        return dataset.getPrefixes().getPrefixMapping(graphNode.getURI()) ;
     }
 
     @Override

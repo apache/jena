@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.query.ARQ;
 
@@ -42,8 +43,11 @@ public class TDB
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
+    /** Symbol to use the the union of named graphs as the default graph of a query */ 
+    public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
+    
     /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
-     * An appropriate loggin gconfiguration is also required
+     * An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(boolean state)
     {
@@ -70,6 +74,8 @@ public class TDB
             return ;
         initialized = true ;
 
+        //TDB.getContext().set(??,??) ;
+        
         // TDB uses a custom OpCompiler.
         
         VocabTDB.init();

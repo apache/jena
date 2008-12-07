@@ -1,17 +1,10 @@
 PREFIX : <http://example/>
 SELECT *
 {
-##   {
-##     ?z ?q ?w . 
-##     ?x :p ?v . 
-##     FILTER(?v = "2")
-##    } UNION 
-   {
-    ?z ?q ?w . 
-    ?z :p ?v . 
-    ?x :p "1" . 
-    :x1 ?p "x" . 
-    FILTER(?v > 5 )
-   }
+  { ?s ?p ?o . }
+ UNION 
+   { GRAPH ?g { ?s ?p ?o } }
+
+
+
 }
-LIMIT 5
