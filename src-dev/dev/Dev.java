@@ -10,12 +10,10 @@ public class Dev
 {
     // ==== 0.7.0 "quads"
     // Test of union default graph etc.
-    // tdb:unionDefaultGraph -- enable quad mode?
-    // Sort out file naming.
-    // Commands
+    //   poragmmatic test to load some files and check results.
+    //   Sort out file naming.
     // Documentation
-    //   Dataset assembler
-    //   Symbol settings.
+    //   Check
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
