@@ -21,6 +21,7 @@ import com.hp.hpl.jena.tdb.junit.GraphLocation;
 import org.junit.*;
 import test.BaseTest;
 
+/** Testing the quad support for TDB */ 
 public class TestDatasetTDB extends BaseTest
 {
     static Node n0 = SSE.parseNode("<http://example/n0>") ; 
