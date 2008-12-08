@@ -26,8 +26,8 @@
 
   <dependencies>
     <!-- rev="latest.integration" -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.5.0"/>
-    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.5.0"/>
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.6.0"/>
+    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.6.0"/>
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.4"/>

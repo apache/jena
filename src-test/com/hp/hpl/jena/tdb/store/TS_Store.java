@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
     TestGraphTDB.class,
     TestPrefixMappingTDB.class,
     TestDatasetTDB.class,
+    TestDataset.class,
     GraphTDBTestSuite.class
 } )
 public class TS_Store

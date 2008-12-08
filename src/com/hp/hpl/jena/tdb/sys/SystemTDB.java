@@ -229,7 +229,7 @@ public class SystemTDB
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            TDB.logInfo.info("System architecture: "+(b?"64 bit":"32 bit")) ;
+            TDB.logInfo.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -241,7 +241,7 @@ public class SystemTDB
         }
         log.debug("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info") ;
         boolean b = s.contains("64") ;
-        TDB.logInfo.info("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
+        TDB.logInfo.debug("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
         return b ;
     }
     

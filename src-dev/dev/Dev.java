@@ -9,11 +9,9 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
-    // Test of union default graph etc.
-    //   poragmmatic test to load some files and check results.
-    //   Sort out file naming.
+    // Sort out file naming.
     // Documentation
-    //   Check
+    //   Check: TDB/JavaAPI
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
@@ -44,6 +42,8 @@ public class Dev
     // TupleTable.size - at least an isEmpty 
     //   Not just an empty block manager.
 
+    // B+Trees - finish with a read-only node.
+    
     // Cheap parsing of Node table.
     // [incremental]
     
