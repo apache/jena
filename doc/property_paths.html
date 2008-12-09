@@ -108,6 +108,10 @@ prefixed name.</p>
 		<td><i><code>elt{n,}</code></i></td>
 		<td><i><code>n</code></i> or more occurrences of <i><code>elt</code></i>.</td>
 	</tr>
+	<tr>
+		<td><i><code>elt{,n}</code></i></td>
+		<td>Between 0 and <i><code>n</code></i> occurrences of <i><code>elt</code></i>.</td>
+	</tr>
 </table>
 
 </div>
@@ -116,10 +120,10 @@ prefixed name.</p>
 
 <p>Precedence:</p>
 <ol>
-	<li>URI, prefixes names</li>
+	<li>URI, prefixed names</li>
 	<li>Groups</li>
 	<li>Unary ^ reverse links</li>
-	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code></li>
+	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{}</code> forms</li>
 	<li>Binary operators <code>/</code> and ^</li>
 	<li>Binary operator <code>|</code> </li>
 </ol>
