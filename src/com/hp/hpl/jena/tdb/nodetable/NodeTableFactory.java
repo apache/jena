@@ -13,14 +13,16 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NodeTableFactory
 {
+    /** Regular node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
         return  create(indexBuilder, location, 
-                       Names.nodesData, Names.indexId2Node,
+                       Names.nodesData, Names.indexNode2Id,
                        SystemTDB.Node2NodeIdCacheSize,
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
 
+    /** Cutom node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location, 
                                    String tableName, String nodeTableIdxName,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)

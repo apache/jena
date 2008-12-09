@@ -83,7 +83,7 @@ public class PGraphFactory
      
         // Creates the object file as a file-backed one. 
         NodeTable nodeTable = new NodeTableIndex(indexBuilder, location, 
-                                                 Names.nodesData, Names.indexId2Node,
+                                                 Names.nodesData, Names.indexNode2Id,
                                                  SystemTDB.Node2NodeIdCacheSize,
                                                  SystemTDB.NodeId2NodeCacheSize) ;
         

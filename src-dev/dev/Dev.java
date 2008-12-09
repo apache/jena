@@ -9,9 +9,7 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
-    // Sort out file naming.
-    // Documentation
-    //   Check: TDB/JavaAPI
+    // Sort out file naming.Names
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
