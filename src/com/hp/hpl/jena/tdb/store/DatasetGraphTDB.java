@@ -26,9 +26,11 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
 {
     private final TripleTable tripleTable ;
-    private final GraphTriplesTDB defaultGraph ;
     private final QuadTable quadTable ;
+
+    private final GraphTriplesTDB defaultGraph ;
     private final DatasetPrefixes prefixes ; ;
+
     private final Lock lock = new LockMRSW() ;
     private final ReorderTransformation transform ;
 
