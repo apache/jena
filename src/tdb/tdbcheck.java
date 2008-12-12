@@ -84,8 +84,13 @@ public class tdbcheck extends CmdARQ
             FileManager.get().readModel(model, f) ;
         }
         else
+        {
+            //model.read(System.in, null, "N-TRIPLES") ;
             // MUST BE N-TRIPLES
-            model.read(System.in, null, "N-TRIPLES") ;
+            NodeTupleReader.CheckingNTriples = true ;
+            NodeTupleReader.CheckingIRIs = true ;
+            NodeTupleReader.read(new NodeTupleReader.NullSink(), System.in, null) ;
+        }
     }
 
     @Override
@@ -94,7 +99,7 @@ public class tdbcheck extends CmdARQ
         return Utils.className(this) ;
     }
 
-    // Inherit from tis to get performAdd checks 
+    // Inherit from this to get performAdd checks 
     static class GraphSinkCheck extends GraphSink
     {
         @Override
