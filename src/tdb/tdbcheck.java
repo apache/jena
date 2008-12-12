@@ -106,7 +106,9 @@ public class tdbcheck extends CmdARQ
         Reader r = null ;
         try
         {
-            r = new InputStreamReader(System.in, "ISO_8859-1") ;
+            //java.io canonical name: ISO8859_1 
+            //java.nio canonical name: ISO-8859-1 
+            r = new InputStreamReader(System.in, "ISO-8859-1") ;
         } catch (UnsupportedEncodingException ex)
         {
             ex.printStackTrace();
