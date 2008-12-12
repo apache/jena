@@ -25,6 +25,8 @@ import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink;
+import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
 import com.hp.hpl.jena.util.FileManager;
 
 /** Check an N-Triples file (or any other syntax). */
@@ -34,7 +36,7 @@ public class tdbcheck extends CmdARQ
     { 
         CmdUtils.setLog4j() ;
         // Override N-TRIPLES
-        String bulkLoaderClass = "com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
+        String bulkLoaderClass = NTriplesReader2.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
         // Checking done in graph.
@@ -73,8 +75,14 @@ public class tdbcheck extends CmdARQ
         Graph g = new GraphSinkCheck() ;
         Model model = ModelFactory.createModelForGraph(g) ;
         
+        NodeTupleReader.CheckingIRIs = true ;
+        
         if ( f != null )
+        {
+            if ( isVerbose() )
+                System.out.println("File: "+f) ;
             FileManager.get().readModel(model, f) ;
+        }
         else
             // MUST BE N-TRIPLES
             model.read(System.in, null, "N-TRIPLES") ;

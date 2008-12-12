@@ -29,7 +29,7 @@ public class NodeTableBase implements NodeTable
     // Assumes an ObjectFile and an Indexer, which may be an Index but allows
     // this to be overriden for a direct use of BDB.
 
-    public ObjectFile objects ;
+    private ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
@@ -54,7 +54,7 @@ public class NodeTableBase implements NodeTable
                         int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this.nodeHashToId = nodeToId ;
-        this.objects = objectFile ;
+        this.objects = objectFile;
         if ( nodeToIdCacheSize > 0) 
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
         if ( idToNodeCacheSize > 0)
@@ -228,13 +228,13 @@ public class NodeTableBase implements NodeTable
     protected final NodeId writeNodeToTable(Node node)
     {
         String s = encode(node) ;
-        return objects.write(s) ;
+        return getObjects().write(s) ;
     }
     
 
     protected final Node readNodeByNodeId(NodeId id)
     {
-        String s = objects.read(id) ;
+        String s = getObjects().read(id) ;
         Node n = decode(s) ;
         return n ;
     }
@@ -245,8 +245,8 @@ public class NodeTableBase implements NodeTable
     {
         if ( nodeHashToId != null )
             nodeHashToId.close() ;
-        if ( objects != null )
-            objects.close() ; 
+        if ( getObjects() != null )
+            getObjects().close() ; 
     }
 
     @Override
@@ -254,8 +254,13 @@ public class NodeTableBase implements NodeTable
     {
         if ( nodeHashToId != null )
             nodeHashToId.sync(force) ;
-        if ( objects != null )
-            objects.sync(force) ;
+        if ( getObjects() != null )
+            getObjects().sync(force) ;
+    }
+
+    public ObjectFile getObjects()
+    {
+        return objects;
     }
 }
 /*
