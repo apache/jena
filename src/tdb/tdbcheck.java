@@ -6,6 +6,9 @@
 
 package tdb;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -89,8 +92,28 @@ public class tdbcheck extends CmdARQ
             // MUST BE N-TRIPLES
             NodeTupleReader.CheckingNTriples = true ;
             NodeTupleReader.CheckingIRIs = true ;
+            boolean forceISO8859 = false ;
+            if ( forceISO8859 )
+                forceISO8859() ;
+
             NodeTupleReader.read(new NodeTupleReader.NullSink(), System.in, null) ;
         }
+    }
+
+    private void forceISO8859()
+    {
+        // Force to ISO-8859-1
+        Reader r = null ;
+        try
+        {
+            r = new InputStreamReader(System.in, "ISO_8859-1") ;
+        } catch (UnsupportedEncodingException ex)
+        {
+            ex.printStackTrace();
+            return ;
+        }
+
+        NodeTupleReader.read(new NodeTupleReader.NullSink(), r, null) ;
     }
 
     @Override

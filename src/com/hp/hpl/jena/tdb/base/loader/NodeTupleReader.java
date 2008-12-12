@@ -90,13 +90,13 @@ public final class NodeTupleReader
     public static void read(TupleSink sink, InputStream input, String base)
     {
         PeekReader r = PeekReader.makeUTF8(input) ;
-        read(sink, r, base) ;
+        _read(sink, r, base) ;
     }
 
     public static void read(TupleSink sink, String string, String base)
     {
         PeekReader r = PeekReader.make(new StringReader(string)) ;
-        read(sink, r, base) ;
+        _read(sink, r, base) ;
     }
 
     public static void read(Graph graph, InputStream input, String base)
@@ -116,12 +116,26 @@ public final class NodeTupleReader
     {
         TupleSink sink = graphSink(graph) ;
         PeekReader r = PeekReader.make(reader) ;
-        read(sink, r, base) ;
+        _read(sink, r, base) ;
     }
 
+    /** Not encouraged */
+    public static void read(TupleSink sink, Reader reader, String base)
+    {
+        PeekReader r = PeekReader.make(reader) ;
+        read(sink, r, base) ;
+    }
+    
+    /** Not encouraged */
+    public static void read(TupleSink sink, PeekReader peekReader, String base)
+    {
+        _read(sink, peekReader, base) ;
+    }
+    
+    
     // ---- Entry point to implementation
     
-    private static void read(TupleSink sink, PeekReader peekReader, String base)
+    private static void _read(TupleSink sink, PeekReader peekReader, String base)
     {
         NodeTupleReader x = new NodeTupleReader(sink, peekReader, base) ;
         invoke(x) ;
