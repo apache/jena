@@ -8,7 +8,7 @@
     tdb:location "DB" ;
     .
 
-## <#dataset> rdf:type      ja:RDFDataset ; #  tdb:DatasetTDB ;
+## <#dataset> rdf:type      ja:RDFDataset ;
 ##     ja:defaultGraph <#graph> ;
 ##     . 
 ## 
