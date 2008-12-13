@@ -52,6 +52,12 @@
        
   -->
 
+  <!--
+  	Main targets:
+  		build		Build jar and snapshot sources
+  		
+  -->
+  
   <!-- Set version from components (if not already set) -->
   <property    name="version"  
                value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
@@ -181,14 +187,33 @@
     </copy>
   </target>
 
-  <target name="jars" depends="jar" />
-  <target name="jar" depends="compile" description="Build the jar">
+  <target name="jar" depends="build"/>
+  <!-- <target name="build" depends="_jar,src-zip,javadoc-zip" /> -->
+    
+  <target name="build" depends="_jar,src-zip" description="Build the jar, and snapshot the sources used"/>
+  
+  <target name="_jar" depends="compile" >
     <delete file="${build.dir}/${jarfile}"/>
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
     <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
     </jar>
   </target>
+  
+  <!-- Zipped files -->
+  
+  <target name="src-zip">
+    <zip destfile="${build.dir}/${src.zipfile}">
+      <fileset refid="fileset.src"/>
+    </zip>
+  </target>
+
+ <target name="javadoc-zip" depends="javadoc">
+    <jar destfile="${build.dir}/${javadoc.zipfile}" 
+         basedir="${javadoc.dir}"/>
+  </target>
+
+  
   
   <!-- ========================================== -->
   <!-- ==== Javadoc -->
@@ -264,18 +289,6 @@
          basedir="${javadoc.dir}"/>
   </target>
   
-  <!-- Zipped files -->
-
-  <target name="src-zip">
-    <zip destfile="${artifacts.dir}/${src.zipfile}">
-      <fileset refid="fileset.src"/>
-    </zip>
-  </target>
-
- <target name="javadoc-zip" depends="javadoc">
-    <jar destfile="${artifacts.dir}/${javadoc.zipfile}" 
-         basedir="${javadoc.dir}"/>
-  </target>
   <!-- ========================================== -->
   <!-- ==== Publication -->
 

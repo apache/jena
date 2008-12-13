@@ -29,7 +29,7 @@ public class NodeTableBase implements NodeTable
     // Assumes an ObjectFile and an Indexer, which may be an Index but allows
     // this to be overriden for a direct use of BDB.
 
-    private ObjectFile objects ;
+    protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.

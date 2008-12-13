@@ -9,6 +9,7 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
+    // Document value-canonicalization
     // ====
     
     // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
