@@ -115,7 +115,6 @@ public class AssemblerVocab
         if ( g == null )
             g = Assembler.general ;
         g.implementWith(r, a) ;
-        //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
 }
 
