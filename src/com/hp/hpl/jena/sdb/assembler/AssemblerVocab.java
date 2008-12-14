@@ -72,7 +72,7 @@ public class AssemblerVocab
     public static final Property pSDBuser            = Vocab.property(NS, "sdbUser") ;
     public static final Property pSDBpassword        = Vocab.property(NS, "sdbPassword") ;
     
-    // ---- Store (uses pSDBtype) 
+    // ---- Store
     public static final Property pLayout             = Vocab.property(NS, "layout") ;
     public static final Property pConnection         = Vocab.property(NS, "connection") ;
     
