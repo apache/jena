@@ -2,7 +2,6 @@ PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example/>
 SELECT *
 {
-    :xz :p (1 2 3)
-
+    ?subject apf:versionARQ ?version
 }
 
