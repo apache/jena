@@ -1,5 +1,5 @@
 @prefix   :         <http://example/> .
 @prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
-:z :lang "xyz" .
+:z <http://example/[and]> "xyz" .
 
