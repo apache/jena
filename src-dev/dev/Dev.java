@@ -12,8 +12,9 @@ public class Dev
     // RC release
     // Document value-canonicalization
     // ====
+    // Tidy up this file :-)
     
-    // Even more directly manipulate the indexes (close once used, linear scan of SPO). 
+    // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
     // Quads:
     //   Filter placement : (filter (quads...))
