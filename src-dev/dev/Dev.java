@@ -9,6 +9,7 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
+    // RC release
     // Document value-canonicalization
     // ====
     
@@ -21,7 +22,8 @@ public class Dev
     //   Dataset management
     //   Tidy OpExecutorTDB.execute(quads)
 
-    // OpRange - OpIndex - generative stream of possibilities.
+    // OpRange - OpIndex(?) - generative stream of possibilities.
+    // { ?s :p ?x . ?s :q ?w } specials?  "OpAllProperties"
 
     // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node
     //   ObjectFile: need to get BB.
@@ -40,14 +42,8 @@ public class Dev
     // TupleTable.size - at least an isEmpty 
     //   Not just an empty block manager.
 
-    // B+Trees - finish with a read-only node.
-    
     // Cheap parsing of Node table.
     // [incremental]
-    
-    // ---- Assembler and configuration
-    //      Setting options (per graph)
-    //      Variable indexes
     
     // ---- Materialized views
     // Key->Action paradigm
@@ -74,6 +70,7 @@ public class Dev
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
 
+    // ---- Experimental
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same?
 
