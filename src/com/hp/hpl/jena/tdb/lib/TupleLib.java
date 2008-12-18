@@ -82,7 +82,7 @@ public class TupleLib
         Node[] n = new Node[N] ;
         for ( int i = 0 ; i < N ; i++ )
             n[i] = nodeTable.retrieveNodeByNodeId(ids.get(i)) ;
-        return new Tuple<Node>(n) ;
+        return Tuple.create(n) ;
     }
     
     public static Tuple<NodeId> tupleNodeIds(NodeTable nodeTable, Tuple<Node> nodes) 
@@ -92,7 +92,7 @@ public class TupleLib
         for ( int i = 0 ; i < N ; i++ )
             n[i] = nodeTable.nodeIdForNode(nodes.get(i)) ;
             
-        return new Tuple<NodeId>(n) ;
+        return Tuple.create(n) ;
     }
 
     @Deprecated
@@ -142,7 +142,7 @@ public class TupleLib
 //        NodeId x = nodeTable.storeNode(s) ;
 //        NodeId y = nodeTable.storeNode(p) ;
 //        NodeId z = nodeTable.storeNode(o) ;
-//        return new Tuple<NodeId>(x, y, z) ;  
+//        return Tuple.create(x, y, z) ;  
 //    }
 //
 //    /** Quad to Tuple, not remapped by a ColumnMap. */
@@ -164,7 +164,7 @@ public class TupleLib
 //        NodeId pId = nodeTable.storeNode(p) ;
 //        NodeId oId = nodeTable.storeNode(o) ;
 //        
-//        return new Tuple<NodeId>(gId, sId, pId, oId) ;  
+//        return Tuple.create(gId, sId, pId, oId) ;  
 //    }
     
     // ---- Tuples and Records
@@ -181,7 +181,7 @@ public class TupleLib
                 j = cMap.fetchSlotIdx(i) ;
             nodeIds[j] = id ;
         }
-        return new Tuple<NodeId>(nodeIds) ;
+        return Tuple.create(nodeIds) ;
     }
 
 

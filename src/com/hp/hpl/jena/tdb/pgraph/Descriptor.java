@@ -202,7 +202,7 @@ public class Descriptor
         NodeId pId = getPred(x,y,z) ;
         NodeId oId = getObj(x,y,z) ;
         
-        return new Tuple<NodeId>(sId, pId, oId) ; 
+        return Tuple.create(sId, pId, oId) ; 
     }
 
     public RecordFactory getFactory()

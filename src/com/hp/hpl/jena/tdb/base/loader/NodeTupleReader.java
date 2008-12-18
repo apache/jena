@@ -338,7 +338,7 @@ public final class NodeTupleReader
 
     // ---- API
     
-    static Tuple<Node> endMarker = new Tuple<Node>() ;
+    static Tuple<Node> endMarker = Tuple.create() ;
     private void readRDF()  {
         boolean noCache = false ;
         if ( noCache ) 
@@ -466,7 +466,7 @@ public final class NodeTupleReader
             return ;
         }
         
-        Tuple<Node> t = new Tuple<Node>(nodes) ;
+        Tuple<Node> t = Tuple.create(nodes) ;
         lastTuple = t ;
         // Note : this can throw a JenaException for further checking of the triple. 
         if ( sink != null )

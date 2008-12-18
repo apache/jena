@@ -99,7 +99,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public Tuple<Node> asTuple(Triple triple)
     {
-        return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
     @Override

@@ -62,7 +62,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         }
 
         // Go directly to the tuple table 
-        Iterator<Tuple<NodeId>> tuples = nodeTupleTable.getTupleTable().find(new Tuple<NodeId>(ids)) ;
+        Iterator<Tuple<NodeId>> tuples = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
 
         // Map to BindingNodeId
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()

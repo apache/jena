@@ -162,7 +162,7 @@ public class TripleIndex
                 long x = getId(e, 0) ;
                 long y = getId(e, SizeOfNodeId) ;
                 long z = getId(e, 2*SizeOfNodeId) ;
-                return new Tuple<NodeId>(NodeId.create(x), NodeId.create(y), NodeId.create(z)) ;
+                return Tuple.create(NodeId.create(x), NodeId.create(y), NodeId.create(z)) ;
             }   
             private final long getId(Record r, int idx)
             {

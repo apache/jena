@@ -35,16 +35,16 @@ public class TestColumnMap extends BaseTest
     @Test public void remap3() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = new Tuple<String>("S", "P", "O") ;
+        Tuple<String> tuple = Tuple.create("S", "P", "O") ;
         Tuple<String> mapped = x.map(tuple) ;
-        Tuple<String> expected = new Tuple<String>("P", "O", "S") ;
+        Tuple<String> expected = Tuple.create("P", "O", "S") ;
         assertEquals(expected, mapped) ;
     }
     
     @Test public void remap4() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = new Tuple<String>("S", "P", "O") ;
+        Tuple<String> tuple = Tuple.create("S", "P", "O") ;
         Tuple<String> tuple2 = x.map(tuple) ;
         tuple2 = x.unmap(tuple2) ;
         assertEquals(tuple, tuple2) ;
@@ -68,12 +68,12 @@ public class TestColumnMap extends BaseTest
     @Test public void map1()
     {
         ColumnMap cmap = new ColumnMap("GSPO", "OSPG") ;
-        Tuple<String> tuple = new Tuple<String>("G", "S", "P", "O") ;
+        Tuple<String> tuple = Tuple.create("G", "S", "P", "O") ;
         Tuple<String> mapped = cmap.map(tuple) ;
-        Tuple<String> expected = new Tuple<String>("O", "S", "P", "G") ;
+        Tuple<String> expected = Tuple.create("O", "S", "P", "G") ;
         assertEquals(expected, mapped) ;
         Tuple<String> unmapped = cmap.unmap(mapped) ;
-        assertEquals(new Tuple<String>("G", "S", "P", "O"), unmapped) ;
+        assertEquals(Tuple.create("G", "S", "P", "O"), unmapped) ;
     }
 
     @Test public void map2()
@@ -82,13 +82,13 @@ public class TestColumnMap extends BaseTest
         String[] y = { "O", "S", "P", "G" } ;
         
         ColumnMap cmap = new ColumnMap("Test", x, y) ;
-        Tuple<String> tuple = new Tuple<String>(x) ;
+        Tuple<String> tuple = Tuple.create(x) ;
         Tuple<String> mapped = cmap.map(tuple) ;
         
-        Tuple<String> expected = new Tuple<String>(y) ;
+        Tuple<String> expected = Tuple.create(y) ;
         assertEquals(expected, mapped) ;
         Tuple<String> unmapped = cmap.unmap(mapped) ;
-        assertEquals(new Tuple<String>(x), unmapped) ;
+        assertEquals(Tuple.create(x), unmapped) ;
     }
     
 }

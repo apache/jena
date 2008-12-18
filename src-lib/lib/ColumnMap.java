@@ -143,7 +143,7 @@ public class ColumnMap
             int j = map[i] ;
             elts[j] = src.get(i) ;
         }
-        return new Tuple<T>(elts) ;
+        return Tuple.create(elts) ;
     }
     
     /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */

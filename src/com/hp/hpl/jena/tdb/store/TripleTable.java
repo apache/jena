@@ -105,7 +105,7 @@ public class TripleTable implements Sync, Closeable
 //    /** Find by NodeId. */
 //    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
 //    {
-//        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
+//        Tuple<NodeId> tuple = Tuple.create(subj, pred, obj) ;
 //        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
 //        return iter ;
 //    }

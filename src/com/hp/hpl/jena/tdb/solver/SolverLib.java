@@ -83,7 +83,7 @@ public class SolverLib
         
         for ( Triple triple : triples )
         {
-            Tuple<Node> tuple = new Tuple<Node>(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            Tuple<Node> tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             chain = solve(nodeTuples, chain, tuple, execCxt) ;
         }
         

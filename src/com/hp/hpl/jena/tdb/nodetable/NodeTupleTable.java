@@ -51,7 +51,7 @@ public class NodeTupleTable implements Sync, Closeable
         for ( int i = 0 ; i < nodes.length ; i++ )
             n[i] = storeNode(nodes[i]) ;
         
-        Tuple<NodeId> t = new Tuple<NodeId>(n) ;
+        Tuple<NodeId> t = Tuple.create(n) ;
         return tupleTable.add(t) ;
     }
     
@@ -66,7 +66,7 @@ public class NodeTupleTable implements Sync, Closeable
             n[i] = id ;
         }
         
-        Tuple<NodeId> t = new Tuple<NodeId>(n) ;
+        Tuple<NodeId> t = Tuple.create(n) ;
         return tupleTable.delete(t) ;
     }
     
@@ -100,7 +100,7 @@ public class NodeTupleTable implements Sync, Closeable
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(NodeId...ids)
     {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(ids) ;
+        Tuple<NodeId> tuple = Tuple.create(ids) ;
         Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
         return iter ;
     }

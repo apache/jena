@@ -112,9 +112,9 @@ public class GraphNamedTDB extends GraphTDBBase
     public Tuple<Node> asTuple(Triple triple)
     {
 //        if ( getGraphNode() == null )
-//            return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+//            return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
 //        else
-            return new Tuple<Node>(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            return Tuple.create(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
     @Override

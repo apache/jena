@@ -13,16 +13,19 @@ import java.util.List;
 
 public final class Tuple<T>
 {
-    public static <T> Tuple<T> blankTuple(int len)
+    public static <X> Tuple<X> blankTuple(int len)
     {
         @SuppressWarnings("unchecked")
-        T[] tuple = (T[])new Object[len] ;
-        return new Tuple<T>(tuple) ;
+        X[] tuple = (X[])new Object[len] ;
+        return Tuple.create(tuple) ;
     }
+    
+    public static <X> Tuple<X> create(X ... elements)
+    { return new Tuple<X>(elements) ; }
     
     final T[] tuple ;
     
-    public Tuple(T...tuple)
+    private Tuple(T...tuple)
     {
         this.tuple = tuple ;
     }

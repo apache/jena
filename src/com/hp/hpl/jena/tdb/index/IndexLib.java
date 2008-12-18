@@ -61,7 +61,7 @@ public class IndexLib
         NodeId x = NodeLib.getNodeId(e, 0) ;
         NodeId y = NodeLib.getNodeId(e, NodeId.SIZE) ;
         NodeId z = NodeLib.getNodeId(e, 2*NodeId.SIZE) ;
-        return new Tuple<NodeId>(x, y, z) ;
+        return Tuple.create(x, y, z) ;
     }
 
 }

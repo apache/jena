@@ -45,7 +45,7 @@ public class TestTupleTable extends BaseTest
     
     static void add(TupleTable table, NodeId x1, NodeId x2, NodeId x3)
     {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(x1, x2, x3) ;
+        Tuple<NodeId> tuple = Tuple.create(x1, x2, x3) ;
         table.add(tuple) ;
     }
     
@@ -56,13 +56,13 @@ public class TestTupleTable extends BaseTest
         TupleTable table = create() ;
         add(table, n1, n2, n3) ;
 
-        Tuple<NodeId> pat = new Tuple<NodeId>(null, null, null) ;
+        Tuple<NodeId> pat = Tuple.create(null, null, null) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
         int z = x.size() ;
         assertEquals(1, z) ;
         Tuple<NodeId> e1 = x.get(0) ;
-        assertEquals(new Tuple<NodeId>(n1, n2, n3) , e1) ;
+        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
     }
     
     @Test public void createFind2()
@@ -71,7 +71,7 @@ public class TestTupleTable extends BaseTest
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
 
-        Tuple<NodeId> pat = new Tuple<NodeId>(null, n2, null) ;
+        Tuple<NodeId> pat = Tuple.create(null, n2, null) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         assertNotNull(iter) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
@@ -80,8 +80,8 @@ public class TestTupleTable extends BaseTest
         
         Tuple<NodeId> e1 = x.get(0) ;
         Tuple<NodeId> e2 = x.get(1) ;
-        assertEquals(new Tuple<NodeId>(n1, n2, n3) , e1) ;
-        assertEquals(new Tuple<NodeId>(n1, n2, n4) , e2) ;
+        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+        assertEquals(Tuple.create(n1, n2, n4) , e2) ;
     }
 }
 
