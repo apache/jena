@@ -40,9 +40,9 @@ public class AssemblerUtils
     {
         if ( initialized )
             return ;
+        initialized = true ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         register(Assembler.general) ;
-        initialized = true ;
     }
     
     static public void register(AssemblerGroup g)
