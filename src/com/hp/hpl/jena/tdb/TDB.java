@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
@@ -78,6 +79,7 @@ public class TDB
         
         // TDB uses a custom OpCompiler.
         
+        AssemblerUtils.init() ;     // ARQ initialization.
         VocabTDB.init();
         QueryEngineTDB.register() ;
         
