@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+	// MySQL cusors: jdbc:mysql://127.0.0.1/rdswip?useCursorFetch=true&defaultFetchSize=8192&profileSQL=false&enableQueryTimeouts=false&netTimeoutForStreamingResults=0 
+
     // Pool.
     // Pool tests or conmvert test suite to use a pool.
     // Documentation
