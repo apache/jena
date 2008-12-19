@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.util.DerbyUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -60,7 +61,8 @@ public class SDB
     /** Used by Jena assemblers for registration */ 
     public static void whenRequiredByAssembler( AssemblerGroup g )
     {
-        AssemblerVocab.register(g) ;
+        AssemblerUtils.init() ;         // ARQ 
+        AssemblerVocab.register(g) ;    // SDB
     }
     
     private static boolean initialized = false ;

@@ -75,9 +75,11 @@ public class QueryTestSDB extends EarlTestCase
         } catch (Exception ex)
         {
             ex.printStackTrace(System.err) ;
+            return ;
         }
 
-      // Same as last time - skip.
+        // More trouble than it's worth.
+//      // Same as last time - skip.
       if ( ! StoreList.inMem(store) && lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )
           return ;
 
@@ -102,8 +104,17 @@ public class QueryTestSDB extends EarlTestCase
     @Override
     public void tearDown()
     { 
-        store.getConnection().close() ;
-        store.close() ;
+        if ( store != null )
+        {
+            store.close() ;
+            store.getConnection().close() ;
+            // Oracle seems to async release connections (in the XE server only?)
+            if ( StoreUtils.isOracle(store))
+            {
+                try { synchronized (this) { this.wait(200) ; } }
+                catch (InterruptedException ex) { ex.printStackTrace(); }
+            }
+        }
         store = null ;
         currentTestName = null ;
     }
@@ -116,6 +127,9 @@ public class QueryTestSDB extends EarlTestCase
             log.info(this.getName()+" : Skipped") ;
             return ;
         }
+        
+        if ( store == null )
+            fail("No store") ;
         
 //        if ( item.getDefaultGraphURIs().size() != 1 || item.getNamedGraphURIs().size() != 0 )
 //            fail("Only one data graph supported") ;

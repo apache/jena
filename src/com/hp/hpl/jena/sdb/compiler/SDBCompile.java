@@ -53,9 +53,7 @@ public class SDBCompile
         }
         
         if ( StoreUtils.isDerby(store) )
-        {
             request.DistinctOnCLOB = false ;
-        }
         
         if ( StoreUtils.isPostgreSQL(store) )
             request.LimitOffsetTranslation = true ;
@@ -64,6 +62,12 @@ public class SDBCompile
             request.LimitOffsetTranslation = true ;
         
         if ( StoreUtils.isSQLServer(store) )
+            request.DistinctOnCLOB = false ;
+        
+        if ( StoreUtils.isOracle(store) )
+            request.DistinctOnCLOB = false ;
+        
+        if ( StoreUtils.isDB2(store) )
             request.DistinctOnCLOB = false ;
         
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;

@@ -125,6 +125,7 @@ public class SDBConnectionFactory
             }
             map.put(jdbcURL, pool) ;
         }
+        System.err.println("From pool") ;
         return pool.get();
     }
 

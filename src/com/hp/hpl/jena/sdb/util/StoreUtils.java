@@ -30,12 +30,6 @@ public class StoreUtils
         return store.getDatabaseType().equals(DatabaseType.HSQLDB) ;
     }
     
-//    public static boolean isHSQLinMem(Store store)
-//    { 
-//        return store.getDatabaseType().equals(DatabaseType.HSQLDB) ;
-//    }
-//    
-
     public static boolean isH2(Store store)
     { 
         return store.getDatabaseType().equals(DatabaseType.H2) ;
@@ -67,6 +61,10 @@ public class StoreUtils
         return store.getDatabaseType().equals(DatabaseType.Oracle) ;
     }
     
+    public static boolean isDB2(Store store)
+    {
+        return store.getDatabaseType().equals(DatabaseType.DB2) ;
+    }
 
     public static void load(Store store, String filename)
     {
