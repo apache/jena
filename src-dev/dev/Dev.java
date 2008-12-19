@@ -10,11 +10,18 @@ public class Dev
 {
     // ==== 0.7.0 "quads"
     // RC release
-    // Document value-canonicalization
+    // Document
+    //   value-canonicalization
+    //   need to .close() (Model, Graphs, Datasets)
+    //   Sync
+    // Check
+    //   Dataset assemblers
     // == RC issues:
     //   Can't run tests from distribution.
     //   --> need an ant target that runs from the JAR
     // ====
+    
+    
     // Tidy up this file :-)
     
     // TupleFactory
