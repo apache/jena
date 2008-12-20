@@ -12,13 +12,13 @@ public class Dev
     // RC release
     // Document
     //   value-canonicalization
+    //   32/64 dicussion
     //   need to .close() (Model, Graphs, Datasets)
     //   Sync
-    // Check
-    //   Dataset assemblers
     // == RC issues:
     //   Can't run tests from distribution.
     //   --> need an ant target that runs from the JAR
+    //   --> or don't ship testing.
     // ====
     
     
