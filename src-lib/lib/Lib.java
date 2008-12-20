@@ -10,7 +10,13 @@ public class Lib
 {
     private Lib() {}
     
-    public static <T> boolean equals(T obj1, T obj2)
+    /** Encode an index (the insertion point) when not found */
+    public static final int encodeIndex(int i) { return -(i+1) ; } 
+
+    /** Decode an index returning the insertion point when not found */
+    public static final int decodeIndex(int i) { return -(i+1) ; } 
+    
+    public static final <T> boolean equals(T obj1, T obj2)
     {
         if ( obj1 == null )
             return obj2 == null ;
@@ -20,10 +26,10 @@ public class Lib
         return obj1.equals(obj2) ;
     }
     
-    static public String className(Object obj)
+    static public final String className(Object obj)
     { return classShortName(obj.getClass()) ; }
     
-    static public String classShortName(Class<?> cls)
+    static public final String classShortName(Class<?> cls)
     {
         String tmp = cls.getName() ;
         int i = tmp.lastIndexOf('.') ;
@@ -32,10 +38,10 @@ public class Lib
     }
     
     /** HashCode - allow nulls */
-    public static int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
+    public static final int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
     
     /** HashCode - allow nulls */
-    public static int hashCodeObject(Object obj, int nullHashCode)
+    public static final int hashCodeObject(Object obj, int nullHashCode)
     {
         if ( obj == null )
             return nullHashCode ; 

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static com.hp.hpl.jena.tdb.lib.Lib.decodeIndex;
+import static lib.Lib.decodeIndex;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

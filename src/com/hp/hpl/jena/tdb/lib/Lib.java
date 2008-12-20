@@ -13,12 +13,6 @@ import java.util.regex.Pattern;
 
 public class Lib
 {
-    /** Encode an index (the insertion point) when not found */
-    public static final int encodeIndex(int i) { return -(i+1) ; } 
-
-    /** Decode an index returning the insertion point when not found */
-    public static final int decodeIndex(int i) { return -(i+1) ; } 
-    
     private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
     /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
     public static String printAbbrev(Object obj)

@@ -12,7 +12,7 @@ import static com.hp.hpl.jena.tdb.base.record.Record.keyNE;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.DumpTree;
-import static com.hp.hpl.jena.tdb.lib.Lib.decodeIndex;
+import static lib.Lib.decodeIndex;
 import static java.lang.String.format;
 import io.IndentedLineBuffer;
 import io.IndentedWriter;

@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.base.buffer;
 
 import static java.lang.String.format;
-import static com.hp.hpl.jena.tdb.lib.Lib.encodeIndex;
+import static lib.Lib.encodeIndex;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
