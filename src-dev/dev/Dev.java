@@ -10,6 +10,9 @@ public class Dev
 {
     // (Jena) Cached IRI checking.
     
+    // Document:
+    //   example: algebra transform (split MyQueryEngine) 
+    
     // ---- [quad paths]
     
     // ?? Extends Algebra back to reading graphs and making datasets?
