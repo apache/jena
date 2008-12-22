@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.19 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.20 2008-12-22 16:32:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.20 $ on $Date: 2008-12-22 16:32:23 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -98,6 +98,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
         graph.setDerivationLogging(recordDerivations);
         graph.setTraceOn(traceOn);
         graph.rebind(data);
+        graph.setDatatypeRangeValidation(true);
                 
         return graph;
     }

@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasoner.java,v 1.8 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: OWLMicroReasoner.java,v 1.9 2008-12-22 16:32:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.reasoner.*;
 
 import java.util.*;
@@ -28,7 +29,7 @@ import java.util.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.9 $ on $Date: 2008-12-22 16:32:23 $
  */
 public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
 
@@ -67,6 +68,23 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
             capabilities = new BaseInfGraph.InfFindSafeCapabilities();
         }
         return capabilities;
+    }
+    
+    /**
+     * Attach the reasoner to a set of RDF data to process.
+     * The reasoner may already have been bound to specific rules or ontology
+     * axioms (encoded in RDF) through earlier bindRuleset calls.
+     * 
+     * @param data the RDF data to be processed, some reasoners may restrict
+     * the range of RDF which is legal here (e.g. syntactic restrictions in OWL).
+     * @return an inference graph through which the data+reasoner can be queried.
+     * @throws ReasonerException if the data is ill-formed according to the
+     * constraints imposed by this reasoner.
+     */
+    public InfGraph bind(Graph data) throws ReasonerException {
+        InfGraph graph = super.bind(data);
+        ((FBRuleInfGraph)graph).setDatatypeRangeValidation(true);
+        return graph;
     }
 
 }

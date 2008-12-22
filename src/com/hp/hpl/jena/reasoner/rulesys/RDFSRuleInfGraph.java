@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.9 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.10 2008-12-22 16:32:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -23,12 +22,9 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.10 $ on $Date: 2008-12-22 16:32:23 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
-
-    /** Optional map of property node to datatype ranges */
-    protected HashMap dtRange = null;
 
     /**
      * Constructor.
@@ -61,71 +57,8 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
         // The full configuration uses validation rules so check for these
         StandardValidityReport report = (StandardValidityReport)super.validate();
         // Also do a hardwired check to handle the simpler configurations
-        HashMap dtRange = getDTRange();
-        for (Iterator props = dtRange.keySet().iterator(); props.hasNext(); ) {
-            Node prop = (Node)props.next();
-            for (Iterator i = find(null, prop, null); i.hasNext(); ) {
-                Triple triple = (Triple)i.next();
-                report.add(checkLiteral(prop, triple.getObject()));
-            }
-        }
+        performDatatypeRangeValidation(report);
         return report;
-    }
-    
-    /**
-     * Check a given literal value for a property against the set of
-     * known range constraints for it.
-     * @param prop the property node whose range is under scrutiny
-     * @param value the literal node whose value is to be checked
-     * @return null if the range is legal, otherwise a ValidityReport.Report
-     * which describes the problem.
-     */
-    public ValidityReport.Report checkLiteral(Node prop, Node value) {
-        List range = (List) getDTRange().get(prop);
-        if (range != null) {
-            if (value.isBlank()) return null;
-            if (!value.isLiteral()) {
-                return new ValidityReport.Report(true, "dtRange", 
-                    "Property " + prop + " has a typed range but was given a non literal value " + value);
-            }
-            LiteralLabel ll = value.getLiteral();   
-            for (Iterator i = range.iterator(); i.hasNext(); ) {
-                RDFDatatype dt = (RDFDatatype)i.next();
-                if (!dt.isValidLiteral(ll)) {
-                    return new ValidityReport.Report(true, "dtRange", 
-                        "Property " + prop + " has a typed range " + dt +
-                        "that is not compatible with " + value);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Return a map from property nodes to a list of RDFDatatype objects
-     * which have been declared as the range of that property.
-     */
-    private HashMap getDTRange() {
-        if (dtRange == null) {
-            dtRange = new HashMap();
-            for (Iterator i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
-                Triple triple = (Triple)i.next();
-                Node prop = triple.getSubject();
-                Node rangeValue = triple.getObject();
-                if (rangeValue.isURI()) {
-                    RDFDatatype dt = TypeMapper.getInstance().getTypeByName(rangeValue.getURI());
-                    if (dt != null) {
-                        List range = (ArrayList) dtRange.get(prop);
-                        if (range == null) {
-                            range = new ArrayList();
-                            dtRange.put(prop, range);
-                        }
-                        range.add(dt);
-                    }
-                }
-            }
-        }
-        return dtRange;
     }
 
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.67 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.68 2008-12-22 16:32:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,7 +16,10 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import java.util.*;
 
@@ -38,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.67 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.68 $ on $Date: 2008-12-22 16:32:23 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -77,6 +80,12 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /** Table of temp nodes which should be hidden from output listings */
     protected Set hiddenNodes;
+
+    /** Optional map of property node to datatype ranges */
+    protected HashMap dtRange = null;
+    
+    /** Flag to request datatype range validation be included in the validation step */
+    protected boolean requestDatatypeRangeValidation = false;
     
     static Log logger = LogFactory.getLog(FBRuleInfGraph.class);
 
@@ -752,16 +761,89 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 }
             }
         }
-//        // Debug
-//        Node ia = Node.createURI("http://jena.hpl.hp.com/testing/reasoners/owl#ia");
-//        System.out.println("Types of ia");
-//        PrintUtil.printOut(findFull(new TriplePattern(ia, RDF.Nodes.type, null)));
-//        System.out.println("different froms");
-//        PrintUtil.printOut(findFull(new TriplePattern(null, OWL.differentFrom.asNode(), null)));
-//        System.out.println("ia same as");
-//        PrintUtil.printOut(findFull(new TriplePattern(ia, OWL.sameIndividualAs.asNode(), null)));
-//        // end
+        
+        if (requestDatatypeRangeValidation) {
+            performDatatypeRangeValidation( report );
+        }
         return report;
+    }
+    
+    /**
+     * Switch on/off datatype range validation
+     */
+    public void setDatatypeRangeValidation(boolean on) {
+        requestDatatypeRangeValidation = on;
+    }
+    
+    /**
+     * Run a datatype range check on all literal values of all properties with a range declaration.
+     * @param report
+     */
+    protected void performDatatypeRangeValidation(StandardValidityReport report) {
+        HashMap dtRange = getDTRange();
+        for (Iterator props = dtRange.keySet().iterator(); props.hasNext(); ) {
+            Node prop = (Node)props.next();
+            for (Iterator i = find(null, prop, null); i.hasNext(); ) {
+                Triple triple = (Triple)i.next();
+                report.add(checkLiteral(prop, triple.getObject()));
+            }
+        }
+    }
+
+    /**
+     * Check a given literal value for a property against the set of
+     * known range constraints for it.
+     * @param prop the property node whose range is under scrutiny
+     * @param value the literal node whose value is to be checked
+     * @return null if the range is legal, otherwise a ValidityReport.Report
+     * which describes the problem.
+     */
+    public ValidityReport.Report checkLiteral(Node prop, Node value) {
+        List range = (List) getDTRange().get(prop);
+        if (range != null) {
+            if (value.isBlank()) return null;
+            if (!value.isLiteral()) {
+                return new ValidityReport.Report(true, "dtRange", 
+                    "Property " + prop + " has a typed range but was given a non literal value " + value);
+            }
+            LiteralLabel ll = value.getLiteral();   
+            for (Iterator i = range.iterator(); i.hasNext(); ) {
+                RDFDatatype dt = (RDFDatatype)i.next();
+                if (!dt.isValidLiteral(ll)) {
+                    return new ValidityReport.Report(true, "dtRange", 
+                        "Property " + prop + " has a typed range " + dt +
+                        "that is not compatible with " + value);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Return a map from property nodes to a list of RDFDatatype objects
+     * which have been declared as the range of that property.
+     */
+    protected HashMap getDTRange() {
+        if (dtRange == null) {
+            dtRange = new HashMap();
+            for (Iterator i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
+                Triple triple = (Triple)i.next();
+                Node prop = triple.getSubject();
+                Node rangeValue = triple.getObject();
+                if (rangeValue.isURI()) {
+                    RDFDatatype dt = TypeMapper.getInstance().getTypeByName(rangeValue.getURI());
+                    if (dt != null) {
+                        List range = (ArrayList) dtRange.get(prop);
+                        if (range == null) {
+                            range = new ArrayList();
+                            dtRange.put(prop, range);
+                        }
+                        range.add(dt);
+                    }
+                }
+            }
+        }
+        return dtRange;
     }
 
 //  =======================================================================
