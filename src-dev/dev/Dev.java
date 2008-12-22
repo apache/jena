@@ -12,7 +12,8 @@ public class Dev
     // RC release
     // Document
     //   value-canonicalization
-    //   32/64 dicussion
+    //   32/64 discussion
+    //   tdb:fileMode
     //   need to .close() (Model, Graphs, Datasets)
     //   Sync
     // == RC issues:

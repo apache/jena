@@ -20,11 +20,15 @@ T="$1"
 shift
 
 case "$T" in
-    avl)   T="AVL";;
     btree) T="BTree";;
     bptree) T="BPlusTree";;
     exthash) T="ExtHash";;
+
+    avl)   T="AVL";;
+    exthashmem) T="ExtHashMem";;
     skiplist) T="SkipList";;
+    ttree)    T="TTree" ;;
+
     *)   echo "$T : Unknown" 1>&2 ; exit 1 ;;
 esac
 
