@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.54 2008-08-09 14:57:57 der Exp $
+ * $Id: TestBugs.java,v 1.55 2008-12-22 16:54:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,8 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import com.hp.hpl.jena.datatypes.DatatypeFormatException;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
@@ -36,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.54 $ on $Date: 2008-08-09 14:57:57 $
+ * @version $Revision: 1.55 $ on $Date: 2008-12-22 16:54:02 $
  */
 public class TestBugs extends TestCase {
 
@@ -955,6 +957,38 @@ public class TestBugs extends TestCase {
         }
     }
 
+    /**
+     * Check datatype range checking using OWL reasoners
+     */
+    public void testDatatypeRangeValidation() throws IOException {
+        String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
+        String filename = "testing/xsd/daml+oil-ex-dt.xsd";
+        TypeMapper tm = TypeMapper.getInstance();
+        XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
+        
+        Model m = ModelFactory.createDefaultModel();
+        RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
+
+        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_MINI_RULE_INF);
+        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_RULE_INF);
+    }
+    
+    private void doTestDatatypeRangeValidation(RDFDatatype over12Type, OntModelSpec spec) {
+        String NS = "http://jena.hpl.hp.com/example#";
+        OntModel ont = ModelFactory.createOntologyModel(spec);
+        Resource over12 = ont.createResource( over12Type.getURI() );
+        DatatypeProperty hasValue = ont.createDatatypeProperty(NS + "hasValue");
+        hasValue.addRange( over12 );
+        
+        ont.createResource(NS + "a").addProperty(hasValue, "15", over12Type);
+        ont.createResource(NS + "b").addProperty(hasValue, "16", XSDDatatype.XSDinteger);
+        ont.createResource(NS + "c").addProperty(hasValue, "10", XSDDatatype.XSDinteger);
+        
+        ValidityReport validity = ont.validate();
+        assertTrue (! validity.isValid());    
+    }
+    
     // debug assistant
 //    private void tempList(Model m, Resource s, Property p, RDFNode o) {
 //        System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
