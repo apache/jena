@@ -21,7 +21,8 @@ public class Dev
     //   --> need an ant target that runs from the JAR
     //   --> or don't ship testing.
     // ====
-    
+    // model.commit becomes sync(false) and BlockMgrDirect does nothing on a weak sync.
+    //  Make the transaction handler do sync(true)   
     
     // Tidy up this file :-)
     

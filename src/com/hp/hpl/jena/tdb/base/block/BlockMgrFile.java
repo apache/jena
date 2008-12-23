@@ -99,16 +99,16 @@ public abstract class BlockMgrFile extends BlockMgrBase
     final protected void check(int id)
     {
         if ( id < 0 || id >= numFileBlocks )
-            throw new BlockException(format("BlockMgrMapped: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
+            throw new BlockException(format("BlockMgrFile: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
     }
     
     final protected void check(int id, ByteBuffer bb)
     {
         check(id) ;
         if ( bb.capacity() != blockSize )
-            throw new BlockException(format("BlockMgrMapped: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
+            throw new BlockException(format("BlockMgrFile: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
         if ( bb.order() != SystemTDB.NetworkOrder )
-            throw new BlockException("BlockMgrMapped: Wrong byte order") ;
+            throw new BlockException("BlockMgrFile: Wrong byte order") ;
     }
 
     protected void force()

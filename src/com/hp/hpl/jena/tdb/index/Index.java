@@ -8,10 +8,13 @@ package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.sparql.core.Closeable;
+
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.lib.Sync;
 
-public interface Index extends Iterable<Record>
+public interface Index extends Iterable<Record>, Sync, Closeable
 {
     /** Find one record - and return the record actually in the index (may have a value part) */
     public Record find(Record record) ;

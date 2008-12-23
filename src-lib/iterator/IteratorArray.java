@@ -12,18 +12,46 @@ import java.util.NoSuchElementException;
 /** Iterator over a Java base array */
 public final class IteratorArray<T> implements Iterator<T>
 {
-    int idx = 0 ;
+    /** Iterator over all the array elements */ 
+    public static <T> IteratorArray<T> create(T[] array)
+    { return new IteratorArray<T>(array, 0, array.length) ; }
+    
+    /** Iterator over array elements from start (inclusive) to finish (exclusive) */ 
+    public static <T> IteratorArray<T> create(T[] array, int start, int finish)
+    { return new IteratorArray<T>(array, start, finish) ; }
+    
+    int idx ;
+    int finishIdx ;
     T[] array ;
     
-    public IteratorArray(T[] array)
-    { this.array = array ; }
+    private IteratorArray(T[] array, int start, int finish) 
+    {
+        this.array = array ;
+        idx = start ;
+        finishIdx = finish ;
+        if ( idx < 0 )
+            idx = 0 ;
+        if ( finishIdx >= array.length ) 
+            finishIdx = array.length ;
+    }
 
     @Override
     public boolean hasNext()
     {
-       return ( idx >= 0 && idx < array.length ) ;
+//        if ( idx < 0 )
+//            return false ;
+        if ( idx >= finishIdx )
+            return false ;
+        return true ;
     }
 
+    public T current()
+    {
+        if ( idx >= finishIdx )
+            throw new NoSuchElementException() ;
+        return array[idx] ;
+    }
+    
     @Override
     public T next()
     {

@@ -37,7 +37,7 @@ public class GraphTDBTransactionHandler extends TransactionHandlerBase //impleme
     @Override
     public void commit()
     {
-        graph.sync(false) ;
+        graph.sync(true) ;
     }
     
 

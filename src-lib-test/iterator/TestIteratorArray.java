@@ -17,7 +17,7 @@ public class TestIteratorArray extends BaseTest
     @Test public void arrayIterator_1()
     {
         String[] a = { } ;
-        Iterator<String> iter = new IteratorArray<String>(a) ;
+        Iterator<String> iter = IteratorArray.create(a) ;
         assertFalse(iter.hasNext()) ;
         assertFalse(iter.hasNext()) ;
     }
@@ -25,7 +25,7 @@ public class TestIteratorArray extends BaseTest
     @Test public void arrayIterator_2()
     {
         String[] a = { "a" } ;
-        Iterator<String> iter = new IteratorArray<String>(a) ;
+        Iterator<String> iter = IteratorArray.create(a) ;
         assertTrue(iter.hasNext()) ;
         assertEquals("a", iter.next()) ;
         assertFalse(iter.hasNext()) ;
@@ -36,7 +36,7 @@ public class TestIteratorArray extends BaseTest
     @Test public void arrayIterator_3()
     {
         String[] a = { "a", "b", "c"} ;
-        Iterator<String> iter = new IteratorArray<String>(a) ;
+        Iterator<String> iter = IteratorArray.create(a) ;
         assertTrue(iter.hasNext()) ;
         assertEquals("a", iter.next()) ;
         assertTrue(iter.hasNext()) ;
@@ -50,12 +50,41 @@ public class TestIteratorArray extends BaseTest
     @Test public void arrayIterator_4()
     {
         String[] a = { "a" } ;
-        Iterator<String> iter = new IteratorArray<String>(a) ;
+        Iterator<String> iter = IteratorArray.create(a) ;
         assertEquals("a", iter.next()) ;
         try { iter.next() ; fail("Expected NoSuchElementException") ; }
         catch (NoSuchElementException ex) {}
     }
     
+    @Test public void arrayIterator_5()
+    {
+        String[] a = { "a", "b", "c" } ;
+        Iterator<String> iter = IteratorArray.create(a,0,1) ;
+        assertEquals("a", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void arrayIterator_6()
+    {
+        String[] a = { "a", "b", "c", "d" } ;
+        Iterator<String> iter = IteratorArray.create(a,1,3) ;
+        assertEquals("b", iter.next()) ;
+        assertEquals("c", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void arrayIterator_7()
+    {
+        String[] a = { "a", "b", "c", "d" } ;
+        IteratorArray<String> iter = IteratorArray.create(a,1,3) ;
+        assertEquals("b", iter.current()) ;
+        assertEquals("b", iter.current()) ;
+        assertEquals("b", iter.next()) ;
+        assertEquals("c", iter.current()) ;
+        assertEquals("c", iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+
 }
 
 /*
