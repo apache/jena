@@ -139,6 +139,31 @@ public class Alg
         return encodeIndex(low) ;
     }
 
+    // Why isn't this in the java RT?
+    public static <T extends Comparable<? super T>>
+    int binarySearch(T[] array, int low, int high, T value)
+    {
+        check(array.length, low, high) ;
+        high -- ;
+
+        while( low <= high )
+        {
+            int mid = ( low + high ) >>> 1 ;
+
+            T k = array[mid] ;
+            
+            int x = k.compareTo(value) ; // comparator.compare(k, value) ;
+            if ( x < 0 )
+                low = mid + 1 ;
+            else if ( x > 0 )
+                high = mid - 1 ;
+            else
+                return mid ;
+        }
+        return encodeIndex(low) ;
+    }
+    
+    
     // Use Arrays.binarySearch functions
     
 //    public static int binarySearch(int buff[], int value)
