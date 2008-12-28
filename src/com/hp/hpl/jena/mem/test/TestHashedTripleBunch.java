@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestHashedTripleBunch.java,v 1.7 2008-02-01 11:28:50 chris-dollin Exp $
+ 	$Id: TestHashedTripleBunch.java,v 1.8 2008-12-28 19:32:23 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -146,7 +146,7 @@ public class TestHashedTripleBunch extends TestTripleBunch
     }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

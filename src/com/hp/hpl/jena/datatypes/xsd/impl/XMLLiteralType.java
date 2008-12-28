@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Dec-02
  * 
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.12 2008-01-02 12:04:01 andy_seaborne Exp $
+ * $Id: XMLLiteralType.java,v 1.13 2008-12-28 19:31:42 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import java.io.*;
  * by use of <code>rdf:parsetype='literal'</code>.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-01-02 12:04:01 $
+ * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:31:42 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
@@ -132,7 +132,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

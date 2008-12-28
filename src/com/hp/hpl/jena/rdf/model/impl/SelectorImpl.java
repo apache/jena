@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2008-01-02 12:05:03 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2008-12-28 19:31:52 $
  */
 
 public final class SelectorImpl extends SimpleSelector  {

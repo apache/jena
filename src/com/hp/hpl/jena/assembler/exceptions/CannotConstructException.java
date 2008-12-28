@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotConstructException.java,v 1.8 2008-01-02 12:07:38 andy_seaborne Exp $
+ 	$Id: CannotConstructException.java,v 1.9 2008-12-28 19:32:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -66,7 +66,7 @@ public class CannotConstructException extends AssemblerException
 
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

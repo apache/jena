@@ -3,10 +3,10 @@
  * Created by:  Dave Reynolds
  * Created on:  04-Dec-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDDateType.java,v 1.6 2008-01-02 12:04:02 andy_seaborne Exp $
+ * $Id: XSDDateType.java,v 1.7 2008-12-28 19:31:42 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
  * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2008-01-02 12:04:02 $
+ * @version $Revision: 1.7 $ on $Date: 2008-12-28 19:31:42 $
  */
 public class XSDDateType extends XSDAbstractDateTimeType {
 
@@ -52,7 +52,7 @@ public class XSDDateType extends XSDAbstractDateTimeType {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

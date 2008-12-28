@@ -1,7 +1,7 @@
 /*
- (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: XMLBaselessContext.java,v 1.6 2008-01-02 12:09:05 andy_seaborne Exp $
+ $Id: XMLBaselessContext.java,v 1.7 2008-12-28 19:32:24 andy_seaborne Exp $
  */
 package com.hp.hpl.jena.rdf.arp.impl;
 
@@ -100,7 +100,7 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
 }
 
 /*
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP All
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP All
  * rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.28 2008-11-24 14:12:37 chris-dollin Exp $
+  $Id: Triple.java,v 1.29 2008-12-28 19:32:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -247,7 +247,7 @@ public class Triple implements TripleMatch
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

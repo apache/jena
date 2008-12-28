@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.17 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.18 2008-12-28 19:32:09 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.18 $ on $Date: 2008-12-28 19:32:09 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -122,7 +122,7 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

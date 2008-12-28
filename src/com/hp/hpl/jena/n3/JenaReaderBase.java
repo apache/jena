@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.FileUtils;
  * single worker function with model, UTF8 reader and visated base  
  *   
  * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.3 2008-01-02 12:04:50 andy_seaborne Exp $
+ * @version 	$Id: JenaReaderBase.java,v 1.4 2008-12-28 19:31:52 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader
@@ -121,7 +121,7 @@ public abstract class JenaReaderBase implements RDFReader
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -12,14 +12,14 @@ import com.hp.hpl.jena.shared.LockMRSW;
  * @see com.hp.hpl.jena.shared.LockMRSW;
  *   
  * @author		Andy Seaborne
- * @version 	$Id: ModelLockImpl.java,v 1.12 2008-01-02 12:05:01 andy_seaborne Exp $
+ * @version 	$Id: ModelLockImpl.java,v 1.13 2008-12-28 19:31:52 andy_seaborne Exp $
  */
 
 public class ModelLockImpl extends LockMRSW implements ModelLock
 { }   
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

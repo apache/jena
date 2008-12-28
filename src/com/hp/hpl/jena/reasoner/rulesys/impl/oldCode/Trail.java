@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  20-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Trail.java,v 1.9 2008-01-02 12:09:45 andy_seaborne Exp $
+ * $Id: Trail.java,v 1.10 2008-12-28 19:32:28 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2008-01-02 12:09:45 $
+ * @version $Revision: 1.10 $ on $Date: 2008-12-28 19:32:28 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -263,7 +263,7 @@ public class Trail implements BindingEnvironment {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

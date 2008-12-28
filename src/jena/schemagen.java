@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.56 $
+ * Revision           $Revision: 1.57 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-04-04 11:45:46 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2008-12-28 19:32:20 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.56 2008-04-04 11:45:46 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.57 2008-12-28 19:32:20 andy_seaborne Exp $
  */
 public class schemagen {
     // Constants
@@ -1658,7 +1658,7 @@ public class schemagen {
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: MockTransactionModel.java,v 1.9 2008-01-03 15:18:54 chris-dollin Exp $
+ $Id: MockTransactionModel.java,v 1.10 2008-12-28 19:31:55 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.assembler.test;
@@ -79,7 +79,7 @@ final class MockTransactionModel extends ModelAssembler
     }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

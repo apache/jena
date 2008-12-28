@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.52 2008-01-02 12:08:20 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.53 2008-12-28 19:32:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.52 $ on $Date: 2008-01-02 12:08:20 $
+ * @version $Revision: 1.53 $ on $Date: 2008-12-28 19:32:00 $
  */
 public class TestFBRules extends TestCase {
     
@@ -1032,7 +1032,7 @@ public class TestFBRules extends TestCase {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.12 2008-11-06 10:57:37 chris-dollin Exp $
+ 	$Id: AssemblerTestBase.java,v 1.13 2008-12-28 19:31:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -167,7 +167,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

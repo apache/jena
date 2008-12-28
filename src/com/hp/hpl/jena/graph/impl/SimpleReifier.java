@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.55 2008-02-11 09:32:33 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.56 2008-12-28 19:31:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -285,7 +285,7 @@ public class SimpleReifier implements Reifier
     }
     
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

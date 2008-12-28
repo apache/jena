@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.70 $ on $Date: 2008-10-13 16:32:14 $
+* @version $Revision: 1.71 $ on $Date: 2008-12-28 19:32:20 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -2765,7 +2765,7 @@ public abstract class DriverRDB implements IRDBDriver {
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

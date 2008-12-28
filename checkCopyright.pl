@@ -1,7 +1,8 @@
 #!/bin/perl
 
 # Run with: find src -name \*.java | xargs perl checkCopyright.pl
-# Check source code
+# Check source code    
+
 
 &setExclude ;
 
@@ -41,9 +42,9 @@ sub checkOne
  	print "$file: No date or wrong order\n" ;
     }
 
-    if ( m!Copyright.*200[^8] Hewlett-Packard! )
+    if ( m!Copyright.*200[^9] Hewlett-Packard! )
     {
- 	print "$file: Not 2008\n" ;
+ 	print "$file: Not 2009\n" ;
     }
 
     unless ( m/THIS SOFTWARE IS PROVIDED BY THE AUTHOR/ )
@@ -90,4 +91,6 @@ sub setExclude
     $exclude{'src/com/hp/hpl/jena/rdql/parser/TokenMgrError.java'} = 1 ;
 
     $exclude{'src/com/hp/hpl/jena/shared/uuid/MD5.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/vocabulary/TestManifest.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/vocabulary/TestManifestX.java'} = 1 ;
 }

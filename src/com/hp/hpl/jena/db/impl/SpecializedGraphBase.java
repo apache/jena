@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SpecializedGraphBase.java,v 1.6 2008-01-02 12:08:23 andy_seaborne Exp $
+  $Id: SpecializedGraphBase.java,v 1.7 2008-12-28 19:32:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -29,7 +29,7 @@ public abstract class SpecializedGraphBase implements SpecializedGraph
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestMonitors.java,v 1.6 2008-01-02 12:08:35 andy_seaborne Exp $
+ * $Id: TestMonitors.java,v 1.7 2008-12-28 19:32:22 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util.test;
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * Tests for MonitorGraph implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 
 public class TestMonitors extends TestCase {
@@ -186,7 +186,7 @@ public class TestMonitors extends TestCase {
 
 
 /*
-    (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

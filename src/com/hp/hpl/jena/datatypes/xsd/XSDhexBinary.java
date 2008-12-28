@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  01-May-2004
  * 
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDhexBinary.java,v 1.8 2008-01-02 12:10:49 andy_seaborne Exp $
+ * $Id: XSDhexBinary.java,v 1.9 2008-12-28 19:32:38 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * This only needs to implement the unparsing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-01-02 12:10:49 $
+ * @version $Revision: 1.9 $ on $Date: 2008-12-28 19:32:38 $
  */
 public class XSDhexBinary extends XSDDatatype {
     
@@ -72,7 +72,7 @@ public class XSDhexBinary extends XSDDatatype {
 
 
 /*
-    (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

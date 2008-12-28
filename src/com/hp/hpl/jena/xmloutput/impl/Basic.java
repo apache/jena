@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.19 2008-01-02 12:09:33 andy_seaborne Exp $
+  $Id: Basic.java,v 1.20 2008-12-28 19:32:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2008-01-02 12:09:33 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2008-12-28 19:32:27 $'
  */
 public class Basic extends BaseXMLWriter 
     {
@@ -178,7 +178,7 @@ public class Basic extends BaseXMLWriter
 }
 
 /*
-	(c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+	(c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

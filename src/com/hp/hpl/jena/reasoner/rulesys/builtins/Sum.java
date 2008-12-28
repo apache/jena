@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Sum.java,v 1.13 2008-01-02 12:06:20 andy_seaborne Exp $
+ * $Id: Sum.java,v 1.14 2008-12-28 19:32:01 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  *  Bind the third arg to the sum of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-01-02 12:06:20 $
+ * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:01 $
  */
 public class Sum extends BaseBuiltin {
 
@@ -75,7 +75,7 @@ public class Sum extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

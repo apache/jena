@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.JenaRuntime ;
  *  Does not cope with tabs or newlines in output strings.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3IndentedWriter.java,v 1.1 2008-06-13 07:35:19 andy_seaborne Exp $
+ * @version 	$Id: N3IndentedWriter.java,v 1.2 2008-12-28 19:31:52 andy_seaborne Exp $
  */
 
 // Not robust/complete enough for public use
@@ -82,7 +82,7 @@ public class N3IndentedWriter
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

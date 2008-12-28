@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.11 2008-01-02 12:08:14 andy_seaborne Exp $
+  $Id: TestReifierCompareToMem.java,v 1.12 2008-12-28 19:32:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -252,7 +252,7 @@ public class TestReifierCompareToMem extends TestCase
     	
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

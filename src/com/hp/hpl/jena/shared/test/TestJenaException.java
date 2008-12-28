@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestJenaException.java,v 1.7 2008-01-02 12:10:55 andy_seaborne Exp $
+  $Id: TestJenaException.java,v 1.8 2008-12-28 19:32:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -34,7 +34,7 @@ public class TestJenaException extends JenaTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionDescription.java,v 1.7 2008-01-03 15:19:07 chris-dollin Exp $
+ 	$Id: ConnectionDescription.java,v 1.8 2008-12-28 19:31:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -88,7 +88,7 @@ public class ConnectionDescription
 
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: NotExpectedTypeException.java,v 1.2 2008-01-02 12:07:38 andy_seaborne Exp $
+ 	$Id: NotExpectedTypeException.java,v 1.3 2008-12-28 19:32:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -34,7 +34,7 @@ public class NotExpectedTypeException extends AssemblerException
     }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbload.java,v 1.13 2008-09-18 08:40:34 andy_seaborne Exp $
+  * @version $Id: dbload.java,v 1.14 2008-12-28 19:32:20 andy_seaborne Exp $
   */ 
  
 public class dbload extends DBcmd
@@ -73,7 +73,7 @@ public class dbload extends DBcmd
 
 
 /*
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

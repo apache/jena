@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            April 23rd 2006
  * Filename           $RCSfile: DIGQueryRelatedIndividualsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:07:11 $
+ * Last modified on   $Date: 2008-12-28 19:32:04 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  * ****************************************************************************/
 
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRelatedIndividualsTranslator.java,v 1.3 2008-01-02 12:07:11 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRelatedIndividualsTranslator.java,v 1.4 2008-12-28 19:32:04 andy_seaborne Exp $
  */
 public class DIGQueryRelatedIndividualsTranslator
     extends DIGQueryTranslator
@@ -130,7 +130,7 @@ public class DIGQueryRelatedIndividualsTranslator
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

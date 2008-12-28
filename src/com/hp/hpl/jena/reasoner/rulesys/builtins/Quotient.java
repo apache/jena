@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Quotient.java,v 1.6 2008-01-02 12:06:20 andy_seaborne Exp $
+ * $Id: Quotient.java,v 1.7 2008-12-28 19:32:01 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * an integer.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2008-01-02 12:06:20 $
+ * @version $Revision: 1.7 $ on $Date: 2008-12-28 19:32:01 $
  */
 public class Quotient extends BaseBuiltin {
 
@@ -81,7 +81,7 @@ public class Quotient extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

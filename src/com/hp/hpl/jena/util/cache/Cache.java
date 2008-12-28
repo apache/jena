@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -41,7 +41,7 @@ public interface Cache extends CacheControl {
 }
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *
  *  All rights reserved.
  *
@@ -68,6 +68,6 @@ public interface Cache extends CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Cache.java,v 1.7 2008-01-02 12:10:16 andy_seaborne Exp $
+ * $Id: Cache.java,v 1.8 2008-12-28 19:32:36 andy_seaborne Exp $
  */
 

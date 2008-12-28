@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  10-Jan-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfGraph.java,v 1.14 2008-01-02 12:07:00 andy_seaborne Exp $
+ * $Id: InfGraph.java,v 1.15 2008-12-28 19:32:04 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-01-02 12:07:00 $
+ * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:04 $
  */
 public interface InfGraph extends Graph {
 
@@ -147,7 +147,7 @@ public interface InfGraph extends Graph {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

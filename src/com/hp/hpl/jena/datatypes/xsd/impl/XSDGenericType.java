@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  13-Dec-2002
  * 
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDGenericType.java,v 1.11 2008-01-02 12:04:03 andy_seaborne Exp $
+ * $Id: XSDGenericType.java,v 1.12 2008-12-28 19:31:42 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-01-02 12:04:03 $
+ * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:31:42 $
  */
 public class XSDGenericType extends XSDDatatype {
 
@@ -60,7 +60,7 @@ public class XSDGenericType extends XSDDatatype {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

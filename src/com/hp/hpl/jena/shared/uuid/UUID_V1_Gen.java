@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -59,7 +59,7 @@ and is used by the clock.
 /** Generator for timebased UUIDs (version 1, variant 2)
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1_Gen.java,v 1.3 2008-01-02 12:06:07 andy_seaborne Exp $
+ * @version 	$Id: UUID_V1_Gen.java,v 1.4 2008-12-28 19:32:00 andy_seaborne Exp $
  */
 
 
@@ -278,7 +278,7 @@ public class UUID_V1_Gen implements UUIDFactory
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

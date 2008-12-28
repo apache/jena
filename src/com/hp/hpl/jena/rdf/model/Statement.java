@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2000-2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+	(c) Copyright 2000-2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.21 2008-01-02 12:05:48 andy_seaborne Exp $
+	$Id: Statement.java,v 1.22 2008-12-28 19:31:54 andy_seaborne Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.21 $ $Date: 2008-01-02 12:05:48 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2008-12-28 19:31:54 $
  */
 
 public interface Statement extends FrontsTriple
@@ -426,7 +426,7 @@ public interface Statement extends FrontsTriple
         }
 }
 /*
-	  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+	  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	  All rights reserved.
 	 
 	 Redistribution and use in source and binary forms, with or without

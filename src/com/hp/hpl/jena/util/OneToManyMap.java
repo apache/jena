@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:07:44 $
+ * Last modified on   $Date: 2008-12-28 19:32:09 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * See end of file for details
  *****************************************************************************/
 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.15 2008-01-02 12:07:44 andy_seaborne Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.16 2008-12-28 19:32:09 andy_seaborne Exp $
  */
 public class OneToManyMap
     implements Map

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Mar-2004
  * 
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMiniReasoner.java,v 1.9 2008-12-22 16:32:23 der Exp $
+ * $Id: OWLMiniReasoner.java,v 1.10 2008-12-28 19:32:09 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * </UL>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2008-12-22 16:32:23 $
+ * @version $Revision: 1.10 $ on $Date: 2008-12-28 19:32:09 $
  */
 public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 
@@ -86,7 +86,7 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 
 
 /*
-    (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

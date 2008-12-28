@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.shared.uuid.test;
 /** Java5-dependent tests.
  * java.util.UUID only appeared in Java5
  * @author Andy Seaborne
- * @version $Id: TestUUID_J5.java,v 1.4 2008-01-02 12:09:21 andy_seaborne Exp $
+ * @version $Id: TestUUID_J5.java,v 1.5 2008-12-28 19:32:25 andy_seaborne Exp $
  */
 
 public class TestUUID_J5 {}
@@ -119,7 +119,7 @@ public class TestUUID_J5 {}
 //}
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
