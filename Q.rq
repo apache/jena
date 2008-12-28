@@ -1,7 +1,7 @@
-#PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example/>
 SELECT *
 {
-    { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } UNION { ?s3 ?p3 ?o3 }   
+    :x apf:concat ?x .
 }
-
