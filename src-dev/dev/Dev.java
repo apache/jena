@@ -27,6 +27,7 @@ public class Dev
     // Tidy up this file :-)
     
     // TupleFactory
+    // Other indexes
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
