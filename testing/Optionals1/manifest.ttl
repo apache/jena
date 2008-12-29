@@ -17,6 +17,9 @@
        [  mf:name    "Optional - 3" ;
           mf:action [ qt:query <opt-3.rq> ; qt:data <data-1.ttl> ] ;
        ]
+       [  mf:name    "Optional - 4" ;
+          mf:action [ qt:query <opt-4.rq> ; qt:data <data-1.ttl> ] ;
+       ]
        [  mf:name    "Coalesce - 1" ;
           mf:action [ qt:query <opt-coalesce-1.rq> ; qt:data <data-2.ttl> ] ;
        ]

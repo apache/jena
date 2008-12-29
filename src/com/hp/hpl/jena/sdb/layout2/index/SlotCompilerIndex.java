@@ -45,11 +45,13 @@ public class SlotCompilerIndex extends SlotCompiler2
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
     // Could be a set but it's convenient to keep thing in order for debugging.
-    private List<Node> constants = new ArrayList<Node>() ;
-    private List<Var>  vars = new ArrayList<Var>() ;
+    private List<Node> constants ; // = new ArrayList<Node>() ;
+    private List<Var>  vars ; // = new ArrayList<Var>() ;
     
     protected TableDescTriples tripleTableDesc ;
     protected TableDescNodes   nodeTableDesc ;
+    
+    private SqlNode constantsSqlNode ;
     
     public SlotCompilerIndex(SDBRequest request)
     { 
@@ -61,9 +63,16 @@ public class SlotCompilerIndex extends SlotCompiler2
     @Override
     public SqlNode start(QuadBlock quads)
     {
+        // Need to work out when constants are in-scope from earlier.
+        
+        // Reset context.
+        constants = new ArrayList<Node>() ;
+        vars = new ArrayList<Var>() ;
+        
         classify(quads, constants, vars) ;
-        SqlNode sqlNode = insertConstantAccesses(constants) ;
-        return sqlNode ;
+        constantsSqlNode = insertConstantAccesses(constants) ;
+        // can be hold this back until the end of a block?
+        return constantsSqlNode ;
     }
     
     @Override

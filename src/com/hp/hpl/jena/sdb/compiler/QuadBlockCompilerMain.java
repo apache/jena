@@ -30,6 +30,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
     { return slotCompiler ; }
 
     //@Override
+    final
     public SqlNode compile(QuadBlock quads)
     {
         SqlNode sqlNode = slotCompiler.start(quads) ;

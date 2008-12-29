@@ -16,6 +16,12 @@ public class Dev
     // Documentation
     // Better key for the pool?
     
+    // Slot compilation / index form. 
+    // Slightly better would be keep constant lookups separate from the SqlNode expression until the
+    // unit is compiled.  Currently, can end up with multiple looks of the same thing (but they will be
+    // cached in the DB but if not, the query is very expensive anyway and an extra lookup will not
+    // add obseravble cost).
+    
     // QueryEngineSDB.init ; enable some static optimizations.
     
     // Testing: SDBTestAll does not include the model tests yet because they are not linked to the store description files

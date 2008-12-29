@@ -10,8 +10,8 @@
     sdb:store <#store> .
 
 <#store> rdf:type sdb:Store ;
-##    sdb:layout         "layout2/index" ;
-    sdb:layout         "layout2/hash" ;
+    sdb:layout         "layout2/index" ;
+##   sdb:layout         "layout2/hash" ;
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;
@@ -25,7 +25,7 @@
      sdb:sdbHost        "localhost" ;
      sdb:sdbType        "derby" ;
      sdb:sdbName        "DB/derby" ;
-     sdb:poolSize       1 ;
+##      sdb:poolSize       1 ;
 
 ##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
 ##     sdb:sdbType       "MySQL" ;

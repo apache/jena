@@ -51,8 +51,8 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
-        sdb.sdbtest.main("--sdb=sdb.ttl", "testing/manifest-sdb.ttl") ;
-        System.exit(0) ;
+//        sdb.sdbtest.main("--sdb=sdb.ttl", "testing/manifest-sdb.ttl") ;
+//        System.exit(0) ;
         
         //TestStores2Connections1.main(argv) ;
         
