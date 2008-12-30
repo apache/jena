@@ -2,6 +2,11 @@ Release Notes
 =============
 ==== Jena 2.5.8
 
+Reasoners:
+   o Extended validity checking for OWL configurations to include 
+     datatype range checking that can cope with user datatypes as done for RDFS.
+     Places the culprit Triple as the ValidityReport.Report extension value.
+     
 ==== Jena 2.5.7
 
 Database layer:

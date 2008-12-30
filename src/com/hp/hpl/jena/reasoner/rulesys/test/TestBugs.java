@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.56 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.57 2008-12-30 16:28:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -20,6 +20,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.56 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.57 $ on $Date: 2008-12-30 16:28:10 $
  */
 public class TestBugs extends TestCase {
 
@@ -986,7 +987,13 @@ public class TestBugs extends TestCase {
         ont.createResource(NS + "c").addProperty(hasValue, "10", XSDDatatype.XSDinteger);
         
         ValidityReport validity = ont.validate();
-        assertTrue (! validity.isValid());    
+        assertTrue (! validity.isValid()); 
+        
+        // Check culprit reporting
+        ValidityReport.Report report = (ValidityReport.Report)(validity.getReports().next());
+        Triple culprit = (Triple)report.getExtension();
+        assertEquals(culprit.getSubject().getURI(), NS + "c");
+        assertEquals(culprit.getPredicate(), hasValue.asNode());
     }
     
     // debug assistant

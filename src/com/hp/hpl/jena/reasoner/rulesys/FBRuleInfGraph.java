@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.69 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.70 2008-12-30 16:28:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.69 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.70 $ on $Date: 2008-12-30 16:28:17 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -785,7 +785,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             Node prop = (Node)props.next();
             for (Iterator i = find(null, prop, null); i.hasNext(); ) {
                 Triple triple = (Triple)i.next();
-                report.add(checkLiteral(prop, triple.getObject()));
+                report.add(checkLiteral(prop, triple));
             }
         }
     }
@@ -794,11 +794,12 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Check a given literal value for a property against the set of
      * known range constraints for it.
      * @param prop the property node whose range is under scrutiny
-     * @param value the literal node whose value is to be checked
+     * @param triple the statement whose object value is to be checked.
      * @return null if the range is legal, otherwise a ValidityReport.Report
      * which describes the problem.
      */
-    public ValidityReport.Report checkLiteral(Node prop, Node value) {
+    public ValidityReport.Report checkLiteral(Node prop, Triple triple) {
+        Node value = triple.getObject();
         List range = (List) getDTRange().get(prop);
         if (range != null) {
             if (value.isBlank()) return null;
@@ -812,7 +813,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 if (!dt.isValidLiteral(ll)) {
                     return new ValidityReport.Report(true, "dtRange", 
                         "Property " + prop + " has a typed range " + dt +
-                        "that is not compatible with " + value);
+                        "that is not compatible with " + value, triple);
                 }
             }
         }
@@ -986,7 +987,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
