@@ -25,7 +25,6 @@
      sdb:sdbHost        "localhost" ;
      sdb:sdbType        "derby" ;
      sdb:sdbName        "DB/derby" ;
-##      sdb:poolSize       1 ;
 
 ##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
 ##     sdb:sdbType       "MySQL" ;

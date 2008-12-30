@@ -22,13 +22,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
+import com.hp.hpl.jena.shared.Command;
+
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
-import com.hp.hpl.jena.sdb.util.Pool;
-
-import com.hp.hpl.jena.shared.Command;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -42,8 +41,6 @@ public class SDBConnection
     static private Generator gen = Gensym.create("connection-") ;
 
     private Connection sqlConnection = null ;
-    private Pool<SDBConnection> pool = null ;
-    boolean inTransaction = false ;
     TransactionHandler transactionHandler = null ;
     String label = gen.next() ;
     
@@ -82,11 +79,6 @@ public class SDBConnection
         if ( url != null ) setJdbcURL(url) ;
     }
 
-    public void setPool(Pool<SDBConnection> pool)
-    {
-        this.pool = pool ;
-    }
-    
     public static SDBConnection none()
     {
         return new SDBConnection(JDBC.jdbcNone, null, null) ;
@@ -271,12 +263,6 @@ public class SDBConnection
     
     public void close()
     {
-        if ( pool != null )
-        {
-            pool.put(this) ;
-            return ;
-        }
-        
         Connection connection = getSqlConnection() ;
         try {
             if ( connection != null && ! connection.isClosed() )
