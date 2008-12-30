@@ -7,7 +7,7 @@
 package lib;
 
 
-/** Syncronization wrapper for a pool */ 
+/** Synchronization wrapper for a pool */ 
 public class SyncPool<T> extends PoolBase<T>
 {
     public SyncPool() { } 
