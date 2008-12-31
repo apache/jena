@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.ResultSet;
@@ -20,6 +22,8 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreUtils
@@ -91,6 +95,17 @@ public class StoreUtils
             x.add(n) ;
         }
         return x.iterator() ;
+    }
+    
+    public static boolean containsGraph(Store store, Node graphNode)
+    {
+        String qs = "SELECT * { GRAPH "+FmtUtils.stringForNode(graphNode)+" { ?s ?p ?o }} LIMIT 1" ;
+        Dataset ds = SDBFactory.connectDataset(store) ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
+        ResultSet rs = qExec.execSelect() ;
+        boolean b = rs.hasNext() ;
+        qExec.close();
+        return b ;
     }
 }
 

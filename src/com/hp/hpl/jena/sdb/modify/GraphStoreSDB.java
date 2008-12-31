@@ -9,16 +9,15 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.Lock;
+
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.ResultSet;
+
+import com.hp.hpl.jena.update.GraphStore;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.update.GraphStore;
 
 public class GraphStoreSDB implements GraphStore
 {
@@ -41,7 +40,7 @@ public class GraphStoreSDB implements GraphStore
     }
 
     public void addGraph(Node graphName, Graph graph)
-    { /* No-op in SDB until theer is explciit graph management */ }
+    { /* No-op in SDB until there is explicit graph management */ }
 
     public Graph removeGraph(Node graphName)
     {
@@ -53,12 +52,7 @@ public class GraphStoreSDB implements GraphStore
 
     public boolean containsGraph(Node graphNode)
     {
-        String qs = "SELECT * { GRAPH "+FmtUtils.stringForNode(graphNode)+" { ?s ?p ?o }} LIMIT 1" ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, toDataset()) ;
-        ResultSet rs = qExec.execSelect() ;
-        boolean b = rs.hasNext() ;
-        qExec.close();
-        return b ;
+        return StoreUtils.containsGraph(store, graphNode) ;
     }
 
     public Graph getDefaultGraph()
