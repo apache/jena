@@ -26,8 +26,11 @@ public class Dev
     
     // Tidy up this file :-)
     
-    // TupleFactory
     // Other indexes
+    
+    // SPARQL/Update and CREATE GRAPH
+    // Dataset is cloned on a Joseki/SPARQL/update operation
+    // Need ARQ change?
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
