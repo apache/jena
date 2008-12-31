@@ -21,8 +21,8 @@ public class Dev
 
     // ---- SPARQL/Update
     // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
-    //   Check for already a GraphStore.
-    //   or make datasets and GraphStores the same?
+    //   Check for already a GraphStore [DONE]
+    //   Sync, close on Datasets?  Model-level "ModelStore"
     
     // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
     

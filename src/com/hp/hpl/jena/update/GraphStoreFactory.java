@@ -37,13 +37,15 @@ public class GraphStoreFactory
 
     /** Create a GraphStore from a dataset so that updates apply to the graphs in the dataset.
      *  Throws UpdateException (an ARQException) if the GraphStore can not be created.
-     *  This is not the way to get a GraphStore for SDB - an SDB Store object is a GraphStore
+     *  This is not the way to get a GraphStore for SDB or TDB - an SDB Store object is a GraphStore
      *  no conversion necessary.
      *  @param dataset
      *  @throws UpdateException
      */
     public static GraphStore create(Dataset dataset)
     { 
+        if ( dataset.asDatasetGraph() instanceof GraphStore )
+            return (GraphStore)(dataset.asDatasetGraph()) ;
         if ( ( dataset instanceof DatasetImpl ) || (dataset instanceof DataSourceImpl ) )
             return new GraphStoreBasic(dataset) ; 
         throw new UpdateException("Can't create a GraphStore for dataset: "+dataset) ;
