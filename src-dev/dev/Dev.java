@@ -19,6 +19,13 @@ public class Dev
     // What's the generalization?
     // FETCH : visitor, syntax tests, Algebra, execution
 
+    // ---- SPARQL/Update
+    // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
+    //   Check for already a GraphStore.
+    //   or make datasets and GraphStores the same?
+    
+    // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
+    
     // Disjunction of equalities => union.
 
     // ---- Static scope analysis

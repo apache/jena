@@ -85,14 +85,14 @@ public class UpdateSerializer implements UpdateVisitor
 
     public void visit(UpdateInsertData add)
     {
-        visitModifyHeader("ADD", "INTO", add) ;
+        visitModifyHeader("INSERT DATA", "INTO", add) ;
         printGraph(add.getData()) ;
         // No trailer
     }
 
     public void visit(UpdateDeleteData remove)
     {
-        visitModifyHeader("REMOVE", "FROM", remove) ;
+        visitModifyHeader("DELETE DATA", "FROM", remove) ;
         printGraph(remove.getData()) ;
         // No trailer
     }
