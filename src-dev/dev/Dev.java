@@ -28,9 +28,9 @@ public class Dev
     
     // Other indexes
     
-    // SPARQL/Update and CREATE GRAPH
+    // SPARQL/Update
     // Dataset is cloned on a Joseki/SPARQL/update operation
-    // Need ARQ change?
+    // Need ARQ change + TDB to provide a GraphStore.
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
