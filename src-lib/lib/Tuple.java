@@ -32,6 +32,14 @@ public final class Tuple<T>
     
     public T get(int idx) { return tuple[idx] ; }
     //public void set(int idx, T elt) { tuple[idx] = elt ; }
+    
+    public int countNotNull()
+    {
+        int x = 0 ;
+        for ( T item : tuple )
+            if ( item != null ) x++ ;
+        return x ;
+    }
 
     public List<T> asList() { return Arrays.asList(tuple) ; }
     
@@ -56,7 +64,7 @@ public final class Tuple<T>
     { 
         int x = 99 ;
         for ( T n : tuple )
-            x ^= n.hashCode() ;
+            x = x<<1 ^ n.hashCode() ;
         return x ;  
     }
     

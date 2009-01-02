@@ -80,29 +80,28 @@ public class ColumnMap
         }
     }
     
-    /** Get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
+    /** Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
     public <T> T fetchSlot(int idx, Tuple<T> tuple)
     { 
         idx = fetchOrder[idx] ;     // Apply the reverse mapping as we are doing zero is P, so it's an unmap.
         return tuple.get(idx) ;
     }
 
-    /** Get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
+    /** Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
     public <T> T fetchSlot(int idx, T[] tuple)
     { 
         idx = fetchOrder[idx] ;     // Apply the reverse mapping as we are doing zero is P, so it's an unmap.
         return tuple[idx] ;
     }
     
-
-    /** Get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
+    /** Apply to a <em>mapped</em> tuple to get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
     public <T> T mapSlot(int idx, Tuple<T> tuple)
     { 
         idx = insertOrder[idx] ;
         return tuple.get(idx) ;
     }
     
-    /** Get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
+    /** Apply to a <em>mapped</em> tuple to get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
     public <T> T mapSlot(int idx, T[] tuple)
     { 
         idx = insertOrder[idx] ;        // Yes - it's the insert location we want to access 
@@ -121,13 +120,13 @@ public class ColumnMap
         return fetchOrder[idx] ;        // Yes - it's the insert location we want to access 
     }
 
-    /** Return a tuple with the column mapping applied */
+    /** Apply to an <em>unmapped</em> tuple to get a tuple with the column mapping applied */
     public <T> Tuple<T> map(Tuple<T> src)
     {
         return map(src, insertOrder) ;
     }
-    
-    /** Return a tuple with the column mapping reversed */
+
+    /** Apply to a <em>mapped</em> tuple to get a tuple with the column mapping reverse-applied */
     public <T> Tuple<T> unmap(Tuple<T> src)
     {
         return map(src, fetchOrder) ;

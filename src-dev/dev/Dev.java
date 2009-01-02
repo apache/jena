@@ -26,11 +26,13 @@ public class Dev
     
     // Tidy up this file :-)
     
-    // Other indexes
+    // ---- Interactions with ARQ
+    // + Other indexes
+    // + SPARQL/Update
+    //   Dataset is cloned on a Joseki/SPARQL/update operation
+    //   Need ARQ change + TDB to provide a GraphStore.
     
-    // SPARQL/Update
-    // Dataset is cloned on a Joseki/SPARQL/update operation
-    // Need ARQ change + TDB to provide a GraphStore.
+    // ---- Generic TupleIndex<T> for NodeId or Node
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     

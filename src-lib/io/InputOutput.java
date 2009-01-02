@@ -1,39 +1,18 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package iterator;
+package io;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/** Null Iterator - also guaranteed sharable and immutable */
-public class NullIterator<T> implements Iterator<T>, Iterable<T>
+public class InputOutput
 {
-    public boolean hasNext()
-    {
-        return false ;
-    }
-
-    public T next()
-    {
-        throw new NoSuchElementException("NullIterator.next") ;
-    }
-
-    public void remove()
-    { throw new NoSuchElementException("NullIterator.remove") ;}
-
-    public Iterator<T> iterator()
-    {
-        return this ;
-    }
 
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
