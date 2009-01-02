@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.109 $
+ * Revision           $Revision: 1.110 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-02 21:10:41 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.109 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.110 2009-01-02 21:10:41 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -2062,7 +2062,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri URI to read from, may be mapped to a local source by the document manager
      */
     public Model read( String uri ) {
-        return read( uri, null );
+        return read( uri, null, null );
     }
 
     /**
@@ -2101,7 +2101,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return This model, to allow chaining calls
      */
     public Model read( String uri, String syntax ) {
-        return read( uri, uri, syntax );
+        return read( uri, null, syntax );
     }
 
     /**
@@ -2127,8 +2127,23 @@ public class OntModelImpl extends ModelCom implements OntModel
             source = sourceURL;
         }
         else {
-            // now we can actually do the read
-            super.read( source, base, syntax );
+            // now we can actually do the read, check first if we should use negotiation
+            if (base == null &&                         // require non-null base
+                !ignoreFileURI( source ) &&             // and that negotiation makes sense (don't conneg to file:)
+                source.equals( uri )                    // and that we haven't remapped the URI
+                )
+            {
+                if (syntax == null ) {
+                    readDelegate( source );
+                }
+                else {
+                    readDelegate( source, syntax );
+                }
+            }
+            else {
+                // if we were given the base, use it ... otherwise default to the base being the source
+                readDelegate( source, (base == null ? uri : base), syntax );
+            }
         }
 
         // the post read hook
@@ -3037,6 +3052,24 @@ public class OntModelImpl extends ModelCom implements OntModel
     private InfGraph getInfGraph() {
         return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()) : null;
     }
+
+
+    /**
+     * Test for whether we ignore <code>file:</code> URI's when testing for content
+     * negotiation.
+     * @param source
+     * @return
+     */
+    protected boolean ignoreFileURI( String source ) {
+        return source.startsWith( "file:" );
+    }
+
+    /* delegation points to allow unit testing of read operations */
+
+    protected Model readDelegate( String url ) { return super.read( url );  }
+    protected Model readDelegate( String url, String lang ) { return super.read( url, lang ); }
+    protected Model readDelegate( String url, String base, String lang ) { return super.read( url, base, lang ); }
+
 
 
     //==============================================================================
