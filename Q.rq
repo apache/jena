@@ -3,5 +3,5 @@ PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example/>
 SELECT *
 {
-    :x apf:concat ?x .
+    GRAPH [] { ?s ?p ?o }
 }

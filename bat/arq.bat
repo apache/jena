@@ -8,5 +8,5 @@ exit /B
 :okRoot
 call %ARQROOT%\bat\make_classpath.bat %ARQROOT%
 
-java -cp %CP% arq.arq %1 %2 %3 %4 %5 %6 %7 %8 %9
+java -cp %CP% arq.arq %*
 exit /B
