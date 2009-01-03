@@ -39,6 +39,10 @@
       <fileset dir="${test.dir}"/>
     </copy>
 
+    <copy todir="${dist.dir}/Store">
+      <fileset dir="Store"/>
+    </copy>
+    
     <!-- bin/ (and bat/ if any) -->
     <copy todir="${dist.dir}/bin">
       <fileset dir="bin"/>
@@ -47,11 +51,6 @@
       <fileset dir="bin2"/>
     </copy>
 
-    <copy todir="${dist.dir}/" file="build.xml"/>
-    <copy todir="${dist.dir}/">
-      <fileset dir="." includes="ivy*"/>
-    </copy>
-    
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
