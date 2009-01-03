@@ -11,12 +11,9 @@ import java.math.BigInteger;
 
 import lib.BitsLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DecimalNode
 {
-    private static Logger log = LoggerFactory.getLogger(DecimalNode.class) ;
+    //private static Logger log = LoggerFactory.getLogger(DecimalNode.class) ;
     
     BigDecimal decimal = null ;
     

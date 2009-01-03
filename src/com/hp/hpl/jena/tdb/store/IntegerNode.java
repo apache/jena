@@ -1,53 +1,40 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.store;
 
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
-import arq.cmdline.ModDataset;
+import lib.BitsLong;
 
-import com.hp.hpl.jena.query.ARQ;
-
-import com.hp.hpl.jena.tdb.TDB;
-
-
-public class tdbquery extends arq.query
+public class IntegerNode
 {
-    // Inherits from arq.query so is not a CmdTDB.  Mixins for Java!
-    public static void main(String [] argv)
+    public static long pack(long v) 
     {
-        new tdbquery(argv).mainRun() ;
+        if ( Math.abs(v) < (1L<<47) )      // Absolute value must fit in 47 bits
+        {
+            v = BitsLong.clear(v, 56, 64) ;
+            v = NodeId.setType(v, NodeId.INTEGER) ;
+            return v ;
+        }
+        else
+            return -1 ;
     }
     
-    public tdbquery(String[] argv)
+    public static long unpack(long v) 
     {
-        super(argv) ;
-        // Because this inherits from an ARQ command
-        CmdTDB.init() ;
-        super.modVersion.addClass(TDB.class) ;
+        long val = BitsLong.clear(v, 56, 64) ;
+        // Sign extends to 64 bits.
+        if ( BitsLong.isSet(val, 55) )
+            val = BitsLong.set(v, 56, 64) ;
+        return val ;
     }
 
-    @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-        if ( isVerbose() )
-            ARQ.getContext().setTrue(TDB.symLogExec) ;
-    }
-    
-    @Override
-    protected ModDataset setModDataset()
-    {
-        return new ModTDBDataset() ;
-    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

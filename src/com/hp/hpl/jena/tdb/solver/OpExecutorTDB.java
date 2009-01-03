@@ -45,7 +45,6 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** TDB executor for algebra expressions.  It is the standard ARQ executor
  *  except for basic graph patterns and filtered basic graph patterns (currently).  
@@ -230,7 +229,7 @@ public class OpExecutorTDB extends OpExecutor
             op = new OpBGP(pattern) ;
         
         // -- Explain
-        if ( execCxt.getContext().isTrue(SystemTDB.symLogExec) && logExec.isInfoEnabled() )
+        if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
         {
             String x = op.toString();
             x = StrUtils.chop(x) ;

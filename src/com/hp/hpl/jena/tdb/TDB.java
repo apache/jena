@@ -6,12 +6,19 @@
 
 package com.hp.hpl.jena.tdb;
 
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
@@ -20,13 +27,16 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Dataset;
 
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
+import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -47,12 +57,18 @@ public class TDB
     /** Symbol to use the the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
     
+    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
+     * for logger "com.hp.hpl.jena.tdb.exec"
+     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
+     */
+    public static final Symbol symLogExec           = SystemTDB.allocSymbol("logExec") ;
+
     /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
      * An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(boolean state)
     {
-        TDB.getContext().set(SystemTDB.symLogExec, state) ;
+        TDB.getContext().set(TDB.symLogExec, state) ;
         if ( ! logExec.isInfoEnabled() )
             log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
     }
@@ -65,6 +81,58 @@ public class TDB
      * repeatedly is safe and low cost.
      */
     public static void init() { }
+    
+//    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+//    public static void sync(Object object) { sync(object, true) ; }
+
+    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    public static void sync(Model model)
+    {
+        sync(model.getGraph()) ;
+    }
+    
+    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    public static void sync(Graph graph)
+    {
+        sync(graph, true) ;
+    }
+
+    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    public static void sync(Dataset dataset)
+    { 
+        DatasetGraph ds = dataset.asDatasetGraph() ;
+        sync(ds) ;
+    }
+    
+    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    public static void sync(DatasetGraph dataset)
+    { 
+        if ( dataset instanceof DatasetGraphTDB )
+            sync(dataset, true) ;
+        else
+        {
+            // May be a general purpose datsset with TDB objects in it.
+            @SuppressWarnings("unchecked")
+            Iterator<Node> iter = dataset.listGraphNodes() ;
+            for ( ; iter.hasNext() ; )
+            {
+                Node n = iter.next();
+                Graph g = dataset.getGraph(n) ;
+                sync(g) ;
+            }
+        }
+    }
+
+    
+    /** Sync a TDB synchronizable object (model, graph daatset). 
+     *  If force is true, synchronize as much as possible (e.g. file metadata)
+     *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
+     * Do nothing otherwise */
+    private static void sync(Object object, boolean force)
+    {
+        if ( object instanceof Sync )
+            ((Sync)object).sync(force) ;
+    }
     
     static { initWorker() ; }
     

@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.query.*;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -58,12 +59,23 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        //prefixes() ; System.exit(0) ;
-        tdb.tdbquery.main(new String[]{"--tdb=tdb.ttl", "--set=tdb:unionDefaultGraph=true", "--query=Q.arq"}) ; System.exit(0) ;
-        //tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
+//        //prefixes() ; System.exit(0) ;
+//        tdb.tdbquery.main(new String[]{"--tdb=tdb.ttl", "--set=tdb:unionDefaultGraph=true", "--query=Q.arq"}) ; System.exit(0) ;
+//        //tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
+//        
+//        namedGraphs() ;        
         
-        namedGraphs() ;        
+        Model model = TDBFactory.createModel() ;
+        TDB.sync(model) ;
+        model = ModelFactory.createDefaultModel() ;
+        TDB.sync(model) ;
         
+        Dataset ds = TDBFactory.createDataset() ;
+        TDB.sync(ds) ;
+        model = ds.getNamedModel("http://example/ng") ; 
+        TDB.sync(model) ;
+        System.out.println("&&&&") ;
+        System.exit(0) ;
         reification() ;
         
         

@@ -1,53 +1,18 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.lib;
 
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
-import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.query.ARQ;
-
-import com.hp.hpl.jena.tdb.TDB;
-
-
-public class tdbquery extends arq.query
+public class SyncOp
 {
-    // Inherits from arq.query so is not a CmdTDB.  Mixins for Java!
-    public static void main(String [] argv)
-    {
-        new tdbquery(argv).mainRun() ;
-    }
-    
-    public tdbquery(String[] argv)
-    {
-        super(argv) ;
-        // Because this inherits from an ARQ command
-        CmdTDB.init() ;
-        super.modVersion.addClass(TDB.class) ;
-    }
 
-    @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-        if ( isVerbose() )
-            ARQ.getContext().setTrue(TDB.symLogExec) ;
-    }
-    
-    @Override
-    protected ModDataset setModDataset()
-    {
-        return new ModTDBDataset() ;
-    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

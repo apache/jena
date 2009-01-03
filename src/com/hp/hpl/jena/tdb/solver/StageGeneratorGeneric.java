@@ -30,12 +30,13 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
+    
+    public StageGeneratorGeneric() {}
     
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,
@@ -83,7 +84,7 @@ public class StageGeneratorGeneric implements StageGenerator
                                     QueryIterator input,
                                     ExecutionContext execCxt)
     {
-        boolean loggingExec = execCxt.getContext().isTrue(SystemTDB.symLogExec) && TDB.logExec.isDebugEnabled() ;
+        boolean loggingExec = execCxt.getContext().isTrue(TDB.symLogExec) && TDB.logExec.isDebugEnabled() ;
         if ( loggingExec ) TDB.logExec.debug(">>"+pattern) ;
         
         if ( reorder != null )

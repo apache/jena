@@ -68,12 +68,6 @@ public class SystemTDB
     /** Root of any TDB-defined Java system properties */   
     public static final String tdbPropertyRoot      = "com.hp.hpl.jena.tdb" ;
 
-    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
-     * for logger "com.hp.hpl.jena.tdb.exec"
-     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
-     */
-    public static final Symbol symLogExec           = allocSymbol("logExec") ;
-
     /** Log duplicates during loading */
     public static final Symbol symLogDuplicates     = allocSymbol("logDuplicates") ;
 

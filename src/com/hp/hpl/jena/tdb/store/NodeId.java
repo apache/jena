@@ -85,7 +85,7 @@ public class NodeId
         return (int)BitsLong.unpack(value, 56, 64) ;
     }
 
-    private static long setType(long value, int type)
+    static long setType(long value, int type)
     {
         return BitsLong.pack(value, type, 56, 64) ;
     }
@@ -183,12 +183,10 @@ public class NodeId
             if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
             {
                 long v = ((Number)lit.getValue()).longValue() ;
-                if ( Math.abs(v) < (1L<<47) )      // Absolute value must fit in 47 bits
-                {
-                    v = lib.BitsLong.clear(v, 56, 64) ;
-                    v = setType(v, INTEGER) ;
+                v = IntegerNode.pack(v) ;
+                // Value -1 is "does not fit"
+                if ( v != -1 )
                     return new NodeId(v) ;
-                }
                 else
                     return null ;
             }
@@ -240,10 +238,12 @@ public class NodeId
                 return null ;
             case INTEGER:
             {
-                long val = BitsLong.clear(v, 56, 64) ;
-                // Sign extends to 64 bits.
-                if ( BitsLong.isSet(val, 55) )
-                    val = BitsLong.set(v, 56, 64) ;
+                long val = IntegerNode.unpack(v) ;
+//                
+//                long val = BitsLong.clear(v, 56, 64) ;
+//                // Sign extends to 64 bits.
+//                if ( BitsLong.isSet(val, 55) )
+//                    val = BitsLong.set(v, 56, 64) ;
                 Node n = Node.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
                 return n ;
             }

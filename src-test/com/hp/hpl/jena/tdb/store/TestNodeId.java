@@ -50,7 +50,12 @@ public class TestNodeId extends TestBase
     @Test public void nodeId_int_6()
     { test("-180",  SSE.parseNode("-180")) ; }
 
-
+    @Test public void nodeId_int_7()
+    { test("01",  SSE.parseNode("1")) ; }
+    
+    @Test public void nodeId_int_8()
+    { test("+01",  SSE.parseNode("1")) ; }
+    
     @Test public void nodeId_decimal_1()
     { test("3.14", SSE.parseNode("3.14")) ; }
 

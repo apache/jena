@@ -9,13 +9,6 @@ package dev;
 public class Dev
 {
     // ==== 0.7.0 "quads"
-    // RC release
-    // Document
-    //   value-canonicalization
-    //   32/64 discussion
-    //   tdb:fileMode
-    //   need to .close() (Model, Graphs, Datasets)
-    //   Sync
     // == RC issues:
     //   Can't run tests from distribution.
     //   --> need an ant target that runs from the JAR
