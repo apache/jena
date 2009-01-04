@@ -12,8 +12,7 @@ import java.io.*;
 import java.util.*;
 
 
-/** apps.SimpleRunnerAlt
- * 
+/** Simple, text output, test runner
  * @author Andy Seaborne
  */
 
