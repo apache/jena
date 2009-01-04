@@ -34,7 +34,7 @@ public class Dev
     // OpRange - OpIndex(?) - generative stream of possibilities.
     // { ?s :p ?x . ?s :q ?w } specials?  "OpAllProperties"
 
-    // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node
+    // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node [Written - not active]
     //   ObjectFile: need to get BB.
     // Logical/physical id experiment
     
