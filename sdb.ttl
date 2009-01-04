@@ -10,8 +10,8 @@
     sdb:store <#store> .
 
 <#store> rdf:type sdb:Store ;
-    sdb:layout         "layout2/index" ;
-##   sdb:layout         "layout2/hash" ;
+##    sdb:layout         "layout2/index" ;
+    sdb:layout         "layout2/hash" ;
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;

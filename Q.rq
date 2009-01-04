@@ -1,25 +1,6 @@
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dc:      <http://purl.org/dc/elements/1.1/>
-PREFIX eg:              <http://example.com/resource#>
-PREFIX voc:             <http://example.com/vocabulary#>
-
-SELECT *
-WHERE {
-##      {
-##                 eg:book dc:creator ?author .
-##         }
-## UNION
-
-        {
-                eg:book voc:listing ?listing .
-                ?listing voc:author ?listed_author .
-
-                # if this OPTIONAL doesn't match, the UNION breaks
-                OPTIONAL { ?listing rdfs:label ?label }
-
-        }
-UNION {
-                eg:book dc:creator ?author1 .
-        }
-}
+PREFIX a: <http://www.w3.org/2000/10/annotation-ns#>
+CONSTRUCT { ?s ?p ?o }
+WHERE { 
+  { ?s a:annotates <subjectURI> } .
+    OPTIONAL {?s ?p ?o }
+  }
