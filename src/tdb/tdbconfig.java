@@ -6,6 +6,8 @@
 
 package tdb;
 
+import io.IndentedWriter;
+
 import java.util.List;
 import java.util.Map;
 
@@ -92,13 +94,13 @@ public class tdbconfig extends CmdSub
                 @SuppressWarnings("unchecked")
                 Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
                 for ( String k : x.keySet() )
-                    System.out.println("  "+k+" : "+x.get(k)) ;
+                    System.out.printf("  %-10s %s\n", k+":", x.get(k)) ;
             }
         }
     }
     
     // Subcommand : help
-    static class SubHelp extends CmdARQ
+    class SubHelp extends CmdARQ
     {
         public SubHelp(String ... argv)
         {
@@ -115,7 +117,16 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            System.out.println("Help!") ;
+            IndentedWriter out = IndentedWriter.stdout ;
+            out.println("Sub-commands:") ;
+            out.incIndent() ;
+
+            for ( String name : subCommandNames() )
+            {
+                out.println(name) ; 
+            }
+            out.decIndent() ;
+            out.flush() ;
         }
 
         @Override

@@ -141,7 +141,7 @@ public class ModTDBDataset extends ModDataset
         {
             // Find and clear all locations
             Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
-            Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir) }") ;
+            Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir)) }") ;
             QueryExecution qExec = null ;
             try {
                 qExec = QueryExecutionFactory.create(query, m) ;

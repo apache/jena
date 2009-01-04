@@ -59,7 +59,9 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-//        //prefixes() ; System.exit(0) ;
+        tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ; System.exit(0) ;
+
+//        prefixes() ; System.exit(0) ;
 //        tdb.tdbquery.main(new String[]{"--tdb=tdb.ttl", "--set=tdb:unionDefaultGraph=true", "--query=Q.arq"}) ; System.exit(0) ;
 //        //tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
 //        

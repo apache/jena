@@ -122,6 +122,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public void sync(boolean force)
     {
+        prefixes.sync(force) ;
         tripleTable.sync(force);
     }
 }

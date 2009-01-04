@@ -6,6 +6,7 @@
 
 package tdb.cmdline;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +56,11 @@ public class CmdSub
     protected void addSubCommand(String subCmdName, Exec exec)
     {
         dispatch.put(subCmdName, exec) ;
+    }
+    
+    protected Collection<String> subCommandNames()
+    {
+        return dispatch.keySet() ;
     }
 }
 

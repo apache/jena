@@ -30,7 +30,7 @@
     <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.6.0"/>
 
     <!-- Necessary for code compilation : configuration main should compile -->
-    <dependency org="junit" name="junit" rev="4.4"/>
+    <dependency org="junit" name="junit" rev="4.5"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="1.5.6"/>
 
     <!-- Additional for development : logging implementation -->

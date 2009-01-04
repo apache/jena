@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import lib.FileOps;
 import org.junit.Test;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.TestPrefixMapping2;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
@@ -40,6 +42,20 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         pmap1.setNsPrefix("x", "http://foo/") ;
         assertNotNull(pmap2.getNsPrefixURI("x")) ;
         assertNotNull(pmap1.getNsPrefixURI("x")) ;
+    }
+    
+    // Persistent.
+    @Test public void persistent1()
+    {
+        FileOps.clearDirectory(TS_Store.testArea) ;
+        
+        DatasetPrefixes prefixes = new DatasetPrefixes(new Location(TS_Store.testArea)) ;
+        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        pmap1.setNsPrefix("x", "http://foo/") ;
+        prefixes.close() ;
+        
+        prefixes = new DatasetPrefixes(new Location(TS_Store.testArea)) ;
+        assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
     }
 
 }

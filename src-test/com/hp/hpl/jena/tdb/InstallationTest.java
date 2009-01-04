@@ -4,26 +4,73 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb;
 
+import iterator.TS_Iterator;
+import lib.TS_Lib;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.base.block.TS_Block;
+import com.hp.hpl.jena.tdb.base.file.TS_File;
+import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
+import com.hp.hpl.jena.tdb.base.record.TS_Record;
+import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+import com.hp.hpl.jena.tdb.graph.TS_Graph;
+import com.hp.hpl.jena.tdb.index.TS_Index;
+import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
+import com.hp.hpl.jena.tdb.solver.TS_Solver;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.store.TS_Store;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 // In the build script, it finds all the TS_*.
 // Ideally would do that here
 
-// **** SEE ALSO InstallationTest ****
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    InstallationTest.class
+    TS_Lib.class
+    , TS_Iterator.class
+
+    //, TS_Base.class
+    , TS_Block.class
+    , TS_File.class
+    , TS_Loader.class
+    , TS_Record.class
+    //, TS_Base.class
+    , TS_RecordFile.class
+    // Lib
+//    , TS_IO.class
+    
+    , TS_Index.class
+    
+    , TS_Store.class     // New
+    , TS_PGraph.class    // Old 
+    
+    , TS_Solver.class
+    , TS_Sys.class
+    , TS_Graph.class
+    , TS_TDB.class
 } )
 
-public class TS_Main
-{} 
-
+public class InstallationTest
+{
+    @BeforeClass static public void beforeClass()   
+    {
+        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+    }
+    
+    // For "ant" before 1.7 that only understands JUnit3. 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(InstallationTest.class) ;
+    }
+}
 
 
 /*

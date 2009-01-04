@@ -137,6 +137,7 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     public void sync(boolean force)
     {
+        dataset.getPrefixes().sync(force) ;
         dataset.sync(force);
     }
 }
