@@ -10,6 +10,10 @@ public class Dev
 {
     // (Jena) Cached IRI checking.
     
+    // SPARQ/Update
+
+    // ----
+    
     // Document:
     //   example: algebra transform (split MyQueryEngine) 
     
