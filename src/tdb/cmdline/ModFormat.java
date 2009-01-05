@@ -35,10 +35,10 @@ public class ModFormat implements ArgModuleGeneral
     
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.getUsage().startCategory("Results") ;
+        cmdLine.getUsage().startCategory("Output format") ;
         cmdLine.add(resultsFmtDecl,
-                    "--results",
-                    "Results format (Result set: text, XML, JSON; Graph: RDF serialization)") ;  
+                    "--format",
+                    "Format (Result sets: text, XML, JSON; Graph: RDF serialization)") ;  
     }
 
     public void checkCommandLine(CmdArgModule cmdLine)
