@@ -24,6 +24,8 @@ public class Dev
     
     // Tests not in build sequence
     
+    // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
+    
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
     // Quads:
