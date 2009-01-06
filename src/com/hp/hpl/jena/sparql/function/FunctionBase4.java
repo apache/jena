@@ -29,7 +29,7 @@ public abstract class FunctionBase4 extends FunctionBase
 
     
     @Override
-    public final NodeValue exec(List args)
+    public final NodeValue exec(List<NodeValue> args)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.

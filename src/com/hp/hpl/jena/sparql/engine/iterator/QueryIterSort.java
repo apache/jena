@@ -16,8 +16,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-
 import com.hp.hpl.jena.query.SortCondition;
 
 /** Sort a query iterator.  Uses an in-memory sort, so limiting the size of

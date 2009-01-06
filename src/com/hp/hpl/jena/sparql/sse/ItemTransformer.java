@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
@@ -25,9 +24,9 @@ public class ItemTransformer
     // Why not directly dispatch - and make the "visit" operation return a result
     static class TransformerApply implements ItemVisitor
     {
-        Stack stack = new Stack() ;
+        Stack<Item> stack = new Stack<Item>() ;
         private void push(Item item) { stack.push(item) ; }
-        private Item pop() { return (Item)stack.pop() ; }
+        private Item pop() { return stack.pop() ; }
        
         private ItemTransform transform ;
 
@@ -35,16 +34,14 @@ public class ItemTransformer
         { this.transform = transform ; }
 
         public Item result()
-        { return (Item)stack.peek() ; }
+        { return stack.peek() ; }
         
         public void visit(Item item, ItemList list)
         {
             ItemList newList = new ItemList(item.getLine(), item.getColumn()) ;
             
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            for ( Item subItem : list )
             {
-                Item subItem = (Item)iter.next() ;
-
                 subItem.visit(this) ;
                 Item newItem = pop();
                 newList.add(newItem) ;

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;

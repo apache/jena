@@ -483,7 +483,7 @@ public class BuilderOp
         }
         Expr expr = BuilderExpr.buildExpr(item) ;
         if ( expr.isVariable() )
-            return  new SortCondition(expr.getNodeVar().asVar(), direction) ;
+            return  new SortCondition(expr.getExprVar().asVar(), direction) ;
         else
             return new SortCondition(expr, direction) ;
     }

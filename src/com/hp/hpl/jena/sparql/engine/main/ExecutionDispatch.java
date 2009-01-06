@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 class ExecutionDispatch implements OpVisitor
 {
-    private Stack stack = new Stack() ;
+    private Stack<QueryIterator> stack = new Stack<QueryIterator>() ;
     private OpExecutor opExecutor ;
     
     ExecutionDispatch(OpExecutor exec)
@@ -239,7 +239,7 @@ class ExecutionDispatch implements OpVisitor
     { 
         if ( stack.size() == 0 )
             ALog.warn(this, "Warning: pop: empty stack") ;
-        return (QueryIterator)stack.pop() ;
+        return stack.pop() ;
     }
 }
 /*

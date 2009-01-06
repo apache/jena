@@ -60,7 +60,7 @@ public interface Expr
     /** Variable name (returns null if not a variable) */
     public String  getVarName() ;
     /** Variable (or null) */
-    public ExprVar getNodeVar() ;
+    public ExprVar getExprVar() ;
     /** Convert to a Var variable.*/
     public Var asVar() ;
 

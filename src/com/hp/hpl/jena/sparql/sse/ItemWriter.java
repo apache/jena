@@ -66,7 +66,8 @@ public class ItemWriter
                 PrefixMapping pmap = sCxt.getPrefixMapping() ;
                 if ( pmap != null )
                 {
-                    Map pm = pmap.getNsPrefixMap() ;
+                    @SuppressWarnings("unchecked")
+                    Map<String,String> pm = (Map<String,String>)pmap.getNsPrefixMap() ;
                     donePrefix = ( pm.size() != 0 ) ;
                     if ( pm.size() != 0 )
                     {
@@ -104,9 +105,8 @@ public class ItemWriter
             out.print("(") ;
             
             boolean listMode = false ;
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            for ( Item subItem : list )
             {
-                Item subItem = (Item)iter.next() ;
                 if ( subItem.isList() )
                 {
                     listMode = true ;
@@ -132,9 +132,8 @@ public class ItemWriter
             if ( list.size() >= 1 && list.get(0).isList() )
                 indentlevel = 1 ;
             
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            for ( Item subItem : list )
             {
-                Item subItem = (Item)iter.next() ;
                 if ( ! first ) 
                     out.println() ;
                 subItem.visit(this) ;
@@ -154,9 +153,8 @@ public class ItemWriter
         {
             boolean first = true ;
 
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            for ( Item subItem : list )
             {
-                Item subItem = (Item)iter.next() ;
                 if ( ! first )
                     out.print(" ") ;
                 first = false ;
@@ -166,7 +164,7 @@ public class ItemWriter
             out.print(")") ;
         }
 
-        private void printPrefixes(Map map, IndentedWriter out)
+        private void printPrefixes(Map<String, String> map, IndentedWriter out)
         {
             if ( map.size() == 0 )
                 return ;
@@ -176,13 +174,13 @@ public class ItemWriter
             
             boolean first = true ;
             
-            for ( Iterator iter = map.keySet().iterator() ; iter.hasNext() ; )
+            for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
             {
                 if ( ! first )
                     out.println();
                 first = false ;
-                String k = (String)iter.next() ;
-                String v = (String)map.get(k) ;
+                String k = iter.next() ;
+                String v = map.get(k) ;
                 
                 out.print("(") ;
                 out.print(k) ;

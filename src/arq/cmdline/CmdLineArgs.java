@@ -8,8 +8,6 @@ package arq.cmdline;
 
 import java.util.*;
 
-import com.hp.hpl.jena.rdf.model.RDFNode;
-
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.util.FileManager;

@@ -100,11 +100,10 @@ public class FmtUtils
     public static void formatPattern(IndentedWriter out, BasicPattern pattern, SerializationContext sCxt)
     {
         boolean first = true ;
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        for (Triple t : pattern )
         {
             if ( ! first )
                 out.println() ;
-            Triple t = (Triple)iter.next() ; 
             formatTriple(out, t, sCxt) ;
             first = false ;
         }

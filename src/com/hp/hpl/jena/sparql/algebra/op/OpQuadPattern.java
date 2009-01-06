@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;

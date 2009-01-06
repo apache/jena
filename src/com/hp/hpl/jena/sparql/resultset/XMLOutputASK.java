@@ -7,9 +7,6 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** XML Output (ASK format)

@@ -9,8 +9,9 @@ package dev;
 public class Dev
 {
     // Upgrade 
-    // Var - several list loops of string or var - checkeach usage.
-    // Registries taking Class<?> can be tidied up
+    // + Var - several list loops of string or var - checkeach usage.
+    // + Registries taking Class<?> can be tidied up
+    // + Redo grammar generation
     
     // (Jena) Cached IRI checking.
     

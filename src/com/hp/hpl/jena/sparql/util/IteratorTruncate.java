@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class IteratorTruncate<T> implements Iterator<T>

@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.expr.Expr;
 
 
 /** Sort a result set. */

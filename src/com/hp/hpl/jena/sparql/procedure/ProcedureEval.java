@@ -5,7 +5,6 @@
  */
 
 package com.hp.hpl.jena.sparql.procedure ;
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -24,12 +23,11 @@ public abstract class ProcedureEval extends ProcedureBase
     {
         // Eval if possible.
         ExprList evalArgs = new ExprList() ;
-        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
+        for (Expr e : args)
         {
-            Expr e = (Expr)iter.next() ;
             if ( e.isVariable() )
             {
-                Var v = e.getNodeVar().asVar() ;
+                Var v = e.getExprVar().asVar() ;
                 // Special case - allow unevaluated variables.
                 if ( binding.contains(v) )
                     evalArgs.add(e.eval(binding, execCxt)) ;

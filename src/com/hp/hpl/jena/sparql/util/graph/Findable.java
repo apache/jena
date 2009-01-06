@@ -9,10 +9,11 @@ package com.hp.hpl.jena.sparql.util.graph;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 public interface Findable
 {
-    public Iterator find(Node s, Node p, Node o) ; 
+    public Iterator<Triple> find(Node s, Node p, Node o) ; 
     public boolean  contains(Node s, Node p, Node o) ; 
 }
 
