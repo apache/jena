@@ -34,24 +34,24 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.5.0</version>
+      <version>2.6.0</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq-extra</artifactId>
-      <version>2.5.0</version>
+      <version>2.6.0</version>
     </dependency>
 
     <!-- Not strictly necessary - ARQ depends on Jena -->
      <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
-      <version>2.5.6</version>
+      <version>2.5.7</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jenatest</artifactId>
-      <version>2.5.6</version>
+      <version>2.5.7</version>
     </dependency>
 
     <dependency>
@@ -59,6 +59,7 @@
       <artifactId>junit</artifactId>
       <version>4.5</version>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
