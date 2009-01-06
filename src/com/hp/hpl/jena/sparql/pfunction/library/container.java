@@ -44,6 +44,7 @@ public class container extends PFuncSimple
 
     protected container(Node typeURI) { this.typeNode = typeURI ; }
 
+    @Override
     public QueryIterator execEvaluated(Binding binding, Node containerNode, Node predicate, Node member, ExecutionContext execCxt)
     {
         Graph graph = execCxt.getActiveGraph() ;

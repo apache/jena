@@ -17,9 +17,9 @@ import com.hp.hpl.jena.sparql.util.PrintSerializable;
  * @author Andy Seaborne
  */
 
-public interface QueryIterator extends Closeable, Iterator, PrintSerializable
+public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerializable
 {
-    /** Get next binding - preferred over Iterator.next() */ 
+    /** Get next binding */ 
     public Binding nextBinding() ;
     
     /** Abort a query - may not clearup properly */

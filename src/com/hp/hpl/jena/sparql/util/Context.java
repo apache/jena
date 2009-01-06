@@ -21,8 +21,8 @@ public class Context
     // Like java.util.Properties except not String-centric
     // (which is also why RDF isn't useful here)
     
-    protected Map context = new HashMap() ;
-    protected List callbacks = new ArrayList() ;
+    protected Map<Symbol, Object> context = new HashMap<Symbol, Object>() ;
+    protected List<Callback> callbacks = new ArrayList<Callback>() ;
     
     /** Create an empty context */
     public Context()
@@ -215,8 +215,9 @@ public class Context
     }
     
     /** Set of properties (as Symbols) currently defined */  
-    public Set keys() { return context.keySet() ; }
+    public Set<Symbol> keys() { return context.keySet() ; }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -229,24 +230,25 @@ public class Context
     // ---- Callbacks
     public void addCallback(Callback m) { callbacks.add(m) ; }
     public void removeCallback(Callback m) { callbacks.remove(m) ; }
-    public List getCallbacks() { return callbacks ; }
+    public List<Callback> getCallbacks() { return callbacks ; }
     
     private void doCallbacks(Symbol symbol)
     {
-        for ( Iterator iter = callbacks.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Callback> iter = callbacks.iterator() ; iter.hasNext() ; )
         {
-            Callback m = (Callback)iter.next() ;
+            Callback m = iter.next() ;
             m.event(symbol) ;
         }
     }
     
+    @Override
     public String toString()
     {
         String x = "" ;
         String sep = "" ;
-        for ( Iterator iter = keys().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Symbol> iter = keys().iterator() ; iter.hasNext() ; )
         {
-            Symbol s = (Symbol)iter.next();
+            Symbol s = iter.next();
             Object value = get(s) ;
             x = x + sep + s + " = " + value ;
             sep = "\n" ;

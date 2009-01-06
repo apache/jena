@@ -22,8 +22,10 @@ public class E_IsURI extends E_IsIRI
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return NodeFunctions.isURI(v) ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_IsURI(expr) ; } 
 }
 

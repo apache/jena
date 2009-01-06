@@ -36,7 +36,8 @@ public class ProbabilisticFrameworkJoin extends HeuristicBasicPattern
 	 * @param triple1
 	 * @return double
 	 */
-	public double getCost(Triple triple1) 
+	@Override
+    public double getCost(Triple triple1) 
 	{			
 		if (probability == null)
 			throw new NullPointerException("The probability framework has not been set to the ARQ context!") ;
@@ -52,7 +53,8 @@ public class ProbabilisticFrameworkJoin extends HeuristicBasicPattern
 	 * @param triple2
 	 * @return double
 	 */
-	public double getCost(Triple triple1, Triple triple2)
+	@Override
+    public double getCost(Triple triple1, Triple triple2)
 	{	
 		if (probability == null)
 			throw new NullPointerException("The probability framework has not been set to the ARQ context!") ;

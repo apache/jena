@@ -33,6 +33,7 @@ public class ExprVar extends ExprNode
         varNode = v ;
     }
     
+    @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
         if ( binding == null )
@@ -44,6 +45,7 @@ public class ExprVar extends ExprNode
         return NodeValue.makeNode(v) ;
     }
 
+    @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         if ( binding == null || !binding.contains(varNode) )
@@ -66,8 +68,10 @@ public class ExprVar extends ExprNode
         out.print(varNode.getName()) ;
     }
     
+    @Override
     public int hashCode() { return varNode.hashCode() ; }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -78,10 +82,14 @@ public class ExprVar extends ExprNode
         return getVarName().equals(nvar.getVarName()) ;
     }
     
+    @Override
     public boolean isVariable() { return true ; }
     /** @return Returns the name. */
+    @Override
     public String getVarName()  { return varNode.getName() ; }
+    @Override
     public ExprVar getExprVar() { return this ; }
+    @Override
     public Var asVar()          { return varNode ; }
     public Node getAsNode()     { return varNode ; }
     

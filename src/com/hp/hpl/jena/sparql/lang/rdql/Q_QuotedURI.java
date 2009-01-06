@@ -39,12 +39,14 @@ public class Q_QuotedURI extends Q_URI {
         seen = s ;
     }
 
+    @Override
     public void jjtClose()
     {
         super._setURI(seen);
         super.jjtClose() ;
     }
 
+    @Override
     public void postParse2(Query query)
     {
         if ( ! isAbsolute )
@@ -98,12 +100,16 @@ public class Q_QuotedURI extends Q_URI {
     // Override these to retain prefix (old style qnames in <> quotes)
     
     // But be aware of effects on URIs in expressions
+    @Override
     public String asQuotedString()    { return "<"+seen+">" ; }
+    @Override
     public String asUnquotedString()  { return seen ; }
     // Must return the expanded form
+    @Override
     public String valueString()       { return super.getURI() ; }
 
     // Displyable form
+    @Override
     public String toString() { return seen ; }
 }
 

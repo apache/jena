@@ -26,7 +26,7 @@ public class ElementOptional extends Element
 
     public Element getOptionalElement() { return optionalPart ; }
 
-    //@Override
+    @Override
     public int hashCode()
     {
         int hash = Element.HashOptional ;
@@ -34,7 +34,7 @@ public class ElementOptional extends Element
         return hash ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -46,6 +46,7 @@ public class ElementOptional extends Element
         return getOptionalElement().equalTo(opt2.getOptionalElement(), isoMap) ;
     }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

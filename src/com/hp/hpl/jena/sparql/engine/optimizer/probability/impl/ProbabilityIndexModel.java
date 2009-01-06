@@ -112,7 +112,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	 * @param triple
 	 * @return double
 	 */
-	public double getProbability(Triple triple)
+	@Override
+    public double getProbability(Triple triple)
 	{		
 		double sp = getSubjectProbability(triple) ;
 		double pp = getPredicateProbability(triple) ;
@@ -141,7 +142,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	 * @param triple
 	 * @return double
 	 */
-	public double getSelectivity(Triple triple)
+	@Override
+    public double getSelectivity(Triple triple)
 	{
 		double s = new Long(selectivity.calculate(triple)).doubleValue() / indexedSize ;
 		
@@ -164,7 +166,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	 * @param triple2
 	 * @return double
 	 */
-	public double getProbability(Triple triple1, Triple triple2)
+	@Override
+    public double getProbability(Triple triple1, Triple triple2)
 	{
 		if (triple2 == null)
 			return getProbability(triple1) ;
@@ -291,7 +294,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	 * @param triple2
 	 * @return double
 	 */
-	public double getSelectivity(Triple triple1, Triple triple2)
+	@Override
+    public double getSelectivity(Triple triple1, Triple triple2)
 	{
 		if (triple2 == null)
 			return getSelectivity(triple1) ;

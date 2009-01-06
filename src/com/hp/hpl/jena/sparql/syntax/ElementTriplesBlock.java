@@ -44,9 +44,9 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     { throw new ARQException("Triples-only collector") ; }
     
     public BasicPattern getPattern() { return pattern ; }
-    public Iterator patternElts() { return pattern.iterator(); }
+    public Iterator<Triple> patternElts() { return pattern.iterator(); }
     
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = Element.HashBasicGraphPattern ;
@@ -54,7 +54,7 @@ public class ElementTriplesBlock extends Element implements TripleCollector
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( el2 instanceof ElementTriplesBlock) )
@@ -63,6 +63,7 @@ public class ElementTriplesBlock extends Element implements TripleCollector
         return this.pattern.equiv(eg2.pattern, isoMap) ; 
     }
 
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 
  

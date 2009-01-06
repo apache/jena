@@ -19,11 +19,13 @@ public class Q_StringNotEqual extends Q_StringEqual implements ExprRDQL, ExprBoo
 
     Q_StringNotEqual(RDQLParser p, int id) { super(p, id); }
 
+    @Override
     protected boolean rawEval(RDQL_NodeValue x, RDQL_NodeValue y)
     {
         return ! super.rawEval(x, y) ;
    }
 
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;

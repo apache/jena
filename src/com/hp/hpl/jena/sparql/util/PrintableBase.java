@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.util;
 // Hmm - hardly worth it!
 public abstract class PrintableBase implements Printable
 {
+    @Override
     public String toString() { return PrintUtils.toString(this) ; }
 }
 

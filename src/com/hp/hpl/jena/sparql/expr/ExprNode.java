@@ -45,13 +45,15 @@ public abstract class ExprNode implements Expr
     
     public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
     
-    public Set getVarsMentioned() { return ExprVars.getVarsMentioned(this) ; }
-    public void varsMentioned(Collection acc) { ExprVars.varsMentioned(acc, this) ; }
+    public Set<Var> getVarsMentioned() { return ExprVars.getVarsMentioned(this) ; }
+    public void varsMentioned(Collection<Var> acc) { ExprVars.varsMentioned(acc, this) ; }
 
-    public Set getVarNamesMentioned() { return ExprVars.getVarNamesMentioned(this) ; }
-    public void varNamesMentioned(Collection acc) { ExprVars.varNamesMentioned(acc, this) ; }
+    public Set<String> getVarNamesMentioned() { return ExprVars.getVarNamesMentioned(this) ; }
+    public void varNamesMentioned(Collection<String> acc) { ExprVars.varNamesMentioned(acc, this) ; }
 
+    @Override
     public abstract int     hashCode() ;
+    @Override
     public abstract boolean equals(Object other) ;
     
     final public Expr copySubstitute(Binding binding)
@@ -77,6 +79,7 @@ public abstract class ExprNode implements Expr
     public ExprFunction getFunction()  { return null ; }
     // ---- 
     
+    @Override
     public String toString()
     {
         return ExprUtils.fmtSPARQL(this) ; 

@@ -20,12 +20,14 @@ public class E_GreaterThanOrEqual extends ExprFunction2
     }
 
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         int r = NodeValue.compare(x, y) ;
         return NodeValue.booleanReturn( r == Expr.CMP_GREATER || r == Expr.CMP_EQUAL ) ;
     }
 
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_GreaterThanOrEqual(e1 , e2 ) ; }
 }
 

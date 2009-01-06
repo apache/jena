@@ -70,6 +70,7 @@ public class IndexBuilderString extends IndexBuilderLiteral
     /** Condition to filter statements passed to the indexStatement.
      * indexThisLiteral also applies
      */
+    @Override
     protected boolean indexThisStatement(Statement stmt)
     { 
         if ( property == null )
@@ -84,6 +85,7 @@ public class IndexBuilderString extends IndexBuilderLiteral
      * a plain string with lanuage tag or an xsd string.
      * {@link #indexThisStatement(Statement) indexThisStatement} also applies.
      */
+    @Override
     protected boolean indexThisLiteral(Literal literal)
     { return LARQ.isString(literal) ; }
 

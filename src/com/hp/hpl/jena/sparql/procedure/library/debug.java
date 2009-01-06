@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.util.IterLib;
 public class debug extends ProcedureEval
 {
 
+    @Override
     public QueryIterator execEval(Binding binding, ExprList args, ExecutionContext execCxt)
     {
         System.out.println("Debug: "+args.toString()) ;

@@ -62,6 +62,7 @@ public class RomanNumeral
         intValue = i ;
     }
     
+    @Override
     public String toString() { return i2r(intValue) ; }
     
     public int intValue() { return intValue ; }

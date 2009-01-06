@@ -32,7 +32,7 @@ public class AlgebraQuad extends TransformCopy
 
     public static Op quadize(Op op)
     {
-        final Stack stack = new Stack() ;
+        final Stack<Node> stack = new Stack<Node>() ;
         stack.push(Quad.defaultGraphNode) ;             // Starting condition
         
         OpVisitor before = new Pusher(stack) ;
@@ -44,8 +44,9 @@ public class AlgebraQuad extends TransformCopy
     
     private static class Pusher extends OpVisitorBase
     {
-        Stack stack ;
-        Pusher(Stack stack) { this.stack = stack ; }
+        Stack<Node> stack ;
+        Pusher(Stack<Node> stack) { this.stack = stack ; }
+        @Override
         public void visit(OpGraph opGraph)
         {
             stack.push(opGraph.getNode()) ;
@@ -54,21 +55,23 @@ public class AlgebraQuad extends TransformCopy
     
     private static class Popper extends OpVisitorBase
     {
-        Stack stack ;
-        Popper(Stack stack) { this.stack = stack ; }
+        Stack<Node> stack ;
+        Popper(Stack<Node> stack) { this.stack = stack ; }
+        @Override
         public void visit(OpGraph opGraph)
         {
-            Node n = (Node)stack.pop() ;
+            Node n = stack.pop() ;
         }
     }
 
     private static class TransformQuadGraph extends TransformCopy
     {
-        private Stack tracker ;
+        private Stack<Node> tracker ;
 
-        public TransformQuadGraph(Stack tracker) { this.tracker = tracker ; }
-        private Node getNode() { return (Node)tracker.peek() ; }
+        public TransformQuadGraph(Stack<Node> tracker) { this.tracker = tracker ; }
+        private Node getNode() { return tracker.peek() ; }
 
+        @Override
         public Op transform(OpGraph opGraph, Op op)
         {
             boolean noPattern = false ;
@@ -99,6 +102,7 @@ public class AlgebraQuad extends TransformCopy
             return op ;
         }
         
+        @Override
         public Op transform(OpPath opPath)
         {
             // Put the (graph) back round it
@@ -108,6 +112,7 @@ public class AlgebraQuad extends TransformCopy
             // not the OpGraph that gets walked by the transform.  
         }
         
+        @Override
         public Op transform(OpBGP opBGP)
         {
             return new OpQuadPattern(getNode(), opBGP.getPattern()) ;

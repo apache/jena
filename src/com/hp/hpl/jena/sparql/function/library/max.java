@@ -16,7 +16,7 @@ public class max extends FunctionBase2
 {
     public max() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue nv1, NodeValue nv2)
     {
         return XSDFuncOp.max(nv1, nv2) ;

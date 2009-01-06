@@ -15,9 +15,11 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 /** Black hole for triples */
 public class GraphSink extends GraphBase
 {
+    @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     { return NullIterator.instance ; }
     
+    @Override
     public void performAdd( Triple t ) {}
 }
 

@@ -68,7 +68,7 @@ public class PathLib
     {
         s = Var.lookup(binding, s) ;
         o = Var.lookup(binding, o) ;
-        Iterator iter = null ;
+        Iterator<Node> iter = null ;
         Node endNode = null ;
         Graph graph = execCxt.getActiveGraph() ;
         
@@ -93,11 +93,11 @@ public class PathLib
     }
     
     private static QueryIterator _execTriplePath(Binding binding, 
-                                                 Iterator iter,
+                                                 Iterator<Node> iter,
                                                  Node endNode,
                                                  ExecutionContext execCxt)
     {
-        List results = new ArrayList() ;
+        List<Binding> results = new ArrayList<Binding>() ;
         
         if (! Var.isVar(endNode))
             throw new ARQInternalErrorException("Non-variable endnode in _execTriplePath") ;
@@ -106,7 +106,7 @@ public class PathLib
         // Assign.
         for (; iter.hasNext();)
         {
-            Node n = (Node)iter.next() ;
+            Node n = iter.next() ;
             results.add(new Binding1(binding, var, n)) ;
         }
         return new QueryIterPlainWrapper(results.iterator()) ;
@@ -116,7 +116,7 @@ public class PathLib
     private static QueryIterator groundedPath(Binding binding, Graph graph, Node subject, Path path, Node object,
                                               ExecutionContext execCxt)
     {
-        Iterator iter = PathEval.eval(graph, subject, path) ;
+        Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
         for ( ; iter.hasNext() ; )
         {
             Node n = (Node)iter.next() ;
@@ -130,14 +130,14 @@ public class PathLib
     private static QueryIterator ungroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar,
                                                 ExecutionContext execCxt)
     {
-        Iterator iter = GraphUtils.allNodes(graph) ;
+        Iterator<Node> iter = GraphUtils.allNodes(graph) ;
         QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
         
         for ( ; iter.hasNext() ; )
         {
             Node n = (Node)iter.next() ;
             Binding b2 = new Binding1(binding, sVar, n) ;
-            Iterator pathIter = PathEval.eval(graph, n, path) ;
+            Iterator<Node> pathIter = PathEval.eval(graph, n, path) ;
             QueryIterator qIter = _execTriplePath(b2, pathIter, oVar, execCxt) ;
             qIterCat.add(qIter) ;
         }

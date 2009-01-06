@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.Syntax;
 
 class ParserARQ extends Parser
 {
+    @Override
     public Query parse(Query query, String queryString)
     {
         ARQParser parser = null ;

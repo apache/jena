@@ -21,7 +21,7 @@ public interface DatasetGraph
 
     public boolean containsGraph(Node graphNode) ;
 
-    public Iterator listGraphNodes() ;
+    public Iterator<Node> listGraphNodes() ;
 
     public Lock getLock() ;
     

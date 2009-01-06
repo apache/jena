@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class strConcat extends FunctionBase
 {
 
+    @Override
     public final NodeValue exec(List args)
     {
         if ( args == null )
@@ -42,6 +43,7 @@ public class strConcat extends FunctionBase
         return NodeValue.makeString(result) ;
     }
 
+    @Override
     public void checkBuild(String uri, ExprList args)
     {}
 }

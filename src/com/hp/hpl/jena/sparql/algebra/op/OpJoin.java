@@ -48,14 +48,17 @@ public class OpJoin extends Op2
     
     public String getName() { return Tags.tagJoin ; }
 
+    @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
+    @Override
     public Op copy(Op newLeft, Op newRight)
     { return new OpJoin(newLeft, newRight) ; }
     
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpJoin) ) return false ;

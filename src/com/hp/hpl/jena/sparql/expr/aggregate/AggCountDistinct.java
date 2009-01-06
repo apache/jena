@@ -32,21 +32,24 @@ public class AggCountDistinct implements AggregateFactory
     {
         public AggCountDistinctWorker() { super() ; }
 
+        @Override
         public String toString()        { return "count(distinct *)" ; }
         public String toPrefixString()  { return "(count distinct)" ; }
 
+        @Override
         protected Accumulator createAccumulator()
         { 
             return new AccCountDistinct() ; 
         }
         
+        @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
     // ---- COUNT(DISTINCT *)
     static class AccCountDistinct implements Accumulator
     {
-        private Set rows = new HashSet() ;
+        private Set<Binding> rows = new HashSet<Binding>() ;
         public AccCountDistinct()               { } 
         // The group key part of binding will be the same for all elements of the group.
         public void accumulate(Binding binding, FunctionEnv functionEnv)

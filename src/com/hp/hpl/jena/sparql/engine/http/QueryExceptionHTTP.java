@@ -76,6 +76,7 @@ public class QueryExceptionHTTP extends QueryException
         this.responseMessage = msg ;
     }
     
+    @Override
     public String toString()
     {
         StringBuffer sb = new StringBuffer() ;

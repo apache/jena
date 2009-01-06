@@ -35,15 +35,19 @@ public class OpTable extends Op0
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
+    @Override
     public Op apply(Transform transform)
     { return transform.transform(this) ; }
 
+    @Override
     public Op copy()
     { return new OpTable(table) ; }
 
+    @Override
     public int hashCode()
     { return table.hashCode() ; } 
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpTable) ) return false ;

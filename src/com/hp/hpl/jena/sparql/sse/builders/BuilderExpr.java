@@ -45,9 +45,8 @@ public class BuilderExpr
         ItemList list = item.getList() ;
         list = list.cdr();
         ExprList exprList = new ExprList() ;
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for (Item elt : list)
         {
-            Item elt = (Item)iter.next() ;
             Expr expr = buildExpr(elt) ;
             exprList.add(expr) ;
         }
@@ -81,9 +80,8 @@ public class BuilderExpr
     {
         VarExprList x = new VarExprList() ;
 
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for (Item item : list)
         {
-            Item item = (Item)iter.next() ;
             if ( item.isNode() )
             {
                 Var v = BuilderNode.buildVar(item) ;
@@ -105,7 +103,7 @@ public class BuilderExpr
         return x ;
     }
     
-    protected Map dispatch = new HashMap() ;
+    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
     public Expr buildItem(Item item)
     {
         Expr expr = null ;
@@ -200,11 +198,11 @@ public class BuilderExpr
     
     protected Build findBuild(String str)
     {
-        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
         {
-            String key = (String)iter.next() ; 
+            String key = iter.next() ; 
             if ( str.equalsIgnoreCase(key) )    // ???
-                return (Build)dispatch.get(key) ;
+                return dispatch.get(key) ;
         }
         return null ;
     }

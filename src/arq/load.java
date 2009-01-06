@@ -44,6 +44,7 @@ public class load extends CmdUpdate
         super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         if ( containsMultiple(graphNameArg) )
@@ -55,10 +56,13 @@ public class load extends CmdUpdate
         super.processModulesAndArgs() ;
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
+    @Override
     protected void execUpdate(GraphStore graphStore)
     {
         if ( loadFiles.size() == 0 )

@@ -46,14 +46,17 @@ public class OpTriple extends Op0
         return opBGP ;
     }        
     
+    @Override
     public Op apply(Transform transform)
     { return transform.transform(this) ; }
 
+    @Override
     public Op copy()
     {
         return new OpTriple(triple) ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpTriple) )
@@ -62,6 +65,7 @@ public class OpTriple extends Op0
         return Utils.tripleIso(getTriple(), opTriple.getTriple(), labelMap) ;
     }
 
+    @Override
     public int hashCode()
     {
         return OpBase.HashTriple ^ triple.hashCode() ;

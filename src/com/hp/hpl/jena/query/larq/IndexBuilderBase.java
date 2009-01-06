@@ -116,34 +116,7 @@ public class IndexBuilderBase implements IndexBuilder
         catch (IOException ex) { throw new ARQLuceneException("flushWriter", ex) ; }
     }
     
-    /** Finish indexing (optimizes the index)
-     * @deprecated Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
-     * The writer index is no longer close by this call.
-     */
-    public void closeForWriting()
-    { closeForWriting(true) ; }
-    
-
-    /** Finish indexing, optionally optimizing the index
-     * @deprecated      Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
-     * @param optimize
-     */
-    public void closeForWriting(boolean optimize)
-    {
-        try {
-            if ( indexWriter != null )
-            {
-                flushWriter() ;
-                // Lucene >2.2.0 - closing not necessary - can be kept open.
-                //indexWriter.close() ;
-            }
-        } catch (Exception e)
-        { throw new ARQLuceneException("close", e) ; }
-    }
-
-    /** Get a search index used by LARQ.
-     *
-     */
+    /** Get a search index used by LARQ */
     
     public IndexLARQ getIndex()
     {

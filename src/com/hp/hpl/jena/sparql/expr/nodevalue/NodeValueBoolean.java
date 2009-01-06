@@ -20,23 +20,24 @@ public class NodeValueBoolean extends NodeValue
     public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
     public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
 
-    //@Override
+    @Override
     public boolean isBoolean()  { return true ; }
 
-    //@Override
+    @Override
     public boolean getBoolean() { return bool ; }
 
-    //@Override
+    @Override
     protected Node makeNode() 
     { return bool ? nTrue : nFalse ; } 
     
-    //@Override
+    @Override
     public String asString() { return toString() ; }
     
-    //@Override
+    @Override
     public String toString()
     { return bool ? "true" : "false" ; }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

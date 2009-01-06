@@ -26,6 +26,7 @@ public class E_LogicalAnd extends ExprFunction2
     }
     
     // Special : does not evaluate RHS if LHS means it is unnecessary. 
+    @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         ExprEvalException error = null ;
@@ -64,12 +65,14 @@ public class E_LogicalAnd extends ExprFunction2
         }
     }
 
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         // Revisit
         throw new ARQInternalErrorException("Can't do that to "+this.getClass()) ;
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_LogicalAnd(e1 , e2 ) ; }
 }
 

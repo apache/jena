@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 public abstract
 class PFuncAssignToSubject extends PFuncAssignBase
 {
+    @Override
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
     {
         // Swap args; proceed as before.

@@ -41,6 +41,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         this.opGraph = opGraph ;
     }
     
+    @Override
     protected QueryIterator nextStage(Binding outerBinding)
     {
         DatasetGraph ds = getExecContext().getDataset() ;
@@ -100,6 +101,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             this.opGraph = opGraph ;
         }
 
+        @Override
         protected boolean hasNextBinding()
         {
             for(;;)
@@ -120,6 +122,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             }
         }
 
+        @Override
         protected Binding moveToNextBinding()
         {
             if ( subIter == null )
@@ -128,6 +131,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             return subIter.nextBinding() ;
         }
 
+        @Override
         protected void closeIterator()
         {
             if ( subIter != null )

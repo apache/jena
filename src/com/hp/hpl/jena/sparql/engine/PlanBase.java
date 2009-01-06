@@ -40,6 +40,7 @@ public abstract class PlanBase extends PrintSerializableBase implements Plan
         return iteratorOnce() ;
     }
 
+    @Override
     public void output(IndentedWriter out)
     {
         SerializationContext sCxt = new SerializationContext(ARQConstants.getGlobalPrefixMap()) ;

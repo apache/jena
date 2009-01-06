@@ -16,7 +16,7 @@ public class strUpperCase extends FunctionBase1
 {
     public strUpperCase() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue str)
     {
         return XSDFuncOp.strUpperCase(str) ;

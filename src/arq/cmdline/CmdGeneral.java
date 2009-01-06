@@ -7,8 +7,6 @@
 package arq.cmdline;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
@@ -36,6 +34,7 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
         addModule(modVersion) ;
     }
 
+    @Override
     public void addModule(ArgModuleGeneral argModule)
     {
         super.addModule(argModule) ;
@@ -54,8 +53,6 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     }
     
     private Usage usage = new Usage() ; 
-    private List argName = new ArrayList() ;
-    private List argText = new ArrayList() ;
     
     protected String cmdName = null ;
 

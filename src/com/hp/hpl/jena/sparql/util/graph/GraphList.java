@@ -23,14 +23,14 @@ public class GraphList
     
     public static Node value(GNode gnode) { return car(gnode) ; }
     
-    public static List members(GNode gnode)
+    public static List<Node> members(GNode gnode)
     {
-        List x = new ArrayList() ;
+        List<Node> x = new ArrayList<Node>() ;
         members(gnode, x) ;
         return x ;
     }
     
-    public static void members(GNode gnode, final Collection acc)
+    public static void members(GNode gnode, final Collection<Node> acc)
     {
         if ( ! isListNode(gnode) )
             return ;
@@ -101,10 +101,10 @@ public class GraphList
         return -1 ;
     }
     
-    public static List indexes(GNode gnode, Node value)
+    public static List<Integer> indexes(GNode gnode, Node value)
     {
         
-        List x = new ArrayList() ;
+        List<Integer> x = new ArrayList<Integer>() ;
         
         if ( ! isListNode(gnode) )
             return x ;
@@ -121,7 +121,7 @@ public class GraphList
         return x ;
     }
     
-    public static void triples(GNode gnode, Collection acc)
+    public static void triples(GNode gnode, Collection<Triple> acc)
     {
 //        if ( ! isListNode(gnode) )
 //            return ;
@@ -138,14 +138,14 @@ public class GraphList
             acc.add(t) ;
     }
 
-    public static List allTriples(GNode gnode)
+    public static List<Triple> allTriples(GNode gnode)
     {
-        List x = new ArrayList() ;
+        List<Triple> x = new ArrayList<Triple>() ;
         allTriples(gnode, x) ;
         return x ;
     }
     
-    public static void allTriples(GNode gnode, Collection acc)
+    public static void allTriples(GNode gnode, Collection<Triple> acc)
     {
         if ( ! isListNode(gnode) )
           return ;
@@ -158,13 +158,14 @@ public class GraphList
     }
     
     /** Expensive operation to find all the likely looking list heads in a model */
-    public static Set findAllLists(Graph graph)
+    public static Set<Node> findAllLists(Graph graph)
     {
         // All except rdf:nil.
         
-        Set acc = new HashSet() ;
+        Set<Node> acc = new HashSet<Node>() ;
         // A list head is a node with a rdf:rest from it, not but rdf:rest to it.
-        Iterator iter = graph.find(Node.ANY, CDR, Node.ANY) ;
+        @SuppressWarnings("unchecked")
+        Iterator iter = (Iterator<Triple>)graph.find(Node.ANY, CDR, Node.ANY) ;
         try {
             for ( ; iter.hasNext() ; )
             {

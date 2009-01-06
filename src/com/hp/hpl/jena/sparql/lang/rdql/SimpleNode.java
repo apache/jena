@@ -65,7 +65,8 @@ public class SimpleNode implements RDQL_Node
      toString(String), otherwise overriding toString() is probably all
      you need to do. */
 
-  public String toString() { return RDQLParserTreeConstants.jjtNodeName[id]; }
+  @Override
+public String toString() { return RDQLParserTreeConstants.jjtNodeName[id]; }
   public String toString(String prefix) { return prefix + toString(); }
 
 

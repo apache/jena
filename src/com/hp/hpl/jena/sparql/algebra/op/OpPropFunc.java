@@ -45,6 +45,7 @@ public class OpPropFunc extends Op1
         return objectArgs2 ;
     } 
     
+    @Override
     public Op apply(Transform transform, Op subOp)
     {
         return transform.transform(this, subOp) ;
@@ -55,16 +56,19 @@ public class OpPropFunc extends Op1
 
     public Node getProperty() { return uri ; }
     
+    @Override
     public Op copy(Op op)
     {
         return new OpPropFunc(uri, subjectArgs, objectArgs2, op) ;
     }
 
+    @Override
     public int hashCode()
     {
         return uri.hashCode() ^ getSubOp().hashCode() ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpPropFunc ) ) return false ;

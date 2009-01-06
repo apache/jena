@@ -25,21 +25,25 @@ public class E_Exists extends ExprFunction
         this.op = op  ;
     }
 
+    @Override
     public Expr getArg(int i)
     {
         return null ;
     }
 
+    @Override
     public int numArgs()
     {
         return 0 ;
     }
 
+    @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         return null ;
     }
 
+    @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
         // XXX Dubious.  Need to get the OpExecutorFactory and that needs an ExecutionContext.

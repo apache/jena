@@ -25,6 +25,7 @@ public class QueryIterRoot extends QueryIterSingleton
         super(binding, execCxt) ;
     }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         if ( binding instanceof BindingRoot )

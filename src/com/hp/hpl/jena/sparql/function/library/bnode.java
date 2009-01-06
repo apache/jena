@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
 public class bnode extends FunctionBase1
 {
 
+    @Override
     public NodeValue exec(NodeValue v)
     {
         Node n = v.asNode() ;

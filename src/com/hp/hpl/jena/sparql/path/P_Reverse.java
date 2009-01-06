@@ -19,7 +19,7 @@ public class P_Reverse extends P_Path1
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
     
-    //@Override
+    @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( path2 instanceof P_Reverse ) ) return false ;
@@ -27,6 +27,7 @@ public class P_Reverse extends P_Path1
         return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
 
+    @Override
     public int hashCode()
     {
         return getSubPath().hashCode() ^ hashReverse ;

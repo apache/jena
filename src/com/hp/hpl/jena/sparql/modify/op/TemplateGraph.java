@@ -36,20 +36,20 @@ public class TemplateGraph extends TemplateGroup
         iter.close() ;
     }
 
-    //@Override
+    @Override
     public boolean equalIso(Object other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof TemplateGraph ) ) return false ;
         return super.equalIso(other, labelMap) ;
     }
 
-    //@Override
+    @Override
     public int hashCode()
     {
         return graph.hashCode() ;
     }
 
-    //@Override
+    @Override
     //@SuppressWarnings("unchecked")
     public void subst(Collection s, Map bNodeMap, Binding b)
     {

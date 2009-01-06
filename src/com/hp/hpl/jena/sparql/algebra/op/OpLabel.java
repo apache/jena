@@ -38,6 +38,7 @@ public class OpLabel extends Op1
         this.object = thing ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpLabel) )
@@ -49,6 +50,7 @@ public class OpLabel extends Op1
         return Utils.equals(getSubOp(), opLabel.getSubOp()) ;
     }
 
+    @Override
     public int hashCode()
     {
         int x = HashLabel ;
@@ -69,9 +71,11 @@ public class OpLabel extends Op1
         return Tags.tagLabel ;
     }
 
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
+    @Override
     public Op copy(Op subOp)
     {
         return new OpLabel(object, subOp) ; 

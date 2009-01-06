@@ -25,7 +25,8 @@ public class Q_Identifier extends SimpleNode {
       idName = s ;
   }
 
-  public String toString() { return idName ; }
+  @Override
+public String toString() { return idName ; }
 }
 
 /*

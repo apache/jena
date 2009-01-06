@@ -24,6 +24,7 @@ public abstract class CmdARQ extends CmdGeneral
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ;
     }
     
+    @Override
     protected void processModulesAndArgs()
     { 
         if ( modVersion.getVersionFlag() )
@@ -34,6 +35,7 @@ public abstract class CmdARQ extends CmdGeneral
             QueryIteratorBase.traceIterators = true ;
     }
     
+    @Override
     protected String getCommandName()
     {
         return Utils.className(this) ;

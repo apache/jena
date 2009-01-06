@@ -12,14 +12,15 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class PatternVars
 {
-    public static Set vars(Element element) { return vars(new LinkedHashSet(), element) ; }
+    public static Set<Var> vars(Element element) { return vars(new LinkedHashSet<Var>(), element) ; }
 
-    public static Set vars(Set s, Element element)
+    public static Set<Var> vars(Set<Var> s, Element element)
     {
         ElementVisitor v = new PatternVarsVisitor(s) ;
         ElementWalker.walk(element, v) ;
@@ -28,23 +29,25 @@ public class PatternVars
 
     static class PatternVarsVisitor extends ElementVisitorBase
     {
-        private Set acc ;
-        private PatternVarsVisitor(Set s) { acc = s ; } 
+        private Set<Var> acc ;
+        private PatternVarsVisitor(Set<Var> s) { acc = s ; } 
 
+        @Override
         public void visit(ElementTriplesBlock el)
         {
-            for (Iterator iter = el.patternElts() ; iter.hasNext() ; )
+            for (Iterator<Triple> iter = el.patternElts() ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next() ;
+                Triple t = iter.next() ;
                 VarUtils.addVarsFromTriple(acc, t) ;
             }
         }
 
+        @Override
         public void visit(ElementPathBlock el) 
         {
-            for (Iterator iter = el.patternElts() ; iter.hasNext() ; )
+            for (Iterator<TriplePath> iter = el.patternElts() ; iter.hasNext() ; )
             {
-                TriplePath tp = (TriplePath)iter.next() ;
+                TriplePath tp = iter.next() ;
                 // If it's triple-izable, then use the triple. 
                 if ( tp.isTriple() )
                     VarUtils.addVarsFromTriple(acc, tp.asTriple()) ;
@@ -58,11 +61,13 @@ public class PatternVars
 //      el.getExpr().varsMentioned(acc);
 //      }
 
+        @Override
         public void visit(ElementNamedGraph el)
         {
             VarUtils.addVar(acc, el.getGraphNameNode()) ;
         }
         
+        @Override
         public void visit(ElementSubQuery el)
         {
             el.getQuery().setResultVars() ;
@@ -70,6 +75,7 @@ public class PatternVars
             acc.addAll(x.getVars()) ;
         }
         
+        @Override
         public void visit(ElementAssign el)
         {
             acc.add(el.getVar()) ;

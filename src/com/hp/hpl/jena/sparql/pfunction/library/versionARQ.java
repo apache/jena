@@ -34,6 +34,7 @@ public class versionARQ extends PropertyFunctionEval
     public versionARQ()
     { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_EITHER) ; }
     
+    @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
         Binding b = new BindingMap(binding) ;

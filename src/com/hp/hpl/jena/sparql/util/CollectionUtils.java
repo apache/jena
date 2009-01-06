@@ -15,11 +15,11 @@ import java.util.* ;
 
 public class CollectionUtils
 {
-    static public void removeNulls(Collection list)
+    static public <T> void removeNulls(Collection<T> list)
     {
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
         {
-            Object e = iter.next() ;
+            T e = iter.next() ;
             if ( e == null )
                 iter.remove() ;
         }
@@ -28,7 +28,7 @@ public class CollectionUtils
     /** Return a list of lists of all the elements of collection in every order
      *  Easy to run out of heap memory.
      */  
-    static public List permute(Collection c)
+    static public <T> List<List<T>> permute(List<T> c)
     {
         if ( c.size() > 5 )
         {
@@ -36,24 +36,21 @@ public class CollectionUtils
             return null ;
         }
         
-        List x = new ArrayList() ;
+        List<List<T>> x = new ArrayList<List<T>>() ;
         if ( c.size() == 1 )
         {
             x.add(c) ;
             return x ;
         }
 
-        for ( Iterator iter = c.iterator() ; iter.hasNext() ; )
+        for ( T obj : c )
         {
-            Object obj = iter.next() ;
-
-            List c2 = new ArrayList(c) ;
+            List<T> c2 = new ArrayList<T>(c) ;
             c2.remove(obj) ;
-            List x2 = permute(c2) ;
+            List<List<T>> x2 = permute(c2) ;
             // For each list returned
-            for ( Iterator iter2 = x2.iterator() ; iter2.hasNext() ; )
+            for ( List<T> x3 : x2 )
             {
-                List x3 = (List)iter2.next() ;
                 // Gives a more expected ordering
                 x3.add(0,obj) ;
                 x.add(x3) ;

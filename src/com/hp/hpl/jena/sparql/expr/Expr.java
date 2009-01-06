@@ -32,8 +32,8 @@ public interface Expr
     public boolean isSatisfied(Binding binding, ExecutionContext execCxt) ;
   
     // Coudl use ExprVars directly.
-    public Set  getVarsMentioned() ;
-    public void varsMentioned(Collection acc) ;
+    public Set<Var>  getVarsMentioned() ;
+    public void varsMentioned(Collection<Var> acc) ;
     
     /** Return true iff this constraint is implemened by something in the expr package
      * and hence is fully integrated or compatible with the visitors.

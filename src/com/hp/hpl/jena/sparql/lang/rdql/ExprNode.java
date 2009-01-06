@@ -87,6 +87,7 @@ abstract class ExprNode
         return evalBool(env) ;
     }
     
+    @Override
     public void postParse2(Query q)
     {
         super.postParse2(q) ;
@@ -260,6 +261,7 @@ abstract class ExprNode
     
     // Used in printing a query - not for getting the string
     // value of a expression (which itself must be unquoted)
+    @Override
     public String toString()
     {
         return asInfixString() ;

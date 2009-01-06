@@ -19,12 +19,14 @@ public class E_LessThanOrEqual extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         int r = NodeValue.compare(x, y) ;
         return NodeValue.booleanReturn( r == Expr.CMP_LESS || r == Expr.CMP_EQUAL ) ;
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_LessThanOrEqual(e1 , e2 ) ; }
 }
 

@@ -22,6 +22,7 @@ public abstract class PrintSerializableBase implements PrintSerializable
     { return PrintUtils.toString(this, pmap) ; }
 
     // final stops it being overridden and missing the output() route.
+    @Override
     public final String toString()
     { return PrintUtils.toString(this) ; }
     

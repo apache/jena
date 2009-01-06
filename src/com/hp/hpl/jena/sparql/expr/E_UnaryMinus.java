@@ -21,8 +21,10 @@ public class E_UnaryMinus extends ExprFunction1
         super(expr, printName, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return XSDFuncOp.unaryMinus(v) ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_UnaryMinus(expr) ; } 
 }
 

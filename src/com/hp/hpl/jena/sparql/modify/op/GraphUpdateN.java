@@ -17,12 +17,12 @@ import com.hp.hpl.jena.graph.Node;
 
 public abstract class GraphUpdateN extends Update
 {
-    protected List graphNodes = new ArrayList() ; // List<Node> : Empty means default graph.
+    protected List<Node> graphNodes = new ArrayList<Node>() ; //Empty means default graph.
     
     public boolean hasGraphNames() { return ! graphNodes.isEmpty() ; } 
     public void addGraphName(Node node) { graphNodes.add(node) ; }
     public void addGraphName(String uri) { graphNodes.add(Node.createURI(uri)) ; }
-    public List getGraphNames() { return graphNodes ; }
+    public List<Node> getGraphNames() { return graphNodes ; }
 }
 
 

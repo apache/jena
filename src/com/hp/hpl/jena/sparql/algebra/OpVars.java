@@ -63,17 +63,20 @@ public class OpVars
 
         OpVarsPattern(Set acc) { this.acc = acc ; }
 
+        @Override
         public void visit(OpBGP opBGP)
         {
             vars(opBGP.getPattern(), acc) ;
         }
         
+        @Override
         public void visit(OpPath opPath)
         {
             addVar(acc, opPath.getTriplePath().getSubject()) ;
             addVar(acc, opPath.getTriplePath().getObject()) ;
         }
 
+        @Override
         public void visit(OpQuadPattern quadPattern)
         {
             addVar(acc, quadPattern.getGraphNode()) ;
@@ -86,16 +89,19 @@ public class OpVars
 //            }
         }
 
+        @Override
         public void visit(OpGraph opGraph)
         {
             addVar(acc, opGraph.getNode()) ;
         }
 
+        @Override
         public void visit(OpDatasetNames dsNames)
         {
             addVar(acc, dsNames.getGraphNode()) ;
         }
         
+        @Override
         public void visit(OpTable opTable)
         {
             // Only the variables with values in the tables
@@ -104,6 +110,7 @@ public class OpVars
             acc.addAll(t.getVars());
         }
         
+        @Override
         public void visit(OpProject opProject) 
         {   
             // Seems a tad wasteful to do all that work then throw it away.
@@ -114,6 +121,7 @@ public class OpVars
             acc.addAll(opProject.getVars()) ;
         }
         
+        @Override
         public void visit(OpAssign opAssign)
         {
             acc.addAll(opAssign.getVarExprList().getVars()) ;
@@ -125,11 +133,13 @@ public class OpVars
     {
         OpVarsQuery(Set acc) { super(acc) ; }
 
+        @Override
         public void visit(OpFilter opFilter)
         {
             opFilter.getExprs().varsMentioned(acc);
         }
 
+        @Override
         public void visit(OpOrder opOrder)
         {
             for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )

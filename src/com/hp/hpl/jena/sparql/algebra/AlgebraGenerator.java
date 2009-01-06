@@ -126,9 +126,8 @@ public class AlgebraGenerator
         
         Op current = null ;
         
-        for (Iterator iter = el.getElements().listIterator() ; iter.hasNext() ; )
+        for ( Element subElt: el.getElements() )
         {
-            Element subElt = (Element)iter.next() ;
             ElementGroup elg = (ElementGroup)subElt ;
             Op op = compileElement(elg) ;
             if ( current == null )
@@ -166,12 +165,12 @@ public class AlgebraGenerator
         // This includes BGP-FILTER-BGP
         // This is a delay from parsing time so a printed query
         // keeps filters where the query writer put them.
-        List groupElts = finalizeSyntax(groupElt, exprList) ; 
+        List<Element> groupElts = finalizeSyntax(groupElt, exprList) ; 
         
         // Second: compile the consolidated group elements.
-        for (Iterator iter = groupElts.listIterator() ; iter.hasNext() ; )
+        for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
-            Element elt = (Element)iter.next() ;
+            Element elt = iter.next() ;
             current = compileOneInGroup(elt, current, exprList) ;
         }
             
@@ -186,14 +185,13 @@ public class AlgebraGenerator
      * Return a list of elements: update the exprList
      */
     
-    private List finalizeSyntax(ElementGroup groupElt, ExprList exprList)
+    private List<Element> finalizeSyntax(ElementGroup groupElt, ExprList exprList)
     {
-        List groupElts = new ArrayList() ;
+        List<Element> groupElts = new ArrayList<Element>() ;
         BasicPattern prev = null ;
         
-        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
+        for (Element elt : groupElt.getElements() )
         {
-            Element elt = (Element)iter.next() ;
             if ( elt instanceof ElementFilter )
             {
                 ElementFilter f = (ElementFilter)elt ;
@@ -332,9 +330,8 @@ public class AlgebraGenerator
         BasicPattern bp = null ;
         Op op = null ;
         
-        for ( Iterator iter = pathBlock.iterator() ; iter.hasNext() ; )
+        for ( TriplePath obj : pathBlock )
         {
-            TriplePath obj = (TriplePath)iter.next();
             if ( obj.isTriple() )
             {
                 if ( bp == null )
@@ -415,7 +412,7 @@ public class AlgebraGenerator
         VarExprList projectVars = query.getProject() ;
         
         VarExprList exprs = new VarExprList() ;
-        List vars = new ArrayList() ;
+        List<Var> vars = new ArrayList<Var>() ;
         
         if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
@@ -425,9 +422,8 @@ public class AlgebraGenerator
                 ALog.warn(this,"No project variables") ;
             
             // Separate assignments and variable projection.
-            for ( Iterator iter = query.getProject().getVars().iterator() ; iter.hasNext(); )
+            for ( Var v : query.getProject().getVars() )
             {
-                Var v = (Var)iter.next() ;
                 Expr e = query.getProject().getExpr(v) ;
                 if ( e != null )
                     exprs.add(v, e) ;
@@ -459,11 +455,8 @@ public class AlgebraGenerator
         // ---- HAVING
         if ( query.hasHaving() )
         {
-            for ( Iterator iter = query.getHavingExprs().iterator() ; iter.hasNext() ; )
-            {
-                Expr expr = (Expr)iter.next() ;
+            for (Expr expr : query.getHavingExprs())
                 op = OpFilter.filter(expr , op) ;    
-            }
         }
         
         // ---- ORDER BY

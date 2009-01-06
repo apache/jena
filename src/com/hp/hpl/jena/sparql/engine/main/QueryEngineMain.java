@@ -35,6 +35,7 @@ public class QueryEngineMain extends QueryEngineBase
         super(query, dataset, input, context) ;
     }
 
+    @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
@@ -51,6 +52,7 @@ public class QueryEngineMain extends QueryEngineBase
 //        return op ;
 //    }
     
+    @Override
     protected Op modifyOp(Op op)
     { return Algebra.optimize(op, super.context) ; }
     

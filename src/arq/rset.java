@@ -34,22 +34,26 @@ public class rset extends CmdARQ
         super.addModule(modOutput) ;
     }
             
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
     }
 
+    @Override
     protected String getSummary()
     {
         return usage ;
     }
 
+    @Override
     protected void exec()
     {
         ResultSet rs = modInput.getResultSet() ;
         modOutput.printResultSet(rs, null) ;
     }
 
+    @Override
     protected String getCommandName()
     {
         return "rset" ;

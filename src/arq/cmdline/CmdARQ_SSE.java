@@ -19,8 +19,10 @@ public abstract class CmdARQ_SSE extends CmdARQ
         super.addModule(modItem) ;
     }
     
+    @Override
     protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
 
+    @Override
     final protected void exec()
     {
         Item item = modItem.getItem() ;

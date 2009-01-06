@@ -44,15 +44,18 @@ public class AggSum implements AggregateFactory
             super() ;
         }
 
+        @Override
         public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
         public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
 
+        @Override
         protected Accumulator createAccumulator()
         { 
             return new AccCountVar() ;
         }
         
         /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+        @Override
         public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
     }
 

@@ -30,7 +30,7 @@ public class BindingFixed extends BindingWrapped
     private int calcHashCode()
     {
         int _hashCode = 0 ;
-        for ( Iterator iter = vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = vars() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ;
             Node n = get(var) ;
@@ -43,9 +43,11 @@ public class BindingFixed extends BindingWrapped
         return _hashCode ;
     }
         
+    @Override
     public void add(Var var, Node node)
     { throw new UnsupportedOperationException("BindingFixed.add") ; }
 
+    @Override
     public boolean equals(Object obj)
     {
         if ( this == obj ) return true ;
@@ -57,6 +59,7 @@ public class BindingFixed extends BindingWrapped
         return BindingBase.equals(this, b) ; 
     }
     
+    @Override
     public int hashCode()
     {
         if ( ! haveDoneHashCode )

@@ -29,6 +29,7 @@ class QueryIteratorCaching extends QueryIteratorWrapper
         super(qIter) ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         Binding b = super.moveToNextBinding() ;
@@ -36,6 +37,7 @@ class QueryIteratorCaching extends QueryIteratorWrapper
         return b ;
     }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {}
     

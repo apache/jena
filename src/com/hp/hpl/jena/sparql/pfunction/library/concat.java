@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.IterLib;
 
 public class concat extends PFuncSimpleAndList
 {
+    @Override
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object,
                                        ExecutionContext execCxt)
     {

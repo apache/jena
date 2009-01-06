@@ -19,6 +19,7 @@ public class textMatch extends LuceneSearch
 {
     private IndexLARQ index = null ;
 
+    @Override
     protected IndexLARQ getIndex(ExecutionContext execCxt)
     { 
         if ( index == null )

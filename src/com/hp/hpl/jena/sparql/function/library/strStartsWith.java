@@ -16,7 +16,7 @@ public class strStartsWith extends FunctionBase2
 {
     public strStartsWith() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue str, NodeValue match)
     {
         return XSDFuncOp.strStartsWith(str, match) ;

@@ -33,21 +33,24 @@ public class AggCountVarDistinct implements AggregateFactory
     {
         public AggCountVarDistinctWorker() { super() ; }
 
+        @Override
         public String toString()        { return "count(distinct "+var+")" ; }
         public String toPrefixString()  { return "(count distinct "+var+")" ; }
 
+        @Override
         protected Accumulator createAccumulator()
         { 
             return new AccCountVarDistinct() ; 
         }
         
+        @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
     // ---- Accumulator
     class AccCountVarDistinct implements Accumulator
     {
-        private Set/*<Node>*/ seen = new HashSet() ;
+        private Set/*<Node>*/<Node> seen = new HashSet<Node>() ;
         public AccCountVarDistinct()               { } 
         // The group key part of binding will be the same for all elements of the group.
         public void accumulate(Binding binding, FunctionEnv functionEnv)

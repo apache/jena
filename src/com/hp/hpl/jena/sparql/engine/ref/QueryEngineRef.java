@@ -33,6 +33,7 @@ public class QueryEngineRef extends QueryEngineBase
         super(query, dataset, input, context) ;
     }
     
+    @Override
     protected Op modifyOp(Op op)
     {
         // Just property functions
@@ -41,6 +42,7 @@ public class QueryEngineRef extends QueryEngineBase
         return op ;
     }
     
+    @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         if ( binding.vars().hasNext() )

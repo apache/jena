@@ -48,7 +48,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(List uriList)
+    public static Dataset create(List<String> uriList)
     { return create(uriList, null, null, null) ; }
     
     /** Create a dataset with a default graph and no named graphs
@@ -67,7 +67,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(List uriList, FileManager fileManager)
+    public static Dataset create(List<String> uriList, FileManager fileManager)
     { return create(uriList, null, fileManager, null) ; }
                                               
     /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
@@ -87,8 +87,8 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset createNamed(List namedSourceList, FileManager fileManager)
-    { return create((List)null, namedSourceList, fileManager, null) ; }
+    public static Dataset createNamed(List<String> namedSourceList, FileManager fileManager)
+    { return create((List<String>)null, namedSourceList, fileManager, null) ; }
     
     /** Create a dataset based on two list of URIs.
      *  The first lists is used to create the background (unnamed graph) by merging, the
@@ -101,7 +101,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(List uriList, List namedSourceList)
+    public static Dataset create(List<String> uriList, List<String> namedSourceList)
     {
         return create(uriList, namedSourceList, null, null) ;
     }
@@ -117,7 +117,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(String uri, List namedSourceList)
+    public static Dataset create(String uri, List<String> namedSourceList)
     {
         return create(uri, namedSourceList, null, null) ;
     }
@@ -135,7 +135,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(String uri, List namedSourceList,
+    public static Dataset create(String uri, List<String> namedSourceList,
                                  FileManager fileManager, String baseURI)
     {
         return DatasetUtils.createDataset(uri, namedSourceList, fileManager, baseURI) ;
@@ -155,7 +155,7 @@ public class DatasetFactory
      * @return Dataset
      */
     
-    public static Dataset create(List uriList, List namedSourceList,
+    public static Dataset create(List<String> uriList, List<String> namedSourceList,
                                  FileManager fileManager, String baseURI)
     {
         return DatasetUtils.createDataset(uriList, namedSourceList, fileManager, baseURI) ;

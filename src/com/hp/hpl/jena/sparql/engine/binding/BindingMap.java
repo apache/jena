@@ -23,41 +23,47 @@ import com.hp.hpl.jena.sparql.core.Var;
 public class BindingMap extends BindingBase
 {
     // Bindings are often small.  Is this overkill? 
-    Map map = new HashMap() ;
+    Map<Var, Node> map = new HashMap<Var, Node>() ;
     
     public BindingMap(Binding parent) { super(parent) ; }
     public BindingMap() { super(BindingRoot.create()) ; } // null?
 
     /** Add a (name,value) */
     
+    @Override
     protected void add1(Var var, Node node)
     {
         map.put(var, node) ;
     }
 
+    @Override
     protected int size1() { return map.size() ; }
     
 
     
     /** Iterate over all the names of variables.
      */
-    public Iterator vars1() 
+    @Override
+    public Iterator<Var> vars1() 
     {
         // Assumes that varnames are NOT duplicated.
-        Iterator iter = map.keySet().iterator() ;
+        Iterator<Var> iter = map.keySet().iterator() ;
         return iter ;
     }
     
+    @Override
     public boolean contains1(Var var)
     {
         return map.containsKey(var) ;
     }
     
+    @Override
     public Node get1(Var var)
     {
-        return (Node)map.get(var) ;
+        return map.get(var) ;
     }
 
+    @Override
     protected void checkAdd1(Var v, Node node) { }
 }
 

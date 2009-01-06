@@ -26,16 +26,16 @@ public class BuilderNode
         return item.getNode() ;
     }
     
-    public static List buildNodeList(Item item)
+    public static List<Node> buildNodeList(Item item)
     {
         BuilderLib.checkList(item) ;
         ItemList list = item.getList() ;
         return buildNodeList(list) ;
     }
     
-    public static List buildNodeList(ItemList list)
+    public static List<Node> buildNodeList(ItemList list)
     {
-        List nodes = new ArrayList() ;
+        List<Node> nodes = new ArrayList<Node>() ;
         for ( Iterator iter = list.iterator() ; iter.hasNext(); )
         {
             Item x = (Item)iter.next() ;
@@ -54,16 +54,16 @@ public class BuilderNode
         return Var.alloc(item.getNode()) ;
     }
     
-    public static List buildVarList(Item item)
+    public static List<Var> buildVarList(Item item)
     {
         BuilderLib.checkList(item) ;
         ItemList list = item.getList() ;
         return buildVarList(list) ;
     }
         
-    public static List buildVarList(ItemList list)
+    public static List<Var> buildVarList(ItemList list)
     {
-        List vars = new ArrayList() ;
+        List<Var> vars = new ArrayList<Var>() ;
         for ( Iterator iter = list.iterator() ; iter.hasNext(); )
         {
             Item x = (Item)iter.next() ;
@@ -81,9 +81,9 @@ public class BuilderNode
         return item.getSymbol() ;
     }
     
-    public static List buildVars(ItemList list)
+    public static List<Var> buildVars(ItemList list)
     {
-        List x = new ArrayList() ;
+        List<Var> x = new ArrayList<Var>() ;
         for ( int i = 0 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;

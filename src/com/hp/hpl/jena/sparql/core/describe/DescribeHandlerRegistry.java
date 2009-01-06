@@ -23,7 +23,7 @@ public class DescribeHandlerRegistry
 {
     static private DescribeHandlerRegistry globalRegistry = null ;
     
-    private List registry = new ArrayList() ; 
+    private List<DescribeHandlerFactory> registry = new ArrayList<DescribeHandlerFactory>() ; 
 
     private DescribeHandlerRegistry() { }
     
@@ -73,19 +73,19 @@ public class DescribeHandlerRegistry
         registry.clear() ;
     }
     
-    public List newHandlerList()
+    public List<DescribeHandler> newHandlerList()
     {
-        List a = new ArrayList() ;
-        for ( Iterator iter = handlers() ; iter.hasNext() ; )
+        List<DescribeHandler> a = new ArrayList<DescribeHandler>() ;
+        for ( Iterator<DescribeHandlerFactory> iter = handlers() ; iter.hasNext() ; )
         {
-            DescribeHandlerFactory f = (DescribeHandlerFactory)iter.next();
+            DescribeHandlerFactory f = iter.next();
             a.add(f.create()) ;
         }
         return a ;
     }
     
     
-    public Iterator handlers()
+    public Iterator<DescribeHandlerFactory> handlers()
     {
         return registry.iterator() ;
     }

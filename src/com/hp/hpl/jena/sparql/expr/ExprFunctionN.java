@@ -22,6 +22,7 @@ public abstract class ExprFunctionN extends ExprFunction
         this.args = args ;
     }
 
+    @Override
     public Expr getArg(int i)
     {
         i = i-1 ;
@@ -30,10 +31,12 @@ public abstract class ExprFunctionN extends ExprFunction
         return args.get(i) ;
     }
 
+    @Override
     public int numArgs() { return args.size() ; }
     
     //public List getArgs() { return args.getList() ; }
 
+    @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         ExprList newArgs = new ExprList() ;

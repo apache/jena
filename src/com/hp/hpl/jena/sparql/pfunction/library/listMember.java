@@ -36,6 +36,7 @@ public class listMember extends ListBase
     public listMember()
     { super(PropFuncArgType.PF_ARG_EITHER) ; }
 
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         super.build(argSubject, predicate, argObject, execCxt) ;
@@ -70,6 +71,7 @@ public class listMember extends ListBase
         return new QueryIterYieldN(count, binding) ;
     }
 
+    @Override
     protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
         Node objectNode = object.getArg() ;

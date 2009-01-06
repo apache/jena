@@ -30,6 +30,7 @@ public class QueryIterPath extends QueryIterRepeatApply
         this.triplePath = triplePath ;
     }
 
+    @Override
     protected QueryIterator nextStage(Binding binding)
     {
         if ( triplePath.isTriple() )
@@ -38,6 +39,7 @@ public class QueryIterPath extends QueryIterRepeatApply
         return qIter ; 
     }
     
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;

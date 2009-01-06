@@ -27,8 +27,8 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class QueryIterConcat extends QueryIter
 {
     boolean initialized = false ;
-    List iteratorList = new ArrayList() ; 
-    Iterator iterator ;
+    List<QueryIterator> iteratorList = new ArrayList<QueryIterator>() ; 
+    Iterator<QueryIterator> iterator ;
     QueryIterator currentQIter = null ;
 
     Binding binding ;
@@ -47,7 +47,7 @@ public class QueryIterConcat extends QueryIter
             if ( iterator == null )
                 iterator = iteratorList.listIterator() ;
             if ( iterator.hasNext() )
-                currentQIter = (QueryIterator)iterator.next() ;
+                currentQIter = iterator.next() ;
             initialized = true ;
         }
     }
@@ -59,6 +59,7 @@ public class QueryIterConcat extends QueryIter
     }
     
     
+    @Override
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -74,7 +75,7 @@ public class QueryIterConcat extends QueryIter
             //currentQIter.close() ;
             currentQIter = null ;
             if ( iterator.hasNext() )
-                currentQIter = (QueryIterator)iterator.next() ;
+                currentQIter = iterator.next() ;
             if ( currentQIter == null )
             {
                 // No more.
@@ -86,6 +87,7 @@ public class QueryIterConcat extends QueryIter
         return true ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
@@ -98,23 +100,25 @@ public class QueryIterConcat extends QueryIter
     }
 
     
+    @Override
     protected void closeIterator()
     {
-        for ( Iterator iter = iteratorList.iterator() ; iter.hasNext() ; )
+        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
         {
-            QueryIterator qIter = (QueryIterator)iter.next() ;
+            QueryIterator qIter = iter.next() ;
             if ( qIter != null )
                 qIter.close() ;
         }
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { 
         out.println(Utils.className(this)) ;
         out.incIndent() ;
-        for ( Iterator iter = iteratorList.iterator() ; iter.hasNext() ; )
+        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
         {
-            QueryIterator qIter = (QueryIterator)iter.next() ;
+            QueryIterator qIter = iter.next() ;
             qIter.output(out, sCxt) ;
         }
         out.decIndent() ;

@@ -46,6 +46,7 @@ public class sse extends CmdARQ_SSE
         super.add(noResolveDecl,    "--raw", "Don't handle base or prefix names specially") ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -60,8 +61,10 @@ public class sse extends CmdARQ_SSE
             SSE.setUseResolver(false) ;
     }
 
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
 
+    @Override
     protected String getSummary() { return getCommandName() ; }
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
@@ -74,6 +77,7 @@ public class sse extends CmdARQ_SSE
         needDivider = true ;
     }
 
+    @Override
     protected void exec(Item item)
     {
         if ( ! print )

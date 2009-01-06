@@ -32,6 +32,7 @@ public class QueryEngineQuad extends QueryEngineRef
         super(query, dataset, input, context) ;
     }
     
+    @Override
     protected Op modifyOp(Op op)
     { 
         return Algebra.toQuadForm(op) ;

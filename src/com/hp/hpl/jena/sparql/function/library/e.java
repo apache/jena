@@ -15,6 +15,7 @@ class e extends FunctionBase0
 {
     static NodeValue value_e = NodeValue.makeDouble(Math.E) ;
     
+    @Override
     public NodeValue exec() { return value_e ; }
     
 }

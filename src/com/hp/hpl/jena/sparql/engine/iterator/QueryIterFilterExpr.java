@@ -33,6 +33,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding
         this.expr = expr ;
     }
     
+    @Override
     public Binding accept(Binding binding)
     {
         try {
@@ -50,6 +51,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding
         }
     }
 
+    @Override
     protected void details(IndentedWriter out, SerializationContext cxt)
     { 
         out.print(Utils.className(this)) ;

@@ -19,6 +19,7 @@ public class E_Equals extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         // Note: notSameValueAs means "known to be different"
@@ -29,6 +30,7 @@ public class E_Equals extends ExprFunction2
         return NodeValue.booleanReturn(b) ;
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Equals(e1 , e2 ) ; }
 }
 

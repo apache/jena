@@ -36,14 +36,17 @@ public class AggCount implements AggregateFactory
             super() ;
         }
 
+        @Override
         public String toString() { return "count(*)" ; }
         public String toPrefixString() { return "(count)" ; }
 
+        @Override
         protected Accumulator createAccumulator()
         { 
             return new AccCount() ;
         }
 
+        @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 

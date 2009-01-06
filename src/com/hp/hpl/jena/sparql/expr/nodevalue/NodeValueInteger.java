@@ -25,34 +25,34 @@ public class NodeValueInteger extends NodeValue
     public NodeValueInteger(long i, Node n)       { super(n) ; integer = new BigInteger(Long.toString(i)) ; }
     public NodeValueInteger(long i)               { super() ; integer = new BigInteger(Long.toString(i)) ; }
 
-    //@Override
+    @Override
     public boolean isNumber() { return true ; }
-    //@Override
+    @Override
     public boolean isInteger() { return true ; }
-    //@Override
+    @Override
     public boolean isDecimal() { return true ; }
-    //@Override
+    @Override
     public boolean isFloat()  { return true ; }
-    //@Override
+    @Override
     public boolean isDouble() { return true ; }
     
-    //@Override
+    @Override
     public BigInteger  getInteger()   { return integer ; }
-    //@Override
+    @Override
     public double getDouble()  { return integer.doubleValue() ; }
-    //@Override
+    @Override
     public float  getFloat()   { return integer.floatValue() ; }
-    //@Override
+    @Override
     public BigDecimal getDecimal()  { return new BigDecimal(integer) ; }
 
-    //@Override
+    @Override
     protected Node makeNode()
     { return Node.createLiteral(integer.toString(), null, XSDDatatype.XSDinteger) ; }
     
-    //@Override
+    @Override
     public String asString() { return toString() ; }
     
-    //@Override
+    @Override
     public String toString()
     { 
         // Preserve lexical form
@@ -60,6 +60,7 @@ public class NodeValueInteger extends NodeValue
         return integer.toString() ;
     }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

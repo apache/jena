@@ -31,7 +31,7 @@ public interface Dataset
     public boolean containsNamedModel(String uri) ;
 
     /** List the names */
-    public Iterator listNames() ;
+    public Iterator<String> listNames() ;
     
     /** Get the lock for this dataset */
     public Lock getLock() ;

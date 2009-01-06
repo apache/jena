@@ -28,6 +28,7 @@ public abstract class ExprFunction2 extends ExprFunction
     public Expr getArg1() { return getArg(1) ; }
     public Expr getArg2() { return getArg(2) ; }
     
+    @Override
     public Expr getArg(int i)
     {
         if ( i == 1 )
@@ -37,10 +38,12 @@ public abstract class ExprFunction2 extends ExprFunction
         return null ;
     }
     
+    @Override
     public int numArgs() { return 2 ; }
     
     // ---- Evaluation
     
+    @Override
     public int hashCode()
     {
         return getFunctionSymbol().hashCode() ^
@@ -48,6 +51,7 @@ public abstract class ExprFunction2 extends ExprFunction
                getArg2().hashCode() ;
     }
 
+    @Override
     final public NodeValue eval(Binding binding, FunctionEnv env)
     {
         NodeValue s = evalSpecial(binding, env) ;
@@ -66,6 +70,7 @@ public abstract class ExprFunction2 extends ExprFunction
 
     // ---- Duplication
     
+    @Override
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         Expr e1 = expr1.copySubstitute(binding, foldConstants) ;

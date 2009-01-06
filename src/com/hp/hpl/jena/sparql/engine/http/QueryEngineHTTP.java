@@ -31,8 +31,8 @@ public class QueryEngineHTTP implements QueryExecution
     Params params = null ;
     
     // Protocol
-    List defaultGraphURIs = new ArrayList() ;
-    List namedGraphURIs  = new ArrayList() ;
+    List<String> defaultGraphURIs = new ArrayList<String>() ;
+    List<String> namedGraphURIs  = new ArrayList<String>() ;
     private String user = null ;
     private char[] password = null ;
     
@@ -60,13 +60,13 @@ public class QueryEngineHTTP implements QueryExecution
     { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
     
     /**  @param defaultGraphURIs The defaultGraphURIs to set. */
-    public void setDefaultGraphURIs(List defaultGraphURIs)
+    public void setDefaultGraphURIs(List<String> defaultGraphURIs)
     {
         this.defaultGraphURIs = defaultGraphURIs ;
     }
 
     /**  @param namedGraphURIs The namedGraphURIs to set. */
-    public void setNamedGraphURIs(List namedGraphURIs)
+    public void setNamedGraphURIs(List<String> namedGraphURIs)
     {
         this.namedGraphURIs = namedGraphURIs ;
     }
@@ -82,7 +82,7 @@ public class QueryEngineHTTP implements QueryExecution
     public void addDefaultGraph(String defaultGraph)
     {
         if ( defaultGraphURIs == null )
-            defaultGraphURIs = new ArrayList() ;
+            defaultGraphURIs = new ArrayList<String>() ;
         defaultGraphURIs.add(defaultGraph) ;
     }
 
@@ -90,7 +90,7 @@ public class QueryEngineHTTP implements QueryExecution
     public void addNamedGraph(String name)
     {
         if ( namedGraphURIs == null )
-            namedGraphURIs = new ArrayList() ;
+            namedGraphURIs = new ArrayList<String>() ;
         namedGraphURIs.add(name) ;
     }
     
@@ -148,14 +148,14 @@ public class QueryEngineHTTP implements QueryExecution
         HttpQuery httpQuery = new HttpQuery(service) ;
         httpQuery.addParam(HttpParams.pQuery, queryString );
         
-        for ( Iterator iter = defaultGraphURIs.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = defaultGraphURIs.iterator() ; iter.hasNext() ; )
         {
-            String dft = (String)iter.next() ;
+            String dft = iter.next() ;
             httpQuery.addParam(HttpParams.pDefaultGraph, dft) ;
         }
-        for ( Iterator iter = namedGraphURIs.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = namedGraphURIs.iterator() ; iter.hasNext() ; )
         {
-            String name = (String)iter.next() ;
+            String name = iter.next() ;
             httpQuery.addParam(HttpParams.pNamedGraph, name) ;
         }
         
@@ -172,6 +172,7 @@ public class QueryEngineHTTP implements QueryExecution
 
 //    public boolean isActive() { return false ; }
     
+    @Override
     public String toString()
     {
         HttpQuery httpQuery = makeHttpQuery() ;

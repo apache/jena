@@ -21,8 +21,10 @@ public class E_Add extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.add(x, y) ; }
 
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Add(e1 , e2 ) ; }
 }
 

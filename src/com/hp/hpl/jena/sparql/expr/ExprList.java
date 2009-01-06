@@ -13,13 +13,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class ExprList
+public class ExprList implements Iterable<Expr>
 {
-    private List expressions = new ArrayList() ;
+    private List<Expr> expressions = new ArrayList<Expr>() ;
     
     public ExprList() {}
     public ExprList(ExprList other) { expressions.addAll(other.expressions) ; }
@@ -32,31 +33,31 @@ public class ExprList
     public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         // Dream of generics
-        for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next();
+            Expr expr = iter.next();
             if ( ! expr.isSatisfied(binding, execCxt) )
                 return false ;
         }
         return true ;
     }
     
-    public Expr get(int idx) { return (Expr)expressions.get(idx) ; }
+    public Expr get(int idx) { return expressions.get(idx) ; }
     public int size() { return expressions.size() ; }
     public boolean isEmpty() { return expressions.isEmpty() ; }
     
-    public Set getVarsMentioned()
+    public Set<Var> getVarsMentioned()
     {
-        Set x = new HashSet() ;
+        Set<Var> x = new HashSet<Var>() ;
         varsMentioned(x) ;
         return x ;
     }
     
-    public void varsMentioned(Collection acc)
+    public void varsMentioned(Collection<Var> acc)
     {
-        for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next();
+            Expr expr = iter.next();
             expr.varsMentioned(acc) ;
         }
     }
@@ -65,9 +66,9 @@ public class ExprList
     public ExprList copySubstitute(Binding binding, boolean foldConstants)
     {
         ExprList x = new ExprList() ;
-        for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next();
+            Expr expr = iter.next();
             expr = expr.copySubstitute(binding, foldConstants) ;
             x.add(expr) ;
         }
@@ -75,24 +76,27 @@ public class ExprList
     }
     public void addAll(ExprList exprs) { expressions.addAll(exprs.getList()) ; }
     public void add(Expr expr) { expressions.add(expr) ; }
-    public List getList() { return expressions ; }
-    public Iterator iterator() { return expressions.iterator() ; }
+    public List<Expr> getList() { return expressions ; }
+    public Iterator<Expr> iterator() { return expressions.iterator() ; }
     
     public void prepareExprs(Context context)
     {
         // Give each expression the chance to set up (bind functions)
-        for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next() ;
+            Expr expr = iter.next() ;
             ExprWalker.walk(new ExprBuild(context), expr) ;
         }
     }
     
+    @Override
     public String toString()
     { return expressions.toString() ; }
     
+    @Override
     public int hashCode() { return expressions.hashCode() ; }
 
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -103,9 +107,9 @@ public class ExprList
     public static ExprList splitConjunction(ExprList exprList1)
     {
         ExprList exprList2 = new ExprList() ;
-        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = exprList1.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next() ;
+            Expr expr = iter.next() ;
             split(exprList2, expr) ;
         }
         return exprList2 ;

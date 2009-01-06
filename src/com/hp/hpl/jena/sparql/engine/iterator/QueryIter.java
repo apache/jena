@@ -40,6 +40,7 @@ public abstract class QueryIter extends QueryIteratorBase
         return new QueryIterTracked(qIter, execCxt) ; 
     }
     
+    @Override
     public final void close()
     {
         super.close() ;

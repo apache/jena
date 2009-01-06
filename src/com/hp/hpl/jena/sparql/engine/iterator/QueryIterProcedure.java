@@ -43,24 +43,28 @@ public class QueryIterProcedure extends QueryIter1
         }
     }
 
+    @Override
     protected void closeSubIterator()
     { 
         init() ;    // Ensure initialized even if immediately closed.
         procIter.close(); 
     }
 
+    @Override
     protected boolean hasNextBinding()
     {
         init() ;
         return procIter.hasNext() ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         init( ) ;
         return procIter.nextBinding() ;
     }
     
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;

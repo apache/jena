@@ -35,8 +35,10 @@ public class QueryIterConvert extends QueryIter1
         converter = c ;
     }
     
+    @Override
     protected void closeSubIterator() {}
 
+    @Override
     public boolean hasNextBinding()
     {
 //        if ( isFinished() )
@@ -48,11 +50,13 @@ public class QueryIterConvert extends QueryIter1
         return getInput().hasNext() ;
     }
 
+    @Override
     public Binding moveToNextBinding()
     {
         return converter.convert(getInput().nextBinding()) ;
     }
 
+    @Override
     protected void details(IndentedWriter out, SerializationContext cxt)
     { 
         out.println(Utils.className(this)) ;

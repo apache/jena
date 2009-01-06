@@ -65,9 +65,11 @@ public class IndexBuilderSubject extends IndexBuilderModel
         property = p ;
     }
     
+    @Override
     public void unindexStatement(Statement s)
     { throw new ARQNotImplemented("unindexStatement") ; }
     
+    @Override
     public void indexStatement(Statement s)
     {
         if ( ! indexThisStatement(s) )

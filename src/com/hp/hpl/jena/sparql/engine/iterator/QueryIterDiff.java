@@ -26,9 +26,11 @@ public class QueryIterDiff extends QueryIter2
         getRight().close();
     }
 
+    @Override
     protected void releaseResources()
     { tableRight.close(); }
 
+    @Override
     protected boolean hasNextBinding()
     {
         if ( slot != null )
@@ -47,6 +49,7 @@ public class QueryIterDiff extends QueryIter2
         return false ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )

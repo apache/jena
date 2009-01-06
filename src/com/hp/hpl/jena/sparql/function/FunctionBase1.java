@@ -20,12 +20,14 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class FunctionBase1 extends FunctionBase
 {
+    @Override
     public void checkBuild(String uri, ExprList args)
     { 
         if ( args.size() != 1 )
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes one argument") ;
     }
 
+    @Override
     public final NodeValue exec(List args)
     {
         if ( args == null )

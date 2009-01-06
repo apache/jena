@@ -25,8 +25,10 @@ public class E_IsIRI extends ExprFunction1
         super(expr, altSymbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return NodeFunctions.isIRI(v) ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_IsIRI(expr) ; } 
 }
 

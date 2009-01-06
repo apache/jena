@@ -33,6 +33,7 @@ class QueryIteratorCopy extends QueryIteratorBase
         iterator = copy() ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         return iterator.nextBinding() ;
@@ -52,9 +53,11 @@ class QueryIteratorCopy extends QueryIteratorBase
         return new QueryIterPlainWrapper(elements.iterator()) ;
     }
 
+    @Override
     protected void closeIterator()
     { iterator.close() ; }
 
+    @Override
     protected boolean hasNextBinding()
     {
         return iterator.hasNext() ;

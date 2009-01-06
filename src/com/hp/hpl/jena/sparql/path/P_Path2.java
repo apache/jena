@@ -31,7 +31,7 @@ public abstract class P_Path2 extends PathBase
 
     public abstract int hashSeed() ;
     
-    //@Override
+    @Override
     final public int hashCode() 
     {
         return hashSeed() ^ path1.hashCode() ^ path2.hashCode() ;

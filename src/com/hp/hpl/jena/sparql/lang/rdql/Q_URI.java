@@ -21,6 +21,7 @@ public class Q_URI extends ParsedLiteral {
         super(p, id);
     }
 
+    @Override
     public void jjtClose()
     {
         // Don't set the node yet - may be an old form qname in <>.
@@ -35,6 +36,7 @@ public class Q_URI extends ParsedLiteral {
 		return uri ;
 	}
     
+    @Override
     public void postParse2(Query query)
     {
         super.postParse2(query) ;

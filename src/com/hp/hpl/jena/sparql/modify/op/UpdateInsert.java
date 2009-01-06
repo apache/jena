@@ -38,7 +38,7 @@ public class UpdateInsert extends UpdateModifyBase
     public Template getInsertTemplate()
     { return getInsertTemplateBase() ; }
     
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 

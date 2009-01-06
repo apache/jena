@@ -75,7 +75,8 @@ public class GraphNode
 		return triple ;
 	}
 	
-	public boolean equals(Object other)
+	@Override
+    public boolean equals(Object other)
 	{
 	    if ( this == other ) return true ;
 	    if ( ! ( other instanceof GraphNode ) ) return false ;

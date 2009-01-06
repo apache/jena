@@ -32,7 +32,7 @@ public class BasicPatternGraph
 	// The heurisic technique used to estimate the costs for (joined triple patterns)
 	private HeuristicBasicPattern heuristic ;
 	// The list of ConnectedGraph components of the BasicPatternGraph
-	private List components = new ArrayList() ; // List<ConntectedGraph>
+	private List<ConnectedGraph> components = new ArrayList<ConnectedGraph>() ; // 
 	private static Log log = LogFactory.getLog(BasicPatternGraph.class) ;
 	
 	/**
@@ -46,14 +46,14 @@ public class BasicPatternGraph
 		this.heuristic = (HeuristicBasicPattern)heuristic ;
 		
 		// First get the list of BasicPatterns of triples which are joined together
-		List patterns = listJoinedBasicPatterns(pattern) ; // List<BasicPattern>
+		List<BasicPattern> patterns = listJoinedBasicPatterns(pattern) ; // List<BasicPattern>
 		
 		log.debug("Number of BasicPatternGraph components: " + patterns.size()) ;
 		
 		/* Create a ConnectedGraph for each identified pattern, 
 		 * i.e. each component of BasicPatternGraph */
-		for (Iterator iter = patterns.iterator(); iter.hasNext(); )
-			buildGraphComponent((BasicPattern)iter.next()) ;
+		for (Iterator<BasicPattern> iter = patterns.iterator(); iter.hasNext(); )
+			buildGraphComponent(iter.next()) ;
 	}
 	
 	/**
@@ -67,9 +67,9 @@ public class BasicPatternGraph
 		BasicPattern pattern = new BasicPattern() ;
 		
 		// Step through the components of BasicPatternGraph ...
-		for (Iterator iter = components.iterator(); iter.hasNext(); )
+		for (Iterator<ConnectedGraph> iter = components.iterator(); iter.hasNext(); )
 		{
-			ConnectedGraph component = (ConnectedGraph)iter.next() ;
+			ConnectedGraph component = iter.next() ;
 			// ... and optimize them.
 			pattern.addAll((BasicPattern)component.optimize()) ;
 		}
@@ -98,7 +98,7 @@ public class BasicPatternGraph
 	 */
 	public ConnectedGraph getComponent(int index)
 	{
-		return (ConnectedGraph)components.get(index) ;
+		return components.get(index) ;
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class BasicPatternGraph
 	 * 
 	 * @return List<ConnectedGraph>
 	 */
-	public List getComponents()
+	public List<ConnectedGraph> getComponents()
 	{
 		return components ; // List<ConnectedGraph>
 	}
@@ -114,16 +114,13 @@ public class BasicPatternGraph
 	/*
 	 * The method returns a list of distinct nodes defined in BasicPattern
 	 */
-	private Vector getNodes(BasicPattern pattern)
+	private Vector<Node> getNodes(BasicPattern pattern)
 	{
-		Vector nodes = new Vector() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
 		
-		// Set trough the BasicPattern and get a set of nodes
-		for (Iterator iter = pattern.iterator(); iter.hasNext(); )
-		{
-			Triple triple = (Triple)iter.next() ;
+		// Step through the BasicPattern and get a set of nodes
+		for (Triple triple : pattern)
 			nodes.addAll(getNodes(triple)) ;
-		}
 		
 		return nodes ;
 	}
@@ -132,9 +129,9 @@ public class BasicPatternGraph
 	 * The method returns a list of nodes defined in a triple.
 	 * Predicates should not be considered for join evaluation
 	 */
-	private Vector getNodes(Triple triple)
+	private Vector<Node> getNodes(Triple triple)
 	{
-		Vector nodes = new Vector() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
 		
 		Node subject = triple.getSubject() ;
 		Node predicate = triple.getPredicate() ;
@@ -172,21 +169,19 @@ public class BasicPatternGraph
 	 * The method creates a set of BasicPatterns with joined triple patterns
 	 * out of the original BasicPattern which has to be optimized. 
 	 */
-	private List listJoinedBasicPatterns(BasicPattern pattern)
+	private List<BasicPattern> listJoinedBasicPatterns(BasicPattern pattern)
 	{
 		/* Queue of nodes to consider */
-		Vector nodes = new Vector() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
 		/* The set contains a list of joined BasicPattern */
-		List patterns = new ArrayList(); // List<BasicPattern>
+		List<BasicPattern> patterns = new ArrayList<BasicPattern>(); // List<BasicPattern>
 		/* Hash set of the triple hash codes. This helper list is used
 		 * to consider triples defined in BasicPattern just once */
-		Set considered = new HashSet() ; // HashSet<Triple>
+		Set<Triple> considered = new HashSet<Triple>() ; // HashSet<Triple>
 		
 		// Step through the triples of BasicPattern
-		for (Iterator iter = pattern.iterator(); iter.hasNext(); )
+		for (Triple triple1 : pattern)
 		{
-			Triple triple1 = (Triple)iter.next() ;
-			
 			// Process the triple only if not yet considered
 			if (! considered.contains(triple1))
 			{
@@ -201,13 +196,11 @@ public class BasicPatternGraph
 				while (nodes.size() > 0)
 				{
 					// If the queue contains variables, process them
-					Node node = (Node)nodes.remove(0) ;
+					Node node = nodes.remove(0) ;
 					log.debug("Check the node: " + node.toString()) ;
 					// Search for triple patterns which match the variable
-					for (Iterator it = pattern.iterator(); it.hasNext(); )
+					for (Triple triple2 : pattern )
 					{
-						Triple triple2 = (Triple)it.next() ;
-						
 						if (! considered.contains(triple2))
 						{
 							log.debug("Consider triple2: " + triple2) ;
@@ -239,13 +232,13 @@ public class BasicPatternGraph
 	 * a variable are clustered into the same BasicPattern. If no BasicPattern
 	 * can be found in the set, create a new one and add it to the set.
 	 */
-	private void addTripleToBasicPattern(List patterns, Triple triple, Node node)
+	private void addTripleToBasicPattern(List<BasicPattern> patterns, Triple triple, Node node)
 	{
 		// First get the right BasicPattern from the set
 		// List<BasicPattern>
-		for (Iterator iter = patterns.iterator(); iter.hasNext(); )
+		for (Iterator<BasicPattern> iter = patterns.iterator(); iter.hasNext(); )
 		{
-			BasicPattern pattern = (BasicPattern)iter.next() ;
+			BasicPattern pattern = iter.next() ;
 			
 			// Check if the pattern contains the variable
 			if (getNodes(pattern).contains(node))
@@ -281,24 +274,22 @@ public class BasicPatternGraph
 		ConnectedGraph component = new ConnectedGraph() ;
 		
 		// First we add for each triple pattern a node to the component
-		for (Iterator iter = pattern.iterator(); iter.hasNext(); )
+		for (Triple triple :  pattern )
 		{
-			Triple triple = (Triple)iter.next() ;
 			double weight = heuristic.getCost(triple) ;
-		
 			component.createNode(triple, weight) ;
 		}
 		
-		List nodes = component.getNodes() ; // List<GraphNode>
+		List<GraphNode> nodes = component.getNodes() ; // List
 		// Create a temporary list of the nodes, used to identify distinct edges
-		List tmp = new ArrayList() ; // List<GraphNode>
+		List<GraphNode> tmp = new ArrayList<GraphNode>() ; // List<GraphNode>
 		// Make sure to create a copy and not simply a reference to nodes (-> concurrency exception)
 		tmp.addAll(nodes) ;
 		
 		// Second build the set of eadges
-		for (Iterator iter1 = nodes.iterator(); iter1.hasNext(); )
+		for (Iterator<GraphNode> iter1 = nodes.iterator(); iter1.hasNext(); )
 		{
-			GraphNode node1 = (GraphNode)iter1.next() ;
+			GraphNode node1 = iter1.next() ;
 			
 			/* Remove the considered node from the temporary map of nodes 
 			 * to avoid twice comparison. Remove the node before iterating
@@ -307,9 +298,9 @@ public class BasicPatternGraph
 			
 			/* Iterator over the remaining nodes, and check if there is an edge
 			 * (i.e. a join between the triples */
-			for (Iterator iter2 = tmp.iterator(); iter2.hasNext(); )
+			for (Iterator<GraphNode> iter2 = tmp.iterator(); iter2.hasNext(); )
 			{
-				GraphNode node2 = (GraphNode)iter2.next() ;
+				GraphNode node2 = iter2.next() ;
 				
 				if (BasicPatternJoin.isJoined(node1, node2))
 				{

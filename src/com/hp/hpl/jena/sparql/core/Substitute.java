@@ -82,7 +82,7 @@ public class Substitute
             this.binding = binding ;
         }
 
-        //@Override
+        @Override
         public Op transform(OpBGP opBGP)
         {
             BasicPattern bgp = opBGP.getPattern() ;
@@ -90,7 +90,7 @@ public class Substitute
             return new OpBGP(bgp) ;
         }
 
-        //@Override
+        @Override
         public Op transform(OpQuadPattern quadPattern)
         {
             Node gNode = quadPattern.getGraphNode() ;
@@ -123,24 +123,27 @@ public class Substitute
             return new OpQuadPattern(g, triples) ;
         }
 
+        @Override
         public Op transform(OpPath opPath)
         {
             return new OpPath(PathLib.substitute(opPath.getTriplePath(), binding)) ;
         }
 
-        //@Override
+        @Override
         public Op transform(OpFilter filter, Op op)
         {
             ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
             return OpFilter.filter(exprs, op) ; 
         }
 
+        @Override
         public Op transform(OpGraph op, Op sub)
         {
             Node n = substitute(op.getNode(), binding) ;
             return new OpGraph(n, sub) ;
         }
 
+        @Override
         public Op transform(OpService op, Op sub)
         {
             Node n = substitute(op.getService(), binding) ;

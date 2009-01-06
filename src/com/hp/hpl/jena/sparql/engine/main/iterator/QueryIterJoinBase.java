@@ -44,6 +44,7 @@ public abstract class QueryIterJoinBase extends QueryIter2
         this.exprs = exprs ;
     }
     
+    @Override
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -56,6 +57,7 @@ public abstract class QueryIterJoinBase extends QueryIter2
         return ( nextBinding != null ) ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( nextBinding == null )
@@ -66,6 +68,7 @@ public abstract class QueryIterJoinBase extends QueryIter2
         return b ;
     }
 
+    @Override
     protected void releaseResources()
     {
         if ( current != null )

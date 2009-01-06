@@ -36,14 +36,17 @@ public class AggCountVar implements AggregateFactory
             super() ;
         }
 
+        @Override
         public String toString() { return "count("+var+")" ; }
         public String toPrefixString() { return "(count "+var+")" ; }
 
+        @Override
         protected Accumulator createAccumulator()
         { 
             return new AccCountVar() ;
         }
         
+        @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 

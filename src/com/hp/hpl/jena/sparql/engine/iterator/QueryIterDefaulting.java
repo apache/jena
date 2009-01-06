@@ -37,6 +37,7 @@ public class QueryIterDefaulting extends QueryIter
     public boolean wasDefaultObject()
     { return returnDefaultObject ; }
     
+    @Override
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -54,6 +55,7 @@ public class QueryIterDefaulting extends QueryIter
         return true ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( isFinished() )
@@ -79,6 +81,7 @@ public class QueryIterDefaulting extends QueryIter
         return binding ;
     }
 
+    @Override
     protected void closeIterator()
     {
         if ( cIter != null )

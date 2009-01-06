@@ -29,6 +29,7 @@ public class splitIRI extends PropertyFunctionBase
         super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_LIST) ;
     }
 
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         // Do some checking.
@@ -48,6 +49,7 @@ public class splitIRI extends PropertyFunctionBase
     //
     // Do not throw an exception except when an internal error situation occurs. 
     
+    @Override
     public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         try {

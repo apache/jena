@@ -26,7 +26,7 @@ public class P_Link extends PathBase
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( path2 instanceof P_Link ) ) return false ;
@@ -34,7 +34,7 @@ public class P_Link extends PathBase
         return Utils.nodeIso(node, other.node, isoMap) ;
     }
 
-    //@Override
+    @Override
     public int hashCode()
     {
         return node.hashCode() ;

@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 public class BEV extends FunctionBase1
 {
+    @Override
     public NodeValue exec(NodeValue x)
     {
         return XSDFuncOp.booleanEffectiveValueAsNodeValue(x) ;

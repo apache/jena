@@ -20,8 +20,10 @@ public class E_IsBlank extends ExprFunction1
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return NodeFunctions.isBlank(v) ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_IsBlank(expr) ; } 
 }
 

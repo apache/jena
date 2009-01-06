@@ -15,7 +15,7 @@ public class strLength extends FunctionBase1
 {
     public strLength() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     {
         return NodeValue.makeInteger(v.getString().length()) ;

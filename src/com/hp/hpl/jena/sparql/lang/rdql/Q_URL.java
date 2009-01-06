@@ -22,6 +22,7 @@ public class Q_URL extends ParsedLiteral {
         super._setURI(s);
     }
 
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
@@ -31,6 +32,7 @@ public class Q_URL extends ParsedLiteral {
         set(uri.getString()) ;
     }
 
+    @Override
     public String toString()
     {
     return "url:"+urlString ;

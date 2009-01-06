@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.lang;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Triple;
 
@@ -18,11 +17,11 @@ import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
 
 public class TriplesDataCollector implements TemplateVisitor
 {
-    private Collection acc ;
+    private Collection<Triple> acc ;
     private int line ;
     private int col ;
 
-    public TriplesDataCollector(Collection acc, int line, int col)
+    public TriplesDataCollector(Collection<Triple> acc, int line, int col)
     { 
         this.acc = acc ;
         this.line = line ;
@@ -43,11 +42,8 @@ public class TriplesDataCollector implements TemplateVisitor
 
     public void visit(TemplateGroup template)
     {
-        for ( Iterator iter = template.getTemplates().iterator() ; iter.hasNext(); )
-        {
-            Template t = (Template)iter.next();
+        for (Template t : template.getTemplates())
             t.visit(this) ;
-        }
     }
     
 }

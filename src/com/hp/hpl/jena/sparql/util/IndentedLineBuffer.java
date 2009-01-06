@@ -36,6 +36,7 @@ public class IndentedLineBuffer
     public StringBuffer getBuffer() { iWriter.flush() ; return sw.getBuffer(); }
     
     public String asString() { iWriter.flush() ; return sw.toString() ; }
+    @Override
     public String toString() { return asString() ; }
     
     public void append(String s) { iWriter.print(s) ; }

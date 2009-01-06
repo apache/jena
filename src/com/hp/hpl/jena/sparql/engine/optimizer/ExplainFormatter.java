@@ -6,7 +6,6 @@
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -30,7 +29,7 @@ public class ExplainFormatter
 	 * @param left
 	 * @param sep
 	 */
-	public static void printTable(StringBuffer out, String[] header, List rows, String left, String sep)
+	public static void printTable(StringBuffer out, String[] header, List<List<String>> rows, String left, String sep)
 	{
 		int[] colWidths = colWidths(header, rows) ;
 		
@@ -38,9 +37,8 @@ public class ExplainFormatter
 		printHeader(out, header, colWidths, left, sep) ;
 		printLine(out, colWidths, left, sep) ;
 		
-		for (Iterator iter = rows.iterator(); iter.hasNext(); )
-		{
-			List row = (List)iter.next() ;
+		for (List<String> row : rows)
+        {
 			StringBuffer bf = new StringBuffer(120) ;
 			
 			bf.append(left) ;
@@ -74,9 +72,9 @@ public class ExplainFormatter
 	 * @param cost
 	 * @return List
 	 */
-	public static List formatCols(PrefixMapping prefix, Triple triple1, Triple triple2, double cost)
+	public static List<String> formatCols(PrefixMapping prefix, Triple triple1, Triple triple2, double cost)
 	{
-		List cols = new ArrayList() ;
+		List<String> cols = new ArrayList<String>() ;
 		
 		String subject1 = formatNode(prefix, triple1.getSubject()) ; 
 		String predicate1 = formatNode(prefix, triple1.getPredicate()) ;
@@ -103,9 +101,9 @@ public class ExplainFormatter
 	 * @param cost
 	 * @return List
 	 */
-	public static List formatCols(PrefixMapping prefix, Triple triple, double cost)
+	public static List<String> formatCols(PrefixMapping prefix, Triple triple, double cost)
 	{
-		List cols = new ArrayList() ;
+		List<String> cols = new ArrayList<String>() ;
 		
 		cols.add(formatNode(prefix, triple.getSubject())) ;
 		cols.add(formatNode(prefix, triple.getPredicate())) ;
@@ -175,17 +173,15 @@ public class ExplainFormatter
 	 * @param rows
 	 * @return int[]
 	 */
-	private static int[] colWidths(String[] header, List rows)
+	private static int[] colWidths(String[] header, List<List<String>> rows)
 	{
 		 int[] colWidths = new int[header.length] ;
 	
-		 for (Iterator iter = rows.iterator(); iter.hasNext(); )
-		 {
-			 List row = (ArrayList)iter.next() ;
-				 
-			 for (int i = 0; i < row.size(); i++ )
+		 for (List<String> row : rows)
+        {
+		     for (int i = 0; i < row.size(); i++ )
 			 {
-				 String s = (String)row.get(i) ;
+				 String s = row.get(i) ;
 				 
 				 if (s.length() > colWidths[i])
 					 colWidths[i] = s.length() ;

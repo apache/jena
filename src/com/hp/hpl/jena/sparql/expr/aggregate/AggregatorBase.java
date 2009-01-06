@@ -23,12 +23,12 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public abstract class AggregatorBase implements Aggregator
 {
-    private Map buckets = new HashMap() ;   // Bindingkey => Accumulator
+    private Map<BindingKey, Accumulator> buckets = new HashMap<BindingKey, Accumulator>() ;   // Bindingkey => Accumulator
 
     final
     public void accumulate(BindingKey key, Binding binding, FunctionEnv functionEnv)
     {
-        Accumulator acc = (Accumulator)buckets.get(key) ;
+        Accumulator acc = buckets.get(key) ;
         if ( acc == null )
         {
             acc = createAccumulator() ;
@@ -43,7 +43,7 @@ public abstract class AggregatorBase implements Aggregator
 
     public Node getValue(BindingKey key)
     {
-        Accumulator acc = (Accumulator)buckets.get(key) ;
+        Accumulator acc = buckets.get(key) ;
         if ( acc == null )
             throw new ARQInternalErrorException("Null for accumulator") ;
         NodeValue nv = acc.getValue();

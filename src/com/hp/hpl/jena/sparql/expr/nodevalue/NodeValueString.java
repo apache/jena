@@ -20,16 +20,16 @@ public class NodeValueString extends NodeValue
     public NodeValueString(String str)         { string = str ; } 
     public NodeValueString(String str, Node n) { super(n) ; string = str ; }
     
-    //@Override
+    @Override
     public boolean isString() { return true ; }
     
-    //@Override
+    @Override
     public String getString() { return string ; }
 
-    //@Override
+    @Override
     public String asString() { return string ; }
     
-    //@Override
+    @Override
     public String toString()
     { 
         if ( getNode() != null )
@@ -40,10 +40,11 @@ public class NodeValueString extends NodeValue
         return '"'+string+'"'  ;
     }
     
-    //@Override
+    @Override
     protected Node makeNode()
     { return Node.createLiteral(string) ; }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

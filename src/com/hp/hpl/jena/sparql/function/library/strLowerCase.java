@@ -16,7 +16,7 @@ public class strLowerCase extends FunctionBase1
 {
     public strLowerCase() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue str)
     {
         return XSDFuncOp.strLowerCase(str) ;

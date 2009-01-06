@@ -54,6 +54,7 @@ public abstract class IndexBuilderModel extends StatementListener
 //    protected IndexReader getIndexReader() { return index.getIndexReader() ; }
     
     /** ModelListener interface : statement taken out of the model */
+    @Override
     public void removedStatement(Statement s)
     { unindexStatement(s) ; }
 
@@ -62,6 +63,7 @@ public abstract class IndexBuilderModel extends StatementListener
     { throw new java.lang.UnsupportedOperationException("unindexStatement") ; }
     
     /** ModelListener interface : statement added to the model */
+    @Override
     public void addedStatement(Statement s)
     { indexStatement(s) ; }
     
@@ -75,13 +77,6 @@ public abstract class IndexBuilderModel extends StatementListener
     /** Update index based on one statement */
     public abstract void indexStatement(Statement s) ;
    
-    
-    /** Finish indexing
-     * @deprecated      Use closeWriter to release the index or flushWriter to optimize it but leave it open for writing.
-     */
-    
-    public void closeForWriting()
-    { index.closeForWriting() ; }
     
     /** Flush the index, optimizing it, to allow a reader to be created */
     public void flushWriter() { index.flushWriter() ; }

@@ -71,6 +71,7 @@ public class ModDatasetGeneral extends ModDataset
         }
     }
     
+    @Override
     public Dataset createDataset()
     {
         // If nothing specified to the module.  Leave alone and hope the query has FROM/FROM NAMED

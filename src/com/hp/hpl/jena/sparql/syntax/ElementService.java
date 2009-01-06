@@ -39,11 +39,11 @@ public class ElementService extends Element
     public Node getServiceNode() { return serviceNode ; }
     public String getServiceURI() { return serviceNode.getURI(); }
     
-    //@Override
+    @Override
     public int hashCode()
     { return serviceNode.hashCode() ^ element.hashCode(); }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( el2 instanceof ElementService ) )
@@ -56,6 +56,7 @@ public class ElementService extends Element
         return true ;
     }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

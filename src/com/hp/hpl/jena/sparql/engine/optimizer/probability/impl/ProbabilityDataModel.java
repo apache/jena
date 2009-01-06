@@ -77,7 +77,8 @@ public class ProbabilityDataModel extends ProbabilityBase
 	 * @param triple
 	 * @return double
 	 */
-	public double getProbability(Triple triple)
+	@Override
+    public double getProbability(Triple triple)
 	{		
 		Node subject = triple.getSubject() ;
 		Node predicate = triple.getPredicate() ;
@@ -117,7 +118,8 @@ public class ProbabilityDataModel extends ProbabilityBase
 	 * @param triple
 	 * @return double
 	 */
-	public double getSelectivity(Triple triple)
+	@Override
+    public double getSelectivity(Triple triple)
 	{		
 		double s = 1d ; 
 	
@@ -143,7 +145,8 @@ public class ProbabilityDataModel extends ProbabilityBase
 	 * @param triple2
 	 * @return double
 	 */
-	public double getProbability(Triple triple1, Triple triple2)
+	@Override
+    public double getProbability(Triple triple1, Triple triple2)
 	{
 		if (triple2 == null)
 			return getProbability(triple1) ;
@@ -164,7 +167,8 @@ public class ProbabilityDataModel extends ProbabilityBase
 	 * @param triple2
 	 * @return double
 	 */
-	public double getSelectivity(Triple triple1, Triple triple2)
+	@Override
+    public double getSelectivity(Triple triple1, Triple triple2)
 	{
 		if (triple2 == null)
 			return getSelectivity(triple1) ;

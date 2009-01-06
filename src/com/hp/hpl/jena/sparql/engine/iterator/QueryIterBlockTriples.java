@@ -50,18 +50,19 @@ public class QueryIterBlockTriples extends QueryIter1
         output = chain ;
     }
 
-    //@Override
+    @Override
     protected boolean hasNextBinding()
     {
         return output.hasNext() ;
     }
 
-    //@Override
+    @Override
     protected Binding moveToNextBinding()
     {
         return output.nextBinding() ;
     }
 
+    @Override
     protected void closeSubIterator()
     {
         if ( output != null )
@@ -69,6 +70,7 @@ public class QueryIterBlockTriples extends QueryIter1
         output = null ;
     }
 
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;

@@ -24,7 +24,7 @@ public class OpQuadPattern extends Op0
 {
     Node graphNode ;
     BasicPattern triples ;
-    List quads = null ;
+    List<Quad> quads = null ;
     
     // A QuadPattern is a block of quads with the same graph arg.
     // i.e. a BasicGraphPattern.  This gets the blank node coping right.
@@ -40,16 +40,13 @@ public class OpQuadPattern extends Op0
         this.triples = triples ;
     }
     
-    public List getQuads()
+    public List<Quad> getQuads()
     {
         if ( quads == null )
         {
-            quads = new ArrayList() ;
-            for (Iterator iter = triples.iterator() ; iter.hasNext() ; )
-            {
-                Triple t = (Triple)iter.next() ;
+            quads = new ArrayList<Quad>() ;
+            for (Triple t : triples )
                 quads.add(new Quad(graphNode, t)) ;
-            } 
         }
         return quads ; 
     }
@@ -61,13 +58,17 @@ public class OpQuadPattern extends Op0
     public boolean isDefaultGraph()         { return graphNode.equals(Quad.defaultGraphNode) ; }
     
     public String getName()                 { return Tags.tagQuadPattern ; }
+    @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy()                        { return new OpQuadPattern(graphNode, triples) ; }
 
+    @Override
     public int hashCode()
     { return graphNode.hashCode() ^ triples.hashCode() ; }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpQuadPattern ) ) return false ;

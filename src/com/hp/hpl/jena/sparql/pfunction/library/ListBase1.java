@@ -18,6 +18,7 @@ public abstract class ListBase1 extends ListBase
     public ListBase1()
     { super(PropFuncArgType.PF_ARG_SINGLE) ; }
 
+    @Override
     final protected 
     QueryIterator execOneList(Binding binding, 
                               Node listNode, Node predicate, PropFuncArg object,

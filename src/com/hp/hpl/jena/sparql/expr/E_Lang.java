@@ -20,8 +20,10 @@ public class E_Lang extends ExprFunction1
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return NodeFunctions.lang(v) ;  }
     
+    @Override
     public Expr copy(Expr expr) { return new E_Lang(expr) ; } 
 }
 

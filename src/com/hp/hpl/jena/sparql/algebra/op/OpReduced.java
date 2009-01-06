@@ -17,17 +17,21 @@ public class OpReduced extends OpModifier
     public OpReduced(Op subOp)
     { super(subOp) ; }
     
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
     public String getName()                 { return Tags.tagReduced ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op subOp)                { return new OpReduced(subOp) ; }
 
+    @Override
     public int hashCode()
     { return getSubOp().hashCode() ^ OpBase.HashReduced ; }
     
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpReduced) ) return false ;

@@ -20,8 +20,10 @@ public class E_Datatype extends ExprFunction1
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v) { return NodeFunctions.datatype(v) ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_Datatype(expr) ; } 
 }
 

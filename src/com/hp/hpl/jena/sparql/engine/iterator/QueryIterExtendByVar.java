@@ -32,13 +32,13 @@ public class QueryIterExtendByVar extends QueryIter
         this.members = members ;
     }
 
-    //@Override
+    @Override
     protected boolean hasNextBinding()
     {
         return members.hasNext() ;
     }
 
-    //@Override
+    @Override
     protected Binding moveToNextBinding()
     {
         Node n = (Node)members.next() ;
@@ -46,7 +46,7 @@ public class QueryIterExtendByVar extends QueryIter
         return b ;
     }
 
-    //@Override
+    @Override
     protected void closeIterator()
     { }
 }

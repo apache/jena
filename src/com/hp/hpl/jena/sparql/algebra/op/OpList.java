@@ -17,6 +17,7 @@ public class OpList extends OpModifier
     public OpList(Op subOp)
     { super(subOp) ; }
 
+    @Override
     public Op copy(Op subOp)
     { return new OpList(subOp) ; }
 
@@ -25,14 +26,17 @@ public class OpList extends OpModifier
 
     public String getName() { return Tags.tagToList ; }
 
+    @Override
     public Op apply(Transform transform, Op subOp) 
     { return transform.transform(this, subOp) ; }
     
+    @Override
     public int hashCode()
     {
         return getSubOp().hashCode() ^ OpBase.HashToList ; 
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpList) ) return false ;

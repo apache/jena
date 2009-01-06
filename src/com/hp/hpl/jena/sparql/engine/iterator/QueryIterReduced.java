@@ -25,17 +25,20 @@ public class QueryIterReduced extends QueryIterDistinctReduced
     public QueryIterReduced(QueryIterator iter, ExecutionContext context)
     { super(iter, context)  ; }
 
+    @Override
     protected void closeSubIterator()
     {
         window = null ;
         super.closeSubIterator() ;
     }
 
+    @Override
     protected boolean isDuplicate(Binding b)
     {
         return window.contains(b) ; 
     }
     
+    @Override
     protected void remember(Binding b)
     {
         if ( window.size() >= N )

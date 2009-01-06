@@ -15,10 +15,10 @@ import com.hp.hpl.jena.sparql.util.Convert;
 public class Params
 {
     // As seen.
-    private List paramList = new ArrayList() ;
+    private List<Pair> paramList = new ArrayList<Pair>() ;
     
     // string -> list -> string
-    private Map params = new HashMap() ;
+    private Map<String, List<String>> params = new HashMap<String, List<String>>() ;
     
     
     /** Create a Params object */
@@ -52,10 +52,10 @@ public class Params
     {
         Pair p = new Pair(name, value) ;
         paramList.add(p) ;
-        List x = (List)params.get(name) ;
+        List<String> x = params.get(name) ;
         if ( x == null )
         {
-            x = new ArrayList() ;
+            x = new ArrayList<String>() ;
             params.put(name, x) ;
         }
         x.add(value) ;
@@ -68,7 +68,7 @@ public class Params
     
     public String getValue(String name)
     {
-        List x = getMV(name) ;
+        List<String> x = getMV(name) ;
         if ( x == null )
             return null ;
         if ( x.size() != 1 )
@@ -76,18 +76,17 @@ public class Params
         return (String)x.get(0) ;
     }
     
-    public List getValues(String name)
+    public List<String> getValues(String name)
     {
-        List x = getMV(name) ;
-        return x ;
+        return getMV(name) ;
     }
         
     public void remove(String name)
     {
         // Absolute record
-        for ( Iterator iter = paramList.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<Pair> iter = paramList.iterator() ; iter.hasNext() ; )
         {
-            Pair p = (Pair)iter.next() ;
+            Pair p = iter.next() ;
             if ( p.getName().equals(name) )
                 iter.remove() ;
         }
@@ -96,7 +95,7 @@ public class Params
     }
     
     /** Exactly as seen */
-    public List pairs()
+    public List<Pair> pairs()
     {
         return paramList ;
     }
@@ -104,12 +103,12 @@ public class Params
     public int count() { return paramList.size() ; }
     
     /** Get the names of parameters - one ocurrence */ 
-    public List names()
+    public List<String> names()
     {
-        List names = new ArrayList() ;
-        for (Iterator iter = paramList.listIterator() ; iter.hasNext() ; )
+        List<String> names = new ArrayList<String>() ;
+        for (Pair pair : paramList)
         {
-            String s = (String)iter.next() ;
+            String s = pair.getName() ;
             if ( names.contains(s) )
                 continue ;
             names.add(s) ;
@@ -121,9 +120,8 @@ public class Params
     {
         StringBuffer sbuff = new StringBuffer() ; 
         boolean first = true ;
-        for ( Iterator iter = pairs().listIterator() ; iter.hasNext() ; )
+        for (Pair p : pairs())
         {
-            Pair p = (Pair)iter.next() ;
             if ( !first )
                 sbuff.append('&') ;
             sbuff.append(p.getName()) ;
@@ -136,12 +134,9 @@ public class Params
         return sbuff.toString() ;
     }
     
-    private List getMV(String name)
+    private List<String> getMV(String name)
     {
-        List x = (List)params.get(name) ;
-        if ( x == null )
-            return null ;
-        return x ;
+        return params.get(name) ;
     }
 
     static class MultiValueException extends RuntimeException

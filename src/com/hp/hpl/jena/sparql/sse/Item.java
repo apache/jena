@@ -153,6 +153,7 @@ public class Item extends ItemLocation
         { hashCode = -99 ; }
     }
     
+    @Override
     public int hashCode()
     {
         ItemHashCode itemHashCode = new ItemHashCode() ;
@@ -180,6 +181,7 @@ public class Item extends ItemLocation
 
     }
     
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -340,6 +342,7 @@ public class Item extends ItemLocation
         return null ;
     }
 
+    @Override
     public String toString()
     {
         IndentedLineBuffer iBuff = new IndentedLineBuffer() ;

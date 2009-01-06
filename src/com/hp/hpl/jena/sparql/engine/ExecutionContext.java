@@ -24,9 +24,9 @@ public class ExecutionContext implements FunctionEnv
     private DatasetGraph dataset  = null ;
     
     // Iterator tracking
-    private Collection openIterators    = null ;
+    private Collection<QueryIterator> openIterators    = null ;
     // Tracking all iterators leads to a build up of state,
-    private Collection allIterators     = null ; 
+    private Collection<QueryIterator> allIterators     = null ; 
     private Graph activeGraph           = null ;
     private OpExecutorFactory executor  = null ;
 
@@ -52,9 +52,9 @@ public class ExecutionContext implements FunctionEnv
     {
         this.context = params ;
         this.dataset = dataset ;
-        this.openIterators = new ArrayList() ;
+        this.openIterators = new ArrayList<QueryIterator>() ;
         if ( TrackAllIterators )
-            this.allIterators  = new ArrayList() ;
+            this.allIterators  = new ArrayList<QueryIterator>() ;
         this.activeGraph = activeGraph ;
         this.executor = factory ;
     }
@@ -72,8 +72,8 @@ public class ExecutionContext implements FunctionEnv
         openIterators.remove(qIter) ;
     }
 
-    public Iterator listOpenIterators()  { return openIterators.iterator() ; }
-    public Iterator listAllIterators()
+    public Iterator<QueryIterator> listOpenIterators()  { return openIterators.iterator() ; }
+    public Iterator<QueryIterator> listAllIterators()
     { 
         if ( allIterators == null ) return null ;
         return allIterators.iterator() ;

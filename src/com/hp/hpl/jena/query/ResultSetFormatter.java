@@ -163,9 +163,9 @@ public class ResultSetFormatter
         {
             // Force nodes to be materialized.
             QuerySolution result = resultSet.nextSolution() ;
-            for ( Iterator iter = result.varNames() ; iter.hasNext() ; )
+            for ( Iterator<String> iter = result.varNames() ; iter.hasNext() ; )
             {
-                String vn = (String)iter.next();
+                String vn = iter.next();
                 RDFNode n = result.get(vn) ;
             }
             count++ ;
@@ -179,9 +179,9 @@ public class ResultSetFormatter
      * @param resultSet   The result set
      * @return            List of QuerySolutions
      */
-    static public List toList(ResultSet resultSet)
+    static public List<QuerySolution> toList(ResultSet resultSet)
     {
-        List list = new ArrayList() ;
+        List<QuerySolution> list = new ArrayList<QuerySolution>() ;
         for ( ; resultSet.hasNext() ; )
         {
             QuerySolution result = 

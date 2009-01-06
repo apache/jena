@@ -34,6 +34,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1
     /** Are there any more acceptable objects.
     * @return true if there is another acceptable object.
     */        
+    @Override
     protected boolean hasNextBinding()
     {
         // Needs to be idempotent.?
@@ -65,6 +66,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1
     /** The next acceptable object in the iterator.
     * @return The next acceptable object.
     */        
+    @Override
     public Binding moveToNextBinding() {
         if (hasNext()) {
             Binding r = nextBinding;
@@ -74,6 +76,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1
         throw new NoSuchElementException();
     }
     
+    @Override
     protected void closeSubIterator() {}
 }
 

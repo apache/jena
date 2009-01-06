@@ -22,7 +22,7 @@ public class date extends FunctionBase1
 {
     public date() {  }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     {
         if ( ! v.isString() )

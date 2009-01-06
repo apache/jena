@@ -18,7 +18,7 @@ public class namespace extends FunctionBase1
 {
     public namespace() { super() ; }
     
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     {
         Node n = v.asNode() ;

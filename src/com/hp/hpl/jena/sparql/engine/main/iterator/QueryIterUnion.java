@@ -39,6 +39,7 @@ public class QueryIterUnion extends QueryIterRepeatApply
         this.subOps = subOps ;
     }
 
+    @Override
     protected QueryIterator nextStage(Binding binding)
     {
         QueryIterConcat unionQIter = new QueryIterConcat(getExecContext()) ;
@@ -54,6 +55,7 @@ public class QueryIterUnion extends QueryIterRepeatApply
         return unionQIter ;
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { 
         out.println(Utils.className(this)) ;

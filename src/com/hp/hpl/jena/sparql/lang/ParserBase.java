@@ -67,7 +67,7 @@ public class ParserBase
     //    BGP causes the map to be cleared at the start of the BGP
     
     LabelToNodeMap activeLabelMap = anonVarLabels ;
-    Set oldLabels = new HashSet() ; 
+    Set<String> oldLabels = new HashSet<String>() ; 
     
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
@@ -366,7 +366,7 @@ public class ParserBase
     // SPARQL/Update 
     protected Graph convertTemplateToTriples(Template template, int line, int col)
     {
-        List acc = new ArrayList() ;
+        List<Triple> acc = new ArrayList<Triple>() ;
         TriplesDataCollector collector = new TriplesDataCollector(acc, line, col) ;
         template.visit(collector) ;
         Graph g = GraphUtils.makePlainGraph() ;

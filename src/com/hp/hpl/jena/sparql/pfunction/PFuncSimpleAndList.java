@@ -29,6 +29,7 @@ class PFuncSimpleAndList extends PropertyFunctionEval
         super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_LIST) ;
     }
     
+    @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         return execEvaluated(binding, argSubject.getArg(), predicate, argObject, execCxt) ;

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.*;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -18,20 +19,22 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class Element
 {
-    public Set varsMentioned()
+    public Set<Var> varsMentioned()
     {
         // In patterns, not in filters
-        LinkedHashSet s = new LinkedHashSet() ;
+        LinkedHashSet<Var> s = new LinkedHashSet<Var>() ;
         return PatternVars.vars(s, this) ;
     }
     
     public abstract void visit(ElementVisitor v) ;
     
+    @Override
     public abstract int hashCode() ;
     // If the labeMap is null, do .equals() on nodes, else map from
     // bNode varables in one to bNodes variables in the other 
     public abstract boolean equalTo(Element el2, NodeIsomorphismMap isoMap) ;
     
+    @Override
     final public boolean equals(Object el2)
     { 
         if ( this == el2 ) return true ;
@@ -42,6 +45,7 @@ public abstract class Element
     }
     
     
+    @Override
     public String toString()
     {
         return FormatterElement.asString(this) ;

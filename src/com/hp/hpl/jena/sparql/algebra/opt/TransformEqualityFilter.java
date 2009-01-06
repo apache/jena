@@ -29,6 +29,7 @@ public class TransformEqualityFilter extends TransformCopy
     
     public TransformEqualityFilter() {}
     
+    @Override
     public Op transform(OpFilter opFilter, Op subOp)
     { 
         // What about filter of OpSequence? 

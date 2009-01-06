@@ -53,6 +53,7 @@ public class OpWalker
                 op.visit(afterVisitor) ;
         }
         
+        @Override
         protected void visitN(OpN op)
         {
             before(op) ;
@@ -65,6 +66,7 @@ public class OpWalker
             after(op) ;
         }
 
+        @Override
         protected void visit2(Op2 op)
         {
             before(op) ;
@@ -74,6 +76,7 @@ public class OpWalker
             after(op) ; 
         }
         
+        @Override
         protected void visit1(Op1 op)
         {
             before(op) ;
@@ -82,6 +85,7 @@ public class OpWalker
             after(op) ;
         }
         
+        @Override
         protected void visit0(Op0 op)         
         {  
             before(op) ;
@@ -89,6 +93,7 @@ public class OpWalker
             after(op) ;
         }
         
+        @Override
         protected void visitExt(OpExt op)
         {
             before(op) ;

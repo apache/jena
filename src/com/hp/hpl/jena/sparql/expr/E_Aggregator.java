@@ -35,6 +35,7 @@ public class E_Aggregator extends ExprVar
     
     public Aggregator getAggregator()   { return aggregator ; }
     
+    @Override
     public String toExprString()        { return aggregator.toString(); }
 }
 

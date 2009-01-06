@@ -20,6 +20,7 @@ public class ElementSubQuery extends Element
     
     public Query getQuery() { return query ; } 
     
+    @Override
     public boolean equalTo(Element other, NodeIsomorphismMap isoMap)
     {
         if ( ! ( other instanceof ElementSubQuery) )
@@ -28,11 +29,13 @@ public class ElementSubQuery extends Element
         return query.equals(el.query) ;
     }
 
+    @Override
     public int hashCode()
     {
         return query.hashCode() ;
     }
 
+    @Override
     public void visit(ElementVisitor v)
     { v.visit(this) ; }
 }

@@ -31,6 +31,7 @@ public abstract class Op2 extends OpBase
     public abstract Op apply(Transform transform, Op left, Op right) ;
     public abstract Op copy(Op left, Op right) ;
 
+    @Override
     public int hashCode()
     {
         return left.hashCode()<<1 ^ right.hashCode() ^ getName().hashCode() ;

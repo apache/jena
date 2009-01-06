@@ -45,19 +45,22 @@ public class BindingWrapped implements Binding
         return binding.getParent() ;
     }
 
-    public Iterator vars()
+    public Iterator<Var> vars()
     {
         return binding.vars() ;
     }
     
+    @Override
     public String toString() { return binding.toString(); }
 
     public int size()           { return binding.size() ; }
 
     public boolean isEmpty()    { return binding.isEmpty() ; }
     
+    @Override
     public int hashCode() { return BindingBase.hashCode(this) ; } 
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;

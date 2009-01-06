@@ -20,39 +20,39 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class VarExprList
 {
-    private List vars  ;
-    private Map exprs  ;
+    private List<Var> vars  ;
+    private Map<Var, Expr> exprs  ;
     
-    public VarExprList(List vars)
+    public VarExprList(List<Var> vars)
     {
         this.vars = vars ;
-        this.exprs = new HashMap() ;
+        this.exprs = new HashMap<Var, Expr>() ;
     }
     
     public VarExprList(VarExprList other)
     {
-        this.vars = new ArrayList(other.vars) ; 
-        this.exprs = new HashMap(other.exprs) ;
+        this.vars = new ArrayList<Var>(other.vars) ; 
+        this.exprs = new HashMap<Var, Expr>(other.exprs) ;
     }
 
     public VarExprList()
     {
-        this.vars = new ArrayList() ;
-        this.exprs = new HashMap() ;
+        this.vars = new ArrayList<Var>() ;
+        this.exprs = new HashMap<Var, Expr>() ;
     }
     
-    public List getVars() { return vars ; }
-    public Map getExprs() { return exprs ; }
+    public List<Var> getVars() { return vars ; }
+    public Map<Var, Expr> getExprs() { return exprs ; }
     
     public boolean contains(Var var) { return vars.contains(var) ; }
     public boolean hasExpr(Var var) { return exprs.containsKey(var) ; }
     
-    public Expr getExpr(Var var) { return (Expr)exprs.get(var) ; }
+    public Expr getExpr(Var var) { return exprs.get(var) ; }
     
     // Or Binding.get(var, NamedExprList)
     public Node get(Var var, Binding binding, FunctionEnv funcEnv)
     {
-        Expr expr = (Expr)exprs.get(var) ; 
+        Expr expr = exprs.get(var) ; 
         if ( expr == null )
             return binding.get(var) ; 
         
@@ -85,9 +85,9 @@ public class VarExprList
     
     public void addAll(VarExprList other)
     {
-        for ( Iterator iter = other.vars.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = other.vars.iterator() ; iter.hasNext() ; )
         {
-            Var v = (Var)iter.next () ;
+            Var v = iter.next () ;
             Expr e = other.getExpr(v) ;
             add(v, e) ;
         }
@@ -96,12 +96,14 @@ public class VarExprList
     public int size() { return vars.size() ; }
     public boolean isEmpty() { return vars.isEmpty() ; } 
     
+    @Override
     public int hashCode()
     { 
         int x = vars.hashCode() ^ exprs.hashCode() ;
         
         return vars.hashCode() ^ exprs.hashCode() ; }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other) return true ;

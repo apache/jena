@@ -20,11 +20,13 @@ public class E_LangMatches extends ExprFunction2
         super(expr1, expr2, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue lang, NodeValue pattern)
     {
         return NodeFunctions.langMatches(lang, pattern) ; 
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_LangMatches(e1 , e2 ) ; }
 }
 

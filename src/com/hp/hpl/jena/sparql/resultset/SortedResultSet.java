@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.expr.Expr;
 
 
 /** Sort a result set. */
@@ -33,19 +34,19 @@ public class SortedResultSet implements ResultSet
     
     QueryIterator qIter ;
     int rowNumber = 0 ;
-    List resultVars = null ;
+    List<String> resultVars = null ;
     Model model ;
     
-    public SortedResultSet(ResultSet rs, List conditions)
+    public SortedResultSet(ResultSet rs, List<Expr> conditions)
     {
         this(rs, new BindingComparator(conditions)) ;
     }
     
-    private SortedResultSet(ResultSet rs, Comparator comparator)
+    private SortedResultSet(ResultSet rs, Comparator<Binding> comparator)
     {
         model = rs.getResourceModel() ;
         // Put straight into a sorted structure 
-        SortedSet sorted = new TreeSet(comparator) ;
+        SortedSet<Binding> sorted = new TreeSet<Binding>(comparator) ;
         
         for ( ; rs.hasNext() ; )
         {
@@ -63,9 +64,9 @@ public class SortedResultSet implements ResultSet
         return qIter.hasNext() ;
     }
 
-    public Object next()
+    public QuerySolution next()
     {
-        return nextBinding() ;
+        return new ResultBinding(model, nextBinding()) ;
     }
 
     public Binding nextBinding()

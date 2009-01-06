@@ -17,17 +17,21 @@ public class OpDistinct extends OpModifier
     public OpDistinct(Op subOp)
     { super(subOp) ; }
     
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
     public String getName()                 { return Tags.tagDistinct ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op subOp)                { return new OpDistinct(subOp) ; }
 
+    @Override
     public int hashCode()
     { return getSubOp().hashCode() ^ OpBase.HashDistinct ; }
     
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpDistinct) ) return false ;

@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class UpdateExt extends Update
 {
+    @Override
     public void visit(UpdateVisitor visitor)
     { 
         visitor.visit(this) ;

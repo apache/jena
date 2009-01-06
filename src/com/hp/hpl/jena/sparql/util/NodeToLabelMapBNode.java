@@ -19,6 +19,7 @@ public class NodeToLabelMapBNode extends NodeToLabelMap
         super(prefix, bNodesAsFakeURIs) ;
     }
     
+    @Override
     public String asString(Node n)
     {
         // Map blank nodes and non-distingusihed variables.

@@ -19,6 +19,7 @@ public class QueryIterLeftJoin extends QueryIterJoinBase
     }
 
     
+    @Override
     protected QueryIterator joinWorker()
     {
         return super.leftJoinWorker() ;

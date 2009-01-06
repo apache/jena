@@ -119,7 +119,7 @@ public class EvaluatorSimple implements Evaluator
             dump(table) ;
         }
         QueryIterator iter = table.iterator(execCxt) ;
-        List output = new ArrayList() ;
+        List<Binding> output = new ArrayList<Binding>() ;
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;

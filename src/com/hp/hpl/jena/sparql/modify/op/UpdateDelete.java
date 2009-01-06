@@ -37,7 +37,7 @@ public class UpdateDelete extends UpdateModifyBase
     public Template getDeleteTemplate()
     { return getDeleteTemplateBase() ; }
     
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 

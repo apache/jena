@@ -21,8 +21,10 @@ public class E_Divide extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.divide(x, y) ; }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Divide(e1 , e2 ) ; }
 }
 

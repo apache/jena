@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.util.IterLib;
 abstract
 class PFuncAssignBase extends PFuncSimple
 {
+    @Override
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
     {
         try {

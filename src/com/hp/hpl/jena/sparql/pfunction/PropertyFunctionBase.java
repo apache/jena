@@ -82,7 +82,7 @@ public abstract class PropertyFunctionBase implements PropertyFunction
            this.argObject = argObject ;
        }
 
-        //@Override
+        @Override
         protected QueryIterator nextStage(Binding binding)
         {
             QueryIterator iter = exec(binding, argSubject, predicate, argObject, super.getExecContext()) ;
@@ -91,6 +91,7 @@ public abstract class PropertyFunctionBase implements PropertyFunction
             return iter ;
         }
         
+        @Override
         protected void details(IndentedWriter out, SerializationContext sCxt)
         {
             out.print("PropertyFunction ["+FmtUtils.stringForNode(predicate, sCxt)+"]") ;

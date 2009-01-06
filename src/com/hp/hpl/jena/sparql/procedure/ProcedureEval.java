@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public abstract class ProcedureEval extends ProcedureBase
 {
+    @Override
     public QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt)
     {
         // Eval if possible.

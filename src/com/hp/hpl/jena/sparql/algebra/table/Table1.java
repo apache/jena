@@ -67,6 +67,7 @@ public class Table1 extends TableBase
         return new QueryIterSingleton(bindingLeft, execContext) ;
     }
 
+    @Override
     public void closeTable()        {}
 
     public List getVars()
@@ -83,9 +84,12 @@ public class Table1 extends TableBase
         return x ;
     }
     
+    @Override
     public int size()           { return 1 ; }
+    @Override
     public boolean isEmpty()    { return false ; }
     
+    @Override
     public String toString()    { return "Table1("+var+","+FmtUtils.stringForNode(value)+")" ; }
 }
 

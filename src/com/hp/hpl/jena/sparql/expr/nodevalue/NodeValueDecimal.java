@@ -20,33 +20,33 @@ public class NodeValueDecimal extends NodeValue
     public NodeValueDecimal(BigDecimal d)         { decimal = d ; }
     public NodeValueDecimal(BigDecimal d, Node n) { super(n) ; decimal = d ; }
     
-    //@Override
+    @Override
     public boolean isNumber() { return true ; }
-    //@Override
+    @Override
     public boolean isDecimal() { return true ; }
-    //@Override
+    @Override
     public boolean isFloat()  { return true ; }
-    //@Override
+    @Override
     public boolean isDouble() { return true ; }
     
-    //@Override
+    @Override
     public BigDecimal getDecimal()  { return decimal ; }
-    //@Override
+    @Override
     public float getFloat()    { return decimal.floatValue() ; }
-    //@Override
+    @Override
     public double getDouble()  { return decimal.doubleValue() ; }
 
-    //@Override
+    @Override
     protected Node makeNode()
     { 
         int s = decimal.scale() ;
         return Node.createLiteral(Utils.stringForm(decimal), null, XSDDatatype.XSDdecimal) ;
     }
     
-    //@Override
+    @Override
     public String asString() { return toString() ; }
     
-    //@Override
+    @Override
     public String toString()
     { 
         // Preserve lexical form.
@@ -54,6 +54,7 @@ public class NodeValueDecimal extends NodeValue
         return Utils.stringForm(decimal) ;
     }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

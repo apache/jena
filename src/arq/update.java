@@ -39,6 +39,7 @@ public class update extends CmdUpdate
         super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         requestFiles = getValues(updateArg) ;   // ????
@@ -46,11 +47,14 @@ public class update extends CmdUpdate
         super.processModulesAndArgs() ;
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
     // Subclass for specialised commands making common updates more convenient
+    @Override
     protected void execUpdate(GraphStore graphStore)
     {
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )

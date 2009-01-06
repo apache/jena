@@ -56,6 +56,7 @@ public class OpSequence extends OpN
 
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
+    @Override
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op instanceof OpSequence) ) return false ;
@@ -63,9 +64,11 @@ public class OpSequence extends OpN
         return super.sameAs(other, labelMap) ;
     }
 
+    @Override
     public Op apply(Transform transform, List elts)
     { return transform.transform(this, elts) ; }
 
+    @Override
     public Op copy(List elts)
     {
         return new OpSequence(elts) ; 

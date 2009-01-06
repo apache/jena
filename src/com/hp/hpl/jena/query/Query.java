@@ -63,8 +63,8 @@ public class Query extends Prologue implements Cloneable
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.  Never a list of zero items.
     
-    List graphURIs = new ArrayList() ;
-    List namedGraphURIs = new ArrayList() ;
+    List<String> graphURIs = new ArrayList<String>() ;
+    List<String> namedGraphURIs = new ArrayList<String>() ;
     
     // The WHERE clause
     Element queryPattern = null ;
@@ -78,7 +78,7 @@ public class Query extends Prologue implements Cloneable
     long resultOffset  = NOLIMIT ;
     
     // ORDER BY
-    List orderBy       = null ;
+    List<SortCondition> orderBy       = null ;
     public static int ORDER_ASCENDING           = 1 ; 
     public static int ORDER_DESCENDING          = -1 ;
     public static int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
@@ -98,7 +98,7 @@ public class Query extends Prologue implements Cloneable
     // DESCRIBE
     // Any URIs/QNames in the DESCRIBE clause
     // Also uses resultVars
-    protected List resultNodes               = new ArrayList() ;     // Type in list: Node
+    protected List<Node> resultNodes               = new ArrayList<Node>() ;     // Type in list: Node
     
     public Query()
     {
@@ -196,7 +196,7 @@ public class Query extends Prologue implements Cloneable
     public void addOrderBy(SortCondition condition)
     {
         if ( orderBy == null )
-            orderBy = new ArrayList() ;
+            orderBy = new ArrayList<SortCondition>() ;
 
         orderBy.add(condition) ;
     }
@@ -221,7 +221,7 @@ public class Query extends Prologue implements Cloneable
         addOrderBy(sc) ;
     }
 
-    public List getOrderBy()           { return orderBy ; }
+    public List<SortCondition> getOrderBy()           { return orderBy ; }
     
     // ---- 
     
@@ -253,7 +253,7 @@ public class Query extends Prologue implements Cloneable
     public void addGraphURI(String s)
     {
         if ( graphURIs == null )
-            graphURIs = new ArrayList() ;
+            graphURIs = new ArrayList<String>() ;
         graphURIs.add(s) ;
     }
 
@@ -264,7 +264,7 @@ public class Query extends Prologue implements Cloneable
     public void addNamedGraphURI(String uri)
     {
         if ( namedGraphURIs == null )
-            namedGraphURIs = new ArrayList() ;
+            namedGraphURIs = new ArrayList<String>() ;
         if ( namedGraphURIs.contains(uri) )
             throw new QueryException("URI already in named graph set: "+uri) ;
         else
@@ -276,7 +276,7 @@ public class Query extends Prologue implements Cloneable
      * @return List of strings
      */
     
-    public List getGraphURIs() { return graphURIs ; }
+    public List<String> getGraphURIs() { return graphURIs ; }
 
     /** Test whether the query mentions a URI in forming the default graph (FROM clause) 
      * 
@@ -290,7 +290,7 @@ public class Query extends Prologue implements Cloneable
      * @return List of strings
      */
     
-    public List getNamedGraphURIs() { return namedGraphURIs ; }
+    public List<String> getNamedGraphURIs() { return namedGraphURIs ; }
 
     /** Test whether the query mentions a URI for a named graph. 
      * 
@@ -321,7 +321,7 @@ public class Query extends Prologue implements Cloneable
 //    protected List resultVars = new ArrayList() ;
 
     /** Return a list of the variables requested (SELECT) */
-    public List getResultVars()
+    public List<String> getResultVars()
     { 
         // Ensure "SELECT *" processed
         setResultVars() ;
@@ -334,9 +334,9 @@ public class Query extends Prologue implements Cloneable
     }
     
     /** Add a collection of projection variables to a SELECT query */
-    public void addProjectVars(Collection vars)
+    public void addProjectVars(Collection<?> vars)
     {
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        for ( Iterator<?> iter = vars.iterator() ; iter.hasNext() ; )
         {
             Object obj = iter.next();
             if ( obj instanceof String )
@@ -418,14 +418,14 @@ public class Query extends Prologue implements Cloneable
     // GROUP/HAVING
     
     protected VarExprList groupVars = new VarExprList() ;
-    protected List havingExprs = new ArrayList() ;  // Expressions : Make an ExprList?
+    protected List<Expr> havingExprs = new ArrayList<Expr>() ;  // Expressions : Make an ExprList?
     
     public boolean hasGroupBy()     { return ! groupVars.isEmpty() ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
     
     public VarExprList getGroupBy()      { return groupVars ; }
     
-    public List getHavingExprs()    { return havingExprs ; }
+    public List<Expr> getHavingExprs()    { return havingExprs ; }
     
     public void addGroupBy(String varName)
     {
@@ -472,17 +472,17 @@ public class Query extends Prologue implements Cloneable
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    private List aggregators = new ArrayList() ;            // List of E_Aggregator
-    private Map aggregatorsAllocated = new HashMap() ;      // Note any E_Aggregator created for reuse.
+    private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;            // List of E_Aggregator
+    private Map<String, E_Aggregator> aggregatorsAllocated = new HashMap<String, E_Aggregator>() ;      // Note any E_Aggregator created for reuse.
     
     public boolean hasAggregators() { return aggregators.size() != 0  ; }
-    public List getAggregators() { return aggregators ; }
+    public List<E_Aggregator> getAggregators() { return aggregators ; }
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
         Aggregator a = agg.create() ;
         String key = a.key() ;
-        E_Aggregator expr = (E_Aggregator)aggregatorsAllocated.get(key); 
+        E_Aggregator expr = aggregatorsAllocated.get(key); 
         
         if ( expr == null )
         {
@@ -526,16 +526,7 @@ public class Query extends Prologue implements Cloneable
     
     /** Get the result list (things wanted - not the results themselves)
      *  of a DESCRIBE query. */ 
-    public List getResultURIs() { return resultNodes ; }
-    
-    /** Add a result for a DESCRIBE query
-     * @deprecated Use addDescribeNode()
-     */
-    public void addResultURIs(Node node)
-    {
-        addDescribeNode(node) ;
-    }
-
+    public List<Node> getResultURIs() { return resultNodes ; }
     
     private boolean resultVarsSet = false ; 
     /** Fix up when the query has "*" (when SELECT * or DESCRIBE *)
@@ -585,12 +576,12 @@ public class Query extends Prologue implements Cloneable
     
     private void findAndAddNamedVars()
     {
-        Iterator varIter = null ;
+        Iterator<Var> varIter = null ;
         if ( hasGroupBy() )
             varIter = groupVars.getVars().iterator() ;
         else
         {
-            Set queryVars = this.getQueryPattern().varsMentioned() ;
+            Set<Var> queryVars = this.getQueryPattern().varsMentioned() ;
             varIter = queryVars.iterator() ;
         }
         
@@ -630,6 +621,7 @@ public class Query extends Prologue implements Cloneable
     }
 
     // With Java 1.5, this can be returns Query.
+    @Override
     public Object clone() { return cloneQuery() ; }
     
     public Query cloneQuery()
@@ -645,6 +637,7 @@ public class Query extends Prologue implements Cloneable
     
     // Reverse of parsing : should produce a string that parses to an equivalent query
     // "Equivalent" => gives the same results on any model  
+    @Override
     public String toString()
     { return serialize() ; }
     
@@ -669,6 +662,7 @@ public class Query extends Prologue implements Cloneable
         //if has select expressions
     }
 
+    @Override
     public int hashCode()
     { 
         if ( hashcode == -1 )
@@ -691,6 +685,7 @@ public class Query extends Prologue implements Cloneable
      * Two instances of a query parsed from the same string are equal. 
      */
     
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;

@@ -16,14 +16,17 @@ public class OpUnion extends Op2
 {
     public OpUnion(Op left, Op right) { super(left, right) ; }
     
+    @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
 
     public String getName()                 { return Tags.tagUnion ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op newLeft, Op newRight)
     { return new OpUnion(newLeft, newRight) ; }
     
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpUnion) ) return false ;

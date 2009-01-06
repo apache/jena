@@ -22,6 +22,7 @@ public class E_Bound extends ExprFunction1
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     { 
 		try {
@@ -33,8 +34,10 @@ public class E_Bound extends ExprFunction1
 		}
     }
 
+    @Override
     public NodeValue eval(NodeValue x) { return NodeValue.TRUE ; }
     
+    @Override
     public Expr copy(Expr expr) { return new E_Bound(expr) ; } 
 }
 

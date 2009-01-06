@@ -78,6 +78,7 @@ public class SortCondition extends PrintSerializableBase
         return expression ;
     }
 
+    @Override
     public int hashCode()
     { 
         int x = this.getDirection() ;
@@ -86,6 +87,7 @@ public class SortCondition extends PrintSerializableBase
         return x ;
     }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;

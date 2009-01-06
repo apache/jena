@@ -22,26 +22,30 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class QuerySolutionMap extends QuerySolutionBase
 {
-    private Map map = new HashMap() ;
+    private Map<String, RDFNode> map = new HashMap<String, RDFNode>() ;
     
     public QuerySolutionMap() { } 
 
     public void add(String name, RDFNode node)
     { map.put(Var.canonical(name), node) ; }
     
-    protected RDFNode _get(String varName)          { return (RDFNode)map.get(Var.canonical(varName)) ; } 
+    @Override
+    protected RDFNode _get(String varName)          { return map.get(Var.canonical(varName)) ; } 
 
+    @Override
     protected boolean _contains(String varName)     { return map.containsKey(Var.canonical(varName)) ; } 
 
-    public Iterator varNames()                   { return map.keySet().iterator() ; }
+    @Override
+    public Iterator<String> varNames()                   { return map.keySet().iterator() ; }
     
+    @Override
     public String toString()
     {
         String tmp = "" ;
         String sep = "" ;
-        for ( Iterator iter = varNames() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = varNames() ; iter.hasNext() ; )
         {
-            String varName = (String)iter.next() ;
+            String varName = iter.next() ;
             RDFNode n = _get(varName) ;
             String nStr = FmtUtils.stringForRDFNode(n) ;
             tmp = tmp+sep+"( ?"+varName+", "+nStr+" )" ;

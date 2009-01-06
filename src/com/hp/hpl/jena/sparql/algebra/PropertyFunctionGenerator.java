@@ -51,7 +51,7 @@ public class PropertyFunctionGenerator
         // 3/ For remaining triples, put into basic graph patterns,
         //    and string together the procedure calls and BGPs.
         
-        List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
+        List<Triple> propertyFunctionTriples = new ArrayList<Triple>() ;    // Property functions seen
         BasicPattern triples = new BasicPattern(pattern) ;  // A copy of all triples (later, it is mutated)
         
         // Find the triples invoking property functions, and those not.
@@ -61,7 +61,7 @@ public class PropertyFunctionGenerator
             //No property functions.
             return new OpBGP(pattern) ;
         
-        Map pfInvocations = new HashMap() ;  // Map triple => property function instance 
+        Map<Triple, PropertyFunctionInstance> pfInvocations = new HashMap<Triple, PropertyFunctionInstance>() ;  // Map triple => property function instance 
         // Removes triples of list arguments.  This mutates 'triples'
         findPropertyFunctionArgs(context, triples, propertyFunctionTriples, pfInvocations) ;
         
@@ -73,7 +73,7 @@ public class PropertyFunctionGenerator
     private static void findPropertyFunctions(Context context, 
                                               BasicPattern pattern,
                                               PropertyFunctionRegistry registry,
-                                              List propertyFunctionTriples)
+                                              List<Triple> propertyFunctionTriples)
     {
         // Step 1 : find property functions (if any); collect triples.
         // Not list arg triples at this point.
@@ -88,15 +88,15 @@ public class PropertyFunctionGenerator
     
     private static void findPropertyFunctionArgs(Context context, 
                                                  BasicPattern triples,
-                                                 List propertyFunctionTriples,
-                                                 Map pfInvocations)
+                                                 List<Triple> propertyFunctionTriples,
+                                                 Map<Triple, PropertyFunctionInstance> pfInvocations)
     {
         // Step 2 : for each property function, remove associated triples in list arguments; 
         // Leave the propertyFunction triple itself.
 
-        for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
+        for ( Iterator<Triple> iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
         {
-            Triple pf = (Triple)iter.next();
+            Triple pf = iter.next();
             PropertyFunctionInstance pfi = magicProperty(context, pf, triples) ;
             pfInvocations.put(pf, pfi) ;
         }
@@ -145,7 +145,7 @@ public class PropertyFunctionGenerator
         }
     }
 
-    private static Op makeStages(BasicPattern triples, Map pfInvocations)
+    private static Op makeStages(BasicPattern triples, Map<Triple, PropertyFunctionInstance> pfInvocations)
     {
         // Step 3 : Make the operation expression.
         //   For each property function, insert the implementation 
@@ -161,7 +161,7 @@ public class PropertyFunctionGenerator
             {
                 op = flush(pattern, op) ;
                 pattern = null ;
-                PropertyFunctionInstance pfi = (PropertyFunctionInstance)pfInvocations.get(t) ;
+                PropertyFunctionInstance pfi = pfInvocations.get(t) ;
                 OpPropFunc opPF =  new OpPropFunc(t.getPredicate(), pfi.getSubjectArgList(), pfi.getObjectArgList(), op) ;
                 op = opPF ;
                 continue ;
@@ -214,12 +214,12 @@ public class PropertyFunctionGenerator
                                                          Triple pfTriple,
                                                          BasicPattern triples)
     {
-        List listTriples = new ArrayList() ;
+        List<Triple> listTriples = new ArrayList<Triple>() ;
 
         GNode sGNode = new GNode(triples, pfTriple.getSubject()) ;
         GNode oGNode = new GNode(triples, pfTriple.getObject()) ;
-        List sList = null ;
-        List oList = null ;
+        List<Node> sList = null ;
+        List<Node> oList = null ;
         
         if ( GraphList.isListNode(sGNode) )
         {

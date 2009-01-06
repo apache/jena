@@ -36,6 +36,7 @@ public class QueryIterPeek extends QueryIter1
         return binding ;
     }
 
+    @Override
     protected boolean hasNextBinding()
     {
         if ( binding != null )
@@ -46,6 +47,7 @@ public class QueryIterPeek extends QueryIter1
         return true ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
@@ -55,6 +57,7 @@ public class QueryIterPeek extends QueryIter1
         return b ;
     }
 
+    @Override
     protected void closeSubIterator()
     { closed = true ; }
 }

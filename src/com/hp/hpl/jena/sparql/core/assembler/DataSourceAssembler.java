@@ -27,6 +27,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
 {
     public static Resource getType() { return DatasetAssemblerVocab.tDataset ; }
     
+    @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         DataSource ds = DatasetFactory.create() ;

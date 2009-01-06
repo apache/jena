@@ -16,7 +16,7 @@ public class abs extends FunctionBase1
 {
     public abs() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     { return XSDFuncOp.abs(v) ; }
 }

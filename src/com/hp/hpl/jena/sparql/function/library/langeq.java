@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase2;
 
 public class langeq extends FunctionBase2
 {
+    @Override
     public NodeValue exec(NodeValue v1, NodeValue v2)
     {
         return NodeFunctions.langMatches(NodeFunctions.lang(v1), v2) ;

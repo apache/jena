@@ -59,9 +59,13 @@ public class Q_StringNoMatch extends ExprNode implements ExprRDQL, ExprBoolean
     // -----------
     // graph.query.Expression
 
+    @Override
     public boolean isApply()         { return true ; }
+    @Override
     public String getFun()           { return super.constructURI(this.getClass().getName()) ; }
+    @Override
     public int argCount()            { return 2; }
+    @Override
     public Expression getArg(int i)  
     {
         if ( i == 0 && left instanceof Expression )
@@ -70,6 +74,7 @@ public class Q_StringNoMatch extends ExprNode implements ExprRDQL, ExprBoolean
             return (Expression)right ;
         return null;
     }
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
@@ -102,11 +107,13 @@ public class Q_StringNoMatch extends ExprNode implements ExprRDQL, ExprBoolean
         return RDQLQueryPrintUtils.asPrefixString(left, right, printName, opSymbol) ;
     }
     
+    @Override
     public void format(IndentedWriter w)
     {
         RDQLQueryPrintUtils.format(w, left, right, printName, opSymbol) ;
     }
     
+    @Override
     public String toString()
     {
         return asInfixString() ;

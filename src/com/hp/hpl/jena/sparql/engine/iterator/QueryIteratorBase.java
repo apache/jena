@@ -80,7 +80,7 @@ public abstract class QueryIteratorBase
     }
     
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
-    public final Object next()
+    public final Binding next()
     {
         return nextBinding() ;
     }

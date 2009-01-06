@@ -24,6 +24,7 @@ public class TransformPropertyFunction extends TransformCopy
      this.context = context ;   
     }
     
+    @Override
     public Op transform(OpTriple opTriple)
     {
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
@@ -40,6 +41,7 @@ public class TransformPropertyFunction extends TransformCopy
         
     }
     
+    @Override
     public Op transform(OpBGP opBGP)
     {
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;

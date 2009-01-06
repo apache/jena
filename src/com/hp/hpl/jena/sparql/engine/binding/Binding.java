@@ -24,7 +24,7 @@ public interface Binding
     public void add(Var var, Node node) ;
 
     /** Iterate over all variables of this binding. */
-    public Iterator vars() ;
+    public Iterator<Var> vars() ;
 
     /** Test whether a variable is bound to some object */
     public boolean contains(Var var) ;

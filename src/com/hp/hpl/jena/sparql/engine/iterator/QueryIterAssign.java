@@ -30,6 +30,7 @@ public class QueryIterAssign extends QueryIterProcessBinding
         //super(input, new Extend(exprs, qCxt), qCxt) ;
     }
     
+    @Override
     public Binding accept(Binding binding)
     {
         Binding b = new BindingMap(binding) ;

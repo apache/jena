@@ -30,11 +30,13 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         this.execCxt = execCxt ;
         
     }
+    @Override
     public void close()
     {
         super.close() ;
         checkForOpenIterators(execCxt) ;
     }
+    @Override
     public void abort()
     {
         super.abort() ;
@@ -42,6 +44,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
     }
     
     // Be silent about ourselves.
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { iterator.output(out, sCxt) ; }
     

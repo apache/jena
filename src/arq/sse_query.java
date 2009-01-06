@@ -61,6 +61,7 @@ public class sse_query extends CmdARQ
         super.addModule(modEngine) ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -78,8 +79,10 @@ public class sse_query extends CmdARQ
         
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
@@ -91,6 +94,7 @@ public class sse_query extends CmdARQ
         needDivider = true ;
     }
     
+    @Override
     protected void exec()
     {
         Op op = modAlgebra.getOp() ;

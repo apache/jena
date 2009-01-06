@@ -35,7 +35,7 @@ public class ElementDataset extends Element
     public Element getPatternElement() { return element ; }
     public void setPatternElement(Element elt) { element = elt ; }
     
-    //@Override
+    @Override
     public int hashCode()
     { 
         int x = getPatternElement().hashCode() ;
@@ -44,6 +44,7 @@ public class ElementDataset extends Element
         return x ;
     }
     
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -64,6 +65,7 @@ public class ElementDataset extends Element
         return true ;
     }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

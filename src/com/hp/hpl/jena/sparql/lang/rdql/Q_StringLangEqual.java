@@ -77,6 +77,7 @@ public class Q_StringLangEqual extends ExprNode implements ExprRDQL, ExprBoolean
         result.setBoolean(b) ;
         return result ;
     }
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
@@ -87,9 +88,13 @@ public class Q_StringLangEqual extends ExprNode implements ExprRDQL, ExprBoolean
     }
     
     // graph.query.Expression
+    @Override
     public boolean isApply()         { return true ; }
+    @Override
     public String getFun()           { return this.getClass().getName() ; } // For URI of the function
+    @Override
     public int argCount()            { return 2; }
+    @Override
     public Expression getArg(int i)  
     {
         if ( i == 0 && left instanceof Expression )
@@ -109,11 +114,13 @@ public class Q_StringLangEqual extends ExprNode implements ExprRDQL, ExprBoolean
         return RDQLQueryPrintUtils.asPrefixString(left, right, printName, opSymbol) ;
     }
 
+    @Override
     public String toString()
     {
         return asInfixString() ;
     }
 
+    @Override
     public void format(IndentedWriter writer)
     {
         RDQLQueryPrintUtils.format(writer, left, right, printName, opSymbol) ;

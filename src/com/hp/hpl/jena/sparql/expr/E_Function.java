@@ -50,8 +50,10 @@ public class E_Function extends ExprFunctionN
         this.functionIRI = functionIRI ; 
     }
 
+    @Override
     public String getFunctionIRI() { return functionIRI ; }
     
+    @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
         // Only needed because some tests call straight in.
@@ -100,11 +102,13 @@ public class E_Function extends ExprFunctionN
         return registry ;
     }
     
+    @Override
     public String getFunctionPrintName(SerializationContext cxt)
     {
         return FmtUtils.stringForURI(functionIRI, cxt) ;
     }
 
+    @Override
     protected Expr copy(ExprList newArgs)
     {
         return new E_Function(getFunctionIRI(), newArgs) ;

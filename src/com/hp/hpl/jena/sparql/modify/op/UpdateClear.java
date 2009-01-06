@@ -13,7 +13,7 @@ public class UpdateClear extends GraphUpdate1
 {
     public UpdateClear() { super(); }
 
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 

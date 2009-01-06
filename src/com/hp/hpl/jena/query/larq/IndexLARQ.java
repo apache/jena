@@ -88,9 +88,10 @@ public class IndexLARQ
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
             }} ;
         
-        Iterator iter = new Map1Iterator(converter, search(queryString)) ;
+        @SuppressWarnings("unchecked")
+        Iterator<Hit> iter = (Iterator<Hit>)new Map1Iterator(converter, search(queryString)) ;
         if ( scoreLimit > 0 )
-            iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
+            iter = new IteratorTruncate<Hit>(new ScoreTest(scoreLimit), iter) ;
         
         NodeIterator nIter = new NodeIteratorImpl(iter, null) ; 
         return nIter ;
@@ -100,7 +101,7 @@ public class IndexLARQ
     
     public boolean hasMatch(String queryString)
     {
-        Iterator iter = search(queryString) ;
+        Iterator<HitLARQ> iter = search(queryString) ;
         return iter.hasNext(); 
     }
     
@@ -110,7 +111,7 @@ public class IndexLARQ
      *  @return Iterator of hits (Graph node and score)
      */
 
-    public Iterator search(String queryString)
+    public Iterator<HitLARQ> search(String queryString)
     {    
         try{
             Searcher searcher = new IndexSearcher(reader);
@@ -125,8 +126,8 @@ public class IndexLARQ
                     Hit h = (Hit)object ;
                     return new HitLARQ(h) ;
                 }} ;
-            
-            Iterator iter = new Map1Iterator(converter, hits.iterator()) ;
+            @SuppressWarnings("unchecked")
+            Iterator<HitLARQ> iter = (Iterator<HitLARQ>)new Map1Iterator(converter, hits.iterator()) ;
             return iter ;
             
         } catch (Exception e)
@@ -141,7 +142,7 @@ public class IndexLARQ
     public HitLARQ contains(Node node, String queryString)
     {
         try{
-            Iterator iter = search(queryString) ;
+            Iterator<HitLARQ> iter = search(queryString) ;
             for ( ; iter.hasNext() ; )
             {
                 HitLARQ x = (HitLARQ)iter.next();

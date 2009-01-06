@@ -27,10 +27,10 @@ public class ElementFetch extends Element
     
     public Node getFetchNode() { return sourceNode ; }
     
-    //@Override
+    @Override
     public int hashCode() { return sourceNode.hashCode() ^ Element.HashFetch ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -44,6 +44,7 @@ public class ElementFetch extends Element
     }
 
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

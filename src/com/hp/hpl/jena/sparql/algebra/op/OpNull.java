@@ -19,9 +19,11 @@ public class OpNull extends Op0
     
     private OpNull() { }
     
+    @Override
     public Op apply(Transform transform)
     { return transform.transform(this) ; }
 
+    @Override
     public Op copy() { return this ; }
 
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
@@ -31,10 +33,12 @@ public class OpNull extends Op0
         return Tags.tagNull ;
     }
 
+    @Override
     public int hashCode()
     { return OpBase.HashNull ; }
 
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     { return ( other instanceof OpNull ) ; }
 }

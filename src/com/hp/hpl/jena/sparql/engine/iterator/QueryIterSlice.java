@@ -58,6 +58,7 @@ public class QueryIterSlice extends QueryIter1
         }
     }
     
+    @Override
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -72,12 +73,14 @@ public class QueryIterSlice extends QueryIter1
         return true ;
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         count ++ ;
         return getInput().nextBinding() ;
     }
 
+    @Override
     protected void closeSubIterator() {}
 }
 

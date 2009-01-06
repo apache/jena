@@ -30,18 +30,19 @@ public class NodeValueDate extends NodeValue
     
     public NodeValueDate(XSDDateTime dt, Node n) { super(n) ; date = dt ; }
     
-    //@Override
+    @Override
     public boolean isDate() { return true ; }
-    //@Override
+    @Override
     public XSDDateTime getDate()     { return date ; }
     
-    //@Override
+    @Override
     protected Node makeNode()
     {
         String lex = date.toString() ;
         return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
     }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 
 }

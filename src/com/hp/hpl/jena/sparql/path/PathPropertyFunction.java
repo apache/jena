@@ -24,7 +24,7 @@ public class PathPropertyFunction extends PFuncSimple
         this.path = path ;
     }
 
-    //@Override
+    @Override
     public QueryIterator execEvaluated(Binding binding,
                                        Node subject, Node predicate, Node object,
                                        ExecutionContext execCxt)

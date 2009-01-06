@@ -74,6 +74,7 @@ public class E_Regex extends ExprFunction
             regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
     }
     
+    @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
         NodeValue v = expr.eval(binding, env) ;
@@ -111,6 +112,7 @@ public class E_Regex extends ExprFunction
         return new RegexJava(pattern, flags) ;
     }
     
+    @Override
     public Expr getArg(int i)
     {
         if ( i == 1 )
@@ -123,6 +125,7 @@ public class E_Regex extends ExprFunction
         return null ;
     }
 
+    @Override
     public int numArgs()
     {
         if ( flags != null )
@@ -144,6 +147,7 @@ public class E_Regex extends ExprFunction
         return pattern ;
     }
 
+    @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         Expr e = expr.copySubstitute(binding, foldConstants) ;

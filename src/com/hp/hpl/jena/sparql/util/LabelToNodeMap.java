@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 
 public class LabelToNodeMap
 {
-    Map bNodeLabels = new HashMap() ;
+    Map<String, Node> bNodeLabels = new HashMap<String, Node>() ;
     
     // Variables or bNodes?
     // True means variables (query pattern)
@@ -60,11 +60,11 @@ public class LabelToNodeMap
         this.allocator = allocator ;
     }
     
-    public Set getLabels()  { return bNodeLabels.keySet() ; }
+    public Set<String> getLabels()  { return bNodeLabels.keySet() ; }
     
     public Node asNode(String label)
     {
-        Node n = (Node)bNodeLabels.get(label) ;
+        Node n = bNodeLabels.get(label) ;
         if ( n != null )
             return n ;
         n = allocNode() ;

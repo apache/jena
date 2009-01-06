@@ -20,6 +20,7 @@ public class E_IsLiteral extends ExprFunction1
         super(expr, symbol) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue v)
     { 
 //      if ( ! v.isNode() )
@@ -30,6 +31,7 @@ public class E_IsLiteral extends ExprFunction1
         return NodeValue.FALSE ;
     }
     
+    @Override
     public Expr copy(Expr expr) { return new E_IsLiteral(expr) ; } 
 }
 

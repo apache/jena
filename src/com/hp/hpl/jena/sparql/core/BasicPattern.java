@@ -25,21 +25,21 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * Reduces the use of bland "List" in APIs (Java 1.4) 
  */ 
 
-public class BasicPattern
+public class BasicPattern implements Iterable<Triple>
 {
-    private List triples ;
+    private List<Triple> triples ;
 
-    public BasicPattern() { this(new ArrayList()) ; }
+    public BasicPattern() { this(new ArrayList<Triple>()) ; }
     public BasicPattern(BasicPattern other)
     {
         this() ;
         // Copy.
         triples.addAll(other.triples) ;
     }
-    private BasicPattern(List triples) { this.triples = triples ; }
+    private BasicPattern(List<Triple> triples) { this.triples = triples ; }
     
     /** Wrap a list of triples up as a BasicPattern.  Chnaging the list, changes the BasicPattern */ 
-    public static BasicPattern wrap(List triples)
+    public static BasicPattern wrap(List<Triple> triples)
     {
         return new BasicPattern(triples) ;
     }
@@ -50,14 +50,16 @@ public class BasicPattern
     public void add(int i, Triple t) { triples.add(i, t) ; }
     
     public Triple get(int i) { return (Triple)triples.get(i) ; }
-    public ListIterator iterator() { return triples.listIterator() ; } 
+    public ListIterator<Triple> iterator() { return triples.listIterator() ; } 
     public int size() { return triples.size() ; }
     public boolean isEmpty() { return triples.isEmpty() ; }
     
-    public List getList() { return triples ; } 
-    
+    public List<Triple> getList() { return triples ; } 
+
+    @Override
     public int hashCode() { return triples.hashCode() ; } 
-    
+
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -83,6 +85,7 @@ public class BasicPattern
         return true ;
     }
     
+    @Override
     public String toString() 
     { 
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
@@ -91,13 +94,13 @@ public class BasicPattern
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
         
         boolean first = true ;
-        for ( Iterator iter = triples.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Triple> iter = triples.iterator() ; iter.hasNext() ; )
         {
             if ( !first )
                 out.print(" ") ;
             else
                 first = false ;
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             // Adds (triple ...)
             // SSE.write(buff.getIndentedWriter(), t) ;
             out.print("(") ;

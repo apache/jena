@@ -16,7 +16,7 @@ public class strEndsWith extends FunctionBase2
 {
     public strEndsWith() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue str, NodeValue match)
     {
         return XSDFuncOp.strEndsWith(str, match) ;

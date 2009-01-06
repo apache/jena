@@ -245,20 +245,20 @@ public class OpExecutor
     
     protected QueryIterator execute(OpUnion opUnion, QueryIterator input)
     {
-        List x = flattenUnion(opUnion) ;
+        List<Op> x = flattenUnion(opUnion) ;
         QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
         return cIter ;
     }
     
     // Based on code from Olaf Hartig.
-    protected List flattenUnion(OpUnion opUnion)
+    protected List<Op> flattenUnion(OpUnion opUnion)
     {
-        List x = new ArrayList() ;
+        List<Op> x = new ArrayList<Op>() ;
         flattenUnion(x, opUnion) ;
         return x ;
     }
     
-    protected void flattenUnion(List acc, OpUnion opUnion)
+    protected void flattenUnion(List<Op> acc, OpUnion opUnion)
     {
         if (opUnion.getLeft() instanceof OpUnion)
             flattenUnion(acc, (OpUnion)opUnion.getLeft()) ;

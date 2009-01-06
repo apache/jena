@@ -55,7 +55,7 @@ public class BuilderOp
         return builderOp.build(item.getList()) ;
     }
 
-    protected Map dispatch = new HashMap() ;
+    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
 
     public BuilderOp()
     {
@@ -146,9 +146,9 @@ public class BuilderOp
     }
 
     // Build a list of expressions.
-    public static List buildExpr(ItemList list)
+    public static List<Expr> buildExpr(ItemList list)
     {
-        List x = new ArrayList() ;
+        List<Expr> x = new ArrayList<Expr>() ;
         for ( int i = 0 ; i < list.size() ; i++ )
         {
             Item itemExpr = list.get(i) ;
@@ -166,11 +166,11 @@ public class BuilderOp
 
     protected Build findBuild(String str)
     {
-        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
         {
-            String key = (String)iter.next() ; 
+            String key = iter.next() ; 
             if ( str.equalsIgnoreCase(key) )
-                return (Build)dispatch.get(key) ;
+                return dispatch.get(key) ;
         }
         return null ;
     }
@@ -427,16 +427,15 @@ public class BuilderOp
             BuilderLib.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-            List aggregators = new ArrayList() ;
+            List<Expr> aggregators = new ArrayList<Expr>() ;
             
             if ( list.size() == 4 )
             {
                 // Aggregations : assume that the exprs are legal.
                 VarExprList y = BuilderExpr.buildNamedExprList(list.get(2).getList()) ;
                 aggregators.addAll(y.getExprs().values()) ;
-                for ( Iterator iter = aggregators.iterator() ; iter.hasNext() ; )
+                for (  Expr expr : aggregators )
                 {
-                    Expr expr = (Expr)iter.next() ;
                     if ( ! ( expr instanceof E_Aggregator ) )
                         BuilderLib.broken(list, "Not a aggregate expression: "+expr) ;
                 }
@@ -456,7 +455,7 @@ public class BuilderOp
             ItemList conditions = list.get(1).getList() ;
             
             // Maybe tagged (asc, (desc or a raw expression)
-            List x = new ArrayList() ;
+            List<SortCondition> x = new ArrayList<SortCondition>() ;
             
             for ( int i = 0 ; i < conditions.size() ; i++ )
             {

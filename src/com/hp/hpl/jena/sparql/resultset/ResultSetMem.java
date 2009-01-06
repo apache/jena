@@ -127,7 +127,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
      *  The returned object should be of class QuerySolution
      */
 
-    public Object next() { return nextSolution() ; }
+    public QuerySolution next() { return nextSolution() ; }
 
     /** Reset this result set back to the beginning */
     public void rewind( ) { reset() ; }

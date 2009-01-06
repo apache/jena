@@ -25,10 +25,13 @@ public class sse_exec extends CmdARQ_SSE
         super(argv) ;
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
 
+    @Override
     protected void exec(Item item)
     {
         BuilderExec.exec(item) ;

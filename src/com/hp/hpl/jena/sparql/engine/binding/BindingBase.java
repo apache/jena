@@ -8,12 +8,12 @@ package com.hp.hpl.jena.sparql.engine.binding;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.iterator.IteratorConcat;
 
 /** Machinary encapsulating a mapping from a name to a value.
  * 
@@ -67,24 +67,24 @@ abstract public class BindingBase implements Binding
 
     public void addAll(Binding other)
     {
-        Iterator iter = other.vars() ;
+        Iterator<Var> iter = other.vars() ;
         for ( ; iter.hasNext(); )
         {
-            Var v = (Var)iter.next();
+            Var v = iter.next();
             Node n = other.get(v) ;
             add(v, n) ;
         }
     }
     
     /** Iterate over all the names of variables. */
-    final public Iterator vars()
+    final public Iterator<Var> vars()
     {
-        Iterator iter = vars1() ;
+        Iterator<Var> iter = vars1() ;
         if ( parent != null )
-            iter = new ConcatenatedIterator(parent.vars(), iter ) ;
+            iter = IteratorConcat.concat(parent.vars(), iter ) ;
         return iter ;
     }
-    protected abstract Iterator vars1() ;
+    protected abstract Iterator<Var> vars1() ;
     
     final public int size()
     {
@@ -126,6 +126,7 @@ abstract public class BindingBase implements Binding
     }
     protected abstract Node get1(Var var) ;
     
+    @Override
     public String toString()
     {
         StringBuffer sbuff = new StringBuffer() ;
@@ -147,7 +148,7 @@ abstract public class BindingBase implements Binding
     public void format1(StringBuffer sbuff)
     {
         String sep = "" ;
-        for ( Iterator iter = vars1() ; iter.hasNext() ; ) 
+        for ( Iterator<Var> iter = vars1() ; iter.hasNext() ; ) 
         {
             Object obj = iter.next() ;
             Var var = (Var)obj ;
@@ -189,7 +190,9 @@ abstract public class BindingBase implements Binding
 
     protected abstract void checkAdd1(Var var, Node node) ;
     
+    @Override
     public int hashCode() { return hashCode(this) ; } 
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -202,7 +205,7 @@ abstract public class BindingBase implements Binding
     public static int hashCode(Binding bind)
     {
         int hash = 0xC0 ;
-        for ( Iterator iter = bind.vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = bind.vars() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ; 
             Node node = bind.get(var) ;
@@ -221,7 +224,7 @@ abstract public class BindingBase implements Binding
         if ( bind1.size() != bind2.size() )
             return false ;
 
-        for ( Iterator iter1 = bind1.vars() ; iter1.hasNext() ; )
+        for ( Iterator<Var> iter1 = bind1.vars() ; iter1.hasNext() ; )
         {
             Var var = (Var)iter1.next() ; 
             Node node1 = bind1.get(var) ;

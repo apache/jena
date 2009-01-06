@@ -15,10 +15,10 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
-import com.hp.hpl.jena.util.iterator.NullIterator;
 
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.sparql.util.iterator.NullIterator;
 
 import com.hp.hpl.jena.query.Dataset;
 
@@ -32,13 +32,13 @@ import com.hp.hpl.jena.query.Dataset;
 public class DataSourceGraphImpl implements DataSourceGraph
 {
     Graph defaultGraph = null ;
-    Map namedGraphs = null ;
+    Map<Node, Graph> namedGraphs = null ;
     Lock lock = null ;
 
     public DataSourceGraphImpl(Graph graph)
     { 
         defaultGraph = graph ;
-        namedGraphs = new HashMap() ;
+        namedGraphs = new HashMap<Node, Graph>() ;
     }
     
     public DataSourceGraphImpl(Model model)
@@ -72,13 +72,13 @@ public class DataSourceGraphImpl implements DataSourceGraph
     { 
         if ( namedGraphs == null )
             return null ;
-        return (Graph)namedGraphs.get(graphName) ;
+        return namedGraphs.get(graphName) ;
     }
 
     public void addGraph(Node graphName, Graph graph)
     {
         if ( namedGraphs== null )
-            namedGraphs = new HashMap() ;
+            namedGraphs = new HashMap<Node, Graph>() ;
         namedGraphs.put(graphName, graph) ;
     }
      
@@ -86,7 +86,7 @@ public class DataSourceGraphImpl implements DataSourceGraph
     {
         if ( namedGraphs == null )
             return null ;
-        return (Graph)namedGraphs.remove(graphName) ;
+        return namedGraphs.remove(graphName) ;
     }
 
     public boolean containsGraph(Node graphName)
@@ -95,10 +95,10 @@ public class DataSourceGraphImpl implements DataSourceGraph
         return namedGraphs.containsKey(graphName) ;
     }
 
-    public Iterator listGraphNodes()
+    public Iterator<Node> listGraphNodes()
     { 
         if ( namedGraphs == null )
-            return new NullIterator() ; 
+            return new NullIterator<Node>() ;
         return namedGraphs.keySet().iterator() ;
     }
     
@@ -138,7 +138,7 @@ public class DataSourceGraphImpl implements DataSourceGraph
     {
         DataSourceGraphImpl ds = new DataSourceGraphImpl() ;
         ds.setDefaultGraph(getDefaultGraph()) ;
-        ds.namedGraphs = new HashMap(namedGraphs) ;
+        ds.namedGraphs = new HashMap<Node, Graph>(namedGraphs) ;
         return ds ;
     }
     
@@ -147,7 +147,7 @@ public class DataSourceGraphImpl implements DataSourceGraph
         if ( ! ( dataset instanceof DataSourceGraphImpl ) )
         {
             defaultGraph = dataset.getDefaultGraph() ;
-            namedGraphs = new HashMap() ;
+            namedGraphs = new HashMap<Node, Graph>() ;
             for ( Iterator iter = dataset.listGraphNodes() ; iter.hasNext(); )
             {
                 Node name = (Node)iter.next();
@@ -156,11 +156,12 @@ public class DataSourceGraphImpl implements DataSourceGraph
             return ;
         }            
         DataSourceGraphImpl ds = (DataSourceGraphImpl)dataset ;
-        namedGraphs = new HashMap(ds.namedGraphs) ;
+        namedGraphs = new HashMap<Node, Graph>(ds.namedGraphs) ;
         defaultGraph = ds.defaultGraph ;
     }
 
     
+    @Override
     public String toString()
     {
         String s = "{" ;
@@ -168,9 +169,9 @@ public class DataSourceGraphImpl implements DataSourceGraph
             s = s+"<null>" ;
         else
             s = s+"["+getDefaultGraph().size()+"]" ;
-        for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = listGraphNodes() ; iter.hasNext() ; )
         {
-            Node graphName = (Node)iter.next() ;
+            Node graphName = iter.next() ;
             String x = FmtUtils.stringForNode(graphName) ;
             s = s+", ("+x+", ["+getGraph(graphName).size()+"])" ;
         }
@@ -183,9 +184,9 @@ public class DataSourceGraphImpl implements DataSourceGraph
         if ( getDefaultGraph() != null )
             getDefaultGraph().close() ;
         
-        for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = listGraphNodes() ; iter.hasNext() ; )
         {
-            Node graphName = (Node)iter.next() ;
+            Node graphName = iter.next() ;
             Graph g = getGraph(graphName) ;
             g.close();
         }

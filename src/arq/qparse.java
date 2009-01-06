@@ -58,6 +58,7 @@ public class qparse extends CmdARQ
         super.add(argDeclOpt, "--opt", "Print with algebra-level optimization") ; 
     }
     
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -85,6 +86,7 @@ public class qparse extends CmdARQ
 
     static String usage = qparse.class.getName()+" [--in syntax] [--out syntax] [--print=FORM] [\"query\"] | --query <file>" ;
     
+    @Override
     protected String getSummary()
     {
         return usage ;
@@ -99,6 +101,7 @@ public class qparse extends CmdARQ
         needDivider = true ;
     }
     
+    @Override
     protected void exec()
     {
         try{
@@ -166,6 +169,7 @@ public class qparse extends CmdARQ
         }
     }
 
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
 
 //    static String usage = qparse.class.getName()+

@@ -99,7 +99,7 @@ class VarFinder
             filterMentions = _filterMentions ;
         }
         
-        //@Override
+        @Override
         public void visit(OpQuadPattern quadPattern)
         {
             slot(defines, quadPattern.getGraphNode()) ;
@@ -116,20 +116,20 @@ class VarFinder
 //            }
         }
 
-        //@Override
+        @Override
         public void visit(OpBGP opBGP)
         {
             BasicPattern triples = opBGP.getPattern() ;
             vars(defines, triples) ;
         }
         
-        //@Override
+        @Override
         public void visit(OpExt opExt)
         {
             opExt.effectiveOp().visit(this) ;
         }
         
-        //@Override
+        @Override
         public void visit(OpJoin opJoin)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opJoin.getLeft()) ;
@@ -144,7 +144,7 @@ class VarFinder
             filterMentions.addAll(rightUsage.filterMentions) ;
         }
 
-        //@Override
+        @Override
         public void visit(OpLeftJoin opLeftJoin)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opLeftJoin.getLeft()) ;
@@ -168,7 +168,7 @@ class VarFinder
                 opLeftJoin.getExprs().varsMentioned(filterMentions);
         }
 
-        //@Override
+        @Override
         public void visit(OpUnion opUnion)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opUnion.getLeft()) ;
@@ -183,19 +183,21 @@ class VarFinder
             filterMentions.addAll(rightUsage.filterMentions) ;
         }
 
-        //@Override
+        @Override
         public void visit(OpGraph opGraph)
         {
             slot(defines, opGraph.getNode()) ;
         }
         
         // @Override
+        @Override
         public void visit(OpFilter opFilter)
         {
             opFilter.getExprs().varsMentioned(filterMentions);
             opFilter.getSubOp().visit(this) ;
         }
         
+        @Override
         public void visit(OpAssign opAssign)
         {
             opAssign.getSubOp().visit(this) ;
@@ -203,6 +205,7 @@ class VarFinder
             defines.addAll(vars) ;
         }
         
+        @Override
         public void visit(OpProject opProject)
         {
             List vars = opProject.getVars() ;
@@ -216,9 +219,11 @@ class VarFinder
             filterMentions.addAll(subUsage.filterMentions) ;
         }
 
+        @Override
         public void visit(OpTable opTable)
         { }
 
+        @Override
         public void visit(OpNull opNull)
         { }
     }

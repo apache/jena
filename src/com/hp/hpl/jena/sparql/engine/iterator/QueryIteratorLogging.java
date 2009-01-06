@@ -29,6 +29,7 @@ public class QueryIteratorLogging extends QueryIteratorWrapper
         log = LogFactory.getLog(input.getClass()) ;
     }
     
+    @Override
     protected boolean hasNextBinding()
     { 
         boolean b = super.hasNextBinding() ;
@@ -38,6 +39,7 @@ public class QueryIteratorLogging extends QueryIteratorWrapper
     }
          
     
+    @Override
     protected Binding moveToNextBinding()
     { 
         Binding binding = super.moveToNextBinding() ;
@@ -46,6 +48,7 @@ public class QueryIteratorLogging extends QueryIteratorWrapper
         return binding ;
     }
 
+    @Override
     protected void closeIterator()
     {
         if ( logging )

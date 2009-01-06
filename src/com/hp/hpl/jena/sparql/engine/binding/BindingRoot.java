@@ -18,6 +18,7 @@ public class BindingRoot extends Binding0
 
     //public boolean isRoot() { return true ; } 
 
+    @Override
     public void format1(StringBuffer sBuff)
     {
         sBuff.append("[Root]") ;

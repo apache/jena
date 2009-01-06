@@ -32,7 +32,7 @@ public abstract class QuerySolutionBase implements QuerySolution
 
     protected abstract boolean _contains(String varName) ;
     
-    public abstract Iterator varNames() ;
+    public abstract Iterator<String> varNames() ;
 }
 
 /*

@@ -23,13 +23,16 @@ public class OpDiff extends Op2
     
     public String getName() { return Tags.tagDiff ; }
 
+    @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op newLeft, Op newRight)
     { return new OpDiff(newLeft, newRight) ; }
     
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpDiff) ) return false ;

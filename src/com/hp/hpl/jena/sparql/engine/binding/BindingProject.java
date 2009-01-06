@@ -15,21 +15,24 @@ import com.hp.hpl.jena.sparql.core.Var;
 public class BindingProject extends BindingBase
 {
     Binding binding ;
-    Collection projectionVars ; 
+    Collection<Var> projectionVars ; 
 
-    public BindingProject(Collection vars, Binding bind)
+    public BindingProject(Collection<Var> vars, Binding bind)
     { 
         super(null) ;
         binding = bind ;
         this.projectionVars = vars ;
     }
 
+    @Override
     protected void add1(Var var, Node node)
     { throw new UnsupportedOperationException("BindingProject.add1") ; }
 
+    @Override
     protected void checkAdd1(Var var, Node node)
     {}
 
+    @Override
     protected boolean contains1(Var var)
     {
         // In the projection set and the underlying
@@ -38,6 +41,7 @@ public class BindingProject extends BindingBase
         //return projectionVars.contains(var) ; 
     }
 
+    @Override
     protected Node get1(Var var)
     {
         if ( ! projectionVars.contains(var) )
@@ -45,11 +49,13 @@ public class BindingProject extends BindingBase
         return binding.get(var) ;
     }
 
-    protected Iterator vars1()
+    @Override
+    protected Iterator<Var> vars1()
     {
         return projectionVars.iterator() ;
     }
 
+    @Override
     protected int size1()
     {
         return projectionVars.size() ;

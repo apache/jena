@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.Collection;
 import java.util.Map;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplate;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -22,19 +25,22 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class Template
 {
-    public abstract void subst(Collection s, Map bNodeMap, Binding b) ;
+    public abstract void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b) ;
     public abstract void visit(TemplateVisitor v) ;
     
+    @Override
     public abstract int hashCode() ;
     
     public abstract boolean equalIso(Object temp2, NodeIsomorphismMap labelMap) ;
     
+    @Override
     final public boolean equals(Object temp2)
     { 
         if ( this == temp2 ) return true ;
         return equalIso(temp2, null) ;
     }
     
+    @Override
     public String toString()
     {
         return FmtTemplate.asString(this) ;

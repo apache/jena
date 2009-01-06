@@ -41,10 +41,10 @@ public class ElementNamedGraph extends Element
         return element ;
     }
     
-    //@Override
+    @Override
     public int hashCode() { return element.hashCode() ^ sourceNode.hashCode() ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -60,6 +60,7 @@ public class ElementNamedGraph extends Element
     }
 
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

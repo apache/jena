@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.util.IterLib;
 
 public class blankNode extends PFuncSimple
 {
+    @Override
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
     {
         if ( Var.isVar(subject) )

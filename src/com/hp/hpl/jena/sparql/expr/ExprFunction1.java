@@ -26,6 +26,7 @@ public abstract class ExprFunction1 extends ExprFunction
 
     public Expr getArg() { return expr ; }
 
+    @Override
     public Expr getArg(int i)
     {
         if ( i == 1 )
@@ -33,16 +34,19 @@ public abstract class ExprFunction1 extends ExprFunction
         return null ;
     }
     
+    @Override
     public int hashCode()
     {
         return getFunctionSymbol().hashCode() ^
                getArg().hashCode() ;
     }
 
+    @Override
     public int numArgs() { return 1 ; }
     
     // ---- Evaluation
     
+    @Override
     final public NodeValue eval(Binding binding, FunctionEnv env)
     {
         NodeValue s = evalSpecial(binding, env) ;
@@ -58,6 +62,7 @@ public abstract class ExprFunction1 extends ExprFunction
     // Allow special cases.
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
+    @Override
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         Expr e = expr.copySubstitute(binding, foldConstants) ;

@@ -28,9 +28,9 @@ public class CmdLineArgs extends CommandLineBase
     }
 
     private boolean processedArgs = false ;
-    protected Map argMap = new HashMap() ;          // Map from string name to ArgDecl 
-    protected Map args = new HashMap() ;            // Name to Arg  
-    protected List positionals = new ArrayList() ;  // Positional arguments as strings.
+    protected Map<String, ArgDecl> argMap = new HashMap<String, ArgDecl>() ;          // Map from string name to ArgDecl 
+    protected Map<String, Arg> args = new HashMap<String, Arg>() ;            // Name to Arg  
+    protected List<String> positionals = new ArrayList<String>() ;  // Positional arguments as strings.
     
     public void process() throws IllegalArgumentException
     {
@@ -111,13 +111,13 @@ public class CmdLineArgs extends CommandLineBase
     {
         if ( ! args.containsKey(name) )
             args.put(name, new Arg(name)) ;
-        Arg arg = (Arg)args.get(name) ;
+        Arg arg = args.get(name) ;
         return addArgWorker(arg, value) ;
     }
 
     private CmdLineArgs addArgWorker(Arg arg, String value)
     {
-        ArgDecl argDecl = (ArgDecl)argMap.get(arg.name) ;
+        ArgDecl argDecl = argMap.get(arg.name) ;
 
         if ( ! argDecl.takesValue() && value != null )
                 throw new IllegalArgumentException("No value for argument: "+arg.getName()) ;
@@ -199,9 +199,9 @@ public class CmdLineArgs extends CommandLineBase
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
-        for ( Iterator iter = args.values().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Arg> iter = args.values().iterator() ; iter.hasNext() ; )
         {
-            Arg a = (Arg)iter.next() ;
+            Arg a = iter.next() ;
             if ( argDecl.matches(a) )
                 arg = a ;
         }
@@ -217,7 +217,7 @@ public class CmdLineArgs extends CommandLineBase
     public Arg getArg(String s)
     {
         s = ArgDecl.canonicalForm(s) ;
-        return (Arg)args.get(s) ;
+        return args.get(s) ;
     }
     
     /**
@@ -279,11 +279,11 @@ public class CmdLineArgs extends CommandLineBase
      * @param argDecl
      * @return List
      */
-    public List getValues(ArgDecl argDecl)
+    public List<String> getValues(ArgDecl argDecl)
     {
         Arg arg = getArg(argDecl) ;
         if ( arg == null )
-            return new ArrayList() ;
+            return new ArrayList<String>() ;
         return arg.getValues() ;
     }    
 
@@ -292,11 +292,11 @@ public class CmdLineArgs extends CommandLineBase
      * @param argDecl
      * @return List
      */
-    public List getValues(String argName)
+    public List<String> getValues(String argName)
     {
         Arg arg = getArg(argName) ;
         if ( arg == null )
-            return new ArrayList() ;
+            return new ArrayList<String>() ;
         return arg.getValues() ;
     }    
     
@@ -306,7 +306,7 @@ public class CmdLineArgs extends CommandLineBase
      */
     public String getPositionalArg(int i)
     {
-        return (String)positionals.get(i) ;
+        return positionals.get(i) ;
     }
     
     public int getNumPositional()
@@ -319,7 +319,7 @@ public class CmdLineArgs extends CommandLineBase
         return positionals.size() > 0 ;
     }
     
-    public List getPositional()
+    public List<String> getPositional()
     {
         return positionals ;
     }
@@ -338,25 +338,26 @@ public class CmdLineArgs extends CommandLineBase
     private ArgDecl find(String a)
     {
         a = ArgDecl.canonicalForm(a) ;
-        return (ArgDecl)argMap.get(a) ;
+        return argMap.get(a) ;
     }
 
+    @Override
     public String toString()
     {
         if ( ! processedArgs ) return super.toString() ;
         String str = "" ;
         String sep = "" ;
-        for ( Iterator iter = args.keySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = args.keySet().iterator() ; iter.hasNext() ; )
         {
-            String k = (String)iter.next() ;
-            Arg a = (Arg)args.get(k) ;
+            String k = iter.next() ;
+            Arg a = args.get(k) ;
             str = str+sep+a ;
             sep = " " ;
         }
         sep = " -- " ;
-        for ( Iterator iter = positionals.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = positionals.iterator() ; iter.hasNext() ; )
         {
-            String v = (String)iter.next() ;
+            String v = iter.next() ;
             str = str+sep+v ;
             sep = " " ;
         }
@@ -408,7 +409,7 @@ public class CmdLineArgs extends CommandLineBase
             }
             
             // Recognized flag
-            ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
+            ArgDecl argDecl = argMap.get(argStr) ;
             
             if ( argDecl.takesValue() )
             {

@@ -48,7 +48,7 @@ public class UpdateRequest extends Prologue
         UpdateFactory.create(this, graphStore, binding).execute(); 
     }
     
-    //@Override
+    @Override
     public String toString()
     { return PrintUtils.toString(this) ; } 
 

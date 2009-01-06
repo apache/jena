@@ -37,6 +37,7 @@ public class BindingKey
     private boolean validHashCode = false ;
     private int keyHashCode = 0 ;
     
+    @Override
     public int hashCode()
     {
         if ( ! validHashCode )
@@ -47,6 +48,7 @@ public class BindingKey
         return keyHashCode ;
     }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -61,9 +63,9 @@ public class BindingKey
     private static int calcHashCode(Binding binding)
     {
         int calcHashCode = EmptyBindingHashCode ;
-        for ( Iterator iter = binding.vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ;
+            Var var = iter.next() ;
             Node n = binding.get(var) ;
             if ( n == null )
                 continue ;

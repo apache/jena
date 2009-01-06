@@ -39,11 +39,13 @@ public class QueryIterYieldN extends QueryIter
     
     public Binding getBinding() { return binding ; }
     
+    @Override
     protected boolean hasNextBinding()
     {
         return countYielded < limitYielded ;
     }
     
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
@@ -53,11 +55,13 @@ public class QueryIterYieldN extends QueryIter
         return binding ;
     }
 
+    @Override
     protected void closeIterator()
     {
         //binding = null ;
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         out.print("QueryIterYieldN: "+limitYielded+" of "+binding);

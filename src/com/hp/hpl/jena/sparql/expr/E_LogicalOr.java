@@ -42,6 +42,7 @@ public class E_LogicalOr extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
+    @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         ExprEvalException error = null ;
@@ -80,12 +81,14 @@ public class E_LogicalOr extends ExprFunction2
         }
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         // Revisit
         throw new ARQInternalErrorException("Can't do that to "+this.getClass()) ;
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_LogicalOr(e1 , e2 ) ; }
 }
 

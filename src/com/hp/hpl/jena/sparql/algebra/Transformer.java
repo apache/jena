@@ -63,11 +63,13 @@ public class Transformer
             return pop() ; 
         }
     
+        @Override
         protected void visit0(Op0 op)
         {
             push(op.apply(transform)) ;
         }
         
+        @Override
         protected void visit1(Op1 op)
         {
             Op subOp = null ;
@@ -76,6 +78,7 @@ public class Transformer
             push(op.apply(transform, subOp)) ;
         }
     
+        @Override
         protected void visit2(Op2 op)
         { 
             Op left = null ;
@@ -90,6 +93,7 @@ public class Transformer
             push(opX) ;
         }
         
+        @Override
         protected void visitN(OpN op)
         {
             List x = new ArrayList(op.size()) ;     // Maybe be slightly too many.
@@ -108,6 +112,7 @@ public class Transformer
             push(opX) ;
         }
         
+        @Override
         protected void visitExt(OpExt op)
         {
             push(transform.transform(op)) ;

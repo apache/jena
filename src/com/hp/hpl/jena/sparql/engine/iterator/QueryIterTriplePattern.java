@@ -33,6 +33,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         this.pattern = pattern ;
     }
 
+    @Override
     protected QueryIterator nextStage(Binding binding)
     {
         return new TripleMapper(binding, pattern, getExecContext()) ;
@@ -172,6 +173,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         }        
         
         
+        @Override
         protected boolean hasNextBinding()
         {
             if ( slot != null ) return true ;
@@ -184,6 +186,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             return slot != null ;
         }
 
+        @Override
         protected Binding moveToNextBinding()
         {
             hasNextBinding() ;
@@ -192,6 +195,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             return r ;
         }
 
+        @Override
         protected void closeIterator()
         {
             if ( graphIter != null )

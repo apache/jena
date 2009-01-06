@@ -25,8 +25,8 @@ public class Histogram
 	// The number of classes for the histogram
 	private int nrOfClasses = 10 ;
 	private double lowerBound = 0d, upperBound = 0d, classSize = 0d ;
-	private List elementList = new ArrayList() ; // List<Double>
-	private Map histogram = new TreeMap() ; // Map<Double, HistogramClass>
+	private List<Double> elementList = new ArrayList<Double>() ; // List<Double>
+	private Map<Double, HistogramClass> histogram = new TreeMap<Double, HistogramClass>() ; // Map<Double, HistogramClass>
 	private static Log log = LogFactory.getLog(Histogram.class) ;
 	
 	/**
@@ -34,13 +34,10 @@ public class Histogram
 	 * 
 	 * @param elements
 	 */
-	public void addElements(List elements)
+	public void addElements(List<Node> elements)
 	{
-		// List<Node>
-		for (Iterator iter = elements.iterator(); iter.hasNext(); )
-		{
-			Node node = (Node)iter.next() ;
-			
+		for (Node node : elements)
+        {
 			Double element = toElement(node) ;
 			
 			if (element != null)
@@ -50,8 +47,8 @@ public class Histogram
 		// Sort the list of hash codes
 		Collections.sort(elementList) ;
 		
-		lowerBound = ((Double)elementList.get(0)).doubleValue() ;
-		upperBound = ((Double)elementList.get(elementList.size() - 1)).doubleValue() ;
+		lowerBound = elementList.get(0).doubleValue() ;
+		upperBound = elementList.get(elementList.size() - 1).doubleValue() ;
 		classSize = (upperBound - lowerBound) / nrOfClasses ;
 		
 		log.debug("Number of elements: " + elementList.size()) ;
@@ -71,11 +68,11 @@ public class Histogram
 			log.debug("Create histogram class with lower bound: " + classLowerBound) ;
 		}
 		
-		for (Iterator iter = elementList.iterator(); iter.hasNext(); )
+		for (Iterator<Double> iter = elementList.iterator(); iter.hasNext(); )
 		{			
-			Double element = (Double)iter.next() ;
+			Double element = iter.next() ;
 			double classLowerBound = getLowerBound(element.doubleValue()) ;
-			HistogramClass histogramClass = (HistogramClass)histogram.get(new Double(classLowerBound)) ;
+			HistogramClass histogramClass = histogram.get(new Double(classLowerBound)) ;
 			histogramClass.increment() ;
 		}
 	}
@@ -103,7 +100,7 @@ public class Histogram
 		// Look for the element only if it fits in the histogram boundaries
 		if (element.doubleValue() >= lowerBound && element.doubleValue() <= upperBound)
 		{
-			HistogramClass histogramClass = (HistogramClass)histogram.get(new Double(getLowerBound(element.doubleValue()))) ;
+			HistogramClass histogramClass = histogram.get(new Double(getLowerBound(element.doubleValue()))) ;
 	
 			return histogramClass.getFrequency() ;
 		}
@@ -118,12 +115,12 @@ public class Histogram
 	 * 
 	 * @return Set<HistogramClass>
 	 */
-	public Set getClasses()
+	public Set<HistogramClass> getClasses()
 	{
-		Set histogramClasses = new HashSet() ; // Set<HistogramClass>
+		Set<HistogramClass> histogramClasses = new HashSet<HistogramClass>() ; // Set<HistogramClass>
 		
-		for (Iterator iter = histogram.values().iterator(); iter.hasNext(); )
-			histogramClasses.add((HistogramClass)iter.next()) ;
+		for (Iterator<HistogramClass> iter = histogram.values().iterator(); iter.hasNext(); )
+			histogramClasses.add(iter.next()) ;
 		
 		return histogramClasses ;
 	}
@@ -209,10 +206,10 @@ public class Histogram
 		long size = 0L ;
 		
 		// Step through the histogram classes and add up the frequencies
-		for (Iterator iter = histogram.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Double> iter = histogram.keySet().iterator(); iter.hasNext(); )
 		{
-			Double key = (Double)iter.next() ;
-			HistogramClass histogramClass = (HistogramClass)histogram.get(key) ;
+			Double key = iter.next() ;
+			HistogramClass histogramClass = histogram.get(key) ;
 			size += histogramClass.getFrequency() ;
 		}
 		

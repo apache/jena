@@ -54,7 +54,8 @@ public class GraphStatisticsHeuristic extends HeuristicBasicPattern
 	 * @param triple1
 	 * @return Double
 	 */
-	public double getCost(Triple triple1) 
+	@Override
+    public double getCost(Triple triple1) 
 	{
 		if (graphStatisticsHandler == null)
 			return vc.getCost(triple1) ;
@@ -93,7 +94,8 @@ public class GraphStatisticsHeuristic extends HeuristicBasicPattern
 	 * @param triple2
 	 * @return Double
 	 */
-	public double getCost(Triple triple1, Triple triple2)
+	@Override
+    public double getCost(Triple triple1, Triple triple2)
 	{
 		return vc.getCost(triple1, triple2) ;
 	}

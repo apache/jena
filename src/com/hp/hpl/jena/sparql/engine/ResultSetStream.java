@@ -25,20 +25,20 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 public class ResultSetStream implements ResultSet
 {
     // Could use QueryIteratorWrapper 
-    QueryIterator queryExecutionIter ;
-    List resultVars ;
-    QuerySolution currentEnv ;
-    int rowNumber ;
-    Model model ;
+    private QueryIterator queryExecutionIter ;
+    private List<String> resultVars ;
+    private QuerySolution currentQuerySolution ;
+    private int rowNumber ;
+    private Model model ;
     
-    boolean ordered = false ; 
-    boolean distinct = false ;
+    private boolean ordered = false ; 
+    private boolean distinct = false ;
     
-    public ResultSetStream(List resultVars, Model m, QueryIterator iter)
+    public ResultSetStream(List<String> resultVars, Model m, QueryIterator iter)
     {
         queryExecutionIter = iter ;
         this.resultVars = resultVars ;
-        currentEnv = null ;
+        currentQuerySolution = null ;
         rowNumber = 0 ;
         model = m ;
     }
@@ -88,14 +88,14 @@ public class ResultSetStream implements ResultSet
             throw new NoSuchElementException(this.getClass()+".next") ;
         
         Binding binding = nextBinding() ;
-        currentEnv = new ResultBinding(model, binding) ;
-        return currentEnv ;
+        currentQuerySolution = new ResultBinding(model, binding) ;
+        return currentQuerySolution ;
     }
 
     
     /** Moves onto the next result possibility.*/
     
-    public Object next() { return nextSolution() ; }
+    public QuerySolution next() { return nextSolution() ; }
     
     /** Return the "row number" - a count of the number of possibilities returned so far.
      *  Remains valid (as the total number of possibilities) after the iterator ends.
@@ -109,7 +109,7 @@ public class ResultSetStream implements ResultSet
     /** Get the variable names for the projection
      */
 
-    public List getResultVars() { return resultVars ; }
+    public List<String> getResultVars() { return resultVars ; }
     
     public Model getModel() { return model ; }
     

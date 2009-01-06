@@ -10,58 +10,61 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.core.Var;
+
 public class ExprVars
 {
-    interface Action { void var(Collection acc, ExprVar nv) ; }
+    interface Action<T> { void var(Collection<T> acc, ExprVar nv) ; }
     
-    public static Set getVarsMentioned(Expr expr)
+    public static Set<Var> getVarsMentioned(Expr expr)
     {
-        Set acc = new HashSet() ;
+        Set<Var> acc = new HashSet<Var>() ;
         varsMentioned(acc, expr) ;
         return acc ;
     }
     
-    public static void varsMentioned(Collection acc, Expr expr)
+    public static void varsMentioned(Collection<Var> acc, Expr expr)
     {
-        ExprVars.Action action =
-            new ExprVars.Action(){
-                public void var(Collection acc, ExprVar nv)
+        ExprVars.Action<Var> action =
+            new ExprVars.Action<Var>(){
+                public void var(Collection<Var> acc, ExprVar nv)
                 {
                     acc.add(nv.asVar()) ;
                 }
             } ;
-        ExprVarsWorker vv = new ExprVarsWorker(acc, action) ;
+        ExprVarsWorker<Var> vv = new ExprVarsWorker<Var>(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
-    public static Set getVarNamesMentioned(Expr expr)
+    public static Set<String> getVarNamesMentioned(Expr expr)
     {
-        Set acc = new HashSet() ;
+        Set<String> acc = new HashSet<String>() ;
         varNamesMentioned(acc, expr) ;
         return acc ;
     }
     
-    public static void varNamesMentioned(Collection acc, Expr expr)
+    public static void varNamesMentioned(Collection<String> acc, Expr expr)
     {
-        ExprVars.Action action =
-            new ExprVars.Action(){
-                public void var(Collection acc, ExprVar nv)
+        ExprVars.Action<String> action =
+            new ExprVars.Action<String>(){
+                public void var(Collection<String> acc, ExprVar nv)
                 {
                     acc.add(nv.getVarName()) ;
                 }
             } ;
-        ExprVarsWorker vv = new ExprVarsWorker(acc, action) ;
+        ExprVarsWorker<String> vv = new ExprVarsWorker<String>(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
-    static class ExprVarsWorker extends ExprVisitorBase
+    static class ExprVarsWorker<T> extends ExprVisitorBase
     {
-        Collection acc ;
-        Action action ;
+        Collection<T> acc ;
+        Action<T> action ;
         
-        public ExprVarsWorker(Collection acc, Action action)
+        public ExprVarsWorker(Collection<T> acc, Action<T> action)
         { this.acc = acc ; this.action = action ; }
         
+        @Override
         public void visit(ExprVar nv)
         { action.var(acc, nv) ; }
     }

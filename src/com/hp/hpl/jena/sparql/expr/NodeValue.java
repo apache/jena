@@ -335,10 +335,12 @@ public abstract class NodeValue extends ExprNode
    // ----------------------------------------------------------------
    // ---- Expr interface
     
+    @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     { return this ; }
 
     // NodeValues are immutable so no need to duplicate.
+    @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {  // return this ; 
         Node n = asNode() ;
@@ -359,8 +361,10 @@ public abstract class NodeValue extends ExprNode
     }
 
     
+    @Override
     public boolean isConstant() { return true ; }
 
+    @Override
     public NodeValue getConstant()     { return this ; }
     
     // ----------------------------------------------------------------
@@ -997,11 +1001,13 @@ public abstract class NodeValue extends ExprNode
         return NodeFunctions.str(node) ;
     }
     
+    @Override
     public int hashCode() 
     {
         return asNode().hashCode() ;
     }
     
+    @Override
     public boolean equals(Object other)
     {
         // This is the equality condition Jena uses - lang tags are different by case. 
@@ -1016,6 +1022,7 @@ public abstract class NodeValue extends ExprNode
 
     public abstract void visit(NodeValueVisitor visitor) ;
     
+    @Override
     public String toString()
     { 
         return asQuotedString() ;

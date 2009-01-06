@@ -50,6 +50,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         this.pattern = pattern ;
     }
 
+    @Override
     public QueryIterator nextStage(Binding binding)
     {
         return new StagePattern(binding, pattern, getExecContext()) ;
@@ -91,14 +92,14 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
                 ALog.warn(this, "Graph Iterator is null") ;
         }
 
-        //@Override
+        @Override
         protected boolean hasNextBinding()
         {
             boolean isMore = graphIter.hasNext() ;
             return isMore ;
         }
 
-        //@Override
+        @Override
         protected Binding moveToNextBinding()
         {
           Domain d = (Domain)graphIter.next() ;
@@ -106,7 +107,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
           return b ;
         }
 
-        //@Override
+        @Override
         protected void closeIterator()
         {
             if ( ! isFinished() )
@@ -136,6 +137,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         return binding ;
     }
     
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;

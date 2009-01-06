@@ -99,7 +99,7 @@ public class JSONInput extends SPARQLResult
     public static class JSONResultSet implements ResultSet, JSONResults {
         // ResultSet variables
         QuerySolution current = null;
-        List variables = new ArrayList();
+        List<String> variables = new ArrayList<String>();
         Binding binding = null; // Current binding
         boolean inputGraphLabels = ARQ.isTrue(ARQ.inputGraphBNodeLabels) ;
 
@@ -174,7 +174,7 @@ public class JSONInput extends SPARQLResult
             return binding != null;
         }
 
-        public Object next() {
+        public QuerySolution next() {
             return nextSolution();
         }
 
@@ -198,7 +198,7 @@ public class JSONInput extends SPARQLResult
             return row;
         }
 
-        public List getResultVars() { return variables; }
+        public List<String> getResultVars() { return variables; }
 
         public boolean isOrdered() { return ordered; }
 

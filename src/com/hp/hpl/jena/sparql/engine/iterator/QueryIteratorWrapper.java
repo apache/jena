@@ -26,10 +26,13 @@ public class QueryIteratorWrapper extends QueryIteratorBase
         iterator = qIter ;
     }
 
+    @Override
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 
     
+    @Override
     protected Binding moveToNextBinding() { return iterator.nextBinding() ; }
 
+    @Override
     protected void closeIterator()
     {
         if ( iterator != null )

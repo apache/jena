@@ -19,7 +19,7 @@ public class UpdateCreate extends GraphMgt
     public UpdateCreate(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
     public UpdateCreate(String iri) { this(iri, false) ; }
 
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 

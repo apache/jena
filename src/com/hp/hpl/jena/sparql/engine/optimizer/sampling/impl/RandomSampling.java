@@ -47,7 +47,8 @@ public class RandomSampling extends SamplingBase
 	 * 
 	 * @return Triple
 	 */
-	public Triple getNextTriple()
+	@Override
+    public Triple getNextTriple()
 	{
 		int next = 0 ;
 		int size = triples.size() ;

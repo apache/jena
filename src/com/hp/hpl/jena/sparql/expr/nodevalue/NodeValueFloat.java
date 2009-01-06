@@ -18,26 +18,26 @@ public class NodeValueFloat extends NodeValue
     public NodeValueFloat(float f)         { super() ; value = f ; }
     public NodeValueFloat(float f, Node n) { super(n) ; value = f ; } 
 
-    //@Override
+    @Override
     public boolean isNumber() { return true ; }
-    //@Override
+    @Override
     public boolean isFloat() { return true ; }
-    //@Override
+    @Override
     public boolean isDouble() { return true ; }
     
-    //@Override
+    @Override
     public float getFloat()  { return value ; }
-    //@Override
+    @Override
     public double getDouble()  { return (double)value ; }
 
-    //@Override
+    @Override
     protected Node makeNode()
     { return Node.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDfloat) ; }
     
-    //@Override
+    @Override
     public String asString() { return toString() ; }
     
-    //@Override
+    @Override
     public String toString()
     { 
         // Preserve lexical form
@@ -45,6 +45,7 @@ public class NodeValueFloat extends NodeValue
         return Float.toString(value) ;
     }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

@@ -34,11 +34,14 @@ public class OpPath extends Op0
 
     public String getName()     { return Tags.tagPath ; }
 
+    @Override
     public Op apply(Transform transform)
     { return transform.transform(this) ; }
 
+    @Override
     public Op copy()    { return new OpPath(triplePath) ; }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap isoMap)
     {
         if ( ! (other instanceof OpPath) ) return false ;
@@ -46,6 +49,7 @@ public class OpPath extends Op0
         return  Utils.triplePathIso(triplePath, p.triplePath, isoMap) ;
     }
 
+    @Override
     public int hashCode()
     {
         return triplePath.hashCode() ;

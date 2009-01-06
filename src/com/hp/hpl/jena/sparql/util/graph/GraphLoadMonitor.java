@@ -51,7 +51,7 @@ public class GraphLoadMonitor extends GraphListenerCounter
 
     public long triplesLoaded() { return getAddCount() ; }
     
-    //@Override
+    @Override
     protected void addTick()
     {
         long soFar = timer.readTimer() ;
@@ -95,16 +95,16 @@ public class GraphLoadMonitor extends GraphListenerCounter
         return StringUtils.str(value) ;
     }
     
-    //@Override
+    @Override
     protected void deleteTick()
     {}
     
-    //@Override
+    @Override
     protected void startRead()
     { startMonitor() ; }
     
             
-    //@Override
+    @Override
     protected void finishRead()
     {
         finishMonitor() ;

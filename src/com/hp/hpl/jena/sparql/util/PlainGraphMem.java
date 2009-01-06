@@ -31,6 +31,7 @@ public class PlainGraphMem extends SmallGraphMem
     // This version uses equalsNode
     
     // @Override
+    @Override
     public boolean graphBaseContains( Triple t ) 
     {
         if ( t.isConcrete() )
@@ -49,6 +50,7 @@ public class PlainGraphMem extends SmallGraphMem
     }
     
     // @Override
+    @Override
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
     {
         return 
@@ -98,7 +100,7 @@ public class PlainGraphMem extends SmallGraphMem
         public TripleMatchFilterEquality(Triple tMatch) 
             { this.tMatch = tMatch; }
         
-        //@Override
+        @Override
         public boolean accept(Object o)
         {
             Triple t = (Triple)o ;

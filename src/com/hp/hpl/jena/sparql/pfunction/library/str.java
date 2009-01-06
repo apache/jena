@@ -27,9 +27,11 @@ public class str extends PFuncSimple
 {
     public str() {}
 
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     { }
     
+    @Override
     public QueryIterator execEvaluated(Binding binding,
                                        Node subject, Node predicate, Node object,
                                        ExecutionContext execCxt)

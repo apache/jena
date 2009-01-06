@@ -25,6 +25,7 @@ public class Q_Var extends ExprNode implements ExprRDQL
     public Q_Var(int id) { super(id); }
     public Q_Var(RDQLParser p, int id) { super(p, id); }
 
+    @Override
     public void jjtClose()
     {
     }
@@ -36,6 +37,7 @@ public class Q_Var extends ExprNode implements ExprRDQL
         varName = vn ;
     }
 
+    @Override
     public Var asVar() { return Var.alloc(varName) ; }
     
     public RDQL_NodeValue evalRDQL(com.hp.hpl.jena.query.Query q, IndexValues env)
@@ -54,17 +56,20 @@ public class Q_Var extends ExprNode implements ExprRDQL
         return var ;
     }
 
+    @Override
     public String toString() { return "?"+varName ; }
 
     public String asInfixString() { return toString() ; }
     public String asPrefixString() { return toString() ; }
 
+    @Override
     public void format(IndentedWriter w)
     {
         w.print(this.asPrefixString()) ;
     }
 
     // graph.query.Expression
+    @Override
     public Valuator prepare(VariableIndexes vi)
     {
         //super.prepare(vi) ; // Not needed - we work down, not up.
@@ -73,7 +78,9 @@ public class Q_Var extends ExprNode implements ExprRDQL
         return this ;
     }
     
+    @Override
     public boolean isVariable()      { return true ; }
+    @Override
     public String getName()          { return varName ; } // For variables only
 
 

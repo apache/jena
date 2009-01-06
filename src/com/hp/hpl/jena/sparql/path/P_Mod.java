@@ -42,13 +42,13 @@ public class P_Mod extends P_Path1
         return max ;
     }
 
-    //@Override
+    @Override
     public int hashCode()
     {
         return hashMod ^ (int)min ^ (int)max ^ getSubPath().hashCode() ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( path2 instanceof P_Mod ) ) return false ;

@@ -6,10 +6,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.* ;
-
-import com.hp.hpl.jena.query.Dataset;
-
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A set of constraints in a query expression.
@@ -19,18 +15,16 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class ElementUnsaid extends Element
 {
-    List constraints = new ArrayList() ;
     Element element ;
-    Dataset dataSrc ;
 
     public ElementUnsaid(Element el) { element = el ;}
     
     public Element getElement() { return element ; } 
     
-    //@Override
+    @Override
     public int hashCode() { return element.hashCode() ^ Element.HashUnsaid ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -43,6 +37,7 @@ public class ElementUnsaid extends Element
         return true ;
     }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

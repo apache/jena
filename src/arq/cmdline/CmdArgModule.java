@@ -12,7 +12,7 @@ import java.util.List;
 
 public abstract class CmdArgModule extends CmdMain
 {
-    List modules = new ArrayList() ;
+    List<ArgModuleGeneral> modules = new ArrayList<ArgModuleGeneral>() ;
     
     protected CmdArgModule(String[] argv)
     {
@@ -24,6 +24,7 @@ public abstract class CmdArgModule extends CmdMain
         modules.add(argModule) ;
     }
 
+    @Override
     final
     public void process()
     {
@@ -42,9 +43,9 @@ public abstract class CmdArgModule extends CmdMain
     
     private void forEach(Action action)
     {
-        for ( Iterator iter = modules.iterator() ; iter.hasNext(); )
+        for ( Iterator<ArgModuleGeneral> iter = modules.iterator() ; iter.hasNext(); )
         {
-            ArgModuleGeneral am = (ArgModuleGeneral)iter.next() ;
+            ArgModuleGeneral am = iter.next() ;
             action.action(this, am) ;
         }
     }

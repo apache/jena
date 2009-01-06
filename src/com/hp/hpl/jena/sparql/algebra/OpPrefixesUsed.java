@@ -42,17 +42,20 @@ public class OpPrefixesUsed
             this.usedPMap = pmap2 ;
         }
         
+        @Override
         public void visit(OpGraph opGraph)
         {
             node(opGraph.getNode()) ;
         }
         
+        @Override
         public void visit(OpQuadPattern quadPattern)
         {
             node(quadPattern.getGraphNode()) ;
             visit(quadPattern.getBasicPattern()) ;
         }
         
+        @Override
         public void visit(OpBGP opBGP)
         {
             BasicPattern p = opBGP.getPattern() ;
@@ -70,6 +73,7 @@ public class OpPrefixesUsed
             }
         }
         
+        @Override
         public void visit(OpFilter opFilter)
         {
             // Do more

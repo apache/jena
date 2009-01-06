@@ -56,7 +56,7 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
            super(input, execCxt) ;
        }
 
-        //@Override
+        @Override
         protected QueryIterator nextStage(Binding binding)
         {
             QueryIterator iter = exec(binding, name, args, super.getExecContext()) ;
@@ -65,6 +65,7 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
             return iter ;
         }
         
+        @Override
         protected void details(IndentedWriter out, SerializationContext sCxt)
         {
             out.print("Procedure ["+FmtUtils.stringForNode(name, sCxt)+"]") ;

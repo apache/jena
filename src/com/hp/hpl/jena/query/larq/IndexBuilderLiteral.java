@@ -29,7 +29,7 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
     // Ensure literals ar eindex once only.
     // Expensive to have use a Lucene reader (they see the state of the index when opened)
     // to check so need to manange duplicates in this class.
-    private Set seen = new HashSet() ;
+    private Set<Node> seen = new HashSet<Node>() ;
     
     public IndexBuilderLiteral()
     { super() ; }
@@ -49,9 +49,11 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
     /** Condition to filter statements passed to the indexStatement */
     protected abstract boolean indexThisStatement(Statement stmt) ;
 
+    @Override
     public void unindexStatement(Statement s)
     { throw new ARQNotImplemented("unindexStatement") ; }
     
+    @Override
     public void indexStatement(Statement s)
     {
         if ( ! indexThisStatement(s) )
@@ -72,14 +74,8 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
         { throw new ARQLuceneException("indexStatement", e) ; }
     }
    
-    /** @deprecated Use {@link IndexBuilderModel#closeWriter()} or {@link IndexBuilderModel#flushWriter()}. */
-    public void closeForWriting()
-    {
-        super.closeForWriting() ;
-        seen = null ;
-    }
-    
     /** Close the index - no more updates possible */
+    @Override
     public void closeWriter()
     { 
         super.closeWriter() ;

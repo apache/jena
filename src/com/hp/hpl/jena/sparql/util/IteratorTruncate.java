@@ -12,15 +12,15 @@ import java.util.NoSuchElementException;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public class IteratorTruncate implements ClosableIterator
+public class IteratorTruncate<T> implements Iterator<T>
 {
     static public interface Test { boolean accept(Object object) ; }
     private Test test ;
-    private Object slot = null ;
+    private T slot = null ;
     private boolean active = true ;
-    private Iterator iter ;
+    private Iterator<T> iter ;
 
-    public IteratorTruncate (Test test, Iterator iter)
+    public IteratorTruncate (Test test, Iterator<T> iter)
     { this.test = test ; this.iter = iter ; }
 
     public boolean hasNext()
@@ -46,11 +46,11 @@ public class IteratorTruncate implements ClosableIterator
         return false ;
     }
 
-    public Object next()
+    public T next()
     {
         if ( ! hasNext() )
             throw new NoSuchElementException("IteratorTruncate.next") ;    
-        Object x = slot ;
+        T x = slot ;
         slot = null ;
         return x ;
     }

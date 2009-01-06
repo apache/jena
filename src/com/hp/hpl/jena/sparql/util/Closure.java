@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.*;
+
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class Closure
@@ -67,7 +68,7 @@ public class Closure
     public static Model closure(Statement statement, ClosureTest test, Model model)
     {
         //Set visited = new HashSet() ;
-        List visited = new ArrayList() ;
+        List<Resource> visited = new ArrayList<Resource>() ;
 
         closure(statement, model, visited, test) ;
         return model ;
@@ -127,7 +128,7 @@ public class Closure
     {
         //Set s = new HashSet() ;
         //Set visited = new HashSet() ;
-        List visited = new ArrayList() ;
+        List<Resource> visited = new ArrayList<Resource>() ;
         
         if ( ! testThisNode )
             closureNoTest(resource, results, visited, test) ;
@@ -141,7 +142,7 @@ public class Closure
     // --------------------------------------------------------------------------------
 
     private static void closure(Statement stmt,
-                                Model closureBlob, Collection visited,
+                                Model closureBlob, Collection<Resource> visited,
                                 ClosureTest test)
     {
         if ( test.includeStmt(stmt) )
@@ -152,7 +153,7 @@ public class Closure
 
 
     private static void closure(RDFNode n,
-                                Model closureBlob, Collection visited,
+                                Model closureBlob, Collection<Resource> visited,
                                 ClosureTest test)
     {
         if ( ! ( n instanceof Resource ) )
@@ -171,7 +172,7 @@ public class Closure
     
      
     private static void closureNoTest(Resource r,
-                                      Model closureBlob, Collection visited,
+                                      Model closureBlob, Collection<Resource> visited,
                                       ClosureTest test)
     {
         visited.add(r) ;

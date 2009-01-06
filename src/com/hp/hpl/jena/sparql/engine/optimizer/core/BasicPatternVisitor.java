@@ -9,6 +9,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 /**
  * The visitor is used to inspect the BGP of a query pattern element.
@@ -18,14 +19,15 @@ import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 
 public class BasicPatternVisitor extends OpVisitorBase
 {
-	List patterns = new ArrayList() ; // List<BasicPattern>
+	List<BasicPattern> patterns = new ArrayList<BasicPattern>() ;
 	
-	public void visit(OpBGP opBGP) 
+	@Override
+    public void visit(OpBGP opBGP) 
 	{ 
 		patterns.add(opBGP.getPattern()) ;
 	}
 	
-	public List getPatterns()
+	public List<BasicPattern> getPatterns()
 	{
 		return patterns ;
 	}

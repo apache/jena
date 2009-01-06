@@ -417,7 +417,7 @@ public class FormatterElement extends FormatterBase
     int subjectWidth = -1 ;
     int predicateWidth = -1 ;
     
-    //@Override
+    @Override
     protected void formatTriples(BasicPattern triples)
     {
         if ( ! PRETTY_PRINT )
@@ -440,7 +440,7 @@ public class FormatterElement extends FormatterBase
             predicateWidth = TRIPLES_PROPERTY_COLUMN ;
         
         // Loops:
-        List subjAcc = new ArrayList() ;    // Accumulate all triples with the same subject.  
+        List<Triple> subjAcc = new ArrayList<Triple>() ;    // Accumulate all triples with the same subject.  
         Node subj = null ;                  // Subject being accumulated
         
         boolean first = true ;             // Print newlines between blocks.
@@ -481,14 +481,14 @@ public class FormatterElement extends FormatterBase
         }
     }
     
-    private void formatSameSubject(Node subject, List triples)
+    private void formatSameSubject(Node subject, List<Triple> triples)
     {
         if ( triples == null || triples.size() == 0 )
             return ;
         
         // Do the first triple.
-        Iterator iter = triples.iterator() ;
-        Triple t1 = (Triple)iter.next() ; 
+        Iterator<Triple> iter = triples.iterator() ;
+        Triple t1 = iter.next() ; 
 
 //        int indent = TRIPLES_SUBJECT_COLUMN+TRIPLES_COLUMN_GAP ;
 //        // Long subject => same line.  Works for single triple as well.
@@ -519,7 +519,7 @@ public class FormatterElement extends FormatterBase
         
         for (  ; iter.hasNext() ; )
         {
-            Triple t = (Triple)iter.next() ;
+            Triple t = iter.next() ;
             out.println(" ;") ;
             printProperty(t.getPredicate()) ;
             printGap() ;

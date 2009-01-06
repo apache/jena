@@ -8,11 +8,6 @@ package com.hp.hpl.jena.query.larq;
 
 public interface IndexBuilder
 {
-    /** Finished indexing
-     *  @deprecated Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
-     */
-    public void closeForWriting() ;
-    
     /** Close the index */
     public void closeWriter() ;
     

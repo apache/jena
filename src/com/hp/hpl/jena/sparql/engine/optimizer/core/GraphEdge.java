@@ -26,7 +26,7 @@ public class GraphEdge
 	// The weight for the graph node
 	private double weight = Double.MIN_VALUE ;
 	// The list of GraphNodes for the GraphEdge
-	private List nodes = new ArrayList() ; // List<GraphNode>
+	private List<GraphNode> nodes = new ArrayList<GraphNode>() ; // List<GraphNode>
 	private static Log log = LogFactory.getLog(GraphEdge.class) ;
 	
 	/**
@@ -74,7 +74,7 @@ public class GraphEdge
 	 * 
 	 * @return List
 	 */
-	public List nodes()
+	public List<GraphNode> nodes()
 	{
 		// List<GraphNode>
 		return nodes ;
@@ -87,7 +87,7 @@ public class GraphEdge
 	 */
 	public GraphNode node1()
 	{
-		return (GraphNode)nodes.get(0) ;
+		return nodes.get(0) ;
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class GraphEdge
 	 */
 	public GraphNode node2()
 	{
-		return (GraphNode)nodes.get(1);
+		return nodes.get(1);
 	}
 }
 

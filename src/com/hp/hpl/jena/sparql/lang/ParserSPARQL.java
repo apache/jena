@@ -24,6 +24,7 @@ public class ParserSPARQL extends Parser
 {
     private interface Action { void exec(SPARQLParser parser) throws Exception ; }
     
+    @Override
     public Query parse(final Query query, String queryString)
     {
         query.setSyntax(Syntax.syntaxSPARQL) ;

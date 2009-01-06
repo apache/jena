@@ -54,6 +54,7 @@ public class Quad
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
     public boolean isUnionGraph()           { return graph.equals(unionGraph) ; }
     
+    @Override
     public int hashCode() 
     { 
         return (graph.hashCode()>>2) ^
@@ -62,6 +63,7 @@ public class Quad
                (object.hashCode() << 1);
     }
     
+    @Override
     public boolean equals(Object other) 
     { 
         if ( this == other ) return true ;
@@ -77,6 +79,7 @@ public class Quad
         return true ;
     }
     
+    @Override
     public String toString()
     {
         return "["+graph.toString()+" "+subject.toString()+" "+predicate.toString()+" "+object.toString()+"]" ;

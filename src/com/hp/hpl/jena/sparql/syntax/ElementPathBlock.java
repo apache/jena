@@ -46,9 +46,9 @@ public class ElementPathBlock extends Element implements TripleCollector
     { pattern.add(index, tPath) ; }
     
     public PathBlock getPattern() { return pattern ; }
-    public Iterator patternElts() { return pattern.iterator(); }
+    public Iterator<TriplePath> patternElts() { return pattern.iterator(); }
     
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = Element.HashBasicGraphPattern ;
@@ -56,7 +56,7 @@ public class ElementPathBlock extends Element implements TripleCollector
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( el2 instanceof ElementPathBlock) )
@@ -65,6 +65,7 @@ public class ElementPathBlock extends Element implements TripleCollector
         return this.pattern.equiv(eg2.pattern, isoMap) ; 
     }
 
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 /*

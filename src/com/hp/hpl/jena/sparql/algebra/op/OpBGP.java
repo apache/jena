@@ -30,11 +30,13 @@ public class OpBGP extends Op0
     public BasicPattern getPattern()        { return pattern ; } 
     
     public String getName()                 { return Tags.tagBGP /*.toUpperCase()*/ ; }
+    @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy()                        { return new OpBGP(pattern) ; }
     
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = OpBase.HashBasicGraphPattern ;
@@ -42,7 +44,7 @@ public class OpBGP extends Op0
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpBGP) )

@@ -17,7 +17,7 @@ import java.util.ListIterator;
 
 public class QuadPattern
 {
-    private List quads = new ArrayList() ; 
+    private List<Quad> quads = new ArrayList<Quad>() ; 
 
     // Not used?
     // OpQuadPattern is a graph node and a basic graph pattern.
@@ -28,14 +28,16 @@ public class QuadPattern
     public void addAll(QuadPattern other) { quads.addAll(other.quads) ; }
     public void add(int i, Quad q) { quads.add(i, q) ; }
     
-    public Quad get(int i) { return (Quad)quads.get(i) ; }
-    public ListIterator iterator() { return quads.listIterator() ; } 
+    public Quad get(int i) { return quads.get(i) ; }
+    public ListIterator<Quad> iterator() { return quads.listIterator() ; } 
     public int size() { return quads.size() ; }
     public boolean isEmpty() { return quads.isEmpty() ; }
     
-    public List getList() { return quads ; } 
+    public List<Quad> getList() { return quads ; } 
     
+    @Override
     public int hashCode() { return quads.hashCode() ; } 
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -45,6 +47,7 @@ public class QuadPattern
         return quads.equals(bp.quads) ;
     }
     
+    @Override
     public String toString() { return quads.toString() ; } 
 }
 

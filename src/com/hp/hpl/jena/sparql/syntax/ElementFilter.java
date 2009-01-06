@@ -22,12 +22,13 @@ public class ElementFilter extends Element
     
     public Expr getExpr() { return expr ; }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 
-    //@Override
+    @Override
     public int hashCode() { return expr.hashCode() ; }
     
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;

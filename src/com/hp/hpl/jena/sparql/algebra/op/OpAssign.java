@@ -62,18 +62,21 @@ public class OpAssign extends Op1
 
     public VarExprList getVarExprList() { return assignments ; }
 
+    @Override
     public int hashCode()
     { return assignments.hashCode() ^ getSubOp().hashCode() ; }
 
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
+    @Override
     public Op copy(Op subOp)
     {
         OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList())) ;
         return op ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpAssign) )
@@ -85,6 +88,7 @@ public class OpAssign extends Op1
         return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
     }
 
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 }

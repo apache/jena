@@ -22,13 +22,13 @@ public class strSubstring extends FunctionBase
 {
     public strSubstring() { super() ; }
 
-    //@Override
+    @Override
     public void checkBuild(String uri, ExprList args)
     {
         if ( args.size() != 2 && args.size() != 3 )
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;
     }
-    //@Override
+    @Override
     public NodeValue exec(List args)
     {
         if ( args.size() > 3 )

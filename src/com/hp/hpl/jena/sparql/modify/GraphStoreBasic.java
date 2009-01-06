@@ -40,6 +40,7 @@ public class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
     public void finishRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
     
+    @Override
     public void close()
     {
         GraphStoreUtils.actionAll(this, 

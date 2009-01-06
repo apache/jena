@@ -20,23 +20,23 @@ public class NodeValueDouble extends NodeValue
     public NodeValueDouble(double d)         { super() ; value = d ; }
     public NodeValueDouble(double d, Node n) { super(n) ; value = d ; } 
 
-    //@Override
+    @Override
     public boolean isNumber() { return true ; }
-    //@Override
+    @Override
     public boolean isDouble() { return true ; }
 
     // Does not provide getFloat
-    //@Override
+    @Override
     public double getDouble()  { return value ; }
 
-    //@Override
+    @Override
     protected Node makeNode()
     { return Node.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDdouble) ; }
     
-    //@Override
+    @Override
     public String asString() { return toString() ; }
     
-    //@Override
+    @Override
     public String toString()
     { 
         // Preserve lexical form
@@ -44,6 +44,7 @@ public class NodeValueDouble extends NodeValue
         return Double.toString(value) ;
     }
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

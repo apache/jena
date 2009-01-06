@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 public class listLength extends ListBase1
 {
-    //@Override
+    @Override
     public QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node length, ExecutionContext execCxt)
     {
         Graph graph = execCxt.getActiveGraph() ;

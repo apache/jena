@@ -22,12 +22,12 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class QueryIterPlainWrapper extends QueryIter
 {
-    Iterator iterator = null ;
+    Iterator<Binding> iterator = null ;
     
-    public QueryIterPlainWrapper(Iterator iter)
+    public QueryIterPlainWrapper(Iterator<Binding> iter)
     { this(iter, null) ; }
     
-    public QueryIterPlainWrapper(Iterator iter, ExecutionContext context)
+    public QueryIterPlainWrapper(Iterator<Binding> iter, ExecutionContext context)
     {
         super(context) ;
         iterator = iter ;
@@ -37,12 +37,15 @@ public class QueryIterPlainWrapper extends QueryIter
      *  so pass null in the constructor and then call this before the iterator is
      *  used.   
      */
-    public void setIterator(Iterator iterator) { this.iterator = iterator ; }
+    public void setIterator(Iterator<Binding> iterator) { this.iterator = iterator ; }
     
+    @Override
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 
     
+    @Override
     protected Binding moveToNextBinding() { return (Binding)iterator.next() ; }
 
+    @Override
     protected void closeIterator()
     {
         if ( iterator != null )
@@ -52,6 +55,7 @@ public class QueryIterPlainWrapper extends QueryIter
         }
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { out.print(Utils.className(this)) ; }
 }

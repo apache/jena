@@ -20,6 +20,7 @@ public class DatasetDescAssembler extends AssemblerBase implements Assembler
 
     public static Resource getType() { return DatasetAssemblerVocab.tDataset ; }
     
+    @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         DatasetDesc ds = new DatasetDesc() ;

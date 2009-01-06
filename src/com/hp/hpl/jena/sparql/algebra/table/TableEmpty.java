@@ -37,17 +37,22 @@ public class TableEmpty extends TableBase
             return new QueryIterNullIterator(execContext) ;
     }
 
+    @Override
     public boolean contains(Binding binding) { return false ; }
     
+    @Override
     public void closeTable()    { }
 
     public List getVarNames()   { return new ArrayList() ; }
 
     public List getVars()       { return new ArrayList() ; }
     
+    @Override
     public String toString()    { return "TableEmpty" ; }
 
+    @Override
     public int size()           { return 0 ; }
+    @Override
     public boolean isEmpty()    { return true ; }
 
 }

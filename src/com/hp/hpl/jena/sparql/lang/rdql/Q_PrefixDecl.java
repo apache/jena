@@ -17,7 +17,8 @@ public class Q_PrefixDecl extends SimpleNode {
     super(p, id);
   }
   
-  public void postParse1(Query query)
+  @Override
+public void postParse1(Query query)
   {
       // They should appear in pairs: an identifier and a URI
       for ( int k = 0 ; k < jjtGetNumChildren() ; k+=2 )

@@ -27,25 +27,25 @@ import com.hp.hpl.jena.util.FileManager;
 public class DatasetUtils
 {
     
-    public static Dataset createDataset(String uri, List namedSourceList)
+    public static Dataset createDataset(String uri, List<String> namedSourceList)
     {
         return createDataset(uri, namedSourceList, null, null) ;
     }
 
-    public static Dataset createDataset(String uri, List namedSourceList,
+    public static Dataset createDataset(String uri, List<String> namedSourceList,
                                         FileManager fileManager, String baseURI)
     {
-        List uriList = new ArrayList() ;
+        List<String> uriList = new ArrayList<String>() ;
         uriList.add(uri) ;
         return createDataset(uriList, namedSourceList, fileManager, baseURI) ;
     }
     
-    public static Dataset createDataset(List uriList, List namedSourceList)
+    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList)
     {
         return createDataset(uriList, namedSourceList, null, null) ;
     }
 
-    public static Dataset createDataset(List uriList, List namedSourceList,
+    public static Dataset createDataset(List<String> uriList, List<String> namedSourceList,
                                         FileManager fileManager, String baseURI)
     {
         DataSource ds = new DataSourceImpl() ;
@@ -66,13 +66,13 @@ public class DatasetUtils
     
     
     /** add graphs into an exiting DataSource */
-    public static Dataset addInGraphs(DataSource ds, List uriList, List namedSourceList)
+    public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList)
     {
         return addInGraphs(ds, uriList, namedSourceList, null, null) ;
     }
     
     /** add graphs into an exiting DataSource */
-    public static Dataset addInGraphs(DataSource ds, List uriList, List namedSourceList,
+    public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList,
                                       FileManager fileManager, String baseURI)
     {
         
@@ -85,9 +85,9 @@ public class DatasetUtils
         
         if ( uriList != null )
         {
-            for (Iterator iter = uriList.iterator() ; iter.hasNext() ; )
+            for (Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; )
             {
-                String sourceURI = (String)iter.next() ;
+                String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
@@ -100,9 +100,9 @@ public class DatasetUtils
         
         if ( namedSourceList != null )
         {
-            for (Iterator iter = namedSourceList.iterator() ; iter.hasNext() ; )
+            for (Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; )
             {
-                String sourceURI = (String)iter.next() ;
+                String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
@@ -131,15 +131,15 @@ public class DatasetUtils
     
     
         
-    public static DatasetGraph createDatasetGraph(String uri, List namedSourceList,
+    public static DatasetGraph createDatasetGraph(String uri, List<String> namedSourceList,
                                                   FileManager fileManager, String baseURI)
    {
-       List uriList = new ArrayList() ;
+       List<String> uriList = new ArrayList<String>() ;
        uriList.add(uri) ;
        return createDatasetGraph(uriList, namedSourceList, fileManager, baseURI) ;
    }
 
-    public static DatasetGraph createDatasetGraph(List uriList, List namedSourceList,
+    public static DatasetGraph createDatasetGraph(List<String> uriList, List<String> namedSourceList,
                                                   FileManager fileManager, String baseURI)
     {
         DataSourceGraphImpl ds = new DataSourceGraphImpl() ;
@@ -151,9 +151,9 @@ public class DatasetUtils
         if ( uriList != null )
         {
             Model m = GraphUtils.makeDefaultModel() ;
-            for (Iterator iter = uriList.iterator() ; iter.hasNext() ; )
+            for (Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; )
             {
-                String sourceURI = (String)iter.next() ;
+                String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
@@ -171,9 +171,9 @@ public class DatasetUtils
         
         if ( namedSourceList != null )
         {
-            for (Iterator iter = namedSourceList.iterator() ; iter.hasNext() ; )
+            for (Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; )
             {
-                String sourceURI = (String)iter.next();
+                String sourceURI = iter.next();
                 String absURI = null ;
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;

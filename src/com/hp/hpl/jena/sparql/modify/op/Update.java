@@ -57,7 +57,7 @@ public abstract class Update implements PrintSerializable
     public String toString(PrefixMapping pmap)
     {  return PrintUtils.toString(this, pmap) ; } 
     
-    //@Override
+    @Override
     public String toString()
     { return PrintUtils.toString(this) ; }
 }

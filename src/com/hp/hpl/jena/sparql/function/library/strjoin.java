@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class strjoin extends FunctionBase
 {
 
+    @Override
     public final NodeValue exec(List args)
     {
         if ( args == null )
@@ -51,6 +52,7 @@ public class strjoin extends FunctionBase
         return NodeValue.makeString(StringUtils.join(sep, x)) ;
     }
 
+    @Override
     public void checkBuild(String uri, ExprList args)
     {
         if ( args.size() < 1 )

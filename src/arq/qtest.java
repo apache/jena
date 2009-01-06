@@ -102,10 +102,13 @@ public class qtest extends CmdARQ
         return new ModEngine() ;
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }
     
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -143,6 +146,7 @@ public class qtest extends CmdARQ
         }
     }
     
+    @Override
     protected void exec()
     {
         if ( suite != null )

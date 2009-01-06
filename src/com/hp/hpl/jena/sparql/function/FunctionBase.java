@@ -44,8 +44,8 @@ public abstract class FunctionBase implements Function
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
         
-        List evalArgs = new ArrayList() ;
-        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
+        List<NodeValue> evalArgs = new ArrayList<NodeValue>() ;
+        for ( Iterator<Expr> iter = args.iterator() ; iter.hasNext() ; )
         {
             Expr e = (Expr)iter.next() ;
             NodeValue x = e.eval(binding, env) ;
@@ -63,7 +63,7 @@ public abstract class FunctionBase implements Function
     public Context getContext() { return env.getContext() ; }
     
     /** Function call to a list of evaluated argument values */ 
-    public abstract NodeValue exec(List args) ;
+    public abstract NodeValue exec(List<NodeValue> args) ;
 
     public abstract void checkBuild(String uri, ExprList args) ;
     

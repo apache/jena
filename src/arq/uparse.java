@@ -32,16 +32,20 @@ public class uparse extends CmdARQ
         super.add(fileArg, "--file=FILE", "Update commands to parse") ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         requestFiles = getValues(fileArg) ;
         super.processModulesAndArgs() ;
     }
     
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+"--file=<request file>" ; }
 
+    @Override
     protected void exec()
     {
         for ( Iterator iter = requestFiles.listIterator() ; iter.hasNext() ; )

@@ -42,7 +42,8 @@ public class VariableCounting extends HeuristicBasicPattern
 	 * @param triple1
 	 * @return Double
 	 */
-	public double getCost(Triple triple1) 
+	@Override
+    public double getCost(Triple triple1) 
 	{
 		double cost = 1d ;
 		int MAX_COST = 8 ;
@@ -81,7 +82,8 @@ public class VariableCounting extends HeuristicBasicPattern
 	 * @param triple2
 	 * @return Double
 	 */
-	public double getCost(Triple triple1, Triple triple2)
+	@Override
+    public double getCost(Triple triple1, Triple triple2)
 	{
 		if (! BasicPatternJoin.isJoined(triple1, triple2))
 		{

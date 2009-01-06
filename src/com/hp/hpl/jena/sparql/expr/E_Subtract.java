@@ -20,8 +20,10 @@ public class E_Subtract extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
 
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.subtract(x, y) ; }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Subtract(e1 , e2 ) ; }
 }
 

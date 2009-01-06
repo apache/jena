@@ -234,8 +234,10 @@ public class ParsedLiteral extends ExprNode implements ExprRDQL, RDQL_NodeValue
     // Expressions
     
     // -- Constants (literals - but that name is confusing with RDF literals). 
+    @Override
     public boolean isConstant()      { return true; }
     // This may be null (as it is not a jena.graph value).
+    @Override
     public Object getValue()         { return getNode() ; }
         
     // In all these stringification operations, order matters e.g. URI before string
@@ -307,6 +309,7 @@ public class ParsedLiteral extends ExprNode implements ExprRDQL, RDQL_NodeValue
         return "literal:unknown" ;
     }
 
+    @Override
     public void format(IndentedWriter writer)
     {
         writer.print(this.asQuotedString()) ;
@@ -317,6 +320,7 @@ public class ParsedLiteral extends ExprNode implements ExprRDQL, RDQL_NodeValue
 	public String valueString() { return asUnquotedString() ; }
 
     // This is used in the filtering stage to get values for testing - must be unquoted.
+    @Override
     public String toString()
     {
         return asUnquotedString() ;

@@ -16,7 +16,7 @@ public class ceiling extends FunctionBase1
 {
     public ceiling() { super() ; }
     
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     { return XSDFuncOp.ceiling(v) ; }
 }

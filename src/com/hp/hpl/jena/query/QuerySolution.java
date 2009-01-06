@@ -5,8 +5,11 @@
  */
 
 package com.hp.hpl.jena.query;
-import java.util.* ;
-import com.hp.hpl.jena.rdf.model.* ; 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 
 /**
@@ -47,7 +50,7 @@ public interface QuerySolution
     /** Iterate over the variable names (strings) in this QuerySolution.
      * @return Iterator of strings
      */ 
-    public Iterator varNames() ;
+    public Iterator<String> varNames() ;
     
 }
 

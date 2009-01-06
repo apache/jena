@@ -46,6 +46,7 @@ public class Q_UnaryMinus extends ExprNode implements ExprNumeric
         return result ;
     }
 
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
@@ -57,9 +58,13 @@ public class Q_UnaryMinus extends ExprNode implements ExprNumeric
     // -----------
     // graph.query.Expression
 
+    @Override
     public boolean isApply()         { return true ; }
+    @Override
     public String getFun()           { return super.constructURI(this.getClass().getName()) ; }
+    @Override
     public int argCount()            { return 1; }
+    @Override
     public Expression getArg(int i)  
     {
         if ( i == 0 && expr instanceof Expression )
@@ -71,12 +76,14 @@ public class Q_UnaryMinus extends ExprNode implements ExprNumeric
 
     public String asPrefixString() { return RDQLQueryPrintUtils.asPrefixString(expr, null, printName, opSymbol) ; }
 
+    @Override
     public void format(IndentedWriter w)
     {
         RDQLQueryPrintUtils.format(w, expr, null, printName, opSymbol) ;
     }
 
 
+    @Override
     public String toString() { return asInfixString() ; }
 }
 

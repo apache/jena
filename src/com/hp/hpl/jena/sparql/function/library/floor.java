@@ -16,7 +16,7 @@ public class floor extends FunctionBase1
 {
     public floor() { super() ; }
     
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     { return XSDFuncOp.floor(v) ; }
 

@@ -98,11 +98,13 @@ public abstract class TableBase implements Table
         return rs ;
     }
     
+    @Override
     public String toString()
     {
         return TableWriter.asSSE(this) ; 
     }
     
+    @Override
     public int hashCode()
     { 
         int hash = 0 ;
@@ -118,6 +120,7 @@ public abstract class TableBase implements Table
     }
 
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;

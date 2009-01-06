@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * @author   Andy Seaborne
  */
 
-public interface ResultSet extends Iterator
+public interface ResultSet extends Iterator<QuerySolution>
 {
     // Could have a ResultSetBase that does all the Node=>Resource (= ResultBinding)  
     /**
@@ -35,7 +35,7 @@ public interface ResultSet extends Iterator
      *  The returned object should be of class QuerySolution
      */
     
-    public Object next() ;
+    public QuerySolution next() ;
 
     /** Moves onto the next result possibility.
      */
@@ -50,7 +50,7 @@ public interface ResultSet extends Iterator
     
     /** Get the variable names for the projection
      */
-    public List getResultVars() ;
+    public List<String> getResultVars() ;
 
     /** Is this ResultSet known to be ordered? 
      * Usually, this means a query involved ORDER BY or a ResultSet read

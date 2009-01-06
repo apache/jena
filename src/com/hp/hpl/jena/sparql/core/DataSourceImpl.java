@@ -6,24 +6,25 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.Lock;
+
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.MapFilter;
 import com.hp.hpl.jena.util.iterator.MapFilterIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.Lock;
+
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.LabelExistsException;
 
 /** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
@@ -36,7 +37,7 @@ public class DataSourceImpl implements DataSource
 {
     protected DataSourceGraph dsg = null ;
     // Cache graph => model so returned models are the same (==)
-    private Map cache = new HashMap() ;      
+    private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
     public DataSourceImpl()
     { this.dsg = new DataSourceGraphImpl() ; }
@@ -119,9 +120,8 @@ public class DataSourceImpl implements DataSource
     }
 
     // How to share with DatasetImpl
-    public Iterator listNames()
+    public Iterator<String> listNames()
     { 
-        List x = new ArrayList(dsg.size()) ;
         MapFilter mapper = new MapFilter(){
             public Object accept(Object x)
             {
@@ -130,7 +130,9 @@ public class DataSourceImpl implements DataSource
             }} ;
         
         ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
-        MapFilterIterator conv = new MapFilterIterator(mapper, eIter) ;
+        
+        @SuppressWarnings("unchecked")
+        Iterator<String> conv = (Iterator<String>)new MapFilterIterator(mapper, eIter) ;
         return conv ;
     }
 
@@ -158,7 +160,7 @@ public class DataSourceImpl implements DataSource
 
     private Model graph2model(Graph graph)
     { 
-        Model model = (Model)cache.get(graph) ;
+        Model model = cache.get(graph) ;
         if ( model == null )
         {
             model = ModelFactory.createModelForGraph(graph) ;

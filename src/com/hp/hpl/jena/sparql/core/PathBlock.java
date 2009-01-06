@@ -15,9 +15,9 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 /** A class whose purpose is to give a name to a collection of triple paths. */ 
 
-public class PathBlock
+public class PathBlock implements Iterable<TriplePath>
 {
-    private List triplePaths = new ArrayList() ; 
+    private List<TriplePath> triplePaths = new ArrayList<TriplePath>() ; 
 
     public PathBlock() {}
     public PathBlock(PathBlock other) {triplePaths.addAll(other.triplePaths) ; }
@@ -26,15 +26,17 @@ public class PathBlock
     public void addAll(PathBlock other) { triplePaths.addAll(other.triplePaths) ; }
     public void add(int i, TriplePath tp) { triplePaths.add(i, tp) ; }
     
-    public TriplePath get(int i) { return (TriplePath)triplePaths.get(i) ; }
-    public ListIterator iterator() { return triplePaths.listIterator() ; } 
+    public TriplePath get(int i) { return triplePaths.get(i) ; }
+    public ListIterator<TriplePath> iterator() { return triplePaths.listIterator() ; } 
     public int size() { return triplePaths.size() ; }
     public boolean isEmpty() { return triplePaths.isEmpty() ; }
     
-    public List getList() { return triplePaths ; } 
+    public List<TriplePath> getList() { return triplePaths ; } 
     
+    @Override
     public int hashCode() { return triplePaths.hashCode() ; } 
     
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -60,6 +62,7 @@ public class PathBlock
         return true ;
     }
     
+    @Override
     public String toString()
     {
         return triplePaths.toString() ;

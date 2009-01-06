@@ -19,6 +19,7 @@ public class GraphStoreAssembler extends DataSourceAssembler
 {
     public static Resource getType() { return DatasetAssemblerVocab.tGraphStore ; }
     
+    @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         // Same vocabulary as datasets.

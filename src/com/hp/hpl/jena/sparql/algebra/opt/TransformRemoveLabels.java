@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 public class TransformRemoveLabels extends TransformCopy
 {
     // Strip labels
+    @Override
     public Op transform(OpLabel opLabel, Op subOp)
     {
         return subOp ;

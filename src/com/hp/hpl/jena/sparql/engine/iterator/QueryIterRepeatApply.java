@@ -43,6 +43,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
     
     protected abstract QueryIterator nextStage(Binding binding) ;
 
+    @Override
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -67,6 +68,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         // Unreachable
     }
 
+    @Override
     protected Binding moveToNextBinding()
     {
         if ( ! hasNextBinding() )
@@ -93,6 +95,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         return iter ;
     }
    
+    @Override
     protected void closeSubIterator()
     {
         if ( currentStage != null )

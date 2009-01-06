@@ -24,11 +24,13 @@ public class E_LogicalNot extends ExprFunction1
         super(expr, printName, symbol) ;
     }
 
+    @Override
     public NodeValue eval(NodeValue v)
     {
         return XSDFuncOp.not(v) ;
     }
  
+    @Override
     public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; } 
 }
 

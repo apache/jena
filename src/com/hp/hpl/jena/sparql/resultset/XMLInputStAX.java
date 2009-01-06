@@ -226,7 +226,7 @@ class XMLInputStAX extends SPARQLResult
         return binding != null ;
     }
 
-    public Object next()
+    public QuerySolution next()
     {
         return nextSolution() ; 
     }

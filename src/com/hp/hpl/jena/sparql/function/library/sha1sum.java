@@ -26,6 +26,7 @@ public class sha1sum extends FunctionBase1
     NodeValue lastSeen = null ;
     NodeValue lastCalc = null ;
     
+    @Override
     public NodeValue exec(NodeValue nodeValue) 
     {
         if ( lastSeen != null && lastSeen.equals(nodeValue) )

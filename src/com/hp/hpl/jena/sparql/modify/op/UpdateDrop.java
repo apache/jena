@@ -21,7 +21,7 @@ public class UpdateDrop extends GraphMgt
     public UpdateDrop(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
     public UpdateDrop(String iri) { this(iri, false) ; }
     
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 

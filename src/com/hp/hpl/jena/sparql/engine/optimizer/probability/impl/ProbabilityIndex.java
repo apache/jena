@@ -65,11 +65,11 @@ public class ProbabilityIndex
 	// The class for accessing the index model
 	private IndexModelAccess ga = new IndexModelAccess() ;
 	// A Java data structure for the statistics of occurrences of properties
-	private Map properties = new HashMap() ; // Map<Property, Long>
+	private Map<Property, Long> properties = new HashMap<Property, Long>() ; // Map<Property, Long>
 	// A Java data structure for the histograms of properties
-	private Map histograms = new HashMap() ; // Map<Property, Histogram>
+	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ; // Map<Property, Histogram>
 	// A Java data structure for the statistics of joined triple patterns
-	private Map patterns = new HashMap() ; // Map<Pattern, Long>
+	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ; // Map<Pattern, Long>
 	// A set of Jena Property objects that are excluded in the index
 	private Set exclude = new HashSet() ; // Set<Property>
 	private static Log log = LogFactory.getLog(ProbabilityIndex.class) ;
@@ -151,7 +151,7 @@ public class ProbabilityIndex
 		long num = 0L ;
 		
 		if (properties.containsKey(property))
-			num = ((Long)properties.get(property)).longValue() ;
+			num = properties.get(property).longValue() ;
 		else
 			log.debug("Index not found (return " + num + "): " + property.toString()) ;
 		
@@ -206,7 +206,7 @@ public class ProbabilityIndex
 	 * 
 	 * @return Map
 	 */
-	public Map getHistograms()
+	public Map<Property, Histogram> getHistograms()
 	{ return histograms ; } // Map<Property, Histogram>
 	
 	/**
@@ -214,7 +214,7 @@ public class ProbabilityIndex
 	 * 
 	 * @return Map
 	 */
-	public Map getProperties()
+	public Map<Property, Long> getProperties()
 	{ return properties ; } // Map<Property, Long>
 	
 	/**
@@ -222,7 +222,7 @@ public class ProbabilityIndex
 	 * 
 	 * @return Map
 	 */
-	public Map getPatterns()
+	public Map<Pattern, Long> getPatterns()
 	{ return patterns ; } // Map<Pattern, Long>
 	
 	/**
@@ -277,7 +277,7 @@ public class ProbabilityIndex
 	private void createTripleIndex(Model dataModel)
 	{ 
 		long frequency ;
-		Map objects = new HashMap() ; // Map<Property, ArrayList<Node>>
+		Map<Property, List<Node>> objects = new HashMap<Property, List<Node>>() ; // Map<Property, ArrayList<Node>>
 		
 		ResIterator resIter = dataModel.listSubjects() ;
 		
@@ -302,13 +302,13 @@ public class ProbabilityIndex
 			{
 				frequency = 0L ;
 				Node object = stmt.getObject().asNode() ;
-				List objectsL = new ArrayList(); // List<Node>
+				List<Node> objectsL = new ArrayList<Node>(); // List<Node>
 				
 				if (properties.containsKey(predicate))
-					frequency = ((Long)properties.get(predicate)).longValue() ;
+					frequency = properties.get(predicate).longValue() ;
 				
 				if (objects.containsKey(predicate))
-					objectsL = (List)objects.get(predicate) ;
+					objectsL = objects.get(predicate) ;
 				
 				objectsL.add(object) ;
 				
@@ -323,18 +323,18 @@ public class ProbabilityIndex
 		log.debug("Number of properties: " + properties.size()) ;
 
 		// BEGIN -- Just for debug purpose
-		for (Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = properties.keySet().iterator(); iter.hasNext(); )
 		{
-			Property property = (Property)iter.next() ;
-			frequency = ((Long)properties.get(property)).longValue() ;
+			Property property = iter.next() ;
+			frequency = properties.get(property).longValue() ;
 			log.debug("Indexed property and frequency: " + frequency + " " + property.toString()) ;
 		}
 		// END
 		
-		for (Iterator iter = objects.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = objects.keySet().iterator(); iter.hasNext(); )
 		{
-			Property property = (Property)iter.next() ;
-			List objectsL = (List)objects.get(property) ; // List<Node>
+			Property property = iter.next() ;
+			List<Node> objectsL = objects.get(property) ; // List<Node>
 			Histogram histogram = new Histogram() ;
 			histogram.addElements(objectsL) ;
 			log.debug("Create histogram for property: " + property) ;
@@ -360,16 +360,16 @@ public class ProbabilityIndex
 		ooSize = selectivity(new Triple(Node.createVariable("s1"), Node.createVariable("p1"), Node.createVariable("o1")),
 	 			 			 new Triple(Node.createVariable("s2"), Node.createVariable("p2"), Node.createVariable("o1"))) ;
 		
-		for (Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = properties.keySet().iterator(); iter.hasNext(); )
 		{
-			Property property1 = (Property)iter.next() ;
+			Property property1 = iter.next() ;
 			
 			// Check if property is in exclude list
 			if (! exclude(property1))
 			{
-				for (Iterator it = properties.keySet().iterator(); it.hasNext(); )
+				for (Iterator<Property> it = properties.keySet().iterator(); it.hasNext(); )
 				{
-					Property property2 = (Property)it.next() ;
+					Property property2 = it.next() ;
 			
 					if (! exclude(property2))
 					{

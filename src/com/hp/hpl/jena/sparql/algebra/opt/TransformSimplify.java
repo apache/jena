@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 
 public class TransformSimplify extends TransformCopy
 {
+    @Override
     public Op transform(OpSequence opSequence, List elts)
     {
         List x = new ArrayList(elts) ;
@@ -29,6 +30,7 @@ public class TransformSimplify extends TransformCopy
         return super.transform(opSequence, x) ;
     }
     
+    @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
         if ( OpJoin.isJoinIdentify(left) )

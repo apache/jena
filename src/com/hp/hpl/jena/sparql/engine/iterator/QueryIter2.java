@@ -33,6 +33,7 @@ public abstract class QueryIter2 extends QueryIter
     protected QueryIterator getLeft()   { return leftInput ; } 
     protected QueryIterator getRight()  { return rightInput ; } 
     
+    @Override
     protected final
     void closeIterator()
     {
@@ -49,6 +50,7 @@ public abstract class QueryIter2 extends QueryIter
     protected abstract void releaseResources() ;
     
     // Do better
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { 
         out.println(Utils.className(this)) ;

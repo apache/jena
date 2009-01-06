@@ -240,8 +240,8 @@ public class Optimizer
 		String left = "| " ;
 		String sep = " | " ;
 		StringBuffer out = new StringBuffer() ;
-		List rowsTable1 = new ArrayList() ; // List<List>
-		List rowsTable2 = new ArrayList() ; // List<List>
+		List<List<String>> rowsTable1 = new ArrayList<List<String>>() ;
+		List<List<String>> rowsTable2 = new ArrayList<List<String>>() ;
 		PrefixMapping prefix = query.getPrefixMapping() ;
 		BasicPatternVisitor visitor = new BasicPatternVisitor() ;
 		Element el = query.getQueryPattern() ;
@@ -253,30 +253,28 @@ public class Optimizer
 			graph = model.getGraph() ;
 	
 	    // The list of BGP defined in the query
-	    List patterns = visitor.getPatterns() ; // List<BasicPattern>
+	    List<BasicPattern> patterns = visitor.getPatterns() ;
 	    
 	    // Step through the BGP patterns defined in the query
-	    for (Iterator iter = patterns.iterator(); iter.hasNext(); )
-	    {
-	    	BasicPattern pattern = (BasicPattern)iter.next() ;
+	    for (BasicPattern pattern : patterns)
+        {
 	    	// Optimizer the BGP
 	    	BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern, config) ;
 	    	BasicPatternGraph basicPatternGraph = optimizer.getBasicPatternGraph() ;
 	    	basicPatternGraph.optimize() ;
 	    	// Return the BGP graph components
-	    	List components = basicPatternGraph.getComponents() ; // List<ConnectedGraph>
+	    	List<ConnectedGraph> components = basicPatternGraph.getComponents() ;
 	    	
 	    	// Step through the BGP graph components
-	    	for (Iterator it = components.iterator(); it.hasNext(); )
+	    	for (Iterator<ConnectedGraph> it = components.iterator(); it.hasNext(); )
 	    	{
-	    		ConnectedGraph component = (ConnectedGraph)it.next() ;
+	    		ConnectedGraph component = it.next() ;
 	    		// Get the optimized list of GraphNodes
-	    		Set nodes = component.getOptGraphNodeList() ; // Set<GraphNode>
-	    		Set edges = component.getOptGraphEdgeList() ; // Set<GraphEdge>
+	    		Set<GraphNode> nodes = component.getOptGraphNodeList() ;
+	    		Set<GraphEdge> edges = component.getOptGraphEdgeList() ;
 	    		
-	    		for (Iterator i = nodes.iterator(); i.hasNext(); )
-	    		{
-	    			GraphNode node = (GraphNode)i.next() ;
+	    		for (GraphNode node : nodes)
+                {
 	    			Triple triple = node.triple() ;
 	    			double weight = node.weight() ;
 	    			rowsTable1.add(ExplainFormatter.formatCols(prefix, triple, weight)) ;
@@ -285,9 +283,9 @@ public class Optimizer
 	    		// Queries with only one triple pattern don't have edges!
 	    		if (edges != null && edges.size() > 0)
 	    		{
-		    		for (Iterator i = edges.iterator(); i.hasNext(); )
+		    		for (Iterator<GraphEdge> i = edges.iterator(); i.hasNext(); )
 		    		{
-		    			GraphEdge edge = (GraphEdge)i.next() ;
+		    			GraphEdge edge = i.next() ;
 		    			Triple triple1 = edge.node1().triple() ;
 		    			Triple triple2 = edge.node2().triple() ;
 		    			double weight = edge.weight() ;

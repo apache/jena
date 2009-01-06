@@ -62,6 +62,7 @@ public class Q_GreaterThanOrEqual extends ExprNode implements ExprRDQL, ExprBool
         return result ;
     }
 
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren() ;
@@ -82,11 +83,13 @@ public class Q_GreaterThanOrEqual extends ExprNode implements ExprRDQL, ExprBool
         return RDQLQueryPrintUtils.asPrefixString(left, right, printName, opSymbol) ;
     }
 
+    @Override
     public void format(IndentedWriter w)
     {
         RDQLQueryPrintUtils.format(w, left, right, printName, opSymbol) ;
     }
 
+    @Override
     public String toString()
     {
         return asInfixString() ;

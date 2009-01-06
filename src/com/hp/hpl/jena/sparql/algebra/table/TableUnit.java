@@ -38,15 +38,19 @@ public class TableUnit extends TableBase
         return new QueryIterSingleton(bindingLeft, execCxt) ;
     }
 
+    @Override
     public void closeTable()    { }
 
+    @Override
     public int size()           { return 1 ; }
+    @Override
     public boolean isEmpty()    { return false ; }
 
     public List getVarNames()   { return new ArrayList() ; }
 
     public List getVars()       { return new ArrayList() ; }
     
+    @Override
     public String toString()    { return "TableUnit" ; }
 }
 

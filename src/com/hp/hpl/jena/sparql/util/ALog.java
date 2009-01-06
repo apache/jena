@@ -20,7 +20,7 @@ public class ALog
         info(caller.getClass(), msg) ;
     }
 
-    static public void info(Class cls, String msg)
+    static public void info(Class<?> cls, String msg)
     {
         LogFactory.getLog(cls).info(msg) ;
     }
@@ -30,7 +30,7 @@ public class ALog
         info(caller.getClass(), msg, th) ;
     }
 
-    static public void info(Class cls, String msg, Throwable th)
+    static public void info(Class<?> cls, String msg, Throwable th)
     {
         LogFactory.getLog(cls).warn(msg, th) ;
     }
@@ -40,7 +40,7 @@ public class ALog
         warn(caller.getClass(), msg) ;
     }
 
-    static public void warn(Class cls, String msg)
+    static public void warn(Class<?> cls, String msg)
     {
         LogFactory.getLog(cls).warn(msg) ;
     }
@@ -50,7 +50,7 @@ public class ALog
         warn(caller.getClass(), msg, th) ;
     }
 
-    static public void warn(Class cls, String msg, Throwable th)
+    static public void warn(Class<?> cls, String msg, Throwable th)
     {
         LogFactory.getLog(cls).warn(msg, th) ;
     }
@@ -60,7 +60,7 @@ public class ALog
         fatal(caller.getClass(), msg) ;
     }
 
-    static public void fatal(Class cls, String msg)
+    static public void fatal(Class<?> cls, String msg)
     {
         LogFactory.getLog(cls).fatal(msg) ;
     }
@@ -70,7 +70,7 @@ public class ALog
         fatal(caller.getClass(), msg, th) ;
     }
 
-    static public void fatal(Class cls, String msg, Throwable th)
+    static public void fatal(Class<?> cls, String msg, Throwable th)
     {
         LogFactory.getLog(cls).fatal(msg, th) ;
     }

@@ -18,7 +18,7 @@ public class localname extends FunctionBase1
 {
     public localname() { super() ; }
     
-    //@Override
+    @Override
     public NodeValue exec(NodeValue v)
     {
         Node n = v.asNode() ;

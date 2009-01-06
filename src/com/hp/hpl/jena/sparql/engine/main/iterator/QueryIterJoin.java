@@ -17,6 +17,7 @@ public class QueryIterJoin extends QueryIterJoinBase
         super(left, right, null, qCxt) ;
     }
     
+    @Override
     protected QueryIterator joinWorker()
     {
         return super.equiJoinWorker() ;

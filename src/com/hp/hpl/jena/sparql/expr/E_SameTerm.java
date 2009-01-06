@@ -20,11 +20,13 @@ public class E_SameTerm extends ExprFunction2
         super(left, right, printName) ;
     }
     
+    @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         return NodeFunctions.sameTerm(x, y) ;
     }
     
+    @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_SameTerm(e1 , e2 ) ; }
 }
 

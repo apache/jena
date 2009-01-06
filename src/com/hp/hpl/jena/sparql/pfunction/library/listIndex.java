@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 public class listIndex extends ListBaseList
 {
+    @Override
     public QueryIterator execOneList(Binding binding, 
                                      Node listNode, Node predicate, PropFuncArg object,
                                      ExecutionContext execCxt)

@@ -34,6 +34,7 @@ class Instance extends FunctionBase1
     XSDDatatype castType ;
     Instance(XSDDatatype dt) {this.castType = dt ;  }
     
+    @Override
     public NodeValue exec(NodeValue v)
     {
         // TODO http://www.w3.org/TR/xpath-functions/#casting

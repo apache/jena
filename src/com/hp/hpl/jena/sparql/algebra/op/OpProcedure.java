@@ -45,6 +45,7 @@ public class OpProcedure extends Op1
         return Tags.tagProc ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if (other == this) return true;
@@ -57,6 +58,7 @@ public class OpProcedure extends Op1
         return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
     }
 
+    @Override
     public int hashCode()
     {
         int x = procId.hashCode() ;
@@ -68,11 +70,13 @@ public class OpProcedure extends Op1
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
+    @Override
     public Op apply(Transform transform, Op subOp)
     {
         return transform.transform(this, subOp) ;
     }
 
+    @Override
     public Op copy(Op subOp)
     {
         return new OpProcedure(procId, args, getSubOp()) ;

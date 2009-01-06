@@ -17,7 +17,7 @@ public class CommandLineBase
 {
     // TODO Case sensitivity : flags and arg
 
-    private List argList = new ArrayList() ;
+    private List<String> argList = new ArrayList<String>() ;
     boolean splitTerms = true ;
 
     public CommandLineBase(String[]args)
@@ -36,12 +36,12 @@ public class CommandLineBase
 //    }
     
     
-    protected List getArgList() { return argList ; }
+    protected List<String> getArgList() { return argList ; }
     protected String getArg(int i)
     { 
         if ( i < 0 || i >= argList.size() )
             return null ;
-        return (String)argList.get(i) ;
+        return argList.get(i) ;
     }
 
     protected void apply(ArgProc a)
@@ -49,7 +49,7 @@ public class CommandLineBase
         a.startArgs() ;
         for ( int i = 0 ; i < argList.size() ; i++ )
         {
-            String arg = (String)argList.get(i) ;
+            String arg = argList.get(i) ;
             a.arg(arg, i) ;
         }
         a.finishArgs() ;
@@ -60,10 +60,10 @@ public class CommandLineBase
      *  Make -flag/--flag consistent.
      * @param argv The words of the command line.
      */    
-    private List processArgv(String[] argv)
+    private List<String> processArgv(String[] argv)
     {
         // Combine with processedArgs/process?
-        List argList = new ArrayList() ;
+        List<String> argList = new ArrayList<String>() ;
         
         boolean positional = false ;
         

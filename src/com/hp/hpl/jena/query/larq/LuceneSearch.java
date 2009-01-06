@@ -8,11 +8,12 @@ package com.hp.hpl.jena.query.larq;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecException;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -31,8 +32,10 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
 
 /** Base class for searching a IndexLARQ */
 
@@ -46,6 +49,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
 
     protected abstract IndexLARQ getIndex(ExecutionContext execCxt) ;
     
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         super.build(argSubject, predicate, argObject, execCxt) ;
@@ -59,6 +63,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
                 throw new QueryBuildException("Object has "+argObject.getArgList().size()+" elements, not 2 or 3: "+argObject) ;
     }
     
+    @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
     	try { 
@@ -186,20 +191,21 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         return true ;
     }
     
+    @SuppressWarnings("unchecked")
     public QueryIterator varSubject(Binding binding, 
                                     Var match, Var score,
                                     String searchString, long limit, float scoreLimit,
                                     ExecutionContext execCxt)
     {
-        Iterator iter = getIndex(execCxt).search(searchString) ;
+        Iterator<HitLARQ> iter = getIndex(execCxt).search(searchString) ;
         
         if ( scoreLimit > 0 )
-            iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
+            iter = new IteratorTruncate<HitLARQ>(new ScoreTest(scoreLimit), iter) ;
         
         HitConverter converter = new HitConverter(binding, match, score) ;
         
-        iter =  new Map1Iterator(converter, iter) ;
-        QueryIterator qIter = new QueryIterPlainWrapper(iter, execCxt) ;
+        Iterator<Binding> iter2 = (Iterator<Binding>)new Map1Iterator(converter, iter) ;
+        QueryIterator qIter = new QueryIterPlainWrapper(iter2, execCxt) ;
 
         if ( limit >= 0 )
             qIter = new QueryIterSlice(qIter, 0, limit, execCxt) ;

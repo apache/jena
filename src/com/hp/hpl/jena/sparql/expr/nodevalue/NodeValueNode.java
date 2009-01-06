@@ -21,10 +21,11 @@ public class NodeValueNode extends NodeValue
     
     public NodeValueNode(Node n) { super(n) ; }
 
-    //@Override
+    @Override
     protected Node makeNode()
     { return getNode() ; } 
     
+    @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
 }
 

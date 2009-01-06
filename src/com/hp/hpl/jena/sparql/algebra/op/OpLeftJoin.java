@@ -37,13 +37,16 @@ public class OpLeftJoin extends Op2
     public ExprList getExprs()      { return expressions ; } 
     public String getName()         { return Tags.tagLeftJoin ; }
     
+    @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op newLeft, Op newRight)
     { return new OpLeftJoin(newLeft, newRight, expressions) ; }
     
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpLeftJoin) ) return false ;

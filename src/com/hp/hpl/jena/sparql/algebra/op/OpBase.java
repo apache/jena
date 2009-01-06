@@ -15,9 +15,11 @@ import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
 public abstract class OpBase extends PrintSerializableBase implements Op
 {
+    @Override
     public abstract int hashCode() ;
     public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;
 
+    @Override
     final public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -27,6 +29,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
         return equalTo((Op)other, null) ;
     }
 
+    @Override
     public void output(IndentedWriter out)
     {
         output(out, null) ;

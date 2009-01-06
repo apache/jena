@@ -31,6 +31,7 @@ public class ElementAssign extends Element
         return expr ;
     }
 
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( el2 instanceof ElementAssign ) )
@@ -43,11 +44,13 @@ public class ElementAssign extends Element
         return true ;
     }
 
+    @Override
     public int hashCode()
     {
         return var.hashCode()^expr.hashCode();
     }
 
+    @Override
     public void visit(ElementVisitor v)
     {
         v.visit(this) ;

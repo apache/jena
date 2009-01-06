@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 
 public class UpdateDeleteData extends UpdateData
 {
+    @Override
     public void visit(UpdateVisitor visitor)
     {
         visitor.visit(this) ;

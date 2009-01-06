@@ -16,13 +16,13 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class OpN extends OpBase
 { 
-    private List elements = new ArrayList() ;
+    private List<Op> elements = new ArrayList<Op>() ;
     
-    protected OpN()         { elements = new ArrayList() ; }
-    protected OpN(List x)   { elements = x ; }
+    protected OpN()         { elements = new ArrayList<Op>() ; }
+    protected OpN(List<Op> x)   { elements = x ; }
     
     public void add(Op op) { elements.add(op) ; }
-    public Op get(int idx) { return (Op)elements.get(idx) ; }
+    public Op get(int idx) { return elements.get(idx) ; }
     
     public abstract Op apply(Transform transform, List elts) ;
     public abstract Op copy(List elts) ;
@@ -30,13 +30,13 @@ public abstract class OpN extends OpBase
 
     public boolean sameAs(OpN op, NodeIsomorphismMap labelMap)
     {
-        Iterator iter1 = elements.listIterator() ;
-        Iterator iter2 = op.elements.listIterator() ;
+        Iterator<Op> iter1 = elements.listIterator() ;
+        Iterator<Op> iter2 = op.elements.listIterator() ;
         
         for ( ; iter1.hasNext() ; )
         {
-            Op op1 = (Op)iter1.next();
-            Op op2 = (Op)iter2.next();
+            Op op1 = iter1.next();
+            Op op2 = iter2.next();
             if ( ! op1.equalTo(op2, labelMap) )
                 return false ;
         }
@@ -46,11 +46,12 @@ public abstract class OpN extends OpBase
     public int size()                   { return elements.size() ; } 
 
     
+    @Override
     public int hashCode()               { return elements.hashCode() ; } 
 
-    public List getElements()           { return elements ; }
+    public List<Op> getElements()           { return elements ; }
 
-    public Iterator iterator()          { return elements.iterator() ; }
+    public Iterator<Op> iterator()          { return elements.iterator() ; }
 }
 
 /*

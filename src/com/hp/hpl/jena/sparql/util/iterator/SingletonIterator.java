@@ -1,46 +1,46 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.larq;
+package com.hp.hpl.jena.sparql.util.iterator;
 
-import java.io.File;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import org.apache.lucene.index.IndexWriter;
-
-/** Helper class for index creation from external content.
- *  
- *  Once completed, the index builder should be closed for writing,
- *  then the getIndex() called.
- *  
- *  To update the index once closed, the application should create a new index builder.
- *  Any index readers (e.g. IndexLARQ objects)
- *  need to be recreated and registered.  
- *  
- *  @deprecated Backwards compatibility named class - use IndexBuilderNode
- *        
- * @author Andy Seaborne
- */
-
-public class IndexBuilderExt extends IndexBuilderNode
+public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
 {
-    /** Create an in-memory index */
-    public IndexBuilderExt() { super() ; }
+    private T thing = null ;
+    private boolean yielded = false ;
     
-    /** Manage a Lucene index that has already been created */
-    public IndexBuilderExt(IndexWriter existingWriter) { super(existingWriter) ; }
+    public SingletonIterator(T thing) { this.thing = thing ; }
     
-    /** Create an on-disk index */
-    public IndexBuilderExt(File fileDir) { super(fileDir) ; }
-    
-    /** Create an on-disk index */
-    public IndexBuilderExt(String fileDir) { super(fileDir) ; }
+    public boolean hasNext()
+    {
+        return ! yielded ;
+    }
+
+    public T next()
+    {
+        if ( yielded )
+            throw new NoSuchElementException("SingletonIterator.next") ;
+        yielded = true ;
+        return thing ;
+    }
+
+    public void remove()
+    { throw new NoSuchElementException("SingletonIterator.remove") ;}
+
+    public Iterator<T> iterator()
+    {
+        return this ;
+    }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

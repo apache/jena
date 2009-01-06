@@ -29,6 +29,7 @@ public abstract class QueryIter1 extends QueryIter
     
     protected QueryIterator getInput() { return input ; }
     
+    @Override
     protected final
     void closeIterator()
     {
@@ -50,6 +51,7 @@ public abstract class QueryIter1 extends QueryIter
     protected abstract void closeSubIterator() ;
     
     // Do better
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         // Linear form.

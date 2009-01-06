@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.Query;
 
 public class QueryEngineRegistry
 {
-    List factories = new ArrayList() ;
+    List<QueryEngineFactory> factories = new ArrayList<QueryEngineFactory>() ;
     static { init() ; }
     
     // Singleton
@@ -81,9 +81,9 @@ public class QueryEngineRegistry
     
     public QueryEngineFactory find(Query query, DatasetGraph dataset, Context context)
     {
-        for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<QueryEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
         {
-            QueryEngineFactory f = (QueryEngineFactory)iter.next() ;
+            QueryEngineFactory f = iter.next() ;
             if ( f.accept(query, dataset, context) )
                 return f ;
         }
@@ -101,9 +101,9 @@ public class QueryEngineRegistry
     
     public QueryEngineFactory find(Op op, DatasetGraph dataset, Context context)
     {
-        for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<QueryEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
         {
-            QueryEngineFactory f = (QueryEngineFactory)iter.next() ;
+            QueryEngineFactory f = iter.next() ;
             if ( f.accept(op, dataset, context) )
                 return f ;
         }
@@ -127,7 +127,7 @@ public class QueryEngineRegistry
     public void remove(QueryEngineFactory f)  { factories.remove(f) ; }
     
     /** Allow <b>careful</b> manipulation of the factories list */
-    public List factories() { return factories ; }
+    public List<QueryEngineFactory> factories() { return factories ; }
 
     /** Check whether a query engine factory is already registered in teh default registry*/
     public static boolean containsFactory(QueryEngineFactory f) { return get().contains(f) ; }

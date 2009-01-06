@@ -37,16 +37,20 @@ public class OpSlice extends OpModifier
 
     public String getName()                 { return Tags.tagSlice ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
 
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
     
+    @Override
     public int hashCode()
     {
         return getSubOp().hashCode() ^ (int)(start&0xFFFFFFFF) ^ (int)(length&0xFFFFFFFF) ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpSlice) ) return false ;

@@ -16,14 +16,14 @@ public abstract class PathBase implements Path
     protected static final int hashMod      = 0x193 ;
     protected static final int hashReverse  = 0x193 ;
     
-    //@Override
+    @Override
     public abstract int hashCode() ;
     
     // If the labeMap is null, do .equals() on nodes, else map from
     // bNode varables in one to bNodes variables in the other 
     public abstract boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
     
-    //@Override
+    @Override
     final public boolean equals(Object path2)
     { 
         if ( this == path2 ) return true ;
@@ -33,7 +33,7 @@ public abstract class PathBase implements Path
         return equalTo((Path)path2, null) ;
     }
     
-    //@Override
+    @Override
     public String toString()
     {
         return PathWriter.asString(this) ;

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class ElementGroup extends Element
 {
-    List elements = new ArrayList() ;
+    List<Element> elements = new ArrayList<Element>() ;
 
     public ElementGroup()
     {  }
@@ -66,14 +66,14 @@ public class ElementGroup extends Element
     }
     
     private void setTop(Element el) { elements.set(elements.size()-1, el) ; }
-    private Element top() { return (Element)elements.get(elements.size()-1) ; }
+    private Element top() { return elements.get(elements.size()-1) ; }
     
     public int mark() { return elements.size() ; }
     
-    public List getElements() { return elements; }
+    public List<Element> getElements() { return elements; }
     public boolean isEmpty() { return elements.size() == 0 ; }
 
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = Element.HashGroup ; // So the empty group isn't zero.
@@ -81,7 +81,7 @@ public class ElementGroup extends Element
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -93,14 +93,15 @@ public class ElementGroup extends Element
             return false ;
         for ( int i = 0 ; i < this.getElements().size() ; i++ )
         {
-            Element e1 = (Element)getElements().get(i) ;
-            Element e2 = (Element)eg2.getElements().get(i) ;
+            Element e1 = getElements().get(i) ;
+            Element e2 = eg2.getElements().get(i) ;
             if ( ! e1.equalTo(e2, isoMap) )
                 return false ;
         }
         return true ;
     }
     
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

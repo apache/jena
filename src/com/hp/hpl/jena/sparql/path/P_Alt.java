@@ -19,14 +19,14 @@ public class P_Alt extends P_Path2
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( path2 instanceof P_Alt ) ) return false ;
         return equalsIso((P_Path2)path2, isoMap) ;
     }
 
-    //@Override
+    @Override
     public int hashSeed() { return hashAlt ; }
 }
 

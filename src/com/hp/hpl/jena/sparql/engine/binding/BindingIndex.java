@@ -24,15 +24,15 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class BindingIndex implements VariableIndexes, IndexValues
 {
-    List indexes = new ArrayList() ;    // String
+    List<String> indexes = new ArrayList<String>() ;
     Binding binding ;
     
     public BindingIndex(Binding b)
     {
         binding = b ; 
-        for ( Iterator iter = binding.vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ;
+            Var var = iter.next() ;
             indexes.add(var.getVarName()) ;
         }
     }
@@ -44,7 +44,7 @@ public class BindingIndex implements VariableIndexes, IndexValues
     {
         for ( int i = 0 ; i < indexes.size() ; i++ )
         {
-            if ( ((String)indexes.get(i)).equals(varname) )
+            if ( indexes.get(i).equals(varname) )
                 return i ;
         }
         //return -1 ;
@@ -58,7 +58,7 @@ public class BindingIndex implements VariableIndexes, IndexValues
     {
         if ( index < 0 || index > indexes.size() )
             return null ;
-        String name = (String)indexes.get(index) ;
+        String name = indexes.get(index) ;
         // The cast is a check.
         return binding.get(Var.alloc(name)) ;
     }

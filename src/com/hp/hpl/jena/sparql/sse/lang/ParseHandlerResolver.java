@@ -49,6 +49,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     }
 
     
+    @Override
     protected void declItem(ItemList list, Item item)
     {
         if ( list != declList )
@@ -87,6 +88,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
         throwException("Inconsistent: "+list.shortString(), list) ;
     }
     
+    @Override
     protected boolean endOfDecl(ItemList list, Item item)
     { 
         // Both (base...) and (prefix...) have one decl item 
@@ -98,11 +100,13 @@ public class ParseHandlerResolver extends ParseHandlerForm
         return false ;
     }
 
+    @Override
     protected boolean isForm(Item tag)
     {
         return tag.isSymbol(baseTag) || tag.isSymbol(prefixTag) ;
     }
     
+    @Override
     protected void startForm(ItemList list)
     {
         // Remember the top of declaration
@@ -120,6 +124,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
         }
     }
     
+    @Override
     protected void finishForm(ItemList list)
     { 
         // Check list length
@@ -134,12 +139,14 @@ public class ParseHandlerResolver extends ParseHandlerForm
         }
     }
 
+    @Override
     public void emitIRI(int line, int column, String iriStr)
     { 
         iriStr = resolveIRI(iriStr, line, column) ;
         super.emitIRI(line, column, iriStr) ;
     }
     
+    @Override
     public void emitPName(int line, int column, String pname)
     {
         if ( inFormDecl() )
@@ -153,6 +160,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
         super.emitIRI(line, column, iriStr) ;
     }
 
+    @Override
     protected String resolvePrefixedName(String pname, int line, int column)
     { 
         if ( prologue.getPrefixMapping() == null )

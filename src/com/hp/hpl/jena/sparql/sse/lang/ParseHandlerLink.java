@@ -29,6 +29,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
     
     // ----
     
+    @Override
     public void parseFinish()
     {
         // Check links.
@@ -37,6 +38,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
     
     // ----
     
+    @Override
     protected void declItem(ItemList list, Item item)
     {
         if ( list.getFirst().isSymbol(tagLink) )
@@ -62,6 +64,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
         super.declItem(list, item) ;
     }
 
+    @Override
     protected boolean endOfDecl(ItemList list, Item item)
     {
         // XXX No.  This does not allow for nested "@names"
@@ -73,6 +76,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
         return super.endOfDecl(list, item) ;
     }
 
+    @Override
     protected boolean isForm(Item tag)
     {
         if ( tag.isSymbol(tagLink) || tag.isSymbol(tagName) )

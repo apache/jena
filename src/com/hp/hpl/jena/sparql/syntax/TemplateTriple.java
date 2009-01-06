@@ -39,7 +39,8 @@ public class TemplateTriple extends Template
     
     public Triple getTriple() { return triple ; } 
     
-    public void subst(Collection acc, Map bNodeMap, Binding b)
+    @Override
+    public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
     {
         Node s = triple.getSubject() ; 
         Node p = triple.getPredicate() ;
@@ -59,7 +60,7 @@ public class TemplateTriple extends Template
         acc.add(t2) ;
     }
     
-    //@Override
+    @Override
     public int hashCode()
     { 
         triple.hashCode();
@@ -79,7 +80,7 @@ public class TemplateTriple extends Template
         return node.hashCode() ;
     }
 
-    //@Override
+    @Override
     public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
     {
         if ( temp2 == null ) return false ;
@@ -113,6 +114,7 @@ public class TemplateTriple extends Template
     
     
     
+    @Override
     public void visit(TemplateVisitor visitor)
     {
         visitor.visit(this) ;
@@ -126,11 +128,11 @@ public class TemplateTriple extends Template
         return n1.equals(n2) ;
     }
     
-    private Node newBlank(Node n, Map bNodeMap)
+    private Node newBlank(Node n, Map<Node, Node> bNodeMap)
     {
         if ( ! bNodeMap.containsKey(n) ) 
             bNodeMap.put(n, Node.createAnon() );
-        return (Node)bNodeMap.get(n) ;
+        return bNodeMap.get(n) ;
     }
 }
 

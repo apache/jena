@@ -30,10 +30,12 @@ public class Symbol
 
     protected Symbol(Symbol other)  { this.symbol = other.symbol ; }
     
+    @Override
     public int hashCode() { return symbol.hashCode() ; } 
     
     //public boolean isCompatibleWith(Symbol other) { return equals(other) ; }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -47,6 +49,7 @@ public class Symbol
     }
 
     public String getSymbol() { return symbol ; }
+    @Override
     public String toString()  { return "symbol:"+symbol ; }
 }
 

@@ -50,6 +50,7 @@ public class query extends CmdARQ
         super.add(argRepeat) ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -67,14 +68,17 @@ public class query extends CmdARQ
         return new ModDatasetAssembler() ;
     }
     
+    @Override
     protected void exec()
     {
         for ( int i = 0 ; i < repeatCount ; i++ )
             queryExec() ;
     }
 
+    @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
+    @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
     protected Dataset getDataset()  { return modDataset.getDataset() ; }

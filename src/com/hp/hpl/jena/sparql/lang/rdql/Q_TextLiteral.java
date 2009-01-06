@@ -35,6 +35,7 @@ public class Q_TextLiteral extends ParsedLiteral {
     super._setString(unescape(s,'\\')) ;
   }
   
+    @Override
     public void jjtClose()
     {
         int n = jjtGetNumChildren();
@@ -54,6 +55,7 @@ public class Q_TextLiteral extends ParsedLiteral {
             seen = seen+"^^"+datatype.asQuotedString() ;
     }
   
+    @Override
     public void postParse2(Query query)
     {
         super.postParse2(query) ;
@@ -78,6 +80,7 @@ public class Q_TextLiteral extends ParsedLiteral {
         super._setNode(n) ; 
     }
   
+    @Override
     public String asQuotedString()
     {
         return seen ;

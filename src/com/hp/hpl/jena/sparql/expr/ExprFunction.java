@@ -35,17 +35,20 @@ public abstract class ExprFunction extends ExprNode
     public abstract Expr getArg(int i) ;
     public abstract int numArgs() ;
 
-    public List getArgs()
+    public List<Expr> getArgs()
     {
-        List x = new ArrayList() ;
+        List<Expr> x = new ArrayList<Expr>() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
             x.add(this.getArg(i)) ;
         return x ;        
     }
 
+    @Override
     public boolean isFunction()        { return true ; }
+    @Override
     public ExprFunction getFunction()  { return this ; }
     
+    @Override
     public int hashCode()
     {
         return funcSymbol.hashCode() ^ numArgs() ;
@@ -55,6 +58,7 @@ public abstract class ExprFunction extends ExprNode
     // + The name is the same
     // + The arguments are the same (including arity).
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;

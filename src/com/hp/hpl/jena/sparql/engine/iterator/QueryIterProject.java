@@ -35,6 +35,7 @@ public class QueryIterProject extends QueryIterConvert
     
     public List getProjectionVars()   { return projectionVars ; }
 
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;

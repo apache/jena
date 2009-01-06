@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
+import com.hp.hpl.jena.sparql.util.iterator.SingletonIterator;
 
 
 /** Special purpose binding for adding just one name/value slot. 
@@ -31,25 +31,30 @@ public class Binding1 extends BindingBase
         value = _node ;
     }
     
+    @Override
     protected void add1(Var v, Node node)
     {
         throw new UnsupportedOperationException("Binding1.add1") ;
     }
 
+    @Override
     protected int size1() { return 1 ; }
     
     /** Iterate over all the names of variables.
      */
-    public Iterator vars1() 
+    @Override
+    public Iterator<Var> vars1() 
     {
-        return new SingletonIterator(var) ;
+        return new SingletonIterator<Var>(var) ;
     }
     
+    @Override
     public boolean contains1(Var n)
     {
         return var.equals(n) ;
     }
     
+    @Override
     public Node get1(Var v)
     {
         if ( v.equals(var) )
@@ -57,6 +62,7 @@ public class Binding1 extends BindingBase
         return null ;
     }
 
+    @Override
     protected void checkAdd1(Var v, Node val) { }
 }
 

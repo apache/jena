@@ -30,10 +30,10 @@ import com.hp.hpl.jena.sparql.util.*;
 
 public class PropFuncArg extends PrintSerializableBase
 {
-    private List argList = null ;
+    private List<Node> argList = null ;
     private Node arg = null ;
     
-    public PropFuncArg(List argList, Node arg)
+    public PropFuncArg(List<Node> argList, Node arg)
     {
         // arg is always the argument, which may be a list in argList.
         // If it's a list, remember that.
@@ -45,24 +45,26 @@ public class PropFuncArg extends PrintSerializableBase
         this.argList = argList ;
     }
         
-    public PropFuncArg(List argList)    { this.argList = argList ; }
+    public PropFuncArg(List<Node> argList)    { this.argList = argList ; }
     public PropFuncArg(Node arg)        { this.arg = arg ; }
     
     public Node getArg()                { return arg ; }
-    public List getArgList()            { return argList ; }
+    public List<Node> getArgList()            { return argList ; }
     public int  getArgListSize()        { return argList==null ? -1 : argList.size() ; }
     public Node getArg(int index)
     {
         if ( argList == null ) return null ;
-        return (Node)argList.get(index) ;
+        return argList.get(index) ;
     }
     
+    @Override
     public int hashCode()
     {
         if ( isNode() ) return arg.hashCode() ;
         return argList.hashCode() ;
     }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
@@ -88,9 +90,9 @@ public class PropFuncArg extends PrintSerializableBase
             return exprList ;
         }
         
-        for ( Iterator iter = pfArg.getArgList().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = pfArg.getArgList().iterator() ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
+            Node n = iter.next() ;
             Expr expr = ExprUtils.nodeToExpr(n) ;
             exprList.add(expr) ;
         }
@@ -128,10 +130,10 @@ public class PropFuncArg extends PrintSerializableBase
     {
         if ( ! isList() )
             return new PropFuncArg(evalIfExistsOneArg(binding, arg)) ;
-        List newArgList = new ArrayList() ;
-        for ( Iterator iter = argList.iterator() ; iter.hasNext() ; )
+        List<Node> newArgList = new ArrayList<Node>() ;
+        for ( Iterator<Node> iter = argList.iterator() ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next();
+            Node n = iter.next();
             newArgList.add(evalIfExistsOneArg(binding, n)) ;
         }
         return new PropFuncArg(newArgList) ;

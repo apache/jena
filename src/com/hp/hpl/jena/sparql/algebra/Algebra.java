@@ -36,19 +36,6 @@ public class Algebra
     public static boolean AllowOptimization = true ;
     private static Transform optimization() { return new TransformEqualityFilter() ; }
     
-    // -------- Prepackaged combinations
-    
-    /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression.
-     * @deprecated Perform an explicit Algebra.optimize on compile(Query)
-     */
-    public static Op compile(Query query, boolean optimize)
-    {
-        Op op = compile(query) ;
-        if ( optimize )
-            op = optimize(op) ;
-        return op ;
-    }
-    
     // -------- Optimize
     
     /** Apply static transformations to a query to optimize it */
@@ -81,41 +68,6 @@ public class Algebra
         if ( elt == null )
             return null ;
         return new AlgebraGenerator().compile(elt) ;
-    }
-
-    // Use toQuadForm.
-    
-    /** Compile a query - to quad form.
-     * @deprecated Use {@link toQuadForm(Op)}
-     */ 
-    public static Op compileQuad(Query query)
-    {
-        if ( query == null )
-            return null ;
-        return toQuadForm(compile(query)) ;
-    }
-
-    /** Compile a pattern to quad form. 
-     * @deprecated Use {@link toQuadForm(Op)}
-     */ 
-    public static Op compileQuad(Element elt)
-    {
-        if ( elt == null )
-            return null ;
-        return toQuadForm(compile(elt)) ;
-    }
-
-    /** Compile a pattern - to quad form.
-     * @deprecated Use {@link toQuadForm(Op)}
-     */ 
-    public static Op compileQuad(Query query, boolean optimize)
-    {
-        if ( query == null )
-            return null ;
-        Op op = toQuadForm(compile(query)) ;
-        if ( optimize )
-            op = optimize(op) ;
-        return op ;
     }
 
     public static Op toQuadForm(Op op)

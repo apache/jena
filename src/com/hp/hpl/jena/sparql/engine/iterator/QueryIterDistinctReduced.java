@@ -22,9 +22,11 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     { super(QueryIterFixed.create(iter, context), context)  ; }
 
     // Subclasses will want to implement this as well. 
+    @Override
     protected void closeSubIterator()
     { slot = null ; }
 
+    @Override
     final
     protected boolean hasNextBinding()
     {
@@ -47,6 +49,7 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
         return false ;
     }
 
+    @Override
     final
     protected Binding moveToNextBinding()
     {

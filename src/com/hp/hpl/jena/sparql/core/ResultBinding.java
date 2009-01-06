@@ -41,6 +41,7 @@ public class ResultBinding extends QuerySolutionBase
 //        binding = new BindingMap() ;
 //    }
     
+    @Override
     public RDFNode _get(String varName)
     {
         Node n = getNode(varName) ;
@@ -54,11 +55,13 @@ public class ResultBinding extends QuerySolutionBase
         return binding.get(Var.alloc(varName)) ;
     }
 
+    @Override
     public boolean _contains(String varName)
     {
         return binding.contains(Var.alloc(varName)) ;
     }
 
+    @Override
     public Iterator varNames()
     { 
         List x = new ArrayList() ;
@@ -75,6 +78,7 @@ public class ResultBinding extends QuerySolutionBase
 
     public Binding getBinding() { return binding ; }
     
+    @Override
     public String toString()
     {
         if ( binding == null )

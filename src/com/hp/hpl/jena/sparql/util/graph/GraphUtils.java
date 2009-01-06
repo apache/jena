@@ -9,9 +9,11 @@ package com.hp.hpl.jena.sparql.util.graph;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+
 import com.hp.hpl.jena.sparql.util.NotUniqueException;
 import com.hp.hpl.jena.sparql.util.PlainGraphMem;
 import com.hp.hpl.jena.sparql.util.PropertyRequiredException;
@@ -58,23 +60,23 @@ public class GraphUtils
     
     // ------- List utilities
     
-    public static List multiValueString(Resource r, Property p)
+    public static List<String> multiValueString(Resource r, Property p)
     {
-        List nodes = multiValue(r, p) ;
-        List values = new ArrayList() ;
+        List<RDFNode> nodes = multiValue(r, p) ;
+        List<String> values = new ArrayList<String>() ;
     
-        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
+        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
-            RDFNode n = (RDFNode)iter.next();
+            RDFNode n = iter.next();
             if ( n.isLiteral() )
                 values.add(((Literal)n).getString()) ;
         }
         return values ;
     }
 
-    public static List multiValue(Resource r, Property p)
+    public static List<RDFNode> multiValue(Resource r, Property p)
     {
-        List values = new ArrayList() ;
+        List<RDFNode> values = new ArrayList<RDFNode>() ;
         StmtIterator sIter = r.listProperties(p) ;
         while(sIter.hasNext())
         {
@@ -84,28 +86,28 @@ public class GraphUtils
         return values;
     }
     
-    public static List multiValueResource(Resource r, Property p)
+    public static List<RDFNode> multiValueResource(Resource r, Property p)
     {
-        List nodes = multiValue(r, p) ;
-        List values = new ArrayList() ;
+        List<RDFNode> nodes = multiValue(r, p) ;
+        List<RDFNode> values = new ArrayList<RDFNode>() ;
     
-        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
+        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
-            RDFNode n = (RDFNode)iter.next();
+            RDFNode n = iter.next();
             if ( n.isResource() )
                 values.add(n) ;
         }
         return values ;
     }
 
-    public static List multiValueURI(Resource r, Property p)
+    public static List<String> multiValueURI(Resource r, Property p)
     {
-        List nodes = multiValue(r, p) ;
-        List values = new ArrayList() ;
+        List<RDFNode> nodes = multiValue(r, p) ;
+        List<String> values = new ArrayList<String>() ;
     
-        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
+        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
-            RDFNode n = (RDFNode)iter.next();
+            RDFNode n = iter.next();
             if ( n.isURIResource() )
                 values.add(((Resource)n).getURI()) ;
         }
@@ -202,9 +204,9 @@ public class GraphUtils
     { return r.getModel().shortForm(r.getURI()) ;  }
     
     /** All subjects and objects, no duplicates. */
-    public static Iterator allNodes(Graph graph)
+    public static Iterator<Node> allNodes(Graph graph)
     {
-        Set x = new HashSet(1000) ;
+        Set<Node> x = new HashSet<Node>(1000) ;
         ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {

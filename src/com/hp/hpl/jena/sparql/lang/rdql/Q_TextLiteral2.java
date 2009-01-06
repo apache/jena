@@ -29,11 +29,13 @@ public class Q_TextLiteral2 extends ParsedLiteral {
     super._setString(unescape(s,'\\')) ;
   }
   
+    @Override
     public void jjtClose()
     {
         // Unlike TextLiteral, this has no optional @ or ^^
     }
   
+    @Override
     public void postParse2(Query query)
     {
         super.postParse2(query) ;
@@ -42,6 +44,7 @@ public class Q_TextLiteral2 extends ParsedLiteral {
         super._setNode(n) ; 
     }
   
+    @Override
     public String asQuotedString()
     {
         return seen ;

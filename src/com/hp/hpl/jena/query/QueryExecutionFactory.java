@@ -357,7 +357,7 @@ public class QueryExecutionFactory
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, String query, List defaultGraphURIs, List namedGraphURIs)
+    static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
         checkNotNull(service, "URL for service is null") ;
         //checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
@@ -386,7 +386,7 @@ public class QueryExecutionFactory
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, Query query, List defaultGraphURIs, List namedGraphURIs)
+    static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
         checkNotNull(service, "URL for service is null") ;
         //checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;

@@ -25,13 +25,17 @@ public class OpDatasetNames extends Op0
 
     public String getName()                 { return "DatasetNames" ; }
 
+    @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy()                        { return new OpDatasetNames(graphNode) ; }
 
+    @Override
     public int hashCode()
     { return graphNode.hashCode() ; }
 
+    @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpDatasetNames) ) return false ;

@@ -20,18 +20,18 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils;
 
 public class DatasetDesc
 {
-    private List defaultGraphURIs = new ArrayList() ;
-    private List namedGraphURIs = new ArrayList() ;
+    private List<String> defaultGraphURIs = new ArrayList<String>() ;
+    private List<String> namedGraphURIs = new ArrayList<String>() ;
     
     public DatasetDesc() {}
     public void addDefaultGraphURI(String uri) { defaultGraphURIs.add(uri) ; }
     public void addNamedGraphURI(String uri) { namedGraphURIs.add(uri) ; }
     
-    public List getDefaultGraphURIs() { return defaultGraphURIs ; }
-    public List getNamedGraphURIs() { return namedGraphURIs ; }
+    public List<String> getDefaultGraphURIs() { return defaultGraphURIs ; }
+    public List<String> getNamedGraphURIs() { return namedGraphURIs ; }
     
-    public Iterator eachDefaultGraphURI() { return defaultGraphURIs.iterator() ; }
-    public Iterator eachNamedGraphURI() { return namedGraphURIs.iterator() ; }
+    public Iterator<String> eachDefaultGraphURI() { return defaultGraphURIs.iterator() ; }
+    public Iterator<String> eachNamedGraphURI() { return namedGraphURIs.iterator() ; }
     
     public Dataset create() { return DatasetUtils.createDataset(this) ; }
     public DatasetGraph createDatasetGraph() { return DatasetUtils.createDatasetGraph(this) ; }

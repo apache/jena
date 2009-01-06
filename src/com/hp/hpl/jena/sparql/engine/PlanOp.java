@@ -32,10 +32,11 @@ public class PlanOp extends PlanBase
         this.label = label ;
     }
     
+    @Override
     protected QueryIterator iteratorOnce()
     { return qIter ; }
 
-    //@Override
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         if ( getOp() == null )

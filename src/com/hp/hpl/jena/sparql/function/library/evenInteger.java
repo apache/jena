@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 public class evenInteger extends FunctionBase1
 {
+    @Override
     public NodeValue exec(NodeValue x)
     {
         if ( ! x.isInteger() )

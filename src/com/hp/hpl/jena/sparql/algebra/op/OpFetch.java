@@ -49,11 +49,13 @@ public class OpFetch extends OpExt
 
     public OpFetch(Node node) { this.node = node ; }
 
+    @Override
     public Op effectiveOp()
     {
         return OpTable.unit() ;
     }
 
+    @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
     {
         return new QueryIterFetch(input, execCxt) ;
@@ -67,6 +69,7 @@ public class OpFetch extends OpExt
             super(input, context) ;
         }
 
+        @Override
         protected QueryIterator nextStage(Binding binding)
         {
             DataSourceGraph ds = (DataSourceGraph)super.getExecContext().getDataset() ;
@@ -83,19 +86,23 @@ public class OpFetch extends OpExt
 
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpFetch) ) return false ;
         return node.equals(((OpFetch)other).node) ;
     }
 
+    @Override
     public String getSubTag() { return "fetch" ; }
 
+    @Override
     public void outputArgs(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(FmtUtils.stringForNode(node, sCxt)) ;
     }
 
+    @Override
     public int hashCode()
     {
         return "fetch".hashCode() ^ node.hashCode() ;

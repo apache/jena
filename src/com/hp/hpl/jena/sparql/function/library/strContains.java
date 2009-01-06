@@ -16,7 +16,7 @@ public class strContains extends FunctionBase2
 {
     public strContains() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue str, NodeValue match)
     {
         return XSDFuncOp.strContains(str, match) ;

@@ -15,6 +15,7 @@ import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -317,7 +318,7 @@ public class ResultSetFactory
      * @param conditions
      * @return ResultSet
      */
-    static public ResultSet makeSorted(ResultSet resultSet, List conditions)
+    static public ResultSet makeSorted(ResultSet resultSet, List<Expr> conditions)
     {
         return new SortedResultSet(resultSet, conditions) ;
     }
@@ -337,7 +338,7 @@ public class ResultSetFactory
      *  @param vars     List of variables for the result set
      * @return ResultSet 
      */
-    static public ResultSet create(QueryIterator queryIterator, List vars)
+    static public ResultSet create(QueryIterator queryIterator, List<String> vars)
     {
         vars = Var.varNames(vars) ;     // Ensure in name form.
         return new ResultSetStream(vars, null, queryIterator) ;

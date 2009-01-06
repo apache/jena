@@ -41,9 +41,11 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
 
     public ParseHandlerForm() {}
     
+    @Override
     public void listStart(int line, int column)
     { super.listStart(line, column) ; }
 
+    @Override
     public void listFinish(int line, int column)
     {
         ItemList list = currentList() ;
@@ -86,6 +88,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             listAdd(item) ;
     }
 
+    @Override
     protected void listAdd(Item item)
     {
         // Always add to the current list, even for (base...) and (prefix...)

@@ -30,6 +30,7 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
         this.op = op ;
     }
 
+    @Override
     protected QueryIterator nextStage(Binding binding)
     {
         Op op2 = QC.substitute(op, binding) ;
@@ -40,6 +41,7 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
         return cIter ;
     }
     
+    @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.println(Utils.className(this)) ;

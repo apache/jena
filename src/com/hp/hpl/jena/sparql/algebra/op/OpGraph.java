@@ -28,13 +28,17 @@ public class OpGraph extends Op1
     
     public String getName()                         { return Tags.tagGraph ; }
 
+    @Override
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
     
+    @Override
     public int hashCode()
     { return node.hashCode() ^ getSubOp().hashCode() ; }
     
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpGraph) ) return false ;

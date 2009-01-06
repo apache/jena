@@ -83,10 +83,10 @@ public class Var extends Node_Variable
         NotAVariableException(String msg) { super(msg) ; }
     }
 
-    //@Override
+    @Override
     public int hashCode() { return super.hashCode() ; }
 
-    //@Override
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -94,7 +94,7 @@ public class Var extends Node_Variable
         return super.equals(other) ;
     }
     
-//    //@Override
+//    @Override
 //    public String toString() { return node.toString() ; }
 
     public boolean isNamedVar() { return isNamedVarName(getName()) ; }
@@ -140,16 +140,16 @@ public class Var extends Node_Variable
     public static boolean isAllocVarName(String x)
     { return x.startsWith(ARQConstants.allocVarMarker) ; }
     
-    public static List varList(List varNames)
+    public static List<Var> varList(List<?> varNames)
     {
-        List x = new ArrayList() ;
-        for ( Iterator iter = varNames.listIterator() ; iter.hasNext() ; )
+        List<Var> x = new ArrayList<Var>() ;
+        for ( Iterator<?> iter = varNames.listIterator() ; iter.hasNext() ; )
         {
             Object obj = iter.next() ;
             if ( obj instanceof String )
                 x.add(Var.alloc((String)obj)) ;
             else if ( obj instanceof Var )
-                x.add(obj) ;
+                x.add((Var)obj) ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }
@@ -157,10 +157,10 @@ public class Var extends Node_Variable
     }
     
     /** return a list of String names */ 
-    public static List varNames(Collection vars)
+    public static List<String> varNames(Collection<?> vars)
     {
-        List x = new ArrayList() ;
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        List<String> x = new ArrayList<String>() ;
+        for ( Iterator< ? > iter = vars.iterator() ; iter.hasNext() ; )
         {
             Object obj = iter.next(); 
             String name = null ; 
@@ -178,30 +178,15 @@ public class Var extends Node_Variable
         return x ;
     }
     
-    public static void checkVarList(Collection varNames)
+    public static Collection<String> names(Collection<?> vars)
     {
-        List x = new ArrayList() ;
-        for ( Iterator iter = varNames.iterator() ; iter.hasNext() ; )
+        List<String> x = new ArrayList<String>() ;
+        for (Object obj : vars)
         {
-            Object obj = iter.next() ;
-            if ( obj instanceof Var )
-                continue ;
-            if ( obj instanceof String )
-                throw new ARQInternalErrorException("Element of a var list is a string: "+obj) ;
-            throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
-        }
-    }
-    
-    public static Collection names(Collection vars)
-    {
-        List x = new ArrayList() ;
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
-        {
-            Object obj = iter.next() ;
             if ( obj instanceof Var )
                 x.add(((Var)obj).getVarName()) ;
             else if ( obj instanceof String )
-                x.add(obj) ;
+                x.add((String)obj) ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }

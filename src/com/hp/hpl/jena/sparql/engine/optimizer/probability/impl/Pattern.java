@@ -72,7 +72,8 @@ public class Pattern
  	 * 
  	 * @return String
  	 */
- 	public String toString()
+ 	@Override
+    public String toString()
  	{ return "[" + joiningP.getURI() + " " + joinedP.getURI() + " " + joinT.getURI() + "]" ; }
  	
  	/**
@@ -80,7 +81,8 @@ public class Pattern
  	 * 
  	 * @param o
  	 */
- 	public boolean equals(Object o)
+ 	@Override
+    public boolean equals(Object o)
  	{
  	   if ( this == o ) return true ;
  		if (! (o instanceof Pattern))
@@ -99,7 +101,8 @@ public class Pattern
  	 * 
  	 * @return int
  	 */
- 	public int hashCode()
+ 	@Override
+    public int hashCode()
  	{ return toString().hashCode() ; }
 }
 

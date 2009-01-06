@@ -27,6 +27,7 @@ public class QueryIterService extends QueryIterRepeatApply
         this.opService = opService ;
     }
     
+    @Override
     protected QueryIterator nextStage(Binding outerBinding)
     {
         Op op = QC.substitute(opService, outerBinding) ;

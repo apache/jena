@@ -29,17 +29,20 @@ public class QueryIterDistinct extends QueryIterDistinctReduced
         super(iter, context)  ;
     }
 
+    @Override
     protected void closeSubIterator()
     {
         seen = null ;
         super.closeSubIterator() ;
     }
 
+    @Override
     protected boolean isDuplicate(Binding binding)
     {
         return seen.contains(binding) ;
     }
 
+    @Override
     protected void remember(Binding binding)
     {
         seen.add(binding) ;

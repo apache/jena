@@ -33,11 +33,14 @@ public class OpGroupAgg extends OpModifier
     public List getAggregators()            { return aggregators ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    @Override
     public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
 
+    @Override
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
+    @Override
     public int hashCode()
     { 
         int x = getSubOp().hashCode() ;
@@ -48,6 +51,7 @@ public class OpGroupAgg extends OpModifier
         return x ;
     }
 
+    @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpGroupAgg) ) return false ;

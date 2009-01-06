@@ -38,6 +38,7 @@ public abstract class OpExt extends OpBase
     public final void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;

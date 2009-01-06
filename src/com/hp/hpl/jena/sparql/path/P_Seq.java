@@ -21,10 +21,10 @@ public class P_Seq extends P_Path2
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
     
-    //@Override
+    @Override
     public int hashSeed() { return hashSeq ; }
 
-    //@Override
+    @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( path2 instanceof P_Seq ) ) return false ;

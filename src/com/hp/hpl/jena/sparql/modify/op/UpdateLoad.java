@@ -23,7 +23,7 @@ public class UpdateLoad extends GraphUpdate1
     
     public void addLoadIRI(String iri) { loadData.add(iri) ; }
  
-    //@Override
+    @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 
     public List getLoadIRIs()

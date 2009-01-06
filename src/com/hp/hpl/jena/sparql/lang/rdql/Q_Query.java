@@ -171,6 +171,7 @@ public class Q_Query extends SimpleNode
      *  It should give the same answers on the same dataset.
      */
 
+    @Override
     public String toString()
     {
     	throw new UnsupportedOperationException ("Q_Query.toString()") ;

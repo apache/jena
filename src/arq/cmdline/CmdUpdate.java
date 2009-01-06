@@ -19,6 +19,7 @@ public abstract class CmdUpdate extends CmdARQ
         addModule(modGraphStore) ;
     }
     
+    @Override
     protected final void exec()
     {
         GraphStore graphStore = modGraphStore.getGraphStore() ;

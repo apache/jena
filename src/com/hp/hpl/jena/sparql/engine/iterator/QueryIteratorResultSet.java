@@ -17,8 +17,11 @@ public class QueryIteratorResultSet extends QueryIteratorBase
     private ResultSet resultSet ; 
     public QueryIteratorResultSet(ResultSet rs) { resultSet = rs ; }
     
+    @Override
     protected void closeIterator()          { resultSet = null ; }
+    @Override
     protected boolean hasNextBinding()      { return resultSet.hasNext() ; }
+    @Override
     protected Binding moveToNextBinding()   { return resultSet.nextBinding() ; }
 
     public void output(IndentedWriter out, SerializationContext cxt)

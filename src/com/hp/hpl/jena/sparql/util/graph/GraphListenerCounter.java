@@ -51,13 +51,13 @@ public abstract class GraphListenerCounter extends GraphListenerBase
         deleteCount = 0 ; 
     }
 
-    //@Override
+    @Override
     public void notifyEvent(Graph source, Object value)
     {
         super.notifyEvent(source, value) ;
     }
 
-    //@Override
+    @Override
     protected void addEvent(Triple t)
     {
         addCount++ ;
@@ -68,7 +68,7 @@ public abstract class GraphListenerCounter extends GraphListenerBase
         }
     }
 
-    //@Override
+    @Override
     protected void deleteEvent(Triple t)
     {
         deleteCount++ ;

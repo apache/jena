@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 class ParserRDQL extends Parser
 {
+    @Override
     public Query parse(Query q, String s)
     {
         q.setSyntax(Syntax.syntaxRDQL) ;

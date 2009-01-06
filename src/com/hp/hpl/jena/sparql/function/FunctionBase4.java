@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class FunctionBase4 extends FunctionBase
 {
+    @Override
     public void checkBuild(String uri, ExprList args)
     { 
         if ( args.size() != 4 )
@@ -27,6 +28,7 @@ public abstract class FunctionBase4 extends FunctionBase
     }
 
     
+    @Override
     public final NodeValue exec(List args)
     {
         if ( args == null )

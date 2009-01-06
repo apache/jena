@@ -56,6 +56,7 @@ public class Q_PatternLiteral extends ExprNode implements ExprRDQL
         }
     }
 
+    @Override
     public String toString()
     {
         // First see if we can do it without escapes
@@ -94,11 +95,14 @@ public class Q_PatternLiteral extends ExprNode implements ExprRDQL
     // -----------
     // graph.query.Expression
 
+    @Override
     public boolean isConstant()      { return true; }
+    @Override
     public Object getValue()         { return toString(); } // For constants
 
     // -----------
     
+    @Override
     public void format(IndentedWriter w)
     {
         w.print(toString()) ;

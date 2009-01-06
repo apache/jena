@@ -41,6 +41,7 @@ public class TableN extends TableBase
         qIter.close() ;
     }
 
+    @Override
     public void addBinding(Binding binding)
     {
         for ( Iterator names = binding.vars() ; names.hasNext() ; )
@@ -52,7 +53,9 @@ public class TableN extends TableBase
         rows.add(binding) ;
     }
     
+    @Override
     public int size()           { return rows.size() ; }
+    @Override
     public boolean isEmpty()    { return rows.isEmpty() ; }
 
     
@@ -87,6 +90,7 @@ public class TableN extends TableBase
         return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
     }
     
+    @Override
     public void closeTable()
     {
         rows = null ;

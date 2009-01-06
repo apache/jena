@@ -26,18 +26,18 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.SortCondition;
 
-public class BindingComparator implements java.util.Comparator 
+public class BindingComparator implements java.util.Comparator<Binding>
 {
-    List conditions ;
+    List<Expr> conditions ;
     private FunctionEnv env ;
     
-    public BindingComparator(List conditions, ExecutionContext execCxt)
+    public BindingComparator(List<Expr> conditions, ExecutionContext execCxt)
     {
         this.conditions = conditions ;
         env = execCxt ;
     }
     
-    public BindingComparator(List _conditions)
+    public BindingComparator(List<Expr> _conditions)
     {
         conditions = _conditions ;
         this.env = new FunctionEnvBase();
@@ -47,12 +47,9 @@ public class BindingComparator implements java.util.Comparator
     // Node comparsion is:
     //  Compare by 
 
-    public int compare(Object arg1, Object arg2)
+    public int compare(Binding bind1, Binding bind2)
     {
-        Binding bind1 = (Binding)arg1 ;
-        Binding bind2 = (Binding)arg2 ;
-        
-        for ( Iterator iter = conditions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Expr> iter = conditions.iterator() ; iter.hasNext() ; )
         {
             SortCondition sc = (SortCondition)iter.next() ;
             if ( sc.expression == null )
@@ -107,9 +104,9 @@ public class BindingComparator implements java.util.Comparator
     public static int compareBindingsSyntactic(Binding bind1, Binding bind2)
     {
         int x = 0 ;
-        for ( Iterator iter = bind1.vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = bind1.vars() ; iter.hasNext() ; )
         {
-            Var v = (Var)iter.next() ;
+            Var v = iter.next() ;
             Node n1 = bind1.get(v) ;
             Node n2 = bind2.get(v) ;
             x = NodeUtils.compareRDFTerms(n1, n2) ; 

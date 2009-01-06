@@ -32,6 +32,7 @@ public class Q_QName extends Q_URI
         seen = s ;
     }
     
+    @Override
     public void jjtClose()
     {
         if ( jjtGetNumChildren() != 2 )
@@ -42,6 +43,7 @@ public class Q_QName extends Q_URI
         //super.setURI(seen) ;
     }
 
+    @Override
     public void postParse2(Query query)
     {
         super.postParse2(query) ;
@@ -59,12 +61,16 @@ public class Q_QName extends Q_URI
 
 
     
+    @Override
     public String asQuotedString()    { return seen ; }
     
+    @Override
     public String asUnquotedString()  { return seen ; }
     // Must return the expanded form
+    @Override
     public String valueString()       { return super.getURI() ; }
 
+    @Override
     public String toString() { return seen ; }
 }
 

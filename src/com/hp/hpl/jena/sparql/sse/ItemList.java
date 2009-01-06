@@ -12,23 +12,23 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 
-public class ItemList extends ItemLocation //implements Iterable<Item> 
+public class ItemList extends ItemLocation implements Iterable<Item> 
 {
-    private final List elements ;
+    private final List<Item> elements ;
     // Pointer to the start of the list
     // Because of repeated cdr's, we can not use a .subList (leads to a whole
     // chain subLists, one per call).
     private final int offset ;       
     private int index(int i) { return offset+i ; }
     private int _size()      { return elements.size()-offset; }
-    private List slice()     { return elements.subList(offset, elements.size()) ; }
+    private List<Item> slice()     { return elements.subList(offset, elements.size()) ; }
     
     public ItemList(int line, int column)
-    { this(line, column, 0, new ArrayList()) ; }
+    { this(line, column, 0, new ArrayList<Item>()) ; }
 
     public ItemList() { this(noLine, noColumn) ; }
 
-    public ItemList(int line, int column, int offset, List elts)
+    public ItemList(int line, int column, int offset, List<Item> elts)
     { 
         super(line, column) ;
         this.elements = elts ;
@@ -38,7 +38,9 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public int size() { return _size() ; }
     public boolean isEmpty() { return _size()==0 ; }
 
+    @Override
     public int hashCode() { return elements.hashCode() ^ offset ; }
+    @Override
     public boolean equals(Object other)
     { 
         if ( this == other ) return true ;
@@ -55,13 +57,13 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public void add(Node node){ elements.add(Item.createNode(node)) ; }
     public void add(String symbol){ elements.add(Item.createSymbol(symbol)) ; }
     
-    public Item get(int idx) { return (Item)elements.get(index(idx)) ; }
+    public Item get(int idx) { return elements.get(index(idx)) ; }
 
     public Item getFirst()      { return get(0) ; }
 
     public Item getLast()       { return get(_size()-1) ; }
 
-    public Iterator iterator() { return elements.listIterator(offset) ; }
+    public Iterator<Item> iterator() { return elements.listIterator(offset) ; }
     
     public Item car()
     { 
@@ -126,6 +128,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         return "(...)" ;
     }
     
+    @Override
     public String toString()
     { 
         String str = "" ;

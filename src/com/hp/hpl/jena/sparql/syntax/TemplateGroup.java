@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.ARQException;
@@ -22,7 +23,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class TemplateGroup extends Template implements TripleCollector
 {
-    List templates = new ArrayList() ;
+    List<Template> templates = new ArrayList<Template>() ;
     
     public TemplateGroup()      { }
     
@@ -43,20 +44,21 @@ public class TemplateGroup extends Template implements TripleCollector
     { throw new ARQException("Triples-only collector") ; }
     
 
-    public List getTemplates() { return templates ; }
-    public Iterator templates() { return templates.iterator() ; }
+    public List<Template> getTemplates() { return templates ; }
+    public Iterator<Template> templates() { return templates.iterator() ; }
     
-    public void subst(Collection s, Map bNodeMap, Binding b)
+    @Override
+    public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
     {
-        for ( Iterator iter = templates.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Template> iter = templates.iterator() ; iter.hasNext() ; )
         {
-            Template t = (Template)iter.next() ;
-            t.subst(s, bNodeMap, b) ;
+            Template t = iter.next() ;
+            t.subst(acc, bNodeMap, b) ;
         }
     }
 
     private int calcHashCode = -1 ;  
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = Template.HashTemplateGroup ;
@@ -64,7 +66,7 @@ public class TemplateGroup extends Template implements TripleCollector
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
     public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
     {
         if ( temp2 == null ) return false ;
@@ -76,14 +78,15 @@ public class TemplateGroup extends Template implements TripleCollector
             return false ;
         for ( int i = 0 ; i < this.getTemplates().size() ; i++ )
         {
-            Template t1 = (Template)getTemplates().get(i) ;
-            Template t2 = (Template)tg2.getTemplates().get(i) ;
+            Template t1 = getTemplates().get(i) ;
+            Template t2 = tg2.getTemplates().get(i) ;
             if ( ! t1.equalIso(t2, labelMap) )
                 return false ;
         }
         return true ;
     }
     
+    @Override
     public void visit(TemplateVisitor visitor)
     {
         visitor.visit(this) ;

@@ -29,7 +29,7 @@ public class ItemLocation
 
     public String location() { return "["+getLine()+","+getColumn()+"]" ; } ;
     
-    //@Override
+    @Override
     public String toString() { return location() ; }
 }
 

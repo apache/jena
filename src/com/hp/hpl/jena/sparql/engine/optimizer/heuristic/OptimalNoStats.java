@@ -43,7 +43,8 @@ public class OptimalNoStats extends HeuristicBasicPattern
 	 * @param triple1
 	 * @return Double
 	 */
-	public double getCost(Triple triple1) 
+	@Override
+    public double getCost(Triple triple1) 
 	{
 		if (gsh == null)
 			return vcp.getCost(triple1) ;
@@ -63,7 +64,8 @@ public class OptimalNoStats extends HeuristicBasicPattern
 	 * @param triple2
 	 * @return Double
 	 */
-	public double getCost(Triple triple1, Triple triple2)
+	@Override
+    public double getCost(Triple triple1, Triple triple2)
 	{
 		double p1 = 0d ; 
 		double p2 = 0d ;

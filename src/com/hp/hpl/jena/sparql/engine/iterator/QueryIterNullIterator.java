@@ -26,14 +26,18 @@ public class QueryIterNullIterator extends QueryIter
     
     public QueryIterNullIterator(ExecutionContext qCxt) { super(qCxt) ; }
 
+    @Override
     protected boolean hasNextBinding()
     { return false ; }
 
+    @Override
     protected Binding moveToNextBinding()
     { throw new NoSuchElementException(Utils.className(this)) ; }
 
+    @Override
     protected void closeIterator() {}
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { out.println(Utils.className(this)) ; }
 }

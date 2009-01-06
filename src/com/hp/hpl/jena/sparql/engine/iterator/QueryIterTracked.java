@@ -27,10 +27,13 @@ public class QueryIterTracked extends QueryIter
         iterator = iter ;
     }
 
+    @Override
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 
     
+    @Override
     protected Binding moveToNextBinding() { return (Binding)iterator.next() ; }
 
+    @Override
     protected void closeIterator()
     {
         if ( iterator != null )

@@ -43,6 +43,7 @@ public class remote extends CmdARQ
     }
     
     
+    @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
@@ -50,6 +51,7 @@ public class remote extends CmdARQ
             throw new CmdException("No SPARQL endpoint specificied") ;
     }
     
+    @Override
     protected void exec()
     {
         Query query = modQuery.getQuery() ;
@@ -76,6 +78,7 @@ public class remote extends CmdARQ
     }
 
 
+    @Override
     protected String getSummary()
     {
         return null ;

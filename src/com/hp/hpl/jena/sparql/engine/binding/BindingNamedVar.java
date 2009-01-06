@@ -22,10 +22,11 @@ public class BindingNamedVar extends BindingWrapped
         super(other) ;
     }
     
-    public Iterator vars()
+    @Override
+    public Iterator<Var> vars()
     {
-        List x = new ArrayList() ;
-        for ( Iterator iter = getWrapped().vars() ; iter.hasNext() ; )
+        List<Var> x = new ArrayList<Var>() ;
+        for ( Iterator<Var> iter = getWrapped().vars() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ;
             if ( ! var.isNamedVar() )
@@ -36,6 +37,7 @@ public class BindingNamedVar extends BindingWrapped
         return x.iterator() ;
     }
     
+    @Override
     public Node get(Var var)
     {
         if ( ! var.isNamedVar() )

@@ -17,15 +17,15 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class ElementUnion extends Element
 {
-    List elements = new ArrayList() ;
+    List<Element> elements = new ArrayList<Element>() ;
 
     public ElementUnion()
     { }
 
     public void addElement(Element el) { elements.add(el) ; }
-    public List getElements() { return elements ; }
+    public List<Element> getElements() { return elements ; }
    
-    //@Override
+    @Override
     public int hashCode()
     { 
         int calcHashCode = Element.HashUnion ; 
@@ -33,7 +33,7 @@ public class ElementUnion extends Element
         return calcHashCode ;
     }
 
-    //@Override
+    @Override
    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
@@ -45,14 +45,15 @@ public class ElementUnion extends Element
             return false ;
         for ( int i = 0 ; i < this.getElements().size() ; i++ )
         {
-            Element e1 = (Element)getElements().get(i) ;
-            Element e2 = (Element)eu2.getElements().get(i) ;
+            Element e1 = getElements().get(i) ;
+            Element e2 = eu2.getElements().get(i) ;
             if ( ! e1.equalTo(e2, isoMap) )
                 return true ;
         }
         return true ;
     }
  
+    @Override
     public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 

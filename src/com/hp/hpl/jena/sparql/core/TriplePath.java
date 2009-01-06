@@ -86,6 +86,7 @@ public final class TriplePath
         return triple ;
     }
 
+    @Override
     public int hashCode()
     {
         if ( hash == -1 )
@@ -98,6 +99,7 @@ public final class TriplePath
         return hash ;
     }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( this == other) return true ;
@@ -114,6 +116,7 @@ public final class TriplePath
             return subject.equals(tp.subject) && object.equals(tp.object) && path.equals(tp.path) ;
     }
     
+    @Override
     public String toString()
     {
         if ( path != null )

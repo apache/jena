@@ -135,9 +135,9 @@ public class BasicPatternJoin
 	 * @param triple2
 	 * @return List<String>
 	 */
-	public static List specificTypes(Triple triple1, Triple triple2)
+	public static List<String> specificTypes(Triple triple1, Triple triple2)
 	{
-		List types = new ArrayList() ; // List<String>
+		List<String> types = new ArrayList<String>() ;
 		
 		if (triple1.getSubject().isVariable())
 		{
@@ -211,10 +211,10 @@ public class BasicPatternJoin
 	 */
 	public static String specificType(Triple triple1, Triple triple2)
 	{
-		List types = specificTypes(triple1, triple2) ; // List<String>
+		List<String> types = specificTypes(triple1, triple2) ; // List<String>
 		
 		if (types.size() > 0)
-			return (String)types.get(0) ;
+			return types.get(0) ;
 		
 		return null ;
 	}
@@ -229,11 +229,11 @@ public class BasicPatternJoin
 	 */
 	public static String specificTypeIgnorePP(Triple triple1, Triple triple2)
 	{
-		List types = specificTypes(triple1, triple2) ; // List<String>
+		List<String> types = specificTypes(triple1, triple2) ; // List<String>
 		
-		for (Iterator iter = types.iterator(); iter.hasNext(); )
+		for (Iterator<String> iter = types.iterator(); iter.hasNext(); )
 		{
-			String type = (String)iter.next() ;
+			String type = iter.next() ;
 			if (!(type.equals(uPP) || (type.equals(bPP))))
 				return type ;
 		}
@@ -249,9 +249,9 @@ public class BasicPatternJoin
 	 * @param triple2
 	 * @return List<String>
 	 */
-	public static List genericTypes(Triple triple1, Triple triple2)
+	public static List<String> genericTypes(Triple triple1, Triple triple2)
 	{
-		List types = new ArrayList() ; // List<String>
+		List<String> types = new ArrayList<String>() ; // List<String>
 		
 		if (triple1.subjectMatches(triple2.getSubject()))
 			types.add(SS) ;
@@ -288,10 +288,10 @@ public class BasicPatternJoin
 	 */
 	public static String genericType(Triple triple1, Triple triple2)
 	{
-		List types = genericTypes(triple1, triple2) ; // List<String>
+		List<String> types = genericTypes(triple1, triple2) ; // List<String>
 		
 		if (types.size() > 0)
-			return (String)types.get(0) ;
+			return types.get(0) ;
 		
 		return null ;
 	}
@@ -306,11 +306,11 @@ public class BasicPatternJoin
 	 */
 	public static String genericTypeIgnorePP(Triple triple1, Triple triple2)
 	{
-		List types = genericTypes(triple1, triple2) ; // List<String>
+		List<String> types = genericTypes(triple1, triple2) ; // List<String>
 		
-		for (Iterator iter = types.iterator(); iter.hasNext(); )
+		for (Iterator<String> iter = types.iterator(); iter.hasNext(); )
 		{
-			String type = (String)iter.next() ;
+			String type = iter.next() ;
 			if (! type.equals(PP))
 				return type ;
 		}

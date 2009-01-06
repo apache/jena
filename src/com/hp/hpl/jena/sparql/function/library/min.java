@@ -16,7 +16,7 @@ public class min extends FunctionBase2
 {
     public min() { super() ; }
 
-    //@Override
+    @Override
     public NodeValue exec(NodeValue nv1, NodeValue nv2)
     {
         return XSDFuncOp.min(nv1, nv2) ;

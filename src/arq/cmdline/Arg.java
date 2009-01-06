@@ -11,8 +11,8 @@ import java.util.*;
 public class Arg
 {
     String name ;
-    String value ;                      // Last seen
-    List values = new ArrayList() ;     // All seen
+    String value ;                                      // Last seen
+    List<String> values = new ArrayList<String>() ;     // All seen
     
     Arg() { name = null ; value = null ; }
     
@@ -27,7 +27,7 @@ public class Arg
     
     public String getName() { return name ; }
     public String getValue() { return value; }
-    public List getValues() { return values; }
+    public List<String> getValues() { return values; }
     
     public boolean hasValue() { return value != null ; }
     
@@ -36,6 +36,7 @@ public class Arg
         return decl.getNames().contains(name) ;
     }
     
+    @Override
     public String toString()
     {
         String base = (( name.length() == 1 )?"-":"--") + name ;
@@ -45,9 +46,9 @@ public class Arg
         String str = "" ;
         String sep = "" ;
         
-        for ( Iterator iter = getValues().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = getValues().iterator() ; iter.hasNext() ; )
         {
-            String v = (String)iter.next() ;
+            String v = iter.next() ;
             str = str + sep + base + "=" + v ;
             sep = " " ;
         }
