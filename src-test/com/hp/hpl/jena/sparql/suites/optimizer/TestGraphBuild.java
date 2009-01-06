@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
 public class TestGraphBuild extends TestCase
 {
 	private BasicPattern pattern ;
-	private List<Map<String, Integer>> components ; // List<Map<String, Integer>>
+	private List<Map<String, Integer>> components ;
 	private static final String testCaseFileName = "testing/Optimizer/TestGraphBuild-manifest.n3" ;
 	
 	public TestGraphBuild(String title, BasicPattern pattern, List<Map<String, Integer>> components)
@@ -104,7 +104,7 @@ public class TestGraphBuild extends TestCase
 		BasicPattern pattern = new BasicPattern() ;
 		
 		// Given a pattern resource, identify the triples
-		for (Iterator iter = patternR.iterator(); iter.hasNext(); )
+		for (NodeIterator iter = patternR.iterator(); iter.hasNext(); )
 		{
 			// Get the rdf:li (i.e. the triple pattern), split by space
 			String[] triple = ((Literal)iter.next()).getLexicalForm().split(" ") ;

@@ -182,13 +182,13 @@ public class TestPath extends TestCase
     private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward)
     {
         Path p = PathParser.parse(string, pmap) ;
-        Iterator resultsIter = 
+        Iterator<Node> resultsIter = 
             directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
-        Set results = new HashSet() ;
+        Set<Node> results = new HashSet<Node>() ;
         for ( ; resultsIter.hasNext() ; )
             results.add( resultsIter.next() ) ;
 
-        Set expected = new HashSet(Arrays.asList(expectedNodes)) ;
+        Set<Node> expected = new HashSet<Node>(Arrays.asList(expectedNodes)) ;
         assertEquals(expected, results) ;
     }
 }

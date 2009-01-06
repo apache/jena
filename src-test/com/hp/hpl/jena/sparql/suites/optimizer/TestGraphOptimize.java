@@ -5,26 +5,25 @@
 
 package com.hp.hpl.jena.sparql.suites.optimizer;
 
-import java.util.*;
-
 import junit.extensions.TestSetup;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Seq;
+
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
-import com.hp.hpl.jena.sparql.suites.optimizer.Util;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.query.ARQ;
+
+import com.hp.hpl.jena.query.*;
 
 /**
  * This test case allows testing of multiple heuristics 
@@ -132,7 +131,7 @@ public class TestGraphOptimize extends TestCase
 		BasicPattern pattern = new BasicPattern() ;
 		
 		// Given a pattern resource, identify the triples
-		for (Iterator iter = patternR.iterator(); iter.hasNext(); )
+		for (NodeIterator iter = patternR.iterator(); iter.hasNext(); )
 		{
 			// Get the rdf:li (i.e. the triple pattern), split by space
 			String[] triple = ((Literal)iter.next()).getLexicalForm().split(" ") ;

@@ -34,9 +34,9 @@ public class TestIndex extends TestCase
 	private static Model graphM = null ;
 	private static ProbabilityIndex index = null ;
 	private static ProbabilityIndexModel probability = null ;
-	private static Map properties = null ;
-	private static Map histograms = null ;
-	private static Map patterns = null ;
+	private static Map<Property, Long> properties = null ;
+	private static Map<Property, Histogram> histograms = null ;
+	private static Map<Pattern, Long> patterns = null ;
 	private static final String testDataFileName = "testing/Optimizer/Test-data.n3" ;
 	
 	public TestIndex(String title)
@@ -132,28 +132,28 @@ public class TestIndex extends TestCase
 	public void testPropertyLookup1()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#firstname") ;
-		assertEquals(((Long)properties.get(property)).longValue(), 5L) ;
+		assertEquals(properties.get(property).longValue(), 5L) ;
 		assertEquals(index.lookup(property), 5L) ;
 	}
 	
 	public void testPropertyLookup2()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#lastname") ;
-		assertEquals(((Long)properties.get(property)).longValue(), 5L) ;
+		assertEquals(properties.get(property).longValue(), 5L) ;
 		assertEquals(index.lookup(property), 5L) ;
 	}
 	
 	public void testPropertyLookup3()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#msn") ;
-		assertEquals(((Long)properties.get(property)).longValue(), 3L) ;
+		assertEquals(properties.get(property).longValue(), 3L) ;
 		assertEquals(index.lookup(property), 3L) ;
 	}
 	
 	public void testPropertyLookup4()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#skype") ;
-		assertEquals(((Long)properties.get(property)).longValue(), 4L) ;
+		assertEquals((properties.get(property)).longValue(), 4L) ;
 		assertEquals(index.lookup(property), 4L) ;
 	}
 	
@@ -172,7 +172,7 @@ public class TestIndex extends TestCase
 	public void testHistogram1()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#firstname") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.size(), 5) ;
 		assertEquals(histogram.getClassSize(), 0.4d, 0d) ;
 		assertEquals(histogram.getLowerBound(), -9.18128756E8, 0d) ;
@@ -183,7 +183,7 @@ public class TestIndex extends TestCase
 	public void testHistogram2()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#lastname") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.size(), 5) ;
 		assertEquals(histogram.getClassSize(), 0.4d, 0d) ;
 		assertEquals(histogram.getLowerBound(), -1.746240346E9, 0d) ;
@@ -194,7 +194,7 @@ public class TestIndex extends TestCase
 	public void testHistogram3()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#msn") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.size(), 3) ;
 		assertEquals(histogram.getClassSize(), 2.487512833E8, 0d) ;
 		assertEquals(histogram.getLowerBound(), -5.9668676E8, 0d) ;
@@ -205,7 +205,7 @@ public class TestIndex extends TestCase
 	public void testHistogram4()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#skype") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.size(), 4) ;
 		assertEquals(histogram.getClassSize(), 1.121603817E8, 0d) ;
 		assertEquals(histogram.getLowerBound(), -6.78441091E8, 0d) ;
@@ -216,7 +216,7 @@ public class TestIndex extends TestCase
 	public void testHistogramClass1()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#firstname") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("First Name 1")), 1) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("First Name 2")), 1) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("First Name 10")), 0) ;
@@ -225,7 +225,7 @@ public class TestIndex extends TestCase
 	public void testHistogramClass2()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#lastname") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("Last Name 1")), 1) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("Last Name 2")), 1) ;
 	}
@@ -233,14 +233,14 @@ public class TestIndex extends TestCase
 	public void testHistogramClass3()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#phone") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("xxx-xxx-xxx")), 5) ;
 	}
 	
 	public void testHistogramClass4()
 	{
 		Property property = ResourceFactory.createProperty("http://example.org#workplace") ;
-		Histogram histogram = (Histogram)histograms.get(property) ;
+		Histogram histogram = histograms.get(property) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("company1")), 2) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("company3")), 1) ;
 		assertEquals(histogram.getClassFrequency(Node.createLiteral("company10")), 0) ;
@@ -258,7 +258,7 @@ public class TestIndex extends TestCase
 		Property joinedP = ResourceFactory.createProperty("http://example.org#phone") ;
 		Resource joinT = ResourceFactory.createResource(BasicPatternJoin.OO) ;
 		Pattern pattern = new Pattern(joiningP, joinedP, joinT) ;
-		assertEquals(((Long)patterns.get(pattern)).longValue(), 25L) ;
+		assertEquals((patterns.get(pattern)).longValue(), 25L) ;
 	}
 	
 	public void testPattern2()
@@ -267,7 +267,7 @@ public class TestIndex extends TestCase
 		Property joinedP = ResourceFactory.createProperty("http://example.org#skype") ;
 		Resource joinT = ResourceFactory.createResource(BasicPatternJoin.SS) ;
 		Pattern pattern = new Pattern(joiningP, joinedP, joinT) ;
-		assertEquals(((Long)patterns.get(pattern)).longValue(), 4L) ;
+		assertEquals((patterns.get(pattern)).longValue(), 4L) ;
 	}
 	
 	public void testPattern3()
@@ -276,7 +276,7 @@ public class TestIndex extends TestCase
 		Property joinedP = ResourceFactory.createProperty("http://example.org#skype") ;
 		Resource joinT = ResourceFactory.createResource(BasicPatternJoin.SS) ;
 		Pattern pattern = new Pattern(joiningP, joinedP, joinT) ;
-		assertEquals(((Long)patterns.get(pattern)).longValue(), 6L) ;
+		assertEquals((patterns.get(pattern)).longValue(), 6L) ;
 	}
 	
 	public void testPattern4()
@@ -285,7 +285,7 @@ public class TestIndex extends TestCase
 		Property joinedP = ResourceFactory.createProperty("http://example.org#skype") ;
 		Resource joinT = ResourceFactory.createResource(BasicPatternJoin.SO) ;
 		Pattern pattern = new Pattern(joiningP, joinedP, joinT) ;
-		assertEquals(((Long)patterns.get(pattern)).longValue(), 0L) ;
+		assertEquals((patterns.get(pattern)).longValue(), 0L) ;
 	}
 	
 	public void testPattern5()
@@ -294,7 +294,7 @@ public class TestIndex extends TestCase
 		Property joinedP = ResourceFactory.createProperty("http://example.org#workplace") ;
 		Resource joinT = ResourceFactory.createResource(BasicPatternJoin.OO) ;
 		Pattern pattern = new Pattern(joiningP, joinedP, joinT) ;
-		assertEquals(((Long)patterns.get(pattern)).longValue(), 9L) ;
+		assertEquals((patterns.get(pattern)).longValue(), 9L) ;
 	}
 
 	// Build the test suite

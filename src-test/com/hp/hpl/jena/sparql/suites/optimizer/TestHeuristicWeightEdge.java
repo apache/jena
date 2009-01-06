@@ -5,29 +5,29 @@
 
 package com.hp.hpl.jena.sparql.suites.optimizer;
 
-import java.util.Iterator;
 import java.util.List;
 
 import junit.extensions.TestSetup;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Seq;
+
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphEdge;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
-import com.hp.hpl.jena.sparql.suites.optimizer.Util;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.query.ARQ;
+
+import com.hp.hpl.jena.query.*;
 
 
 /**
@@ -83,14 +83,14 @@ public class TestHeuristicWeightEdge extends TestCase
 		if (component == null)
 			return ;
 		
-		List edges = component.getEdges() ;
+		List<GraphEdge> edges = component.getEdges() ;
 		
 		// There are no edges defined
 		if (edges.size() == 0)
 			return ;
 		
 		// Extract the edge from the graph (there is only one edge specified for each test case)
-		GraphEdge edge = (GraphEdge)edges.iterator().next() ;
+		GraphEdge edge = edges.iterator().next() ;
 	    
 		// Test if the node weight equals to the expected weight specified within the test
 		assertTrue(edge.weight() == weight) ;
@@ -150,7 +150,7 @@ public class TestHeuristicWeightEdge extends TestCase
 	{
 		BasicPattern pattern = new BasicPattern() ;
 		
-		for (Iterator iter = edgeR.iterator(); iter.hasNext(); )
+		for (NodeIterator iter = edgeR.iterator(); iter.hasNext(); )
 		{
 			String[] triple = ((Literal)iter.next()).getLexicalForm().split(" ") ;
 			// Create a BasicPattern from the string representation of the node

@@ -45,7 +45,7 @@ public class TestLARQUtils
         return ResultSetFormatter.consume(rs) ;
     }
     
-    public static int count(Iterator iter)
+    public static int count(Iterator<?> iter)
     {
         int count = 0 ; 
         for ( ; iter.hasNext() ; )

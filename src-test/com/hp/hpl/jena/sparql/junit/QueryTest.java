@@ -418,13 +418,13 @@ public class QueryTest extends EarlTestCase
         String tmp = "" ;
         if ( testItem.getDefaultGraphURIs() != null )
         {
-            for ( Iterator iter = testItem.getDefaultGraphURIs().iterator() ; iter.hasNext() ; )
-                tmp = tmp+(String)iter.next() ;
+            for ( Iterator<String> iter = testItem.getDefaultGraphURIs().iterator() ; iter.hasNext() ; )
+                tmp = tmp+iter.next() ;
         }
         if ( testItem.getNamedGraphURIs() != null )
         {
-            for ( Iterator iter = testItem.getNamedGraphURIs().iterator() ; iter.hasNext() ; )
-                tmp = tmp+(String)iter.next() ;
+            for ( Iterator<String> iter = testItem.getNamedGraphURIs().iterator() ; iter.hasNext() ; )
+                tmp = tmp+iter.next() ;
         }
         
         String d = "Test "+testNumber+" :: "+testItem.getName() ;

@@ -67,43 +67,43 @@ public class TestList extends TestCase
     
     public void testListIndexes_1()   
     { 
-        List x = GraphList.indexes(emptyList, node0) ;
+        List<Integer> x = GraphList.indexes(emptyList, node0) ;
         assertEquals(0, x.size()) ;
     }
     
     public void testListIndexes_2()   
     { 
-        List x = GraphList.indexes(list4, node0) ;
+        List<Integer> x = GraphList.indexes(list4, node0) ;
         assertEquals(0, x.size()) ;
     }
 
     public void testListIndexes_3()   
     { 
-        List x = GraphList.indexes(list4, node1) ;
+        List<Integer> x = GraphList.indexes(list4, node1) ;
         assertEquals(1, x.size()) ;
-        assertEquals(0, ((Integer)x.get(0)).intValue()) ;
+        assertEquals(0, x.get(0).intValue()) ;
     }
     
     public void testListIndexes_4()   
     { 
-        List x = GraphList.indexes(list4, node2) ;
+        List<Integer> x = GraphList.indexes(list4, node2) ;
         assertEquals(1, x.size()) ;
-        assertEquals(1, ((Integer)x.get(0)).intValue()) ;
+        assertEquals(1, x.get(0).intValue()) ;
     }
 
     public void testListIndexes_5()   
     { 
-        List x = GraphList.indexes(list4, node4) ;
+        List<Integer> x = GraphList.indexes(list4, node4) ;
         assertEquals(1, x.size()) ;
-        assertEquals(3, ((Integer)x.get(0)).intValue()) ;
+        assertEquals(3, x.get(0).intValue()) ;
     }
     
     public void testListIndexes_6()   
     { 
-        List x = GraphList.indexes(list22, node1) ;
+        List<Integer> x = GraphList.indexes(list22, node1) ;
         assertEquals(2, x.size()) ;
-        assertEquals(0, ((Integer)x.get(0)).intValue()) ;
-        assertEquals(2, ((Integer)x.get(1)).intValue()) ;
+        assertEquals(0, x.get(0).intValue()) ;
+        assertEquals(2, x.get(1).intValue()) ;
     }
 
     public void testListTriples_1() { assertEquals(0, GraphList.allTriples(emptyList).size()) ; }
