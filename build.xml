@@ -56,9 +56,9 @@
 
   <fileset dir="." id="fileset.src">
     <include name="${src.dir}/**/*.java"/>
-    <include name="${src.test.dir}**/*.java"/>
-    <include name="${src.lib.dir}**/*.java"/>
-    <include name="${src.lib.test.dir}**/*.java"/>
+    <include name="${src.test.dir}/**/*.java"/>
+    <include name="${src.lib.dir}/**/*.java"/>
+    <include name="${src.lib.test.dir}/**/*.java"/>
   </fileset>
 
 <!--
