@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.pfunction.PFuncAssignToObject;
 
 public class uppercase extends PFuncAssignToObject
 {
+    @Override
     public Node calc(Node node)
     {
         if ( ! node.isLiteral() ) 

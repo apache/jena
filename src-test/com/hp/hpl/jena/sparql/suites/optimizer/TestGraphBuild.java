@@ -50,7 +50,8 @@ public class TestGraphBuild extends TestCase
 	}
 	
 	// Run the dynamically loaded test cases
-	protected void runTest()
+	@Override
+    protected void runTest()
 	{	
 		BasicPatternGraph graph = new BasicPatternGraph(pattern, new VariableCounting()) ;
 	    assertTrue(graph.numberOfConnectedComponents() == components.size()) ;

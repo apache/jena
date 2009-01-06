@@ -30,6 +30,7 @@ public class TestVar extends TestExpr
     
 
     
+    @Override
     void checkExpr(Expr expr)
     {
         assertTrue("Not a NodeVar: "+expr, expr.isVariable()) ;
@@ -37,9 +38,11 @@ public class TestVar extends TestExpr
         assertEquals("Different variable names", rightVarName, v.getVarName()) ;
     }
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue)
     { }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         if ( ! failureCorrect() )

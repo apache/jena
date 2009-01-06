@@ -51,6 +51,7 @@ public abstract class EarlTestCase extends TestCase
         return query ;
     }
 
+    @Override
     final protected void runTest() throws Throwable
     { 
         try {

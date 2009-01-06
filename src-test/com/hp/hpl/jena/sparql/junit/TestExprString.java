@@ -41,8 +41,10 @@ public class TestExprString extends TestExpr
     }
     
     
+    @Override
     void checkExpr(Expr expr) { }
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue)
     {
         if ( super.failureMode == TestExpr.EVAL_FAIL )
@@ -51,6 +53,7 @@ public class TestExprString extends TestExpr
         assertEquals(exprString+" => "+expr+" ", rightAnswer, result ) ;
     }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         if ( !failureCorrect() )

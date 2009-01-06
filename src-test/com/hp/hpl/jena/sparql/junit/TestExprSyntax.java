@@ -23,10 +23,13 @@ public class TestExprSyntax extends TestExpr
     }
 
     
+    @Override
     void checkExpr(Expr expr) { } 
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue) { }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         // Syntax check - ignore eval errors.

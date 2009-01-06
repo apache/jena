@@ -49,8 +49,10 @@ public class TestExprBoolean extends TestExpr
     }
     
     
+    @Override
     void checkExpr(Expr expr) {}
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue)
     {
         if ( ! evalCorrect() )
@@ -59,6 +61,7 @@ public class TestExprBoolean extends TestExpr
         assertEquals("Parse "+exprString+" ==> "+expr+" ", rightAnswer, result ) ;
     }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         if ( ! failureCorrect() )

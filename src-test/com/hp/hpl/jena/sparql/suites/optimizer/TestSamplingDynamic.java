@@ -42,7 +42,8 @@ public class TestSamplingDynamic extends TestCase
 	}
 	
 	// Run the dynamically loaded test cases
-	public void runTest()
+	@Override
+    public void runTest()
 	{
 		Graph graph = SamplingFactory.defaultSamplingMethod(graphM, factor) ;
 		assertEquals(graph.size(), size) ;

@@ -77,6 +77,7 @@ public abstract class TestExpr extends TestCase
         this.failureMode = failureOutcome ;
     }
 
+    @Override
     protected void runTest() throws Throwable
     {
         Expr expr = null ;
@@ -160,6 +161,7 @@ public abstract class TestExpr extends TestCase
     abstract void checkException(Expr expr, Exception ex) ;
     
     // Junit/TestCase (3.8, 3.8.1 at least) mangles the toString
+    @Override
     public String toString() { return testName ; }
     
 }

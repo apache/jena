@@ -43,6 +43,7 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
         return ts ;
     }
     
+    @Override
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
         // Defaults.

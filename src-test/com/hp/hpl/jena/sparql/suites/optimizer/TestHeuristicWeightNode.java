@@ -65,7 +65,8 @@ public class TestHeuristicWeightNode extends TestCase
 	}
 	
 	// Run the dynamically loaded test cases
-	public void runTest()
+	@Override
+    public void runTest()
 	{	
 		BasicPatternGraph graph = new BasicPatternGraph(pattern, Util.getHeuristic(heuristic, context, graphM.getGraph())) ;
 		
@@ -109,12 +110,14 @@ public class TestHeuristicWeightNode extends TestCase
 		 // Wrapper for the test suite including the test cases which executes the setup only once
 		TestSetup wrapper = new TestSetup(ts) 
 		{
-			protected void setUp() 
+			@Override
+            protected void setUp() 
 			{
 				oneTimeSetUp();
 			}
 
-			protected void tearDown() 
+			@Override
+            protected void tearDown() 
 			{
 				oneTimeTearDown();
 			}

@@ -11,6 +11,7 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 
 public class TestUpdateGraphMem extends TestUpdateGraph
 {
+    @Override
     protected GraphStore getEmptyGraphStore()
     {
         GraphStore gStore = GraphStoreFactory.create() ;

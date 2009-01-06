@@ -49,6 +49,7 @@ public class TestSerialization extends EarlTestCase
     //   Parse again.
     //   Are they equal?
     
+    @Override
     protected void runTestForReal() throws Throwable
     {
         Query query = null ;

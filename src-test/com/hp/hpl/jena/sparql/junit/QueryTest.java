@@ -60,6 +60,7 @@ public class QueryTest extends EarlTestCase
         return s ;
     }
     
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp() ;
@@ -75,6 +76,7 @@ public class QueryTest extends EarlTestCase
         resultsModel = testItem.getResultModel() ;
     }
     
+    @Override
     protected void tearDown() throws Exception
     {
         if ( resetNeeded )
@@ -138,6 +140,7 @@ public class QueryTest extends EarlTestCase
         return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null, null) ;
     }
     
+    @Override
     protected void runTestForReal() throws Throwable
     {
         Query query = null ;
@@ -393,6 +396,7 @@ public class QueryTest extends EarlTestCase
         out.println() ;
     }
     
+    @Override
     public String toString()
     { 
         if ( testItem.getName() != null )

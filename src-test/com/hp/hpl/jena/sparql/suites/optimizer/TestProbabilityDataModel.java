@@ -53,7 +53,8 @@ public class TestProbabilityDataModel extends TestCase
 	}
 	
 	// Run the dynamically loaded test cases
-	protected void runTest()
+	@Override
+    protected void runTest()
 	{
 		assertTrue(statistics.getMinProbability() == minProbability) ;
 		assertTrue(statistics.getDataGraphSize() == dataGraphSize) ;
@@ -121,12 +122,14 @@ public class TestProbabilityDataModel extends TestCase
 		// Wrapper for the test suite including the test cases which executes the setup only once
 		TestSetup wrapper = new TestSetup(ts) 
 		{
-			protected void setUp() 
+			@Override
+            protected void setUp() 
 			{
 				oneTimeSetUp();
 			}
 
-			protected void tearDown() 
+			@Override
+            protected void tearDown() 
 			{
 				oneTimeTearDown();
 			}

@@ -61,6 +61,7 @@ public class SyntaxTest extends EarlTestCase
     }
     
     
+    @Override
     protected void runTestForReal() throws Throwable
     {
         try {

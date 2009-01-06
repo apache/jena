@@ -48,8 +48,10 @@ public class TestExprRDFTerm extends TestExpr
     
     
     
+    @Override
     void checkExpr(Expr expr) {}
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue)
     {
         if ( super.failureMode == TestExpr.EVAL_FAIL )
@@ -62,6 +64,7 @@ public class TestExprRDFTerm extends TestExpr
         assertTrue(exprString+" => "+expr+" ", b) ; // rightAnswer.toString(), nodeValue.toString() ) ;
     }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         if ( !failureCorrect() )

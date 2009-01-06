@@ -68,12 +68,14 @@ public class TestData extends TestCase
         // Wrapper for the test suite including the test cases which executes the setup only once
 		TestSetup wrapper = new TestSetup(ts) 
 		{
-			protected void setUp() 
+			@Override
+            protected void setUp() 
 			{
 				oneTimeSetUp();
 			}
 
-			protected void tearDown() 
+			@Override
+            protected void tearDown() 
 			{
 				oneTimeTearDown();
 			}

@@ -31,7 +31,8 @@ public class TestPrimeNumberGen extends TestCase
 		super(title) ;
 	}
 	
-	protected void runTest()
+	@Override
+    protected void runTest()
 	{	
 		assertTrue(prime.first() == 2) ;
 		

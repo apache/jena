@@ -31,6 +31,7 @@ public class TestAPI extends TestCase
     Model m = null ;
     
     
+    @Override
     public void setUp()
     {
         m = GraphUtils.makeJenaDefaultModel() ;
@@ -45,6 +46,7 @@ public class TestAPI extends TestCase
         m.add(r1, p3, "y1") ;
     }
 
+    @Override
     public void tearDown()
     {}
     

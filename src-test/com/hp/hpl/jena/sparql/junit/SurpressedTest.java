@@ -28,6 +28,7 @@ public class SurpressedTest extends EarlTestCase
 //        super.tearDown() ;
 //    }
 
+    @Override
     protected void runTestForReal() throws Throwable
     {
         super.notTested() ;

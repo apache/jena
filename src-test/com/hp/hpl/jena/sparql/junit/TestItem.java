@@ -259,6 +259,7 @@ public class TestItem
     // ----------------------------------------------------
     // Misc
     
+    @Override
     public String toString()
     {
         StringBuffer sbuff = new StringBuffer() ;

@@ -52,8 +52,10 @@ public class TestExprNumeric extends TestExpr
     public TestExprNumeric(String exprStr, double rightAnswer, Query query, Binding env)
     { this(exprStr, new Double(rightAnswer), query, env) ; }
     
+    @Override
     void checkExpr(Expr expr) {}
 
+    @Override
     void checkValue(Expr expr, NodeValue nodeValue)
     {
         if ( ! evalCorrect() )
@@ -94,6 +96,7 @@ public class TestExprNumeric extends TestExpr
         fail(exprString+": Unrecognized kind of NodeValue for numeric expression: "+nodeValue) ;
     }
     
+    @Override
     void checkException(Expr expr, Exception ex)
     {
         if ( ! failureCorrect() )

@@ -162,6 +162,7 @@ public class TS_ExprRDQL extends TestSuite
             isDouble = true ;
         }
 
+        @Override
         protected void runTest() throws Throwable
         {
             ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;
@@ -213,6 +214,7 @@ public class TS_ExprRDQL extends TestSuite
             rightAnswer = _rightAnswer ;
         }
 
+        @Override
         protected void runTest() throws Throwable
         {
             ByteArrayInputStream in = new ByteArrayInputStream(s.getBytes()) ;

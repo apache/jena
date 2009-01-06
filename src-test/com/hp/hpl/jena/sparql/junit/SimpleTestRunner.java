@@ -23,9 +23,13 @@ public class SimpleTestRunner extends BaseTestRunner
         super();
     }
 
+    @Override
     public void testStarted(String arg0) { }
+    @Override
     public void testEnded(String arg0)   { }
+    @Override
     public void testFailed(int arg0, Test test, Throwable t) {}
+    @Override
     protected void runFailed(String arg0) { }
 
 
