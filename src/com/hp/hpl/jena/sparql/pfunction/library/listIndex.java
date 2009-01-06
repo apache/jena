@@ -107,12 +107,12 @@ public class listIndex extends ListBaseList
                                                  ExecutionContext execCxt)
     {
         // Iterate over list
-        List members = GraphList.members(new GNode(graph, listNode)) ;
-        List bindings = new ArrayList() ;
+        List<Node> members = GraphList.members(new GNode(graph, listNode)) ;
+        List<Binding> bindings = new ArrayList<Binding>() ;
         for ( int i = 0 ; i < members.size() ; i++ )
         {
             Node idx = NodeFactory.intToNode(i) ;
-            Node member = (Node)members.get(i) ;
+            Node member = members.get(i) ;
             Binding b = new BindingMap(binding) ;
             b.add(varIndex, idx) ;
             b.add(varMember, member) ;

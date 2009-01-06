@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -20,20 +21,20 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterProject extends QueryIterConvert
 {
-    List projectionVars ;
+    List<Var> projectionVars ;
 
-    public QueryIterProject(QueryIterator input, List vars, ExecutionContext qCxt)
+    public QueryIterProject(QueryIterator input, List<Var> vars, ExecutionContext qCxt)
     {
         super(input, project(vars, qCxt), qCxt) ;
         projectionVars = vars ;
     }
 
-    static QueryIterConvert.Converter project(List vars, ExecutionContext qCxt)
+    static QueryIterConvert.Converter project(List<Var> vars, ExecutionContext qCxt)
     {
         return new Projection(vars, qCxt) ;
     }
     
-    public List getProjectionVars()   { return projectionVars ; }
+    public List<Var> getProjectionVars()   { return projectionVars ; }
 
     @Override
     protected void details(IndentedWriter out, SerializationContext sCxt)
@@ -46,9 +47,9 @@ public class QueryIterProject extends QueryIterConvert
     static
     class Projection implements QueryIterConvert.Converter
     {
-        List projectionVars ;
+        List<Var> projectionVars ;
 
-        Projection(List vars, ExecutionContext qCxt)
+        Projection(List<Var> vars, ExecutionContext qCxt)
         { 
             this.projectionVars = vars ;
         }
