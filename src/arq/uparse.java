@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.FileUtils;
 public class uparse extends CmdARQ
 {
     ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "--file", "--update") ;
-    List requestFiles = null ;
+    List<String> requestFiles = null ;
     
     public static void main (String [] argv)
     { new uparse(argv).mainRun() ; }
@@ -48,16 +48,16 @@ public class uparse extends CmdARQ
     @Override
     protected void exec()
     {
-        for ( Iterator iter = requestFiles.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = requestFiles.listIterator() ; iter.hasNext() ; )
         {
-            String filename = (String)iter.next();
+            String filename = iter.next();
             String x = oneFile(filename) ;
             if ( x != null )
                 execOne(x) ; 
         }
-        for ( Iterator iter = super.positionals.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = super.positionals.listIterator() ; iter.hasNext() ; )
         {
-            String x = (String)iter.next();
+            String x = iter.next();
             execOne(x) ; 
         }
 

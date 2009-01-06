@@ -6,7 +6,6 @@
 
 package arq;
 
-import java.util.Iterator;
 
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
@@ -66,9 +65,8 @@ public class sse_query extends CmdARQ
     {
         super.processModulesAndArgs() ;
 
-        for ( Iterator iter = getValues(printDecl).iterator() ; iter.hasNext() ; )
+        for (String arg : getValues(printDecl))
         {
-            String arg = (String)iter.next() ;
             if ( arg.equalsIgnoreCase("op") ||
                       arg.equalsIgnoreCase("alg") || 
                       arg.equalsIgnoreCase("algebra") ) { printOp = true ; }

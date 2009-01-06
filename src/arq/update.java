@@ -26,7 +26,7 @@ public class update extends CmdUpdate
     ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "--update") ;
     ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;       // Write the result to stdout.
     
-    List requestFiles = null ;
+    List<String> requestFiles = null ;
     boolean dump = false ;
     
     public static void main (String [] argv)
@@ -60,15 +60,15 @@ public class update extends CmdUpdate
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do") ;
         
-        for ( Iterator iter = requestFiles.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = requestFiles.iterator() ; iter.hasNext() ; )
         {
-            String filename = (String)iter.next();
+            String filename = iter.next();
             execOneFile(filename, graphStore) ;
         }
         
-        for ( Iterator iter = super.getPositional().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = super.getPositional().iterator() ; iter.hasNext() ; )
         {
-            String requestString = (String)iter.next();
+            String requestString = iter.next();
             execOne(requestString, graphStore) ;
         }
         

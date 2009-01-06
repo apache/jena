@@ -15,7 +15,7 @@ import java.util.*; ;
 
 public class TranslationTable
 {
-    Map map = new HashMap() ;
+    Map<String, Symbol> map = new HashMap<String, Symbol>() ;
     boolean ignoreCase = false ;
     
     /** Create a translation table which respects case */
@@ -29,20 +29,20 @@ public class TranslationTable
     {
         if ( name == null )
             return null ;
-        
-        for ( Iterator iter = map.entrySet().iterator() ; iter.hasNext() ; )
+
+        for ( Iterator<Map.Entry<String, Symbol>> iter = map.entrySet().iterator() ; iter.hasNext() ; )
         {
-            Map.Entry entry = (Map.Entry)iter.next() ;
-            String k = (String)entry.getKey() ;
+            Map.Entry<String, Symbol> entry = iter.next() ;
+            String k = entry.getKey() ;
             if ( ignoreCase )
             {                
                 if ( k.equalsIgnoreCase(name) )
-                    return (Symbol)entry.getValue() ;
+                    return entry.getValue() ;
             }
             else
             {
                 if ( k.equals(name) )
-                    return (Symbol)entry.getValue() ;
+                    return entry.getValue() ;
             }
         }
         return null ;
@@ -53,8 +53,8 @@ public class TranslationTable
         map.put(k, v) ;
     }
     
-    public Iterator keys() { return map.keySet().iterator() ; }
-    public Iterator values() { return map.values().iterator() ; }
+    public Iterator<String> keys() { return map.keySet().iterator() ; }
+    public Iterator<Symbol> values() { return map.values().iterator() ; }
 }
 
 /*

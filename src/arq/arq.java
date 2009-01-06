@@ -17,10 +17,10 @@ public class arq
 {
     public static void main (String [] argv)
     {
-        List a = new ArrayList() ;
+        List<String> a = new ArrayList<String>() ;
         for ( int i = 0 ; i < argv.length ; i++ ) a.add(argv[i]) ;
         a.add(0, "--syntax=arq") ;
-        argv = (String[])a.toArray(argv) ;
+        argv = a.toArray(argv) ;
         query.main(argv) ;
     }
  }

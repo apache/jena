@@ -131,9 +131,9 @@ public class qexpr
         boolean actionPrintSPARQL = false ; 
         boolean actionPrint = cl.contains(printDecl) ;
             
-        for ( Iterator iter = cl.getValues(printDecl).iterator() ; iter.hasNext(); )
+        for ( Iterator<String> iter = cl.getValues(printDecl).iterator() ; iter.hasNext(); )
         {
-            String v = (String)iter.next();
+            String v = iter.next();
             if ( v.equalsIgnoreCase("prefix") || v.equalsIgnoreCase("op") )
                 actionPrintPrefix = true ;
             else if ( v.equalsIgnoreCase("expr") )   actionPrintSPARQL = true ;

@@ -66,9 +66,9 @@ public class qparse extends CmdARQ
         if ( contains(argDeclOpt) )
             printOpt = printOp = true ;
 
-        for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
-            String arg = (String)iter.next() ;
+            String arg = iter.next() ;
             if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
             else if ( arg.equalsIgnoreCase("op") ||
                       arg.equalsIgnoreCase("alg") || 
@@ -188,9 +188,9 @@ public class qparse extends CmdARQ
     {
         if ( msg != null )
             out.println(msg) ;
-        for ( Iterator iter = Syntax.querySyntaxNames.keys() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = Syntax.querySyntaxNames.keys() ; iter.hasNext() ; )
         {
-            String k = (String)(iter.next()) ;
+            String k = iter.next() ;
             Syntax v = Syntax.lookup(k) ;
             k = padOut(k,10) ;
             out.println("  "+k+"  "+v) ;

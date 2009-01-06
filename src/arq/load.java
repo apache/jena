@@ -31,7 +31,7 @@ public class load extends CmdUpdate
     ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;       // Write the result to stdout.
     
     String graphName = null ;
-    List loadFiles = null ;
+    List<String> loadFiles = null ;
     boolean dump = false ;
     
     public static void main (String [] argv)
@@ -72,9 +72,9 @@ public class load extends CmdUpdate
         if ( graphName != null )
             loadReq.setGraphName(graphName) ;
         
-        for ( Iterator iter = loadFiles.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = loadFiles.iterator() ; iter.hasNext() ; )
         {
-            String filename = (String)iter.next();
+            String filename = iter.next();
             loadReq.addLoadIRI(filename) ;
         }
         
@@ -82,9 +82,9 @@ public class load extends CmdUpdate
         {
             // Need a better way
             monitor(graphStore.getDefaultGraph()) ;
-            for ( Iterator iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
+            for ( Iterator<Node> iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
             {
-                Graph g = graphStore.getGraph((Node)iter.next()) ;
+                Graph g = graphStore.getGraph(iter.next()) ;
                 monitor(g) ;
             }
         }

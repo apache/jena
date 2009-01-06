@@ -86,7 +86,7 @@ public class TestCmdLine extends TestCase
         cl.process() ;
         assertTrue("No -arg= argument found" , cl.contains(argA) ) ;
         
-        Iterator iter = cl.getValues("arg").iterator() ;
+        Iterator<String> iter = cl.getValues("arg").iterator() ;
         assertEquals("Argument 1", iter.next() , "V1") ;
         assertEquals("Argument 2", iter.next() , "V2") ;
     }
