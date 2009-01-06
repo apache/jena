@@ -74,14 +74,14 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 
     private void visitModify(final UpdateModifyBase modify)
     {
-        final List bindings = evalBindings(modify.getElement() ) ;
+        final List<Binding> bindings = evalBindings(modify.getElement() ) ;
         GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
         GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
   
-    private List evalBindings(Element pattern)
+    private List<Binding> evalBindings(Element pattern)
     {
-        List bindings = new ArrayList() ;
+        List<Binding> bindings = new ArrayList<Binding>() ;
         if ( pattern != null )
         {
             Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
@@ -99,22 +99,22 @@ public class UpdateProcessorVisitor implements UpdateVisitor
         return bindings ;
     }
 
-    private void execDeletes(UpdateModifyBase modify, Graph graph, List bindings)
+    private void execDeletes(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
     {
         if ( modify.getDeletes() != null )
         {
             QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-            Collection acc = subst(modify.getDeletes(), qIter) ;
+            Collection<Triple> acc = subst(modify.getDeletes(), qIter) ;
             graph.getBulkUpdateHandler().delete(acc.iterator()) ;
         }
     }
 
-    private void execInserts(UpdateModifyBase modify, Graph graph, List bindings)
+    private void execInserts(UpdateModifyBase modify, Graph graph, List<Binding> bindings)
     {
         if ( modify.getInserts() != null )
         {
             QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-            Collection acc = subst(modify.getInserts(), qIter) ;
+            Collection<Triple> acc = subst(modify.getInserts(), qIter) ;
             graph.getBulkUpdateHandler().add(acc.iterator()) ;
         }
     }
@@ -134,9 +134,9 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             public void exec(Graph graph)
             {
                 Model model = ModelFactory.createModelForGraph(graph) ;
-                for ( Iterator iter = load.getLoadIRIs().iterator() ; iter.hasNext() ; )
+                for ( Iterator<String> iter = load.getLoadIRIs().iterator() ; iter.hasNext() ; )
                 {
-                    String s = (String)iter.next() ;
+                    String s = iter.next() ;
                     FileManager.get().readModel(model, s) ;
                 }
             }}) ;
@@ -175,19 +175,19 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 
     // -----------------------------------------------------
     
-    protected static Collection subst(Template template, QueryIterator qIter)
+    protected static Collection<Triple> subst(Template template, QueryIterator qIter)
     {
-        Set acc = new HashSet() ;
+        Set<Triple> acc = new HashSet<Triple>() ;
         for ( ; qIter.hasNext() ; )
         {
-            Map bNodeMap = new HashMap() ;
+            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
             Binding b = qIter.nextBinding() ;
             template.subst(acc, bNodeMap, b) ;
         }
 
-        for ( Iterator iter = acc.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Triple> iter = acc.iterator() ; iter.hasNext() ; )
         {
-            Triple triple = (Triple)iter.next() ;
+            Triple triple = iter.next() ;
             if ( ! isGroundTriple(triple))
             {
                 ALog.warn(UpdateProcessorVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;

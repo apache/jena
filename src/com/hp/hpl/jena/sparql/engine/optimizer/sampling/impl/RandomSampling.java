@@ -25,7 +25,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public class RandomSampling extends SamplingBase 
 {	
 	private Random rand = new Random() ;
-	private List triples = new ArrayList() ; // List<Triple>
+	private List<Triple> triples = new ArrayList<Triple>() ;
 	
 	/**
 	 * Do some preliminary setup work. Graph cannot be null

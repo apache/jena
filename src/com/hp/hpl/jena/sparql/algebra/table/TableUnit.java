@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -46,9 +47,9 @@ public class TableUnit extends TableBase
     @Override
     public boolean isEmpty()    { return false ; }
 
-    public List getVarNames()   { return new ArrayList() ; }
+    public List<String> getVarNames()   { return new ArrayList<String>() ; }
 
-    public List getVars()       { return new ArrayList() ; }
+    public List<Var> getVars()       { return new ArrayList<Var>() ; }
     
     @Override
     public String toString()    { return "TableUnit" ; }

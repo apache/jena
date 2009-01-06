@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
@@ -61,7 +63,7 @@ public class Eval
             throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ; 
 
         DatasetGraph dsg = evaluator.getExecContext().getDataset() ;
-        Iterator iter = dsg.listGraphNodes() ;
+        Iterator<Node> iter = dsg.listGraphNodes() ;
         List<Binding> list = new ArrayList<Binding>(dsg.size()) ;
         for ( ; iter.hasNext(); )
         {
@@ -95,7 +97,7 @@ public class Eval
         // Graph node is a variable.
         Var gVar = Var.alloc(opGraph.getNode()) ;
         Table current = null ;
-        for ( Iterator iter = execCxt.getDataset().listGraphNodes() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = execCxt.getDataset().listGraphNodes() ; iter.hasNext() ; )
         {
             Node gn = (Node)iter.next();
             Graph graph = execCxt.getDataset().getGraph(gn) ;
@@ -151,9 +153,9 @@ public class Eval
             Var gVar = Var.alloc(opQuad.getGraphNode()) ;
             // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
             QueryIterConcat concat = new QueryIterConcat(cxt) ;
-            for ( Iterator graphNodes = cxt.getDataset().listGraphNodes() ; graphNodes.hasNext(); )
+            for ( Iterator<Node> graphNodes = cxt.getDataset().listGraphNodes() ; graphNodes.hasNext(); )
             {
-                Node gn = (Node)graphNodes.next() ;
+                Node gn = graphNodes.next() ;
                 //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
                 
                 Graph g = cxt.getDataset().getGraph(gn) ;

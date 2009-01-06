@@ -16,6 +16,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+
+import com.hp.hpl.jena.query.SortCondition;
 
 /** Sort a query iterator.  Uses an in-memory sort, so limiting the size of
  * iterators that can be handled.
@@ -29,27 +32,27 @@ public class QueryIterSort
     boolean finished = false ;
     QueryIterator qIterSorted ;
     
-    public QueryIterSort(QueryIterator qIter, List conditions, ExecutionContext context)
+    public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context)
     {
         this(qIter, new BindingComparator(conditions, context), context) ;
     }
 
-    public QueryIterSort(QueryIterator qIter, Comparator comparator, ExecutionContext context)
+    public QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context)
     {
         super(sort(qIter, comparator), context) ;
     }
     
-    private static Iterator sort(QueryIterator qIter, Comparator comparator)
+    private static Iterator<Binding> sort(QueryIterator qIter, Comparator<Binding> comparator)
     {
         // Be careful about duplicates.
         // Used to use a TreeSet but, well, that's a set.
-        List x = new ArrayList() ;
+        List<Binding> x = new ArrayList<Binding>() ;
         for ( ; qIter.hasNext() ; )
         {
             Binding b = (Binding)qIter.next() ;
             x.add(b) ;
         }
-        Binding[] y = (Binding[])x.toArray(new Binding[]{}) ;
+        Binding[] y = x.toArray(new Binding[]{}) ;
         x = null ;      // Drop the List now - might be big.  Unlikely to really make a real difference.  But we can try.
         Arrays.sort(y, comparator) ;
         x = Arrays.asList(y) ;

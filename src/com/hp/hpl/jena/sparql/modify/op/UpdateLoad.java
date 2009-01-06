@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 
 public class UpdateLoad extends GraphUpdate1
 {
-    List loadData = new ArrayList() ;
+    List<String> loadData = new ArrayList<String>() ;
     
     public UpdateLoad() { super() ; }
     /** Load the default graph with the contents of web resource iri */
@@ -26,7 +26,7 @@ public class UpdateLoad extends GraphUpdate1
     @Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 
-    public List getLoadIRIs()
+    public List<String> getLoadIRIs()
     { return loadData ; }
 }
 

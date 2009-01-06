@@ -21,8 +21,8 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class TableN extends TableBase
 {
-    protected List rows = new ArrayList() ;
-    protected List vars = new ArrayList() ;
+    protected List<Binding> rows = new ArrayList<Binding>() ;
+    protected List<Var> vars = new ArrayList<Var>() ;
 
     public TableN() {}
     
@@ -64,10 +64,10 @@ public class TableN extends TableBase
                                         ExprList conditions,
                                         ExecutionContext execContext)
     {
-        List out = new ArrayList() ;
-        for ( Iterator iter = rows.iterator() ; iter.hasNext() ; )
+        List<Binding> out = new ArrayList<Binding>() ;
+        for ( Iterator<Binding> iter = rows.iterator() ; iter.hasNext() ; )
         {
-            Binding bindingRight = (Binding)iter.next() ;
+            Binding bindingRight = iter.next() ;
             
             Binding r =  merge(bindingLeft, bindingRight) ;
             if ( r == null )
@@ -97,7 +97,7 @@ public class TableN extends TableBase
         // Don't clear the vars in case code later asks for the variables. 
     }
 
-    public List getVarNames()   { return vars ; }
+    public List<Var> getVarNames()   { return vars ; }
 
     public List getVars()       { return Var.varNames(vars) ; }
 }

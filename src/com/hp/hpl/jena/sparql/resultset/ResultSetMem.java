@@ -29,12 +29,12 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     // TODO Convert to use a ResultSetProcessor
     // The result set in memory
     // .hasPrevious() and .previous()
-    protected List rows = new ArrayList();
-    protected List varNames = null ;
+    protected List<Binding> rows = new ArrayList<Binding>();
+    protected List<String> varNames = null ;
     protected boolean ordered = false ; 
 
     private int rowNumber = 0 ;
-    private Iterator iterator = null ;
+    private Iterator<Binding> iterator = null ;
     private Model model = null ;
 
     /** Create an in-memory result set from another one
@@ -96,7 +96,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
 
     public ResultSetMem()
     {
-        this.varNames = new ArrayList() ;
+        this.varNames = new ArrayList<String>() ;
         reset() ;
     }
     
@@ -121,7 +121,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     
     public QuerySolution nextSolution()  { return new ResultBinding(model, nextBinding()) ; }
     
-    public Binding nextBinding()  { rowNumber++ ; return (Binding)iterator.next() ; }
+    public Binding nextBinding()  { rowNumber++ ; return iterator.next() ; }
 
     /** Moves onto the next result possibility.
      *  The returned object should be of class QuerySolution
@@ -151,7 +151,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     
     /** Get the variable names for the projection
      */
-    public List getResultVars() { return varNames ; }
+    public List<String> getResultVars() { return varNames ; }
 
 }
 

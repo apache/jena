@@ -14,16 +14,18 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
+import com.hp.hpl.jena.query.SortCondition;
+
 public class OpOrder extends OpModifier
 {
-    private List conditions ;
-    public OpOrder(Op subOp, List conditions)
+    private List<SortCondition> conditions ;
+    public OpOrder(Op subOp, List<SortCondition> conditions)
     { 
         super(subOp) ;
         this.conditions = conditions ;
     }
     
-    public List getConditions() { return conditions ; }
+    public List<SortCondition> getConditions() { return conditions ; }
     
     public String getName()                 { return Tags.tagOrderBy ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }

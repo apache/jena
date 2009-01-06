@@ -318,7 +318,7 @@ public class ResultSetFactory
      * @param conditions
      * @return ResultSet
      */
-    static public ResultSet makeSorted(ResultSet resultSet, List<Expr> conditions)
+    static public ResultSet makeSorted(ResultSet resultSet, List<SortCondition> conditions)
     {
         return new SortedResultSet(resultSet, conditions) ;
     }

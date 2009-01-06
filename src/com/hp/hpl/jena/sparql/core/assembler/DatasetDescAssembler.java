@@ -27,13 +27,13 @@ public class DatasetDescAssembler extends AssemblerBase implements Assembler
 
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
-        List dftGraphs1 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pDefaultGraph) ;
-        List dftGraphs2 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pGraph) ;
+        List<String> dftGraphs1 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pDefaultGraph) ;
+        List<String> dftGraphs2 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pGraph) ;
         ds.getDefaultGraphURIs().addAll(dftGraphs1) ;
         ds.getDefaultGraphURIs().addAll(dftGraphs2) ;
 
         // -------- Named graphs
-        List namedGraphURIs = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pNamedGraph) ; 
+        List<String> namedGraphURIs = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pNamedGraph) ; 
         ds.getNamedGraphURIs().addAll(namedGraphURIs) ;
         
         return ds ;

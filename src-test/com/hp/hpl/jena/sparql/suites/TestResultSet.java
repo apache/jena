@@ -227,7 +227,7 @@ public class TestResultSet extends TestCase
     {
         Binding b = new BindingMap() ;
         b.add(Var.alloc(var), val) ;
-        List vars = new ArrayList() ;
+        List<String> vars = new ArrayList<String>() ;
         vars.add(var) ;
         QueryIterator qIter = new QueryIterSingleton(b, null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
@@ -241,10 +241,10 @@ public class TestResultSet extends TestCase
         Binding b2 = new BindingMap() ;
         b2.add(Var.alloc(var), val) ;
         
-        List vars = new ArrayList() ;
+        List<String> vars = new ArrayList<String>() ;
         vars.add(var) ;
 
-        List solutions = new ArrayList() ;
+        List<Binding> solutions = new ArrayList<Binding>() ;
         solutions.add(b1) ;
         solutions.add(b2) ;
         
@@ -275,7 +275,7 @@ public class TestResultSet extends TestCase
         b.add(Var.alloc(var1), val1) ;
         b.add(Var.alloc(var2), val2) ;
         
-        List vars = new ArrayList() ;
+        List<String> vars = new ArrayList<String>() ;
         vars.add(var1) ;
         vars.add(var2) ;
         

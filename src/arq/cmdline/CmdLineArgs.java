@@ -8,6 +8,8 @@ package arq.cmdline;
 
 import java.util.*;
 
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.util.FileManager;
@@ -70,9 +72,9 @@ public class CmdLineArgs extends CommandLineBase
    
     public CmdLineArgs add(ArgDecl arg)
     {
-        for ( Iterator iter = arg.names() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = arg.names() ; iter.hasNext() ; )
         {
-            String name = (String)iter.next();
+            String name = iter.next();
             if ( argMap.containsKey(name))
                 ALog.warn(this, "Argument '"+name+"' already added") ; 
             argMap.put(name, arg) ;

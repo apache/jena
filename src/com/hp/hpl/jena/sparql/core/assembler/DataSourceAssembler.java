@@ -48,9 +48,9 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
         ds.setDefaultModel(dftModel) ;
 
         // -------- Named graphs
-        List nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ; 
+        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ; 
         
-        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
+        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
             RDFNode n = (RDFNode)iter.next();
             if ( ! ( n instanceof Resource ) )

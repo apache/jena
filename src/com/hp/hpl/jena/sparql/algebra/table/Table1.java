@@ -70,16 +70,16 @@ public class Table1 extends TableBase
     @Override
     public void closeTable()        {}
 
-    public List getVars()
+    public List<Var> getVars()
     {
-        List x = new ArrayList() ;
+        List<Var> x = new ArrayList<Var>() ;
         x.add(var) ;
         return x ;
     }
     
-    public List getVarNames()
+    public List<String> getVarNames()
     {
-        List x = new ArrayList() ;
+        List<String> x = new ArrayList<String>() ;
         x.add(var.getVarName()) ;
         return x ;
     }

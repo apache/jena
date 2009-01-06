@@ -12,6 +12,8 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.SortCondition;
+
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
@@ -24,6 +26,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
@@ -158,14 +161,14 @@ public class EvaluatorSimple implements Evaluator
 
     public Table list(Table table) { return table ; } 
 
-    public Table order(Table table, List conditions)
+    public Table order(Table table, List<SortCondition> conditions)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterSort(qIter, conditions, getExecContext()) ;
         return new TableN(qIter) ;
     }
 
-    public Table groupBy(Table table, VarExprList groupVars, List aggregators)
+    public Table groupBy(Table table, VarExprList groupVars, List<E_Aggregator> aggregators)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterGroup(qIter, groupVars, aggregators, getExecContext()) ;

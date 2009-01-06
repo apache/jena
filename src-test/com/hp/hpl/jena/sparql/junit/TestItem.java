@@ -43,8 +43,8 @@ public class TestItem
     private boolean buildLuceneIndex = false ; 
     private String resultFile ;
     private String comment ;
-    private List defaultGraphURIs ;
-    private List namedGraphURIs ;
+    private List<String> defaultGraphURIs ;
+    private List<String> namedGraphURIs ;
     private Resource testType = null ;
     private String queryFile ;
     private Syntax queryFileSyntax ;
@@ -90,9 +90,9 @@ public class TestItem
     {
         name = _name ;
         queryFile = _queryFile ;
-        defaultGraphURIs = new ArrayList() ;
+        defaultGraphURIs = new ArrayList<String>() ;
         defaultGraphURIs.add(_dataFile) ;
-        namedGraphURIs =  new ArrayList() ;
+        namedGraphURIs =  new ArrayList<String>() ;
         resultFile = _resultFile ;
         comment = "" ;
         queryFileSyntax = Syntax.guessQueryFileSyntax(_queryFile) ;
@@ -140,8 +140,8 @@ public class TestItem
     }
     
     public String getComment() { return comment ; }
-    public List getDefaultGraphURIs() { return defaultGraphURIs ; }
-    public List getNamedGraphURIs() { return namedGraphURIs ; }
+    public List<String> getDefaultGraphURIs() { return defaultGraphURIs ; }
+    public List<String> getNamedGraphURIs() { return namedGraphURIs ; }
     
     public boolean requiresTextIndex() { return buildLuceneIndex ; }
     
@@ -180,13 +180,13 @@ public class TestItem
      * @return List
      */ 
     
-    private List _getDefaultGraphURIs()
+    private List<String> _getDefaultGraphURIs()
     {
         if ( ! _getAction().isAnon() )
             // Action is a URI - data had better be in the query itself.
             return null ;
             
-        List l = new ArrayList() ;
+        List<String> l = new ArrayList<String>() ;
         ClosableIterator cIter =  _getAction().listProperties(VocabTestQuery.data) ;
         for ( ; cIter.hasNext() ; )
         {
@@ -202,13 +202,13 @@ public class TestItem
      * @return List
      */ 
     
-    private List _getNamedGraphsURIs()
+    private List<String> _getNamedGraphsURIs()
     {
         if ( ! _getAction().isAnon() )
             // Action is a URI - data had better be in the query itself.
             return null ;
             
-        List l = new ArrayList() ;
+        List<String> l = new ArrayList<String>() ;
         ClosableIterator cIter =  _getAction().listProperties(VocabTestQuery.graphData) ;
         for ( ; cIter.hasNext() ; )
         {

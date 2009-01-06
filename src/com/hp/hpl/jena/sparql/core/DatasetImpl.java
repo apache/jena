@@ -30,7 +30,7 @@ public class DatasetImpl implements Dataset
 {
     protected DatasetGraph dsg = null ;
     // Cache graph => model so returned models are the same (==)
-    private Map cache = new HashMap() ;      
+    private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
     public DatasetImpl(Model model)
     {
@@ -69,17 +69,18 @@ public class DatasetImpl implements Dataset
         dsg.close();
     }
 
-    public Iterator listNames()
+    public Iterator<String> listNames()
     { 
         MapFilter mapper = new MapFilter(){
-            public Object accept(Object x)
+            public String accept(Object x)
             {
                 Node n = (Node)x ;
                 return n.getURI() ;  
             }} ;
         
         ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
-        MapFilterIterator conv = new MapFilterIterator(mapper, eIter) ;
+        @SuppressWarnings("unchecked")
+        Iterator<String> conv = (Iterator<String>)new MapFilterIterator(mapper, eIter) ;
         return conv ;
     }
 
@@ -100,7 +101,7 @@ public class DatasetImpl implements Dataset
 
     private Model graph2model(Graph graph)
     { 
-        Model model = (Model)cache.get(graph) ;
+        Model model = cache.get(graph) ;
         if ( model == null )
         {
             model = ModelFactory.createModelForGraph(graph) ;

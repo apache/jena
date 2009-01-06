@@ -6,9 +6,6 @@
 
 package arq;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ_SSE;
@@ -31,7 +28,6 @@ public class sse extends CmdARQ_SSE
     private boolean         print       = true ;
     private boolean         structural  = true ;
     private boolean         lineNumbers = false ;
-    private List            filenames ;
 
     public static void main (String [] argv)
     {
@@ -50,10 +46,7 @@ public class sse extends CmdARQ_SSE
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        if ( filenames == null )
-            filenames = new ArrayList() ;
-
-        print = ! contains(noPrintDecl) ;
+        print = !contains(noPrintDecl) ;
         if ( contains(numberDecl) )
             lineNumbers = getValue(numberDecl).equalsIgnoreCase("on") ;
         

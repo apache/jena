@@ -23,7 +23,7 @@ public
 class QueryIteratorCopy extends QueryIteratorBase
 {
     // Not tracked.
-    List elements = new ArrayList() ;
+    List<Binding> elements = new ArrayList<Binding>() ;
     QueryIterator iterator ; 
     
     public QueryIteratorCopy(QueryIterator qIter)
@@ -43,7 +43,7 @@ class QueryIteratorCopy extends QueryIteratorBase
     {}
     
     
-    public List elements()
+    public List<Binding> elements()
     {
         return Collections.unmodifiableList(elements) ;
     }

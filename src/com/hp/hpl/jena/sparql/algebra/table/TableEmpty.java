@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -43,9 +44,9 @@ public class TableEmpty extends TableBase
     @Override
     public void closeTable()    { }
 
-    public List getVarNames()   { return new ArrayList() ; }
+    public List<String> getVarNames()   { return new ArrayList<String>() ; }
 
-    public List getVars()       { return new ArrayList() ; }
+    public List<Var> getVars()       { return new ArrayList<Var>() ; }
     
     @Override
     public String toString()    { return "TableEmpty" ; }

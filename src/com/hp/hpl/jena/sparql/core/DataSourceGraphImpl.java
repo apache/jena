@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 
@@ -122,10 +123,10 @@ public class DataSourceGraphImpl implements DataSourceGraph
         if ( dataset.getDefaultModel() != null )
             defaultGraph = dataset.getDefaultModel().getGraph() ;
         
-        Iterator iter = dataset.listNames() ;
+        Iterator<String> iter = dataset.listNames() ;
         while(iter.hasNext())
         {
-            String uri = (String)iter.next() ;
+            String uri = iter.next() ;
             Node graphRef = Node.createURI(uri) ;
             Model m = dataset.getNamedModel(uri) ;
             if ( m == null )
@@ -148,9 +149,9 @@ public class DataSourceGraphImpl implements DataSourceGraph
         {
             defaultGraph = dataset.getDefaultGraph() ;
             namedGraphs = new HashMap<Node, Graph>() ;
-            for ( Iterator iter = dataset.listGraphNodes() ; iter.hasNext(); )
+            for ( Iterator<Node> iter = dataset.listGraphNodes() ; iter.hasNext(); )
             {
-                Node name = (Node)iter.next();
+                Node name = iter.next();
                 this.addGraph(name, dataset.getGraph(name)) ;
             }
             return ;

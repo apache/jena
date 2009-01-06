@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -24,30 +22,13 @@ import com.hp.hpl.jena.sparql.util.Printable;
 public class UpdateRequest extends Prologue
     implements Printable//, Iterable<Update>
 {
-    private List requests = new ArrayList() ;
+    private List<Update> requests = new ArrayList<Update>() ;
     public UpdateRequest() { super() ; }
     public UpdateRequest(Update graphUpdate) { super() ; requests.add(graphUpdate) ; }
     
     public void addUpdate(Update update) { requests.add(update) ; }
-    public List getUpdates() { return requests ; }
+    public List<Update> getUpdates() { return requests ; }
 
-    /** @deprecated  @link{UpdateFactory#create(UpdateRequest, GraphStore)} */
-    public void exec(GraphStore graphStore)
-    { 
-        UpdateFactory.create(this, graphStore).execute(); 
-    }
-    
-    /** Execute a request, with a given set of variable/value settings.
-     *  The initial binding applies to all Updates within the request.
-     * @deprecated  @link{UpdateFactory#create(UpdateRequest, GraphStore, binding)}
-     * @param graphStore
-     * @param binding
-     */ 
-    public void exec(GraphStore graphStore, Binding binding)
-    { 
-        UpdateFactory.create(this, graphStore, binding).execute(); 
-    }
-    
     @Override
     public String toString()
     { return PrintUtils.toString(this) ; } 
@@ -60,9 +41,9 @@ public class UpdateRequest extends Prologue
         boolean first = true ;
         out.println() ;
         
-        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
+        for ( Iterator<Update> iter = requests.iterator() ; iter.hasNext(); )
         {
-            Update update = (Update)iter.next() ;
+            Update update = iter.next() ;
 
             if ( ! first )
                 out.println("    # ----------------") ;
@@ -74,7 +55,7 @@ public class UpdateRequest extends Prologue
         }
     }
     
-    public Iterator iterator()
+    public Iterator<Update> iterator()
     {
         return requests.iterator() ;
     }

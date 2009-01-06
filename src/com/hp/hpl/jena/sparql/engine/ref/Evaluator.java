@@ -13,10 +13,15 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+
+import com.hp.hpl.jena.query.SortCondition;
 
 public interface Evaluator
 {
@@ -41,9 +46,9 @@ public interface Evaluator
     public Table unit() ; 
     public Table list(Table table) ;
     
-    public Table order(Table table, List conditions) ;
-    public Table groupBy(Table table, VarExprList groupVars, List aggregators) ;
-    public Table project(Table table, List projectVars) ; 
+    public Table order(Table table, List<SortCondition> conditions) ;
+    public Table groupBy(Table table, VarExprList groupVars, List<E_Aggregator> aggregators) ;
+    public Table project(Table table, List<Var> projectVars) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;

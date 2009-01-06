@@ -27,7 +27,7 @@ public class OpProject extends OpModifier
         this.vars = vars ;
     }
     
-    public List getVars() { return vars ; }
+    public List<Var> getVars() { return vars ; }
     
     public String getName() { return Tags.tagProject ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }

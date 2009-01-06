@@ -25,11 +25,11 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 {
     public QueryIterGroup(QueryIterator qIter, 
                           VarExprList groupVars,
-                          List aggregators,
+                          List<E_Aggregator> aggregators,
                           ExecutionContext execCxt)
     {
         super(null, execCxt) ;
-        Iterator iter = calc(qIter, groupVars, aggregators, execCxt) ;
+        Iterator<Binding> iter = calc(qIter, groupVars, aggregators, execCxt) ;
         setIterator(iter) ;
     }
 
@@ -38,12 +38,12 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
-    private static Iterator calc(QueryIterator iter, 
-                                 VarExprList groupVars, List aggregators,
+    private static Iterator<Binding> calc(QueryIterator iter, 
+                                 VarExprList groupVars, List<E_Aggregator> aggregators,
                                  ExecutionContext execCxt)
     {
         // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
-        Map buckets = new HashMap() ;    
+        Map<BindingKey, Binding> buckets = new HashMap<BindingKey, Binding>() ;    
         
         for ( ; iter.hasNext() ; )
         {
@@ -57,9 +57,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             // Assumes an aggregator is a per-execution mutable thingy
             if ( aggregators != null )
             {
-                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    E_Aggregator agg = aggIter.next();
                     agg.getAggregator().accumulate(key, b, execCxt) ;
                 }
             }
@@ -79,9 +79,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             
             if ( aggregators != null )
             {
-                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    E_Aggregator agg = aggIter.next();
                     Var v = agg.asVar() ;
                     Node value = agg.getAggregator().getValueEmpty() ;
                     if ( value != null )
@@ -104,16 +104,16 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // For each bucket, get binding, add aggregator values to the binding.
         if ( aggregators != null )
         {
-            for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+            for ( Iterator<BindingKey> bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
             {
-                BindingKey key = (BindingKey)bIter.next();
+                BindingKey key = bIter.next();
                 
                 // Maybe null
-                Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
+                Binding binding = buckets.get(key) ; // == key.getBinding() ;
                 
-                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                for ( Iterator<E_Aggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    E_Aggregator agg = aggIter.next();
                     Var v = agg.asVar() ;
                     Node value =  agg.getAggregator().getValue(key) ;
                     if ( value != null )
@@ -138,9 +138,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // No group vars (implicit or explicit) => working on whole result set. 
         // Still need a BindingMap to assign to later.
         Binding x = new BindingMap() ;
-        for ( Iterator iter = vars.getVars().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = vars.getVars().iterator() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ;
+            Var var = iter.next() ;
             Node node = vars.get(var, binding, execCxt) ;
             if ( node != null )
                 x.add(var, node) ;

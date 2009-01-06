@@ -13,10 +13,7 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.VariableNotBoundException;
+import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -28,16 +25,16 @@ import com.hp.hpl.jena.query.SortCondition;
 
 public class BindingComparator implements java.util.Comparator<Binding>
 {
-    List<Expr> conditions ;
+    List<SortCondition> conditions ;
     private FunctionEnv env ;
     
-    public BindingComparator(List<Expr> conditions, ExecutionContext execCxt)
+    public BindingComparator(List<SortCondition> conditions, ExecutionContext execCxt)
     {
         this.conditions = conditions ;
         env = execCxt ;
     }
     
-    public BindingComparator(List<Expr> _conditions)
+    public BindingComparator(List<SortCondition> _conditions)
     {
         conditions = _conditions ;
         this.env = new FunctionEnvBase();
@@ -49,9 +46,9 @@ public class BindingComparator implements java.util.Comparator<Binding>
 
     public int compare(Binding bind1, Binding bind2)
     {
-        for ( Iterator<Expr> iter = conditions.iterator() ; iter.hasNext() ; )
+        for ( Iterator<SortCondition> iter = conditions.iterator() ; iter.hasNext() ; )
         {
-            SortCondition sc = (SortCondition)iter.next() ;
+            SortCondition sc = iter.next() ;
             if ( sc.expression == null )
                 throw new QueryExecException("Broken sort condition") ;
 
