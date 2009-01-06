@@ -18,11 +18,11 @@ import com.hp.hpl.jena.graph.Node;
 
 public class NodeIsomorphismMap //extends HashMap
 {
-    private Map map = new HashMap() ;
+    private Map<Node, Node> map = new HashMap<Node, Node>() ;
     
     public NodeIsomorphismMap() {}
     
-    private Node get(Node key) { return (Node)map.get(key) ; }
+    private Node get(Node key) { return map.get(key) ; }
     private void put(Node key, Node value) { map.put(key, value) ; }
     
     public boolean makeIsomorhpic(Node n1, Node n2)

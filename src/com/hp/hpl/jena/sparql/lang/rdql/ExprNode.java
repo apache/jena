@@ -93,21 +93,21 @@ abstract class ExprNode
         super.postParse2(q) ;
     }
 
-    public Set getVarsMentioned()
+    public Set<Var> getVarsMentioned()
     {
-        Set acc = new HashSet() ;
+        Set<Var> acc = new HashSet<Var>() ;
         varsMentioned(acc) ;
         return acc ;
     }
     
-    public Set getVarNamesMentioned()
+    public Set<String> getVarNamesMentioned()
     {
-        Set acc = new HashSet() ;
+        Set<String> acc = new HashSet<String>() ;
         varNamesMentioned(acc) ;
         return acc ;
     }
     
-    public void varNamesMentioned(Collection acc) 
+    public void varNamesMentioned(Collection<String> acc) 
     {
         if ( this instanceof Q_Var )
         {
@@ -128,7 +128,7 @@ abstract class ExprNode
         }
     }
     
-    public void varsMentioned(Collection acc)
+    public void varsMentioned(Collection<Var> acc)
     {
         if ( this instanceof Q_Var )
         {

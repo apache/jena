@@ -16,6 +16,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.Histogram;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.impl.ProbabilityIndex;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.impl.ProbabilityIndexModel;
@@ -45,7 +46,7 @@ public class TestAPI extends TestCase
 	private static ProbabilityIndex index = null ;
 	private static ProbabilityIndexModel probability = null ;
 	private static Query query = null ;
-	private static Set exProperty = new HashSet() ;
+	private static Set<Property> exProperty = new HashSet<Property>() ;
 	private static final Property firstnameP = ResourceFactory.createProperty("http://example.org#firstname") ;
 	private static final Property lastnameP = ResourceFactory.createProperty("http://example.org#lastname") ;
 	private static final Property workplaceP = ResourceFactory.createProperty("http://example.org#workplace") ;
@@ -125,8 +126,8 @@ public class TestAPI extends TestCase
 		
 		ProbabilityIndex index = probability.getIndex() ;
 		
-		Map properties = index.getProperties() ;
-		Map histograms = index.getHistograms() ;
+		Map<Property, Long> properties = index.getProperties() ;
+		Map <Property, Histogram> histograms = index.getHistograms() ;
 		
 		assertTrue(index.allowsJoinedProbability() == false) ;
 		assertTrue(properties.containsKey(msnP) == true) ;

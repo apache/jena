@@ -74,10 +74,10 @@ public class TextOutput extends OutputBase
             numRows++ ;
             QuerySolution rBind = rs.nextSolution() ;
             int col = -1 ;
-            for ( Iterator iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
+            for ( Iterator<String> iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
             {
                 col++ ;
-                String rVar = (String)iter.next() ;
+                String rVar = iter.next() ;
                 String s = getVarValueAsString(rBind, rVar) ;
                 if ( colWidths[col] < s.length() )
                     colWidths[col] = s.length() ;

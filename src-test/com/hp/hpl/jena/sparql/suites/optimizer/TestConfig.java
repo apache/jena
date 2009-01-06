@@ -40,7 +40,7 @@ public class TestConfig extends TestCase
 {
 	private static long size ;
 	private static Model graphM = null ;
-	private static Set exProperty = new HashSet() ;
+	private static Set<Property> exProperty = new HashSet<Property>() ;
 	private static final Property firstnameP = ResourceFactory.createProperty("http://example.org#firstname") ;
 	private static final Property lastnameP = ResourceFactory.createProperty("http://example.org#lastname") ;
 	private static final Property workplaceP = ResourceFactory.createProperty("http://example.org#workplace") ;
@@ -116,7 +116,7 @@ public class TestConfig extends TestCase
 	{
 		ProbabilityIndexModel probability = null ;
 		ProbabilityIndex index = null ;
-		Set exclude = null ;
+		Set<Property> exclude = null ;
 		Config config = new Config() ;
 		config.setExProperty(exProperty) ;
 		

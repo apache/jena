@@ -70,42 +70,42 @@ public class PrintUtils
     
     // Prints a collection (a List usually).  
         
-    public static void printList(IndentedWriter out, Collection list, 
+    public static <T> void printList(IndentedWriter out, Collection<T> list, 
                                  String sep, Fmt itemFmt)
     {
         String sep$ = "" ; 
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
         {
             out.print(sep$) ;
             sep$ = sep ;
-            Object obj = iter.next() ;
+            T obj = iter.next() ;
             out.print(itemFmt.fmt(obj)) ;
         }
     }
 
-    public static void printList(IndentedWriter out, Collection list, String sep)
+    public static <T> void printList(IndentedWriter out, Collection<T> list, String sep)
     { printList(out, list, sep, itemFmt) ; }
 
-    public static void printList(IndentedWriter out, Collection list)
+    public static <T> void printList(IndentedWriter out, Collection<T> list)
     { printList(out, list, " ") ; }
 
-    public static void printList(PrintStream out, Collection list, 
+    public static <T> void printList(PrintStream out, Collection<T> list, 
                                  String sep, Fmt itemFmt)
     {
         String sep$ = "" ; 
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for ( Iterator<T> iter = list.iterator() ; iter.hasNext() ; )
         {
             out.print(sep$) ;
             sep$ = sep ;
-            Object obj = iter.next() ;
+            T obj = iter.next() ;
             out.print(itemFmt.fmt(obj)) ;
         }
     }
 
-    public static void printList(PrintStream out, List list, String sep)
+    public static <T> void printList(PrintStream out, List<T> list, String sep)
     { printList(out, list, sep, itemFmt) ; }
 
-    public static void printList(PrintStream out, List list)
+    public static <T> void printList(PrintStream out, List<T> list)
     { printList(out, list, " ") ; }
 
     public static void printPlan(Query query, QueryExecution qe)

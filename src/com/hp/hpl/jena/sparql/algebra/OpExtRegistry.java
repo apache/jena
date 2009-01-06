@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 /** Manage extension algebra operations */
 public class OpExtRegistry
 {
-    static Map extensions = new HashMap() ;
+    static Map<String, ExtBuilder> extensions = new HashMap<String, ExtBuilder>() ;
     // Wire in.
     static { BuilderOp.add(Tags.tagExt, new BuildExt()) ; }
     
@@ -31,7 +31,7 @@ public class OpExtRegistry
         extensions.remove(subtag) ;
     }
     
-    public static ExtBuilder builder(String tag) { return (ExtBuilder)extensions.get(tag) ; }
+    public static ExtBuilder builder(String tag) { return extensions.get(tag) ; }
     
     static public class BuildExt implements BuilderOp.Build 
     { 

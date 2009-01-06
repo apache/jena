@@ -35,7 +35,7 @@ public class RDFInput extends ResultSetMem
     // Convert from RDF model to in-memory result set
     private void buildFromDumpFormat(Model resultsModel)
     {
-        varNames = new ArrayList() ;
+        varNames = new ArrayList<String>() ;
         StmtIterator sIter = resultsModel.listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
         for ( ; sIter.hasNext() ;)
         {
@@ -52,10 +52,7 @@ public class RDFInput extends ResultSetMem
     {
         buildVariables(root) ;
         int count = buildPreprocess(root) ;
-        if ( ordered )
-            buildRowsOrdered(root, count) ;
-        else
-            buildRows(root) ;
+        buildRows(root) ;
     }
         
     private void buildVariables(Resource root)
@@ -88,8 +85,6 @@ public class RDFInput extends ResultSetMem
             ALog.warn(this, "Rows = "+rows+" but only "+indexed+" indexes" ) ;
             return rows ;
         }
-        if ( indexed > 0 )
-            ordered = true ;
         return rows ;
     }
 

@@ -58,7 +58,7 @@ public class container extends PFuncSimple
         }            
         
         // Container a variable. 
-        Collection c = null ;
+        Collection<Node> c = null ;
         
         if ( member.isVariable() )
             c = findContainers(graph, typeNode) ;
@@ -67,9 +67,9 @@ public class container extends PFuncSimple
         
         QueryIterConcat cIter = new QueryIterConcat(execCxt) ;
         Var cVar = Var.alloc(containerNode) ;
-        for ( Iterator iter = c.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = c.iterator() ; iter.hasNext() ; )
         {
-            Node cn = (Node)iter.next() ;
+            Node cn = iter.next() ;
             //Binding the container node. 
             Binding b = new Binding1(binding, cVar, cn) ;
             Node m = member ;
@@ -95,15 +95,15 @@ public class container extends PFuncSimple
     private QueryIterator members(Binding binding, Node containerNode, Var memberVar, ExecutionContext execCxt)
     {
         // Not necessarily very efficient
-        Collection x = GraphContainerUtils.containerMembers(execCxt.getActiveGraph(), containerNode, typeNode) ;
+        Collection<Node> x = GraphContainerUtils.containerMembers(execCxt.getActiveGraph(), containerNode, typeNode) ;
         if ( x == null )
             // Wrong type.
             return IterLib.noResults(execCxt) ;
 
-        List bindings = new ArrayList() ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        List<Binding> bindings = new ArrayList<Binding>() ;
+        for ( Iterator<Node> iter = x.iterator() ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
+            Node n = iter.next() ;
             Binding b = new Binding1(binding, memberVar, n) ;
             bindings.add(b) ;
         }
@@ -118,9 +118,9 @@ public class container extends PFuncSimple
         return new QueryIterYieldN(count, binding, execCxt) ;
     }
     
-    static private Collection findContainers(Graph graph, Node typeNode)
+    static private Collection<Node> findContainers(Graph graph, Node typeNode)
     {
-        Set acc = new HashSet() ;
+        Set<Node> acc = new HashSet<Node>() ;
         if ( typeNode != null )
         {
             findContainers(acc, graph, typeNode) ;
@@ -132,7 +132,7 @@ public class container extends PFuncSimple
         return acc ;
     }
     
-    static private void findContainers(Collection acc, Graph graph, Node typeNode)
+    static private void findContainers(Collection<Node> acc, Graph graph, Node typeNode)
     {
         ExtendedIterator iter = graph.find(Node.ANY, RDF.type.asNode(), typeNode) ;
         while(iter.hasNext())
@@ -143,9 +143,9 @@ public class container extends PFuncSimple
         }
     }
     
-    static private Collection findContainingContainers(Graph graph, Node typeNode, Node member)
+    static private Collection<Node> findContainingContainers(Graph graph, Node typeNode, Node member)
     {
-        Collection acc = new HashSet() ; 
+        Collection<Node> acc = new HashSet<Node>() ; 
         // Index off the object
         ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, member) ;
         while(iter.hasNext())

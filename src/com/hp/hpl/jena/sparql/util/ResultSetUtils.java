@@ -57,10 +57,10 @@ public class ResultSetUtils
      * @see{com.hp.hpl.jena.query.ResultSetFactory}   
      * Suggested by James Howison  
      */
-    public static List resultSetToList(ResultSet rs,
+    public static List<RDFNode> resultSetToList(ResultSet rs,
                                        String selectElement)
     {
-        List items = new ArrayList() ;
+        List<RDFNode> items = new ArrayList<RDFNode>() ;
         while (rs.hasNext())
         {
             QuerySolution qs = rs.nextSolution() ;
@@ -78,11 +78,11 @@ public class ResultSetUtils
      * @see{com.hp.hpl.jena.query.ResultSetFactory}   
      *   
      */
-    public static List resultSetToStringList(ResultSet rs,
+    public static List<String> resultSetToStringList(ResultSet rs,
                                              String selectElement,
                                              String literalOrResource)
     {
-        List items = new ArrayList() ;
+        List<String> items = new ArrayList<String>() ;
         while (rs.hasNext())
         {
             QuerySolution qs = rs.nextSolution() ;

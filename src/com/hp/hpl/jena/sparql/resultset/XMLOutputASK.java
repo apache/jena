@@ -23,7 +23,6 @@ public class XMLOutputASK implements XMLResults
     String stylesheetURL = null ;
     IndentedWriter  out ;
     int bNodeCounter = 0 ;
-    Map bNodeMap = new HashMap() ;
     boolean xmlInst = true ;
     
     public XMLOutputASK(OutputStream outStream)

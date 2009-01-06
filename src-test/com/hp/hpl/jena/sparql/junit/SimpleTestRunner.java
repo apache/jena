@@ -68,13 +68,13 @@ public class SimpleTestRunner extends BaseTestRunner
                            " : Errors = "+result.errorCount()+
                            " : Failures = "+result.failureCount()) ;
         
-        for ( Enumeration e = result.errors() ; e.hasMoreElements() ; )
+        for ( Enumeration<?> e = result.errors() ; e.hasMoreElements() ; )
         {
             out.println() ;
             TestFailure failure = (TestFailure)e.nextElement() ;
             out.println("Error:    "+failure.toString()) ;
         }
-        for ( Enumeration e = result.failures() ; e.hasMoreElements() ; )
+        for ( Enumeration<?> e = result.failures() ; e.hasMoreElements() ; )
         {
             out.println() ;
             TestFailure failure = (TestFailure)e.nextElement() ;

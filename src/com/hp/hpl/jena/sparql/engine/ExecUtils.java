@@ -22,41 +22,40 @@ import com.hp.hpl.jena.sparql.util.ALog;
 public class ExecUtils
 {
     public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
-                                      List pattern, Binding presets, Set vars)
+                                      List<Triple> pattern, Binding presets, Set<Var> vars)
     {
         if ( pattern == null )
             return ;
-        for (Iterator iter = pattern.listIterator(); iter.hasNext();)
+        for (Iterator<Triple>iter = pattern.listIterator(); iter.hasNext();)
         {
-            Triple t = (Triple) iter.next();
+            Triple t = iter.next();
             t = BindingUtils.substituteIntoTriple(t, presets) ;
             if ( vars != null )
             {
                 if ( t.getSubject().isVariable() )
-                    vars.add(t.getSubject()) ;
+                    vars.add(Var.alloc(t.getSubject())) ;
                 if ( t.getPredicate().isVariable() )
-                    vars.add(t.getPredicate()) ;
+                    vars.add(Var.alloc(t.getPredicate())) ;
                 if ( t.getObject().isVariable() )
-                    vars.add(t.getObject()) ;
+                    vars.add(Var.alloc(t.getObject())) ;
             }
             graphQuery.addMatch(t);
         }
     }
     
-    public static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List constraints)
+    public static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List<?> constraints)
     {
         ALog.warn(ExecUtils.class, "Call to compileConstraints for Jena Expressions") ;
     }
     
-    public static Var[] projectionVars(Set vars)
+    public static Var[] projectionVars(Set<Var> vars)
     {
         Var[] result = new Var[vars.size()] ;
     
         int i = 0 ; 
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = vars.iterator() ; iter.hasNext() ; )
         {
-            // Or Var.alloc((Node)iter.next()) ;
-            Var n = (Var)iter.next() ;
+            Var n = iter.next() ;
             result[i] = n ;
             i++ ;
         }

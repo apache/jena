@@ -20,8 +20,8 @@ public class ProcedureRegistry
     // Extract a Registry class and do casting and initialization here.
     // Identical to FunctionRegistry except the types.
     // And PropertyFunctionRegistry (which may disappear)
-    Map registry = new HashMap() ;
-    Set attemptedLoads = new HashSet() ;
+    Map<String, ProcedureFactory> registry = new HashMap<String, ProcedureFactory>() ;
+    Set<String> attemptedLoads = new HashSet<String>() ;
     
     public synchronized static ProcedureRegistry standardRegistry()
     {
@@ -68,7 +68,7 @@ public class ProcedureRegistry
      * @param uri           String URI
      * @param procClass     Class for the procedure (new instance called).
      */
-    public void put(String uri, Class procClass)
+    public void put(String uri, Class< ? > procClass)
     { 
         if ( ! Procedure.class.isAssignableFrom(procClass) )
         {
@@ -82,30 +82,30 @@ public class ProcedureRegistry
     /** Lookup by URI */
     public ProcedureFactory get(String uri)
     {
-        ProcedureFactory procedure = (ProcedureFactory)registry.get(uri) ;
+        ProcedureFactory procedure = registry.get(uri) ;
         if ( procedure != null )
             return procedure ;
 
         if ( attemptedLoads.contains(uri) )
             return null ;
 
-        Class procedureClass = MappedLoader.loadClass(uri, Procedure.class) ;
+        Class<?> procedureClass = MappedLoader.loadClass(uri, Procedure.class) ;
         if ( procedureClass == null )
             return null ;
         // Registry it
         put(uri, procedureClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.
-        return (ProcedureFactory)registry.get(uri) ;
+        return registry.get(uri) ;
     }
     
     public boolean isRegistered(String uri) { return registry.containsKey(uri) ; }
     
     /** Remove by URI */
-    public ProcedureFactory remove(String uri) { return (ProcedureFactory)registry.remove(uri) ; } 
+    public ProcedureFactory remove(String uri) { return registry.remove(uri) ; } 
     
     /** Iterate over URIs */
-    public Iterator keys() { return registry.keySet().iterator() ; }
+    public Iterator<String> keys() { return registry.keySet().iterator() ; }
 }
 
 /*

@@ -12,17 +12,17 @@ import java.util.*;
 
 public class SetUtils
 {
-    static public Set intersection(Set s1, Set s2)
+    static public <T> Set<T> intersection(Set<T> s1, Set<T> s2)
     {
-        Set s3 = new HashSet(s1) ;
+        Set<T> s3 = new HashSet<T>(s1) ;
         s3.retainAll(s2) ;
         return s3 ;
     }
     
-    static public boolean intersectionP(Set s1, Set s2)
+    static public <T> boolean intersectionP(Set<T> s1, Set<T> s2)
     {
-        Set x = null ;
-        Set y = null ;
+        Set<T> x = null ;
+        Set<T> y = null ;
         
         if ( s1.size() < s2.size() )
             return _intersectionP(s1, s2) ;
@@ -30,9 +30,9 @@ public class SetUtils
             return _intersectionP(s2, s1) ;
     }
     
-    static private boolean _intersectionP(Set s1, Set s2)
+    static private <T> boolean _intersectionP(Set<T> s1, Set<T> s2)
     {
-        for( Iterator iter = s1.iterator() ; iter.hasNext() ; )
+        for( Iterator<T> iter = s1.iterator() ; iter.hasNext() ; )
         {
             Object elt = iter.next() ;
             if ( s2.contains(elt) ) 
@@ -42,9 +42,9 @@ public class SetUtils
     }
     
     
-    static public Set union(Set s1, Set s2)
+    static public <T> Set<T> union(Set<T> s1, Set<T> s2)
     {
-        Set s3 = new HashSet(s1) ;
+        Set<T> s3 = new HashSet<T>(s1) ;
         s3.addAll(s2) ;
         return s3 ;
     }
@@ -52,9 +52,9 @@ public class SetUtils
     
     /** Return is s1 \ s2 */
     
-    static public Set difference(Set s1, Set s2)
+    static public <T> Set<T> difference(Set<T> s1, Set<T> s2)
     {
-        Set s3 = new HashSet(s1) ;
+        Set<T> s3 = new HashSet<T>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
     }

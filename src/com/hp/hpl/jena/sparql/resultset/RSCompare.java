@@ -34,15 +34,6 @@ public class RSCompare
      */
     public static boolean same(ResultSet rs1, ResultSet rs2)
     {
-        if ( rs1.isOrdered() && rs2.isOrdered() )
-            return sameOrdered(rs1, rs2) ;
-        
-        if ( rs1.isOrdered() )
-            return false ;  // rs2 isn't ordered
-            
-        if ( rs2.isOrdered() )
-            return false ;  // rs1 isn't ordered
-        
         return sameUnordered(rs1, rs2) ;
     }
     
@@ -74,7 +65,7 @@ public class RSCompare
      */
     public static boolean sameOrdered(ResultSet rs1, ResultSet rs2)
     {
-        Map bNodeMap = new HashMap() ; 
+        Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ; 
         
         for ( ; rs1.hasNext() ; )
         {
@@ -94,10 +85,10 @@ public class RSCompare
         return true ;
     }
     
-    private static boolean sameQuerySolution(Map bNodeMap, QuerySolution qs1, QuerySolution qs2)
+    private static boolean sameQuerySolution(Map<Node, Node> bNodeMap, QuerySolution qs1, QuerySolution qs2)
     {
-        Iterator names1 = qs1.varNames() ;
-        Iterator names2 = qs2.varNames() ;
+        Iterator<String> names1 = qs1.varNames() ;
+        Iterator<String> names2 = qs2.varNames() ;
         
         for ( ; names1.hasNext() ; ) 
         {
@@ -105,7 +96,7 @@ public class RSCompare
             if ( !names2.hasNext() ) return false ;
             names2.next() ;
             
-            String vn = (String)names1.next() ;
+            String vn = names1.next() ;
             RDFNode rn1 = qs1.get(vn) ;
             RDFNode rn2 = qs2.get(vn) ;
             if ( rn2 == null )

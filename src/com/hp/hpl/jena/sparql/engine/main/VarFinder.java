@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -25,39 +24,36 @@ class VarFinder
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
     
-    static Set optDefined(Op op)
+    static Set<Var> optDefined(Op op)
     {
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
-    private static Set fixed(Op op)
+    private static Set<Var> fixed(Op op)
     {
         return VarUsageVisitor.apply(op).defines ;
     }
     
     
-    static Set filter(Op op)
+    static Set<Var> filter(Op op)
     {
         return VarUsageVisitor.apply(op).filterMentions ;
     }
 
-    private static void vars(Set vars, Triple triple)
+    private static void vars(Set<Var> vars, Triple triple)
     {
         slot(vars, triple.getSubject()) ;
         slot(vars, triple.getPredicate()) ;
         slot(vars, triple.getObject()) ;
     }
     
-    private static void vars(Set acc, BasicPattern pattern)
+    private static void vars(Set<Var> acc, BasicPattern pattern)
     {
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext(); )
-        {
-            Triple triple = (Triple)iter.next() ;
+        for ( Triple triple : pattern )
             vars(acc, triple) ;
-        }
     }
 
-    private static void slot(Set vars, Node node)
+    private static void slot(Set<Var> vars, Node node)
     {
         if ( Var.isVar(node) )
             vars.add(Var.alloc(node)) ;
@@ -68,9 +64,9 @@ class VarFinder
     VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
-    public Set getOpt() { return varUsageVisitor.optDefines ; }
-    public Set getFilter() { return varUsageVisitor.filterMentions ; }
-    public Set getFixed() { return varUsageVisitor.defines ; }
+    public Set<Var> getOpt() { return varUsageVisitor.optDefines ; }
+    public Set<Var> getFilter() { return varUsageVisitor.filterMentions ; }
+    public Set<Var> getFixed() { return varUsageVisitor.defines ; }
     
     private static class VarUsageVisitor extends OpVisitorBase //implements OpVisitor
     {
@@ -81,18 +77,18 @@ class VarFinder
             return v ;
         }
 
-        Set defines = null ;
-        Set optDefines = null ;
-        Set filterMentions = null ;
+        Set<Var> defines = null ;
+        Set<Var> optDefines = null ;
+        Set<Var> filterMentions = null ;
 
         VarUsageVisitor()
         {
-            defines = new HashSet() ;   
-            optDefines = new HashSet() ;
-            filterMentions = new HashSet() ;
+            defines = new HashSet<Var>() ;   
+            optDefines = new HashSet<Var>() ;
+            filterMentions = new HashSet<Var>() ;
         }
         
-        VarUsageVisitor(Set _defines, Set _optDefines, Set _filterMentions)
+        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions)
         {
             defines = _defines ;
             optDefines = _optDefines ;
@@ -201,14 +197,14 @@ class VarFinder
         public void visit(OpAssign opAssign)
         {
             opAssign.getSubOp().visit(this) ;
-            List vars = opAssign.getVarExprList().getVars() ;
+            List<Var> vars = opAssign.getVarExprList().getVars() ;
             defines.addAll(vars) ;
         }
         
         @Override
         public void visit(OpProject opProject)
         {
-            List vars = opProject.getVars() ;
+            List<Var> vars = opProject.getVars() ;
             VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp()) ;
             
             subUsage.defines.retainAll(vars) ;

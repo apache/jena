@@ -17,9 +17,9 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
 {
-    Class extClass ;
+    Class< ? > extClass ;
     
-    PropertyFunctionFactoryAuto(Class xClass)
+    PropertyFunctionFactoryAuto(Class< ? > xClass)
     {
         extClass = xClass ;
         

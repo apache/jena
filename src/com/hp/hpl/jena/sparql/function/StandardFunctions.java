@@ -96,7 +96,7 @@ public class StandardFunctions
         registry.put(dt.getURI(), new CastXSD(dt) ) ;
     }
 
-    private static void add(FunctionRegistry registry, String uri, Class funcClass)
+    private static void add(FunctionRegistry registry, String uri, Class<?> funcClass)
     {
         registry.put(uri, funcClass) ;
     }

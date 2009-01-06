@@ -29,19 +29,19 @@ public class substring extends FunctionBase
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;
     }
     @Override
-    public NodeValue exec(List args)
+    public NodeValue exec(List<NodeValue> args)
     {
         if ( args.size() > 3 )
             throw new ExprEvalException("substring: Wrong number of arguments: "+
                                         args.size()+" : [wanted 2 or 3]") ;
         
-        NodeValue v1 = (NodeValue)args.get(0) ;
-        NodeValue v2 = (NodeValue)args.get(1) ;
+        NodeValue v1 = args.get(0) ;
+        NodeValue v2 = args.get(1) ;
         NodeValue v3 = null ;
         
         if ( args.size() == 3 )
         {
-            v3 = (NodeValue)args.get(2) ;
+            v3 = args.get(2) ;
             return XSDFuncOp.javaSubstring(v1, v2, v3) ;
         }
 

@@ -16,7 +16,7 @@ public class MappedLoader
     // Map string => string of prefixes 
     //   e.g. http://jena.hpl.hp.com/ARQ/property# => java:com.hp.hpl.jena.sparql.pfunction.
     
-    static Map uriMap = new HashMap() ;
+    static Map<String, String> uriMap = new HashMap<String, String>() ;
     
     static {
         uriMap.put(ARQConstants.ARQFunctionLibraryURI,
@@ -34,7 +34,7 @@ public class MappedLoader
                    "java:com.hp.hpl.jena.sparql.pfunction.library.") ;
     }
     
-    public static boolean isPossibleDynamicURI(String uri, Class expectedClass)
+    public static boolean isPossibleDynamicURI(String uri, Class<?> expectedClass)
     {
         uri = mapDynamicURI(uri) ;
         if ( uri == null )
@@ -47,7 +47,7 @@ public class MappedLoader
 
     public static String mapDynamicURI(String uri)
     {
-        Map.Entry e = find(uri) ;
+        Map.Entry<String, String> e = find(uri) ;
         if ( e == null )
         {
             if ( uri.startsWith(ARQConstants.javaClassURIScheme) )
@@ -55,27 +55,27 @@ public class MappedLoader
             return null ;
         }
         
-        String k = (String)e.getKey() ;
-        String v = (String)e.getValue();
+        String k = e.getKey() ;
+        String v = e.getValue();
 
         uri = uri.substring(k.length()) ;
         uri = v + uri ;
         return uri ;
     }
     
-    private static Map.Entry find(String uri)
+    private static Map.Entry<String,String> find(String uri)
     {
-        for ( Iterator iter = uriMap.entrySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Map.Entry<String,String>> iter = uriMap.entrySet().iterator() ; iter.hasNext() ; )
         {
-            Map.Entry e = (Map.Entry)iter.next() ;
-            String k = (String)e.getKey() ;
+            Map.Entry<String, String> e = iter.next() ;
+            String k = e.getKey() ;
             if ( uri.startsWith(k) )
                 return e ;
         }
         return null ;
     }
     
-    public static Class loadClass(String uri, Class expectedClass)
+    public static Class<?> loadClass(String uri, Class<?> expectedClass)
     {
         uri = mapDynamicURI(uri) ;
         if ( uri == null )

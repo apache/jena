@@ -15,9 +15,9 @@ import com.hp.hpl.jena.query.QueryBuildException;
 
 class FunctionFactoryAuto implements FunctionFactory
 {
-    Class extClass ;
+    Class<?> extClass ;
     
-    FunctionFactoryAuto(Class xClass)
+    FunctionFactoryAuto(Class<?> xClass)
     {
         extClass = xClass ;
     }

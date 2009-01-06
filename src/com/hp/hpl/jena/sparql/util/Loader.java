@@ -12,9 +12,9 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
 public class Loader
 {
-    static public Class loadClass(String classNameOrURI) { return loadClass(classNameOrURI, null) ; }
+    static public Class<?> loadClass(String classNameOrURI) { return loadClass(classNameOrURI, null) ; }
     
-    static public Class loadClass(String classNameOrURI, Class requiredClass)
+    static public Class<?> loadClass(String classNameOrURI, Class<?> requiredClass)
     {
         if ( classNameOrURI == null )
             throw new ARQInternalErrorException("Null classNameorIRI") ;
@@ -29,7 +29,7 @@ public class Loader
         if ( classNameOrURI.startsWith(ARQConstants.javaClassURIScheme) )
             className = classNameOrURI.substring(ARQConstants.javaClassURIScheme.length()) ;
         
-        Class classObj = null ;
+        Class<?> classObj = null ;
         
         try {
             classObj = Class.forName(className);
@@ -47,9 +47,9 @@ public class Loader
         return classObj ;
     }
 
-    static public Object loadAndInstantiate(String uri, Class requiredClass)
+    static public Object loadAndInstantiate(String uri, Class<?> requiredClass)
     {
-        Class classObj = loadClass(uri, requiredClass) ;
+        Class<?> classObj = loadClass(uri, requiredClass) ;
         if ( classObj == null )
             return null ;
         

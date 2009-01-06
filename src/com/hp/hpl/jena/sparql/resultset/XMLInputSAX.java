@@ -75,8 +75,6 @@ class XMLInputSAX extends SPARQLResult
 
             ResultSetStream rss = new ResultSetStream(handler.variables, model,
                                                       new QueryIterPlainWrapper(handler.results.iterator())) ;
-            rss.setDistinct(handler.distinct) ;
-            rss.setDistinct(handler.ordered) ;
             // Set superclass member
             set(rss) ;
         }
@@ -92,10 +90,6 @@ class XMLInputSAX extends SPARQLResult
         static final String namespace    = XMLResults.dfNamespace ;
         static final String variableElt  = XMLResults.dfVariable ;
         static final String resultElt    = XMLResults.dfSolution ;
-
-        // ResultSet
-        boolean ordered = false ;
-        boolean distinct = false ;
 
         // Boolean
         boolean isBooleanResult = false ;

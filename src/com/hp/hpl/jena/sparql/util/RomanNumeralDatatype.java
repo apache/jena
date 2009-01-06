@@ -28,7 +28,7 @@ public class RomanNumeralDatatype extends BaseDatatype //implements RDFDatatype
     private RomanNumeralDatatype() { super(URI) ; }
 
     @Override
-    public Class getJavaClass() { return RomanNumeral.class ; }
+    public Class<?> getJavaClass() { return RomanNumeral.class ; }
     
     @Override
     public String unparse(Object value)

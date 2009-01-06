@@ -37,7 +37,7 @@ public interface Transform
     public Op transform(OpConditional opCondition, Op left, Op right) ;
     
     // OpN
-    public Op transform(OpSequence opSequence, List elts) ;
+    public Op transform(OpSequence opSequence, List<Op> elts) ;
 
     // Extensions
     public Op transform(OpExt opExt) ;

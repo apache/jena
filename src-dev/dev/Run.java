@@ -152,9 +152,9 @@ public class Run
         public void outputArgs(IndentedWriter out, SerializationContext sCxt)
         {
             boolean first = true ;
-            for ( Iterator iter = argList.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Item> iter = argList.iterator() ; iter.hasNext() ; )
             {
-                Item item = (Item)iter.next();
+                Item item = iter.next();
                 if ( first )
                     first = false ;
                 else

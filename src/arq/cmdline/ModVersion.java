@@ -25,7 +25,7 @@ public class ModVersion implements ArgModuleGeneral
         versionMgr.addClass(ARQ.class) ;
     }
     
-    public void addClass(Class c) { versionMgr.addClass(c) ; }
+    public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
     
     public void registerWith(CmdGeneral cmdLine)
     {

@@ -42,8 +42,8 @@ public class Transformer
     class TransformApply extends OpVisitorByType
     {
         private Transform transform = null ;
-        private Stack stack = new Stack() ;
-        private Op pop() { return (Op)stack.pop(); }
+        private Stack<Op> stack = new Stack<Op>() ;
+        private Op pop() { return stack.pop(); }
         
         private void push(Op op)
         { 
@@ -96,12 +96,12 @@ public class Transformer
         @Override
         protected void visitN(OpN op)
         {
-            List x = new ArrayList(op.size()) ;     // Maybe be slightly too many.
+            List<Op> x = new ArrayList<Op>(op.size()) ;     // Maybe be slightly too many.
             
             
-            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {
-                Op sub = (Op)iter.next() ;
+                Op sub = iter.next() ;
                 Op r = pop() ;
                 // Skip nulls.
                 if ( r != null )

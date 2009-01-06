@@ -50,9 +50,9 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	// The object of the specialized RDF index
 	private ProbabilityIndex index = new ProbabilityIndex() ;
 	// The mapping of the histograms for the properties
-	private Map histograms = new HashMap() ; // Map<Property, Histogram>
+	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ;
 	// The mapping of the joined triple patterns with their sizes
-	private Map patterns = new HashMap() ; // Map<Pattern, Long>
+	private Map <Pattern, Long>patterns = new HashMap<Pattern, Long>() ;
 	// The upper bound sizes of variable patterns joined over the SS, SO, OS and OO
 	private long indexedSSSize = -1L, indexedSOSize = -1L, indexedOSSize = -1L, indexedOOSize = -1L ;
 	private static Log log = LogFactory.getLog(ProbabilityIndexModel.class) ;
@@ -428,9 +428,9 @@ public class ProbabilityIndexModel extends ProbabilityBase
 		}
 	
 		// The predicate is unbound, in which case we sum the object size from all histograms
-		for (Iterator iter = histograms.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = histograms.keySet().iterator(); iter.hasNext(); )
 		{
-			Property property = (Property)iter.next() ;
+			Property property = iter.next() ;
 			Histogram histogram = (Histogram)histograms.get(property) ;
 				
 			size += histogram.getClassFrequency(object) ;

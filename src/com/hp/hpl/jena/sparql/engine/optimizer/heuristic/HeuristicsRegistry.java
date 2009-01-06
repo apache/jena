@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.GraphStatisticsHeuristi
 
 public class HeuristicsRegistry 
 {
-	private Map registry = new HashMap() ; // Map<String, Heuristic>
+	private Map<String, Heuristic> registry = new HashMap<String, Heuristic>() ;
 	private static Log log = LogFactory.getLog(HeuristicsRegistry.class) ;
 	
 	public static final String BGP_VARIABLE_COUNTING = "BGP_VARIABLE_COUNTING" ;

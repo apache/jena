@@ -26,8 +26,8 @@ public class PropertyFunctionRegistry
 {
     static PropertyFunctionRegistry globalRegistry = null ;
     
-    Map registry = new HashMap() ;
-    Set attemptedLoads = new HashSet() ;
+    Map<String, PropertyFunctionFactory> registry = new HashMap<String, PropertyFunctionFactory>() ;
+    Set<String> attemptedLoads = new HashSet<String>() ;
     
     public synchronized static PropertyFunctionRegistry standardRegistry()
     {
@@ -74,7 +74,7 @@ public class PropertyFunctionRegistry
      * @param uri        String URI for the PropertyFunction
      * @param extClass   The Java class
      */
-    public void put(String uri, Class extClass)
+    public void put(String uri, Class<?> extClass)
     { 
         if ( ! PropertyFunction.class.isAssignableFrom(extClass) )
         {
@@ -97,30 +97,30 @@ public class PropertyFunctionRegistry
     /** Lookup by URI */
     public PropertyFunctionFactory get(String uri)
     {
-        PropertyFunctionFactory ext = (PropertyFunctionFactory)registry.get(uri) ;
+        PropertyFunctionFactory ext = registry.get(uri) ;
         if ( ext != null )
             return ext ;
         
         if ( attemptedLoads.contains(uri) )
             return null ;
 
-        Class extClass = MappedLoader.loadClass(uri, PropertyFunction.class) ;
+        Class<?> extClass = MappedLoader.loadClass(uri, PropertyFunction.class) ;
         if ( extClass == null )
             return null ;
         // Register it
         put(uri, extClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.
-        return (PropertyFunctionFactory)registry.get(uri) ;
+        return registry.get(uri) ;
     }
     
     public boolean isRegistered(String uri) { return registry.containsKey(uri) ; }
     
     /** Remove by URI */
-    public PropertyFunctionFactory remove(String uri) { return (PropertyFunctionFactory)registry.remove(uri) ; } 
+    public PropertyFunctionFactory remove(String uri) { return registry.remove(uri) ; } 
     
     /** Iterate over URIs */
-    public Iterator keys() { return registry.keySet().iterator() ; }
+    public Iterator<String> keys() { return registry.keySet().iterator() ; }
     
     private void loadStdDefs()
     {

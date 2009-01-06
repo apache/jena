@@ -12,12 +12,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.VariableCounting;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Seq;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -38,10 +33,10 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
 public class TestGraphBuild extends TestCase
 {
 	private BasicPattern pattern ;
-	private List components ; // List<Map<String, Integer>>
+	private List<Map<String, Integer>> components ; // List<Map<String, Integer>>
 	private static final String testCaseFileName = "testing/Optimizer/TestGraphBuild-manifest.n3" ;
 	
-	public TestGraphBuild(String title, BasicPattern pattern, List components)
+	public TestGraphBuild(String title, BasicPattern pattern, List<Map<String, Integer>> components)
 	{		
 		super(title) ;
 		
@@ -58,8 +53,8 @@ public class TestGraphBuild extends TestCase
 	    
 	    for (int i = 0; i < components.size(); i++)
 	    {	    	
-	    	Integer nodes = (Integer)((Map)components.get(i)).get("nodes") ;
-	    	Integer edges = (Integer)((Map)components.get(i)).get("edges") ;
+	    	Integer nodes = (Integer)components.get(i).get("nodes") ;
+	    	Integer edges = (Integer)components.get(i).get("edges") ;
 	    	ConnectedGraph component = graph.getComponent(i) ;
 	    	
 	    	assertTrue(component.getNodes().size() == nodes.intValue()) ;
@@ -89,7 +84,7 @@ public class TestGraphBuild extends TestCase
 				// Extract the triples of the corresponding basic pattern for the test case
 				BasicPattern basicPattern = getBasicPattern(patternR) ;
 				// Extract the information about the number of nodes and edges of the graph for the test case
-				List components = getGraphComponents(graphR) ; // List<Map<String, Integer>>
+				List<Map<String, Integer>> components = getGraphComponents(graphR) ; // List<Map<String, Integer>>
 				
 				// Add a new test to the test suite
 				ts.addTest(new TestGraphBuild(title, basicPattern, components)) ;
@@ -123,17 +118,17 @@ public class TestGraphBuild extends TestCase
 	}
 	
 	// Given the graph RDF node (blank node) extract the corresponding components with nodes and edges
-	private static List getGraphComponents(Seq graphR)
+	private static List<Map<String, Integer>> getGraphComponents(Seq graphR)
 	{
 		Property nodesP = ResourceFactory.createProperty(Util.TEST_NS + "nodes") ;
         Property edgesP = ResourceFactory.createProperty(Util.TEST_NS + "edges") ;
-		List components = new ArrayList() ; // List<Map<String, Integer>>
+		List<Map<String, Integer>> components = new ArrayList<Map<String, Integer>>() ; // List<Map<String, Integer>>
 
 		// Given a graph resource, we need to iterate over the components and extract the information about nodes and edges
-		for (Iterator iter = graphR.iterator(); iter.hasNext(); )
+		for (NodeIterator iter = graphR.iterator(); iter.hasNext(); )
 		{
 			Resource componentR = (Resource)iter.next() ;
-			Map component = new HashMap() ; // Map<String, Integer>
+			Map<String, Integer> component = new HashMap<String, Integer>() ; // Map<String, Integer>
 			String nodes = componentR.getProperty(nodesP).getObject().asNode().getLiteralLexicalForm() ;
 			String edges = componentR.getProperty(edgesP).getObject().asNode().getLiteralLexicalForm() ;
 		

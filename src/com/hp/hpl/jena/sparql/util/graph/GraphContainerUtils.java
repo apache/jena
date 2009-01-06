@@ -28,17 +28,17 @@ public class GraphContainerUtils
     private static final String membershipPattern = RDF.getURI()+"_(\\d+)" ;
     private static final int NOT_FOUND = -9999 ;
 
-    public static Collection containerMembers(Graph graph, Node container)
+    public static Collection<Node> containerMembers(Graph graph, Node container)
     { return containerMembers(graph, container, null) ; }
 
-    public static Collection containerMembers(Graph graph, Node container, Node containerType)
+    public static Collection<Node> containerMembers(Graph graph, Node container, Node containerType)
     {
         if ( ! isContainer(graph, container, containerType) )
             return null ;
 
         ExtendedIterator iter = graph.find(container, Node.ANY, Node.ANY) ;
 
-        SortedMap triples = new TreeMap(order) ;
+        SortedMap<Integer, Node> triples = new TreeMap<Integer, Node>(order) ;
         try {
             for ( ; iter.hasNext() ; )
             {
@@ -151,15 +151,10 @@ public class GraphContainerUtils
     }
     
     static ContainerOrder order = new ContainerOrder() ;
-    static private class ContainerOrder implements java.util.Comparator
+    static private class ContainerOrder implements java.util.Comparator<Integer>
     {
-        
-        
-        public int compare(Object left, Object right)
+        public int compare(Integer i1, Integer i2)
         {
-            Integer i1 = (Integer)left ;
-            Integer i2 = (Integer)right ;
-            
             int index1 = i1.intValue() ;
             int index2 = i2.intValue() ;
             
@@ -167,8 +162,6 @@ public class GraphContainerUtils
             if ( index1 > index2 ) return Expr.CMP_GREATER ;
             return Expr.CMP_EQUAL ; 
         }
-        
-        
     }
 
 }

@@ -58,9 +58,9 @@ public abstract class TableBase implements Table
         
         // If compatible, merge. Iterate over variables in right but not in left.
         Binding b = new BindingMap(bindingLeft) ;
-        for ( Iterator vIter = bindingRight.vars() ; vIter.hasNext() ; )
+        for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
         {
-            Var v = (Var)vIter.next();
+            Var v = vIter.next();
             Node n = bindingRight.get(v) ;
             if ( ! bindingLeft.contains(v) )
                 b.add(v, n) ;
@@ -92,7 +92,7 @@ public abstract class TableBase implements Table
     public ResultSet toResultSet()
     {
         QueryIterator qIter = iterator(null) ;
-        ResultSet rs = new ResultSetStream(getVars(), null, qIter) ;
+        ResultSet rs = new ResultSetStream(getVarNames(), null, qIter) ;
         rs = ResultSetFactory.makeRewindable(rs) ;
         qIter.close() ;
         return rs ;

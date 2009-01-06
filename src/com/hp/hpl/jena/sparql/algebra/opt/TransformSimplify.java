@@ -18,12 +18,12 @@ import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 public class TransformSimplify extends TransformCopy
 {
     @Override
-    public Op transform(OpSequence opSequence, List elts)
+    public Op transform(OpSequence opSequence, List<Op> elts)
     {
-        List x = new ArrayList(elts) ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        List<Op> x = new ArrayList<Op>(elts) ;
+        for ( Iterator<Op> iter = x.iterator() ; iter.hasNext() ; )
         {
-            Op sub = (Op)iter.next() ;
+            Op sub = iter.next() ;
             if ( OpJoin.isJoinIdentify(sub) )
                 iter.remove();
         }

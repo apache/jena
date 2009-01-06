@@ -18,7 +18,7 @@ public class Usage
     class Category
     {
         String desc ;
-        List entries = new ArrayList() ;
+        List<Entry> entries = new ArrayList<Entry>() ;
         Category(String desc) { this.desc = desc ; }
     }
     
@@ -27,7 +27,7 @@ public class Usage
      Entry(String arg, String msg) { this.arg = arg ; this.msg = msg ; }
    }
    
-   List categories = new ArrayList() ;
+   List<Category> categories = new ArrayList<Category>() ;
    public Usage()
    {
        // Start with an unnamed category
@@ -55,15 +55,15 @@ public class Usage
        int INDENT1 = 2 ;
        int INDENT2 = 4 ;
        out.incIndent(INDENT1) ;
-       for ( Iterator iter = categories.iterator() ; iter.hasNext() ; )
+       for ( Iterator<Category> iter = categories.iterator() ; iter.hasNext() ; )
        {
-           Category c = (Category)iter.next() ;
+           Category c = iter.next() ;
            if ( c.desc != null )
                out.println(c.desc) ;
            out.incIndent(INDENT2) ;
-           for ( Iterator iter2 = c.entries.iterator() ; iter2.hasNext() ; )
+           for ( Iterator<Entry> iter2 = c.entries.iterator() ; iter2.hasNext() ; )
            {
-               Entry e = (Entry)iter2.next() ;
+               Entry e = iter2.next() ;
                out.print(e.arg) ;
                if ( e.msg != null )
                {
@@ -81,7 +81,7 @@ public class Usage
    
    private Category current()
    {
-       return (Category)categories.get(categories.size()-1) ;
+       return categories.get(categories.size()-1) ;
    }
 }
 

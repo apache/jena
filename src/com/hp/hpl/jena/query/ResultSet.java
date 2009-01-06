@@ -52,13 +52,6 @@ public interface ResultSet extends Iterator<QuerySolution>
      */
     public List<String> getResultVars() ;
 
-    /** Is this ResultSet known to be ordered? 
-     * Usually, this means a query involved ORDER BY or a ResultSet read
-     * from a serialization had indexing information.
-     * (The ordering does not necessaryly have to be total)
-     */
-    public boolean isOrdered() ;
-    
     /* Get the model that resources are created against - may be null */
     public Model getResourceModel() ;
 }

@@ -63,7 +63,7 @@ public class search
 	private String qstr = null ;
 	private double time = Double.MAX_VALUE ;
 	private int resultSetSize = 0 ;
-	private Map timings = new HashMap() ;
+	private Map<Double, List<String>> timings = new HashMap<Double, List<String>>() ;
 	
 	public static void main(String[] args) 
 	{	
@@ -103,7 +103,7 @@ public class search
 		Op op = Algebra.compile(el) ;
 		op = Algebra.optimize(op, context) ;
 		OpWalker.walk(op, visitor) ;
-	    List patterns = visitor.getPatterns() ; // List<BasicPattern>
+	    List<BasicPattern> patterns = visitor.getPatterns() ;
 	    // Get the BGP (this works only for queries with a single BGP!
 	    BasicPattern bgp = (BasicPattern)patterns.get(0) ;
 	    // Get the basic patterns for all possible optimizations
@@ -123,9 +123,9 @@ public class search
 	    int size = bgp.size() ;
 		Triple[] triples = new Triple[size] ;
 	    int N = 0 ;
-	    for (Iterator iter = bgp.iterator(); iter.hasNext(); )
+	    for (Iterator<Triple> iter = bgp.iterator(); iter.hasNext(); )
 	    {
-	    	triples[N] = (Triple)iter.next() ;
+	    	triples[N] = iter.next() ;
 	    	N++ ;
 	    }
 	    if (triples.length != size || N != size)
@@ -196,7 +196,7 @@ public class search
 	{		
 		BasicPattern pattern = new BasicPattern() ;
 		ElementTriplesBlock el = new ElementTriplesBlock() ;
-	    List matchesHeuristic = new ArrayList() ;
+	    List<String> matchesHeuristic = new ArrayList<String>() ;
 	    
 	    // Add the triples to the new bgp
 	    for (int i = 0; i < triples.length; i++)
@@ -268,10 +268,10 @@ public class search
 			out.write("Result set size: " + resultSetSize + "\n") ;
 			out.write("\n") ;
 			
-			for (Iterator iter = timings.keySet().iterator(); iter.hasNext(); )
+			for (Iterator<Double> iter = timings.keySet().iterator(); iter.hasNext(); )
 			{
-				Double time = (Double)iter.next() ;
-				List heuristics = (List)timings.get(time) ;
+				Double time = iter.next() ;
+				List<String> heuristics = timings.get(time) ;
 				out.write(time.toString()) ;
 				if (heuristics.size() > 0)
 					out.write(" " + heuristics.toString()) ;
@@ -371,10 +371,10 @@ class Evaluate
 	
 	public void run()                  
     {        
-		List durations = new ArrayList() ; // List<Long>
+		List<Long> durations = new ArrayList<Long>() ; // List<Long>
 	    qstr = query.toString() ;
 	    
-		List runs = new ArrayList() ;
+		List<Double> runs = new ArrayList<Double>() ;
 		
 		System.out.println("======================================================================") ;
 		System.out.println(qstr) ;
@@ -430,14 +430,14 @@ class Evaluate
 		return resultSetSize ;
 	}
 	
-	private static double getAvgElapsedTimeInMillis(List durations)
+	private static double getAvgElapsedTimeInMillis(List<Long> durations)
 	{
 		double ns = 0d ;
 		double duration ;
 		
-		for (Iterator iter = durations.iterator(); iter.hasNext(); )
+		for (Iterator<Long> iter = durations.iterator(); iter.hasNext(); )
 		{
-			duration = ((Long)iter.next()).doubleValue() ;
+			duration = iter.next().doubleValue() ;
 			ns += duration ;
 		}
 		
@@ -446,13 +446,13 @@ class Evaluate
 		return ms / durations.size() ;
 	}
 	
-	private static double getAvg(List durations)
+	private static double getAvg(List<Double> durations)
 	{
 		double duration = 0d ;
 		
-		for (Iterator iter = durations.iterator(); iter.hasNext(); )
+		for (Iterator<Double> iter = durations.iterator(); iter.hasNext(); )
 		{
-			duration += ((Double)iter.next()).doubleValue() ;
+			duration += iter.next().doubleValue() ;
 		}
 		
 		return duration / durations.size() ;

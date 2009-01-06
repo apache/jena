@@ -55,7 +55,7 @@ public class index
 		readCmdParams(args) ;
 		Model infData = null ;
 		Graph graph = null ;
-		Set exProperty = new HashSet() ;
+		Set<Property> exProperty = new HashSet<Property>() ;
 		Config config = new Config() ;
 		String strLevel = "full" ;
 		
@@ -109,9 +109,9 @@ public class index
 				 e.printStackTrace() ;
 			 }
 			 
-			 for (Iterator iter = exProperty.iterator(); iter.hasNext(); )
+			 for (Iterator<Property> iter = exProperty.iterator(); iter.hasNext(); )
 			 {
-				 System.out.println("\t" + ((Property)iter.next()).getURI()) ;
+				 System.out.println("\t" + iter.next().getURI()) ;
 			 }
 		}
 		

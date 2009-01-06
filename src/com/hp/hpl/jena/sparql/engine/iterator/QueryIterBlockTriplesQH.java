@@ -79,7 +79,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
             
             //System.out.println("StageBasePattern: "+pattern) ;
             
-            Set vars = new HashSet() ;
+            Set<Var> vars = new HashSet<Var>() ;
             ExecUtils.compilePattern(graphQuery, pattern.getList(), binding, vars) ;
             projectionVars = ExecUtils.projectionVars(vars) ; 
             // **** No constraints done here currently

@@ -41,7 +41,7 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
 
     IndentedWriter out ;
     int bNodeCounter = 0 ;
-    Map bNodeMap = new HashMap() ;
+    Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
     
     JSONOutputResultSet(OutputStream outStream)
     { this(new IndentedWriter(outStream)) ; }
@@ -99,9 +99,9 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
         out.print(quoteName(dfVars)+": [ ") ;
         if ( multiLineVarNames ) out.println() ;
         out.incIndent() ;
-        for (Iterator iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
+        for (Iterator<String> iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
         {
-            String varname = (String)iter.next() ;
+            String varname = iter.next() ;
             out.print("\""+varname+"\"") ;
             if ( multiLineVarNames ) out.println() ;
             if ( iter.hasNext() )

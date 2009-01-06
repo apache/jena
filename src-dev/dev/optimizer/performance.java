@@ -53,8 +53,8 @@ public class performance
 	public static void main(String[] args) 
 	{			
 		int resultSetSize = 0 ;
-		List durations = new ArrayList() ; // List<Long>
-		List runs = new ArrayList() ; // List<Double>
+		List<Long> durations = new ArrayList<Long>() ;
+		List<Double> runs = new ArrayList<Double>() ;
 		
 		try
 		{
@@ -131,15 +131,15 @@ public class performance
 		catch (Exception e) { e.printStackTrace() ; }
 	}
 	
-	private static void writeLog(List runs, int resultSetSize)
+	private static void writeLog(List<Double> runs, int resultSetSize)
 	{
 		try 
 		{
 			BufferedWriter out = new BufferedWriter(new FileWriter(log)) ;
 		
-			for (Iterator iter = runs.iterator(); iter.hasNext(); )
+			for (Iterator<Double> iter = runs.iterator(); iter.hasNext(); )
 			{
-				out.write(((Double)iter.next()).toString() + newline) ;
+				out.write(iter.next().toString() + newline) ;
 			}
 		
 			out.write("Timing in ms" + newline) ;
@@ -150,13 +150,13 @@ public class performance
 		catch (IOException e) { e.printStackTrace() ;  }
 	}
 	
-	private static double getAvgElapsedTimeInMillis(List durations)
+	private static double getAvgElapsedTimeInMillis(List<Long> durations)
 	{
 		double ns = 0d ;
 		
-		for (Iterator iter = durations.iterator(); iter.hasNext(); )
+		for (Iterator<Long> iter = durations.iterator(); iter.hasNext(); )
 		{
-			double duration = ((Long)iter.next()).doubleValue() ;
+			double duration = iter.next().doubleValue() ;
 			ns += duration ;
 		}
 		

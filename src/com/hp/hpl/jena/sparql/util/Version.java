@@ -14,27 +14,27 @@ import java.util.List;
 /** Manage version information for subsystems */
 public class Version
 {
-    private List classes = new ArrayList() ; 
-    public void addClass(Class c) { classes.add(c) ; }
+    private List<Class< ? >> classes = new ArrayList<Class< ? >>() ; 
+    public void addClass(Class< ? > c) { classes.add(c) ; }
     private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
 
     public void print()
     {    
-        for ( Iterator iter = classes.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
         {
-            Class c = (Class)iter.next();
+            Class<?> c = iter.next();
             String x = Utils.classShortName(c) ;
             fields(x, c) ;    
         }
     }
     
-    private static void fields(String prefix, Class cls)
+    private static void fields(String prefix, Class< ? > cls)
     {
         for (int i=0; i < fields.length; i++)
             printField(IndentedWriter.stdout, prefix, fields[i], cls) ;
     }
     
-    private static String field(String fieldName, Class cls)
+    private static String field(String fieldName, Class< ? > cls)
     {
         try
         {
@@ -56,7 +56,7 @@ public class Version
         return "<error>" ;
     }
     
-    private static void printField(IndentedWriter out, String prefix, String fieldName, Class cls)
+    private static void printField(IndentedWriter out, String prefix, String fieldName, Class< ? > cls)
     {
         out.print(prefix) ;
         out.print(": ") ;

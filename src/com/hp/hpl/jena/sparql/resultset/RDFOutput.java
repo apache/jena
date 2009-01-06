@@ -95,11 +95,6 @@ public class RDFOutput
                 thisBinding.addProperty(ResultSetGraphVocab.variable, rVar) ;
                 thisBinding.addProperty(ResultSetGraphVocab.value, n) ;
                 thisSolution.addProperty(ResultSetGraphVocab.binding, thisBinding) ;
-                if ( resultSet.isOrdered() )
-                {
-                    Literal i = model.createTypedLiteral(Integer.toString(count), XSDDatatype.XSDinteger) ;
-                    thisSolution.addProperty(ResultSetGraphVocab.index, i) ;
-                }
             }
         }
         //results.addProperty(ResultSetVocab.size, count) ;

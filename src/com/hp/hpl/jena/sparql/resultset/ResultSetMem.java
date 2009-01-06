@@ -31,7 +31,6 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     // .hasPrevious() and .previous()
     protected List<Binding> rows = new ArrayList<Binding>();
     protected List<String> varNames = null ;
-    protected boolean ordered = false ; 
 
     private int rowNumber = 0 ;
     private Iterator<Binding> iterator = null ;
@@ -56,7 +55,6 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     public ResultSetMem(ResultSetMem imrs2, boolean takeCopy)
     {
         varNames = imrs2.varNames;
-        ordered = imrs2.ordered ;
         if ( takeCopy )
             rows.addAll(imrs2.rows) ;
         else
@@ -75,7 +73,6 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     public ResultSetMem(ResultSet qr)
     {
         model = qr.getResourceModel() ;
-        ordered = qr.isOrdered() ;
         if (qr instanceof ResultSetMem)
         {
             ResultSetMem qrm = (ResultSetMem) qr;
@@ -146,8 +143,6 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     /** Return the number of rows
      */
     public int size() { return rows.size() ; }
-    
-    public boolean isOrdered() { return ordered ; }
     
     /** Get the variable names for the projection
      */

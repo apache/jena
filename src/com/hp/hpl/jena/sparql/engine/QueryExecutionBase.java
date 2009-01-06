@@ -244,12 +244,6 @@ public class QueryExecutionBase implements QueryExecution
             model = ModelFactory.createDefaultModel() ;
         
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, qIter) ;
-        
-        // Set flags (the plan has the elements for solution modifiers)
-        if ( query.hasOrderBy() )
-            rStream.setOrdered(true) ;
-        if ( query.isDistinct() )
-            rStream.setDistinct(true) ;
         return rStream ;
     }
     

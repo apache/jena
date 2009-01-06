@@ -15,9 +15,9 @@ import com.hp.hpl.jena.query.QueryBuildException;
 
 class ProcedureFactoryAuto implements ProcedureFactory
 {
-    Class extClass ;
+    Class<?> extClass ;
     
-    ProcedureFactoryAuto(Class xClass)
+    ProcedureFactoryAuto(Class<?> xClass)
     {
         extClass = xClass ;
     }

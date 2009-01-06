@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.query.SortCondition;
 
@@ -23,45 +24,42 @@ import com.hp.hpl.jena.query.SortCondition;
 
 public class OpVars
 {
-    public static Set patternVars(Op op)
+    public static Set<Var> patternVars(Op op)
     {
-        Set acc = new HashSet() ;
+        Set<Var> acc = new HashSet<Var>() ;
         patternVars(op, acc) ;
         return acc ; 
     }
     
-    public static void patternVars(Op op, Set acc)
+    public static void patternVars(Op op, Set<Var> acc)
     {
         OpWalker.walk(op, new OpVarsPattern(acc)) ;
     }
     
-    public static Set allVars(Op op)
+    public static Set<Var> allVars(Op op)
     {
-        Set acc = new HashSet() ;
+        Set<Var> acc = new HashSet<Var>() ;
         allVars(op, acc) ;
         return acc ;
     }
 
-    public static void allVars(Op op, Set acc)
+    public static void allVars(Op op, Set<Var> acc)
     {
         OpWalker.walk(op, new OpVarsQuery(acc)) ;
     }
     
-    public static void vars(BasicPattern pattern, Collection acc)
+    public static void vars(BasicPattern pattern, Collection<Var> acc)
     {
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
-        {
-            Triple triple = (Triple)iter.next() ;
+        for ( Triple triple : pattern )
             addVarsFromTriple(acc, triple) ;
-        } 
     }
     
     private static class OpVarsPattern extends OpVisitorBase
     {
         // The possibly-set-vars
-        protected Set acc ;
+        protected Set<Var> acc ;
 
-        OpVarsPattern(Set acc) { this.acc = acc ; }
+        OpVarsPattern(Set<Var> acc) { this.acc = acc ; }
 
         @Override
         public void visit(OpBGP opBGP)
@@ -131,7 +129,7 @@ public class OpVars
     
     private static class OpVarsQuery extends OpVarsPattern
     {
-        OpVarsQuery(Set acc) { super(acc) ; }
+        OpVarsQuery(Set<Var> acc) { super(acc) ; }
 
         @Override
         public void visit(OpFilter opFilter)
@@ -142,23 +140,23 @@ public class OpVars
         @Override
         public void visit(OpOrder opOrder)
         {
-            for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
+            for ( Iterator<SortCondition> iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
             {
-                SortCondition sc = (SortCondition)iter.next();
-                Set x = sc.getExpression().getVarsMentioned() ;
+                SortCondition sc = iter.next();
+                Set<Var> x = sc.getExpression().getVarsMentioned() ;
                 acc.addAll(x) ;
             }
         }
     }
 
-    private static void addVarsFromTriple(Collection acc, Triple t)
+    private static void addVarsFromTriple(Collection<Var> acc, Triple t)
     {
         addVar(acc, t.getSubject()) ;
         addVar(acc, t.getPredicate()) ;
         addVar(acc, t.getObject()) ;
     }
     
-    private static void addVarsFromQuad(Collection acc, Quad q)
+    private static void addVarsFromQuad(Collection<Var> acc, Quad q)
     {
         addVar(acc, q.getSubject()) ;
         addVar(acc, q.getPredicate()) ;
@@ -166,13 +164,13 @@ public class OpVars
         addVar(acc, q.getGraph()) ;
     }
     
-    private static void addVar(Collection acc, Node n)
+    private static void addVar(Collection<Var> acc, Node n)
     {
         if ( n == null )
             return ;
         
         if ( n.isVariable() )
-            acc.add(n) ;
+            acc.add(Var.alloc(n)) ;
     }
 }
 

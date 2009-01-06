@@ -37,7 +37,7 @@ public class TransformCopy implements Transform
     public Op transform(OpService opService, Op x)                  { return xform(opService, x) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
-    public Op transform(OpSequence opSequence, List elts)           { return xform(opSequence, elts) ; }
+    public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
     public Op transform(OpDiff opDiff, Op left, Op right)           { return xform(opDiff, left, right) ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
@@ -77,7 +77,7 @@ public class TransformCopy implements Transform
             return op ;
         return op.copy(left, right) ;
     }
-    private Op xform(OpN op, List elts)
+    private Op xform(OpN op, List<Op> elts)
     {
         // Need to do one-deep equality checking.
         if ( ! alwaysCopy && equals1(elts, op.getElements()) )
@@ -85,7 +85,7 @@ public class TransformCopy implements Transform
         return op.copy(elts) ;
     }
     
-    private boolean equals1(List list1, List list2)
+    private boolean equals1(List<Op> list1, List<Op> list2)
     {
         if ( list1.size() != list2.size() )
             return false ;

@@ -6,13 +6,11 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 // Two queries comparison 
 
@@ -21,9 +19,6 @@ public class QueryCompare implements QueryVisitor
     private Query   query2 ;
     private boolean result = true ;
     static public boolean PrintMessages = false ;
-    
-    // Internal variables mapping (bnodes) 
-    private Map labelMap = new HashMap() ;
 
     public static boolean equals(Query query1, Query query2)
     {

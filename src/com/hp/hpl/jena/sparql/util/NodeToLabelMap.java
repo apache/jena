@@ -19,7 +19,7 @@ public class NodeToLabelMap
 {
     // Couls abstract again as a node -> label cache + cache miss handler.
     int bNodeCounter = 0 ;
-    Map bNodeStrings = new HashMap() ;
+    Map<Node, String> bNodeStrings = new HashMap<Node, String>() ;
     boolean bNodesAsFakeURIs = false ;
     String prefixString = "b" ;
     
@@ -44,7 +44,7 @@ public class NodeToLabelMap
 
     protected String mapNode(Node n)
     {
-        String s = (String)bNodeStrings.get(n) ;
+        String s = bNodeStrings.get(n) ;
         if ( s != null )
             return s ;
         

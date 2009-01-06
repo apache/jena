@@ -44,9 +44,9 @@ public class TableN extends TableBase
     @Override
     public void addBinding(Binding binding)
     {
-        for ( Iterator names = binding.vars() ; names.hasNext() ; )
+        for ( Iterator<Var> names = binding.vars() ; names.hasNext() ; )
         {
-            Var v = (Var)names.next() ;
+            Var v = names.next() ;
             if ( ! vars.contains(v))
                 vars.add(v) ;
         }
@@ -97,9 +97,9 @@ public class TableN extends TableBase
         // Don't clear the vars in case code later asks for the variables. 
     }
 
-    public List<Var> getVarNames()   { return vars ; }
+    public List<String> getVarNames()   { return Var.varNames(vars) ; }
 
-    public List getVars()       { return Var.varNames(vars) ; }
+    public List<Var> getVars()          { return  vars ; }
 }
 
 /*

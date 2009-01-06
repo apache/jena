@@ -10,7 +10,7 @@ public class Dev
 {
     // Upgrade 
     // Var - several list loops of string or var - checkeach usage.
-    
+    // Registries taking Class<?> can be tidied up
     
     // (Jena) Cached IRI checking.
     

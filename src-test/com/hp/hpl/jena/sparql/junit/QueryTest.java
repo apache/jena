@@ -135,7 +135,7 @@ public class QueryTest extends EarlTestCase
         return r ;
     }
     
-    private static Dataset createDataset(List defaultGraphURIs, List namedGraphURIs)
+    private static Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
         return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null, null) ;
     }
@@ -214,8 +214,8 @@ public class QueryTest extends EarlTestCase
     private static ResultSetRewindable unique(ResultSetRewindable results)
     {
         // VERY crude.  Utilises the fact that bindings have value equality.
-        List x = new ArrayList() ;
-        Set seen = new HashSet() ;
+        List<Binding> x = new ArrayList<Binding>() ;
+        Set<Binding> seen = new HashSet<Binding>() ;
         for ( ; results.hasNext() ; )
         {
             Binding b = results.nextBinding() ;

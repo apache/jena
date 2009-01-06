@@ -22,8 +22,8 @@ import com.hp.hpl.jena.query.ARQ;
 public class FunctionRegistry //extends HashMap<String, Function>
 {
     // Extract a Registry class and do casting and initialization here.
-    Map registry = new HashMap() ;
-    Set attemptedLoads = new HashSet() ;
+    Map<String, FunctionFactory> registry = new HashMap<String, FunctionFactory>() ;
+    Set<String> attemptedLoads = new HashSet<String>() ;
     
     public synchronized static FunctionRegistry standardRegistry()
     {
@@ -71,7 +71,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
      * @param uri           String URI
      * @param funcClass     Class for the function (new instance called).
      */
-    public void put(String uri, Class funcClass)
+    public void put(String uri, Class<?> funcClass)
     { 
         if ( ! Function.class.isAssignableFrom(funcClass) )
         {
@@ -85,30 +85,30 @@ public class FunctionRegistry //extends HashMap<String, Function>
     /** Lookup by URI */
     public FunctionFactory get(String uri)
     {
-        FunctionFactory function = (FunctionFactory)registry.get(uri) ;
+        FunctionFactory function = registry.get(uri) ;
         if ( function != null )
             return function ;
 
         if ( attemptedLoads.contains(uri) )
             return null ;
 
-        Class functionClass = MappedLoader.loadClass(uri, Function.class) ;
+        Class<?> functionClass = MappedLoader.loadClass(uri, Function.class) ;
         if ( functionClass == null )
             return null ;
         // Registry it
         put(uri, functionClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.
-        return (FunctionFactory)registry.get(uri) ;
+        return registry.get(uri) ;
     }
     
     public boolean isRegistered(String uri) { return registry.containsKey(uri) ; }
     
     /** Remove by URI */
-    public FunctionFactory remove(String uri) { return (FunctionFactory)registry.remove(uri) ; } 
+    public FunctionFactory remove(String uri) { return registry.remove(uri) ; } 
     
     /** Iterate over URIs */
-    public Iterator keys() { return registry.keySet().iterator() ; }
+    public Iterator<String> keys() { return registry.keySet().iterator() ; }
 
 }
 
