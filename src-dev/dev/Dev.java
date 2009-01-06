@@ -10,7 +10,9 @@ public class Dev
 {
     // (Jena) Cached IRI checking.
     
-    // SPARQ/Update
+    // SPARQL/Update - Sort out GraphStores/Datasets
+    
+    // Initial bindings ==> Initial table.
 
     // ----
     
