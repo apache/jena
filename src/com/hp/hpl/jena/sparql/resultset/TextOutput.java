@@ -66,7 +66,7 @@ public class TextOutput extends OutputBase
 
         // Widths at least that of the variable name.  Assumes we will print col headings.
         for ( int i = 0 ; i < numCols ; i++ )
-            colWidths[i] = ((String)rs.getResultVars().get(i)).length() ;
+            colWidths[i] = (rs.getResultVars().get(i)).length() ;
 
         // Preparation pass : find the maximum width for each column
         for ( ; rs.hasNext() ; )
@@ -139,7 +139,7 @@ public class TextOutput extends OutputBase
         int lineWidth = 0 ;
         for ( int col = 0 ; col < numCols ; col++ )
         {
-            String rVar = (String)resultSet.getResultVars().get(col) ;
+            String rVar = resultSet.getResultVars().get(col) ;
             row[col] = rVar ;
             lineWidth += colWidths[col] ;
             if ( col > 0 )
@@ -165,7 +165,7 @@ public class TextOutput extends OutputBase
             QuerySolution rBind = resultSetRewindable.nextSolution() ;
             for ( int col = 0 ; col < numCols ; col++ )
             {
-                String rVar = (String)resultSet.getResultVars().get(col) ;
+                String rVar = resultSet.getResultVars().get(col) ;
                 row[col] = this.getVarValueAsString(rBind, rVar );
             }
             printRow(pw, row, colWidths, colStart, colSep, colEnd) ;

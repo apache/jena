@@ -73,7 +73,7 @@ public class Params
             return null ;
         if ( x.size() != 1 )
             throw new MultiValueException("Multiple value ("+x.size()+" when exactly one requested") ; 
-        return (String)x.get(0) ;
+        return x.get(0) ;
     }
     
     public List<String> getValues(String name)

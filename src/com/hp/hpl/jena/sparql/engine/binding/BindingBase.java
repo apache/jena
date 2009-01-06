@@ -207,7 +207,7 @@ abstract public class BindingBase implements Binding
         int hash = 0xC0 ;
         for ( Iterator<Var> iter = bind.vars() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ; 
+            Var var = iter.next() ; 
             Node node = bind.get(var) ;
             hash ^= var.hashCode() ;
             hash ^= node.hashCode() ;
@@ -226,7 +226,7 @@ abstract public class BindingBase implements Binding
 
         for ( Iterator<Var> iter1 = bind1.vars() ; iter1.hasNext() ; )
         {
-            Var var = (Var)iter1.next() ; 
+            Var var = iter1.next() ; 
             Node node1 = bind1.get(var) ;
             Node node2 = bind2.get(var) ;
             

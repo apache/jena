@@ -71,7 +71,7 @@ public class TestHeuristicWeightNode extends TestCase
 		BasicPatternGraph graph = new BasicPatternGraph(pattern, Util.getHeuristic(heuristic, context, graphM.getGraph())) ;
 		
 		// Extract the node from the graph (there is only one node specified for each test case)
-		GraphNode node = (GraphNode)graph.getComponent(0).getNodes().iterator().next() ;
+		GraphNode node = graph.getComponent(0).getNodes().iterator().next() ;
 	    
 		// Test if the node weight equals to the expected weight specified within the test
 		assertTrue(node.weight() == weight) ;

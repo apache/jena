@@ -66,6 +66,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map) */
+    @SuppressWarnings("unchecked")
     public PrefixMapping setNsPrefixes(Map map)
     {
         pmapLocal.setNsPrefixes(map) ;
@@ -98,16 +99,18 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsPrefixMap() */
-    public Map getNsPrefixMap() { return getNsPrefixMap(true) ; }
+    public Map<String, String> getNsPrefixMap() { return getNsPrefixMap(true) ; }
     
-    public Map getNsPrefixMap(boolean includeGlobalMap)
+    public Map<String, String> getNsPrefixMap(boolean includeGlobalMap)
     {
-        Map m1 = pmapLocal.getNsPrefixMap() ;
+        @SuppressWarnings("unchecked")
+        Map<String, String> m1 = pmapLocal.getNsPrefixMap() ;
         if ( pmapGlobal == null )
             return m1 ;
         if ( includeGlobalMap )
         {
-            Map m2 = pmapGlobal.getNsPrefixMap() ;
+            @SuppressWarnings("unchecked")
+            Map<String, String> m2 = pmapGlobal.getNsPrefixMap() ;
             m1.putAll(m2) ;
         }
         return m1 ;
@@ -164,12 +167,13 @@ public class PrefixMapping2 implements PrefixMapping
 
     public PrefixMapping withDefaultMappings(PrefixMapping map)
     {
-        Iterator it = map.getNsPrefixMap().entrySet().iterator();
+        @SuppressWarnings("unchecked")
+        Iterator<Map.Entry<String, String>> it = map.getNsPrefixMap().entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            String prefix = (String) e.getKey();
-            String uri = (String) e.getValue();
+            Map.Entry<String, String> e = it.next();
+            String prefix = e.getKey();
+            String uri = e.getValue();
             if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
                 setNsPrefix( prefix, uri );
             }

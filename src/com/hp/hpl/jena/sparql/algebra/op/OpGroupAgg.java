@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -19,9 +20,9 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class OpGroupAgg extends OpModifier
 {
     private VarExprList groupVars ;
-    private List aggregators ;
+    private List<E_Aggregator> aggregators ;
 
-    public OpGroupAgg(Op subOp, VarExprList groupVars, List aggregators)
+    public OpGroupAgg(Op subOp, VarExprList groupVars, List<E_Aggregator> aggregators)
     { 
         super(subOp) ;
         this.groupVars  = groupVars ;
@@ -30,7 +31,7 @@ public class OpGroupAgg extends OpModifier
     
     public String getName()                 { return Tags.tagGroupBy ; }
     public VarExprList getGroupVars()       { return groupVars ; }
-    public List getAggregators()            { return aggregators ; }
+    public List<E_Aggregator> getAggregators()            { return aggregators ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override

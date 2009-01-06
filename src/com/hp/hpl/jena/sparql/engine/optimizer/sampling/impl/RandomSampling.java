@@ -56,7 +56,7 @@ public class RandomSampling extends SamplingBase
 		if (size > 0)
 			next = rand.nextInt(size) ;
 		
-		return (Triple)triples.remove(next) ;
+		return triples.remove(next) ;
 	}
 	
 	/*

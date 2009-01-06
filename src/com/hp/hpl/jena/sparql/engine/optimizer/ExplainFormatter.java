@@ -45,7 +45,7 @@ public class ExplainFormatter
 			
 			for (int i = 0; i < row.size(); i++)
 			{
-				String s = (String)row.get(i) ;
+				String s = row.get(i) ;
 				
 				bf.append(s) ;
 				

@@ -32,7 +32,7 @@ public class BindingFixed extends BindingWrapped
         int _hashCode = 0 ;
         for ( Iterator<Var> iter = vars() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ;
+            Var var = iter.next() ;
             Node n = get(var) ;
             if ( n == null )
                 continue ;

@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public class OpPrefixesUsed
 {
+    @SuppressWarnings("unchecked")
     static public PrefixMapping used(Op op, PrefixMapping pmap)
     {
         PrefixMapping pmap2 = new PrefixMappingImpl() ;
@@ -33,10 +34,10 @@ public class OpPrefixesUsed
     
     static class PrefixFinder extends OpVisitorBase
     {
-        Map pmap ;
+        Map<String, String> pmap ;
         PrefixMapping usedPMap ;
         
-        public PrefixFinder(PrefixMapping pmap2, Map pmap)
+        public PrefixFinder(PrefixMapping pmap2, Map<String, String> pmap)
         {
             this.pmap = pmap ;
             this.usedPMap = pmap2 ;
@@ -64,9 +65,8 @@ public class OpPrefixesUsed
         
         private void visit(BasicPattern pattern)
         {
-            for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+            for ( Triple t : pattern )
             {
-                Triple t =(Triple)iter.next();
                 node(t.getSubject()) ;
                 node(t.getPredicate()) ;
                 node(t.getObject()) ;
@@ -87,11 +87,11 @@ public class OpPrefixesUsed
             if ( usedPMap.shortForm(uri) != uri )
                 return ;
             
-            for ( Iterator iter = pmap.entrySet().iterator() ; iter.hasNext() ; )
+            for ( Iterator<Map.Entry<String, String>> iter = pmap.entrySet().iterator() ; iter.hasNext() ; )
             {
-                Map.Entry e = (Map.Entry)iter.next();
-                String k = (String)e.getKey() ;
-                String v = (String)e.getValue() ;
+                Map.Entry<String, String> e = iter.next();
+                String k = e.getKey() ;
+                String v = e.getValue() ;
                 
                 if ( uri.startsWith(v) )
                 {

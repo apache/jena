@@ -6,8 +6,6 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.net.MalformedURLException;
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;

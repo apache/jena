@@ -28,9 +28,9 @@ public class GraphStoreUtils
     public static void actionAll(GraphStore graphStore, GraphStoreAction action)
     {
         action.exec(graphStore.getDefaultGraph()) ;
-        for ( Iterator iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
         {
-            Node gn = (Node)iter.next() ;
+            Node gn = iter.next() ;
             Graph g = graphStore.getGraph(gn) ;
             if ( g == null )
                 throw new UpdateException("No such graph: "+gn) ; 

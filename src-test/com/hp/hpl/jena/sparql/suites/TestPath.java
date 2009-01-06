@@ -186,7 +186,7 @@ public class TestPath extends TestCase
             directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
         Set results = new HashSet() ;
         for ( ; resultsIter.hasNext() ; )
-            results.add( (Node)resultsIter.next() ) ;
+            results.add( resultsIter.next() ) ;
 
         Set expected = new HashSet(Arrays.asList(expectedNodes)) ;
         assertEquals(expected, results) ;

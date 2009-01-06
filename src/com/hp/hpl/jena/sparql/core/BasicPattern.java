@@ -49,7 +49,7 @@ public class BasicPattern implements Iterable<Triple>
     public void addAll(BasicPattern other) { triples.addAll(other.triples) ; }
     public void add(int i, Triple t) { triples.add(i, t) ; }
     
-    public Triple get(int i) { return (Triple)triples.get(i) ; }
+    public Triple get(int i) { return triples.get(i) ; }
     public ListIterator<Triple> iterator() { return triples.listIterator() ; } 
     public int size() { return triples.size() ; }
     public boolean isEmpty() { return triples.isEmpty() ; }

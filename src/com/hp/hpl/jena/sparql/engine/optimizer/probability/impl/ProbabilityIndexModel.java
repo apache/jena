@@ -220,7 +220,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 			if (patterns.containsKey(pattern))
 			{
 				double correction = 1d ;
-				double indexProbability = ((Long)patterns.get(pattern)).doubleValue() / squaredIndexedSize ;
+				double indexProbability = (patterns.get(pattern)).doubleValue() / squaredIndexedSize ;
 				
 				// Consider bound elements
 				if (specificJoinType.equals(BasicPatternJoin.bSS))
@@ -417,7 +417,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 			
 			if (histograms.containsKey(property))
 			{
-				Histogram histogram = (Histogram)histograms.get(property) ;
+				Histogram histogram = histograms.get(property) ;
 				return histogram.getClassFrequency(object) ;
 			}
 			else
@@ -431,7 +431,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 		for (Iterator<Property> iter = histograms.keySet().iterator(); iter.hasNext(); )
 		{
 			Property property = iter.next() ;
-			Histogram histogram = (Histogram)histograms.get(property) ;
+			Histogram histogram = histograms.get(property) ;
 				
 			size += histogram.getClassFrequency(object) ;
 		}

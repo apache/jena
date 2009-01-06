@@ -52,7 +52,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
         
         for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
-            RDFNode n = (RDFNode)iter.next();
+            RDFNode n = iter.next();
             if ( ! ( n instanceof Resource ) )
                 throw new DatasetAssemblerException(root, "Not a resource: "+FmtUtils.stringForRDFNode(n)) ;
             Resource r = (Resource)n ;

@@ -28,7 +28,7 @@ public class BindingNamedVar extends BindingWrapped
         List<Var> x = new ArrayList<Var>() ;
         for ( Iterator<Var> iter = getWrapped().vars() ; iter.hasNext() ; )
         {
-            Var var = (Var)iter.next() ;
+            Var var = iter.next() ;
             if ( ! var.isNamedVar() )
                 continue ;
             x.add(var) ;

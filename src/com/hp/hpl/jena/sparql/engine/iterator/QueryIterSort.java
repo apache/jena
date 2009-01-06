@@ -47,7 +47,7 @@ public class QueryIterSort
         List<Binding> x = new ArrayList<Binding>() ;
         for ( ; qIter.hasNext() ; )
         {
-            Binding b = (Binding)qIter.next() ;
+            Binding b = qIter.next() ;
             x.add(b) ;
         }
         Binding[] y = x.toArray(new Binding[]{}) ;

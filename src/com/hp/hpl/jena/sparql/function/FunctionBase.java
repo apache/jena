@@ -47,7 +47,7 @@ public abstract class FunctionBase implements Function
         List<NodeValue> evalArgs = new ArrayList<NodeValue>() ;
         for ( Iterator<Expr> iter = args.iterator() ; iter.hasNext() ; )
         {
-            Expr e = (Expr)iter.next() ;
+            Expr e = iter.next() ;
             NodeValue x = e.eval(binding, env) ;
             evalArgs.add(x) ;
         }

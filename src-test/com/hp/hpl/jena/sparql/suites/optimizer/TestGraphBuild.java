@@ -53,8 +53,8 @@ public class TestGraphBuild extends TestCase
 	    
 	    for (int i = 0; i < components.size(); i++)
 	    {	    	
-	    	Integer nodes = (Integer)components.get(i).get("nodes") ;
-	    	Integer edges = (Integer)components.get(i).get("edges") ;
+	    	Integer nodes = components.get(i).get("nodes") ;
+	    	Integer edges = components.get(i).get("edges") ;
 	    	ConnectedGraph component = graph.getComponent(i) ;
 	    	
 	    	assertTrue(component.getNodes().size() == nodes.intValue()) ;

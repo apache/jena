@@ -48,7 +48,7 @@ class FindableBasicPattern implements Findable
         if ( o == Node.ANY ) o = null ;
         for ( Iterator<Triple> iter = triples.iterator() ; iter.hasNext(); )
         {
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             if ( s != null && ! t.getSubject().equals(s) ) continue ;
             if ( p != null && ! t.getPredicate().equals(p) ) continue ;
             if ( o != null && ! t.getObject().equals(o) ) continue ;

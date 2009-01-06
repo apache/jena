@@ -67,7 +67,7 @@ public class ItemWriter
                 if ( pmap != null )
                 {
                     @SuppressWarnings("unchecked")
-                    Map<String,String> pm = (Map<String,String>)pmap.getNsPrefixMap() ;
+                    Map<String,String> pm = pmap.getNsPrefixMap() ;
                     donePrefix = ( pm.size() != 0 ) ;
                     if ( pm.size() != 0 )
                     {

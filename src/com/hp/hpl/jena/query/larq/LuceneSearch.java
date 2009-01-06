@@ -204,7 +204,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         HitConverter converter = new HitConverter(binding, match, score) ;
         
-        Iterator<Binding> iter2 = (Iterator<Binding>)new Map1Iterator(converter, iter) ;
+        Iterator<Binding> iter2 = new Map1Iterator(converter, iter) ;
         QueryIterator qIter = new QueryIterPlainWrapper(iter2, execCxt) ;
 
         if ( limit >= 0 )

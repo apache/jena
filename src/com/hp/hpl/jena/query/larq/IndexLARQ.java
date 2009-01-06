@@ -89,7 +89,7 @@ public class IndexLARQ
             }} ;
         
         @SuppressWarnings("unchecked")
-        Iterator<Hit> iter = (Iterator<Hit>)new Map1Iterator(converter, search(queryString)) ;
+        Iterator<Hit> iter = new Map1Iterator(converter, search(queryString)) ;
         if ( scoreLimit > 0 )
             iter = new IteratorTruncate<Hit>(new ScoreTest(scoreLimit), iter) ;
         
@@ -127,7 +127,7 @@ public class IndexLARQ
                     return new HitLARQ(h) ;
                 }} ;
             @SuppressWarnings("unchecked")
-            Iterator<HitLARQ> iter = (Iterator<HitLARQ>)new Map1Iterator(converter, hits.iterator()) ;
+            Iterator<HitLARQ> iter = new Map1Iterator(converter, hits.iterator()) ;
             return iter ;
             
         } catch (Exception e)
@@ -145,7 +145,7 @@ public class IndexLARQ
             Iterator<HitLARQ> iter = search(queryString) ;
             for ( ; iter.hasNext() ; )
             {
-                HitLARQ x = (HitLARQ)iter.next();
+                HitLARQ x = iter.next();
                 if ( x != null && x.getNode().equals(node)) 
                     return x ;
             }

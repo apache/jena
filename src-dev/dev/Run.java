@@ -25,10 +25,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.*;
 
 import com.hp.hpl.jena.query.*;
 
@@ -37,6 +34,22 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        
+        {
+        String x = "PREFIX  :     <http://example/>\n"+
+        "SELECT  (count(?x) AS ?countX)\n"+
+        "    WHERE\n"+
+        "      { ?x :p ?p}\n"+
+        "    GROUP BY ?p\n" ;
+        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
+        QueryUtils.checkOp(query, false) ;
+        QueryUtils.checkParse(query) ;
+        System.exit(0) ;
+        
+        
+        }
+        
+        
         String[] x1 = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
             " ASK {",
             "FILTER bound(?test)",

@@ -24,8 +24,8 @@ public abstract class OpN extends OpBase
     public void add(Op op) { elements.add(op) ; }
     public Op get(int idx) { return elements.get(idx) ; }
     
-    public abstract Op apply(Transform transform, List elts) ;
-    public abstract Op copy(List elts) ;
+    public abstract Op apply(Transform transform, List<Op> elts) ;
+    public abstract Op copy(List<Op> elts) ;
     
 
     public boolean sameAs(OpN op, NodeIsomorphismMap labelMap)

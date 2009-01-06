@@ -114,14 +114,13 @@ public class FormatterElement extends FormatterBase
         // Could be neater.
         boolean first = true ;
         PathBlock pBlk = el.getPattern() ;
-        for ( Iterator iter = pBlk.iterator() ; iter.hasNext() ; )
+        for ( TriplePath tp : pBlk )
         {
             if ( ! first )
             {
                 out.println(" .") ;
             }
             first = false ;
-            TriplePath tp = (TriplePath)iter.next();
             if ( tp.isTriple() )
             {
                 printSubject(tp.getSubject()) ;
@@ -208,7 +207,7 @@ public class FormatterElement extends FormatterBase
         {
             // If this is an element of just one, just do it inplace
             // Can't happen from a parsed query.
-            Element e = (Element)el.getElements().get(0) ;
+            Element e = el.getElements().get(0) ;
             visitAsGroup(e) ;
             return ;
         }
@@ -223,8 +222,10 @@ public class FormatterElement extends FormatterBase
         out.incIndent(INDENT) ;
         
         boolean first = true ;
-        for ( Iterator iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        for ( Iterator<Element> iter = el.getElements().listIterator() ; iter.hasNext() ;)
         {
+           
+            Element subElement = iter.next() ;
             if ( ! first )
             {
                 out.decIndent(INDENT) ;
@@ -233,7 +234,6 @@ public class FormatterElement extends FormatterBase
                 out.newline() ;
                 out.incIndent(INDENT) ;
             }
-            Element subElement = (Element)iter.next() ;
             visitAsGroup(subElement) ;
             first = false ;
         }
@@ -253,7 +253,7 @@ public class FormatterElement extends FormatterBase
         if ( GROUP_UNNEST_ONE && el.getElements().size() == 1 )
         {
             // If this is an element of just one, we can remove the {} if it is a group.
-            Element e = (Element)el.getElements().get(0) ;
+            Element e = el.getElements().get(0) ;
             visitAsGroup(e) ;
             return ;
         }
@@ -277,9 +277,9 @@ public class FormatterElement extends FormatterBase
     
         boolean first = true ;
         
-        for ( Iterator iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        for ( Iterator<Element> iter = el.getElements().listIterator() ; iter.hasNext() ;)
         {
-            Element subElement = (Element)iter.next() ;
+            Element subElement = iter.next() ;
            if ( ! first )
             {
                 // Need to move on after the last thing printed.
@@ -446,9 +446,8 @@ public class FormatterElement extends FormatterBase
         boolean first = true ;             // Print newlines between blocks.
         
         int indent = -1 ;
-        for ( Iterator iter = triples.iterator() ; iter.hasNext() ; )
+        for ( Triple t : triples )
         {
-            Triple t = (Triple)iter.next() ;
             if ( subj != null && t.getSubject().equals(subj) )
             {
                 subjAcc.add(t) ;
@@ -538,9 +537,8 @@ public class FormatterElement extends FormatterBase
         subjectWidth = -1 ;
         predicateWidth = -1 ;
 
-        for ( Iterator iter = triples.iterator() ; iter.hasNext() ; )
+        for ( Triple t : triples )
         {
-            Triple t = (Triple)iter.next() ;
             String s = slotToString(t.getSubject()) ;
             if ( s.length() > subjectWidth )
                 subjectWidth = s.length() ;

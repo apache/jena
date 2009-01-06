@@ -92,7 +92,7 @@ public class ParserBase
         // remove group of one group.
         if ( elg.getElements().size() == 1 )
         {
-            Element e1 = (Element)elg.getElements().get(0) ;
+            Element e1 = elg.getElements().get(0) ;
             if ( e1 instanceof ElementGroup )
                 return e1 ;
         }

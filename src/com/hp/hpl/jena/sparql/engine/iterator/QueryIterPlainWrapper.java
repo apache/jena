@@ -43,7 +43,7 @@ public class QueryIterPlainWrapper extends QueryIter
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 
     
     @Override
-    protected Binding moveToNextBinding() { return (Binding)iterator.next() ; }
+    protected Binding moveToNextBinding() { return iterator.next() ; }
 
     @Override
     protected void closeIterator()

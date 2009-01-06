@@ -63,9 +63,9 @@ public class ElementWalker
         
         public void visit(ElementGroup el)
         {
-            for ( Iterator iter = el.getElements().iterator() ; iter.hasNext() ; )
+            for ( Iterator<Element> iter = el.getElements().iterator() ; iter.hasNext() ; )
             {
-                Element e = (Element)iter.next() ;
+                Element e = iter.next() ;
                 e.visit(this) ;
             }
             proc.visit(el) ;

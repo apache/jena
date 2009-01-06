@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -50,13 +51,12 @@ public class TemplateGraph extends TemplateGroup
     }
 
     @Override
-    //@SuppressWarnings("unchecked")
-    public void subst(Collection s, Map bNodeMap, Binding b)
+    public void subst(Collection<Triple> acc, Map<Node, Node> bNodeMap, Binding b)
     {
-        for ( Iterator iter = templates() ; iter.hasNext() ; )
+        for ( Iterator<Template> iter = templates() ; iter.hasNext() ; )
         {
             TemplateTriple tt = (TemplateTriple)iter.next() ;
-            s.add(tt.getTriple()) ;
+            acc.add(tt.getTriple()) ;
         }
     }
 }

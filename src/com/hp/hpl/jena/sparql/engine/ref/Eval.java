@@ -67,7 +67,7 @@ public class Eval
         List<Binding> list = new ArrayList<Binding>(dsg.size()) ;
         for ( ; iter.hasNext(); )
         {
-            Node gn = (Node)iter.next();
+            Node gn = iter.next();
             Binding b = new Binding1(null, Var.alloc(graphNode), gn) ;
             list.add(b) ;
         }
@@ -99,7 +99,7 @@ public class Eval
         Table current = null ;
         for ( Iterator<Node> iter = execCxt.getDataset().listGraphNodes() ; iter.hasNext() ; )
         {
-            Node gn = (Node)iter.next();
+            Node gn = iter.next();
             Graph graph = execCxt.getDataset().getGraph(gn) ;
             ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
             Evaluator e2 = EvaluatorFactory.create(execCxt2) ;

@@ -183,9 +183,9 @@ public class OpExecutor
     {
         QueryIterator qIter = input ;
         
-        for ( Iterator iter = opSequence.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Op> iter = opSequence.iterator() ; iter.hasNext() ; )
         {
-            Op sub = (Op)iter.next() ;
+            Op sub = iter.next() ;
             qIter = executeOp(sub, qIter) ;
         }
         
@@ -279,11 +279,8 @@ public class OpExecutor
         Op base = opFilter.getSubOp() ;
         QueryIterator qIter = executeOp(base, input) ;
 
-        for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
-        {
-            Expr expr = (Expr)iter.next() ;
+        for ( Expr expr : exprs )
             qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
-        }
         return qIter ;
     }
 

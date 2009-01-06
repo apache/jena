@@ -424,17 +424,18 @@ public class BuilderOp
             BuilderLib.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-            List<Expr> aggregators = new ArrayList<Expr>() ;
+            List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
             
             if ( list.size() == 4 )
             {
                 // Aggregations : assume that the exprs are legal.
                 VarExprList y = BuilderExpr.buildNamedExprList(list.get(2).getList()) ;
-                aggregators.addAll(y.getExprs().values()) ;
+                
                 for (  Expr expr : aggregators )
                 {
                     if ( ! ( expr instanceof E_Aggregator ) )
                         BuilderLib.broken(list, "Not a aggregate expression: "+expr) ;
+                    aggregators.add((E_Aggregator)expr) ;    
                 }
             }
             Op sub = build(list, list.size()-1) ;

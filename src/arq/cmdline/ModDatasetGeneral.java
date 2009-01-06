@@ -36,8 +36,8 @@ public class ModDatasetGeneral extends ModDataset
     //protected final ArgDecl dirDecl        = new ArgDecl(ArgDecl.HasValue, "dir") ;
     protected final ArgDecl lmapDecl       = new ArgDecl(ArgDecl.HasValue, "lmap") ;
  
-    private List graphURLs               = null ;
-    private List namedGraphURLs          = null ;
+    private List<String> graphURLs               = null ;
+    private List<String> namedGraphURLs          = null ;
     private DataFormat dataSyntax        = null ;
     private FileManager fileManager     = FileManager.get() ;    
 
@@ -100,12 +100,12 @@ public class ModDatasetGeneral extends ModDataset
         { throw new CmdException("Error creating dataset", ex) ; }
     }
 
-    public List getGraphURLs()
+    public List<String> getGraphURLs()
     {
         return graphURLs ;
     }
 
-    public List getNamedGraphURLs()
+    public List<String> getNamedGraphURLs()
     {
         return namedGraphURLs ;
     }

@@ -423,14 +423,9 @@ public class ConnectedGraph
 	{
 		public int compare(GraphNode node1, GraphNode node2)
 		{
-			if (! (node1 instanceof GraphNode))
-				throw new ClassCastException() ;
-			if (! (node2 instanceof GraphNode))
-				throw new ClassCastException() ;
-			
-			if (((GraphNode)node1).weight() < ((GraphNode)node2).weight())
+			if ((node1).weight() < (node2).weight())
 				return -1 ;
-			if (((GraphNode)node1).weight()> ((GraphNode)node2).weight())
+			if ((node1).weight()> (node2).weight())
 				return 1 ;
 			
 			return 0 ;

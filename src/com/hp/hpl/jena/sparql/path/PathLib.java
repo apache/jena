@@ -119,7 +119,7 @@ public class PathLib
         Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
         for ( ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
+            Node n = iter.next() ;
             if ( n.sameValueAs(object) )
                 return IterLib.result(binding, execCxt) ;        
         }
@@ -135,7 +135,7 @@ public class PathLib
         
         for ( ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
+            Node n = iter.next() ;
             Binding b2 = new Binding1(binding, sVar, n) ;
             Iterator<Node> pathIter = PathEval.eval(graph, n, path) ;
             QueryIterator qIter = _execTriplePath(b2, pathIter, oVar, execCxt) ;

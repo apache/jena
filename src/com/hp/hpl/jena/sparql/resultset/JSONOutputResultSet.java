@@ -207,7 +207,7 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
             if ( multiLineValues ) out.println() ;
             if ( ! bNodeMap.containsKey(resource))
                 bNodeMap.put(resource, "b"+(bNodeCounter++)) ;
-            String label = (String)bNodeMap.get(resource) ;
+            String label = bNodeMap.get(resource) ;
             out.print(quoteName(dfValue)+": "+quote(label)) ;
             if ( multiLineValues ) out.println() ;
         }

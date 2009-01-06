@@ -97,7 +97,7 @@ public class IndexModelAccess
 		
 		while (resIter.hasNext())
 		{
-			Resource propertyR = (Resource)resIter.nextResource() ;
+			Resource propertyR = resIter.nextResource() ;
 			
 			Property property = ResourceFactory.createProperty(propertyR.getProperty(Vocabulary.property).getResource().getURI()) ;
 			long frequency = propertyR.getProperty(Vocabulary.frequency).getLong() ;
@@ -136,7 +136,7 @@ public class IndexModelAccess
 		
 		while (resIter.hasNext())
 		{
-			Resource patternR = (Resource)resIter.nextResource() ;
+			Resource patternR = resIter.nextResource() ;
 			Property joiningProperty = ResourceFactory.createProperty(patternR.getProperty(Vocabulary.joiningProperty).getResource().getURI()) ;
 			Property joinedProperty = ResourceFactory.createProperty(patternR.getProperty(Vocabulary.joinedProperty).getResource().getURI()) ;
 			Resource joinType = ResourceFactory.createResource(patternR.getProperty(Vocabulary.joinType).getResource().getURI()) ;

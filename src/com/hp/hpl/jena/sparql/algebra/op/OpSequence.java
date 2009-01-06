@@ -50,7 +50,7 @@ public class OpSequence extends OpN
     }
     
     private OpSequence()           { super() ; }
-    private OpSequence(List elts)  { super(elts) ; }
+    private OpSequence(List<Op> elts)  { super(elts) ; }
     
     public String getName() { return Tags.tagSequence ; }
 
@@ -65,11 +65,11 @@ public class OpSequence extends OpN
     }
 
     @Override
-    public Op apply(Transform transform, List elts)
+    public Op apply(Transform transform, List<Op> elts)
     { return transform.transform(this, elts) ; }
 
     @Override
-    public Op copy(List elts)
+    public Op copy(List<Op> elts)
     {
         return new OpSequence(elts) ; 
     }

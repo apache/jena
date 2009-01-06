@@ -90,7 +90,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
             return null ; 
         }
         
-        Binding binding = (Binding)getInput().next() ;
+        Binding binding = getInput().next() ;
         QueryIterator iter = nextStage(binding) ;
         return iter ;
     }

@@ -223,12 +223,12 @@ public class HttpQuery extends Params
             
             boolean first = true ;
             OutputStream out = httpConnection.getOutputStream() ;
-            for ( Iterator iter = pairs().listIterator() ; iter.hasNext() ; )
+            for ( Iterator<Pair> iter = pairs().listIterator() ; iter.hasNext() ; )
             {
                 if ( ! first )
                     out.write('&') ;
                 first = false ;
-                Pair p = (Pair)iter.next() ;
+                Pair p = iter.next() ;
                 out.write(p.getName().getBytes()) ;
                 out.write('=') ;
                 String x = p.getValue() ;
@@ -307,11 +307,11 @@ public class HttpQuery extends Params
             if ( false )
             {
                 // Dump the reply
-                Map map = httpConnection.getHeaderFields() ;
-                for ( Iterator iter = map.keySet().iterator() ; iter.hasNext() ; )
+                Map<String,List<String>> map = httpConnection.getHeaderFields() ;
+                for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
                 {
-                    String k = (String)iter.next();
-                    List v = (List)map.get(k) ;
+                    String k = iter.next();
+                    List<String> v = map.get(k) ;
                     System.out.println(k+" = "+v) ;
                 }
                 

@@ -32,7 +32,7 @@ public class ResultSetApply
         proc.start(rs) ;
         for ( ; rs.hasNext() ; )
         {
-            QuerySolution qs = (QuerySolution)rs.next() ;
+            QuerySolution qs = rs.next() ;
             proc.start(qs) ;
             for ( Iterator iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
             {

@@ -119,7 +119,7 @@ public class AlgebraGenerator
     { 
         if ( el.getElements().size() == 1 )
         {
-            Element subElt = (Element)el.getElements().get(0) ;
+            Element subElt = el.getElements().get(0) ;
             ElementGroup elg = (ElementGroup)subElt ;
             return compileElement(elg) ;
         }
@@ -343,7 +343,7 @@ public class AlgebraGenerator
             op = flush(bp, op) ;
             bp = null ;
                 
-            TriplePath tp = (TriplePath)obj ;
+            TriplePath tp = obj ;
             OpPath opPath = new OpPath(tp) ;
             op = OpSequence.create(op, opPath) ;
             continue ;

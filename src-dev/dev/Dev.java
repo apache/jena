@@ -8,6 +8,9 @@ package dev;
 
 public class Dev
 {
+    // E_Aggregator needs hashCode and .equals.
+    // ==> Aggregator?
+    
     // Upgrade 
     // + Var - several list loops of string or var - checkeach usage.
     // + Registries taking Class<?> can be tidied up

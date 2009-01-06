@@ -3,16 +3,16 @@
 package com.hp.hpl.jena.sparql.lang.rdql;
 
 class JJTRDQLParserState {
-  private java.util.Stack nodes;
-  private java.util.Stack marks;
+  private java.util.Stack<RDQL_Node> nodes;
+  private java.util.Stack<Integer> marks;
 
   private int sp;		// number of nodes on stack
   private int mk;		// current mark
   private boolean node_created;
 
   JJTRDQLParserState() {
-    nodes = new java.util.Stack();
-    marks = new java.util.Stack();
+    nodes = new java.util.Stack<RDQL_Node>();
+    marks = new java.util.Stack<Integer>();
     sp = 0;
     mk = 0;
   }
@@ -36,7 +36,7 @@ class JJTRDQLParserState {
   /* Returns the root node of the AST.  It only makes sense to call
      this after a successful parse. */
   RDQL_Node rootNode() {
-    return (RDQL_Node)nodes.elementAt(0);
+    return nodes.elementAt(0);
   }
 
   /* Pushes a node on to the stack. */
@@ -49,14 +49,14 @@ class JJTRDQLParserState {
      stack.  */
   RDQL_Node popNode() {
     if (--sp < mk) {
-      mk = ((Integer)marks.pop()).intValue();
+      mk = marks.pop().intValue();
     }
-    return (RDQL_Node)nodes.pop();
+    return nodes.pop();
   }
 
   /* Returns the node currently on the top of the stack. */
   RDQL_Node peekNode() {
-    return (RDQL_Node)nodes.peek();
+    return nodes.peek();
   }
 
   /* Returns the number of children on the stack in the current node
@@ -70,7 +70,7 @@ class JJTRDQLParserState {
     while (sp > mk) {
       popNode();
     }
-    mk = ((Integer)marks.pop()).intValue();
+    mk = marks.pop().intValue();
   }
 
 
@@ -86,7 +86,7 @@ class JJTRDQLParserState {
      made the children of the definite node.  Then the definite node
      is pushed on to the stack. */
   void closeNodeScope(RDQL_Node n, int num) {
-    mk = ((Integer)marks.pop()).intValue();
+    mk = marks.pop().intValue();
     while (num-- > 0) {
       RDQL_Node c = popNode();
       c.jjtSetParent(n);
@@ -106,7 +106,7 @@ class JJTRDQLParserState {
   void closeNodeScope(RDQL_Node n, boolean condition) {
     if (condition) {
       int a = nodeArity();
-      mk = ((Integer)marks.pop()).intValue();
+      mk = marks.pop().intValue();
       while (a-- > 0) {
 	RDQL_Node c = popNode();
 	c.jjtSetParent(n);
@@ -116,7 +116,7 @@ class JJTRDQLParserState {
       pushNode(n);
       node_created = true;
     } else {
-      mk = ((Integer)marks.pop()).intValue();
+      mk = marks.pop().intValue();
       node_created = false;
     }
   }

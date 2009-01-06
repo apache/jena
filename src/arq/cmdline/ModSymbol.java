@@ -47,9 +47,9 @@ public class ModSymbol implements ArgModuleGeneral
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
             return ;
         
-        for ( Iterator iter = cmdLine.getValues(setDecl).iterator() ; iter.hasNext(); )
+        for ( Iterator<String> iter = cmdLine.getValues(setDecl).iterator() ; iter.hasNext(); )
         {
-            String arg = (String)iter.next();
+            String arg = iter.next();
             String[] frags = arg.split("=", 2) ;
             if ( frags.length != 2)
                 throw new RuntimeException("Can't split '"+arg+"'") ;
@@ -78,9 +78,9 @@ public class ModSymbol implements ArgModuleGeneral
     
     public void verbose(IndentedWriter out)
     {
-        for ( Iterator iter = context.keys().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Symbol> iter = context.keys().iterator() ; iter.hasNext() ; )
         {
-            Symbol symbol = (Symbol)iter.next();
+            Symbol symbol = iter.next();
             String value = context.getAsString(symbol) ;
             out.println(symbol+" -> "+value) ;
         }

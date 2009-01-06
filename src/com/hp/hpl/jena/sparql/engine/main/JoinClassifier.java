@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.SetUtils ;
 
 public class JoinClassifier
@@ -44,15 +45,15 @@ public class JoinClassifier
 
         // Need only check left/rght.
         VarFinder vfLeft = new VarFinder(op) ;
-        Set vLeftFixed = vfLeft.getFixed() ;
-        Set vLeftOpt = vfLeft.getOpt() ;
+        Set<Var> vLeftFixed = vfLeft.getFixed() ;
+        Set<Var> vLeftOpt = vfLeft.getOpt() ;
         if (print) System.err.println("Left/fixed:    " + vLeftFixed) ;
         if (print) System.err.println("Left/opt:      " + vLeftOpt) ;
 
         VarFinder vfRight = new VarFinder(other) ;
-        Set vRightFixed = vfRight.getFixed() ;
-        Set vRightOpt = vfRight.getOpt() ;
-        Set vRightFilter = vfRight.getFilter() ;
+        Set<Var> vRightFixed = vfRight.getFixed() ;
+        Set<Var> vRightOpt = vfRight.getOpt() ;
+        Set<Var> vRightFilter = vfRight.getFilter() ;
 
         if (print) System.err.println("Right/fixed:   " + vRightFixed) ;
         if (print) System.err.println("Right/opt:     " + vRightOpt) ;

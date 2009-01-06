@@ -71,7 +71,7 @@ public class BasicPatternGraph
 		{
 			ConnectedGraph component = iter.next() ;
 			// ... and optimize them.
-			pattern.addAll((BasicPattern)component.optimize()) ;
+			pattern.addAll(component.optimize()) ;
 		}
 		
 		log.debug("Optimized BasicPattern: " + pattern.toString()) ;

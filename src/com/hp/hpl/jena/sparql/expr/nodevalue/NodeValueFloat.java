@@ -28,7 +28,7 @@ public class NodeValueFloat extends NodeValue
     @Override
     public float getFloat()  { return value ; }
     @Override
-    public double getDouble()  { return (double)value ; }
+    public double getDouble()  { return value ; }
 
     @Override
     protected Node makeNode()

@@ -38,8 +38,8 @@ public abstract class FunctionBase2 extends FunctionBase
         if ( args.size() != 2 )
             throw new ExprEvalException(Utils.className(this)+": Wrong number of arguments: Wanted 2, got "+args.size()) ;
         
-        NodeValue v1 = (NodeValue)args.get(0) ;
-        NodeValue v2 = (NodeValue)args.get(1) ;
+        NodeValue v1 = args.get(0) ;
+        NodeValue v2 = args.get(1) ;
         
         return exec(v1, v2) ;
     }

@@ -37,7 +37,7 @@ public abstract class FunctionBase1 extends FunctionBase
         if ( args.size() != 1 )
             throw new ExprEvalException("FunctionBase1: Wrong number of arguments: Wanted 1, got "+args.size()) ;
         
-        NodeValue v1 = (NodeValue)args.get(0) ;
+        NodeValue v1 = args.get(0) ;
         
         return exec(v1) ;
     }

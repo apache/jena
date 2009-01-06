@@ -165,7 +165,7 @@ public class GraphList
         Set<Node> acc = new HashSet<Node>() ;
         // A list head is a node with a rdf:rest from it, not but rdf:rest to it.
         @SuppressWarnings("unchecked")
-        Iterator iter = (Iterator<Triple>)graph.find(Node.ANY, CDR, Node.ANY) ;
+        Iterator iter = graph.find(Node.ANY, CDR, Node.ANY) ;
         try {
             for ( ; iter.hasNext() ; )
             {

@@ -7,34 +7,27 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParserTokenManager;
-import com.hp.hpl.jena.sparql.lang.sparql.Token;
-import com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError;
+import com.hp.hpl.jena.sparql.lang.sparql.*;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryParseException;
 
 
 /** Misc support for Expr
@@ -51,7 +44,7 @@ public class ExprUtils
         return NodeValue.makeNode(n) ;
     }
     
-    public static String joinList(List args, String sep)
+    public static String joinList(List<Expr> args, String sep)
     {
         if ( args == null )
             return "<<Null list>>" ;
@@ -63,12 +56,10 @@ public class ExprUtils
         
         boolean first = true ;
 
-        for ( Iterator iter = args.listIterator() ; iter.hasNext() ; )
+        for ( Expr ex :  args )
         {
             if ( ! first )
                 s.append(sep) ;
-            Expr ex = (Expr)iter.next() ;
-            
             // Values are printed withquoting.
             if ( ex instanceof NodeValue )
             {
@@ -160,9 +151,8 @@ public class ExprUtils
     {
         FmtExpr fmt = new FmtExpr(iOut, pmap) ;
         String sep = "" ;
-        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+        for (Expr expr : exprs)
         {
-            Expr expr = (Expr)iter.next();
             iOut.print(sep) ;
             sep = " , " ;
             fmt.format(expr) ;

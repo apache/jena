@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -37,7 +36,7 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
 
     boolean outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels);
     int bNodeCounter = 0;
-    Map bNodeMap = new HashMap();
+    Map<Resource, String> bNodeMap = new HashMap<Resource, String>();
     
     JSONObject json ;
     JSONArray solutions ;
@@ -75,8 +74,8 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
             json.put(dfHead, head) ;
             
             JSONArray vars = new JSONArray() ;
-            for (Iterator iter = rs.getResultVars().iterator(); iter.hasNext(); )
-                vars.put((String)iter.next()) ;
+            for (String string : rs.getResultVars())
+                vars.put(string) ;
             head.put(dfVars, vars) ;
             // ---- results
             JSONObject results = new JSONObject() ;
@@ -144,7 +143,7 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
             else {
                 if (!bNodeMap.containsKey(resource))
                     bNodeMap.put(resource, "b" + (bNodeCounter++));
-                label = (String) bNodeMap.get(resource);
+                label = bNodeMap.get(resource);
             }
             jsonValue.put(dfType, dfBNode);
             jsonValue.put(dfValue, label) ;

@@ -57,7 +57,7 @@ public class HeuristicsRegistry
 	public Heuristic get(String heuristic)
 	{
 		if (registry.containsKey(heuristic))
-			return (Heuristic)registry.get(heuristic) ;
+			return registry.get(heuristic) ;
 		else
 			log.fatal("Heuristic not found in registry: " + heuristic) ;
 		

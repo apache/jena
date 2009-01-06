@@ -46,7 +46,7 @@ class ParserRDQL extends Parser
                 {
                     // SPARQL resolves FROM IRIs during parsing.
                     // This is the old RDQL parser ...
-                    String u = (String)q.getGraphURIs().get(i) ;
+                    String u = q.getGraphURIs().get(i) ;
                     u = q.getResolver().resolve(u) ;
                     q.getGraphURIs().set(i, u) ;
                 }

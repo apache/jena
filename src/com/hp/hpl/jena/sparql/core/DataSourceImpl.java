@@ -132,7 +132,7 @@ public class DataSourceImpl implements DataSource
         ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
         
         @SuppressWarnings("unchecked")
-        Iterator<String> conv = (Iterator<String>)new MapFilterIterator(mapper, eIter) ;
+        Iterator<String> conv = new MapFilterIterator(mapper, eIter) ;
         return conv ;
     }
 

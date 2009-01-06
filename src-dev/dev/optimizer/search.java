@@ -105,7 +105,7 @@ public class search
 		OpWalker.walk(op, visitor) ;
 	    List<BasicPattern> patterns = visitor.getPatterns() ;
 	    // Get the BGP (this works only for queries with a single BGP!
-	    BasicPattern bgp = (BasicPattern)patterns.get(0) ;
+	    BasicPattern bgp = patterns.get(0) ;
 	    // Get the basic patterns for all possible optimizations
 	    // BGP_VARIABLE_COUNTING
 		BasicPattern bgpVC = getBGPForHeuristic("BGP_VARIABLE_COUNTING", true, context, graph, bgp, config) ;
@@ -201,7 +201,7 @@ public class search
 	    // Add the triples to the new bgp
 	    for (int i = 0; i < triples.length; i++)
 	    {
-	    	Triple triple = (Triple)triples[i] ;
+	    	Triple triple = triples[i] ;
 	    	
 	    	el.addTriple(triple) ;
 	    	pattern.add(triple) ;

@@ -69,7 +69,7 @@ public class QueryIterDefaulting extends QueryIter
 
         Binding binding = null ;
         if ( cIter != null && cIter.hasNext() )
-            binding = (Binding)cIter.next() ;
+            binding = cIter.next() ;
         else
         {
             if ( haveReturnedSomeObject )

@@ -275,7 +275,7 @@ public class QueryExecUtils
         Query q = QueryFactory.create(qs) ;
         if ( q.getResultVars().size() != 1 )
             throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
-        String varname = (String)q.getResultVars().get(0) ;
+        String varname = q.getResultVars().get(0) ;
         QueryExecution qExec = QueryExecutionFactory.create(q, ds);
         return getExactlyOne(qExec, varname) ;
     }

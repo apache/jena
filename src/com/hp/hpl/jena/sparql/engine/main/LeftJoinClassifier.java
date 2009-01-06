@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.SetUtils;
 
 public class LeftJoinClassifier
@@ -40,23 +41,23 @@ public class LeftJoinClassifier
         if ( right instanceof OpModifier )
             return false ;
         
-        Set leftVars = OpVars.patternVars(left) ;
+        Set<Var> leftVars = OpVars.patternVars(left) ;
         
         VarFinder vf = new VarFinder(right) ;
         
-        Set optRight = vf.getOpt() ;
-        Set filterVarsRight = vf.getFilter() ; 
+        Set<Var> optRight = vf.getOpt() ;
+        Set<Var> filterVarsRight = vf.getFilter() ; 
 
         // Safe for linear execution if there are no  
         return ! SetUtils.intersectionP(leftVars, optRight) && ! SetUtils.intersectionP(leftVars, filterVarsRight) ;
     }
     
-    static public Set nonLinearVars(OpLeftJoin op)
+    static public Set<Var> nonLinearVars(OpLeftJoin op)
     {
         Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
         Op right = JoinClassifier.effectiveOp(op.getRight()) ;
-        Set leftVars = OpVars.patternVars(left) ;
-        Set optRight = VarFinder.optDefined(right) ;
+        Set<Var> leftVars = OpVars.patternVars(left) ;
+        Set<Var> optRight = VarFinder.optDefined(right) ;
 
         return SetUtils.intersection(leftVars, optRight) ;
     }

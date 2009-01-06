@@ -54,7 +54,7 @@ public class OpAsQuery
         Query query ;
         Element element = null ;
         ElementGroup currentGroup = null ;
-        Stack stack = new Stack() ;
+        Stack<ElementGroup> stack = new Stack<ElementGroup>() ;
         public Converter(Query query)
         {
             this.query = query ;
@@ -65,7 +65,7 @@ public class OpAsQuery
         {
             ElementGroup g = asElementGroup(op) ;
             if ( g.getElements().size() == 1 )
-                return (Element)g.getElements().get(0) ;
+                return g.getElements().get(0) ;
             return g ;
         }
         
@@ -109,14 +109,10 @@ public class OpAsQuery
         private ElementTriplesBlock process(BasicPattern pattern)
         {
             ElementTriplesBlock e = new ElementTriplesBlock() ;
-            Iterator iter = pattern.iterator() ;
-            for ( ; iter.hasNext() ; )
-            {
-                Triple t = (Triple)iter.next() ;
+            for (Triple t : pattern)
                 // Leave bNode variables as they are
                 // Query serialization will deal with them. 
                 e.addTriple(t) ;
-            }
             return e ;
         }
         
@@ -196,9 +192,8 @@ public class OpAsQuery
             element = currentGroup() ;      // Was cleared by asElement. 
             
             ExprList exprs = opFilter.getExprs() ;
-            for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
+            for ( Expr expr : exprs )
             {
-                Expr expr = (Expr)iter.next();
                 ElementFilter f = new ElementFilter(expr) ;
                 currentGroup().addElement(f) ;
             }
@@ -240,23 +235,19 @@ public class OpAsQuery
 
         public void visit(OpOrder opOrder)
         {
-            List x = opOrder.getConditions() ;
-            Iterator iter = x.iterator() ;
-            for ( ; iter.hasNext(); )
-            {
-                SortCondition sc = (SortCondition)iter.next();
+            List<SortCondition> x = opOrder.getConditions() ;
+            for ( SortCondition sc : x )
                 query.addOrderBy(sc);
-            }
             opOrder.getSubOp().visit(this) ;
         }
 
         public void visit(OpProject opProject)
         {
             query.setQueryResultStar(false) ;
-            Iterator iter = opProject.getVars().iterator() ;
+            Iterator<Var> iter = opProject.getVars().iterator() ;
             for ( ; iter.hasNext() ; )
             {
-                Var v = (Var)iter.next();
+                Var v = iter.next();
                 query.addResultVar(v) ;
             }
             opProject.getSubOp().visit(this) ;
@@ -292,7 +283,7 @@ public class OpAsQuery
             if ( g == null || g.getElements().size() == 0 )
                 return null ;
             int len = g.getElements().size() ;
-            return (Element)g.getElements().get(len-1) ;
+            return g.getElements().get(len-1) ;
         }
 
         private void startSubGroup()
@@ -327,9 +318,9 @@ public class OpAsQuery
         {
             if ( stack.size() == 0 )
                 return null ;
-            return (ElementGroup)stack.peek();
+            return stack.peek();
         }
-        private ElementGroup pop() { return (ElementGroup)stack.pop(); }
+        private ElementGroup pop() { return stack.pop(); }
         private void push(ElementGroup el) { stack.push(el); }
     }
 }

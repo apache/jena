@@ -44,11 +44,11 @@ public class ModEngine extends ModBase
     public void processArgs(CmdArgModule cmdLine)
     {
        
-        List x = cmdLine.getValues(engineDecl) ;
+        List<String> x = cmdLine.getValues(engineDecl) ;
 
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = x.iterator() ; iter.hasNext() ; )
         {
-            String engineName = (String)iter.next() ;
+            String engineName = iter.next() ;
             if ( engineName.equalsIgnoreCase("ref") ||
                  engineName.equalsIgnoreCase("reference") )
             {
@@ -64,10 +64,9 @@ public class ModEngine extends ModBase
             throw new CmdException("Engine name not recognized: "+engineName) ;
         }
 
-        List y = cmdLine.getValues(unEngineDecl) ;
-        for ( Iterator iter = y.iterator() ; iter.hasNext() ; )
+        List<String> y = cmdLine.getValues(unEngineDecl) ;
+        for (String engineName : y)
         {
-            String engineName = (String)iter.next() ;
             if ( engineName.equalsIgnoreCase("ref") ||
                  engineName.equalsIgnoreCase("reference") )
             {
