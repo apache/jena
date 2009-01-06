@@ -90,7 +90,7 @@ public class tdbperf extends CmdSub
             GraphTDB g = setup1() ;
             
             TupleIndex[] z = g.getNodeTupleTable().getTupleTable().getIndexes() ;
-//            z[0] = new TupleIndexMem(3, new ColumnMap("SPO", "SPO")) ;
+            z[0] = new TupleIndexMem(3, new ColumnMap("SPO", "SPO")) ;
             z[1] = new TupleIndexMem(3, new ColumnMap("SPO", "POS")) ;
             z[2] = new TupleIndexMem(3, new ColumnMap("SPO", "OSP")) ;
             

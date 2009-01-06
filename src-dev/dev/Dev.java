@@ -21,8 +21,10 @@ public class Dev
     //   Need ARQ change + TDB to provide a GraphStore.
     
     // ---- Generic TupleIndex<T> for NodeId or Node
+    // e.g. Need mapper from T to TupleIndexRecord to abstract. 
     
     // Tests not in build sequence
+    // "Publish to local"
     
     // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
     
@@ -70,7 +72,7 @@ public class Dev
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
     // ---- 32 bit mode.
-    // ARC Cache Scheme
+    // ARC (Adaptive Replacement Cache) Cache Scheme
 
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
