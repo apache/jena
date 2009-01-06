@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // Upgrade 
+    // Var - several list loops of string or var - checkeach usage.
+    
+    
     // (Jena) Cached IRI checking.
     
     // SPARQL/Update - Sort out GraphStores/Datasets
