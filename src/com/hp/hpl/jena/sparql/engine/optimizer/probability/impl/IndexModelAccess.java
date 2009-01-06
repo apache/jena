@@ -14,14 +14,7 @@ import java.util.HashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.rdf.model.Bag;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Seq;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.Histogram;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.HistogramClass;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.Vocabulary;
@@ -54,13 +47,13 @@ public class IndexModelAccess
 	/* The result set size of variable triple patterns joined over SS, SO, OS and OO */
 	private long ssSize = -1L, soSize = -1L, osSize = -1L, ooSize = -1L ;
 	/* The data structure holding statistics about the properties */
-	private Map properties = new HashMap(); // Map<Property, Long>
+	private Map<Property, Long> properties = new HashMap<Property, Long>(); // Map<Property, Long>
 	/* The data structure holding the histograms for the properties */
-	private Map histograms = new HashMap() ; // Map<Property, Histogram>
+	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ; // Map<Property, Histogram>
 	/* The data structure holding the statistics for joined triple patterns */
-	private Map patterns = new HashMap() ; // Map<Pattern, Long>
+	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ; // Map<Pattern, Long>
 	/* The set of properties which are excluded in the index */
-	private Set exclude = new HashSet() ; // Set<Property>
+	private Set<Property> exclude = new HashSet<Property>() ; // Set<Property>
 	private static Log log = LogFactory.getLog(IndexModelAccess.class) ;
 
 	/**
@@ -93,7 +86,7 @@ public class IndexModelAccess
 		Bag excludeB = ontologyR.getProperty(Vocabulary.exclude).getBag() ;
 	
 		// Add the excluded properties to the set
-		for (Iterator iter = excludeB.iterator(); iter.hasNext(); )
+		for (NodeIterator iter = excludeB.iterator(); iter.hasNext(); )
 		{
 			Resource resource = (Resource)iter.next() ;
 			exclude.add(ResourceFactory.createProperty(resource.getURI())) ;
@@ -123,7 +116,7 @@ public class IndexModelAccess
 			histograms.put(property, histogram) ;
 			log.debug("Added histogram to index: [" + histogram.getLowerBound() + "," + histogram.getUpperBound() + "], " + histogram.getClassSize()) ;
 			
-			for (Iterator iter = classesS.iterator(); iter.hasNext(); )
+			for (NodeIterator iter = classesS.iterator(); iter.hasNext(); )
 			{
 				Resource histogramClassR = (Resource)iter.next() ;
 			
@@ -169,10 +162,10 @@ public class IndexModelAccess
 	 */
 	public Model create(ProbabilityIndex index)
 	{
-		Map properties = index.getProperties() ; // Map<Property, Long>
-		Map histograms = index.getHistograms() ; // Map<Property, Histogram>
-		Map patterns = index.getPatterns() ; // Map<Pattern, Long>
- 		Set exclude = index.getExProperty() ; // Set<Property>
+		Map<Property, Long> properties = index.getProperties() ;
+		Map<Property, Histogram> histograms = index.getHistograms() ;
+		Map<Pattern, Long> patterns = index.getPatterns() ;
+ 		Set<Property> exclude = index.getExProperty() ;
  		
 		Model model = ModelFactory.createDefaultModel() ;
 
@@ -191,17 +184,17 @@ public class IndexModelAccess
 		Bag excludeB = model.createBag() ;
 		ontologyR.addProperty(Vocabulary.exclude, excludeB) ;
 		
-		for (Iterator iter = exclude.iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = exclude.iterator(); iter.hasNext(); )
 		{
-			Property property = (Property)iter.next() ;
+			Property property = iter.next() ;
 			excludeB.add(property) ;
 		}
 		
 		// Create resources for each property holding it's frequency
-		for (Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Property> iter = properties.keySet().iterator(); iter.hasNext(); )
 		{
-			Property property = (Property)iter.next() ;
-			long frequency = ((Long)properties.get(property)).longValue() ;
+			Property property = iter.next() ;
+			long frequency = properties.get(property).longValue() ;
 
 			Resource propertyR = model.createResource() ;
 			propertyR.addProperty(RDF.type, RDF.Property) ;
@@ -209,7 +202,7 @@ public class IndexModelAccess
 			propertyR.addProperty(Vocabulary.frequency, new Long(frequency).toString()) ;
 		
 			// Create the histogram resource for this property
-			Histogram histogram = (Histogram)histograms.get(property) ;
+			Histogram histogram = histograms.get(property) ;
 			Resource histogramR = model.createResource() ;
 			histogramR.addProperty(RDF.type, Vocabulary.Histogram) ;
 			histogramR.addProperty(Vocabulary.lowerBound, new Double(histogram.getLowerBound()).toString()) ;
@@ -217,11 +210,11 @@ public class IndexModelAccess
 			histogramR.addProperty(Vocabulary.classSize, new Double(histogram.getClassSize()).toString()) ;
 			
 			Seq histogramS = model.createSeq() ;
-			Set histogramClasses = histogram.getClasses() ; // Set<HistogramClass>
+			Set<HistogramClass> histogramClasses = histogram.getClasses() ;
 			
-			for (Iterator it = histogramClasses.iterator(); it.hasNext(); )
+			for (Iterator<HistogramClass> it = histogramClasses.iterator(); it.hasNext(); )
 			{
-				HistogramClass histogramClass = (HistogramClass)it.next() ;
+				HistogramClass histogramClass = it.next() ;
 				double classLowerBound = histogramClass.getLowerBound() ;
 				long classFrequency = histogramClass.getFrequency() ;
 				
@@ -238,10 +231,10 @@ public class IndexModelAccess
 		}
 		
 		// Create resources for patterns
-		for (Iterator iter = patterns.keySet().iterator(); iter.hasNext(); )
+		for (Iterator<Pattern> iter = patterns.keySet().iterator(); iter.hasNext(); )
 		{
-			Pattern pattern = (Pattern)iter.next() ;
-			long frequency = ((Long)patterns.get(pattern)).longValue() ;
+			Pattern pattern = iter.next() ;
+			long frequency = patterns.get(pattern).longValue() ;
 			
 			Resource patternR = model.createResource() ;
 			patternR.addProperty(RDF.type, Vocabulary.Pattern) ;
@@ -333,7 +326,7 @@ public class IndexModelAccess
 	 * 
 	 * @return Map
 	 */
-	public Map getProperties()
+	public Map<Property, Long> getProperties()
 	{ return properties ; }
 	
 	/**
@@ -341,7 +334,7 @@ public class IndexModelAccess
 	 * 
 	 * @return Map
 	 */
-	public Map getHistograms() 
+	public Map<Property, Histogram> getHistograms() 
 	{ return histograms ; }
 	
 	/**
@@ -350,7 +343,7 @@ public class IndexModelAccess
 	 * 
 	 * @return Map
 	 */
-	public Map getPatterns()
+	public Map<Pattern, Long> getPatterns()
 	{ return patterns ; }
 	
 	/**
@@ -358,7 +351,7 @@ public class IndexModelAccess
 	 * 
 	 * @return Set
 	 */
-	public Set getExProperty()
+	public Set<Property> getExProperty()
 	{ return exclude ; }
 }
 

@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -49,9 +48,8 @@ public class BuilderPrefixMapping
             prefixes = prefixes.cdr();
         }
         
-        for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
+        for (Item pair : prefixes)
         {
-            Item pair = (Item)iter.next() ;
             if ( !pair.isList() || pair.getList().size() != 2 )
                 BuilderLib.broken(pair, "Not a prefix/IRI pair") ;
             Item prefixItem = pair.getList().get(0) ;

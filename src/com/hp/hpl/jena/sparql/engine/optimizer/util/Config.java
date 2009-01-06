@@ -7,6 +7,9 @@ package com.hp.hpl.jena.sparql.engine.optimizer.util;
 
 import java.util.Set;
 import java.util.HashSet;
+
+import com.hp.hpl.jena.rdf.model.Property;
+
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.IndexLevel;
 
 /**
@@ -21,7 +24,7 @@ public class Config
 {
 	private double samplingFactor = 1.0 ;
 	private int indexLevel = IndexLevel.FULL ;
-	private Set exProperty = new HashSet() ;
+	private Set<Property> exProperty = new HashSet<Property>() ;
 	private String basicPatternHeuristic = null ;
 	private boolean limitMinProbability = true ;
 	
@@ -76,7 +79,7 @@ public class Config
 	 * 
 	 * @param exProperty
 	 */
-	public Config(Set exProperty)
+	public Config(Set<Property> exProperty)
 	{ this.exProperty = exProperty ; }
 	
 	/**
@@ -86,7 +89,7 @@ public class Config
 	 * @param indexLevel
 	 * @param exProperty
 	 */
-	public Config(int indexLevel, Set exProperty)
+	public Config(int indexLevel, Set<Property> exProperty)
 	{
 		this.indexLevel = indexLevel ;
 		this.exProperty = exProperty ;
@@ -153,7 +156,7 @@ public class Config
 	 * 
 	 * @param exProperty
 	 */
-	public void setExProperty(Set exProperty)
+	public void setExProperty(Set<Property> exProperty)
 	{ this.exProperty = exProperty ; }
 	
 	/**
@@ -162,7 +165,7 @@ public class Config
 	 * 
 	 * @return Set
 	 */
-	public Set getExProperty()
+	public Set<Property> getExProperty()
 	{ return exProperty ; }
 	
 	/**

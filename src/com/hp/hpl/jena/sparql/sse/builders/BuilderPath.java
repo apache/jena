@@ -44,7 +44,7 @@ public class BuilderPath
         return new TriplePath(s, p, o) ; 
     }
 
-    protected Map dispatch = new HashMap() ;
+    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
     
     private BuilderPath()
     {
@@ -85,11 +85,11 @@ public class BuilderPath
     
     protected Build findBuild(String str)
     {
-        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
         {
-            String key = (String)iter.next() ; 
+            String key = iter.next() ; 
             if ( str.equalsIgnoreCase(key) )
-                return (Build)dispatch.get(key) ;
+                return dispatch.get(key) ;
         }
         return null ;
     }

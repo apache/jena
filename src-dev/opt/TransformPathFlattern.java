@@ -22,6 +22,7 @@ public class TransformPathFlattern extends TransformCopy
         this.pathCompiler = pathCompiler ;
     }
     
+    @Override
     public Op transform(OpPath opPath)
     {
         return super.transform(opPath) ;

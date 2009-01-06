@@ -85,17 +85,20 @@ public class GraphSPARQL extends GraphBase implements Graph
     
     /* We don't support value tests, hence handlesLiteralTyping is false */
     //@Override
+    @Override
     public Capabilities getCapabilities()
     { 
     	if (capabilities == null)
             capabilities = new AllCapabilities()
-        	  { /*@Override*/ public boolean handlesLiteralTyping() { return false; } };
+        	  { /*@Override*/ @Override
+            public boolean handlesLiteralTyping() { return false; } };
         return capabilities;
     }
     
     public DatasetGraph getDataset() { return dataset ; } 
 
     //@Override
+    @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
         Node s = m.getMatchSubject() ;
@@ -132,7 +135,7 @@ public class GraphSPARQL extends GraphBase implements Graph
         
         QueryIterator qIter = plan.iterator() ;
         //List<Triple> triples = new ArrayList<Triple>() ;
-        List triples = new ArrayList() ;
+        List<Triple> triples = new ArrayList<Triple>() ;
         
         for (; qIter.hasNext() ; )
         {

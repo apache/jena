@@ -35,7 +35,7 @@ public class BuilderResultSet
         
         ItemList list = item.getList() ; 
         
-        List vars = BuilderNode.buildVarList(list.get(1)) ;
+        List<Var> vars = BuilderNode.buildVarList(list.get(1)) ;
         // skip tag, skip vars.
         int start = 2 ;
 

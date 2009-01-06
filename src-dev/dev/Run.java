@@ -126,24 +126,29 @@ public class Run
         public OpExtTest(ItemList argList)
         { this.argList = argList ; }
     
+        @Override
         public Op effectiveOp()
         {
             return null ;
         }
     
+        @Override
         public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
         {
             return null ;
         }
     
+        @Override
         public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
         {
             if ( ! ( other instanceof OpExtTest) ) return false ;
             return argList.equals(((OpExtTest)other).argList) ;
         }
     
+        @Override
         public String getSubTag() { return "TAG" ; }
     
+        @Override
         public void outputArgs(IndentedWriter out, SerializationContext sCxt)
         {
             boolean first = true ;
@@ -158,6 +163,7 @@ public class Run
             }
         }
         
+        @Override
         public int hashCode()
         {
             return argList.hashCode() ;

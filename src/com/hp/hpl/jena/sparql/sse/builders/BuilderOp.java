@@ -19,10 +19,7 @@ import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -497,7 +494,7 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "project") ;
-            List x = BuilderNode.buildVars(list.get(1).getList()) ; 
+            List<Var> x = BuilderNode.buildVars(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
             return new OpProject(sub, x) ;
         }

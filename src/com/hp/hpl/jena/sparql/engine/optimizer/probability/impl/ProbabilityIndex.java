@@ -71,7 +71,7 @@ public class ProbabilityIndex
 	// A Java data structure for the statistics of joined triple patterns
 	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ; // Map<Pattern, Long>
 	// A set of Jena Property objects that are excluded in the index
-	private Set exclude = new HashSet() ; // Set<Property>
+	private Set<Property> exclude = new HashSet<Property>() ;
 	private static Log log = LogFactory.getLog(ProbabilityIndex.class) ;
 	
 	/**
@@ -266,7 +266,7 @@ public class ProbabilityIndex
 	 * 
 	 * @return Set
 	 */
-	public Set getExProperty()
+	public Set<Property> getExProperty()
 	{ return exclude ; }
 	
 	/*

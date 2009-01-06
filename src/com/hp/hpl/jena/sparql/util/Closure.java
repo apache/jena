@@ -186,10 +186,10 @@ public class Closure
     }
 
 
-    private static String dbg_string(Collection s)
+    private static String dbg_string(Collection<?> s)
     {
         String tmp = "" ;
-        for ( Iterator iter = s.iterator() ; iter.hasNext() ; )
+        for ( Iterator<?> iter = s.iterator() ; iter.hasNext() ; )
         {
             tmp = tmp+" "+iter.next().toString() ;
         }

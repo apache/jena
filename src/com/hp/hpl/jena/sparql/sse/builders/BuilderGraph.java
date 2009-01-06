@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import java.util.Iterator;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -70,9 +69,8 @@ public class BuilderGraph
         BuilderLib.checkTag(list, Tags.tagGraph) ;
         list = list.cdr();
         
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for (Item item : list)
         {
-            Item item = (Item)iter.next();
             BuilderLib.checkList(item) ;
             Triple triple = buildTriple(item.getList()) ;
             graph.add(triple) ;
@@ -115,9 +113,8 @@ public class BuilderGraph
         list = list.cdr();
         DataSourceGraphImpl ds = new DataSourceGraphImpl((Graph)null) ;
         
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for (Item item : list)
         {
-            Item item = (Item)iter.next();
             if ( item.isTagged(Tags.tagDefault) )
             {
                 if ( ds.getDefaultGraph() != null )

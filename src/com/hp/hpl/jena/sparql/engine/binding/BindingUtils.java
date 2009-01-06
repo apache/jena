@@ -48,9 +48,9 @@ public class BindingUtils
     {
         if ( qSolution == null )
             return ;
-        for ( Iterator iter = qSolution.varNames() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = qSolution.varNames() ; iter.hasNext() ; )
         {
-            String n = (String)iter.next() ;
+            String n = iter.next() ;
             RDFNode x = qSolution.get(n) ;
             binding.add(Var.alloc(n), x.asNode()) ;
         }

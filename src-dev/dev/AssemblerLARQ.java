@@ -22,6 +22,7 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
      *     
      */
     
+    @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         
