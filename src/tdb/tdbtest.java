@@ -30,7 +30,7 @@ public class tdbtest
         if ( TDB.VERSION.equals("DEV") )
             out.printf("TDB test suite\n") ;
         else
-            out.printf("TDB v%s(Built: %s) test suite\n", TDB.VERSION, TDB.BUILD_DATE) ;
+            out.printf("TDB v%s test suite (Built: %s)\n", TDB.VERSION, TDB.BUILD_DATE) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new MyTextListener(out)) ;
         Result result = runner.run(InstallationTest.class) ;

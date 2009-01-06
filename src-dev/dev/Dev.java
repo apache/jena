@@ -22,6 +22,8 @@ public class Dev
     
     // ---- Generic TupleIndex<T> for NodeId or Node
     
+    // Tests not in build sequence
+    
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
     // Quads:

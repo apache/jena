@@ -54,7 +54,7 @@ public class TDB
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
-    /** Symbol to use the the union of named graphs as the default graph of a query */ 
+    /** Symbol to use the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
     
     /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
