@@ -104,6 +104,7 @@
   <!-- ==== Grammars, Compilation and JAR -->
 
   <target name="pre-compile" depends="clean-build-dirs,javac-flags">
+    <mkdir dir="${classes.build.dir}"/>
   </target>
 
   <target name="build-src" depends="clean-build-dirs">

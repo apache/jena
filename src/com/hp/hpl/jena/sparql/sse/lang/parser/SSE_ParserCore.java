@@ -373,28 +373,34 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     }
   }
 
+  /** Generated Token Manager. */
   public SSE_ParserCoreTokenManager token_source;
   JavaCharStream jj_input_stream;
-  public Token token, jj_nt;
+  /** Current token. */
+  public Token token;
+  /** Next token. */
+  public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
   final private int[] jj_la1 = new int[17];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
-      jj_la1_0();
-      jj_la1_1();
+      jj_la1_init_0();
+      jj_la1_init_1();
    }
-   private static void jj_la1_0() {
+   private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {0x2,0x2,0x47c3bf0,0x2,0x2,0x2,0x2,0x4400000,0x47c3bf0,0x3c3bf0,0x380,0x3c3800,0x3c0000,0x30,0x30000000,0x30000000,0x3800,};
    }
-   private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+   private static void jj_la1_init_1() {
+      jj_la1_1 = new int[] {0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x400,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
+  /** Constructor with InputStream. */
   public SSE_ParserCore(java.io.InputStream stream) {
      this(stream, null);
   }
+  /** Constructor with InputStream and supplied encoding */
   public SSE_ParserCore(java.io.InputStream stream, String encoding) {
     try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
@@ -404,9 +410,11 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
+  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
@@ -416,6 +424,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
+  /** Constructor. */
   public SSE_ParserCore(java.io.Reader stream) {
     jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
@@ -425,6 +434,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
@@ -434,6 +444,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
+  /** Constructor with generated Token Manager. */
   public SSE_ParserCore(SSE_ParserCoreTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -442,6 +453,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(SSE_ParserCoreTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -450,7 +462,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     for (int i = 0; i < 17; i++) jj_la1[i] = -1;
   }
 
-  final private Token jj_consume_token(int kind) throws ParseException {
+  private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -464,6 +476,8 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     throw generateParseException();
   }
 
+
+/** Get the next Token. */
   final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -472,6 +486,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     return token;
   }
 
+/** Get the specific Token. */
   final public Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
@@ -481,23 +496,21 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     return t;
   }
 
-  final private int jj_ntk() {
+  private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.Vector<int[]> jj_expentries = new java.util.Vector<int[]>();
+  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
+  /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[43];
-    for (int i = 0; i < 43; i++) {
-      la1tokens[i] = false;
-    }
+    jj_expentries.clear();
+    boolean[] la1tokens = new boolean[44];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -514,23 +527,25 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
         }
       }
     }
-    for (int i = 0; i < 43; i++) {
+    for (int i = 0; i < 44; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
-        jj_expentries.addElement(jj_expentry);
+        jj_expentries.add(jj_expentry);
       }
     }
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = jj_expentries.elementAt(i);
+      exptokseq[i] = jj_expentries.get(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }
 
+  /** Enable tracing. */
   final public void enable_tracing() {
   }
 
+  /** Disable tracing. */
   final public void disable_tracing() {
   }
 
