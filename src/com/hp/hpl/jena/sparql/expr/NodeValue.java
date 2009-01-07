@@ -400,7 +400,7 @@ public abstract class NodeValue extends ExprNode
     {
         // Currently only called from E_Equals
         if ( nv1 == null || nv2 == null )
-            new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
+            throw new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
         
         int compType = classifyValueOp(nv1, nv2) ;
         
@@ -544,7 +544,7 @@ public abstract class NodeValue extends ExprNode
         // and NodeUtils.comparLiteralsByValue 
         if ( nv1 == null || nv2 == null )
             //raise(new ExprEvalException("Attempt to notSameValueAs on null") ;
-            new ARQInternalErrorException("Attempt to compare on null") ;
+            throw new ARQInternalErrorException("Attempt to compare on null") ;
         int x = compare(nv1, nv2, false) ;
         return x ;
     }

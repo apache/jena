@@ -69,7 +69,7 @@ public class ARQConstants
     public static final String ARQProcedureLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.procedure.library." ;
 
     /** Common prefixes */
-    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
+    protected static final PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
         //globalPrefixMap.setNsPrefixes(PrefixMapping.Standard) ;
         globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;

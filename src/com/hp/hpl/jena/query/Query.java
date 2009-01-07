@@ -73,16 +73,16 @@ public class Query extends Prologue implements Cloneable
     Syntax syntax = Syntax.syntaxSPARQL ; // Default
     
     // LIMIT/OFFSET
-    public static long  NOLIMIT = Long.MIN_VALUE ;
+    public static final long  NOLIMIT = Long.MIN_VALUE ;
     long resultLimit   = NOLIMIT ;
     long resultOffset  = NOLIMIT ;
     
     // ORDER BY
     List<SortCondition> orderBy       = null ;
-    public static int ORDER_ASCENDING           = 1 ; 
-    public static int ORDER_DESCENDING          = -1 ;
-    public static int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
-    public static int ORDER_UNKNOW              = -3 ; 
+    public static final int ORDER_ASCENDING           = 1 ; 
+    public static final int ORDER_DESCENDING          = -1 ;
+    public static final int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
+    public static final int ORDER_UNKNOW              = -3 ; 
 
     boolean strictQuery = true ;
     

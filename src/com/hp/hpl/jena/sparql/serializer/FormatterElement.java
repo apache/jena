@@ -30,45 +30,45 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 public class FormatterElement extends FormatterBase
     implements ElementVisitor
 {
-    public static int INDENT = 2 ; 
+    public static final int INDENT = 2 ; 
     
     /** Control whether to show triple pattern boundaries - creates extra nesting */
-    public static boolean PATTERN_MARKERS = false ;
+    public static final boolean PATTERN_MARKERS = false ;
     
 //    /** Control whether triple patterns always have a final dot - it can be dropped in some cases */
 //    public static boolean PATTERN_FINAL_DOT = false ;
 
     /** Control whether (non-triple) patterns have a final dot - it can be dropped */
-    public static boolean GROUP_SEP_DOT = false ;
+    public static final boolean GROUP_SEP_DOT = false ;
     
     /** Control whether the first item of a group is on the same line as the { */
-    public static boolean GROUP_FIRST_ON_SAME_LINE = false ;
+    public static final boolean GROUP_FIRST_ON_SAME_LINE = false ;
 
     /** Control pretty printing */
-    public static boolean PRETTY_PRINT = true  ;
+    public static final boolean PRETTY_PRINT = true  ;
 
     /** Control whether disjunction has set of delimiters - as it's a group usually, these aren't needed */
-    public static boolean UNION_MARKERS = false ;
+    public static final boolean UNION_MARKERS = false ;
     
     /** Control whether a group of one is unnested - changes the query syntax tree */ 
-    public static boolean GROUP_UNNEST_ONE = false ; 
+    public static final boolean GROUP_UNNEST_ONE = false ; 
 
     /** Control whether GRAPH indents in a fixed way or based on the layout size */
-    public static boolean GRAPH_FIXED_INDENT = true ;
+    public static final boolean GRAPH_FIXED_INDENT = true ;
     
     /** Control whether UNSAID indents in a fixed way or based on the layout size */
-    public static boolean UNSAID_FIXED_INDENT = true ;
+    public static final boolean UNSAID_FIXED_INDENT = true ;
     
     /** Control triples pretty printing */
-    public static int TRIPLES_SUBJECT_COLUMN = 8 ;
+    public static final int TRIPLES_SUBJECT_COLUMN = 8 ;
     
     // Less than this => rest of triple on the same line
     // Could be smart and make it depend on the property length as well.  Later.
-    public static int TRIPLES_SUBJECT_LONG = 12 ;     
+    public static final int TRIPLES_SUBJECT_LONG = 12 ;     
 
-    public static int TRIPLES_PROPERTY_COLUMN = 20;
+    public static final int TRIPLES_PROPERTY_COLUMN = 20;
     
-    public static int TRIPLES_COLUMN_GAP = 2 ;
+    public static final int TRIPLES_COLUMN_GAP = 2 ;
 
     public FormatterElement(IndentedWriter out, SerializationContext context)
     {

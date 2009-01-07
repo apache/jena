@@ -53,7 +53,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
             if ( ! item.isSymbol() )
                 throwException("Must be a symbol for a named item: "+item.shortString(), item) ;
             
-            if ( namedItems.containsKey(item) )
+            if ( namedItems.containsKey(item.getSymbol()) )
                 throwException("Name already defined: "+item, item) ;
             currentName = item.getSymbol() ;
             // Add it anyway.  Removed in form processing.

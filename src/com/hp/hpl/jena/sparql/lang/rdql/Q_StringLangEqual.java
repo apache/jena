@@ -22,8 +22,8 @@ public class Q_StringLangEqual extends ExprNode implements ExprRDQL, ExprBoolean
     ExprRDQL left ;
     ExprRDQL right ;
 
-    protected static String printName = "lang=" ;
-    protected static String opSymbol = "langeq" ;
+    protected static final String printName = "lang=" ;
+    protected static final String opSymbol = "langeq" ;
     
     Q_StringLangEqual(int id) { super(id); }
     

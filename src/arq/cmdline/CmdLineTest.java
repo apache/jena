@@ -15,7 +15,7 @@ public class CmdLineTest extends CommandLineBase
         
     }
 
-    class Proc implements ArgProc
+    static class Proc implements ArgProc
     {
         public void startArgs() {}
         public void finishArgs() {}

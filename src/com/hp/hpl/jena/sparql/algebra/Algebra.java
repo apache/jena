@@ -33,7 +33,7 @@ import com.hp.hpl.jena.query.Query;
 /** Utilities to produce SPARQL algebra */
 public class Algebra
 {
-    public static boolean AllowOptimization = true ;
+    public static final boolean AllowOptimization = true ;
     private static Transform optimization() { return new TransformEqualityFilter() ; }
     
     // -------- Optimize

@@ -12,15 +12,15 @@ import com.hp.hpl.jena.graph.Triple;
 public class Quad
 {
     /** Name of the default graph as used in quad form of algebra */ 
-    public static Node defaultGraphNode     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
+    public static final Node defaultGraphNode     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
     
     // These are convenience constants for other systems to give special
     // interpretation to these "named" graphs.  
     
     /** Name of the default for explict use in GRAPH */
-    public static Node defaultGraphIRI      =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    public static final Node defaultGraphIRI      =  Node.createURI("urn:x-arq:DefaultGraph") ;
     /** Name of the merge of all named graphs */
-    public static Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
+    public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
 
     private final Node graph, subject, predicate, object ;
     

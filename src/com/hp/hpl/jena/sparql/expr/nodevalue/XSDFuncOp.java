@@ -589,7 +589,7 @@ public class XSDFuncOp
         return compareXSDDateTime(nv1.getDate(), nv2.getDate()) ;
     }
 
-    public static String defaultTimezone = "Z" ;
+    public static final String defaultTimezone = "Z" ;
     
     private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2)
     {

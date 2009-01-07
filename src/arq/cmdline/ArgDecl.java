@@ -15,8 +15,6 @@ public class ArgDecl
 {
     boolean takesValue ;
     Set<String> names = new HashSet<String>() ;
-    boolean takesArg = false ;
-    //List argHooks = new ArrayList() ;
     public static final boolean HasValue = true ;
     public static final boolean NoValue = false ;
     
