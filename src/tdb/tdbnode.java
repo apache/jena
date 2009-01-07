@@ -42,7 +42,7 @@ public class tdbnode extends CmdTDB
         GraphTDB graph = getGraph() ;
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         @SuppressWarnings("unchecked")
-        Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
+        Iterator<String> iter = super.getPositional().iterator() ;
         if ( ! iter.hasNext() )
         {
             System.err.println("No node ids") ;

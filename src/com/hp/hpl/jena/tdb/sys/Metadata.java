@@ -50,7 +50,7 @@ public class Metadata
     public static String get(String name, String defaultValue)
     {
         init() ;
-        return (String)properties.getProperty(name, defaultValue) ;
+        return properties.getProperty(name, defaultValue) ;
     }
 }
 

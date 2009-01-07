@@ -558,7 +558,7 @@ public final class NodeTupleReader
                 // Too big for Basic Multilingual Plane (BMP)
                 char[] pair = Character.toChars(ch) ;
                 for ( char chSub : pair )
-                    buffer.append((char)chSub);
+                    buffer.append(chSub);
                 continue ;
             }
             else if (ch == '"')

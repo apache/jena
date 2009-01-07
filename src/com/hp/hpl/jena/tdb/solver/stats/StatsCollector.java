@@ -81,7 +81,7 @@ public class StatsCollector
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         long count = 0 ;
         @SuppressWarnings("unchecked")
-        Iterator<Triple> iter = (Iterator<Triple>)graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {
             Triple t = iter.next();

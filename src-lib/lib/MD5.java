@@ -119,10 +119,10 @@ public class MD5 {
         int i = 0 ;
         int j = 0 ;
         for ( ; j < len; i++, j += 4) {
-            output[i] = (((int) (input[off+j]&0xff))
-                         | (((int) (input[off+j+1] & 0xff)) << 8)
-                         | (((int) (input[off+j+2] & 0xff)) << 16)
-                         | (((int) (input[off+j+3] & 0xff)) << 24)) ;
+            output[i] = (((input[off+j]&0xff))
+                         | (((input[off+j+1] & 0xff)) << 8)
+                         | (((input[off+j+2] & 0xff)) << 16)
+                         | (((input[off+j+3] & 0xff)) << 24)) ;
         }
     }
 

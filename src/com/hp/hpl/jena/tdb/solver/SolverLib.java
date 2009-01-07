@@ -56,7 +56,7 @@ public class SolverLib
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         List<Triple> triples = NodeLib.tripleList(pattern) ;
-        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
+        @SuppressWarnings("unchecked") Iterator<Binding> iter = input ;
         
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
@@ -77,7 +77,7 @@ public class SolverLib
     {
         List<Triple> triples = NodeLib.tripleList(pattern) ;
         NodeTupleTable nodeTuples = ds.getQuadTable().getNodeTupleTable() ;
-        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
+        @SuppressWarnings("unchecked") Iterator<Binding> iter = input ;
         NodeTable nodeTable = nodeTuples.getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
@@ -136,7 +136,7 @@ public class SolverLib
                 
                 BindingNodeId b = new BindingNodeId() ;
                 @SuppressWarnings("unchecked")
-                Iterator<Var> vars = (Iterator<Var>)binding.vars() ;
+                Iterator<Var> vars = binding.vars() ;
     
                 for ( ; vars.hasNext() ; )
                 {
@@ -155,7 +155,7 @@ public class SolverLib
     public static String strPattern(BasicPattern pattern)
     {
         @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        List<Triple> triples = pattern.getList() ;
         String x = Iter.asString(triples, "\n  ") ;
         return printAbbrev(x) ; 
     }

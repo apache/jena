@@ -78,7 +78,7 @@ public class Scope
         {
             // Need to modify each sub op becase a sequence puts earlier ops in scope of later ones. 
             @SuppressWarnings("unchecked")
-            Iterator<Op> seq = (Iterator<Op>)opSeq.iterator() ;
+            Iterator<Op> seq = opSeq.iterator() ;
             for ( ; seq.hasNext() ; )
             {
                 Op op = seq.next();

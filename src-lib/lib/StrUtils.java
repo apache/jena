@@ -66,7 +66,7 @@ public class StrUtils
     /** Join a list of strings */
     private static String join(String sep, List<String> a)
     {
-        return join(sep, (String[])a.toArray(new String[0])) ;
+        return join(sep, a.toArray(new String[0])) ;
     }
     
     public static final int CMP_GREATER  = +1 ;

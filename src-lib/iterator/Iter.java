@@ -274,7 +274,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return filter(iter, new FilterOutNulls<T>()) ;
     }
     
-    @SuppressWarnings({"unchecked", "cast"})
+    @SuppressWarnings({"unchecked"})
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
 
     // ---- String related helpers

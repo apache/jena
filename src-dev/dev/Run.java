@@ -157,7 +157,7 @@ public class Run
     private static void printPrefixMapping(PrefixMapping pmap)
     {
         @SuppressWarnings("unchecked")
-        Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
+        Map<String, String> x = pmap.getNsPrefixMap() ;
         for ( String k : x.keySet() )
             System.out.println(k+" : "+x.get(k)) ;
     }

@@ -92,7 +92,7 @@ public class tdbconfig extends CmdSub
                 System.out.println("Graph: "+gn) ;
                 PrefixMapping pmap = prefixes.getPrefixMapping(gn) ;
                 @SuppressWarnings("unchecked")
-                Map<String, String> x = (Map<String, String>)pmap.getNsPrefixMap() ;
+                Map<String, String> x = pmap.getNsPrefixMap() ;
                 for ( String k : x.keySet() )
                     System.out.printf("  %-10s %s\n", k+":", x.get(k)) ;
             }
@@ -182,7 +182,7 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             @SuppressWarnings("unchecked")
-            List<String> args = (List<String>)positionals ;
+            List<String> args = positionals ;
             for ( String x : args )
             {
                 System.out.println("**** Object File: "+x) ;

@@ -189,7 +189,7 @@ public class Reifier2 implements Reifier
     {
         ExtendedIterator it = graph.find(match) ;
         @SuppressWarnings("unchecked")
-        Iterator<Triple> it2 = (Iterator<Triple>)it ;
+        Iterator<Triple> it2 = it ;
         it2 = Iter.filter(it2, filterReif) ;
         return WrappedIterator.create(it2) ;
     }

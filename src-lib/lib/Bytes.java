@@ -151,7 +151,7 @@ public class Bytes
     /** Make an int order of args -- high to low */
     static private int assembleInt(byte b3, byte b2, byte b1, byte b0)
     {
-        return (int)( ((b3 & 0xFF) << 24) |
+        return ( ((b3 & 0xFF) << 24) |
                       ((b2 & 0xFF) << 16) |
                       ((b1 & 0xFF) <<  8) |
                       ((b0 & 0xFF) <<  0)

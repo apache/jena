@@ -65,7 +65,7 @@ public class ObjectFileMem implements ObjectFile
         List<String> strings = new ArrayList<String>() ;
         for ( int i = 0 ; i < buffers.size(); i++ )
         {
-            String str = read(NodeId.create((long)i)) ;
+            String str = read(NodeId.create(i)) ;
             strings.add(str) ;
         }
         return strings ;
@@ -84,7 +84,7 @@ public class ObjectFileMem implements ObjectFile
     {
         for ( int i = 0 ; i < buffers.size(); i++ )
         {
-            String str = read(NodeId.create((long)i)) ;
+            String str = read(NodeId.create(i)) ;
             System.out.printf("0x%08X : %s\n", i, str) ;
         }
     }

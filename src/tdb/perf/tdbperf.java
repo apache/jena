@@ -173,7 +173,7 @@ public class tdbperf extends CmdSub
                 long x = timer.readTimer() ;
             }
             long x = timer.endTimer() ;
-            double time = (double)x/1000.0 ;
+            double time = x/1000.0 ;
             
             long count = sink.count ;
             

@@ -192,7 +192,7 @@ public class tdbcheck extends CmdARQ
                 Violation vWarning = null ;
                 Violation vSub = null ;
                 while (it.hasNext()) {
-                    Violation v2 = (Violation) it.next();
+                    Violation v2 = it.next();
                     int code = v2.getViolationCode() ;
                     if ( v2.isError() )
                     {

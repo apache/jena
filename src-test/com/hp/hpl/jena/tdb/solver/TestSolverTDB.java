@@ -64,7 +64,7 @@ public class TestSolverTDB extends TestBase
     static private void addAll(Graph srcGraph, Graph dstGraph)
     {
         @SuppressWarnings("unchecked")
-        Iterator<Triple> triples = (Iterator<Triple>)srcGraph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        Iterator<Triple> triples = srcGraph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( Triple t : Iter.iter(triples) )
             dstGraph.add(t) ;
     }
