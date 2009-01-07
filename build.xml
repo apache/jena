@@ -88,7 +88,9 @@
 
     <!-- ==== Compile ==== -->
 
-    <target name="pre-compile" depends="javac-flags"/>
+    <target name="pre-compile" depends="javac-flags">
+      <mkdir dir="${classes.build.dir}"/>
+    </target>
 
     <target name="build-src" depends="clean-build-src-dir">
         <tstamp>
@@ -111,7 +113,8 @@
 
     <target name="compile" 
             depends="pre-compile,build-src,compile-java"
-            description="Compile"/>
+            description="Compile">
+    </target>
 
     <target name="compile-java" depends="pre-compile">
         <javac srcdir="${src.build.dir}"
@@ -357,7 +360,6 @@
     <target name="clean-build-dirs"
             depends="clean-build-classes-dir,clean-build-src-dir"/>
     <target name="clean-build-classes-dir">
-
         <delete dir="${classes.build.dir}"/>
         <mkdir dir="${classes.build.dir}"/>
     </target>

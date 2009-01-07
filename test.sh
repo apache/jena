@@ -46,6 +46,8 @@ do
       fi
   done
 
+echo "Running SDB tests in $SDBROOT"
+
 ( cd $SDBROOT
     STORE="sdb.ttl"
     if [ ! -e "$STORE" ]
