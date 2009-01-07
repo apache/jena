@@ -7,7 +7,7 @@
   <property name="version-major"      value="2"/>
   <property name="version-minor"      value="7"/>
   <property name="version-revision"   value="0"/>
-  <property name="version-status"     value="-dev"/>
+  <property name="version-status"     value="-SNAPSHOT"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
 
@@ -65,8 +65,8 @@
     <property name="java.debuglevel"  value=""/>
     <property name="java.deprecation" value="false"/>
     <property name="java.optimize"    value="true"/>
-    <property name="java.source"      value="1.4"/>
-    <property name="java.target"      value="1.4"/>
+    <property name="java.source"      value="1.5"/>
+    <property name="java.target"      value="1.5"/>
   </target>
 
   <target name="default-javac-flags"
@@ -76,8 +76,8 @@
     <property name="java.debuglevel"  value="source,lines,vars"/>
     <property name="java.deprecation" value="false"/>
     <property name="java.optimize"    value="false"/>
-    <property name="java.source"      value="1.4"/>
-    <property name="java.target"      value="1.4"/>
+    <property name="java.source"      value="1.5"/>
+    <property name="java.target"      value="1.5"/>
   </target>
 
   <target name="javac-flags" depends="default-javac-flags"/>
