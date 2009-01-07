@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -31,10 +27,8 @@ public class concat extends PFuncSimpleAndList
             throw new ExprEvalException("Subject is not a variable ("+subject+")") ;
         
         String x = "" ;
-        List args = object.getArgList() ;
-        for ( Iterator iter = args.listIterator() ; iter.hasNext(); )
+        for ( Node node : object.getArgList() )
         {
-            Node node = (Node)iter.next();
             if ( Var.isVar(node) )
                 return IterLib.noResults(execCxt) ;
             String str = NodeFunctions.str(node) ;

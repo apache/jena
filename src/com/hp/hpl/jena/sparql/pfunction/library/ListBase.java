@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -44,11 +43,10 @@ public abstract class ListBase extends PropertyFunctionEval
         // Subject unbound. BFI.
         Var listVar = Var.alloc(listNode) ;
         // Gulp.  Find all lists; work hard.
-        Set x = GraphList.findAllLists(graph) ;
+        Set<Node> x = GraphList.findAllLists(graph) ;
         QueryIterConcat qIter = new QueryIterConcat(execCxt) ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        for ( Node n : x )
         {
-            Node n = (Node)iter.next();
             Binding b = new Binding1(binding, listVar, n) ;
             QueryIterator q = execOneList(b, n, predicate, argObject, execCxt) ;
             qIter.add(q) ;

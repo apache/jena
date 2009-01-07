@@ -61,7 +61,7 @@ public class listMember extends ListBase
 
     private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt)
     {
-        List members = GraphList.members(new GNode(execCxt.getActiveGraph(), listNode)) ;
+        List<Node> members = GraphList.members(new GNode(execCxt.getActiveGraph(), listNode)) ;
         return new QueryIterExtendByVar(binding, itemVar, members.iterator(), execCxt) ;
     }
     

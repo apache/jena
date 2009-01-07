@@ -55,7 +55,7 @@ public class versionARQ extends PropertyFunctionEval
         }
         else // List - of two?
         {
-            List x = object.getArgList() ;
+            List<Node> x = object.getArgList() ;
             if ( x.size() != 2)
                 return IterLib.noResults(execCxt) ;
             Node major = object.getArg(0) ;
