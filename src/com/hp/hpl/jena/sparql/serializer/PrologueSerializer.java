@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -52,7 +51,7 @@ public class PrologueSerializer
 
     public static void printPrefixes(Prologue prologue, IndentedWriter out)
     {
-        Map pmap = null ;
+        Map<String, String> pmap = null ;
 
         if ( prologue.getPrefixMapping() instanceof PrefixMapping2 )
         {
@@ -60,15 +59,18 @@ public class PrologueSerializer
             pmap = pm2.getNsPrefixMap(false) ;
         }
         else
-            pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
+        {
+            @SuppressWarnings("unchecked")
+            Map<String, String> _pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
+            pmap = _pmap ;
+        }
 
         if ( pmap.size() > 0 )
         {
             //boolean first = true ;
-            for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
+            for (String k : pmap.keySet())
             {
-                String k = (String)iter.next() ;
-                String v = (String)pmap.get(k) ;
+                String v = pmap.get(k) ;
                 out.print("PREFIX  ") ;
                 out.print(k) ;
                 out.print(':') ;

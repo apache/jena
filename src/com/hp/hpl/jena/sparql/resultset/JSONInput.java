@@ -271,9 +271,10 @@ public class JSONInput extends SPARQLResult
                 Binding binding = new BindingMap() ;
                 JSONObject jsolution = jbindings.getJSONObject(row) ;
                 
-                for (Iterator it = jsolution.keys(); it.hasNext() ; ) 
+                for (   @SuppressWarnings("unchecked")
+                        Iterator<String> it = jsolution.keys(); it.hasNext() ; ) 
                 {
-                    String varName = (String) it.next() ;
+                    String varName = it.next() ;
                     JSONObject jbinding = jsolution.getJSONObject(varName) ;
                     
                     if ( !jbinding.has(dfType) )

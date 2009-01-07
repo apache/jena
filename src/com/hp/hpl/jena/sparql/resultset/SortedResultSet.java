@@ -86,7 +86,7 @@ public class SortedResultSet implements ResultSet
         return rowNumber ;
     }
 
-    public List getResultVars()
+    public List<String> getResultVars()
     {
         return resultVars ;
     }
@@ -107,9 +107,9 @@ public class SortedResultSet implements ResultSet
     private Binding copyToBinding(QuerySolution qs)
     {
         BindingMap b = new BindingMap() ;
-        for ( Iterator iter = qs.varNames() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; )
         {
-            String varName = (String)iter.next() ;
+            String varName = iter.next() ;
             RDFNode rn = qs.get(varName) ;
             b.add(Var.alloc(varName), rn.asNode()) ;
         }

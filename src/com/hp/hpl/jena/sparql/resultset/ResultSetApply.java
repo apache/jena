@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.resultset;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import java.util.* ;
 
 /** A class to walk a result set.
  * 
@@ -34,9 +33,8 @@ public class ResultSetApply
         {
             QuerySolution qs = rs.next() ;
             proc.start(qs) ;
-            for ( Iterator iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
+            for ( String varName : rs.getResultVars()  )
             {
-                String varName = (String)iter.next() ;
                 RDFNode node = qs.get(varName) ;
                 // node may be null
                 proc.binding(varName, node) ;

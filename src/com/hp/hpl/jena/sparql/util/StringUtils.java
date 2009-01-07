@@ -42,9 +42,9 @@ public class StringUtils
     }
     
     /** Join a list of strings */
-    public static String join(String sep, List a)
+    public static String join(String sep, List<String> a)
     {
-        return join(sep, (String[])a.toArray(new String[0])) ;
+        return join(sep, a.toArray(new String[0])) ;
     }
     
     public static int strCompare(String s1, String s2)

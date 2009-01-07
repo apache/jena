@@ -53,11 +53,8 @@ public class RDFOutput
         Resource results = model.createResource() ;
         results.addProperty(RDF.type, ResultSetGraphVocab.ResultSet) ;
         
-        for (Iterator iter = resultSet.getResultVars().iterator(); iter.hasNext();)
-        {
-            String vName = (String) iter.next();
+        for (String vName : resultSet.getResultVars() )
             results.addProperty(ResultSetGraphVocab.resultVariable, vName) ;
-        }
         
         int count = 0 ;
         for ( ; resultSet.hasNext() ; )
@@ -67,14 +64,14 @@ public class RDFOutput
             Resource thisSolution = model.createResource() ;
             results.addProperty(ResultSetGraphVocab.solution, thisSolution) ;
 
-            Iterator iter = getAllVars() ?
+            Iterator<String> iter = getAllVars() ?
                                     rBind.varNames() :
                                     resultSet.getResultVars().iterator() ;
             
             for ( ; iter.hasNext() ; )
             {
                 Resource thisBinding = model.createResource() ;
-                String rVar = (String)iter.next() ;
+                String rVar = iter.next() ;
                 RDFNode n = rBind.get(rVar) ;
                 
                 if ( n == null )

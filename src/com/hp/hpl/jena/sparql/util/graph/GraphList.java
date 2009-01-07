@@ -246,12 +246,12 @@ public class GraphList
         if ( listEnd(gnode) )
             return null ;
         
-        Iterator iter = gnode.findable.find(gnode.node, arc, Node.ANY) ;
+        Iterator<Triple> iter = gnode.findable.find(gnode.node, arc, Node.ANY) ;
         if ( ! iter.hasNext() )
             return null ;
-        Triple t = (Triple)iter.next() ;
+        Triple t = iter.next() ;
         if ( iter.hasNext() )
-            ALog.warn(GraphList.class, "Unusual list: two arc with same property ("+arc+")") ;
+            ALog.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
         NiceIterator.close(iter) ;
         return t ;         
     }

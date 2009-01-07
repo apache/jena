@@ -71,7 +71,7 @@ public class QueryExecUtils
     {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
-        List vars = null ;
+        List<String> vars = null ;
         if ( op instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else

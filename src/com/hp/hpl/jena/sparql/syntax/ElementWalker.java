@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.Iterator;
 
 
 /** An element visitor that walks the graph pattern tree, applying a visitor
@@ -53,21 +52,15 @@ public class ElementWalker
         
         public void visit(ElementUnion el)
         {
-            for ( Iterator iter = el.getElements().listIterator() ; iter.hasNext() ; )
-            {
-                Element e = (Element)iter.next() ;
+            for ( Element e : el.getElements() )
                 e.visit(this) ;
-            }
             proc.visit(el) ;
         }
         
         public void visit(ElementGroup el)
         {
-            for ( Iterator<Element> iter = el.getElements().iterator() ; iter.hasNext() ; )
-            {
-                Element e = iter.next() ;
+            for (Element e : el.getElements())
                 e.visit(this) ;
-            }
             proc.visit(el) ;
         }
     

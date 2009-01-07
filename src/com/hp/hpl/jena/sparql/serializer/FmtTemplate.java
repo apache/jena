@@ -54,9 +54,9 @@ public class FmtTemplate extends FormatterBase
         //boolean first = true ;
         BasicPattern acc = new BasicPattern() ;    // Accumulator of successive triples
         
-        for ( Iterator iter = template.templates() ; iter.hasNext() ; )
+        for ( Iterator<Template> iter = template.templates() ; iter.hasNext() ; )
         {
-            Template temp = (Template)iter.next() ;
+            Template temp = iter.next() ;
             if ( temp instanceof TemplateTriple )
             {
                 Triple triple = ((TemplateTriple)temp).getTriple() ;

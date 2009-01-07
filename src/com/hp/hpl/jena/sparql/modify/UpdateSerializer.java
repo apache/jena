@@ -33,9 +33,8 @@ public class UpdateSerializer implements UpdateVisitor
     private void visitModifyHeader(String name, String word, GraphUpdateN modify)
     {
         out.print(name) ;
-        for ( Iterator iter = modify.getGraphNames().iterator() ; iter.hasNext() ; )
+        for ( Node iri : modify.getGraphNames() )
         {
-            Node iri = (Node)iter.next() ;
             if ( word != null )
             {
                 out.print(" ") ;
@@ -111,9 +110,8 @@ public class UpdateSerializer implements UpdateVisitor
     public void visit(UpdateLoad load)
     {
         out.print("LOAD") ;
-        for ( Iterator iter = load.getLoadIRIs().iterator() ; iter.hasNext() ; )
+        for ( String iri : load.getLoadIRIs() )
         {
-            String iri = (String)iter.next() ;
             out.print(" ") ;
             FmtUtils.stringForURI(iri, sCxt) ;
         }
@@ -177,9 +175,11 @@ public class UpdateSerializer implements UpdateVisitor
     {
         out.println("{") ;
         out.incIndent() ;
-        for ( Iterator iter = data.find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext(); )
+        
+        for ( @SuppressWarnings("unchecked") Iterator<Triple> iter = data.find(Node.ANY, Node.ANY, Node.ANY) ; 
+            iter.hasNext(); )
         {
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             String s = FmtUtils.stringForTriple(t, sCxt.getPrefixMapping()) ;
             out.println(s) ;
         }

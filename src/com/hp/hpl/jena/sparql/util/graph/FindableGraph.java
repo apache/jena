@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 class FindableGraph implements Findable
 {
@@ -17,7 +18,8 @@ class FindableGraph implements Findable
 
     FindableGraph(Graph graph) { this.graph = graph ; }
 
-    public Iterator find(Node s, Node p, Node o)
+    @SuppressWarnings("unchecked")
+    public Iterator<Triple> find(Node s, Node p, Node o)
     {
         if ( s == null ) s = Node.ANY ;
         if ( p == null ) p = Node.ANY ;

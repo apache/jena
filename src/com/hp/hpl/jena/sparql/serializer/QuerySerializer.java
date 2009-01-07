@@ -7,11 +7,12 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
@@ -20,10 +21,6 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.query.SortCondition;
 
 /** Serialize a query into SPARQL or ARQ formats */
 
@@ -148,9 +145,8 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.getGraphURIs() != null && query.getGraphURIs().size() != 0 )
         {
-            for ( Iterator iter = query.getGraphURIs().iterator() ; iter.hasNext() ; )
+            for ( String uri : query.getGraphURIs() )
             {
-                String uri = (String)iter.next() ;
                 out.print("FROM ") ;
                 out.print(FmtUtils.stringForURI(uri, query)) ;
                 out.newline() ;
@@ -158,10 +154,9 @@ public class QuerySerializer implements QueryVisitor
         }
         if ( query.getNamedGraphURIs() != null  && query.getNamedGraphURIs().size() != 0 )
         {
-            for ( Iterator iter = query.getNamedGraphURIs().iterator() ; iter.hasNext() ; )
+            for ( String uri : query.getNamedGraphURIs() )
             {
                 // One per line
-                String uri = (String)iter.next() ;
                 out.print("FROM NAMED ") ;
                 out.print(FmtUtils.stringForURI(uri, query)) ;
                 out.newline() ;
@@ -201,10 +196,9 @@ public class QuerySerializer implements QueryVisitor
         if ( query.hasHaving() )
         {
             out.print("HAVING") ;
-            for ( Iterator iter = query.getHavingExprs().iterator() ; iter.hasNext() ; )
+            for (Expr expr : query.getHavingExprs())
             {
                 out.print(" ") ;
-                Expr expr = (Expr)iter.next() ;
                 fmtExpr.format(expr) ;
             }
             out.println() ;
@@ -217,11 +211,10 @@ public class QuerySerializer implements QueryVisitor
         {
             out.print("ORDER BY ") ;
             boolean first = true ;
-            for (Iterator iter = query.getOrderBy().iterator() ; iter.hasNext() ; )
+            for (SortCondition sc : query.getOrderBy())
             {
                 if ( ! first )
                     out.print(" ") ;
-                SortCondition sc = (SortCondition)iter.next() ;
                 sc.format(fmtExpr, out) ;
                 first = false ;
             }
@@ -255,12 +248,11 @@ public class QuerySerializer implements QueryVisitor
     
     // ----
     
-    void appendVarList(Query query, IndentedWriter sb, List vars)
+    void appendVarList(Query query, IndentedWriter sb, List<String> vars)
     {
         boolean first = true ;
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        for ( String varName : vars )
         {
-            String varName = (String)iter.next() ;
             Var var = Var.alloc(varName) ;
             if ( ! first )
                 sb.print(" ") ;
@@ -273,9 +265,8 @@ public class QuerySerializer implements QueryVisitor
     void appendNamedExprList(Query query, IndentedWriter sb, VarExprList namedExprs)
     {
         boolean first = true ;
-        for ( Iterator iter = namedExprs.getVars().iterator() ; iter.hasNext() ; )
+        for ( Var var : namedExprs.getVars() )
         {
-            Var var = (Var)iter.next();
             Expr expr = namedExprs.getExpr(var) ;
             if ( ! first )
                 sb.print(" ") ;
@@ -318,13 +309,12 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
-    static void appendURIList(Query query, IndentedWriter sb, List vars)
+    static void appendURIList(Query query, IndentedWriter sb, List<Node> vars)
     {
         SerializationContext cxt = new SerializationContext(query) ;
         boolean first = true ;
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        for ( Node node : vars )
         {
-            Node node = (Node)iter.next() ;
             if ( ! first )
                 sb.print(" ") ;
             sb.print(FmtUtils.stringForNode(node, cxt)) ;

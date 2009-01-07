@@ -152,7 +152,7 @@ class XMLInputStAX extends SPARQLResult
         // ResultSet variables
         QuerySolution current = null ; 
         XMLStreamReader parser = null ;
-        List variables = new ArrayList() ;
+        List<String> variables = new ArrayList<String>() ;
         Binding binding = null ;            // Current binding
         //RefBoolean inputGraphLabels = new RefBoolean(ARQ.inputGraphBNodeLabels, false) ;
         boolean inputGraphLabels = ARQ.isTrue(ARQ.inputGraphBNodeLabels) ; 
@@ -254,7 +254,7 @@ class XMLInputStAX extends SPARQLResult
         return row ;
     }
 
-    public List getResultVars()
+    public List<String> getResultVars()
     {
         return variables ;
     }

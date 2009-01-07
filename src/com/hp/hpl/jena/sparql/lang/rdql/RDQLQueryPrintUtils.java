@@ -5,10 +5,7 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import java.io.* ;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.io.PrintWriter;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -25,7 +22,6 @@ public class RDQLQueryPrintUtils
     public static boolean printOpName = true ;
     
     static int bNodeCounter = 0 ;
-    static Map bNodeStrings = new HashMap() ; 
     
     static PrefixMapping prefixes = PrefixMapping.Factory.create()
                                     .setNsPrefixes( PrefixMapping.Standard )
