@@ -161,7 +161,7 @@ public class ParseHandlerPlain implements ParseHandler
     
     protected static class ListStack
     {
-        private Stack stack    = new Stack() ;
+        private Stack<ItemList> stack    = new Stack<ItemList>() ;
         
         boolean isEmpty() { return stack.size() == 0 ; }
         
@@ -169,11 +169,11 @@ public class ParseHandlerPlain implements ParseHandler
         {
             if ( stack.size() == 0 )
                 return null ;
-            return (ItemList)stack.peek() ;
+            return stack.peek() ;
         }
     
         void push(ItemList list) { stack.push(list) ; }
-        ItemList pop() { return (ItemList)stack.pop() ; }
+        ItemList pop() { return stack.pop() ; }
     }
 
     

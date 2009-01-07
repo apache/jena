@@ -9,10 +9,8 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
@@ -50,7 +48,7 @@ public class BasicPattern implements Iterable<Triple>
     public void add(int i, Triple t) { triples.add(i, t) ; }
     
     public Triple get(int i) { return triples.get(i) ; }
-    public ListIterator<Triple> iterator() { return triples.listIterator() ; } 
+    public Iterator<Triple> iterator() { return triples.listIterator() ; } 
     public int size() { return triples.size() ; }
     public boolean isEmpty() { return triples.isEmpty() ; }
     

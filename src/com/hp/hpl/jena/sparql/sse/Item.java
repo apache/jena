@@ -109,9 +109,9 @@ public class Item extends ItemLocation
     
     public static Item find(ItemList list, String key)
     {
-        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Item> iter = list.iterator() ; iter.hasNext() ; )
         {
-            Item x = (Item)iter.next() ;
+            Item x = iter.next() ;
             if ( x.isTagged(key))
                 return x ;
         }

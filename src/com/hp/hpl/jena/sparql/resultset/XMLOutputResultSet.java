@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -39,7 +38,7 @@ public class XMLOutputResultSet
 
     IndentedWriter  out ;
     int bNodeCounter = 0 ;
-    Map bNodeMap = new HashMap() ;
+    Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
     
     XMLOutputResultSet(OutputStream outStream)
     {
@@ -83,9 +82,8 @@ public class XMLOutputResultSet
             out.println("<link href=\""+link+"\"/>") ;
         }
         
-        for (Iterator iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
+        for (String n : rs.getResultVars())
         {
-            String n = (String)iter.next() ;
             out.incIndent(INDENT) ;
             out.print("<") ;
             out.print(dfVariable) ;
@@ -199,7 +197,7 @@ public class XMLOutputResultSet
             {
                 if ( ! bNodeMap.containsKey(r))
                     bNodeMap.put(r, "b"+(bNodeCounter++)) ;
-                label = (String)bNodeMap.get(r) ;
+                label = bNodeMap.get(r) ;
             }
             out.println("<"+dfBNode+">"+label+"</"+dfBNode+">") ;
         }

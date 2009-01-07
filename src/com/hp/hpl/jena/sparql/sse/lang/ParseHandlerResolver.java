@@ -41,7 +41,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     private String              topBase         = null ;
     private Prologue            prologue        = null ; 
     private ItemList            declList        = null ;
-    private Stack               state           = new Stack() ; // Previous prologues (not the current one)
+    private Stack<Prologue>               state           = new Stack<Prologue>() ; // Previous prologues (not the current one)
     
     public ParseHandlerResolver(Prologue p)
     {
@@ -116,10 +116,10 @@ public class ParseHandlerResolver extends ParseHandlerForm
 
     private void dump()
     {
-        Iterator iter = state.iterator() ;
+        Iterator<Prologue> iter = state.iterator() ;
         for ( ; iter.hasNext() ; )
         {
-            Prologue p = (Prologue)iter.next() ;
+            Prologue p = iter.next() ;
             System.out.println("  Prologue: "+p.getBaseURI()) ;
         }
     }
@@ -128,7 +128,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     protected void finishForm(ItemList list)
     { 
         // Check list length
-        prologue = (Prologue)state.pop() ;
+        prologue = state.pop() ;
         // Restore state 
         
         // Choose the result.

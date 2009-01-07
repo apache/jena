@@ -6,15 +6,17 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.op.OpService;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
@@ -48,9 +50,8 @@ public class Substitute
             return bgp ;
         
         BasicPattern bgp2 = new BasicPattern() ;
-        for ( Iterator iter = bgp.iterator() ; iter.hasNext() ; )
+        for ( Triple triple : bgp )
         {
-            Triple triple = (Triple)iter.next() ;
             Triple t = substitute(triple, binding) ;
             bgp2.add(t) ;
         }
@@ -97,9 +98,8 @@ public class Substitute
             Node g = substitute(gNode, binding) ;
 
             BasicPattern triples = new BasicPattern() ;
-            for ( Iterator iter = quadPattern.getBasicPattern().iterator() ; iter.hasNext() ; )
+            for ( Triple triple : quadPattern.getBasicPattern() )
             {
-                Triple triple = (Triple)iter.next() ;
                 Node s = substitute(triple.getSubject(), binding) ;
                 Node p = substitute(triple.getPredicate(), binding) ;
                 Node o = substitute(triple.getObject(), binding) ;

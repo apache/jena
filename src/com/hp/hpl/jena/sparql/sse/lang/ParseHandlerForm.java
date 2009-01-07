@@ -162,14 +162,14 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     
     private static class FrameStack
     {
-        private Stack frames    = new Stack() ;
+        private Stack<Frame> frames    = new Stack<Frame>() ;
     
         boolean isCurrent(ItemList list)
         {
             if ( frames.size() == 0 )
                 return false ;
     
-            Frame f = (Frame)frames.peek();
+            Frame f = frames.peek();
     
             return f.listItem == list ;
         }
@@ -178,11 +178,11 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         {
             if ( frames.size() == 0 )
                 return null ;
-            return (Frame)frames.peek() ;
+            return frames.peek() ;
         }
     
         void push(Frame f) { frames.push(f) ; }
-        Frame pop() { return (Frame)frames.pop() ; }
+        Frame pop() { return frames.pop() ; }
     }
 
 }

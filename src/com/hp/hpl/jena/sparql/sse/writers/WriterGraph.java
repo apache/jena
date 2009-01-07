@@ -35,9 +35,8 @@ public class WriterGraph
 
     public static void output(IndentedWriter out, BasicPattern pattern, SerializationContext sCxt)
     {
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ;)
+        for ( Triple triple : pattern )
         {
-            Triple triple = (Triple)iter.next() ;
             WriterNode.output(out, triple, sCxt) ;
             out.println() ;
         }
@@ -50,10 +49,10 @@ public class WriterGraph
         WriterLib.start(out, Tags.tagDataset, NL) ;
         writeGraph(out, ds.getDefaultGraph(), naming) ;
         out.ensureStartOfLine() ;
-        for ( Iterator iter = ds.listGraphNodes() ; iter.hasNext() ; )
+        for ( Iterator<Node> iter = ds.listGraphNodes() ; iter.hasNext() ; )
         {
+            Node node = iter.next() ;  
             out.ensureStartOfLine() ;
-            Node node = (Node)iter.next() ;  
             Graph g = ds.getGraph(node) ;
             writeGraph(out, g, node, naming) ;
         }
@@ -95,7 +94,8 @@ public class WriterGraph
             out.print(label) ;
         }
         
-        Iterator iter = g.find(Node.ANY, Node.ANY, Node.ANY) ;
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> iter = g.find(Node.ANY, Node.ANY, Node.ANY) ;
         if ( ! iter.hasNext() )
         {
             // Empty.
@@ -111,7 +111,7 @@ public class WriterGraph
             if ( ! first )
                 out.println();
             first = false ;
-            Triple triple = (Triple)iter.next();
+            Triple triple = iter.next();
             WriterNode.output(out, triple, naming) ;
         }
         out.decIndent() ;

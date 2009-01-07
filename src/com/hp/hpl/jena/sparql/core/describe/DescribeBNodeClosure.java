@@ -42,9 +42,9 @@ public class DescribeBNodeClosure implements DescribeHandler
         Closure.closure(otherModel(r, dataset.getDefaultModel()), false, acc) ;
         
         // Named graphs
-        for ( Iterator iter = dataset.listNames() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; )
         {
-            String name = (String)iter.next();
+            String name = iter.next();
             Model model =  dataset.getNamedModel(name) ;
             Resource r2 = otherModel(r, model) ;
             Closure.closure(r2, false, acc) ;

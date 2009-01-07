@@ -63,7 +63,8 @@ public class WriterBasePrefix
 
         if ( prefixMapping != null )
         {
-            Map m = prefixMapping.getNsPrefixMap() ;
+            @SuppressWarnings("unchecked")
+            Map<String, String> m = prefixMapping.getNsPrefixMap() ;
             if ( ! m.isEmpty() )
             {
                 int s = iWriter.getCol() ;
@@ -74,14 +75,14 @@ public class WriterBasePrefix
                 int len = iWriter.getCurrentOffset() ;
 
                 iWriter.incIndent(len) ;
-                Iterator iter = m.keySet().iterator();
+                Iterator<String> iter = m.keySet().iterator();
                 boolean first = true ;
                 for ( ; iter.hasNext() ; )
                 {
                     if ( ! first )
                         iWriter.println() ;
                     first = false ;
-                    String prefix = (String)iter.next();
+                    String prefix = iter.next();
                     String uri = prefixMapping.getNsPrefixURI(prefix) ;
                     // Base relative URI = but not prefix mappings!
                     uri = FmtUtils.stringForURI(uri, prologue.getBaseURI()) ;

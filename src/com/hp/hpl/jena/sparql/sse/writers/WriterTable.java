@@ -43,10 +43,9 @@ public class WriterTable
     public static void output(IndentedWriter out, Binding binding, SerializationContext sCxt )
     {
         WriterLib.start(out, Tags.tagRow, WriterLib.NoSP) ;
-        Iterator iter = binding.vars() ;
-        for ( ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
         {
-            Var v = (Var)iter.next() ;
+            Var v = iter.next() ;
             Node n = binding.get(v) ;
             out.print(" ") ;
             WriterLib.start2(out) ;

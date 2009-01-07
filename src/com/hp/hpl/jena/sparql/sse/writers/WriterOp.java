@@ -104,9 +104,9 @@ public class WriterOp
         private void visitOpN(OpN op)
         {
             start(op, NL) ;
-            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {
-                Op sub = (Op)iter.next() ;
+                Op sub = iter.next() ;
                 out.ensureStartOfLine() ;
                 printOp(sub) ;
             }
@@ -140,18 +140,18 @@ public class WriterOp
 
         public void visit(OpQuadPattern opQuadP)
         { 
-            List quads = opQuadP.getQuads() ;
+            List<Quad> quads = opQuadP.getQuads() ;
             if ( quads.size() == 1 )
             {
                 start(opQuadP, NoNL) ;
-                formatQuad((Quad)quads.get(0)) ;
+                formatQuad(quads.get(0)) ;
                 finish(opQuadP) ;
                 return ;
             }
             start(opQuadP, NL) ;
-            for ( Iterator iter = quads.listIterator() ; iter.hasNext() ;)
+            for ( Iterator<Quad> iter = quads.listIterator() ; iter.hasNext() ;)
             {
-               Quad quad = (Quad)iter.next() ;
+               Quad quad = iter.next() ;
                formatQuad(quad) ;
                out.println() ;
             }
@@ -175,9 +175,8 @@ public class WriterOp
         
         private void write(BasicPattern pattern)
         {
-            for ( Iterator iter = pattern.iterator() ; iter.hasNext() ;)
+            for ( Triple t : pattern )
             {
-               Triple t = (Triple)iter.next() ;
                formatTriple(t) ;
                out.println() ;
             }
@@ -375,12 +374,11 @@ public class WriterOp
             start() ;
 
             boolean first = true ;
-            for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
+            for ( SortCondition sc : opOrder.getConditions() )
             {
                 if ( ! first )
                     out.print(" ") ;
                 first = false ;
-                SortCondition sc = (SortCondition)iter.next() ;
                 formatSortCondition(sc) ;
             }
             finish() ;
@@ -492,17 +490,16 @@ public class WriterOp
                 op.visit(this) ;
         }
         
-        private void writeVarList(List vars)
+        private void writeVarList(List<Var> vars)
         {
             start() ;
             boolean first = true ;
-            for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+            for (Var var : vars)
             {
                 if ( ! first )
                   out.print(" ") ;
                 first = false ;
-                Var v = (Var)iter.next() ;
-                out.print(v.toString()) ;
+                out.print(var.toString()) ;
             }
             finish() ;
         }
@@ -511,12 +508,11 @@ public class WriterOp
         {
             start() ;
             boolean first = true ;
-            for ( Iterator iter = project.getVars().iterator() ; iter.hasNext() ; )
+            for ( Var v : project.getVars() )
             {
                 if ( ! first )
                   out.print(" ") ;
                 first = false ;
-                Var v = (Var)iter.next() ;
                 Expr expr = project.getExpr(v) ;
                 if ( expr != null )
                 {

@@ -67,7 +67,7 @@ public class Q_Query extends SimpleNode
         query.setQueryPattern(queryElement) ;
         
         // Collect all mentioned variables.
-        List varAcc = new ArrayList() ;
+        List<String> varAcc = new ArrayList<String>() ;
 
         try {
             // First - collect prefixes.
@@ -147,9 +147,9 @@ public class Q_Query extends SimpleNode
             if ( selectAllVars )
             {
                 query.setQueryResultStar(true) ;
-                for ( Iterator iter = varAcc.iterator() ; iter.hasNext() ; )
+                for ( Iterator<String> iter = varAcc.iterator() ; iter.hasNext() ; )
                 {
-                    String varName = (String)iter.next() ;
+                    String varName = iter.next() ;
                     q.addResultVar(varName) ;
                 }
             }
@@ -217,7 +217,7 @@ public class Q_Query extends SimpleNode
         }
     }
 
-    private void makeElementTriplePatterns(Query q, RDQL_Node node, ElementGroup group, List varAcc)
+    private void makeElementTriplePatterns(Query q, RDQL_Node node, ElementGroup group, List<String> varAcc)
     {
         int n = node.jjtGetNumChildren() ;
         
@@ -236,7 +236,7 @@ public class Q_Query extends SimpleNode
     }
 
 
-    private void extractFixedTriplePatterns(Query q, List triplePatterns, RDQL_Node node, List varAcc)
+    private void extractFixedTriplePatterns(Query q, List<Triple> triplePatterns, RDQL_Node node, List<String> varAcc)
     {
         int n = node.jjtGetNumChildren() ;
         for ( int j = 0 ; j < n ; j++ )
@@ -257,7 +257,7 @@ public class Q_Query extends SimpleNode
     // one place.
     
     
-    static private com.hp.hpl.jena.graph.Node convertToGraphNode(RDQL_Node n, Query q, List varAcc)
+    static private com.hp.hpl.jena.graph.Node convertToGraphNode(RDQL_Node n, Query q, List<String> varAcc)
     {
         if ( n instanceof Q_Var )
         {

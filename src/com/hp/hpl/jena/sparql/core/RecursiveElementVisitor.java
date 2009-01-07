@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.sparql.syntax.*;
 
 /** <p> Visitor pattern helper that walks the entire tree calling operations
@@ -119,9 +117,8 @@ public class RecursiveElementVisitor implements ElementVisitor
     public final void visit(ElementUnion el)
     {
         startElement(el) ;
-        for ( Iterator iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        for ( Element subElement : el.getElements() )
         {
-            Element subElement = (Element)iter.next() ;
             startSubElement(el, subElement) ;
             subElement.visit(this) ;
             endSubElement(el, subElement) ;
@@ -132,9 +129,8 @@ public class RecursiveElementVisitor implements ElementVisitor
     public final void visit(ElementGroup el)
     {
         startElement(el) ;
-        for ( Iterator iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        for ( Element subElement : el.getElements() )
         {
-            Element subElement = (Element)iter.next() ;
             startSubElement(el, subElement) ;
             subElement.visit(this) ;
             endSubElement(el, subElement) ;

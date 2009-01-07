@@ -153,16 +153,6 @@ public class Prologue
     /** Set the IRI resolver */
     public void setResolver(IRIResolver resolver) { this.resolver = resolver; }
     
-    /**
-     * @deprecated use expandPrefixedName instead
-     * @param qname
-     * @return String Expanded prefixed name
-     */
-    
-    public String expandQName(String qname)
-    { return expandPrefixedName(qname) ; }
-    
-    
     /** Expand prefixed name 
      * 
      * @param qname  The prefixed name to be expanded

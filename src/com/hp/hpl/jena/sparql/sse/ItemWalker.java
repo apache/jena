@@ -25,9 +25,9 @@ public class ItemWalker
         
         public void visit(Item item, ItemList list)
         {
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Item> iter = list.iterator() ; iter.hasNext() ; )
             {
-                Item subItem = (Item)iter.next() ;
+                Item subItem = iter.next() ;
                 subItem.visit(this) ;
             }
             visitor.visit(item, list) ;

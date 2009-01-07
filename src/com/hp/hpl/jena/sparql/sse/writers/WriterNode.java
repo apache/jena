@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse.writers;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -63,15 +62,14 @@ public class WriterNode
         out.print(FmtUtils.stringForNode(node, naming)) ;
     }
     
-    public static void output(IndentedWriter out, List nodeList, SerializationContext naming)
+    public static void output(IndentedWriter out, List<Node> nodeList, SerializationContext naming)
     {
         out.print("(") ;
         boolean first = true ;
-        for ( Iterator iter = nodeList.iterator() ; iter.hasNext(); )
+        for ( Node node : nodeList )
         {
             if ( ! first )
                 out.print(" ") ;
-            Node node = (Node)iter.next();
             out.print(FmtUtils.stringForNode(node, naming)) ;
             first = false ;
         }
