@@ -45,10 +45,9 @@ public class QueryIterCommonParent extends QueryIterConvert
             BindingMap b2 = new BindingMap(parentBinding) ;
 
             // Copy the resultSet bindings to the combined result binding with checking. 
-            Iterator iter = b.vars() ;
-            for ( ; iter.hasNext(); )
+            for ( Iterator<Var> iter = b.vars() ; iter.hasNext(); )
             {
-                Var v = (Var)iter.next();
+                Var v = iter.next();
                 Node n = b.get(v) ;
                 if ( b2.contains(v) )
                 {

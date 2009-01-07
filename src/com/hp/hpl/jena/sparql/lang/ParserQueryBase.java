@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.Query;
 
 public class ParserQueryBase extends ParserBase 
 {
-    private Stack stack = new Stack() ;
+    private Stack<Query> stack = new Stack<Query>() ;
     protected Query query ;
 
     public void setQuery(Query q)
@@ -36,7 +36,7 @@ public class ParserQueryBase extends ParserBase
         Query subQuery = query ;
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
-        query = (Query)stack.pop();
+        query = stack.pop();
         setPrologue(query) ;
         return subQuery ;
     }

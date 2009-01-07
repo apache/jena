@@ -6,11 +6,8 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
@@ -45,9 +42,8 @@ public class PathCompiler
     
     void reduce(PathBlock x, PathBlock pathBlock, VarAlloc varAlloc )
     {
-        for ( Iterator iter = pathBlock.iterator() ; iter.hasNext() ; )
+        for ( TriplePath tp : pathBlock )
         {
-            TriplePath tp = (TriplePath)iter.next();
             if ( tp.isTriple() )
             {
                 x.add(tp) ;

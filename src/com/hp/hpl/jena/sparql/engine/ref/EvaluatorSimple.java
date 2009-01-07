@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -175,7 +176,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
     
-    public Table project(Table table, List projectVars)
+    public Table project(Table table, List<Var> projectVars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterProject(qIter, projectVars, getExecContext()) ;

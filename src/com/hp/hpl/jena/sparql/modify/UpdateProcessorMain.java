@@ -6,11 +6,8 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
-
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
@@ -33,11 +30,8 @@ public class UpdateProcessorMain implements UpdateProcessor
     {
         graphStore.startRequest() ;
         UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
-        for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
-        {
-            Update update = (Update)iter.next() ;
+        for ( Update update : request.getUpdates() )
             update.visit(v) ;
-        }
         graphStore.finishRequest() ;
     }
 

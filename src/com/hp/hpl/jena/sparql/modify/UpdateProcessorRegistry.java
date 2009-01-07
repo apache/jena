@@ -16,7 +16,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
 
 public class UpdateProcessorRegistry
 {
-    List factories = new ArrayList() ;
+    List<UpdateProcessorFactory> factories = new ArrayList<UpdateProcessorFactory>() ;
     static { init() ; }
     
     // Singleton
@@ -55,9 +55,9 @@ public class UpdateProcessorRegistry
     
     public UpdateProcessorFactory find(UpdateRequest request, GraphStore graphStore)
     {
-        for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( Iterator<UpdateProcessorFactory> iter = factories.listIterator() ; iter.hasNext() ; )
         {
-            UpdateProcessorFactory f = (UpdateProcessorFactory)iter.next() ;
+            UpdateProcessorFactory f = iter.next() ;
             if ( f.accept(request, graphStore) )
                 return f ;
         }
@@ -81,7 +81,7 @@ public class UpdateProcessorRegistry
     public void remove(UpdateProcessorFactory f)  { factories.remove(f) ; }
     
     /** Allow <b>careful</b> manipulation of the factories list */
-    public List factories() { return factories ; }
+    public List<UpdateProcessorFactory> factories() { return factories ; }
 
     /** Check whether a query engine factory is already registered in teh default registry*/
     public static boolean containsFactory(UpdateProcessorFactory f) { return get().contains(f) ; }

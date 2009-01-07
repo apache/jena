@@ -60,7 +60,7 @@ public class ProbabilisticFrameworkJoin extends HeuristicBasicPattern
 			throw new NullPointerException("The probability framework has not been set to the ARQ context!") ;
 		
 		// Get the type of specific joins
-		List joins = BasicPatternJoin.specificTypes(triple1, triple2) ;
+		List<String> joins = BasicPatternJoin.specificTypes(triple1, triple2) ;
 		
 		if (joins.contains(BasicPatternJoin.bPP))
 			return 1.0 ;

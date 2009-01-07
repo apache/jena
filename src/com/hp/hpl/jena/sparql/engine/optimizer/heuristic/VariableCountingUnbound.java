@@ -75,11 +75,11 @@ public class VariableCountingUnbound extends HeuristicBasicPattern
 	
 		double cost = 32d ;
 		int MAX_COST = 32 ;
-		List joins = BasicPatternJoin.specificTypes(triple1, triple2) ; // List<String>
+		List<String> joins = BasicPatternJoin.specificTypes(triple1, triple2) ;
 		
-		for (Iterator iter = joins.iterator(); iter.hasNext(); )
+		for (Iterator<String> iter = joins.iterator(); iter.hasNext(); )
 		{
-			String type = (String)iter.next() ;
+			String type = iter.next() ;
 		
 			// Weight bound PP joins with 1.0, always
 			if (type.equals(BasicPatternJoin.bPP))

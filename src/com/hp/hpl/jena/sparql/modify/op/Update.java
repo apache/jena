@@ -8,40 +8,15 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateSerializer;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintSerializable;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateFactory;
 
 public abstract class Update implements PrintSerializable
 {
-    
-    /** Execute an update.
-     * @deprecated {@link UpdateFactory.create(GraphStore)}
-     * @param graphStore
-     */
-    
-    public final void exec(GraphStore graphStore)
-    { UpdateFactory.create(this, graphStore).execute() ; }
-    
-    /** Execute an update, using the bindign as values for some of the variables in a pattern.
-     * Binding ignored in operations without a pattern.
-     * @deprecated {@link UpdateFactory.create(GraphStore, Binding)}
-     * @param graphStore
-     * @param binding
-     */
-    
-    public final void exec(GraphStore graphStore, Binding binding)
-    {
-        UpdateFactory.create(this, graphStore, binding).execute() ;
-    }
-
     public abstract void visit(UpdateVisitor visitor) ; 
     
     public final void output(IndentedWriter out, SerializationContext sCxt)

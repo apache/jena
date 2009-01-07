@@ -94,11 +94,11 @@ public class VariableCounting extends HeuristicBasicPattern
 	
 		double cost = 32d ;
 		int MAX_COST = 32 ;
-		List joins = BasicPatternJoin.specificTypes(triple1, triple2) ; // List<String>
+		List<String> joins = BasicPatternJoin.specificTypes(triple1, triple2) ;
 		
-		for (Iterator iter = joins.iterator(); iter.hasNext(); )
+		for (Iterator<String> iter = joins.iterator(); iter.hasNext(); )
 		{
-			String type = (String)iter.next() ;
+			String type = iter.next() ;
 			
 			if (type.equals(BasicPatternJoin.uSS))
 				cost -= 2 ;

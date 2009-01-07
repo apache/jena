@@ -22,9 +22,9 @@ public class QueryIterExtendByVar extends QueryIter
     // Use QueryIterProcessBinding?
     Binding binding ;
     Var var ;
-    Iterator members ;
+    Iterator<Node> members ;
     
-    public QueryIterExtendByVar(Binding binding, Var var, Iterator members, ExecutionContext execCxt)
+    public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt)
     {
         super(execCxt) ;
         this.binding = binding ;
@@ -41,7 +41,7 @@ public class QueryIterExtendByVar extends QueryIter
     @Override
     protected Binding moveToNextBinding()
     {
-        Node n = (Node)members.next() ;
+        Node n = members.next() ;
         Binding b = new Binding1(binding, var, n) ;
         return b ;
     }

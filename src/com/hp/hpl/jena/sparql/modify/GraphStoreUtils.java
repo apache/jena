@@ -53,7 +53,7 @@ public class GraphStoreUtils
         action.exec(g) ;
     }
 
-    public static void action(GraphStore graphStore, List graphNodes, GraphStoreAction action)
+    public static void action(GraphStore graphStore, List<Node> graphNodes, GraphStoreAction action)
     {
         if ( graphNodes.isEmpty() )
         {
@@ -62,9 +62,8 @@ public class GraphStoreUtils
         }
         else
         {
-            for ( Iterator iter = graphNodes.iterator() ; iter.hasNext() ; )
+            for (Node gn : graphNodes)
             {
-                Node gn = (Node)iter.next() ;
                 Graph g = graphStore.getGraph(gn) ;
                 if ( g == null )
                     throw new UpdateException("No such graph: "+gn) ; 

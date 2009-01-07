@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -34,9 +31,8 @@ public class QueryIterAssign extends QueryIterProcessBinding
     public Binding accept(Binding binding)
     {
         Binding b = new BindingMap(binding) ;
-        for ( Iterator iter = exprs.getVars().iterator() ; iter.hasNext(); )
+        for ( Var v : exprs.getVars() )
         {
-            Var v = (Var)iter.next();
             // Not this, where expressions do not see the new bindings.
             // Node n = exprs.get(v, bind, funcEnv) ;
             // which gives (Lisp) "let" semantics, not "let*" semantics 

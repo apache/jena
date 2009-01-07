@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
@@ -27,16 +26,15 @@ public class strConcat extends FunctionBase
 {
 
     @Override
-    public final NodeValue exec(List args)
+    public final NodeValue exec(List<NodeValue> args)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
         
         String result = "" ;
-        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
+        for ( NodeValue arg : args )
         {
-            NodeValue arg = (NodeValue)iter.next();
             String x = arg.asString() ;
             result = result+x ;
         }

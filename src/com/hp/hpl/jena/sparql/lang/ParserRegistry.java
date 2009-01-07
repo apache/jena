@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.Syntax;
 public class ParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map factories = new HashMap() ;
+    Map<Syntax, ParserFactory> factories = new HashMap<Syntax, ParserFactory>() ;
     
     // Singleton
     static ParserRegistry registry = null ;
@@ -79,7 +79,7 @@ public class ParserRegistry
      */
     
     public ParserFactory getFactory(Syntax syntax)
-    { return (ParserFactory) factories.get(syntax) ; }
+    { return factories.get(syntax) ; }
     
     /** Return a suitable parser for the given syntax
      *

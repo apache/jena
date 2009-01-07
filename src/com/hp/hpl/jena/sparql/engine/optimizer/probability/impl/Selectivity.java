@@ -5,12 +5,11 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.probability.impl;
 
-import java.util.Iterator;
 import java.util.Random;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -19,6 +18,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternJoin;
@@ -128,12 +128,8 @@ public class Selectivity
 	{
 		ElementTriplesBlock el = new ElementTriplesBlock() ;
 
-		for (Iterator iter = bp.iterator(); iter.hasNext(); )
-		{
-			Triple triple = (Triple)iter.next() ;
-		
+		for (Triple triple : bp )
 			el.addTriple(triple) ;
-		}
 		
 		return el ;
 	}

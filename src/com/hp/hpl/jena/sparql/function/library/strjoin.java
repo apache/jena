@@ -33,19 +33,19 @@ public class strjoin extends FunctionBase
 {
 
     @Override
-    public final NodeValue exec(List args)
+    public final NodeValue exec(List<NodeValue> args)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
         
-        Iterator iter = args.iterator() ;
-        String sep = ((NodeValue)iter.next()).asString() ;
+        Iterator<NodeValue> iter = args.iterator() ;
+        String sep = iter.next().asString() ;
 
         List<String> x = new ArrayList<String>() ;
         for ( ; iter.hasNext() ; )
         {
-            NodeValue arg = (NodeValue)iter.next();
+            NodeValue arg = iter.next();
             x.add( arg.asString() ) ;
         }
         
