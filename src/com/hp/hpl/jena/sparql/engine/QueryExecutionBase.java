@@ -116,15 +116,15 @@ public class QueryExecutionBase implements QueryExecution
         // Build each template substitution as triples.
         for ( ; queryIterator.hasNext() ; )
         {
-            Set set = new HashSet() ;
-            Map bNodeMap = new HashMap() ;
+            Set<Triple> set = new HashSet<Triple>() ;
+            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
             Binding binding = queryIterator.nextBinding() ;
             template.subst(set, bNodeMap, binding) ; 
 
             // Convert and merge into Model.
-            for ( Iterator iter = set.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Triple> iter = set.iterator() ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next() ;
+                Triple t = iter.next() ;
                 Statement stmt = ModelUtils.tripleToStatement(model, t) ;
                 if ( stmt != null )
                     model.add(stmt) ;
@@ -148,7 +148,7 @@ public class QueryExecutionBase implements QueryExecution
         if ( query.getQueryPattern() == null )
             query.setQueryPattern(new ElementGroup()) ;
         
-        Set set = new HashSet() ;
+        Set<RDFNode> set = new HashSet<RDFNode>() ;
 
         //May return null (no query pattern) 
         ResultSet qRes = execResultSet() ;
@@ -160,9 +160,8 @@ public class QueryExecutionBase implements QueryExecution
             for ( ; qRes.hasNext() ; )
             {
                 QuerySolution rb = qRes.nextSolution() ;
-                for ( Iterator iter = query.getResultVars().iterator() ; iter.hasNext() ; )
+                for ( String varName : query.getResultVars() )
                 {
-                    String varName = (String)iter.next() ;
                     RDFNode n = rb.get(varName) ;
                     set.add(n) ;
                 }
@@ -173,9 +172,8 @@ public class QueryExecutionBase implements QueryExecution
         if ( query.getResultURIs() != null )
         {
             // Any URIs in the DESCRIBE
-            for ( Iterator iter = query.getResultURIs().iterator() ; iter.hasNext() ; )
+            for (Node n : query.getResultURIs())
             {
-                Node n = (Node)iter.next() ;
                 // Need to make dataset available to describe handlers.
                 RDFNode rNode = ModelUtils.convertGraphNodeToRDFNode(n, dataset.getDefaultModel()) ;
                 set.add(rNode) ;
@@ -183,40 +181,30 @@ public class QueryExecutionBase implements QueryExecution
         }
 
         // Create new handlers for this process.
-        List dhList = DescribeHandlerRegistry.get().newHandlerList() ;
+        List<DescribeHandler> dhList = DescribeHandlerRegistry.get().newHandlerList() ;
 
         getContext().put(ARQConstants.sysCurrentDataset, getDataset()) ;
         // Notify start of describe phase
-        for ( Iterator handlers = dhList.iterator() ; handlers.hasNext() ; )
-        {
-            DescribeHandler dh = (DescribeHandler)handlers.next() ;
+        for (DescribeHandler dh : dhList)
             dh.start(model, getContext()) ;
-        }
 
         // Do describe for each resource found.
-        for (Iterator iter = set.iterator() ; iter.hasNext() ;)
+        for (Iterator<RDFNode> iter = set.iterator() ; iter.hasNext() ;)
         {
-            RDFNode n = (RDFNode)iter.next() ;
+            RDFNode n = iter.next() ;
 
             if ( n instanceof Resource )
             {
-                for ( Iterator handlers = dhList.iterator() ; handlers.hasNext() ; )
-                {
-                    DescribeHandler dh = (DescribeHandler)handlers.next() ;
+                for (DescribeHandler dh : dhList)
                     dh.describe((Resource)n) ;
-                }
             }
             else
                 // Can't describe literals
                 continue ;
         }
 
-        // Notify end of describe phase
-        for ( Iterator handlers = dhList.iterator() ; handlers.hasNext() ; )
-        {
-            DescribeHandler dh = (DescribeHandler)handlers.next() ;
-            dh.finish() ;
-        }
+        for (DescribeHandler dh : dhList)
+            dh.start(model, getContext()) ;
 
         this.close() ;
         return model ; 

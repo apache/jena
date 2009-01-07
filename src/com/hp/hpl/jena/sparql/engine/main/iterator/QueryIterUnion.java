@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -29,10 +28,10 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterUnion extends QueryIterRepeatApply 
 {
-    protected List subOps  ;
+    protected List<Op> subOps  ;
     
     public QueryIterUnion(QueryIterator input,
-                          List subOps,
+                          List<Op> subOps,
                           ExecutionContext context)
     {
         super(input, context) ;
@@ -43,9 +42,8 @@ public class QueryIterUnion extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding binding)
     {
         QueryIterConcat unionQIter = new QueryIterConcat(getExecContext()) ;
-        for ( Iterator iter = subOps.listIterator() ; iter.hasNext() ; )
+        for (Op subOp : subOps)
         {
-            Op subOp = (Op)iter.next() ;
             subOp = QC.substitute(subOp, binding) ;
             QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
             QueryIterator qIter = QC.execute(subOp, parent, getExecContext()) ;
@@ -60,11 +58,8 @@ public class QueryIterUnion extends QueryIterRepeatApply
     { 
         out.println(Utils.className(this)) ;
         out.incIndent() ;
-        for ( Iterator iter = subOps.iterator() ; iter.hasNext() ; )
-        {
-            Op op = (Op)iter.next() ;
+        for (Op op : subOps)
             op.output(out, sCxt) ;
-        }
         out.decIndent() ;
         out.ensureStartOfLine() ;
     }

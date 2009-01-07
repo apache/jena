@@ -19,12 +19,16 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
+import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.sse.WriterSSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 import com.hp.hpl.jena.sparql.util.*;
 
 import com.hp.hpl.jena.query.*;
@@ -32,6 +36,42 @@ import com.hp.hpl.jena.query.*;
 
 public class Run
 {
+    public static void checkOp(Query query, boolean optimizeAlgebra)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        Op op = Algebra.compile(query) ;
+        if ( optimizeAlgebra )
+            op =  Algebra.optimize(op) ;
+        WriterSSE.out(buff.getIndentedWriter(), op, query) ;
+        String str = buff.getBuffer().toString() ;
+        
+        try {
+            Op op2 = SSE.parseOp(str) ;
+            if ( op.hashCode() != op2.hashCode() )
+            {
+                System.out.println(str) ;
+                System.out.println(op) ;
+                System.out.println(op2) ;
+                
+                throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
+                
+                
+            }
+            if ( ! op.equals(op2) )
+                throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
+        } catch (SSEParseException ex)
+        { 
+            System.err.println(str);
+            throw ex ; 
+        }      // Breakpoint
+        catch (BuildException ex)
+        {
+            System.err.println(str);
+            throw ex ; 
+        }
+    }
+    
+    
     public static void main(String[] argv) throws Exception
     {
         
@@ -41,10 +81,39 @@ public class Run
         "    WHERE\n"+
         "      { ?x :p ?p}\n"+
         "    GROUP BY ?p\n" ;
-        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
-        QueryUtils.checkOp(query, false) ;
-        QueryUtils.checkParse(query) ;
-        System.exit(0) ;
+        
+        String y = "(project (?countX)\n"+
+                    "(assign ((?countX ?.0))\n"+
+                    "  (group (?p) ((?.0 (count ?x)))\n"+
+                    "    (bgp (triple ?x <http://example/p> ?p)\n"+
+                    "))))" ;  
+        
+
+//          Op op1 = SSE.parseOp(y) ;
+//          y = op1.toString();
+//          
+//          Op op2 = SSE.parseOp(y) ;
+//          
+//          if ( op1.hashCode() != op2.hashCode() )
+//              System.out.println("DIFFERENT") ;
+//          else
+//              System.out.println("SAME") ;
+//          
+//          if ( ! op1.equals(op2) ) 
+//              System.out.println("DIFFERENT") ;
+//          else
+//              System.out.println("SAME") ;
+              
+          
+          Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
+          
+          checkOp(query, false) ;
+          
+          System.out.println(x) ;
+          System.out.println(query) ;
+          QueryUtils.checkOp(query, false) ;
+          QueryUtils.checkParse(query) ;
+          System.exit(0) ;
         
         
         }

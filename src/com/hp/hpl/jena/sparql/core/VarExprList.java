@@ -112,6 +112,12 @@ public class VarExprList
         VarExprList x = (VarExprList)other ;
         return Utils.equals(vars, x.vars) &&  Utils.equals(exprs, x.exprs) ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return vars.toString() + " // "+exprs.toString();
+    }
 }
 
 /*

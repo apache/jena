@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.optimizer;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -81,8 +82,8 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 	
 	private boolean isConsistent(BasicPattern pattern, BasicPattern optimized)
 	{
-		List patternL = pattern.getList() ;
-		List optimizedL = optimized.getList() ;
+		List<Triple> patternL = pattern.getList() ;
+		List<Triple> optimizedL = optimized.getList() ;
 		
 		if (patternL.containsAll(optimizedL) && optimizedL.containsAll(patternL))
 			return true ;

@@ -55,9 +55,9 @@ public class TableWriter
     private static void output(Binding binding, IndentedWriter out, SerializationContext sCxt)
     {
         out.print("(row") ;
-        for ( Iterator iter = binding.vars() ; iter.hasNext() ; )
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
         {
-            Var v = (Var)iter.next();
+            Var v = iter.next();
             Node n = binding.get(v) ;
             out.print(" ") ;
             out.print(Plan.startMarker2) ;

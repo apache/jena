@@ -430,8 +430,7 @@ public class BuilderOp
             {
                 // Aggregations : assume that the exprs are legal.
                 VarExprList y = BuilderExpr.buildNamedExprList(list.get(2).getList()) ;
-                
-                for (  Expr expr : aggregators )
+                for (  Expr expr : y.getExprs().values() )
                 {
                     if ( ! ( expr instanceof E_Aggregator ) )
                         BuilderLib.broken(list, "Not a aggregate expression: "+expr) ;

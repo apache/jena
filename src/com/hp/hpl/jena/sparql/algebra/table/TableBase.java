@@ -41,9 +41,9 @@ public abstract class TableBase implements Table
     {
         // Test to see if compatible: Iterate over variables in left
         boolean matches = true ;
-        for ( Iterator vIter = bindingLeft.vars() ; vIter.hasNext() ; )
+        for ( Iterator<Var> vIter = bindingLeft.vars() ; vIter.hasNext() ; )
         {
-            Var v = (Var)vIter.next();
+            Var v = vIter.next();
             Node nLeft  = bindingLeft.get(v) ; 
             Node nRight = bindingRight.get(v) ;
             

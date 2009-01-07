@@ -77,9 +77,8 @@ public class PropertyFunctionGenerator
     {
         // Step 1 : find property functions (if any); collect triples.
         // Not list arg triples at this point.
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        for ( Triple t : pattern )
         {
-            Triple t = (Triple)iter.next() ;
             if ( isMagicProperty(registry, t) )
                 propertyFunctionTriples.add(t) ;
         }
@@ -136,9 +135,8 @@ public class PropertyFunctionGenerator
                 return ;
             }
             
-            for ( Iterator iter = pfArg.getArgList().iterator() ; iter.hasNext() ; )
+            for (  Node n : pfArg.getArgList() )
             {
-                Node n = (Node)iter.next() ;
                 Expr expr = ExprUtils.nodeToExpr(n) ;
                 exprList.add(expr) ;
             }
@@ -153,10 +151,8 @@ public class PropertyFunctionGenerator
         
         Op op = null; 
         BasicPattern pattern = null ;
-        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
+        for ( Triple t : triples )
         {
-            Triple t = (Triple)iter.next() ;
-            
             if ( pfInvocations.containsKey(t) )
             {
                 op = flush(pattern, op) ;

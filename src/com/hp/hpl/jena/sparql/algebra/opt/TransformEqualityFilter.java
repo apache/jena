@@ -6,11 +6,13 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import java.util.Iterator;
-
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
@@ -19,8 +21,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-import com.hp.hpl.jena.query.ARQ;
 
 public class TransformEqualityFilter extends TransformCopy
 {
@@ -45,9 +45,8 @@ public class TransformEqualityFilter extends TransformCopy
         // Any assignments must go inside filters so the filters see the assignments.
         ExprList exprs2 = new ExprList() ;
         
-        for ( Iterator iter = exprs.getList().iterator() ; iter.hasNext() ; )
+        for (  Expr e : exprs.getList() )
         {
-            Expr e = (Expr) iter.next() ;
             Op op2 = processFilter(e, op) ;
             if ( op2 == null )
                 exprs2.add(e) ;

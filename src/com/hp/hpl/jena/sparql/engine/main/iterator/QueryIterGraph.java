@@ -9,12 +9,8 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
@@ -29,6 +25,8 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.iterator.NullIterator;
+import com.hp.hpl.jena.sparql.util.iterator.SingletonIterator;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply
@@ -45,7 +43,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding outerBinding)
     {
         DatasetGraph ds = getExecContext().getDataset() ;
-        Iterator graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
+        Iterator<Node> graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
         
         QueryIterator current = new QueryIterGraphInner(
                                                outerBinding, graphNameNodes, 
@@ -67,33 +65,32 @@ public class QueryIterGraph extends QueryIterRepeatApply
         return b.get(Var.alloc(n)) ;
     }
 
-    // Iterator<Node>
-    protected static Iterator makeSources(DatasetGraph data, Binding b, Node graphVar)
+    protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar)
     {
         // TODO This should done as part of subsitution.
         Node n2 = resolve(b, graphVar) ;
         
         if ( n2 != null && ! n2.isURI() )
             // Bloank node or literal possible after resolving
-            return new NullIterator() ;
+            return new NullIterator<Node>() ;
         
         // n2 is a URI or null.
         
         if ( n2 == null )
             // Do all submodels.
             return data.listGraphNodes() ;
-        return new SingletonIterator(n2) ;
+        return new SingletonIterator<Node>(n2) ;
     }
     
 
     protected static class QueryIterGraphInner extends QueryIter
     {
         protected Binding parentBinding ;
-        protected Iterator graphNames ;       // Names as Nodes
+        protected Iterator<Node> graphNames ;
         protected OpGraph opGraph ;
         protected QueryIterator subIter = null ;
 
-        protected QueryIterGraphInner(Binding parent, Iterator graphNames, OpGraph opGraph, ExecutionContext execCxt)
+        protected QueryIterGraphInner(Binding parent, Iterator<Node> graphNames, OpGraph opGraph, ExecutionContext execCxt)
         {
             super(execCxt) ;
             this.parentBinding = parent ;
@@ -147,7 +144,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         {
             if ( ! graphNames.hasNext() )
                 return null ;
-            Node gn = (Node)graphNames.next() ;
+            Node gn = graphNames.next() ;
 
 //            Graph g = getExecContext().getDataset().getGraph(gn) ;
 //            if ( g == null )

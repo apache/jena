@@ -57,9 +57,9 @@ public class OpWalker
         protected void visitN(OpN op)
         {
             before(op) ;
-            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {
-                Op sub = (Op)iter.next() ;
+                Op sub = iter.next() ;
                 sub.visit(this) ;
             }
             if ( visitor != null ) op.visit(visitor) ;

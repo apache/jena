@@ -345,12 +345,12 @@ public class WriterOp
                 start() ;
                 out.incIndent() ;
                 boolean first = true ;
-                for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+                for ( Iterator<E_Aggregator> iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
                 {
+                    E_Aggregator agg = iter.next();
                     if ( ! first )
                         out.print(" ") ;
                     first = false ;
-                    E_Aggregator agg = (E_Aggregator)iter.next();
                     Var v = agg.asVar() ;
                     String str = agg.getAggregator().toPrefixString() ;
                     start() ;

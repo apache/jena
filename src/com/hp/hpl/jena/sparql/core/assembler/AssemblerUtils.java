@@ -7,8 +7,6 @@
 package com.hp.hpl.jena.sparql.core.assembler;
 
 
-import arq.cmd.CmdException;
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
@@ -66,12 +64,12 @@ public class AssemblerUtils
     public static Object build(String assemblerFile, Resource type)
     {
         if ( assemblerFile == null )
-            throw new CmdException("No assembler file") ;
+            throw new ARQException("No assembler file") ;
         Model spec = null ;
         try {
             spec = FileManager.get().loadModel(assemblerFile) ;
         } catch (Exception ex)
-        { throw new CmdException("Failed reading assembler description: "+ex.getMessage()) ; }
+        { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
 
         Resource root = null ;
         try {

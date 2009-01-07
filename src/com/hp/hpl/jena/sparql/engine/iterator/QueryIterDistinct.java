@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 public class QueryIterDistinct extends QueryIterDistinctReduced
 {
-    private Set seen = new HashSet() ;
+    private Set<Binding> seen = new HashSet<Binding>() ;
     
     public QueryIterDistinct(QueryIterator iter, ExecutionContext context)
     {
