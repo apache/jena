@@ -314,7 +314,9 @@
 
   <!-- Worker task for the above tasks -->
 
-  <target name="run-junit" depends="clean-reports">
+  <target name="pre-run-junit"/>
+
+  <target name="run-junit" depends="pre-run-junit,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 

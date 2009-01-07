@@ -71,4 +71,8 @@
   <import file="build-lib.xml"/>
   <import file="build-dist.xml"/>
 
+  <target name="pre-run-junit">
+    <mkdir dir="tmp/testing"/>
+  </target>
+
 </project>
