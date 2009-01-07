@@ -65,11 +65,11 @@ public class ProbabilityIndex
 	// The class for accessing the index model
 	private IndexModelAccess ga = new IndexModelAccess() ;
 	// A Java data structure for the statistics of occurrences of properties
-	private Map<Property, Long> properties = new HashMap<Property, Long>() ; // Map<Property, Long>
+	private Map<Property, Long> properties = new HashMap<Property, Long>() ;
 	// A Java data structure for the histograms of properties
-	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ; // Map<Property, Histogram>
+	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ;
 	// A Java data structure for the statistics of joined triple patterns
-	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ; // Map<Pattern, Long>
+	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ;
 	// A set of Jena Property objects that are excluded in the index
 	private Set<Property> exclude = new HashSet<Property>() ;
 	private static Log log = LogFactory.getLog(ProbabilityIndex.class) ;
@@ -207,7 +207,7 @@ public class ProbabilityIndex
 	 * @return Map
 	 */
 	public Map<Property, Histogram> getHistograms()
-	{ return histograms ; } // Map<Property, Histogram>
+	{ return histograms ; }
 	
 	/**
 	 * Return the mapping for the properties and their frequencies
@@ -215,7 +215,7 @@ public class ProbabilityIndex
 	 * @return Map
 	 */
 	public Map<Property, Long> getProperties()
-	{ return properties ; } // Map<Property, Long>
+	{ return properties ; }
 	
 	/**
 	 * Return the mapping of joined triple patterns and their frequencies
@@ -223,7 +223,7 @@ public class ProbabilityIndex
 	 * @return Map
 	 */
 	public Map<Pattern, Long> getPatterns()
-	{ return patterns ; } // Map<Pattern, Long>
+	{ return patterns ; }
 	
 	/**
 	 * Return the indexed upper bound number of records returned by the joined
@@ -277,7 +277,7 @@ public class ProbabilityIndex
 	private void createTripleIndex(Model dataModel)
 	{ 
 		long frequency ;
-		Map<Property, List<Node>> objects = new HashMap<Property, List<Node>>() ; // Map<Property, ArrayList<Node>>
+		Map<Property, List<Node>> objects = new HashMap<Property, List<Node>>() ;
 		
 		ResIterator resIter = dataModel.listSubjects() ;
 		
@@ -302,7 +302,7 @@ public class ProbabilityIndex
 			{
 				frequency = 0L ;
 				Node object = stmt.getObject().asNode() ;
-				List<Node> objectsL = new ArrayList<Node>(); // List<Node>
+				List<Node> objectsL = new ArrayList<Node>();
 				
 				if (properties.containsKey(predicate))
 					frequency = properties.get(predicate).longValue() ;
@@ -334,7 +334,7 @@ public class ProbabilityIndex
 		for (Iterator<Property> iter = objects.keySet().iterator(); iter.hasNext(); )
 		{
 			Property property = iter.next() ;
-			List<Node> objectsL = objects.get(property) ; // List<Node>
+			List<Node> objectsL = objects.get(property) ;
 			Histogram histogram = new Histogram() ;
 			histogram.addElements(objectsL) ;
 			log.debug("Create histogram for property: " + property) ;

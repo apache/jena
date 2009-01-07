@@ -211,7 +211,7 @@ public class BasicPatternJoin
 	 */
 	public static String specificType(Triple triple1, Triple triple2)
 	{
-		List<String> types = specificTypes(triple1, triple2) ; // List<String>
+		List<String> types = specificTypes(triple1, triple2) ;
 		
 		if (types.size() > 0)
 			return types.get(0) ;
@@ -229,7 +229,7 @@ public class BasicPatternJoin
 	 */
 	public static String specificTypeIgnorePP(Triple triple1, Triple triple2)
 	{
-		List<String> types = specificTypes(triple1, triple2) ; // List<String>
+		List<String> types = specificTypes(triple1, triple2) ;
 		
 		for (Iterator<String> iter = types.iterator(); iter.hasNext(); )
 		{
@@ -251,7 +251,7 @@ public class BasicPatternJoin
 	 */
 	public static List<String> genericTypes(Triple triple1, Triple triple2)
 	{
-		List<String> types = new ArrayList<String>() ; // List<String>
+		List<String> types = new ArrayList<String>() ;
 		
 		if (triple1.subjectMatches(triple2.getSubject()))
 			types.add(SS) ;
@@ -288,7 +288,7 @@ public class BasicPatternJoin
 	 */
 	public static String genericType(Triple triple1, Triple triple2)
 	{
-		List<String> types = genericTypes(triple1, triple2) ; // List<String>
+		List<String> types = genericTypes(triple1, triple2) ;
 		
 		if (types.size() > 0)
 			return types.get(0) ;
@@ -306,7 +306,7 @@ public class BasicPatternJoin
 	 */
 	public static String genericTypeIgnorePP(Triple triple1, Triple triple2)
 	{
-		List<String> types = genericTypes(triple1, triple2) ; // List<String>
+		List<String> types = genericTypes(triple1, triple2) ;
 		
 		for (Iterator<String> iter = types.iterator(); iter.hasNext(); )
 		{

@@ -46,7 +46,7 @@ public class BasicPatternGraph
 		this.heuristic = (HeuristicBasicPattern)heuristic ;
 		
 		// First get the list of BasicPatterns of triples which are joined together
-		List<BasicPattern> patterns = listJoinedBasicPatterns(pattern) ; // List<BasicPattern>
+		List<BasicPattern> patterns = listJoinedBasicPatterns(pattern) ;
 		
 		log.debug("Number of BasicPatternGraph components: " + patterns.size()) ;
 		
@@ -108,7 +108,7 @@ public class BasicPatternGraph
 	 */
 	public List<ConnectedGraph> getComponents()
 	{
-		return components ; // List<ConnectedGraph>
+		return components ;
 	}
 	
 	/*
@@ -116,7 +116,7 @@ public class BasicPatternGraph
 	 */
 	private Vector<Node> getNodes(BasicPattern pattern)
 	{
-		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ;
 		
 		// Step through the BasicPattern and get a set of nodes
 		for (Triple triple : pattern)
@@ -131,7 +131,7 @@ public class BasicPatternGraph
 	 */
 	private Vector<Node> getNodes(Triple triple)
 	{
-		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ;
 		
 		Node subject = triple.getSubject() ;
 		Node predicate = triple.getPredicate() ;
@@ -172,12 +172,12 @@ public class BasicPatternGraph
 	private List<BasicPattern> listJoinedBasicPatterns(BasicPattern pattern)
 	{
 		/* Queue of nodes to consider */
-		Vector<Node> nodes = new Vector<Node>() ; // Vector<Node>
+		Vector<Node> nodes = new Vector<Node>() ;
 		/* The set contains a list of joined BasicPattern */
-		List<BasicPattern> patterns = new ArrayList<BasicPattern>(); // List<BasicPattern>
+		List<BasicPattern> patterns = new ArrayList<BasicPattern>();
 		/* Hash set of the triple hash codes. This helper list is used
 		 * to consider triples defined in BasicPattern just once */
-		Set<Triple> considered = new HashSet<Triple>() ; // HashSet<Triple>
+		Set<Triple> considered = new HashSet<Triple>() ;
 		
 		// Step through the triples of BasicPattern
 		for (Triple triple1 : pattern)
@@ -282,7 +282,7 @@ public class BasicPatternGraph
 		
 		List<GraphNode> nodes = component.getNodes() ; // List
 		// Create a temporary list of the nodes, used to identify distinct edges
-		List<GraphNode> tmp = new ArrayList<GraphNode>() ; // List<GraphNode>
+		List<GraphNode> tmp = new ArrayList<GraphNode>() ;
 		// Make sure to create a copy and not simply a reference to nodes (-> concurrency exception)
 		tmp.addAll(nodes) ;
 		

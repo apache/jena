@@ -111,6 +111,10 @@ public class ItemList extends ItemLocation implements Iterable<Item>
         // Note : this is a copy.
         // Note: List.subList just puts a wrapper around the overlying list
         // but don't do this a lot because ArrayList.get recurses to the core list (may run out of stack).
+        
+        // Better would an adjusting slice over base array but it's quite tricky to do the calculations correctly.
+        // This way is mnore likely to be correct.
+        
         x.elements.addAll(elements.subList(start+offset, finish+offset)) ;
         return x ;
     }

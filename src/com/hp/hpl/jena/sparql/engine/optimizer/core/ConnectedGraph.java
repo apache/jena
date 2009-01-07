@@ -39,15 +39,15 @@ public class ConnectedGraph
 	// The first prime number is ...
 	private int MIN_OID = prime.first() ;
 	// The set of optimized GraphNode objects
-	private Set<GraphNode> optGraphNodeList = new LinkedHashSet<GraphNode>() ; // Set<GraphNode>
+	private Set<GraphNode> optGraphNodeList = new LinkedHashSet<GraphNode>() ;
 	// The set of optimized GraphEdge objects
-	private Set<GraphEdge> optGraphEdgeList = new LinkedHashSet<GraphEdge>() ; // Set<GraphEdge>
+	private Set<GraphEdge> optGraphEdgeList = new LinkedHashSet<GraphEdge>() ;
 	// The list of nodes for the ConnectedGraph, uses the natural sort of OIDs for TreeMaps
-	private Map<Integer, GraphNode> nodes = new TreeMap<Integer, GraphNode>() ; // Map<Integer, GraphNode>
+	private Map<Integer, GraphNode> nodes = new TreeMap<Integer, GraphNode>() ;
 	// The list of edges for the ConnectedGraph, uses the natural sort of OIDs for TreeMaps
-	private Map<Integer, GraphEdge> edges = new TreeMap<Integer, GraphEdge>() ; // Map<Integer, GraphEdge>
+	private Map<Integer, GraphEdge> edges = new TreeMap<Integer, GraphEdge>() ;
 	// This inverted index maps a triple hash code of a node to the corresponding OID  
-	private Map<Triple, Integer> nodesInvertedIndex = new HashMap<Triple, Integer>() ; // Map<Triple, Integer> 
+	private Map<Triple, Integer> nodesInvertedIndex = new HashMap<Triple, Integer>() ;
 	private static Log log = LogFactory.getLog(ConnectedGraph.class) ;
 	
 	/**
@@ -231,7 +231,7 @@ public class ConnectedGraph
 	 */
 	public List<GraphNode> getNodes()
 	{
-		List<GraphNode> list = new ArrayList<GraphNode>() ; // List<GraphNode>
+		List<GraphNode> list = new ArrayList<GraphNode>() ;
 		
 		for (Iterator<GraphNode> iter = nodes.values().iterator(); iter.hasNext(); )
 		{
@@ -254,7 +254,7 @@ public class ConnectedGraph
 	 */
 	public List<GraphEdge> getEdges()
 	{
-		List<GraphEdge> list = new ArrayList<GraphEdge>() ; // List<GraphEdge>
+		List<GraphEdge> list = new ArrayList<GraphEdge>() ;
 		
 		for (Iterator<GraphEdge> iter = edges.values().iterator(); iter.hasNext(); )
 		{
@@ -325,7 +325,7 @@ public class ConnectedGraph
 	
 		// Set<GraphNode>
 		// The ordered set of nodes which reflect the QEP
-		Set<GraphNode> qep = new LinkedHashSet<GraphNode>() ; // Set<GraphNode>
+		Set<GraphNode> qep = new LinkedHashSet<GraphNode>() ;
 		
 		qep.add(nodes.get(new Integer(MIN_OID))) ;
 			
@@ -390,7 +390,7 @@ public class ConnectedGraph
 		for (Iterator<GraphEdge> iter = edges.iterator(); iter.hasNext(); )
 		{
 			GraphEdge edge = iter.next() ;
-			List<GraphNode> nodes = edge.nodes() ; // List<GraphNode>
+			List<GraphNode> nodes = edge.nodes() ;
 			
 			for (Iterator<GraphNode> it = nodes.iterator(); it.hasNext(); )
 			{

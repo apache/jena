@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Node;
  */ 
 public class NodeToLabelMap
 {
-    // Couls abstract again as a node -> label cache + cache miss handler.
+    // Could abstract again as a node -> label cache + cache miss handler.
     int bNodeCounter = 0 ;
     Map<Node, String> bNodeStrings = new HashMap<Node, String>() ;
     boolean bNodesAsFakeURIs = false ;

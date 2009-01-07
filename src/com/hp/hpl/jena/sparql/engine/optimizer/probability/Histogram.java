@@ -25,8 +25,8 @@ public class Histogram
 	// The number of classes for the histogram
 	private int nrOfClasses = 10 ;
 	private double lowerBound = 0d, upperBound = 0d, classSize = 0d ;
-	private List<Double> elementList = new ArrayList<Double>() ; // List<Double>
-	private Map<Double, HistogramClass> histogram = new TreeMap<Double, HistogramClass>() ; // Map<Double, HistogramClass>
+	private List<Double> elementList = new ArrayList<Double>() ;
+	private Map<Double, HistogramClass> histogram = new TreeMap<Double, HistogramClass>() ;
 	private static Log log = LogFactory.getLog(Histogram.class) ;
 	
 	/**
@@ -117,7 +117,7 @@ public class Histogram
 	 */
 	public Set<HistogramClass> getClasses()
 	{
-		Set<HistogramClass> histogramClasses = new HashSet<HistogramClass>() ; // Set<HistogramClass>
+		Set<HistogramClass> histogramClasses = new HashSet<HistogramClass>() ;
 		
 		for (Iterator<HistogramClass> iter = histogram.values().iterator(); iter.hasNext(); )
 			histogramClasses.add(iter.next()) ;

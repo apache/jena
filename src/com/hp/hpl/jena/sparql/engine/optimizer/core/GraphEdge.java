@@ -26,7 +26,7 @@ public class GraphEdge
 	// The weight for the graph node
 	private double weight = Double.MIN_VALUE ;
 	// The list of GraphNodes for the GraphEdge
-	private List<GraphNode> nodes = new ArrayList<GraphNode>() ; // List<GraphNode>
+	private List<GraphNode> nodes = new ArrayList<GraphNode>() ;
 	private static Log log = LogFactory.getLog(GraphEdge.class) ;
 	
 	/**

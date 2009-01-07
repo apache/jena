@@ -47,13 +47,13 @@ public class IndexModelAccess
 	/* The result set size of variable triple patterns joined over SS, SO, OS and OO */
 	private long ssSize = -1L, soSize = -1L, osSize = -1L, ooSize = -1L ;
 	/* The data structure holding statistics about the properties */
-	private Map<Property, Long> properties = new HashMap<Property, Long>(); // Map<Property, Long>
+	private Map<Property, Long> properties = new HashMap<Property, Long>();
 	/* The data structure holding the histograms for the properties */
-	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ; // Map<Property, Histogram>
+	private Map<Property, Histogram> histograms = new HashMap<Property, Histogram>() ;
 	/* The data structure holding the statistics for joined triple patterns */
-	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ; // Map<Pattern, Long>
+	private Map<Pattern, Long> patterns = new HashMap<Pattern, Long>() ;
 	/* The set of properties which are excluded in the index */
-	private Set<Property> exclude = new HashSet<Property>() ; // Set<Property>
+	private Set<Property> exclude = new HashSet<Property>() ;
 	private static Log log = LogFactory.getLog(IndexModelAccess.class) ;
 
 	/**

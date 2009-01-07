@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import com.hp.hpl.jena.sparql.util.IteratorTruncate;
+import com.hp.hpl.jena.sparql.util.iterator.IteratorTruncate;
 
 /** Class to provide the truncation limit based on hit score
  * 
