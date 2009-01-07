@@ -14,7 +14,7 @@ public class Params
 {
     Map<String, String> params = new TreeMap<String, String>() ;
 
-    public String get(String key) { return (String)params.get(key.toLowerCase()) ; }
+    public String get(String key) { return params.get(key.toLowerCase()) ; }
     
     public void put(String key, String value) { params.put(key.toLowerCase(), value) ; }
     

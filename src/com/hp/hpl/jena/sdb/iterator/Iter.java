@@ -38,7 +38,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return new Iter<T>(iterable.iterator()) ;
     }
     
-    @SuppressWarnings({"unchecked", "cast"})
+    @SuppressWarnings("unchecked")
     public static <T> Iter<T> convert(Iterator iterator) { return iter((Iterator<T>)iterator) ; }
     
     private Iterator<T> iterator ;

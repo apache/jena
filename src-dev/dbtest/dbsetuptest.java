@@ -45,7 +45,7 @@ public class dbsetuptest
         
         for ( Iterator<String> iter = params.iterator() ; iter.hasNext() ; )
         {
-            String k = (String)iter.next() ;
+            String k = iter.next() ;
             String v = params.get(k) ;
             System.out.println(k+" = "+v) ;
         }
