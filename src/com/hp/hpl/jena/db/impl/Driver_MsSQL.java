@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Driver_MsSQL.java,v 1.8 2008-12-28 19:32:21 andy_seaborne Exp $
+ * $Id: Driver_MsSQL.java,v 1.9 2009-01-08 14:56:41 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.db.impl;
@@ -13,7 +13,6 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Properties;
 
 import com.hp.hpl.jena.db.IDBConnection;
@@ -33,7 +32,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
  * for impact.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 
 public class Driver_MsSQL extends Driver_PostgreSQL  {

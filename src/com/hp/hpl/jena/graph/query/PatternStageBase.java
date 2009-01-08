@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.18 2008-12-28 19:32:11 andy_seaborne Exp $
+    $Id: PatternStageBase.java,v 1.19 2009-01-08 14:56:43 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -15,7 +15,6 @@ import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.StageElement.*;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     PatternStageBase contains the features that are common to the 

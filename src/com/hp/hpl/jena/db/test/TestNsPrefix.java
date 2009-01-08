@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNsPrefix.java,v 1.13 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: TestNsPrefix.java,v 1.14 2009-01-08 14:56:41 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,8 +24,6 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
-
 import junit.framework.*;
 
 public class TestNsPrefix extends ModelTestBase {    

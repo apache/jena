@@ -5,15 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.11 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.12 2009-01-08 14:56:30 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.vocabulary.*;
-
 import java.util.*;
 
 /**
@@ -22,7 +19,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-08 14:56:30 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.95 $
+ * Revision           $Revision: 1.96 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-02 21:10:48 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-08 14:56:43 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,6 @@ import com.hp.hpl.jena.mem.faster.GraphMemFasterQueryHandler;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
-import com.hp.hpl.jena.rdf.arp.JenaReader;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
@@ -47,7 +46,6 @@ import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.shared.ClosedException;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;

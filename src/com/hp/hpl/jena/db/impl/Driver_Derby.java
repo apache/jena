@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.db.impl.DriverRDB.RDBLongObject;
 
 public class Driver_Derby extends DriverRDB 
 {

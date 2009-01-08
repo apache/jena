@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.41 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.42 2009-01-08 14:56:41 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;

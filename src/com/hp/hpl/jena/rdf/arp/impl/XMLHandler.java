@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.31 2008-12-28 19:32:24 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.32 2009-01-08 14:56:42 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -37,7 +37,6 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;

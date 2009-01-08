@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.57 2008-12-30 16:28:10 der Exp $
+ * $Id: TestBugs.java,v 1.58 2009-01-08 14:56:41 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,7 +15,6 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -39,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.57 $ on $Date: 2008-12-30 16:28:10 $
+ * @version $Revision: 1.58 $ on $Date: 2009-01-08 14:56:41 $
  */
 public class TestBugs extends TestCase {
 

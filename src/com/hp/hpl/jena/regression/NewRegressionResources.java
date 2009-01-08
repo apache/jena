@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.13 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionResources.java,v 1.14 2009-01-08 14:56:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.regression.Regression.ResTestObjF;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.regression.Regression.*;
 

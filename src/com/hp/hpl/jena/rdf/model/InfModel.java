@@ -5,14 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModel.java,v 1.14 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: InfModel.java,v 1.15 2009-01-08 14:56:42 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ValidityReport;
-import com.hp.hpl.jena.reasoner.rulesys.FBRuleReasoner;
-
 import java.util.Iterator;
 
 /**
@@ -37,7 +35,7 @@ import java.util.Iterator;
  * and Derivations are not yet stable.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:31:54 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-08 14:56:42 $
  */
 public interface InfModel extends Model {
 
