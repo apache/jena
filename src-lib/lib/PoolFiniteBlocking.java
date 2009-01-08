@@ -6,36 +6,37 @@
 
 package lib;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import com.hp.hpl.jena.sparql.ARQException;
 
-/** A Pool of objects */ 
-public class PoolBase<T> implements Pool<T>
+/** Finite capacity pool */ 
+public class PoolFiniteBlocking<T> implements Pool<T>
 {
-    // For convenience we operate a LIFO policy.
-    // This not part of the extenal contract of a "pool"
-    Deque<T> pool = new ArrayDeque<T>();
-    int maxSize = -1 ;  // Unbounded
+    BlockingDeque<T> pool  ;
     
-    public PoolBase() {} 
-    //public Pool(int maxSize) { this.maxSize = maxSize ; }
+    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
     
-    public void put(T item)
+    @Override
+    public final void put(T item)
     {
-        // Currently, unbounded
-        if ( maxSize >= 0 && pool.size() == 0 )
-        {}
-        pool.push(item) ;
+        pool.addLast(item) ;
     }
     
-    /** Get an item from the pool - return null if the pool is empty */
+    @Override
     public T get()              
     { 
-        if ( pool.size() == 0 ) return null ;
-        return pool.pop();
+        try
+        { 
+            return pool.takeFirst() ;
+        } catch (InterruptedException ex)
+        {
+            throw new ARQException("Failed to get an item from the pool (InterruptedException): "+ex.getMessage()) ;
+        }
     }
     
-    public boolean isEmpty()    { return pool.size() == 0 ; } 
+    @Override
+    public boolean isEmpty()    { return pool.isEmpty() ; } 
 }
 
 /*

@@ -8,9 +8,9 @@ package lib;
 
 
 /** Synchronization wrapper for a pool */ 
-public class SyncPool<T> extends PoolBase<T>
+public class PoolSync<T> extends PoolBase<T>
 {
-    public SyncPool() { } 
+    public PoolSync() { } 
     
     @Override
     public final synchronized void put(T item)

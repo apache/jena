@@ -209,15 +209,20 @@ public class Bytes
     }
     
     private static Charset utf8 = null ;
+    private static final int PoolSize = 5 ;
     // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap. 
-    private static Pool<CharsetEncoder> encoders = new SyncPool<CharsetEncoder>() ;
-    private static Pool<CharsetDecoder> decoders = new SyncPool<CharsetDecoder>() ;
+    private static Pool<CharsetEncoder> encoders = new PoolSync<CharsetEncoder>() ;
+    private static Pool<CharsetDecoder> decoders = new PoolSync<CharsetDecoder>() ;
     
-//    private static CharsetEncoder enc = null ;
-//    private static CharsetDecoder dec = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
+            // Fill the pool.
+            for ( int i = 0 ; i < PoolSize ; i++ )
+            {
+                encoders.put(utf8.newEncoder()) ;
+                decoders.put(utf8.newDecoder()) ;
+            }
         } catch (Throwable ex)
         {
             ex.printStackTrace(System.err);
@@ -228,7 +233,9 @@ public class Bytes
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
         CharsetEncoder enc = encoders.get();
-        if ( enc == null )
+        // Blocking finite Pool - does not happen.
+        // Plain Pool (sync wrapped) - might - allocate an extra one. 
+        if ( enc == null ) 
             enc = utf8.newEncoder();
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
