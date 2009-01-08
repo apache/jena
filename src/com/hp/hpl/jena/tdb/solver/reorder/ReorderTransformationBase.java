@@ -16,11 +16,12 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
+
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
 
 
 /** Machinary */
@@ -40,7 +41,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
         
-        List<Triple> triples = NodeLib.tripleList(pattern) ;
+        List<Triple> triples = pattern.getList() ; ;
 
         // Could merge into the conversion step to do the rewrite WRT an Binding.
         // Or done here as a second pass mutate of PatternTriples

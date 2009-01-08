@@ -112,7 +112,6 @@ public class TDB
         else
         {
             // May be a general purpose datsset with TDB objects in it.
-            @SuppressWarnings("unchecked")
             Iterator<Node> iter = dataset.listGraphNodes() ;
             for ( ; iter.hasNext() ; )
             {

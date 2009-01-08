@@ -60,7 +60,6 @@ public class tdbcheck extends CmdARQ
     @Override
     protected void exec()
     {
-        @SuppressWarnings("unchecked")
         List<String> files = getPositional() ;
         if ( files.size() == 0 )
         {

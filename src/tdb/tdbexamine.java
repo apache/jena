@@ -37,7 +37,6 @@ public class tdbexamine extends CmdTDB
     @Override
     protected void exec()
     {
-        @SuppressWarnings("unchecked")
         Iterator<String> iter = super.getPositional().iterator() ;
         
         if ( ! iter.hasNext() )

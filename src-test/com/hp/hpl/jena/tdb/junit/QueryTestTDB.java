@@ -66,9 +66,7 @@ public class QueryTestTDB extends EarlTestCase
     
     public void setupData()
     {
-        @SuppressWarnings("unchecked")
         List<String> current = item.getDefaultGraphURIs() ;
-        @SuppressWarnings("unchecked")
         List<String> named = item.getNamedGraphURIs() ;
         
         if ( compareLists(current, currentDefaultGraphs) &&

@@ -20,16 +20,15 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;
 
-    @SuppressWarnings("unchecked")
-    public static <T> Iterator<T> create(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
+    public static <X> Iterator<X> create(Iterator<X> iter1, Iterator<X> iter2)
     {
         if ( iter1 == null )
-            return (Iterator<T>)iter2 ;
+            return iter2 ;
         
         if ( iter2 == null )
-            return (Iterator<T>)iter1 ;
+            return iter1 ;
         
-        return new Iterator2<T>(iter1, iter2) ;
+        return new Iterator2<X>(iter1, iter2) ;
     }
     
     private Iterator2(Iterator<? extends T> iter1, Iterator<? extends T> iter2)

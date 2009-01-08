@@ -16,22 +16,13 @@ import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
-import java.util.List;
-
 import lib.Bytes;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.QuadPattern;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -78,61 +69,55 @@ public class NodeLib
     
     // ----
     
-    /** Get the triples in the form of a List<Triple> */
-    public static List<Triple> tripleList(OpBGP opBGP)
-    {
-        return tripleList(opBGP.getPattern()) ;
-    }
+//    /** Get the triples in the form of a List<Triple> */
+//    public static List<Triple> tripleList(BasicPattern pattern)
+//    {
+//        return tripleList(pattern.getList()) ;
+//    }
+//    
+//    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
+//    public static List<Triple> tripleList(List<?> triples)
+//    {
+//        @SuppressWarnings("unchecked")
+//        List<Triple> x = (List<Triple>)triples ;
+//        return x ;
+//    }
     
-    /** Get the triples in the form of a List<Triple> */
-    public static List<Triple> tripleList(BasicPattern pattern)
-    {
-        return tripleList(pattern.getList()) ;
-    }
-    
-    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
-    public static List<Triple> tripleList(List<?> triples)
-    {
-        @SuppressWarnings("unchecked")
-        List<Triple> x = (List<Triple>)triples ;
-        return x ;
-    }
-    
-    /** Get the triples in the form of a List<Triple> */
-    public static List<Quad> quadList(OpQuadPattern opQuad)
-    {
-        return quadList(opQuad.getQuads()) ;
-    }
-    
-    /** Get the triples in the form of a List<Triple> */
-    public static List<Quad> quadList(QuadPattern pattern)
-    {
-        return quadList(pattern.getList()) ;
-    }
+//    /** Get the triples in the form of a List<Triple> */
+//    public static List<Quad> quadList(OpQuadPattern opQuad)
+//    {
+//        return quadList(opQuad.getQuads()) ;
+//    }
+//    
+//    /** Get the triples in the form of a List<Triple> */
+//    public static List<Quad> quadList(QuadPattern pattern)
+//    {
+//        return quadList(pattern.getList()) ;
+//    }
 
-    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
-    public static List<Quad> quadList(List<?> quads)
-    {
-        @SuppressWarnings("unchecked")
-        List<Quad> x = (List<Quad>)quads ;
-        return x ;
-    }
-    
-    /** Cast a list (known to be nodes, e.g. from Java 1.4) to a List<Node> */
-    public static List<Node> nodeList(List<?> nodes)
-    {
-        @SuppressWarnings("unchecked")
-        List<Node> x = (List<Node>)nodes ;
-        return x ;
-    }
-    
-    /** Cast a list (known to be vars, e.g. from Java 1.4) to a List<Var> */
-    public static List<Var> varList(List<?> vars)
-    {
-        @SuppressWarnings("unchecked")
-        List<Var> x = (List<Var>)vars ;
-        return x ;
-    }
+//    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
+//    public static List<Quad> quadList(List<?> quads)
+//    {
+//        @SuppressWarnings("unchecked")
+//        List<Quad> x = (List<Quad>)quads ;
+//        return x ;
+//    }
+//    
+//    /** Cast a list (known to be nodes, e.g. from Java 1.4) to a List<Node> */
+//    public static List<Node> nodeList(List<?> nodes)
+//    {
+//        @SuppressWarnings("unchecked")
+//        List<Node> x = (List<Node>)nodes ;
+//        return x ;
+//    }
+//    
+//    /** Cast a list (known to be vars, e.g. from Java 1.4) to a List<Var> */
+//    public static List<Var> varList(List<?> vars)
+//    {
+//        @SuppressWarnings("unchecked")
+//        List<Var> x = (List<Var>)vars ;
+//        return x ;
+//    }
     
     public static Hash hash(Node n)
     { 

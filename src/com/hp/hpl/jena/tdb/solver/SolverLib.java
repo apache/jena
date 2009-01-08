@@ -19,13 +19,14 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
+
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
@@ -55,8 +56,8 @@ public class SolverLib
         /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        List<Triple> triples = NodeLib.tripleList(pattern) ;
-        @SuppressWarnings("unchecked") Iterator<Binding> iter = input ;
+        List<Triple> triples = pattern.getList() ;
+        Iterator<Binding> iter = input ;
         
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
@@ -75,9 +76,9 @@ public class SolverLib
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        List<Triple> triples = NodeLib.tripleList(pattern) ;
+        List<Triple> triples = pattern.getList() ;
         NodeTupleTable nodeTuples = ds.getQuadTable().getNodeTupleTable() ;
-        @SuppressWarnings("unchecked") Iterator<Binding> iter = input ;
+        Iterator<Binding> iter = input ;
         NodeTable nodeTable = nodeTuples.getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
@@ -135,7 +136,6 @@ public class SolverLib
                     return ((BindingTDB)binding).getBindingId() ;
                 
                 BindingNodeId b = new BindingNodeId() ;
-                @SuppressWarnings("unchecked")
                 Iterator<Var> vars = binding.vars() ;
     
                 for ( ; vars.hasNext() ; )
@@ -154,7 +154,6 @@ public class SolverLib
     /** Turn a BasicPattern into an abbreviated string for debugging */  
     public static String strPattern(BasicPattern pattern)
     {
-        @SuppressWarnings("unchecked")
         List<Triple> triples = pattern.getList() ;
         String x = Iter.asString(triples, "\n  ") ;
         return printAbbrev(x) ; 

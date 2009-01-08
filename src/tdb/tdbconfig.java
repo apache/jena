@@ -181,7 +181,6 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            @SuppressWarnings("unchecked")
             List<String> args = positionals ;
             for ( String x : args )
             {

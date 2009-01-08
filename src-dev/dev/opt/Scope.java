@@ -21,8 +21,6 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 
-import com.hp.hpl.jena.tdb.lib.NodeLib;
-
 public class Scope
 {
     
@@ -77,7 +75,6 @@ public class Scope
         public void visit(OpSequence opSeq)
         {
             // Need to modify each sub op becase a sequence puts earlier ops in scope of later ones. 
-            @SuppressWarnings("unchecked")
             Iterator<Op> seq = opSeq.iterator() ;
             for ( ; seq.hasNext() ; )
             {
@@ -139,9 +136,11 @@ public class Scope
         @Override
         public void visit(OpProject opProject)
         {
-            Set<Var> x = defined.get(opProject.getSubOp()) ;
-            List<Var> vars = NodeLib.varList(opProject.getVars()) ;
-            Set<Var> z = new HashSet<Var>(x) ;      // The new set
+            // Restrict to in project AND actually mentioned.
+            //Set<Var> x = defined.get(opProject.getSubOp()) ;
+            
+            List<Var> vars = opProject.getVars() ;
+            Set<Var> z = new HashSet<Var>(opProject.getVars()) ;      // The new set
             z.retainAll(vars) ;
             defined.put(opProject, z) ;
         }
@@ -152,7 +151,7 @@ public class Scope
         public void visit(OpBGP opBGP)
         {
             Set<Var> acc = new HashSet<Var>() ;
-            for ( Triple t : NodeLib.tripleList(opBGP) )
+            for ( Triple t : opBGP.getPattern() )
                 addVarsFromTriple(acc, t) ;
             defined.put(opBGP, acc) ;
         }
@@ -161,7 +160,7 @@ public class Scope
         public void visit(OpQuadPattern opQuad)
         {
             Set<Var> acc = new HashSet<Var>() ;
-            for ( Quad q : NodeLib.quadList(opQuad) )
+            for ( Quad q :opQuad.getQuads() )
                 addVarsFromQuad(acc, q) ;
             defined.put(opQuad, acc) ;
         }

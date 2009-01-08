@@ -83,9 +83,8 @@ public class Reorganise
         
         // At this point we need to be walk-down.
         @Override
-        public Op transform(OpSequence opSequence, @SuppressWarnings("unchecked") List elts) 
+        public Op transform(OpSequence opSequence, List<Op> elts) 
         {
-            @SuppressWarnings("unchecked")
             List<Op> x = opSequence.getElements() ;   // Old elements, not transformed.
             Set<Var> defined = new HashSet<Var>() ;
             

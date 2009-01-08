@@ -73,8 +73,7 @@ public class GraphLocation
     { 
         if ( graph != null )
         {
-            @SuppressWarnings("unchecked")
-            Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+            Iterator<Triple> iter = Iter.convert(graph.find(Node.ANY, Node.ANY, Node.ANY)) ;
             List<Triple> triples = Iter.toList(iter) ;
             
             for ( Triple t : triples )

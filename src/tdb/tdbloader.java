@@ -77,7 +77,6 @@ public class tdbloader extends CmdTDB
         if ( isQuiet() )
             timing = false ;
         
-        @SuppressWarnings("unchecked")
         List<String> urls = getPositional() ;
         if ( urls.size() == 0 )
             urls.add("-") ;
