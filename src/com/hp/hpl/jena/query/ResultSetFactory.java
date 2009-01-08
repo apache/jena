@@ -332,15 +332,14 @@ public class ResultSetFactory
         return new ResultSetMem(results) ; 
     }
     
-    /** Build a result set from one of  ARQ's lower level query iterator.
+    /** Build a result set from one of ARQ's lower level query iterator.
      *  @param queryIterator
-     *  @param vars     List of variables for the result set
+     *  @param vars     List of variables, by name, for the result set
      * @return ResultSet 
      */
-    static public ResultSet create(QueryIterator queryIterator, List<String> vars)
+    static public ResultSet create(QueryIterator queryIterator, List<?> vars)
     {
-        vars = Var.varNames(vars) ;     // Ensure in name form.
-        return new ResultSetStream(vars, null, queryIterator) ;
+        return new ResultSetStream(Var.varNames(vars), null, queryIterator) ;
     }
 }
 
