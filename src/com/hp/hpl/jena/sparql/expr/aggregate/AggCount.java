@@ -45,6 +45,13 @@ public class AggCount implements AggregateFactory
         { 
             return new AccCount() ;
         }
+        
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            // Stateless as expression
+            return ( other instanceof AggCountWorker ) ;
+        } 
+
 
         @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 

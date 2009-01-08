@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -45,6 +46,16 @@ public class AggCountVar implements AggregateFactory
         { 
             return new AccCountVar() ;
         }
+
+        private Var getVar() { return var ; }
+        
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            if ( ! ( other instanceof AggCountVarWorker ) )
+                return false ;
+            AggCountVarWorker agg = (AggCountVarWorker)other ;
+            return agg.getVar().equals(getVar()) ;
+        } 
         
         @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 

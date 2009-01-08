@@ -25,13 +25,14 @@ public class AggCountVarDistinct implements AggregateFactory
 
     public Aggregator create()
     {
-        return new AggCountVarDistinctWorker() ;
+        return new AggCountVarDistinctWorker(var) ;
     }
 
     // ---- Aggregator
     class AggCountVarDistinctWorker extends AggregatorBase
     {
-        public AggCountVarDistinctWorker() { super() ; }
+        //private Var var ;
+        public AggCountVarDistinctWorker(Var var) { super() ; } //this.var = var ; }
 
         @Override
         public String toString()        { return "count(distinct "+var+")" ; }
@@ -43,6 +44,16 @@ public class AggCountVarDistinct implements AggregateFactory
             return new AccCountVarDistinct() ; 
         }
         
+        private Var getVar() { return var ; }
+        
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            if ( ! ( other instanceof AggCountVarDistinctWorker ) )
+                return false ;
+            AggCountVarDistinctWorker agg = (AggCountVarDistinctWorker)other ;
+            return agg.getVar().equals(getVar()) ;
+        } 
+        
         @Override
         public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
@@ -50,8 +61,8 @@ public class AggCountVarDistinct implements AggregateFactory
     // ---- Accumulator
     class AccCountVarDistinct implements Accumulator
     {
-        private Set/*<Node>*/<Node> seen = new HashSet<Node>() ;
-        public AccCountVarDistinct()               { } 
+        private Set<Node> seen = new HashSet<Node>() ;
+        public AccCountVarDistinct() { } 
         // The group key part of binding will be the same for all elements of the group.
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 

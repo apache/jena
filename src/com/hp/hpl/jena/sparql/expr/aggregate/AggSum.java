@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
@@ -54,6 +55,17 @@ public class AggSum implements AggregateFactory
             return new AccCountVar() ;
         }
         
+        private Expr getExpr() { return expr ; }
+        
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            if ( ! ( other instanceof AggSumWorker ) )
+                return false ;
+            AggSumWorker agg = (AggSumWorker)other ;
+            return agg.getExpr().equals(getExpr()) ;
+        } 
+
+        
         /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
         @Override
         public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
@@ -65,8 +77,7 @@ public class AggSum implements AggregateFactory
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToSum ;
         
-        public AccCountVar()
-        { }
+        public AccCountVar() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 

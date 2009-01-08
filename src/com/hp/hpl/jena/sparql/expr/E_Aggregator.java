@@ -35,19 +35,19 @@ public class E_Aggregator extends ExprVar
     
     public Aggregator getAggregator()   { return aggregator ; }
     
-//    @Override
-//    public int hashCode() { return aggregator.hashCode() ; }
-//    
-//    @Override
-//    public boolean equals(Object other)
-//    {
-//        if ( this == other ) return true ;
-//
-//        if ( ! ( other instanceof E_Aggregator ) )
-//            return false ;
-//        E_Aggregator agg = (E_Aggregator)other ;
-//        return aggregator.equals(agg.aggregator) && this.getVarName().equals(agg.getVarName()) ;
-//    }
+    @Override
+    public int hashCode() { return super.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( this == other ) return true ;
+        if ( ! super.equals(other) ) return false ;
+        if ( ! ( other instanceof E_Aggregator ) )
+            return false ;
+        E_Aggregator agg = (E_Aggregator)other ;
+        return aggregator.equalsAsExpr(agg.aggregator) ;
+    }
     
     
     @Override

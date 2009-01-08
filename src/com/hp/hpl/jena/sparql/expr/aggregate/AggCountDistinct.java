@@ -43,7 +43,13 @@ public class AggCountDistinct implements AggregateFactory
         }
         
         @Override
-        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
+        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; }
+
+        public boolean equalsAsExpr(Aggregator other)
+        {
+            // Stateless as expression
+            return ( other instanceof AggCountDistinctWorker ) ;
+        } 
     }
 
     // ---- COUNT(DISTINCT *)

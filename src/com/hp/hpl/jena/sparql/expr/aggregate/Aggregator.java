@@ -24,6 +24,7 @@ public interface Aggregator
     public Node getValueEmpty() ;
     public String toPrefixString()  ;
     public String key() ;
+    public boolean equalsAsExpr(Aggregator other) ;
 }
 
 /*

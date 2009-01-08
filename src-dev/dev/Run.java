@@ -17,9 +17,9 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.*;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -57,6 +57,11 @@ public class Run
                 
                 
             }
+            System.out.println(op) ;
+            System.out.println(op2) ;
+            
+            // Expression in assignment for op 
+            
             if ( ! op.equals(op2) )
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
         } catch (SSEParseException ex)
@@ -76,23 +81,24 @@ public class Run
     {
         
         {
-        String x = "PREFIX  :     <http://example/>\n"+
-        "SELECT  (count(?x) AS ?countX)\n"+
-        "    WHERE\n"+
-        "      { ?x :p ?p}\n"+
-        "    GROUP BY ?p\n" ;
+        String x = "SELECT  (count(?x) AS ?countX) {}" ;
         
-        String y = "(project (?countX)\n"+
-                    "(assign ((?countX ?.0))\n"+
-                    "  (group (?p) ((?.0 (count ?x)))\n"+
-                    "    (bgp (triple ?x <http://example/p> ?p)\n"+
-                    "))))" ;  
         
-
+        
+        
+//        String y = "(project (?countX)\n"+
+//                    "(assign ((?countX ?.0))\n"+
+//                    "  (group (?p) ((?.0 (count ?x)))\n"+
+//                    "    (bgp (triple ?x <http://example/p> ?p)\n"+
+//                    "))))" ;  
+//        
+//
 //          Op op1 = SSE.parseOp(y) ;
-//          y = op1.toString();
+//          IndentedLineBuffer buff = new IndentedLineBuffer() ;
+//          WriterSSE.out(buff.getIndentedWriter(), op1, null) ;
+//          String str = buff.getBuffer().toString() ;
 //          
-//          Op op2 = SSE.parseOp(y) ;
+//          Op op2 = SSE.parseOp(str) ;
 //          
 //          if ( op1.hashCode() != op2.hashCode() )
 //              System.out.println("DIFFERENT") ;
@@ -105,14 +111,55 @@ public class Run
 //              System.out.println("SAME") ;
               
           
-          Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
-          
+        // Issue is:
+        //
+        // In query, have "SELECT  (count(?x) AS ?countX)" which places 
+        // a project VarExpr of (?countX, ?countX=count(?X))
+        //
+        // Later, that is mangeled out to an assignment:
+        //(?countX, ?countX=?.0) over (?.0 count(?x))
+        // which is written out as the Op.
+        //
+        // See AlgebraGenerator.compileModifiers, which takes the
+        // assignment for the SELECT from the originally added (query syntax)
+        // projection, ignoring any OpGroupAgg assigned new variables.
+        
+        
+        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(query) ;
+        {
+            Op opX = ((OpProject)op).getSubOp() ;
+            OpAssign opAssign = (OpAssign)opX ;
+            //System.out.println(opAssign) ;
+            System.out.println(opAssign.getVarExprList()) ;
+            System.out.println("-----") ;
+        }
+
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        WriterSSE.out(buff.getIndentedWriter(), op, null) ;
+        String str = buff.getBuffer().toString() ;
+        Op op2 = SSE.parseOp(str) ;
+        {
+            Op opX = ((OpProject)op2).getSubOp() ;
+            OpAssign opAssign = (OpAssign)opX ;
+            //System.out.println(opAssign) ;
+            System.out.println(opAssign.getVarExprList()) ;
+            System.out.println("-----") ;
+        }
+
+//        OpAssign opZ = new OpAssign(OpTable.unit()) ;
+//        opZ.add(Var.alloc("x"), SSE.parseExpr("(+ 1 2)")) ;
+//        
+//        System.out.println(opZ) ;
+//        System.out.println(opZ.getVarExprList()) ;
+        
+        
           checkOp(query, false) ;
-          
-          System.out.println(x) ;
-          System.out.println(query) ;
-          QueryUtils.checkOp(query, false) ;
-          QueryUtils.checkParse(query) ;
+//          
+//          System.out.println(x) ;
+//          System.out.println(query) ;
+//          QueryUtils.checkOp(query, false) ;
+//          QueryUtils.checkParse(query) ;
           System.exit(0) ;
         
         
