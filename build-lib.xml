@@ -29,7 +29,7 @@
  
        == Library of standard tasks
        clean      clean up
-       clean-once clean up once - can depend on this repeatedly - wil run first time only.
+       clean-once clean up once - can depend on this repeatedly - will run first time only.
        compile    compile sources
        jar        make jar 
        publish    export to maven
@@ -190,9 +190,9 @@
   <target name="jar" depends="build"/>
   <!-- <target name="build" depends="_jar,src-zip,javadoc-zip" /> -->
     
-  <target name="build" depends="_jar,src-zip" description="Build the jar, and snapshot the sources used"/>
+  <target name="build" depends="package.jar,src-zip" description="Build the jar, and snapshot the sources used"/>
   
-  <target name="_jar" depends="compile" >
+  <target name="package.jar" depends="compile" >
     <delete file="${build.dir}/${jarfile}"/>
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
@@ -297,8 +297,12 @@
           depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
   
   <target name="publish" description="Build and publish this version"
-          depends="clean-once,artifacts,ivy-publish">
+          depends="clean-once,artifacts,test,ivy-publish">
   </target>
+  
+  <target name="publish-test" description="Build and publish this version (locally, for testing)"
+            depends="clean-once,artifacts,test,ivy-publish-dev">
+    </target>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
@@ -381,7 +385,7 @@
     <!-- <ivy:resolve conf="main"/> -->
     <ivy:deliver conf="main"/>
     <ivy:publish conf="main" 
-                 resolver="dev-publish" 
+                 resolver="${publish.resolver}" 
                  overwrite="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>

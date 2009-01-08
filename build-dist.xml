@@ -1,7 +1,9 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="dist">
   
   <!-- ========================================== -->
-
+  <!-- Additional functionality for creating a zipped release
+       Assumes build-lib.xml is imported
+   -->
   <!-- Distribution area -->
 
   <property name="dist.name"              value="${Name}-${version}"/>
@@ -12,10 +14,6 @@
 
   <!-- ==== Release -->
 
-  <target name="release" depends="clean,artifacts,package"
-	  description="Create a release">
-  </target>
-
   <target name="package" depends="copy-init,copy-dist,zip-release"/>
 
   <target name="copy-init">
@@ -24,7 +22,7 @@
     <mkdir dir="${dist.dir}/${lib.dir}"/>
   </target>
 
-  <target name="copy-dist" depends="copy-init,jar,javadoc">
+  <target name="copy-dist" depends="copy-init,jar,javadoc,test">
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
       <fileset dir="${build.dir}" includes="${jarfile}"/>
@@ -77,6 +75,7 @@
   </target>
 
   <!-- To calm error checking -->
+  <target name="test"/>
   <target name="clean"/>
   <target name="artifacts"/>
   <target name="jar"/>

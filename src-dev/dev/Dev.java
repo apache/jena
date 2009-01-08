@@ -8,10 +8,6 @@ package dev;
 
 public class Dev
 {
-    // ==== 0.7.0 "quads"
-    // == RC issues:
-    // ====
-    
     // Tidy up this file :-)
     
     // ---- Interactions with ARQ
@@ -20,7 +16,7 @@ public class Dev
     //   Dataset is cloned on a Joseki/SPARQL/update operation
     //   Need ARQ change + TDB to provide a GraphStore.
     
-    // ---- Generic TupleIndex<T> for NodeId or Node
+    // ---- Generic TupleIndex<T extends Something> for NodeId or Node
     // e.g. Need mapper from T to TupleIndexRecord to abstract. 
     
     // Tests not in build sequence
