@@ -26,6 +26,8 @@ public class Dev
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
     
+    // Build: resolve jars and compile against them. 
+    
     // Quads:
     //   Filter placement : (filter (quads...))
     //   Quad loader.

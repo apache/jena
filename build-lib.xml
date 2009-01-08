@@ -310,10 +310,12 @@
   <target name="test" depends="junit" description="Run the test suite"/>
   <target name="junit" depends="run-junit" description="Run the test suite">
     <fail message="JUnit tests failed" if="junit.failed"/>
+    <echo message="JUnit tests passed"/>
   </target>
 
   <target name="report" depends="run-report" description="Run tests and generate reports">
     <fail message="JUnit tests failed" if="junit.failed"/>
+    <echo message="JUnit tests passed"/>
   </target>
 
   <!-- Worker task for the above tasks -->
