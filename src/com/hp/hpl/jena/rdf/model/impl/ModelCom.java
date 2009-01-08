@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.127 2008-12-28 19:31:52 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.128 2009-01-08 18:49:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -408,7 +408,7 @@ public class ModelCom
     public StmtIterator listLiteralStatements( Resource S, Property P, char  O )
         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
-    public StmtIterator listlLiteralStatements( Resource S, Property P, float O )
+    public StmtIterator listLiteralStatements( Resource S, Property P, float O )
          { return listStatements( S, P, createTypedLiteral( O ) ); }
     
     public StmtIterator listLiteralStatements( Resource S, Property P, double  O )

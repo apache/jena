@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.22 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestSimpleListStatements.java,v 1.23 2009-01-08 18:49:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -91,7 +91,7 @@ public class TestSimpleListStatements extends ModelTestBase
     
     public void testFloat() 
         {
-        List got = model.listlLiteralStatements( null, null, floatValue ).toList();
+        List got = model.listLiteralStatements( null, null, floatValue ).toList();
         assertEquals( 1, got.size() );
         Statement it = (Statement) got.get( 0 );
         assertEquals( resource( "http://example.org/float" ), it.getSubject() );

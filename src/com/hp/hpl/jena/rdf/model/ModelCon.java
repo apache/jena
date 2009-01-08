@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.31 $'
-            Date='$Date: 2008-12-28 19:31:54 $'
+            Revision='$Revision: 1.32 $'
+            Date='$Date: 2009-01-08 18:49:17 $'
  */
 public interface ModelCon {
 
@@ -671,7 +671,7 @@ public interface ModelCon {
         matches <code>predicate</code>, and O matches the typed literal
         corresponding to <code>object</code>.
     */ 
-    StmtIterator listlLiteralStatements( Resource subject, Property predicate, float object );
+    StmtIterator listLiteralStatements( Resource subject, Property predicate, float object );
 
     /** 
         Answer a statement iterator that will iterate over all the statements
