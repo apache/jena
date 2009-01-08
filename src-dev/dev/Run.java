@@ -123,6 +123,8 @@ public class Run
         // See AlgebraGenerator.compileModifiers, which takes the
         // assignment for the SELECT from the originally added (query syntax)
         // projection, ignoring any OpGroupAgg assigned new variables.
+        //
+        // But why does it not cause a bug in execution?
         
         
         Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;

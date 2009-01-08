@@ -9,7 +9,8 @@ package dev;
 public class Dev
 {
     // E_Aggregator needs hashCode and .equals.
-    // ==> Aggregator?
+    // ==> Bug in assignment generation from a query with aggregations.
+    // But does not affect results!  
     
     // Upgrade 
     // + Var - several list loops of string or var - checkeach usage.
