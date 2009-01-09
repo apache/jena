@@ -27,7 +27,6 @@ public class TupleIndexMem implements TupleIndex
     //private Map<NodeId, List<Tuple<NodeId>>> index = new HashMap<NodeId, List<Tuple<NodeId>>>();
     private Index3<NodeId, NodeId, NodeId, Tuple<NodeId>> index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
     private ColumnMap colMap ;
-    private int slot ;
     private int tupleLength ;
     
     public TupleIndexMem(int N, ColumnMap colMapping)

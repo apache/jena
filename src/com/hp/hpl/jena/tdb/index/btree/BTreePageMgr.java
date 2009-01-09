@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.tdb.index.btree;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockType.* ;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
+
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.block.BlockConverter;
@@ -14,25 +16,17 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 final class BTreePageMgr
 {
     private BTree btree ;
     private BlockMgr blockMgr ;
-    private RecordFactory factory ;
     private Block2BTreeNode converter ;
 
-    BTreePageMgr(BTree btree, BlockMgr blockMgr, BTreeParams params)
+    BTreePageMgr(BTree btree, BlockMgr blockMgr)
     {
-        this(btree, blockMgr, params.recordFactory) ;
-    }
-    
-    private BTreePageMgr(BTree btree, BlockMgr blockMgr, RecordFactory factory)
-    { 
         this.btree = btree ;
         this.blockMgr = blockMgr ;
-        this.factory = factory ;
         this.converter = new Block2BTreeNode() ;
     }
    

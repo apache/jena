@@ -24,7 +24,7 @@ public class ModTDBAssembler extends ModAssembler
     private ModLocation modLocation     =  new ModLocation() ;
 
     public static final String defaultAssemblerFile = "tdb.ttl" ;
-    public static boolean useDefaultAssemblerFile = false ;
+    protected boolean useDefaultAssemblerFile = false ;
     
     public ModTDBAssembler()
     { 

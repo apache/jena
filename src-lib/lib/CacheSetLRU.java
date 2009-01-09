@@ -11,7 +11,7 @@ public class CacheSetLRU<T>
 {
     //LinkHashSet does not have LRU support.
     
-    Action<T> dropHandler = null ;
+    //Action<T> dropHandler = null ;
     
     static Object theOnlyValue = new Object() ;
     CacheLRU.CacheImpl<T, Object> cacheMap = null ;

@@ -158,7 +158,6 @@ public final class BPTreeRecords extends BPTreePage
         
         if ( CheckingNode )
         {
-            Record m = maxRecord() ;
             if ( ! Record.keyEQ(r, maxRecord()) )
             {
                 System.err.println(rBuff) ;

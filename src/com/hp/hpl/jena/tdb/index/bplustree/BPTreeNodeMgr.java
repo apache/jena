@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockType.*;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_BRANCH;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_LEAF;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
 
 import java.nio.ByteBuffer;
 
@@ -15,7 +18,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.btree.BTreeException;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
@@ -23,14 +25,12 @@ final class BPTreeNodeMgr
 {
     private BPlusTree bpTree ;
     private BlockMgr blockMgr ;
-    private RecordFactory keyFactory ;
     private Block2BTreeNode converter ;
 
-    BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr, BPlusTreeParams params)
+    BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
     {
         this.bpTree = bpTree ;
         this.blockMgr = blockMgr ;
-        this.keyFactory = params.getKeyFactory() ;
         this.converter = new Block2BTreeNode() ;
     }
    

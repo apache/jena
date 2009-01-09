@@ -130,7 +130,7 @@ public class BTree implements Iterable<Record>, RangeIndex
     public BTree(BTreeParams bTreeParams, BlockMgr blkMgr)
     {
         this.bTreeParams = bTreeParams ;
-        this.pageMgr = new BTreePageMgr(this, blkMgr, bTreeParams) ;
+        this.pageMgr = new BTreePageMgr(this, blkMgr) ;
         if ( pageMgr.valid(0) )
         {
             // Existing BTree

@@ -35,7 +35,7 @@ public class QueryTestTDB extends EarlTestCase
     // processing.  Physical graph/datsets is in package "store". 
     
     private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class) ;
-    static Dataset dataset = null ;
+    private Dataset dataset = null ;
 
     boolean skipThisTest = false ;
     TestItem item ;

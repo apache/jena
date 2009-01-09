@@ -169,7 +169,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     {
         // Consistency checks.
         this.bpTreeParams = params ;
-        this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes, params) ;
+        this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrLeaves) ;
         recordsMgr = new BPTreeRecordsMgr(this, recordPageMgr) ;
     }

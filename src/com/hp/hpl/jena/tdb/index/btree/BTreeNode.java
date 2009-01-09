@@ -487,7 +487,6 @@ public class BTreeNode
         // New blocks.
         BTreeNode left = create(id, isLeaf) ;
         BTreeNode right = create(id, isLeaf) ;
-        int maxRecords = maxRecords() ;
         
         // New left
         records.copy(0, left.records, 0, bTreeParams.SplitIndex) ;
@@ -611,7 +610,7 @@ public class BTreeNode
         if ( isLeaf )
         {
             if ( logging() )
-                log.debug(format("reduceRoot << leaf root", this)) ;
+                log.debug(format("reduceRoot << leaf root")) ;
             // Now empty leaf root.
             return ;
         }
@@ -993,7 +992,7 @@ public class BTreeNode
     {
         if ( logging() )
         {
-            log.debug(format("shiftRight(%d, %d)", left.id, right.id, idx)) ;
+            log.debug(format("shiftRight(%d, %d)", left.id, right.id)) ;
             log.debug(format("shiftRight >> %s", this)) ;
             log.debug(format("shiftRight >> %s", left)) ;
             log.debug(format("shiftRight >> %s", right)) ;

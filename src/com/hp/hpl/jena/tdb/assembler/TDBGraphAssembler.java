@@ -63,8 +63,6 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         // ---- API ways
         
         
-        String[] indexes = null ;
-
         StmtIterator sIter = root.listProperties(pIndex) ;
         while(sIter.hasNext())
         {

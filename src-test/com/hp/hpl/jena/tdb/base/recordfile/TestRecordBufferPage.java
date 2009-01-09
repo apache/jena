@@ -77,7 +77,7 @@ public class TestRecordBufferPage extends BaseTest
     private static int get(RecordBuffer rb, int idx) 
     {
         Record r = rb.get(idx) ;
-        int v = (r.getKey()[0])<<8 | (r.getKey()[1]) ;
+        int v = (r.getKey()[0])<<8 | ((r.getKey()[1])&0xFF) ;
         return v ;
     }
     

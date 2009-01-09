@@ -219,8 +219,8 @@ public class CacheNG<Key, T> implements Cache<Key, T>
         if ( entry == null )
             return ;
         
-        if ( entry.refCount != 0 )
-            ; // Problems
+//        if ( entry.refCount != 0 )
+//            ; // Problems
         objects.remove(key) ;
         if ( logging )
             log.info("Remove   : "+key) ;

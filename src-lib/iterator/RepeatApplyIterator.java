@@ -15,7 +15,6 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
 {
     private Iterator<T> input ;
     private boolean finished = false ;
-    private T slot = null ;
     private Iterator<T> currentStage = null ;
 
     protected RepeatApplyIterator(Iterator<T> input)

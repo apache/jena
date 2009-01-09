@@ -32,15 +32,12 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 /* public */ class ObjectFileDisk_DataIO implements ObjectFile
 {
     // Uses DataInput/DataOutput string encoding.
-    private String filename ;
     private RandomAccessFile out ;
     private long filesize ;
 
     ObjectFileDisk_DataIO(String filename)
     {
-        this.filename = filename ;
         try {
-            this.filename = filename ;
             // "rwd" - Syncs only the file contents
             // "rws" - Syncs the file contents and metadata
             // "rw" - cached?

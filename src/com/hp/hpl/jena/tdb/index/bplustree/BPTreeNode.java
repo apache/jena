@@ -543,7 +543,7 @@ public final class BPTreeNode extends BPTreePage
         BPTreeNode right = create(id) ;
         right.isLeaf = this.isLeaf ;
         
-        int maxRecords = maxRecords() ;
+        //int maxRecords = maxRecords() ;
         
         // New left
         records.copy(0, left.records, 0, params.SplitIndex) ;
@@ -655,7 +655,7 @@ public final class BPTreeNode extends BPTreePage
         if ( isLeaf )
         {
             if ( logging() )
-                log.debug(format("reduceRoot << leaf root", this)) ;
+                log.debug(format("reduceRoot << leaf root")) ;
             // Now empty leaf root.
             return ;
         }
@@ -1240,7 +1240,7 @@ public final class BPTreeNode extends BPTreePage
         if ( SystemTDB.NullOut )
         {
             int x = params.MaxPtr ;
-            for ( ; i < params.MaxPtr ; i ++ )
+            for ( ; i < x ; i ++ )
             {
                 if ( ! ptrs.isClear(i) )
                     error("Node: %d: Unexpected pointer @%d :: %s", id, i, this) ;

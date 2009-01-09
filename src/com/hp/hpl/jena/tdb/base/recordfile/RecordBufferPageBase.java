@@ -32,7 +32,7 @@ public class RecordBufferPageBase extends PageBase //implements Page
     // Interface: "Page" - id, byteBuffer, count
     protected RecordBuffer recBuff ;
     
-    private int offset ;                // Bytes of overhead.
+    //private int offset ;                // Bytes of overhead.
  
     
     public static int calcRecordSize(RecordFactory factory, int blkSize, int headerOffset)

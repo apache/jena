@@ -22,7 +22,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public abstract class CmdTDB extends CmdARQ
 {
     // CmdTDB acts on a single graph
-    private GraphTDB graph = null ;
     private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected String graphName = null ;
     

@@ -283,7 +283,7 @@ public class Reifier2 implements Reifier
         if ( node == null )
             node = Node.ANY ;
         
-        QueryIterator qIter = nodesReifTriple(node, triple) ;
+        //QueryIterator qIter = nodesReifTriple(node, triple) ;
         Set<Triple> triples = new HashSet<Triple>();
         triplesToZap(triples, node, rdfType, statement) ;
         triplesToZap(triples, node, subject, triple.getSubject()) ;

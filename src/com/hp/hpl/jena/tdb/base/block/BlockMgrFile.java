@@ -53,7 +53,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
             //numFileBlocks = new AtomicLong(numFileBlocks) ;
             
             if ( numFileBlocks > Integer.MAX_VALUE )
-                log.warn(format("File size (%d) exceeds tested block number limits", filesize, blockSize)) ;
+                log.warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
             
             if ( filesize%longBlockSize != 0 )
                 throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;

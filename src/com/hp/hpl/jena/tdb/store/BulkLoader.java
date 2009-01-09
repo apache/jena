@@ -476,8 +476,8 @@ public class BulkLoader
                 System.out.printf("Load: %s\n", s) ;
             count += loadOne(model, s, showProgress) ;
         }
-        long time = timer.endTimer() ;
-        
+
+        //long time = timer.endTimer() ;
         //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
         model.close();
     }

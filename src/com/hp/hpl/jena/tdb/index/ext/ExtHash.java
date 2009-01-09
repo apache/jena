@@ -174,7 +174,7 @@ public class ExtHash implements Index
     }
     
     /** Size of the file, in bytes */
-    private static long filesize(int dictionarySize) { return 4*dictionarySize ; }  
+    private static long filesize(int dictionarySize) { return 4L*dictionarySize ; }  
 
     // =====================
     
@@ -303,7 +303,6 @@ public class ExtHash implements Index
     { 
        if ( dictionary.limit() == 1 )
        {
-           int id = dictionary.get(1) ;
            HashBucket b = hashBucketMgr.get(1) ;
            return b.isEmpty() ;
        }
