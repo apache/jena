@@ -47,7 +47,7 @@ public class AggCountVar implements AggregateFactory
             return new AccCountVar() ;
         }
 
-        private Var getVar() { return var ; }
+        private final Var getVar() { return var ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {

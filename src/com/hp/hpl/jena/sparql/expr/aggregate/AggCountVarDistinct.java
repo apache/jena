@@ -44,7 +44,7 @@ public class AggCountVarDistinct implements AggregateFactory
             return new AccCountVarDistinct() ; 
         }
         
-        private Var getVar() { return var ; }
+        private final Var getVar() { return var ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {

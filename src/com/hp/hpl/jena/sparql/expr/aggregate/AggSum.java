@@ -55,7 +55,7 @@ public class AggSum implements AggregateFactory
             return new AccCountVar() ;
         }
         
-        private Expr getExpr() { return expr ; }
+        private final Expr getExpr() { return expr ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {
