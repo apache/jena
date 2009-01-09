@@ -133,8 +133,8 @@ public class FmtExpr
             }
             else
             {
-                // Print in variable form or as an aggrgegator
-                out.print(nv.toExprString()) ;
+                // Print in variable form or as an aggregator expression
+                out.print(nv.asSparqlExpr()) ;
             }
         }
 
