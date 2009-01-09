@@ -1,11 +1,8 @@
-PREFIX fb: <http://rdf.freebase.com/ns/>
-SELECT ?actor ?name
-FROM fb:en.blade_runner
+PREFIX :  <http://example/>
+
+SELECT ?x (count(*) as ?count)
 {
-  fb:en.blade_runner fb:film.film.starring ?personUUID
-  FETCH ?personUUID
-  GRAPH ?personUUID { ?personUUID fb:film.performance.actor ?actor }
-  FETCH ?actor
-  GRAPH ?actor { ?actor fb:type.object.name ?name }
+    ?x :p ?v
 }
-ORDER BY ?actor
+GROUP BY ?x
+HAVING (count(distinct ?v) > 2)
