@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Group aggregation functions calculate a value during grouping and
  *  place it in the output binding.  This class is relationship of 
- *  an aggregation expression and that variable.  Evaluation return
+ *  an aggregation expression and that variable.  Evaluation returns
  *  the variable's bound value. 
  */
 
@@ -48,10 +48,18 @@ public class E_Aggregator extends ExprVar
         E_Aggregator agg = (E_Aggregator)other ;
         return aggregator.equalsAsExpr(agg.aggregator) ;
     }
-    
+
+    // As an expression suitable for outputting the calculation. 
+    @Override
+    public String asSparqlExpr()        
+    { return aggregator.toString() ; }
     
     @Override
-    public String toExprString()        { return aggregator.toString(); }
+    public String toString()
+    // Don't call super.toString - that will call toExprString()!
+    { return "(AGG "+
+                (varNode==null?"<>":"?"+super.varNode.getVarName())+
+                " "+aggregator.toString()+")"; }
 }
 
 /*
