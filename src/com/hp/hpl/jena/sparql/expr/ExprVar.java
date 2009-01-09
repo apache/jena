@@ -96,7 +96,7 @@ public class ExprVar extends ExprNode
     
     public String toPrefixString()  { return varNode.toString() ; }
     // As an expression (aggregators override this).
-    public String toExprString()    { return  varNode.toString() ; }
+    public String asSparqlExpr()    { return  varNode.toString() ; }
 
 //    // ??? Just use format?
 //    public String toString()        { return varNode.toString() ; }
