@@ -16,8 +16,10 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify;
 import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -414,26 +416,7 @@ public class AlgebraGenerator
         VarExprList exprs = new VarExprList() ;
         List<Var> vars = new ArrayList<Var>() ;
         
-        if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
-        {
-            // Don't project for QueryResultStar so initial bindings show through
-            // in SELECT *
-            if ( projectVars.size() == 0 && query.isSelectType() )
-                ALog.warn(this,"No project variables") ;
-            
-            // Separate assignments and variable projection.
-            for ( Var v : query.getProject().getVars() )
-            {
-                Expr e = query.getProject().getExpr(v) ;
-                if ( e != null )
-                    exprs.add(v, e) ;
-                // Include in project
-                vars.add(v) ;
-            }
-        }
-        
         Op op = pattern ;
-        //Modifiers mods = new Modifiers(query) ;
         
         // ---- ToList
         if ( context.isTrue(ARQ.generateToList) )
@@ -441,11 +424,45 @@ public class AlgebraGenerator
             op = new OpList(op) ;
         
         // ---- GROUP BY
-        // ?? Check for aliases introduced via assignments.
         
         if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
+        {
             // When there is no GroupBy but there are some aggregates, it's a group of no variables.
             op = new OpGroupAgg(op, query.getGroupBy(), query.getAggregators()) ;
+            // Modified exprs.
+        }
+        
+        //---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
+        // Now do assignments from expressions 
+        // Must be after "group by" has intriduces it's variables.
+        if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
+        {
+            // Don't project for QueryResultStar so initial bindings show
+            // through in SELECT *
+            if ( projectVars.size() == 0 && query.isSelectType() )
+                ALog.warn(this,"No project variables") ;
+
+            // Separate assignments and variable projection.
+            for ( Var v : query.getProject().getVars() )
+            {
+                Expr e = query.getProject().getExpr(v) ;
+                if ( e != null )
+                {
+                    // If an aggregator, then the project expression
+                    // is the variable of the aggregator, not the aggregation function. 
+                    if ( e instanceof E_Aggregator )
+                    {
+                        // Force the expression to be the variable.
+                        ExprVar actualVar = new ExprVar(((E_Aggregator)e).asVar()) ;
+                        e = actualVar ;
+                    }
+                    exprs.add(v, e) ;
+                }
+                // Include in project
+                vars.add(v) ;
+            }
+        }
+
         
         // ---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
@@ -464,9 +481,9 @@ public class AlgebraGenerator
             op = new OpOrder(op, query.getOrderBy()) ;
         
         // ---- PROJECT
+        
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
-        // Assignments from expressions down earlier.
         
         if ( vars.size() > 0 )
             op = new OpProject(op, vars) ;
