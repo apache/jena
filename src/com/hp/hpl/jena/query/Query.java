@@ -472,8 +472,9 @@ public class Query extends Prologue implements Cloneable
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;            // List of E_Aggregator
-    private Map<String, E_Aggregator> aggregatorsAllocated = new HashMap<String, E_Aggregator>() ;      // Note any E_Aggregator created for reuse.
+    private List<E_Aggregator> aggregators = new ArrayList<E_Aggregator>() ;
+    // Note any E_Aggregator created for reuse.
+    private Map<String, E_Aggregator> aggregatorsAllocated = new HashMap<String, E_Aggregator>() ; 
     
     public boolean hasAggregators() { return aggregators.size() != 0  ; }
     public List<E_Aggregator> getAggregators() { return aggregators ; }
