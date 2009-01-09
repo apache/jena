@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.58 2009-01-08 14:56:41 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.59 2009-01-09 17:04:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.58 $ on $Date: 2009-01-08 14:56:41 $
+ * @version $Revision: 1.59 $ on $Date: 2009-01-09 17:04:13 $
  */
 public class TestBugs extends TestCase {
 
@@ -994,6 +994,21 @@ public class TestBugs extends TestCase {
         assertEquals(culprit.getSubject().getURI(), NS + "c");
         assertEquals(culprit.getPredicate(), hasValue.asNode());
     }
+    
+//    /**
+//     * Check ability to report literals as well as resources as culprits
+//     */
+//    public void testLiteralsInErrorReports() {
+//        String rules = "-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).";
+//        GenericRuleReasoner reasoner = new GenericRuleReasoner( Rule.parseRules(rules) );
+//        InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+//        ValidityReport validity = im.validate();
+//        assertTrue (! validity.isValid()); 
+//        ValidityReport.Report report = (ValidityReport.Report)(validity.getReports().next());
+//        assertTrue( report.getExtension() instanceof RDFNode);
+//        RDFNode culprit = (RDFNode)report.getExtension();
+//        assertEquals( culprit, im.createTypedLiteral(42));
+//    }
     
     // debug assistant
 //    private void tempList(Model m, Resource s, Property p, RDFNode o) {
