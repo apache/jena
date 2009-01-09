@@ -29,13 +29,13 @@ public class OpGroupAgg extends OpModifier
         this.aggregators = aggregators ;
     }
     
-    public String getName()                 { return Tags.tagGroupBy ; }
-    public VarExprList getGroupVars()       { return groupVars ; }
-    public List<E_Aggregator> getAggregators()            { return aggregators ; }
+    public String getName()                     { return Tags.tagGroupBy ; }
+    public VarExprList getGroupVars()           { return groupVars ; }
+    public List<E_Aggregator> getAggregators()  { return aggregators ; }
 
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
+    public Op copy(Op subOp)                    { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)
