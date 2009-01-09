@@ -11,15 +11,26 @@ import java.util.Iterator;
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.*;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
+import com.hp.hpl.jena.sparql.algebra.op.OpGroupAgg;
+import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -29,20 +40,36 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
-import com.hp.hpl.jena.sparql.util.*;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
+    static String divider = "----------" ;
+    static String nextDivider = null ;
+    static void divider()
+    {
+        if ( nextDivider != null )
+            System.out.println(nextDivider) ;
+        nextDivider = divider ;
+    }
+    
     public static void checkOp(Query query, boolean optimizeAlgebra)
     {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
         Op op = Algebra.compile(query) ;
+        checkOp( op, optimizeAlgebra, query) ;        
+    }
+    
+    
+    private static void checkOp(Op op, boolean optimizeAlgebra, Prologue prologue)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
         if ( optimizeAlgebra )
             op =  Algebra.optimize(op) ;
-        WriterSSE.out(buff.getIndentedWriter(), op, query) ;
+        WriterSSE.out(buff.getIndentedWriter(), op, prologue) ;
         String str = buff.getBuffer().toString() ;
         
         try {
@@ -54,8 +81,6 @@ public class Run
                 System.out.println(op2) ;
                 
                 throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
-                
-                
             }
             System.out.println(op) ;
             System.out.println(op2) ;
@@ -74,14 +99,15 @@ public class Run
             System.err.println(str);
             throw ex ; 
         }
+
     }
-    
-    
+
     public static void main(String[] argv) throws Exception
     {
         
         {
-        String x = "SELECT  (count(?x) AS ?countX) {}" ;
+        String x1 = "SELECT  (count(?x) AS ?countX) {}" ;
+        String x2 = "SELECT  (1+2 AS ?countX) {}" ;
         
         
         
@@ -126,28 +152,12 @@ public class Run
         //
         // But why does it not cause a bug in execution?
         
+        process(x1) ;
         
-        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
-        {
-            Op opX = ((OpProject)op).getSubOp() ;
-            OpAssign opAssign = (OpAssign)opX ;
-            //System.out.println(opAssign) ;
-            System.out.println(opAssign.getVarExprList()) ;
-            System.out.println("-----") ;
-        }
-
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        WriterSSE.out(buff.getIndentedWriter(), op, null) ;
-        String str = buff.getBuffer().toString() ;
-        Op op2 = SSE.parseOp(str) ;
-        {
-            Op opX = ((OpProject)op2).getSubOp() ;
-            OpAssign opAssign = (OpAssign)opX ;
-            //System.out.println(opAssign) ;
-            System.out.println(opAssign.getVarExprList()) ;
-            System.out.println("-----") ;
-        }
+        //process(x2) ;
+        System.exit(0) ;
+        divider() ;
+       
 
 //        OpAssign opZ = new OpAssign(OpTable.unit()) ;
 //        opZ.add(Var.alloc("x"), SSE.parseExpr("(+ 1 2)")) ;
@@ -155,7 +165,7 @@ public class Run
 //        System.out.println(opZ) ;
 //        System.out.println(opZ.getVarExprList()) ;
         
-        
+        Query query = QueryFactory.create(x1,Syntax.syntaxARQ) ;
           checkOp(query, false) ;
 //          
 //          System.out.println(x) ;
@@ -166,35 +176,6 @@ public class Run
         
         
         }
-        
-        
-        String[] x1 = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
-            " ASK {",
-            "FILTER bound(?test)",
-            "LET (?x := afn:now())" ,
-            "}"
-        } ;
-        String[] x = {"PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                      "PREFIX geom:  <http://www.w3.org/2003/01/geo/wgs84_pos#>",
-                      "PREFIX owl:   <http://www.w3.org/2002/07/owl#>",
-                      "PREFIX geo: <java:org.geospatialweb.arqext.>",
-                      "select ?ouri" ,
-                      "{      ?ouri owl:sameAs   ?guri .",
-                      "       ?ouri geo:nearby( 44.88 2.23 30000.0 )",
-                      "}"} ;
-        String qs = StringUtils.join("\n", x) ;
-        
-        
-
-        
-        Query query = QueryFactory.create(qs,Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
-        //op = Algebra.optimize(op) ;
-        System.out.print(op) ;
-        
-        Model m = ModelFactory.createDefaultModel() ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, m) ;
-        QueryExecUtils.executeQuery(query, qexec)  ;
         System.exit(0) ;
         
         fetch() ; System.exit(0) ; 
@@ -204,6 +185,69 @@ public class Run
 
         runQParse() ;
         System.exit(0) ;
+    }
+    
+    private static void process(String x)
+    {
+        divider() ;
+        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
+        Op op1 = Algebra.compile(query) ;
+        System.out.println(op1) ;
+        
+        divider() ;
+        decompose(op1) ;
+
+        divider() ;
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        WriterSSE.out(buff.getIndentedWriter(), op1, null) ;
+        String str = buff.getBuffer().toString() ;
+        
+        Op op2 = SSE.parseOp(str) ;
+        decompose(op2) ;
+
+        //divider() ;
+        OpAssign opAssign1 = (OpAssign)((OpProject)op1).getSubOp() ;
+        OpAssign opAssign2 = (OpAssign)((OpProject)op2).getSubOp() ;
+        
+        OpGroupAgg opGroup1 = (OpGroupAgg)opAssign1.getSubOp() ;
+        OpGroupAgg opGroup2 = (OpGroupAgg)opAssign1.getSubOp() ;
+        
+        compare("group", opGroup1, opGroup2) ;
+        compare("assign", opAssign1, opAssign2) ; 
+        compare("project", op1, op2) ;
+        checkOp(op1, false, null) ;
+    }
+
+
+    private static void compare(String string, Op op1, Op op2)
+    {
+        divider() ;
+        System.out.println("Compare: "+string) ;
+        
+        if ( op1.hashCode() != op2.hashCode() )
+        {
+//            System.out.println(str) ;
+//            System.out.println(op) ;
+//            System.out.println(op2) ;
+//            
+            throw new QueryCheckException("reparsed algebra expression hashCode does not equal algebra from query") ;
+        }
+//        System.out.println(op) ;
+//        System.out.println(op2) ;
+        
+        // Expression in assignment for op 
+        
+        if ( ! op1.equals(op2) )
+            throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
+        
+    }
+    
+    private static void decompose(Op op)
+    {
+        Op opX = ((OpProject)op).getSubOp() ;
+        OpAssign opAssign = (OpAssign)opX ;
+        //System.out.print(opAssign) ;
+        System.out.println("Assign VarExprList: "+opAssign.getVarExprList()) ;
     }
     
     public static void fetch()

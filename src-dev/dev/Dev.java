@@ -8,18 +8,17 @@ package dev;
 
 public class Dev
 {
-    // E_Aggregator needs hashCode and .equals.
-    // ==> Bug in assignment generation from a query with aggregations.
-    // But does not affect results!  
+    // SPARQL/Update - Sort out GraphStores/Datasets
+    
+    // E_Aggregator should not be a subclass of ExprVar, but as a (funny?) subclass of OpAssign.
+    // May remove the need for (assign...) 
+    // Currently, fixed up in AlgebraGenerator.compileModifiers
     
     // Upgrade 
     // + Var - several list loops of string or var - checkeach usage.
     // + Registries taking Class<?> can be tidied up
-    // + Redo grammar generation
     
-    // (Jena) Cached IRI checking.
-    
-    // SPARQL/Update - Sort out GraphStores/Datasets
+    // (Jena) Cached IRI checking (minor)
     
     // Initial bindings ==> Initial table.
 
