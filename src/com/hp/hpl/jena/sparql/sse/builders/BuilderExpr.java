@@ -92,12 +92,8 @@ public class BuilderExpr
             if ( !item.isList() || item.getList().size() != 2 )
                     BuilderLib.broken(item, "Not a var or var/expression pair") ;
             
-            
             Var var = BuilderNode.buildVar(item.getList().get(0)) ;
             Expr expr = BuilderExpr.buildExpr(item.getList().get(1)) ;
-            // XXX HACK
-            if ( expr instanceof E_Aggregator )
-                ((E_Aggregator)expr).setVar(var) ;
             x.add(var, expr) ;
             }
         return x ;
