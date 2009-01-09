@@ -20,19 +20,36 @@ public class OpAssign extends Op1
 {
     private VarExprList assignments ;
     
+    // Theer factory operations compress nested assignments if possible.
+    // Not possible if it's the reassignment of something already assigned.
+    // Or we could implement something like (let*).
+    
     static public Op assign(Op op, Var var, Expr expr)
     {
-        // Compress assignments if possible.
         if ( ! ( op instanceof OpAssign ) )
             return createAssign(op, var, expr) ;
         
         OpAssign opAssign = (OpAssign)op ;
         if ( opAssign.assignments.contains(var) )
-            // Must nest - variable already used.
             return createAssign(op, var, expr) ;
 
-        // Merge assignment
         opAssign.assignments.add(var, expr) ;
+        return opAssign ;
+    }
+    
+    static public Op assign(Op op, VarExprList exprs)
+    {
+        if ( ! ( op instanceof OpAssign ) )
+            return createAssign(op, exprs) ;
+            
+        OpAssign opAssign = (OpAssign)op ;
+        for ( Var var : exprs.getVars() )
+        {
+            if ( opAssign.assignments.contains(var) )
+                return createAssign(op, exprs) ;
+        }
+            
+        opAssign.assignments.addAll(exprs) ;
         return opAssign ;
     }
     
@@ -41,15 +58,23 @@ public class OpAssign extends Op1
         VarExprList x = new VarExprList() ;
         x.add(var, expr) ;
         return new OpAssign(op, x) ;
-    }        
+    }   
     
-    public OpAssign(Op subOp)
+    static private Op createAssign(Op op, VarExprList exprs)
+    {
+        // Create, copying the var-expr list
+        VarExprList x = new VarExprList() ;
+        x.addAll(exprs) ;
+        return new OpAssign(op, x) ;
+    }   
+    
+    private OpAssign(Op subOp)
     {
         super(subOp) ;
         assignments = new VarExprList() ;
     }
     
-    public OpAssign(Op subOp, VarExprList exprs)
+    private OpAssign(Op subOp, VarExprList exprs)
     {
         super(subOp) ;
         assignments = exprs ;
@@ -57,7 +82,9 @@ public class OpAssign extends Op1
     
     public String getName() { return Tags.tagAssign ; }
     
-    public void add(Var var, Expr expr)
+    // Need to protect this with checking for var already used.
+    // See the factories in statics above. 
+    private void add(Var var, Expr expr)
     { assignments.add(var, expr) ; }
 
     public VarExprList getVarExprList() { return assignments ; }

@@ -467,7 +467,7 @@ public class AlgebraGenerator
         // ---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
             // Potential rewrites based of assign introducing aliases.
-            op = new OpAssign(op, exprs) ;
+            op = OpAssign.assign(op, exprs) ;
 
         // ---- HAVING
         if ( query.hasHaving() )

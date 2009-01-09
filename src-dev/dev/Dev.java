@@ -11,6 +11,7 @@ public class Dev
     // SPARQL/Update - Sort out GraphStores/Datasets
     
     // E_Aggregator should not be a subclass of ExprVar, but as a (funny?) subclass of OpAssign.
+    // (or a class of things all on it's own?)
     // May remove the need for (assign...) 
     // Currently, fixed up in AlgebraGenerator.compileModifiers
     

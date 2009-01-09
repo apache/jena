@@ -54,9 +54,11 @@ public class E_Aggregator extends ExprVar
     public String asSparqlExpr()        
     { return aggregator.toString() ; }
     
+    // DEBUGGING
     @Override
     public String toString()
-    // Don't call super.toString - that will call toExprString()!
+    // Don't call super.toString - that will call asSparqlExpr()!
+    // varNode can be null temporarily as a structure is built.
     { return "(AGG "+
                 (varNode==null?"<>":"?"+super.varNode.getVarName())+
                 " "+aggregator.toString()+")"; }

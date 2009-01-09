@@ -459,12 +459,12 @@ public class BuilderOp
             BuilderLib.checkLength(3, list,  "Order") ;
             ItemList conditions = list.get(1).getList() ;
             
-            // Maybe tagged (asc, (desc or a raw expression)
+            // Maybe tagged (asc, desc or a raw expression)
             List<SortCondition> x = new ArrayList<SortCondition>() ;
             
             for ( int i = 0 ; i < conditions.size() ; i++ )
             {
-                int direction = Query.ORDER_DEFAULT ;
+                //int direction = Query.ORDER_DEFAULT ;
                 Item item = conditions.get(i) ;
                 SortCondition sc = scBuilder(item) ;
                 x.add(sc) ;
@@ -480,7 +480,6 @@ public class BuilderOp
         int direction = Query.ORDER_DEFAULT ;
         if ( item.isTagged("asc") || item.isTagged("desc") )
         {
-            
             BuilderLib.checkList(item) ;
             BuilderLib.checkLength(2, item.getList(), "Direction corrupt") ;
             if ( item.isTagged("asc") )
@@ -536,7 +535,7 @@ public class BuilderOp
             BuilderLib.checkLength(3, list, "assign") ;
             VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
-            return new OpAssign(sub, x) ;
+            return OpAssign.assign(sub, x) ;
         }
     } ;
 
