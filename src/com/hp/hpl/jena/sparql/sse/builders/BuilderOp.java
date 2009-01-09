@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -430,13 +431,20 @@ public class BuilderOp
             {
                 // Aggregations : assume that the exprs are legal.
                 VarExprList y = BuilderExpr.buildNamedExprList(list.get(2).getList()) ;
-                for (  Expr expr : y.getExprs().values() )
+
+                // Aggregations need to know the name of the variable they are associated with
+                // (so it can be set by the aggregation calculation)
+                // Bind aggregation to variable
+                for (  Entry<Var, Expr> entry : y.getExprs().entrySet() )
                 {
-                    if ( ! ( expr instanceof E_Aggregator ) )
-                        BuilderLib.broken(list, "Not a aggregate expression: "+expr) ;
-                    aggregators.add((E_Aggregator)expr) ;    
+                    if ( ! ( entry.getValue() instanceof E_Aggregator ) )
+                        BuilderLib.broken(list, "Not a aggregate expression: "+entry.getValue()) ;
+                    E_Aggregator eAgg = (E_Aggregator)entry.getValue() ;
+                    eAgg.setVar(entry.getKey()) ;
+                    aggregators.add(eAgg) ;    
                 }
             }
+            
             Op sub = build(list, list.size()-1) ;
             Op op = new OpGroupAgg(sub,vars, aggregators) ;
             return op ;
