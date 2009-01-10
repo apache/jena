@@ -254,7 +254,6 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     static private String asString(Node node)
     {
         if ( node.getLiteralDatatype() != null
-            && ! node.getLiteralDatatype().equals("") 
             && ! node.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
             return null ;
         return node.getLiteralLexicalForm() ;

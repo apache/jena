@@ -334,7 +334,7 @@ public class ResultSetFormatter
      */
 
     static public void outputAsRDF(String format,  boolean booleanResult)
-    { outputAsRDF(format, booleanResult) ; }
+    { outputAsRDF(System.out, format, booleanResult) ; }
 
     
     /** Write out an RDF model that encodes a boolean result

@@ -1,5 +1,5 @@
 #FindBugs User Preferences
-#Wed Jan 07 17:38:34 GMT 2009
+#Sat Jan 10 14:47:57 GMT 2009
 detectorAppendingToAnObjectOutputStream=AppendingToAnObjectOutputStream|true
 detectorBCPMethodReturnCheck=BCPMethodReturnCheck|false
 detectorBadAppletConstructor=BadAppletConstructor|false
@@ -150,7 +150,7 @@ detectorWaitInLoop=WaitInLoop|true
 detectorWrongMapIterator=WrongMapIterator|true
 detectorXMLFactoryBypass=XMLFactoryBypass|true
 detector_threshold=1
-effort=default
+effort=max
 filter_settings=High|BAD_PRACTICE,CORRECTNESS,EXPERIMENTAL,I18N,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false
 filter_settings_neg=|
 run_at_full_build=true

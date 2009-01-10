@@ -17,7 +17,7 @@ import java.util.*;
 
 public class Context
 {
-    // In Java 1.5. this extends Map<Symbol, Object> + helper functions
+    // In Java 1.5. this could extend Map<Symbol, Object> + helper functions
     // Like java.util.Properties except not String-centric
     // (which is also why RDF isn't useful here)
     
@@ -217,15 +217,21 @@ public class Context
     /** Set of properties (as Symbols) currently defined */  
     public Set<Symbol> keys() { return context.keySet() ; }
     
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-
-        if ( ! ( other instanceof Context ) ) return false ;
-        Context cxt = (Context)other ;
-        return context.equals(cxt.context) ;
-    }
+//    @Override
+//    public int hashCode()
+//    {
+//        return context.hashCode() ;
+//    }
+//    
+//    @Override
+//    public boolean equals(Object other)
+//    {
+//        if ( this == other ) return true ;
+//
+//        if ( ! ( other instanceof Context ) ) return false ;
+//        Context cxt = (Context)other ;
+//        return context.equals(cxt.context) ;
+//    }
     
     // ---- Callbacks
     public void addCallback(Callback m) { callbacks.add(m) ; }

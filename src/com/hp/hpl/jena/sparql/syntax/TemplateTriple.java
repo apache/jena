@@ -63,7 +63,6 @@ public class TemplateTriple extends Template
     @Override
     public int hashCode()
     { 
-        triple.hashCode();
         if ( triple == null ) return 2 ;
         // Without any blank nodes
         int hash = 0 ;
