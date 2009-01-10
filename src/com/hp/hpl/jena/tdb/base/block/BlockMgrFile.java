@@ -12,13 +12,14 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** Abstract class to for block managers over a file */
+/** Abstract class for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase
 {
     // Woudl like multiple inheritiance to reuse FileBase
@@ -26,7 +27,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected String filename ;
     protected FileChannel channel ;
     protected RandomAccessFile out ;
-    protected long numFileBlocks = -1 ;     // XXX AtomicLong.
+    protected long numFileBlocks = -1 ;             // Don't overload use of this!
+    protected AtomicLong seq = new AtomicLong() ;   // Id (future)
     protected boolean isEmpty = false ;
     
     // Better for ids?
@@ -73,9 +75,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     {
         //return numFileBlocks.getAndIncrement() ;
         
-        // Always extends.
-        int id = -1 ;
-        id = (int)numFileBlocks ;
+        int id = (int)numFileBlocks ;
         numFileBlocks ++ ;
 
 //        if ( getLog().isDebugEnabled() ) 
@@ -94,7 +94,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
         return true ; 
     }
 
-    final  synchronized
+    final
     protected void check(int id)
     {
         // Access to numFileBlocks not synchronized - it's only a check

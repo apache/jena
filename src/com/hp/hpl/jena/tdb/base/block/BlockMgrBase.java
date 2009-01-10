@@ -10,10 +10,9 @@ import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 
-// Rename as PageManager?
 public abstract class BlockMgrBase implements BlockMgr
 {
-    protected int blockSize ;
+    protected final int blockSize ;
     protected BlockMgrBase(int blockSize)
     {
         this.blockSize = blockSize ;

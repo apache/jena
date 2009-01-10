@@ -18,7 +18,7 @@ import java.nio.charset.CoderResult;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java)
- *  {@link http://en.wikipedia.org/wiki/Endianness}
+ *  {@link "http://en.wikipedia.org/wiki/Endianness"}
  */  
 
 public class Bytes
@@ -94,7 +94,7 @@ public class Bytes
     { setInt(value, b, 0) ; }
     
     /** Put an int into a byte array from a given position
-     * @param value The integer
+     * @param x The integer
      * @param b byte array 
      * @param idx starting point
      */

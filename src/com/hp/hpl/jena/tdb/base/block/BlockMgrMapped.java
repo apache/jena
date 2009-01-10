@@ -104,6 +104,7 @@ public class BlockMgrMapped extends BlockMgrFile
                 
                 // And then reset limit to max for segment.
                 segBuffer.limit(segBuffer.capacity()) ;
+                // Extend block count when we allocate above end. 
                 numFileBlocks = Math.max(numFileBlocks, id+1) ;
                 return dst ;
             } catch (IllegalArgumentException ex) {
@@ -121,6 +122,7 @@ public class BlockMgrMapped extends BlockMgrFile
     private final int byteOffset(int id)                { return (id%blocksPerSegment)*blockSize ; }
     private final long fileLocation(long segmentNumber) { return segmentNumber*SegmentSize ; }
     
+    // Even for MultipleReader this needs to be sync'ed.
     private MappedByteBuffer allocSegment(int seg)
     {
         // Auxiliary function for getSilent - which holds the lock needed here.
@@ -153,7 +155,8 @@ public class BlockMgrMapped extends BlockMgrFile
             throw new BlockException("Negative segment offset: "+seg) ;
         }
         
-        // This, the relocation code above, and flushDirtySegements(), are the only places to directly access segments[] while running. 
+        // This, the relocation code above, and flushDirtySegements(), 
+        // are the only places to directly access segments[] while running. 
         MappedByteBuffer segBuffer = segments[seg] ;
         if ( segBuffer == null )
         {
@@ -169,7 +172,7 @@ public class BlockMgrMapped extends BlockMgrFile
                 throw new BlockException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
             }
         }
-        segmentDirty[seg] = true ;
+        //segmentDirty[seg] = true ; // Old - why was it ever here?
         return segBuffer ;
     }
 
@@ -193,12 +196,10 @@ public class BlockMgrMapped extends BlockMgrFile
         check(id, block) ;
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("put(%d)", id)) ;
-        synchronized(this)
-        {
-            segmentDirty[segment(id)] = true ;
-            // No other work.
-            putNotification(id, block) ;
-        }
+        // Assumed MRSW - no need to sync as we are the only W
+        segmentDirty[segment(id)] = true ;
+        // No other work.
+        putNotification(id, block) ;
     }
     
     @Override
@@ -206,12 +207,9 @@ public class BlockMgrMapped extends BlockMgrFile
     { 
         check(id) ;
         int seg = id/blocksPerSegment ; 
-        synchronized(this)
-        {
-            segmentDirty[seg] = false ;
-        }
+        segmentDirty[seg] = false ;
         if ( getLog().isDebugEnabled() ) 
-            getLog().debug(format("release(%d)", id)) ;
+            getLog().debug(format("freeBlock(%d)", id)) ;
     }
     
     @Override
@@ -222,7 +220,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    protected synchronized void force()
+    protected void force()
     {
         flushDirtySegments() ;
         super.force() ;

@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.lib.Sync;
 
-// Rename as PageManager?
 public interface BlockMgr extends Sync, Closeable
 {
     /** Allocate an uninitialized slot.  Fill with a .put */ 

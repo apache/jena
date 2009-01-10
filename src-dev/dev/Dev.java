@@ -8,9 +8,21 @@ package dev;
 
 public class Dev
 {
+    // Documentation
+    //  Concurrency policy
+    
     // Check synchronization and block managers.
-    //   Use of AtomicLong in BlockMgrFile.
+    // SyncWrapper?
     //   Dirty segment marker.
+    // BlockMgrFile - gets file size wrong when reopening mapped files.
+    // ==> Reopenable
+    // ==> .release(id)
+    // ==> Accurate size (?? meaningful beyond isEmpty/notEmpty?)
+    // ==> Metablocks.
+    //   ==> Moveable roots.
+    // Multiple blockops => no point sync at this level? Only if not MRSW? 
+    // POLICY!  Assume MRSW => reads have to protect themselves against other reads
+    // if they change internal structures.  
     
     // Tidy up this file :-)
     
@@ -22,9 +34,6 @@ public class Dev
     
     // ---- Generic TupleIndex<T extends Something> for NodeId or Node
     // e.g. Need mapper from T to TupleIndexRecord to abstract. 
-    
-    // Tests not in build sequence
-    // "Publish to local"
     
     // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
     
@@ -55,7 +64,7 @@ public class Dev
     // ---- BlockMgrs
     // Reopenable BlockMgrs (and the object file?) 
     //   Needed?  SPO close followed by linear scans only.
-    //   Reopne the whole graph (??)
+    //   Reopen the whole graph (??)
     // TupleTable.size - at least an isEmpty 
     //   Not just an empty block manager.
 
