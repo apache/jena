@@ -56,18 +56,6 @@ public class Run
     }
 
     static { CmdUtils.setLog4j() ; }
-    
-    interface Foo { public void bar() ; }
-    
-    class X implements Foo
-    {
-
-        //@Override
-        public void bar()
-        {}
-        
-    }
-    
  
     public static void main(String ... args) throws IOException
     {
