@@ -97,7 +97,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         
         NodeId nodeId = NodeId.create(location) ;
         
-        int i = delayCache.size() ;
+        //int i = delayCache.size() ;
         delayCache.add(new Pair<NodeId, String>(nodeId, str)) ;
         return nodeId ; 
     }
@@ -254,7 +254,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     
     
     // URI compression can be effective but literals are more of a problem.  More variety. 
-    public static boolean compression = false ; 
+    public final static boolean compression = false ; 
     private static StringAbbrev abbreviations = new StringAbbrev() ;
     static {
         abbreviations.add(  "rdf",      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;

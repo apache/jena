@@ -46,7 +46,7 @@ public class SolverLib
      * Normally it's this code, which puts a delayed iterator mapping
      * around the BindingNodeId stream. 
      */
-    public static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
+    public final static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
         @Override
         public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds)
         {

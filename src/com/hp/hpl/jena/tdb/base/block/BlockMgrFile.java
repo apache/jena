@@ -26,7 +26,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected String filename ;
     protected FileChannel channel ;
     protected RandomAccessFile out ;
-    protected long numFileBlocks = -1 ;
+    protected long numFileBlocks = -1 ;     // XXX AtomicLong.
     protected boolean isEmpty = false ;
     
     // Better for ids?
@@ -68,27 +68,25 @@ public abstract class BlockMgrFile extends BlockMgrBase
     
     final protected void putNotification(int id, ByteBuffer block) { isEmpty = false ; }
     
-    @Override final
+    @Override final synchronized
     public int allocateId()
     {
         //return numFileBlocks.getAndIncrement() ;
         
         // Always extends.
         int id = -1 ;
-        synchronized (this)
-        {
-            id = (int)numFileBlocks ;
-            numFileBlocks ++ ;
-        }
+        id = (int)numFileBlocks ;
+        numFileBlocks ++ ;
 
 //        if ( getLog().isDebugEnabled() ) 
 //            getLog().debug(format("allocateId(%d)", id)) ;
         return id ;
     }
     
-    @Override final
+    @Override final synchronized
     public boolean valid(int id)
     {
+        // Access to numFileBlocks not synchronized - it's only a check
         if ( id >= numFileBlocks )
             return false ;
         if ( id < 0 )
@@ -96,8 +94,10 @@ public abstract class BlockMgrFile extends BlockMgrBase
         return true ; 
     }
 
-    final protected void check(int id)
+    final  synchronized
+    protected void check(int id)
     {
+        // Access to numFileBlocks not synchronized - it's only a check
         if ( id < 0 || id >= numFileBlocks )
             throw new BlockException(format("BlockMgrFile: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
     }

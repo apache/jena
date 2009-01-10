@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // Check synchronization and block managers.
+    //   Use of AtomicLong in BlockMgrFile.
+    //   Dirty segment marker.
+    
     // Tidy up this file :-)
     
     // ---- Interactions with ARQ

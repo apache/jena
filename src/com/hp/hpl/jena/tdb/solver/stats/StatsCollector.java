@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.sparql.sse.Item.createTagged;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import lib.Log;
 import lib.MapUtils;
@@ -177,11 +178,9 @@ public class StatsCollector
             addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
         statsList.add(meta) ;
         
-        for ( Node p : predicates.keySet() )
-        {
-            addPair(statsList, p, NodeFactory.intToNode(predicates.get(p))) ;
-//            System.out.printf("%s : %d\n",n, predicateIds.get(p) ) ;
-        }
+        for ( Entry<Node, Integer> entry : predicates.entrySet() )
+            addPair(statsList, entry.getKey(), NodeFactory.intToNode(entry.getValue())) ;
+        
         return stats ;
     }
 }

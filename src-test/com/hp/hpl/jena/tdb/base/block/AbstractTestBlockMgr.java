@@ -16,7 +16,7 @@ import test.BaseTest;
 
 public abstract class AbstractTestBlockMgr extends BaseTest
 {
-    static public int BlkSize = 256 ;
+    static final public int BlkSize = 256 ;
     
     protected BlockMgr blockMgr = null ;
     

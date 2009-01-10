@@ -55,7 +55,7 @@ import com.hp.hpl.jena.tdb.store.GraphTDB;
  */
 public class OpExecutorTDB extends OpExecutor
 {
-    public static OpExecutorFactory altFactory = new OpExecutorFactory()
+    public final static OpExecutorFactory altFactory = new OpExecutorFactory()
     {
         @Override
         public OpExecutor create(ExecutionContext execCxt)

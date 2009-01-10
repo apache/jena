@@ -42,7 +42,7 @@ public class NodecSSE implements Nodec
             bb = bb.slice() ;
         }
         // String -> bytes
-
+        // XXX Length issues
         bb.position(4) ;
         Bytes.toByteBuffer(str, bb) ;
         bb.position(0) ;
@@ -52,9 +52,11 @@ public class NodecSSE implements Nodec
     @Override
     public Node decode(ByteBuffer bb, int idx)
     {
+        // XXX Length issues
         int x = bb.getInt(idx) ;
         // Get string.
         bb.position(idx+4) ;
+        bb.limit();
         // Bytes -> String 
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node

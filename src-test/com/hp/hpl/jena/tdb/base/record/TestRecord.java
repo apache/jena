@@ -16,7 +16,7 @@ import test.BaseTest;
 
 public class TestRecord extends BaseTest
 {
-    static public int RecLen = 4 ;
+    static final public int RecLen = 4 ;
     
     @Test public void int1()
     {

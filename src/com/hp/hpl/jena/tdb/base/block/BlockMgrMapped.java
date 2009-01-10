@@ -90,8 +90,8 @@ public class BlockMgrMapped extends BlockMgrFile
         int seg = segment(id) ;                 // Segment.
         int segOff = byteOffset(id) ;           // Byte offset in segment
 
-        if ( getLog().isDebugEnabled() ) 
-            getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
+        if ( getLog().isTraceEnabled() ) 
+            getLog().trace(format("%d => [%d, %d]", id, seg, segOff)) ;
 
         synchronized (this) {
             try {
@@ -191,9 +191,14 @@ public class BlockMgrMapped extends BlockMgrFile
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
-        segmentDirty[segment(id)] = true ;
-        // No other work.
-        putNotification(id, block) ;
+        if ( getLog().isDebugEnabled() ) 
+            getLog().debug(format("put(%d)", id)) ;
+        synchronized(this)
+        {
+            segmentDirty[segment(id)] = true ;
+            // No other work.
+            putNotification(id, block) ;
+        }
     }
     
     @Override
@@ -201,7 +206,10 @@ public class BlockMgrMapped extends BlockMgrFile
     { 
         check(id) ;
         int seg = id/blocksPerSegment ; 
-        segmentDirty[seg] = false ;
+        synchronized(this)
+        {
+            segmentDirty[seg] = false ;
+        }
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("release(%d)", id)) ;
     }
@@ -214,7 +222,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    protected void force()
+    protected synchronized void force()
     {
         flushDirtySegments() ;
         super.force() ;

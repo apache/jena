@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 @RunWith(AllTests.class)
 public class GraphTDBTestSuite extends TestSuite
 {
-    public static String manifestMain = "testing/manifest.ttl" ;
+    public final static String manifestMain = "testing/manifest.ttl" ;
     
     static public TestSuite suite() { return new GraphTDBTestSuite() ; }
     

@@ -52,7 +52,7 @@ public class TDB
     /** Logger for execution information */
     public static final Logger logExec = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
     
-    public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
+    public final static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
     /** Symbol to use the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;

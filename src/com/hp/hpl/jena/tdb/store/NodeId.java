@@ -12,10 +12,10 @@ import java.nio.ByteBuffer;
 import lib.BitsLong;
 import lib.Bytes;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -156,10 +156,7 @@ public class NodeId
         
         if ( ! enableInlineLiterals ) return null ;
         
-        String lex = node.getLiteralLexicalForm() ;
         LiteralLabel lit = node.getLiteral() ;
-        
-        RDFDatatype dt = node.getLiteralDatatype() ;
         
         // Decimal is a valid supertype of integer but we handle integers and decimals differently.
         

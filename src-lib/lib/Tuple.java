@@ -90,7 +90,6 @@ public final class Tuple<T>
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder() ;
         return "["+Iter.asString(asList(), ", ")+"]" ;
     }
 }

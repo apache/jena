@@ -209,8 +209,11 @@ public class Bytes
     }
     
     private static Charset utf8 = null ;
-    private static final int PoolSize = 5 ;
-    // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap. 
+    
+    // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap.
+    // Initial pool size. Any additional encoder/decoder are later
+    // placed in the pool - it's an infinite, reusing, pool.
+    private static final int PoolSize = 1 ;
     private static Pool<CharsetEncoder> encoders = new PoolSync<CharsetEncoder>() ;
     private static Pool<CharsetDecoder> decoders = new PoolSync<CharsetDecoder>() ;
     

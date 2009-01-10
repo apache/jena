@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
 {
-    public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
+    public final static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
     
     public StageGeneratorGeneric() {}
     

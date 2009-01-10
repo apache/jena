@@ -28,7 +28,7 @@ public class ReorderFixed extends ReorderTransformationBase
     /** Maximum value for a match involving two terms. */
     public static int MultiTermMax = 9 ; 
     
-    public static StatsMatcher matcher ;
+    public final static StatsMatcher matcher ;
     static {
         matcher = new StatsMatcher() ;
         

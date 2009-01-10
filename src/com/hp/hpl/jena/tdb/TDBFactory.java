@@ -42,7 +42,7 @@ public class TDBFactory
     static ImplFactory factory = null ;
 
     // PGraph (old) implementation factory
-    public static ImplFactory pgraphFactory = new ImplFactory()
+    public final static ImplFactory pgraphFactory = new ImplFactory()
     {
         @Override
         public Graph createGraph()
@@ -62,7 +62,7 @@ public class TDBFactory
     };
 
     // Standard implementation factory
-    public static ImplFactory stdFactory = new ImplFactory()
+    public final static ImplFactory stdFactory = new ImplFactory()
     {
         @Override
         public Graph createGraph()

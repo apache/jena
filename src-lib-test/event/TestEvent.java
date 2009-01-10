@@ -71,7 +71,6 @@ public class TestEvent extends BaseTest
     {
         EventListenerLogger listener = new EventListenerLogger() ;
         Object obj = new Object() ;
-        Object arg = new String("arg") ;
         
         EventManager.send(obj, new Event(ev1, "foo")) ;
         assertEquals(0, listener.eventCount) ;

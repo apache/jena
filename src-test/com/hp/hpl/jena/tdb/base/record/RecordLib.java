@@ -24,9 +24,9 @@ import lib.Bytes;
 public class RecordLib
 {
     // Size of a record when testing (one integer)
-    public static int TestRecordLength = 4 ;
+    public final static int TestRecordLength = 4 ;
     
-    public static RecordFactory recordFactory = new RecordFactory(TestRecordLength, 0) ; 
+    public final static RecordFactory recordFactory    = new RecordFactory(TestRecordLength, 0) ; 
     
     public static Record intToRecord(int v) { return intToRecord(v, recordFactory) ; }
     public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)) ; }

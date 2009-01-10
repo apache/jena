@@ -19,17 +19,17 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 public abstract class AbstractTestGraph2 extends TestBase
 {
     // This will become the basis for a general graph test in Jena(3)
-    protected static Node s1 = makeNode("<s1>") ;
-    protected static Node p1 = makeNode("<p1>") ;
-    protected static Node o1 = makeNode("<o1>") ;
+    protected static final Node s1 = makeNode("<s1>") ;
+    protected static final Node p1 = makeNode("<p1>") ;
+    protected static final Node o1 = makeNode("<o1>") ;
 
-    protected static Node s2 = makeNode("<s2>") ;
-    protected static Node p2 = makeNode("<p2>") ;
-    protected static Node o2 = makeNode("<o2>") ;
+    protected static final Node s2 = makeNode("<s2>") ;
+    protected static final Node p2 = makeNode("<p2>") ;
+    protected static final Node o2 = makeNode("<o2>") ;
     
-    protected static Node lit1 = makeNode("'lex'") ;
-    protected static Node lit2 = makeNode("'lex'@en") ;
-    protected static Node lit3 = makeNode("123") ;
+    protected static final Node lit1 = makeNode("'lex'") ;
+    protected static final Node lit2 = makeNode("'lex'@en") ;
+    protected static final Node lit3 = makeNode("123") ;
     
     static Triple triple(Node s, Node p, Node o)
     { return new Triple(s, p, o) ; }
