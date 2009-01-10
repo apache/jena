@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * and also the unit for adapting to other data store in ARQ).  But for
  * experimentation, it can be useful to have a convenience direct triple access.
 
- * @see {OpBGP}
+ * @see OpBGP
  */ 
 public class OpTriple extends Op0
 {

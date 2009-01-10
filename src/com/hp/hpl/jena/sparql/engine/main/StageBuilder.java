@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.util.Context;
  *
  * Extension happens by registering a different StageGenerator in
  * the context object for the execution. Setting the StageGenerator
- * in the global context ({@link ARQ.getContext}) makes it available
+ * in the global context ({@link ARQ}) makes it available
  * to all query execution created after the point of setting.
  * 
  * Helper static methods for setting the stage generator are provided.  

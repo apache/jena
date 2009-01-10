@@ -19,14 +19,12 @@ public interface QueryExecution
 {
     /** Set the FileManger that might be used to load files.
      *  May not be supported by all QueryExecution implementations.  
-     * @throws UnsupportedMethodException 
      */
     public void setFileManager(FileManager fm) ;
     
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * @param binding
-     * @throws UnsupportedMethodException 
      */
     public void setInitialBinding(QuerySolution binding) ;
 

@@ -83,7 +83,7 @@ public class CmdLineArgs extends CommandLineBase
     /**
      * Add a positional parameter
      * @param value
-     * @return
+     * @return this object
      */
     public CmdLineArgs addPositional(String value)
     {
@@ -94,7 +94,7 @@ public class CmdLineArgs extends CommandLineBase
     /**
      * Add a named argument which has no value.
      * @param name
-     * @return
+     * @return this
      */
     public CmdLineArgs addArg(String name)
     {
@@ -105,7 +105,7 @@ public class CmdLineArgs extends CommandLineBase
      * Add a named argument/value pair
      * @param name
      * @param value
-     * @return
+     * @return this object
      */
     public CmdLineArgs addArg(String name, String value)
     {
@@ -177,14 +177,14 @@ public class CmdLineArgs extends CommandLineBase
     /** Test whether the command line had a particular argument
      * 
      * @param argName
-     * @return
+     * @return this object
      */
     public boolean hasArg(String argName) { return getArg(argName) != null ; }
 
     /** Test whether the command line had a particular argument
      * 
      * @param argDecl
-     * @return
+     * @return true or false
      */
     
     public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
@@ -210,14 +210,14 @@ public class CmdLineArgs extends CommandLineBase
     
     /** Get the argument associated with the arguement name.
      *  Actually returns the LAST one seen
-     *  @param argDecl Argument declaration to find
+     *  @param argName Argument name
      *  @return Last argument that matched.
      */
     
-    public Arg getArg(String s)
+    public Arg getArg(String argName)
     {
-        s = ArgDecl.canonicalForm(s) ;
-        return args.get(s) ;
+        argName = ArgDecl.canonicalForm(argName) ;
+        return args.get(argName) ;
     }
     
     /**
@@ -239,7 +239,7 @@ public class CmdLineArgs extends CommandLineBase
     /**
      * Returns the value (a string) for an argument with a value - 
      * returns null for no argument and no value.  
-     * @param argDecl
+     * @param argName
      * @return String
      */
     public String getValue(String argName)
@@ -289,7 +289,7 @@ public class CmdLineArgs extends CommandLineBase
 
     /**
      * Returns all the values (0 or more strings) for an argument. 
-     * @param argDecl
+     * @param argName
      * @return List
      */
     public List<String> getValues(String argName)

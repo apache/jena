@@ -48,7 +48,7 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 	 * @param input
 	 * @param execCxt
 	 * @return QueryIterator
-	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#execute(com.hp.hpl.jena.sparql.core.BasicPattern, com.hp.hpl.jena.sparql.engine.ExecutionContext)
+	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#execute(BasicPattern, QueryIterator, ExecutionContext)
 	 */
 	public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
 	{

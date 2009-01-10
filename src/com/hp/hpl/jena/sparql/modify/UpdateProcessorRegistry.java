@@ -39,7 +39,7 @@ public class UpdateProcessorRegistry
     /** Locate a suitable factory for this query and dataset from the default registry
      * 
      * @param request   UpdateRequest 
-     * @param dataset Dataset
+     * @param graphStore The graph store
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
