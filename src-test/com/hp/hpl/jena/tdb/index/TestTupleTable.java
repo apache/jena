@@ -55,8 +55,8 @@ public class TestTupleTable extends BaseTest
     { 
         TupleTable table = create() ;
         add(table, n1, n2, n3) ;
-
-        Tuple<NodeId> pat = Tuple.create(null, null, null) ;
+        // Cast removes compile lint warning.
+        Tuple<NodeId> pat = Tuple.create((NodeId)null, null, null) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
         int z = x.size() ;

@@ -176,6 +176,7 @@
            >
       <src refid="java.source.path"/>
       <classpath refid="java.build.class.path" />
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
 

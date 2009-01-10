@@ -338,7 +338,7 @@ public final class NodeTupleReader
 
     // ---- API
     
-    static Tuple<Node> endMarker = Tuple.create() ;
+    static Tuple<Node> endMarker = Tuple.blankTuple(0) ;
     private void readRDF()  {
         boolean noCache = false ;
         if ( noCache ) 
