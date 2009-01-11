@@ -37,6 +37,10 @@
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
     <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
+    <!-- Java logging 
+    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
+    -->
+
     <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"/> 
 
     <!-- Log4j 1.2.15 referes to inaccessible modules as excluded below. -->
