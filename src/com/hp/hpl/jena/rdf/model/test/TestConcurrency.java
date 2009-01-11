@@ -6,10 +6,12 @@
 package com.hp.hpl.jena.rdf.model.test ;
 import com.hp.hpl.jena.rdf.model.* ;
 
+import com.hp.hpl.jena.shared.Lock;
+
 import junit.framework.*;
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.10 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version 	$Id: TestConcurrency.java,v 1.11 2009-01-11 21:34:23 andy_seaborne Exp $
  */
 public class TestConcurrency  extends TestSuite
 {
@@ -35,23 +37,23 @@ public class TestConcurrency  extends TestSuite
         {
             // Same model: inner and outer
             addTest(new Nesting("Lock nesting 1 - same model", 
-                    model1, ModelLock.READ, ModelLock.READ, false)) ;
+                    model1, Lock.READ, Lock.READ, false)) ;
             addTest(new Nesting("Lock nesting 2 - same model",
-                    model1, ModelLock.WRITE, ModelLock.WRITE, false)) ;
+                    model1, Lock.WRITE, Lock.WRITE, false)) ;
             addTest(new Nesting("Lock nesting 3 - same model",
-                    model1, ModelLock.READ, ModelLock.WRITE, true)) ;
+                    model1, Lock.READ, Lock.WRITE, true)) ;
             addTest(new Nesting("Lock nesting 4 - same model",
-                    model1, ModelLock.WRITE, ModelLock.READ, false)) ;
+                    model1, Lock.WRITE, Lock.READ, false)) ;
     
             // Different  model: inner and outer
             addTest(new Nesting("Lock nesting 1 - defifferent models", 
-                    model1, ModelLock.READ, model2, ModelLock.READ, false)) ;
+                    model1, Lock.READ, model2, Lock.READ, false)) ;
             addTest(new Nesting("Lock nesting 2 - defifferent models",
-                    model1, ModelLock.WRITE, model2, ModelLock.WRITE, false)) ;
+                    model1, Lock.WRITE, model2, Lock.WRITE, false)) ;
             addTest(new Nesting("Lock nesting 3 - defifferent models",
-                    model1, ModelLock.READ, model2, ModelLock.WRITE, false)) ;
+                    model1, Lock.READ, model2, Lock.WRITE, false)) ;
             addTest(new Nesting("Lock nesting 4 - defifferent models",
-                    model1, ModelLock.WRITE, model2, ModelLock.READ, false)) ;
+                    model1, Lock.WRITE, model2, Lock.READ, false)) ;
         }
         if ( true )
         {
@@ -134,7 +136,7 @@ public class TestConcurrency  extends TestSuite
             Model model = ModelFactory.createDefaultModel() ;
             Thread threads[] = new Thread[threadTotal] ;
 
-            boolean getReadLock = ModelLock.READ ;
+            boolean getReadLock = Lock.READ ;
             for (int i = 0; i < threadTotal; i++)
             {
                 String nextId = "T"+Integer.toString(++threadCount);
