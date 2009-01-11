@@ -11,18 +11,12 @@ public class Dev
     // Documentation
     //  Concurrency policy
     
-    // Check synchronization and block managers.
-    // SyncWrapper?
-    //   Dirty segment marker.
-    // BlockMgrFile - gets file size wrong when reopening mapped files.
+    // Consistency - do not manage in block managers except where MRSW no safe.
     // ==> Reopenable
     // ==> .release(id)
     // ==> Accurate size (?? meaningful beyond isEmpty/notEmpty?)
     // ==> Metablocks.
     //   ==> Moveable roots.
-    // Multiple blockops => no point sync at this level? Only if not MRSW? 
-    // POLICY!  Assume MRSW => reads have to protect themselves against other reads
-    // if they change internal structures.  
     
     // Tidy up this file :-)
     
@@ -38,7 +32,6 @@ public class Dev
     // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
     
     // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
-    
     // Build: resolve jars and compile against them. 
     
     // Quads:

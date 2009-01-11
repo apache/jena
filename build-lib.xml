@@ -373,6 +373,11 @@
           description="Resolve and fetch dependences with Ivy">
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
+    
+    <!--
+    <pathconvert refid="ivy.dev.classpath" property="tmp" />
+    <echo message="Path: ${tmp}"/>
+    -->
   </target>
 
   <target name="ivy-resolve" depends="ivy-resolve-report"/>
