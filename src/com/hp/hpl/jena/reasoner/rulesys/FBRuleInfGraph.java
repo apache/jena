@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.71 2009-01-02 22:11:56 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.72 2009-01-11 13:00:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.71 $ on $Date: 2009-01-02 22:11:56 $
+ * @version $Revision: 1.72 $ on $Date: 2009-01-11 13:00:00 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -756,6 +756,19 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     RDFNode culprit = null;
                     if (culpritN.isURI()) {
                         culprit = ResourceFactory.createResource(culpritN.getURI());
+                    } else if (culpritN.isLiteral()) {
+                        RDFDatatype dtype = culpritN.getLiteralDatatype();
+                        String lex = culpritN.getLiteralLexicalForm();
+                        Object value = culpritN.getLiteralValue();
+                        if (dtype == null) {
+                            if (value instanceof String) {
+                                culprit = ResourceFactory.createPlainLiteral(lex);
+                            } else {
+                                culprit = ResourceFactory.createTypedLiteral(value);
+                            }
+                        } else {
+                            culprit = ResourceFactory.createTypedLiteral(lex, dtype);
+                        }
                     }
                     report.add(nature.equalsIgnoreCase("error"), type, description.toString(), culprit);
                 }
