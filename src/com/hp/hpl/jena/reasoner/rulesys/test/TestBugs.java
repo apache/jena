@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.60 2009-01-11 12:59:36 der Exp $
+ * $Id: TestBugs.java,v 1.61 2009-01-11 20:40:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.60 $ on $Date: 2009-01-11 12:59:36 $
+ * @version $Revision: 1.61 $ on $Date: 2009-01-11 20:40:15 $
  */
 public class TestBugs extends TestCase {
 
@@ -1000,7 +1000,7 @@ public class TestBugs extends TestCase {
      */
     public void testLiteralsInErrorReports() {
         RDFNode culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
-        assertEquals( culprit, ResourceFactory.createTypedLiteral(42));
+        assertEquals( culprit, ResourceFactory.createTypedLiteral( new Integer(42) ));
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 'foo').  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
         assertEquals( culprit, ResourceFactory.createPlainLiteral("foo"));
         BuiltinRegistry.theRegistry.register( new SomeTriple() );
