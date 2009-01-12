@@ -104,6 +104,8 @@ public class Run
 
     public static void main(String[] argv) throws Exception
     {
+        execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
+        
         
         {
         String x1 = "SELECT  (count(?x) AS ?countX) {}" ;

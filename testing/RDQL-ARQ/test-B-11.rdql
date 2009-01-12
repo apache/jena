@@ -3,4 +3,4 @@
 SELECT *
 FROM   <model9.n3>
 WHERE  (?x ?y ?z)
-AND    ?z eq "value"@en^^rdf:XMLLiteral
+AND    ?z eq "<value/>"^^rdf:XMLLiteral

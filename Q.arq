@@ -1,8 +1,12 @@
-PREFIX :  <http://example/>
+PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX :        <http://example/>
+PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
 
-SELECT ?x (count(*) as ?count)
+SELECT *
 {
-    ?x :p ?v
+    (:p) list:member ?p .
+    (1 2) list:member ?s .
+    ?s ?p ?o 
+    
 }
-GROUP BY ?x
-HAVING (count(distinct ?v) > 2)

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.suites.*;
-import com.hp.hpl.jena.sparql.suites.optimizer.OptimizerTestSuite;
 
 /**
  * All the ARQ tests 
@@ -65,8 +64,8 @@ public class ARQTestSuite extends TestSuite
         
         ts.addTest(TS_SSE.suite()) ;
         
-        // The ARQ-Optimizer test suite, Markus Stocker 08/06/2007
-        ts.addTest(OptimizerTestSuite.suite()) ;
+//        // The ARQ-Optimizer test suite, Markus Stocker 08/06/2007
+//        ts.addTest(OptimizerTestSuite.suite()) ;
         
         return ts ;
     }
