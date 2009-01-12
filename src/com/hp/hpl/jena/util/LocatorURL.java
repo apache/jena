@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.18 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.19 2009-01-12 16:47:48 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -48,12 +48,6 @@ public class LocatorURL implements Locator
             conn.connect() ;
             InputStream in = new BufferedInputStream(conn.getInputStream());
             
-            if ( in == null )
-            {
-                if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                    log.trace("Not found: "+filenameOrURI) ; 
-                return null ;
-            }
             if ( FileManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
             return new TypedStream(in, conn.getContentType()) ; 

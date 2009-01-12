@@ -1,7 +1,7 @@
 
 # (c) Copyright 2004, Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: schema2.n3,v 1.1 2006-01-05 13:53:24 chris-dollin Exp $
+# $Id: schema2.n3,v 1.2 2009-01-12 16:47:49 andy_seaborne Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -10,4 +10,4 @@
 
 @prefix :           <#> .
 
-_:x rdf:value 17.
+_:x rdf:value 17 .

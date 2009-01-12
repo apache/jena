@@ -8,5 +8,5 @@
    [ lm:name "http://example.org/file" ;
      lm:altName "file:testing/FileManager/location-mapping-test-file" ] ,
    [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] ,
-   [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] ,
+   [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ]
    .

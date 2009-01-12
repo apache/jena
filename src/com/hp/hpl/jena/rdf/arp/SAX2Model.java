@@ -173,9 +173,6 @@ public class SAX2Model extends SAX2RDF {
         initParse(base, lang);
     }
 
-    // TODO: not for 2.3: revisit constructors here. Error handlers need to be
-    // set before first error.
-
     /**
      * @deprecated
      */

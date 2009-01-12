@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.73 2008-12-28 19:31:54 andy_seaborne Exp $
+  $Id: Model.java,v 1.74 2009-01-12 16:47:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,11 +61,11 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.73 $Date: 2008/03/14 16:07:38 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.74 $Date: 2008/12/28 19:31:54 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
-        RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
+        RDFReaderF, RDFWriterF, PrefixMapping, Lock
 {
 
 
@@ -1029,5 +1029,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.73 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: Model.java,v 1.74 2009-01-12 16:47:48 andy_seaborne Exp $
  */

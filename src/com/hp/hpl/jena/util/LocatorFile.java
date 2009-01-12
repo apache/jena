@@ -19,7 +19,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.16 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.17 2009-01-12 16:47:48 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -123,14 +123,7 @@ public class LocatorFile implements Locator
         
         try {
             InputStream in = new FileInputStream(f) ;
-            if ( in == null )
-            {
-                // Should not happen 
-                if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                    log.trace("LocatorFile: Failed to open: "+filenameOrURI+altDirLogStr) ;
-                return null ;
-            }
-            
+
             if ( FileManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI+altDirLogStr) ;
                 

@@ -635,7 +635,7 @@ class Performance  {
 			}
 		};
 		InputStream oldIn = System.in;
-		InputStream ntIn = null;
+		//InputStream ntIn = null;    // Not used
 		try {
 			System.setIn(in);
 			NTriple.mainEh(
@@ -646,8 +646,8 @@ class Performance  {
 			System.err.println(base + " " + e.toString());
 		} finally {
 			System.setIn(oldIn);
-			if (ntIn != null)
-				ntIn.close();
+//			if (ntIn != null)
+//				ntIn.close();
 		}
 	}
 

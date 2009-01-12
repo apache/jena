@@ -130,7 +130,7 @@ class NTripleTestSuite extends WGTestSuite {
 			Assert.assertTrue(bnode.isAnonymous());
 			switch (state) {
 				case 1 :
-					Assert.fail("Missing startRDF");
+					Assert.fail("Missing startRDF"); return ;
 				case 2 :
 					Assert.assertFalse(bnode.hasNodeID());
 					seen(bnode);
@@ -190,9 +190,9 @@ class NTripleTestSuite extends WGTestSuite {
 			anon.isEmpty());
 			switch (state) {
 				case 1 :
-					Assert.fail("end-of-file before anything");
+					Assert.fail("end-of-file before anything"); return ;
 				case 2 :
-					Assert.fail("did not see endRDF");
+					Assert.fail("did not see endRDF"); return ;
 				case 3 :
 				case 4 :
 					break;

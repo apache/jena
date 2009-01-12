@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- $Id: TestXMLFeatures.java,v 1.56 2008-12-28 19:32:02 andy_seaborne Exp $
+ $Id: TestXMLFeatures.java,v 1.57 2009-01-12 16:47:47 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.56 $ $Date: 2008-12-28 19:32:02 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.57 $ $Date: 2009-01-12 16:47:47 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -386,9 +386,9 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 			switch (behaviour) {
 			case BadPropURI:
-				fail("Bad property URI <" + s + "> was not detected.");
+				fail("Bad property URI <" + s + "> was not detected."); return ;
 			case BadURI:
-				fail("Bad URI <" + s + "> was not detected.");
+				fail("Bad URI <" + s + "> was not detected."); return ;
 			}
 			// read back in
 			Model m2 = createMemModel();
@@ -693,5 +693,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestXMLFeatures.java,v 1.56 2008-12-28 19:32:02 andy_seaborne Exp $
+ * $Id: TestXMLFeatures.java,v 1.57 2009-01-12 16:47:47 andy_seaborne Exp $
  */

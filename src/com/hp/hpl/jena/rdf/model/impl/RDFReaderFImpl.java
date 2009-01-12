@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.22 2008-12-28 19:31:52 andy_seaborne Exp $
+ * $Id: RDFReaderFImpl.java,v 1.23 2009-01-12 16:47:48 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.22 $ $Date: 2008-12-28 19:31:52 $
+ * @version $Revision: 1.23 $ $Date: 2009-01-12 16:47:48 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
@@ -68,7 +68,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         "com.hp.hpl.jena.rdf.arp.JenaReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
-        "com.hp.hpl.jena.n3.N3JenaReader",
+        TURTLEREADER, //com.hp.hpl.jena.n3.N3JenaReader.class.getName(),  // N3 replaced by a Turtle-based parser 
         TURTLEREADER,
         TURTLEREADER,
         TURTLEREADER,

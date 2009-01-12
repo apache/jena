@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.128 2009-01-08 18:49:27 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.129 2009-01-12 16:47:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -37,12 +37,12 @@ import java.util.*;
 
 public class ModelCom 
     extends EnhGraph
-    implements Model, PrefixMapping, ModelLock
+    implements Model, PrefixMapping, Lock
 {
 
       private static final RDFReaderF readerFactory = new RDFReaderFImpl();
       private static final RDFWriterF writerFactory = new RDFWriterFImpl();
-      private ModelLock modelLock = null ;
+      private Lock modelLock = null ;
       
     /**
     	make a model based on the specified graph
@@ -1276,10 +1276,10 @@ public class ModelCom
         return L.isIsomorphicWith( R );
         }
         
-    public synchronized ModelLock getModelLock()
+    public synchronized Lock getModelLock()
     {
         if ( modelLock == null )
-            modelLock = new ModelLockImpl() ;
+            modelLock = new LockMRSW() ;
         return modelLock ;
     }
     

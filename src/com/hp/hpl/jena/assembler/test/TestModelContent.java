@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.9 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: TestModelContent.java,v 1.10 2009-01-12 16:47:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -51,7 +51,7 @@ public class TestModelContent extends AssemblerTestBase
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, false, true );
         Resource root = resourceInModel
-            ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
+            ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17\\s.'" );
         try { a.open( Assembler.content, root  ); }
         catch (RuntimeException e) {}
         }
@@ -62,7 +62,7 @@ public class TestModelContent extends AssemblerTestBase
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, true, false );
         Resource root = resourceInModel
-            ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
+            ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17\\s.'" );
         Model m = (Model) a.open( Assembler.content, root  );
         assertEquals( listOfStrings( "supports[true] begin add commit" ), history );
         assertIsoModels( expected, m );
@@ -78,7 +78,7 @@ public class TestModelContent extends AssemblerTestBase
             {
             Resource root = resourceInModel
                 ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content"
-                + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
+                + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17\\s.'" );
             a.open( Assembler.content, root  );
             fail( "should throw (wrapped) failing exception" );
             }
@@ -94,7 +94,7 @@ public class TestModelContent extends AssemblerTestBase
         {
         Resource root = resourceInModel
             ( "x rdf:type " + type + "; x ja:content y; y rdf:type ja:Content"
-            + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
+            + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17\\s.'" );
         Model m = (Model) a.open( Assembler.content, root );
         assertIsoModels( model( "_x rdf:value '17'xsd:integer" ), m );
         }
@@ -103,8 +103,8 @@ public class TestModelContent extends AssemblerTestBase
         {
         Model m = (Model) a.open( Assembler.content, resourceInModel
                 ( "x rdf:type " + type + "; x ja:content y; x ja:content z"
-                + "; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'"
-                + "; z rdf:type ja:Content; z rdf:type ja:LiteralContent; z ja:literalContent '_:x\\srdf:value\\s42.'" ) );
+                + "; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17\\s.'"
+                + "; z rdf:type ja:Content; z rdf:type ja:LiteralContent; z ja:literalContent '_:x\\srdf:value\\s42\\s.'" ) );
         assertIsoModels( model( "_x rdf:value '17'xsd:integer; _y rdf:value '42'xsd:integer" ), m );
         }
     }
