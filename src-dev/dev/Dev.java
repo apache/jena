@@ -10,6 +10,7 @@ public class Dev
 {
     // Documentation
     //  Concurrency policy
+    // Ideal, B+Tree shoud be able to have different orders in leaves and branches.
     
     // Consistency - do not manage in block managers except where MRSW no safe.
     // ==> Reopenable

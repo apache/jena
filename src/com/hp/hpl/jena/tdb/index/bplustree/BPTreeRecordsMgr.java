@@ -12,7 +12,7 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 
 /** Bridge for making, getting and putting BPTreeRecords over a RecordBufferPageMgr */
-final class BPTreeRecordsMgr
+final public class BPTreeRecordsMgr
 {
     private BPlusTree bpTree ;
     private RecordBufferPageMgr rBuffPageMgr ;
@@ -59,7 +59,7 @@ final class BPTreeRecordsMgr
         return bRec ;
     }
     
-    BlockMgr getBlockMgr() { return rBuffPageMgr.getBlockMgr() ; }
+    public BlockMgr getBlockMgr() { return rBuffPageMgr.getBlockMgr() ; }
 
     public void dump()
     {

@@ -200,8 +200,10 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
 
     BPlusTreeParams getParams()     { return bpTreeParams ; } 
 
-    BPTreeNodeMgr getNodeManager()          { return nodeManager ; }
-    BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
+    /** Only use for careful manipulation of structures */
+    public BPTreeNodeMgr getNodeManager()          { return nodeManager ; }
+    /** Only use for careful manipulation of structures */
+    public BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
     
     public RecordFactory getRecordFactory()
     {
