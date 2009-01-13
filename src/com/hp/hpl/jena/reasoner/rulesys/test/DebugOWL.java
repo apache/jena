@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.35 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: DebugOWL.java,v 1.36 2009-01-13 13:22:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.oldCode.*;
 import com.hp.hpl.jena.shared.WrappedIOException;
 //import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
@@ -33,7 +32,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.36 $ on $Date: 2009-01-13 13:22:49 $
  */
 public class DebugOWL {
 
@@ -110,12 +109,7 @@ public class DebugOWL {
                 reasoner = OWLFBRuleReasonerFactory.theInstance().create(null);
 //                ((OWLFBRuleReasoner)reasoner).setTraceOn(true);
                 break;
-            
-            case OWL:
-                reasoner = OWLRuleReasonerFactory.theInstance().create(null);
-//                ((OWLRuleReasoner)reasoner).setTraceOn(true);
-                break;
-            
+                        
             case RDFSFB:
                 reasoner = RDFSFBRuleReasonerFactory.theInstance().create(null);
                 break;
@@ -123,12 +117,7 @@ public class DebugOWL {
             case RDFSFinal:
                 reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
                 break;
-            
-            case OWLExpt:
-                reasoner = OWLExptRuleReasonerFactory.theInstance().create(null);
-//                ((OWLExptRuleReasoner)reasoner).setTraceOn(true);
-                break;
-            
+                        
             case RDFSLPExpt:
                 try {
                     List rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules"));

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.31 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: Util.java,v 1.32 2009-01-13 13:22:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.32 $ on $Date: 2009-01-13 13:22:48 $
  */
 public class Util {
 
@@ -211,15 +211,6 @@ public class Util {
         } else {
             return RDF.Nodes.nil;
         }
-    }
-    
-    /**
-     * Open a resource file and read it all into a single string.
-     * Treats lines starting with # as comment lines, as per stringFromReader.
-     * @deprecated Use loadRuleParserFromResourceFile
-     */
-    public static String loadResourceFile( String filename ) {
-        return Rule.rulesStringFromReader( FileUtils.openResourceFile( filename ) );
     }
     
     /**

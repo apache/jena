@@ -8,7 +8,8 @@ Reasoners:
    o Extended validity checking for OWL configurations to include 
      datatype range checking that can cope with user datatypes as done for RDFS.
      Places the culprit Triple as the ValidityReport.Report extension value.
-
+   o Removed deprecated reasoners (RDFS1, RDFSExpt, OWLExpt) and associated support.
+     
 N3:
    o N3 parser is now the Trutle parser.
      The dialect of N3 that Jena supported (which is quite old) has some idioms that are not legal

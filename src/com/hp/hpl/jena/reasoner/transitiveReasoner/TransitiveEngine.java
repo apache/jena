@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.13 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: TransitiveEngine.java,v 1.14 2009-01-13 13:22:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-13 13:22:49 $
  */
 public class TransitiveEngine {
     
@@ -291,10 +291,6 @@ public class TransitiveEngine {
         return checkOccuranceUtility(prop, graph, subPropertyCache);
     }
 
-// ----------------------------------------------------------------------------
-// Global helper routines, maintined in this for just to suppor the (now deprecated)
-// rdfs1 reasoner.
-    
     /**
      * Caches all subClass declarations, including those that
      * are defined via subProperties of subClassOf. Public to allow other reasoners
@@ -337,7 +333,7 @@ public class TransitiveEngine {
      * @param spCache the subPropertyOf cache to use
      * @return true if there is a triple using prop or one of its sub properties
      */
-    public static boolean checkOccuranceUtility(Node prop, Graph graph, TransitiveGraphCache spCache) {
+    private static boolean checkOccuranceUtility(Node prop, Graph graph, TransitiveGraphCache spCache) {
         boolean foundOne = false;
         ExtendedIterator uses  = graph.find( null, prop, null );
         foundOne = uses.hasNext();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.19 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestRDFSReasoners.java,v 1.20 2009-01-13 13:22:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2008-12-28 19:32:22 $
+ * @version $Revision: 1.20 $ on $Date: 2009-01-13 13:22:49 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
@@ -52,10 +52,6 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         try {
-            // Even though it is deprecated, maintain the tests for now
-//            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
-//            constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
-
             // FB reasoner doesn't support validation so the full set of wg tests are
             // commented out            
 //            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);

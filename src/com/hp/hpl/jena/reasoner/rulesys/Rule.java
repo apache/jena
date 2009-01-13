@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.50 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.51 2009-01-13 13:22:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -66,7 +66,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.50 $ on $Date: 2008-12-28 19:32:09 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.51 $ on $Date: 2009-01-13 13:22:48 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -467,28 +467,7 @@ public class Rule implements ClauseEntry {
         catch (WrappedIOException e)
             { throw new RulesetNotFoundException( uri ); }
     }
-    
-    /**
-    Answer a String which is the concatenation (with newline glue) of all the
-    non-comment lines readable from <code>src</code>. A comment line is
-    one starting "#" or "//".
-    @deprecated Use rulesParserFromReader
-    */
-    public static String rulesStringFromReader( BufferedReader src ) {
-       try {
-           StringBuffer result = new StringBuffer();
-           String line;
-           while ((line = src.readLine()) != null) {
-               if (line.startsWith( "#" ) || line.startsWith( "//" )) continue;     // Skip comment lines
-               result.append( line );
-               result.append( "\n" );
-           }
-           return result.toString();
-       }
-       catch (IOException e) 
-           { throw new WrappedIOException( e ); }
-   }
-    
+        
     /**
      * Processes the source reader stripping off comment lines and noting prefix
      * definitions (@prefix) and rule inclusion commands (@include).

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.25 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestRDFSRules.java,v 1.26 2009-01-13 13:22:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -31,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.25 $ on $Date: 2008-12-28 19:32:00 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.26 $ on $Date: 2009-01-13 13:22:49 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -121,37 +120,7 @@ public class TestRDFSRules extends TestCase {
 //        }
 //        t2 = System.currentTimeMillis();
 //        System.out.println(name + ": " + count + " results in " + (t2-t1)/10 +"ms");
-    }
-    
-    /**
-     * Simple timing test used to just a broad feel for how performance of the
-     * pure FPS rules compares with the hand-crafted version.
-     * The test ontology and data is very small. The test query is designed to
-     * require an interesting fraction of the inferences to be made but not all of them.
-     * The bigger the query the more advantage the FPS (which eagerly computes everything)
-     * would have over the normal approach.
-     */
-    public static void main(String[] args) {
-        try {
-            Model tbox = FileManager.get().loadModel("testing/reasoners/rdfs/timing-tbox.rdf");
-            Model data = FileManager.get().loadModel("testing/reasoners/rdfs/timing-data.rdf");
-            Reasoner rdfsFBRule = RDFSFBRuleReasonerFactory.theInstance().create(null);
-            Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
-            Reasoner rdfsFinal    = RDFSRuleReasonerFactory.theInstance().create(null);
-        
-            doTiming(rdfs1, tbox, data, "RDFS1", 1);    
-            doTiming(rdfsFBRule, tbox, data, "RDFS FB rule", 1);    
-            doTiming(rdfsFinal, tbox, data, "RDFS final rule", 1);    
-            doTiming(rdfs1, tbox, data, "RDFS1", 50);    
-            doTiming(rdfsFBRule, tbox, data, "RDFS FB rule", 50);    
-            doTiming(rdfsFinal, tbox, data, "RDFS final rule", 50);    
- 
-        } catch (Exception e) {
-            System.out.println("Problem: " + e.toString());
-            e.printStackTrace();
-        }
-    }
-    
+    }    
 }
 
 /*

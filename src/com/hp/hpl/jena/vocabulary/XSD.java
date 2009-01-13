@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSD.java,v 1.14 2008-12-28 19:32:07 andy_seaborne Exp $
+ * $Id: XSD.java,v 1.15 2009-01-13 13:22:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,21 +18,14 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
  * the XSD primitive datatypes which are known to Jena. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:07 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-13 13:22:49 $
  */
-public class XSD {
-    /** 
-     * The XSD namespace. This is the real XML Schema namespace
-     * and so lacks the RDF-friendly # character. 
-     * @deprecated in order to transition to RDF-friendly version replaced by {@link #getURI()}
-     */
-    public static String NS = XSDDatatype.XSD;
-    
+public class XSD {    
     /**
      * The RDF-friendly version of the XSD namespace
      * with trailing # character.
      */
-    public static String getURI() { return NS + "#"; }
+    public static String getURI() { return XSDDatatype.XSD + "#"; }
     
     /** Resource URI for xsd:float */
     public static Resource xfloat;
