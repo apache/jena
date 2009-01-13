@@ -9,7 +9,18 @@ Reasoners:
      datatype range checking that can cope with user datatypes as done for RDFS.
      Places the culprit Triple as the ValidityReport.Report extension value.
    o Removed deprecated reasoners (RDFS1, RDFSExpt, OWLExpt) and associated support.
-     
+
+JenaModelSpec:
+   o This long-deprecated vocabulary (which supported the old ModelSpec system)
+     has been removed. ModelSpec was replaced by Assembler long ago.
+
+   o some Maker methods that implicitly relied on this vocabulary (but which
+     had not been deprecated) have also been removed. This affects GraphMaker,
+     SimpleGraphMaker, BaseGraphMaker, and ModelMakerImpl: the methods used
+     were getMakerClass, augmentDescription, addDescription, and
+     getDescription. These methods were only relevant to uses of the old
+     ModelSpec system, which was removed in previous releases.
+
 N3:
    o N3 parser is now the Trutle parser.
      The dialect of N3 that Jena supported (which is quite old) has some idioms that are not legal
