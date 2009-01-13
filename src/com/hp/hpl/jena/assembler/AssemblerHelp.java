@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.24 2008-12-28 19:31:54 andy_seaborne Exp $
+ $Id: AssemblerHelp.java,v 1.25 2009-01-13 14:05:58 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -80,13 +80,6 @@ public class AssemblerHelp
         StmtIterator it = m.listStatements( null, JA.loadClass, ANY );
         while (it.hasNext()) loadArbitraryClass( g, it.nextStatement() );        
         }
-    
-    /**
-        @deprecated Use <code>loadAssemblerClasses</code> instead
-            (since it's explicit in what kinds of classes it loads).
-    */
-    public static void loadClasses( AssemblerGroup group, Model m )
-        { loadAssemblerClasses( group, m ); }
     
     /**
          Load all the classes which are objects of any (t, ja:assembler, S) statements 
@@ -201,7 +194,6 @@ public class AssemblerHelp
     */
     public static Set findSpecificTypes( Resource root, Resource baseType )
         {
-        Model desc = root.getModel();
         List types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
         Set results = new HashSet();
         for (int i = 0; i < types.size(); i += 1)

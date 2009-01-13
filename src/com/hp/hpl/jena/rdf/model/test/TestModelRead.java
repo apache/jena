@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestModelRead.java,v 1.15 2009-01-13 14:06:00 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -80,7 +80,7 @@ public class TestModelRead extends ModelTestBase
         String fn = IRIResolver.resolveFileURL("file:testing/modelReading/based.n3" );
         Model wanted = 
             ModelFactory.createDefaultModel()
-            .add( resource( fn ), property( "jms:predicate" ), resource( "jms:object" ) );
+            .add( resource( fn ), property( "ja:predicate" ), resource( "ja:object" ) );
         mBasedImplicit.read( fn, "N3" );
         assertIsoModels( wanted, mBasedImplicit );
         }
@@ -89,7 +89,7 @@ public class TestModelRead extends ModelTestBase
         {
         Model mBasedExplicit = ModelFactory.createDefaultModel();
         mBasedExplicit.read( "file:testing/modelReading/based.n3", "http://example/", "N3" );
-        assertIsoModels( modelWithStatements( "http://example/ jms:predicate jms:object" ), mBasedExplicit );
+        assertIsoModels( modelWithStatements( "http://example/ ja:predicate ja:object" ), mBasedExplicit );
         }
     
     public void testDefaultLangXML()

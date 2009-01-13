@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.27 2008-12-28 19:32:21 andy_seaborne Exp $
+  $Id: GraphRDBMaker.java,v 1.28 2009-01-13 14:05:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 import java.rmi.server.UID;
 import java.util.*;
@@ -43,20 +42,6 @@ public class GraphRDBMaker extends BaseGraphMaker
         this.c = c; 
         this.reificationStyle = GraphRDB.styleRDB( style );
         }
-
-    /**
-        Answer the RDFS class of this RDB GraphMaker
-        @return JenaModelSpec.RDBMakerClass [as node]
-    */
-    public Node getMakerClass()
-        { return JenaModelSpec.RDBMakerSpec.asNode(); }
-        
-    /**
-        Augment the maker description of this maker with RDB-specific properties.
-        TODO do this
-    */     
-    protected void augmentDescription( Graph g, Node self )
-        {}
         
     /**
         Answer the default graph of this Maker; make it if necessary.

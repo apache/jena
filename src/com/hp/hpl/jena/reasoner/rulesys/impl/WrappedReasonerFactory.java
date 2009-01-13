@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReasonerFactory.java,v 1.10 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: WrappedReasonerFactory.java,v 1.11 2009-01-13 14:05:59 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.JenaModelSpec;
 
 /**
     WrappedReasonerFactory - a wrapper round ReasonerFactories that
@@ -37,10 +36,17 @@ public final class WrappedReasonerFactory implements ReasonerFactory
     public Reasoner create( Resource ignored )
         { Reasoner result = factory.create( config );
         return schemaUnion.isEmpty() ? result : result.bindSchema( schemaUnion ); }
+
+    public static final Property schemaURL = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2003/08/jms#schemaURL" );
     
     private static Model loadSchemas( Model schema, Resource R )
         {
-        StmtIterator schemas = R.listProperties( JenaModelSpec.schemaURL );
+        StmtIterator schemas = R.listProperties( schemaURL );
+        if (schemas.hasNext())
+            {
+            System.err.println( "WARNING: detected obsolete use of jms:schemaURL when wrapping a reasoner factory" );
+            System.err.println( "  This will fail to work in the next release of Jena" );
+            }
         while (schemas.hasNext())
             {
             Statement s = schemas.nextStatement();

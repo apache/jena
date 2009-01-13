@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestGenericRuleReasonerConfig.java,v 1.6 2008-12-28 19:32:00 andy_seaborne Exp $
+ 	$Id: TestGenericRuleReasonerConfig.java,v 1.7 2009-01-13 14:05:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -32,7 +32,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     
     public void testLoadsSingleRuleSetViaURL()
         { 
-        testLoadsSingleRuleViaURL( "jms" );
+//        testLoadsSingleRuleViaURL( "jms" );
         testLoadsSingleRuleViaURL( "jr" );
         }
 
@@ -47,7 +47,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     
     public void testLoadsSingleRuleFromString()
         { 
-        testLoadsSingleRuleFromString( "jms" );
+//        testLoadsSingleRuleFromString( "jms" );
         testLoadsSingleRuleFromString( "jr" );
         }
 
@@ -62,7 +62,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     
     public void testLoadsSingleRuleViaRuleSetStringString()
         { 
-        testLoadsRulesViaRuleSetStrings( "jms" );
+//        testLoadsRulesViaRuleSetStrings( "jms" );
         testLoadsRulesViaRuleSetStrings( "jr" );
         }
 
@@ -83,7 +83,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     
     public void testLoadsMultipleRuleSetsViaRuleSetNode()
         {
-        testLoadsMultipleRuleSetsViaRuleSetNode( "jms" );
+//        testLoadsMultipleRuleSetsViaRuleSetNode( "jms" );
         testLoadsMultipleRuleSetsViaRuleSetNode( "jr" );
         }
 

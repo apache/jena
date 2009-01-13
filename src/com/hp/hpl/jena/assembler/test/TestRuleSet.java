@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRuleSet.java,v 1.5 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestRuleSet.java,v 1.6 2009-01-13 14:05:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -57,6 +57,19 @@ public class TestRuleSet extends AssemblerTestBase
         String ruleString = "[(?a P b) -> (?a rdf:type T)]";
         RuleSet s = RuleSet.create( ruleString );
         assertEquals( Rule.parseRules( ruleString ), s.getRules() );
+        }
+    
+    public void testHashAndEquality()
+        {
+        String A = "[(?x breaks ?y) -> (?y brokenBy ?x)]";
+        String B = "[(?a Q b) -> (?a rdf:type U)]";
+        RuleSet rsA = RuleSet.create( A ), rsA2 = RuleSet.create( A );
+        RuleSet rsB = RuleSet.create( B );
+        assertEquals( rsA.getRules(), rsA2.getRules() );
+        assertEquals( rsA, rsA2 );
+        assertDiffer( rsA, rsB );
+        assertEquals( rsA.hashCode(), rsA2.hashCode() );
+        assertFalse( rsA.hashCode() == rsB.hashCode() );
         }
     }
 

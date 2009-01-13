@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.39 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: PrefixMapping.java,v 1.40 2009-01-13 14:05:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -198,7 +198,6 @@ public interface PrefixMapping
         .setNsPrefix( "daml", DAMLVocabulary.NAMESPACE_DAML_2001_03_URI )
         .setNsPrefix( "rss", RSS.getURI() )
         .setNsPrefix( "vcard", VCARD.getURI() )
-        .setNsPrefix( "jms", JenaModelSpec.getURI() )
         .setNsPrefix( "ja", JA.getURI() )
         .setNsPrefix( "eg", "http://www.example.org/" )
         .lock()

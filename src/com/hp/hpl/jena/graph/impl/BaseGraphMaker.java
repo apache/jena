@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.20 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: BaseGraphMaker.java,v 1.21 2009-01-13 14:05:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 /**
     This base class provides convenience functions for the three "usual" graph
@@ -71,45 +70,6 @@ public abstract class BaseGraphMaker implements GraphMaker
     public Graph openGraph( String name )
         { return openGraph( name, false ); }
 
-        
-    /**
-        Answer an RDF specification of this GraphMaker, adequate to constructing one
-        just like it.
-        
-        @return a Graph describing the Maker using the JenaModelSpec vocabulary.
-    */
-    public Graph getDescription()
-        { return getDescription( Node.createAnon() ); }
-        
-    public Graph getDescription( Node root )
-        {
-        Graph result = Factory.createGraphMem();
-        addDescription( result, root );
-        return result;     
-        }
-                
-    public Graph addDescription( Graph desc, Node self )
-        {
-        Node mode = JenaModelSpec.styleAsJMS( style ); 
-        desc.add( Triple.create( self, JenaModelSpec.reificationMode.asNode(), mode ) );
-        desc.add( Triple.create( self, RDF.Nodes.type, getMakerClass() ) );
-        augmentDescription( desc, self );    
-        return desc;
-        }
-
-    /**
-        Update the graph g with any other descriptive information for this GraphMaker.
-        @param d the description to be augmented
-        @param self the node that represents this GraphMaker
-    */
-    protected abstract void augmentDescription( Graph d, Node self );
-        
-    /**
-        Answer the Class node for this GraphMaker's description.
-        
-        @return a URI node which is some RDFS subclass of MakerSpec
-    */
-    public abstract Node getMakerClass();
     }
 
 

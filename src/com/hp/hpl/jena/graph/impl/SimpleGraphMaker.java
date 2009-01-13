@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.19 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: SimpleGraphMaker.java,v 1.20 2009-01-13 14:05:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
@@ -35,19 +34,6 @@ public class SimpleGraphMaker extends BaseGraphMaker
     */ 
     public SimpleGraphMaker()
         { this( ReificationStyle.Minimal ); }
-       
-    /**
-        Answer the RDFS class of this Maker
-        @return JenaModelSpec.MemMakerClass [as node]
-    */ 
-    public Node getMakerClass()
-        { return JenaModelSpec.MemMakerSpec.asNode(); }
-       
-    /**
-        Augment the general description of a GraphMaker with any Simple triples [ie none]
-    */ 
-    protected void augmentDescription( Graph d, Node self )
-        {}
     
     /**
         The mapping from the names of graphs to the Graphs themselves.
