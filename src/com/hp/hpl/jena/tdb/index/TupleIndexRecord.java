@@ -210,8 +210,9 @@ public final class TupleIndexRecord implements TupleIndex
                 // Check on pattern
                 for ( int i = 0 ; i < tupleLength ; i++ )
                 {
-                    // The pattern must be null or match the tuple being tested.
-                    if ( pattern.get(i) != null )
+                    NodeId n = pattern.get(i) ;
+                    // The pattern must be null/Any or match the tuple being tested.
+                    if ( n != null && n != NodeId.NodeIdAny )
                         if ( ! item.get(i).equals(pattern.get(i)) ) 
                             return false ;
                 }

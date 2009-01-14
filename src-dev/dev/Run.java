@@ -10,22 +10,27 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
@@ -35,13 +40,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.tdb.store.*;
 
 import dev.opt.TransformIndexJoin;
 
@@ -69,31 +68,31 @@ public class Run
             model.close() ;
             ds.close() ;
             
-            //tdb.tdbdump.main("--loc=DB", "--format=RDF/XML") ;
-            ds = TDBFactory.createDataset("DB") ;
-            model = ds.getDefaultModel() ;
-            
-            // This flushes thing into the cache.
-            
-            // Has only a GPU index - is the scan failing?
-            // SCAN FAILING
-            //   And why is this not tested?
-            //   For prefix mapping?
-            //   For tuple tables?
-            // Check SDB
-            
-            
+            tdb.tdbdump.main("--loc=DB", "--format=RDF/XML-ABBREV") ;
+//            ds = TDBFactory.createDataset("DB") ;
+//            model = ds.getDefaultModel() ;
+//            
+//            // This flushes thing into the cache.
+//            
+//            // Has only a GPU index - is the scan failing?
+//            // SCAN FAILING
+//            //   And why is this not tested?
+//            //   For prefix mapping?
+//            //   For tuple tables?
+//            // Check SDB
+//            
+//            
 //            Map<String, String> m = model.getNsPrefixMap() ;
 //            for ( Entry<String, String> e : m.entrySet() )
 //            {
 //                System.out.printf("'%s' -> '%s'\n", e.getKey(), e.getValue()) ;
 //            }
-            
-            // and without the flush, this fails.
-            String prefix = model.getNsURIPrefix("http://example/") ;
-            System.out.println("<< "+prefix) ;
-            if ( prefix == null )
-                System.out.println("NULL") ;
+//            
+//            // and without the flush, this fails.
+//            String prefix = model.getNsURIPrefix("http://example/") ;
+//            System.out.println("<< "+prefix) ;
+//            if ( prefix == null )
+//                System.out.println("NULL") ;
             System.out.println("<< END") ;
             System.exit(0) ;
         }

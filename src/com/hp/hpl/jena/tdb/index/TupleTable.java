@@ -96,6 +96,12 @@ public class TupleTable implements Sync, Closeable
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
+//        for ( NodeId n : pattern.tuple() )
+//        {
+//            if ( n == null )
+//                log.warn("find(Tuple<NodeId> pattern): Null found: "+pattern) ;
+//        }
+        
         if ( tupleLen != pattern.size() )
             throw new TDBException(String.format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), tupleLen)) ;
         

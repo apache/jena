@@ -43,6 +43,14 @@ public class TestTupleTable extends BaseTest
         return table ;
     }
     
+    static private TupleTable create2()
+    {
+        TupleIndex idxSPO = TestTupleIndexRecord.create("SPO") ;
+        TupleIndex x[] = { idxSPO } ;
+        TupleTable table = new TupleTable(3, x) ;
+        return table ;
+    }
+    
     static void add(TupleTable table, NodeId x1, NodeId x2, NodeId x3)
     {
         Tuple<NodeId> tuple = Tuple.create(x1, x2, x3) ;
@@ -83,6 +91,61 @@ public class TestTupleTable extends BaseTest
         assertEquals(Tuple.create(n1, n2, n3) , e1) ;
         assertEquals(Tuple.create(n1, n2, n4) , e2) ;
     }
+    
+    @Test public void createFind3()
+    { 
+        // test scan
+        TupleTable table = create2() ;
+        add(table, n1, n2, n3) ;
+        add(table, n1, n2, n4) ;
+
+        Tuple<NodeId> pat = Tuple.create(n1, null, n3) ;
+        Iterator<Tuple<NodeId>> iter = table.find(pat) ;
+        assertNotNull(iter) ;
+        List<Tuple<NodeId>> x = Iter.toList(iter) ;
+        int z = x.size() ;
+        assertEquals(1, z) ;
+        
+        Tuple<NodeId> e1 = x.get(0) ;
+        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+    }
+    
+    @Test public void createFind4()
+    { 
+        // test scan
+        TupleTable table = create2() ;
+        add(table, n1, n2, n3) ;
+        add(table, n1, n2, n4) ;
+
+        Tuple<NodeId> pat = Tuple.create(null, null, n3) ;
+        Iterator<Tuple<NodeId>> iter = table.find(pat) ;
+        assertNotNull(iter) ;
+        List<Tuple<NodeId>> x = Iter.toList(iter) ;
+        int z = x.size() ;
+        assertEquals(1, z) ;
+        
+        Tuple<NodeId> e1 = x.get(0) ;
+        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+    }
+    
+    @Test public void createFind5()
+    { 
+        // test scan
+        TupleTable table = create2() ;
+        add(table, n1, n2, n3) ;
+        add(table, n1, n2, n4) ;
+
+        Tuple<NodeId> pat = Tuple.create(null, NodeId.NodeIdAny, n3) ;
+        Iterator<Tuple<NodeId>> iter = table.find(pat) ;
+        assertNotNull(iter) ;
+        List<Tuple<NodeId>> x = Iter.toList(iter) ;
+        int z = x.size() ;
+        assertEquals(1, z) ;
+        
+        Tuple<NodeId> e1 = x.get(0) ;
+        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+    }
+
 }
 
 /*

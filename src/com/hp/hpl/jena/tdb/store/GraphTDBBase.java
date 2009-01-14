@@ -97,7 +97,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
                 public boolean deleteAllowed( boolean every ) { return true; } 
                 public boolean canBeEmpty() { return true; }
                 public boolean iteratorRemoveAllowed() { return false; } /* ** */
-                public boolean findContractSafe() { return false; }
+                public boolean findContractSafe() { return true; }
                 public boolean handlesLiteralTyping() { return false; } /* ** */
             } ; 
         
