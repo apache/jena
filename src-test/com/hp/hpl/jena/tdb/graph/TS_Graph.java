@@ -9,10 +9,12 @@ package com.hp.hpl.jena.tdb.graph;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestReifier2.class
+    , TestPrefixMappingTDB.class
+    , TestBulkUpdateTDB.class
+
 })
 public class TS_Graph
 {

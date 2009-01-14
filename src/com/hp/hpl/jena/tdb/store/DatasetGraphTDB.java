@@ -50,7 +50,11 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     @Override
     public boolean containsGraph(Node graphNode)
     {
-        return false ;
+        NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
+        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().find(pattern) ;
+        boolean result = x.hasNext() ;
+        return result ;
     }
 
     @Override
@@ -71,25 +75,26 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     public ReorderTransformation getTransform()     { return transform ; }
     
     public DatasetPrefixes getPrefixes()            { return prefixes ; }
+
+    static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
+    {
+        @Override
+        public NodeId convert(Tuple<NodeId> item)
+        {
+            return item.get(0) ;
+        }
+    } ;
     
     @Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
-        Transform<Tuple<NodeId>, NodeId> project = new Transform<Tuple<NodeId>, NodeId>()
-        {
-            @Override
-            public NodeId convert(Tuple<NodeId> item)
-            {
-                return item.get(0) ;
-            }
-        } ;
-        Iterator<NodeId> z =  Iter.iter(x).map(project).distinct() ;
+        Iterator<NodeId> z =  Iter.iter(x).map(project0).distinct() ;
         return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
 
     @Override
-    public int size()                   { return -1 ; }
+    public int size()                   { return (int)Iter.count(listGraphNodes()) ; }
     
     public Location getLocation()       { return defaultGraph.getLocation() ; }
 

@@ -66,16 +66,16 @@ public class NodeTableBase implements NodeTable
 
     /** Get the Node for this NodeId, or null if none */
     @Override
-    public Node retrieveNodeByNodeId(NodeId id)
+    public Node getNodeForNodeId(NodeId id)
     {
         return _retrieveNodeByNodeId(id) ;
     }
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
     @Override
-    public NodeId nodeIdForNode(Node node)  { return _idForNode(node, false) ; }
+    public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
 
-    /** Find the NodeId for a node, allocating a new NodeId if th eNode does not yet have a NodeId */ 
+    /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
     @Override
     public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
 

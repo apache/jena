@@ -105,6 +105,7 @@ public class TDB
     }
     
     /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    @SuppressWarnings("unchecked")
     public static void sync(DatasetGraph dataset)
     { 
         if ( dataset instanceof DatasetGraphTDB )

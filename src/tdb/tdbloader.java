@@ -64,6 +64,7 @@ public class tdbloader extends CmdTDB
         return getCommandName()+" [--desc DATASET | -loc DIR] FILE ..." ;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {

@@ -115,7 +115,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             return n ;
         } 
         // May return NodeId.NodeDoesNotExist which must not be null. 
-        return nodeTable.nodeIdForNode(node) ;
+        return nodeTable.getNodeIdForNode(node) ;
     }
 }
 /*

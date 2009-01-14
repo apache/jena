@@ -1,73 +1,35 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package iterator;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import lib.Action;
+import io.IndentedWriter;
+import io.Printable;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-
-public class GraphTDBQueryHandler extends SimpleQueryHandler //implements QueryHandler
+public class ActionPrint <T extends Printable> implements Action<T> 
 {
-
-    public GraphTDBQueryHandler(GraphTDB graph)
+    private boolean first = true ;
+    private IndentedWriter out ;
+    private String sep ; 
+    
+    public ActionPrint(IndentedWriter out, String sep) { this.out = out ; this.sep = sep ; }
+    public ActionPrint(IndentedWriter out) { this(out, " ") ; }
+    
+    public void apply(Printable item)
     {
-        super(graph) ;
+        if ( ! first && sep != null )
+            out.print(sep) ;
+        first = false ;
+        item.output(out) ;
     }
-
-    // ----------------------
-    @Override
-    public boolean containsNode(Node n)
-    {
-        return super.containsNode(n) ;
-    }
-
-    @Override
-    public ExtendedIterator subjectsFor(Node p, Node o)
-    {
-        return super.subjectsFor(p, o) ;
-    }
-
-    @Override
-    public ExtendedIterator predicatesFor(Node s, Node o)
-    {
-        return super.predicatesFor(s, o) ;
-    }
-
-    @Override
-    public ExtendedIterator objectsFor(Node s, Node p)
-    {
-        return super.objectsFor(s, p) ;
-    }
-    // ----------------------
-
-//    @Override
-//    public Stage patternStage(Mapping map, ExpressionSet constraints, Triple[] p)
-//    {
-//        return null ;
-//    }
-//
-//    @Override
-//    public BindingQueryPlan prepareBindings(Query q, Node[] variables)
-//    {
-//        return null ;
-//    }
-//
-//    @Override
-//    public TreeQueryPlan prepareTree(Graph pattern)
-//    {
-//        return null ;
-//    }
-}
+} 
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

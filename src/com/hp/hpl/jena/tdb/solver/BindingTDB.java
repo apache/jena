@@ -88,7 +88,7 @@ public class BindingTDB extends BindingBase
             NodeId id = idBinding.get(var) ;
             if ( id == null )
                 return null ; 
-            n = nodeTable.retrieveNodeByNodeId(id) ;
+            n = nodeTable.getNodeForNodeId(id) ;
             // Update cache.
             cachePut(var, n) ;
             return n ;

@@ -81,7 +81,7 @@ public class TupleLib
         int N = ids.size() ;
         Node[] n = new Node[N] ;
         for ( int i = 0 ; i < N ; i++ )
-            n[i] = nodeTable.retrieveNodeByNodeId(ids.get(i)) ;
+            n[i] = nodeTable.getNodeForNodeId(ids.get(i)) ;
         return Tuple.create(n) ;
     }
     
@@ -90,7 +90,7 @@ public class TupleLib
         int N = nodes.size() ;
         NodeId[] n = new NodeId[N] ;
         for ( int i = 0 ; i < N ; i++ )
-            n[i] = nodeTable.nodeIdForNode(nodes.get(i)) ;
+            n[i] = nodeTable.getNodeIdForNode(nodes.get(i)) ;
             
         return Tuple.create(n) ;
     }
@@ -98,19 +98,19 @@ public class TupleLib
     @Deprecated
     public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
-        Node sNode = nodeTable.retrieveNodeByNodeId(s) ;
-        Node pNode = nodeTable.retrieveNodeByNodeId(p) ;
-        Node oNode = nodeTable.retrieveNodeByNodeId(o) ;
+        Node sNode = nodeTable.getNodeForNodeId(s) ;
+        Node pNode = nodeTable.getNodeForNodeId(p) ;
+        Node oNode = nodeTable.getNodeForNodeId(o) ;
         return new Triple(sNode, pNode, oNode) ;
     }
     
     @Deprecated
     public static Quad quad(NodeTable nodeTable, NodeId g, NodeId s, NodeId p, NodeId o) 
     {
-        Node gNode = nodeTable.retrieveNodeByNodeId(g) ;
-        Node sNode = nodeTable.retrieveNodeByNodeId(s) ;
-        Node pNode = nodeTable.retrieveNodeByNodeId(p) ;
-        Node oNode = nodeTable.retrieveNodeByNodeId(o) ;
+        Node gNode = nodeTable.getNodeForNodeId(g) ;
+        Node sNode = nodeTable.getNodeForNodeId(s) ;
+        Node pNode = nodeTable.getNodeForNodeId(p) ;
+        Node oNode = nodeTable.getNodeForNodeId(o) ;
         return new Quad(gNode, sNode, pNode, oNode) ;
     }
 

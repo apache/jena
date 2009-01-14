@@ -199,7 +199,7 @@ public class NodeLib
             @Override
             public Node convert(NodeId item)
             {
-                return nodeTable.retrieveNodeByNodeId(item) ;
+                return nodeTable.getNodeForNodeId(item) ;
             }
         }) ;
     }

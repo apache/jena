@@ -43,8 +43,6 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     , TS_Record.class
     //, TS_Base.class
     , TS_RecordFile.class
-    // Lib
-//    , TS_IO.class
     
     , TS_Index.class
     

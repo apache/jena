@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
-import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
+import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -52,7 +52,7 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 
     final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    private final GraphTDBQueryHandler queryHandler = null ;
+    private final QueryHandlerTDB queryHandler = null ;
     //private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 

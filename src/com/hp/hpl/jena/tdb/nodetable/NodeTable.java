@@ -7,15 +7,20 @@
 package com.hp.hpl.jena.tdb.nodetable;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-public interface NodeTable
+public interface NodeTable extends Sync, Closeable
 {
-    NodeId storeNode(Node node) ;               // Store the node
-    NodeId nodeIdForNode(Node node) ;           // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
+    /** Store the node in the node table (if not already present) and return the allocated Id. */
+    public NodeId storeNode(Node node) ;
+    
+    /** Look up node and return the NodeId - return NodeId.NodeDoesNotExist if not found */
+    public NodeId getNodeIdForNode(Node node) ;
+    
+    /** Look up node id and return the Node - return null if not found */
+    public Node getNodeForNodeId(NodeId id) ;
 }
 
 /*

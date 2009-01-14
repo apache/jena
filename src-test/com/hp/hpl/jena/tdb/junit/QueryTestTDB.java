@@ -64,6 +64,7 @@ public class QueryTestTDB extends EarlTestCase
         if ( dataset != null ) dataset.close() ; 
     }
     
+    @SuppressWarnings("unchecked")
     public void setupData()
     {
         List<String> current = item.getDefaultGraphURIs() ;

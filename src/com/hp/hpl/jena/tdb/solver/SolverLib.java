@@ -54,6 +54,7 @@ public class SolverLib
         }} ;
 
         /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
+    @SuppressWarnings("unchecked")
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         List<Triple> triples = pattern.getList() ;
@@ -74,6 +75,7 @@ public class SolverLib
     
     // Abstract: NodeTupleTable, Tuple generator, input, execCxt 
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
+    @SuppressWarnings("unchecked")
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         List<Triple> triples = pattern.getList() ;
@@ -115,7 +117,7 @@ public class SolverLib
                     for ( Var v : bindingNodeIds )
                     {
                         NodeId id = bindingNodeIds.get(v) ;
-                        Node n = nodeTable.retrieveNodeByNodeId(id) ;
+                        Node n = nodeTable.getNodeForNodeId(id) ;
                         b.add(v, n) ;
                     }
                     return b ;
@@ -129,6 +131,7 @@ public class SolverLib
     {
         return new Transform<Binding, BindingNodeId>()
         {
+            @SuppressWarnings("unchecked")
             @Override
             public BindingNodeId convert(Binding binding)
             {
@@ -143,7 +146,7 @@ public class SolverLib
                     Var v = vars.next() ;
                     Node n = binding.get(v) ;  
                     // Rely on the node table cache. 
-                    NodeId id = nodeTable.nodeIdForNode(n) ;
+                    NodeId id = nodeTable.getNodeIdForNode(n) ;
                     b.put(v, id) ;
                 }
                 return b ;
@@ -152,6 +155,7 @@ public class SolverLib
     }
 
     /** Turn a BasicPattern into an abbreviated string for debugging */  
+    @SuppressWarnings("unchecked")
     public static String strPattern(BasicPattern pattern)
     {
         List<Triple> triples = pattern.getList() ;

@@ -146,6 +146,7 @@ public class TestSolverTDB extends TestBase
         return SSE.parseTable(str).toResultSet() ; 
     }
     
+    @SuppressWarnings("unchecked")
     private static ResultSet exec(String pattern, Graph graph)
     {
         Op op = SSE.parseOp(pattern, pmap) ;

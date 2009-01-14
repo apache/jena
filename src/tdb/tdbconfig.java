@@ -178,6 +178,7 @@ public class tdbconfig extends CmdSub
             return "tdbconfig stats" ;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void exec()
         {

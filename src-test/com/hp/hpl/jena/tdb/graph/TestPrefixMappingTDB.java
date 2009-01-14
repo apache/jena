@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.graph;
 
 import lib.FileOps;
 import org.junit.Test;
@@ -12,7 +12,8 @@ import org.junit.Test;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.graph.TestPrefixMapping2;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.TS_Store;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
 {

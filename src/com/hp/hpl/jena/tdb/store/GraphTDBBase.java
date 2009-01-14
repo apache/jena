@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Reifier;
@@ -15,20 +16,21 @@ import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.core.Quad;
-
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB;
 import com.hp.hpl.jena.tdb.graph.GraphBase2;
-import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
-import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
+import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB;
 import com.hp.hpl.jena.tdb.graph.Reifier2;
+import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** General operations for TDB graphs (free-satnding graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
-    private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
+    private final QueryHandlerTDB queryHandler = new QueryHandlerTDB(this) ;
+    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
+    private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
     private final ReorderTransformation reorderTransform  ;
     private final Location location ;
 
@@ -81,6 +83,9 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     @Override
+    public BulkUpdateHandler getBulkUpdateHandler() {return bulkUpdateHandler ; }
+
+    @Override
     public Capabilities getCapabilities()
     {
         if ( capabilities == null )
@@ -107,6 +112,8 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     public TransactionHandler getTransactionHandler()
     { return transactionHandler ; }
     
+//    protected GraphStatisticsHandler createStatisticsHandler()
+//    { return null; }
  
 }
 

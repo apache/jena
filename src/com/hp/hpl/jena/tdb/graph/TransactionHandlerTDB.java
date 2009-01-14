@@ -1,35 +1,55 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package iterator;
+package com.hp.hpl.jena.tdb.graph;
 
-import lib.Action;
-import io.IndentedWriter;
-import io.Printable;
+import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
 
-public class PrintAction <T extends Printable> implements Action<T> 
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+
+/** TDB does not support ACID transactions - it uses the SPARQL/Update events.  
+ *  It (weakly) flushes if commit is called although it denies supporting transactions
+ */
+
+public class TransactionHandlerTDB extends TransactionHandlerBase //implements TransactionHandler 
 {
-    private boolean first = true ;
-    private IndentedWriter out ;
-    private String sep ; 
-    
-    public PrintAction(IndentedWriter out, String sep) { this.out = out ; this.sep = sep ; }
-    public PrintAction(IndentedWriter out) { this(out, " ") ; }
-    
-    public void apply(Printable item)
+    private final GraphTDB graph ;
+
+    public TransactionHandlerTDB(GraphTDB graph)
     {
-        if ( ! first && sep != null )
-            out.print(sep) ;
-        first = false ;
-        item.output(out) ;
+        this.graph = graph ;
     }
-} 
+    
+    @Override
+    public void abort()
+    {
+        throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
+        //log.warn("'Abort' of a transaction not supported - ignored") ;
+    }
+
+    @Override
+    public void begin()
+    {}
+
+    @Override
+    public void commit()
+    {
+        graph.sync(true) ;
+    }
+    
+
+    @Override
+    public boolean transactionsSupported()
+    {
+        return false ;
+    }
+}
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

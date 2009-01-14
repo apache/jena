@@ -146,7 +146,7 @@ public class StatsCollector
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         for ( NodeId p : predicateIds.keySet() )
         {
-            Node n = nodeTable.retrieveNodeByNodeId(p) ;
+            Node n = nodeTable.getNodeForNodeId(p) ;
             
             // Skip these - they just clog things up!
             if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )

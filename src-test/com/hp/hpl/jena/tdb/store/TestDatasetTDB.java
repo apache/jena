@@ -6,20 +6,27 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import iterator.Iter;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import test.BaseTest;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.sse.SSE;
-
 import com.hp.hpl.jena.query.Dataset;
-
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
-
-import org.junit.*;
-import test.BaseTest;
 
 /** Testing the quad support for TDB */ 
 public class TestDatasetTDB extends BaseTest
@@ -79,6 +86,41 @@ public class TestDatasetTDB extends BaseTest
         g2.add(new Triple(n0,n1,n2) ) ;
         assertTrue(g2.contains(n0,n1,n2) ) ;
         assertFalse(g1.contains(n0,n1,n2) ) ;
+    }
+
+    @Test public void dataset4()
+    {
+        String graphName = "http://example/" ;
+        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+        Dataset ds = TDBFactory.createDataset() ;
+        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        // Graphs only exists if they have a triple in them
+        assertFalse(ds.containsNamedModel(graphName)) ;
+        
+        @SuppressWarnings("unchecked")
+        Iterator<String> iter = ds.listNames() ;
+        assertFalse(iter.hasNext()) ;
+        
+        assertEquals(0, ds.asDatasetGraph().size()) ;
+    }
+    
+    @Test public void dataset5()
+    {
+        String graphName = "http://example/" ;
+        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+        Dataset ds = TDBFactory.createDataset() ;
+        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        // Graphs only exists if they have a triple in them
+        g2.add(triple) ;
+        
+        assertTrue(ds.containsNamedModel(graphName)) ;
+        @SuppressWarnings("unchecked")
+        Iterator<String> iter = ds.listNames() ;
+        List<String> x = Iter.toList(iter) ;
+        List<String> y = Arrays.asList(graphName) ;
+        assertEquals(x,y) ;
+        
+        assertEquals(1, ds.asDatasetGraph().size()) ;
     }
 
 }

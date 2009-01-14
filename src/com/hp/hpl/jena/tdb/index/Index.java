@@ -31,6 +31,9 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Delete a record.  Return true if a record was actually removed */
     public boolean delete(Record record) ;
     
+//    /** Empty the index */
+//    public boolean clear() ;
+
     /** Iterate over the whole index */ 
     public Iterator<Record> iterator() ;
     

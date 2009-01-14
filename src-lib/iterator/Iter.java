@@ -277,6 +277,24 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
+    
+    /** Count the iterable - many iterable objects have a .size() operation which shoudl be used in preference to this explicit counting operation  */ 
+    public static <T> long count(Iterable<T> iterator)
+    {
+        ActionCount<T> action = new ActionCount<T>() ;
+        Iter.apply(iterator, action) ;
+        return action.getCount() ;
+    }
+
+    /** Count the iterator (this is destructive on the iterator) */ 
+    public static <T> long count(Iterator<T> iterator)
+    {
+        ActionCount<T> action = new ActionCount<T>() ;
+        Iter.apply(iterator, action) ;
+        return action.getCount() ;
+    }
+
+    
 
     // ---- String related helpers
     
@@ -359,8 +377,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter1.append(iter2) ;
     }
 
+    // ------------------------------------------------------
     // The class.
-    // Consider merging in a 
     
     private Iterator<T> iterator ;
     private Iter(Iterator<T> iterator) { this.iterator = iterator ; }
@@ -416,6 +434,14 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return new Iter<T>(Iterator2.create(iterator, iter)) ;
     }
 
+    /** Count the iterator (this is destructive on the iterator) */ 
+    public long count()
+    {
+        ActionCount<T> action = new ActionCount<T>() ;
+        apply(action) ;
+        return action.getCount() ;
+    }
+    
     public String asString() { return asString(iterator) ; }
     public String asString(String sep) { return asString(iterator, sep) ; }
     

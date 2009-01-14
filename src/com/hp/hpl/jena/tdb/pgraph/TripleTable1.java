@@ -151,7 +151,7 @@ public class TripleTable1 implements Sync, Closeable
     {
         if ( node == null || node == Node.ANY )
             return NodeId.NodeIdAny ;
-        return nodeTable.nodeIdForNode(node) ;
+        return nodeTable.getNodeIdForNode(node) ;
     }
     
     // Store node, return id.  Node may already be stored.
@@ -164,7 +164,7 @@ public class TripleTable1 implements Sync, Closeable
     
     protected final Node retrieveNode(NodeId id)
     {
-        return nodeTable.retrieveNodeByNodeId(id) ;
+        return nodeTable.getNodeForNodeId(id) ;
     }
 
     /** Find by node. */

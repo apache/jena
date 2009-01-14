@@ -20,13 +20,13 @@ public class NodeTableSink implements NodeTable
     {}
 
     @Override
-    public NodeId nodeIdForNode(Node node)
+    public NodeId getNodeIdForNode(Node node)
     {
         throw new TDBException("NodeTableSink.nodeIdForNode") ;
     }
 
     @Override
-    public Node retrieveNodeByNodeId(NodeId id)
+    public Node getNodeForNodeId(NodeId id)
     {
         throw new TDBException("NodeTableSink.retrieveNodeByNodeId") ;
     }

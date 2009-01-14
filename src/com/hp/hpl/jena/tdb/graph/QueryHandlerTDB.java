@@ -4,80 +4,66 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.graph.impl.GraphWithPerform;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
+
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+
+public class QueryHandlerTDB extends SimpleQueryHandler //implements QueryHandler
 {
 
-    /**
-     * @param graph
-     */
-    public BulkUpdateHandlerTDB(GraphWithPerform graph)
+    public QueryHandlerTDB(GraphTDB graph)
     {
         super(graph) ;
     }
-    
-//  @Override
-//  public void removeAll()
-//  {}
 
-    
-//
-//    @Override
-//    public void add(Triple[] triples)
-//    {}
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public void add(List triples)
-//    {}
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public void add(Iterator it)
-//    {}
-//
-//    @Override
-//    public void add(Graph g)
-//    {}
-//
-//    @Override
-//    public void add(Graph g, boolean withReifications)
-//    {}
-//
-//    @Override
-//    public void delete(Triple[] triples)
-//    {}
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public void delete(List triples)
-//    {}
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public void delete(Iterator it)
-//    {}
-//
-//    @Override
-//    public void delete(Graph g)
-//    {}
-//
-//    @Override
-//    public void delete(Graph g, boolean withReifications)
-//    {}
-//
-//    @Override
-//    public void remove(Node s, Node p, Node o)
-//    {}
-//
-//    @Override
-//    public void removeAll()
-//    {}
+    // ----------------------
+    @Override
+    public boolean containsNode(Node n)
+    {
+        return super.containsNode(n) ;
+    }
 
+    @Override
+    public ExtendedIterator subjectsFor(Node p, Node o)
+    {
+        return super.subjectsFor(p, o) ;
+    }
+
+    @Override
+    public ExtendedIterator predicatesFor(Node s, Node o)
+    {
+        return super.predicatesFor(s, o) ;
+    }
+
+    @Override
+    public ExtendedIterator objectsFor(Node s, Node p)
+    {
+        return super.objectsFor(s, p) ;
+    }
+    // ----------------------
+
+//    @Override
+//    public Stage patternStage(Mapping map, ExpressionSet constraints, Triple[] p)
+//    {
+//        return null ;
+//    }
+//
+//    @Override
+//    public BindingQueryPlan prepareBindings(Query q, Node[] variables)
+//    {
+//        return null ;
+//    }
+//
+//    @Override
+//    public TreeQueryPlan prepareTree(Graph pattern)
+//    {
+//        return null ;
+//    }
 }
 
 /*

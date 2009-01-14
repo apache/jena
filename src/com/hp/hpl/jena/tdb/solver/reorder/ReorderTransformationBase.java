@@ -35,6 +35,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return reorderIndexes(pattern).reorder(pattern) ;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final ReorderProc reorderIndexes(BasicPattern pattern)
     {

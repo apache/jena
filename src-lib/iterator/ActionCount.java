@@ -1,55 +1,26 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package iterator;
 
-import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
+import lib.Action;
 
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-
-/** TDB does not support ACID transactions - it uses the SPARQL/Update events.  
- *  It (weakly) flushes if commit is called although it denies supporting transactions
- */
-
-public class GraphTDBTransactionHandler extends TransactionHandlerBase //implements TransactionHandler 
+public class ActionCount<T> implements Action<T>
 {
-    private final GraphTDB graph ;
-
-    public GraphTDBTransactionHandler(GraphTDB graph)
-    {
-        this.graph = graph ;
-    }
+    private long count = 0 ;
     
     @Override
-    public void abort()
-    {
-        throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
-        //log.warn("'Abort' of a transaction not supported - ignored") ;
-    }
-
-    @Override
-    public void begin()
-    {}
-
-    @Override
-    public void commit()
-    {
-        graph.sync(true) ;
-    }
+    public void apply(T item)
+    { count++ ; }
     
-
-    @Override
-    public boolean transactionsSupported()
-    {
-        return false ;
-    }
+    public long getCount() { return count ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

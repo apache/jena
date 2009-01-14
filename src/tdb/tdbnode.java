@@ -36,6 +36,7 @@ public class tdbnode extends CmdTDB
         return getCommandName()+" NodeId ..." ;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {
@@ -54,7 +55,7 @@ public class tdbnode extends CmdTDB
             try {
                 long x = Long.parseLong(id) ;
                 NodeId nodeId = new NodeId(x) ;
-                Node n = nodeTable.retrieveNodeByNodeId(nodeId) ;
+                Node n = nodeTable.getNodeForNodeId(nodeId) ;
                 System.out.printf("%s [%d] => %s\n", id, x, n) ;
             } catch (Exception ex)
             {
