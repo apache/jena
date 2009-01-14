@@ -12,10 +12,12 @@ public class Dev
     // Where are the test cases??
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
+
+    // removeAll, listSubjects
     
     // Documentation
     //  Concurrency policy
-    // Ideally, B+Tree shoud be able to have different orders in leaves and branches.
+    // Ideal, B+Tree shoud be able to have different orders in leaves and branches.
     
     // Consistency - do not manage in block managers except where MRSW no safe.
     // ==> Reopenable
