@@ -138,6 +138,11 @@ public class TDBFactory
     public static Graph createGraph()   { return _createGraph() ; }
     
     /** Create or connect to a TDB-backed dataset */ 
+    public static Dataset createDataset(String dir)
+    { return createDataset(new Location(dir)) ; }
+    
+
+    /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)
     { return new DatasetImpl(factory.createDatasetGraph(location)) ; }
     

@@ -9,30 +9,23 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
@@ -42,7 +35,13 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
 
@@ -61,13 +60,31 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        GraphTDB g = (GraphTDB)TDBFactory.createModel().getGraph();
-        BulkLoader bLoad = new BulkLoader(g, false) ;
-        List<String> x = Arrays.asList("D.ttl") ;
-        bLoad.load(x) ;
-        System.out.println("<< END") ;
-        System.exit(0) ;
         
+        {
+            FileOps.clearDirectory("DB") ;
+            Dataset ds = TDBFactory.createDataset("DB") ;
+            Model model = ds.getDefaultModel() ;
+            FileManager.get().readModel(model, "D.ttl") ;
+            model.close() ;
+            ds.close() ;
+            
+            //tdb.tdbdump.main("--loc=DB", "--format=RDF/XML") ;
+            ds = TDBFactory.createDataset("DB") ;
+            model = ds.getDefaultModel() ;
+            Map<String, String> m = model.getNsPrefixMap() ;
+            for ( Entry<String, String> e : m.entrySet() )
+            {
+                System.out.printf("'%s' -> '%s'\n", e.getKey(), e.getValue()) ;
+            }
+            
+            String prefix = model.getNsURIPrefix("http://example/") ;
+            System.out.println("<< "+prefix) ;
+            if ( prefix == null )
+                System.out.println("NULL") ;
+            System.out.println("<< END") ;
+            System.exit(0) ;
+        }
         
         
         
