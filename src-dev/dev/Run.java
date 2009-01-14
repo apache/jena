@@ -72,11 +72,11 @@ public class Run
             //tdb.tdbdump.main("--loc=DB", "--format=RDF/XML") ;
             ds = TDBFactory.createDataset("DB") ;
             model = ds.getDefaultModel() ;
-            Map<String, String> m = model.getNsPrefixMap() ;
-            for ( Entry<String, String> e : m.entrySet() )
-            {
-                System.out.printf("'%s' -> '%s'\n", e.getKey(), e.getValue()) ;
-            }
+//            Map<String, String> m = model.getNsPrefixMap() ;
+//            for ( Entry<String, String> e : m.entrySet() )
+//            {
+//                System.out.printf("'%s' -> '%s'\n", e.getKey(), e.getValue()) ;
+//            }
             
             String prefix = model.getNsURIPrefix("http://example/") ;
             System.out.println("<< "+prefix) ;

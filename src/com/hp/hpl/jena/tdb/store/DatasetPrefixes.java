@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.store;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import lib.ColumnMap;
 import lib.Tuple;
@@ -16,6 +17,8 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -70,6 +73,8 @@ public class DatasetPrefixes implements Closeable, Sync
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
         Node u = Node.createURI(uri) ;
+        
+        System.out.printf("Insert: %s %s %s\n", FmtUtils.stringForNode(g), FmtUtils.stringForNode(p), FmtUtils.stringForNode(u)) ; 
         nodeTupleTable.addRow(g,p,u) ;
     }
 
@@ -91,6 +96,19 @@ public class DatasetPrefixes implements Closeable, Sync
             return null ;
         Node uri = iter.next().get(2) ;
         return uri.getURI() ; 
+    }
+
+    public synchronized String readByURI(String graphName, String uriStr)
+    {
+        System.out.printf("readByURI: %s %s\n", graphName, uriStr) ; 
+        Node g = Node.createURI(graphName) ; 
+        Node u = Node.createURI(uriStr) ; 
+        System.out.printf("readByURI: %s %s\n", FmtUtils.stringForNode(g), FmtUtils.stringForNode(u)) ;
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
+        if ( ! iter.hasNext() )
+            return null ;
+        Node prefix = iter.next().get(1) ;
+        return prefix.getLiteralLexicalForm()  ;
     }
 
     public synchronized Map<String, String> readPrefixMap(String graphName)
@@ -153,16 +171,39 @@ public class DatasetPrefixes implements Closeable, Sync
     // A view of the table.
     class Projection extends PrefixMappingImpl
     {
+        // Own cache and complete replace  PrefixMappingImpl?
+        
         private String graphName ; 
         Projection(String graphName) { this.graphName = graphName ; }
 
+//        @Override
+//        protected void regenerateReverseMapping() {}
+
+        @Override
+        public String getNsURIPrefix( String uri )
+        {
+            String x = super.getNsURIPrefix(uri) ;
+            if ( x !=  null )
+                return x ;
+            // Do a reverse read.
+            x = readByURI(graphName, uri) ;
+            if ( x != null )
+                super.set(x, uri) ;
+            return x ;
+        }
+        
+        
         @Override 
         public Map<String, String> getNsPrefixMap()
         {
-            return readPrefixMap(graphName) ;
-            //return super.getNsPrefixMap() ;
+            Map<String, String> m =  readPrefixMap(graphName) ;
+            // Force into the cache.
+            for ( Entry<String, String> e : m.entrySet() ) 
+                super.set(e.getKey(), e.getValue()) ;
+            return m ;
         }
 
+        
         @Override
         protected void set(String prefix, String uri)
         {
@@ -177,7 +218,9 @@ public class DatasetPrefixes implements Closeable, Sync
             if ( x !=  null )
                 return x ;
             // In case it has been updated.
-            return readPrefix(graphName, prefix) ;
+            x = readPrefix(graphName, prefix) ;
+            super.set(prefix, x) ;
+            return x ;
         }
 
         @Override
