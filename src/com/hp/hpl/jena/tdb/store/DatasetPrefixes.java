@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import lib.ColumnMap;
@@ -15,11 +19,7 @@ import lib.Tuple;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -38,7 +38,6 @@ public class DatasetPrefixes implements Closeable, Sync
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-    
     public DatasetPrefixes(Location location)
     {
         this(IndexBuilder.get(), location) ;
@@ -73,8 +72,7 @@ public class DatasetPrefixes implements Closeable, Sync
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
         Node u = Node.createURI(uri) ;
-        
-        System.out.printf("Insert: %s %s %s\n", FmtUtils.stringForNode(g), FmtUtils.stringForNode(p), FmtUtils.stringForNode(u)) ; 
+
         nodeTupleTable.addRow(g,p,u) ;
     }
 
@@ -100,10 +98,9 @@ public class DatasetPrefixes implements Closeable, Sync
 
     public synchronized String readByURI(String graphName, String uriStr)
     {
-        System.out.printf("readByURI: %s %s\n", graphName, uriStr) ; 
         Node g = Node.createURI(graphName) ; 
         Node u = Node.createURI(uriStr) ; 
-        System.out.printf("readByURI: %s %s\n", FmtUtils.stringForNode(g), FmtUtils.stringForNode(u)) ;
+        // XXX Failing ?????
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
         if ( ! iter.hasNext() )
             return null ;
@@ -169,6 +166,7 @@ public class DatasetPrefixes implements Closeable, Sync
     { return new Projection(graphName) ; }
     
     // A view of the table.
+    // Manages the PrefixMappingImpl cache as well.
     class Projection extends PrefixMappingImpl
     {
         // Own cache and complete replace  PrefixMappingImpl?
@@ -197,7 +195,7 @@ public class DatasetPrefixes implements Closeable, Sync
         public Map<String, String> getNsPrefixMap()
         {
             Map<String, String> m =  readPrefixMap(graphName) ;
-            // Force into the cache.
+            // Force into the cache
             for ( Entry<String, String> e : m.entrySet() ) 
                 super.set(e.getKey(), e.getValue()) ;
             return m ;
