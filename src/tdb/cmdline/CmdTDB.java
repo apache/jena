@@ -31,7 +31,7 @@ public abstract class CmdTDB extends CmdARQ
     {
         super(argv) ;
         init() ;
-        super.add(argNamedGraph, "--graph=IRI", "Load a named graph") ;
+        super.add(argNamedGraph, "--graph=IRI", "Act on a named graph") ;
         super.addModule(tdbDatasetAssembler) ;
         super.modVersion.addClass(TDB.class) ;
     }

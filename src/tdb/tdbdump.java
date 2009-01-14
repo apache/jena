@@ -9,7 +9,6 @@ package tdb;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
 import arq.cmd.CmdUtils;
-import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -17,9 +16,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class tdbdump extends CmdTDB
 {
     ModFormat modFormat =  new ModFormat() ;
-    
-    // Share with TDB loader via 
-    private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     
     static public void main(String... argv)
     { 
