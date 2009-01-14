@@ -80,6 +80,7 @@ public class Run
             //   And why is this not tested?
             //   For prefix mapping?
             //   For tuple tables?
+            // Check SDB
             
             
 //            Map<String, String> m = model.getNsPrefixMap() ;
