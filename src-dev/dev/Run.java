@@ -9,6 +9,8 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import lib.FileOps;
@@ -59,6 +61,16 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        GraphTDB g = (GraphTDB)TDBFactory.createModel().getGraph();
+        BulkLoader bLoad = new BulkLoader(g, false) ;
+        List<String> x = Arrays.asList("D.ttl") ;
+        bLoad.load(x) ;
+        System.out.println("<< END") ;
+        System.exit(0) ;
+        
+        
+        
+        
         Model m = TDBFactory.createModel() ;
         FileManager.get().readModel(m, "D.ttl") ;
         m.removeAll() ;

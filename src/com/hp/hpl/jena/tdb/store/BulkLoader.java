@@ -67,6 +67,12 @@ public class BulkLoader
     private Item statsItem = null ;
     private NodeTupleTable nodeTupleTable ; 
 
+    public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
+    {
+        BulkLoader loader = new BulkLoader(graph, showProgress) ;
+        loader.load(urls) ;
+    }
+    
     public BulkLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
@@ -374,7 +380,7 @@ public class BulkLoader
     
     private static Object lock = new Object() ;
 
-    private static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
+    private void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
     {
         Timer timer = new Timer() ;
         long cumulative = 0 ;
@@ -442,18 +448,29 @@ public class BulkLoader
 
     
     // ---- Misc utilities
-    private static synchronized void printf(String fmt, Object ...args)
-    { System.out.printf(fmt, args) ; }
-    
-    private static synchronized void println()
-    { System.out.println() ; }
-    
-    private static synchronized void println(String str)
-    { System.out.println(str) ; }
-    
-    private static synchronized void now(String str)
-    { 
-        if ( str != null )
+    private synchronized void printf(String fmt, Object... args)
+    {
+        if (!showProgress) return ;
+        System.out.printf(fmt, args) ;
+    }
+
+    private synchronized void println()
+    {
+        if (!showProgress) return ;
+        System.out.println() ;
+    }
+
+    private synchronized void println(String str)
+    {
+        if (!showProgress) return ;
+        System.out.println(str) ;
+    }
+
+    private synchronized void now(String str)
+    {
+        if (!showProgress) return ;
+
+        if (str != null)
         {
             System.out.print(str) ;
             System.out.print(" : ") ;
