@@ -106,10 +106,13 @@ public class QueryTestSDB extends EarlTestCase
     { 
         if ( store != null )
         {
+            // Other databases can have problems if all are running on the same machine at the same time.
+            // e.g. running out of shared memory segments.
+            
             store.close() ;
             store.getConnection().close() ;
             // Oracle seems to async release connections (in the XE server only?)
-            if ( StoreUtils.isOracle(store))
+            if ( StoreUtils.isOracle(store) )
             {
                 try { synchronized (this) { this.wait(200) ; } }
                 catch (InterruptedException ex) { ex.printStackTrace(); }
