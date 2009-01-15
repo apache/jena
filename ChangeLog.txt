@@ -5,6 +5,20 @@ ChangeLog for TDB
 
 + Upgrade to Java5 version of ARQ.
 
+==== 0.7.1
+
+Bug fixes:
+
+- Dataset.containsNamedModel on a TDB-backed data store always returns false.
+  Now returns true if there are any triples in that graph.
+  
+- removeAll could cause an exception.
+  Known issue but coudl manifest itself in strange ways
+  Temporary fix applied - functionaly correct but may use signficiant amounts of memory.
+  
+- Persistent prefixes might not work with RDF/XML even if they did for other formats.
+  Fixed. 
+   
 ==== 0.7.0
 
 + Named graph support
@@ -16,9 +30,11 @@ ChangeLog for TDB
 + Upgrade to slf4j 1.5.6 (2 jar names change)
 
 ==== 0.6.0
+
 + Added optimizer (statistics based) 
 + (32 bit OS) Added a transaction handler that will cause cached changes
   to be flushed to disk.  This is not ACID semantics and no abort is possible.   
 
 ==== 0.5.3
+
 + Bug fixes: concurrency control for on-disk files
