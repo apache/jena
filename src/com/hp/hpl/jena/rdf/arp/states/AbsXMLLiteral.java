@@ -24,6 +24,7 @@ public abstract class AbsXMLLiteral extends Frame {
         xmlNameSpace.put("", "");
     }
 
+    @Override
     String suggestParsetypeLiteral() {
         // shouldn't be called.
         return "";
@@ -72,6 +73,7 @@ public abstract class AbsXMLLiteral extends Frame {
               ns.put(prefix, uri);
     }
 
+    @Override
     abstract public void endElement() throws SAXParseException;
 
     void startLitElement(String uri, String rawName, Map ns) {
@@ -121,6 +123,7 @@ public abstract class AbsXMLLiteral extends Frame {
       by &#xD;.  
      * @throws SAXParseException 
      */
+    @Override
     public void characters(char[] chrs, int start, int length) throws SAXParseException {
 
         if (checkComposingChar)
@@ -155,6 +158,7 @@ public abstract class AbsXMLLiteral extends Frame {
         }
     }
 
+    @Override
     public void comment(char[] ch, int start, int length) throws SAXParseException {
         append("<!--");
         append(ch,start,length);
@@ -163,6 +167,7 @@ public abstract class AbsXMLLiteral extends Frame {
         checkComposingChar = true;
     }
 
+    @Override
     public void processingInstruction(String target, String data) {
         append("<?");
         append(target);

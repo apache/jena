@@ -19,18 +19,23 @@ public class Node_ANY extends Node_Fluid
     /* package */ Node_ANY() { super( "" ); }
     
     /** Node_ANY's are only equal to other Node_ANY's */
+    @Override
     public boolean equals( Object other )
         { return other instanceof Node_ANY; }
         
+    @Override
     public Object visitWith( NodeVisitor v )
         { return v.visitAny( this ); }
         
+    @Override
     public boolean matches( Node other )
         { return other != null; }
         
+    @Override
     public String toString()
         { return "ANY"; }
     
+    @Override
     public String toString( PrefixMapping pm, boolean quoting )
         { return "ANY"; }
     }

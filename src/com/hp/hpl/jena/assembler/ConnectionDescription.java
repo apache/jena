@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionDescription.java,v 1.8 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: ConnectionDescription.java,v 1.9 2009-01-16 17:24:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -71,6 +71,7 @@ public class ConnectionDescription
         not it has already had its connection opened. 
         @see java.lang.Object#toString()
     */
+    @Override
     public String toString()
         { 
         return

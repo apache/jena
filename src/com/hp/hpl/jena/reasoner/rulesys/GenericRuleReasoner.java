@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.37 2009-01-13 14:05:59 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.38 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.37 $ on $Date: 2009-01-13 14:05:59 $
+ * @version $Revision: 1.38 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -134,6 +134,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * This will not affect inference models already created from this reasoner.
      * @param rules a list of Rule objects
      */
+    @Override
     public void setRules(List rules) {
         // Currently redunant but it will differ from the inherited
         // version in the future
@@ -198,6 +199,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         }
     }
         
+    @Override
     protected boolean doSetResourceParameter( Property parameter, Resource value )
         {
         if (isRuleSetURL( parameter )) 
@@ -257,6 +259,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
+    @Override
     protected boolean doSetParameter(Property parameter, Object value) {
         if (parameter.equals(ReasonerVocabulary.PROPenableFunctorFiltering)) {
             filterFunctors =  Util.convertBooleanPredicateArg(parameter, value);
@@ -305,6 +308,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         if (schemaGraph != null) {
             throw new ReasonerException("Can only bind one schema at a time to a GenericRuleReasoner");
@@ -348,6 +352,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         Graph schemaArg = schemaGraph == null ? getPreload() : schemaGraph;
         InfGraph graph = null; 
@@ -381,6 +386,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     /**
      * Get the single static precomputed rule closure.
      */
+    @Override
     protected synchronized InfGraph getPreload() {
         // We only support this in HYBRID mode
         if (cachePreload && preload == null && mode == HYBRID) {
@@ -416,6 +422,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             this.name = name;
         }
         
+        @Override
         public String toString() {
             return name;
         }

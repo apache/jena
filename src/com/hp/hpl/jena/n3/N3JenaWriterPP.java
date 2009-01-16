@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.25 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.26 2009-01-16 17:23:51 andy_seaborne Exp $
  */
 
 
@@ -49,7 +49,8 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     // ----------------------------------------------------
     // Prepatation stage
 
-	protected void prepare(Model model)
+	@Override
+    protected void prepare(Model model)
 	{
 		prepareLists(model) ;
 		prepareOneRefBNodes(model) ;
@@ -218,6 +219,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     
 
     
+    @Override
     protected ClosableIterator preparePropertiesForSubject(Resource r)
     {
         Set seen = new HashSet() ;
@@ -265,6 +267,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         return eIter ;
     }
     
+    @Override
     protected boolean skipThisSubject(Resource subj)
     {
         return rdfListsAll.contains(subj)   ||
@@ -279,6 +282,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
     // Before ... 
 
+    @Override
     protected void startWriting()
     {
         allocateDatastructures() ;
@@ -290,6 +294,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     //     However loops of "one ref" are possible.
     // 2 - Lists
 
+    @Override
     protected void finishWriting()
     {
         oneRefObjects.removeAll(oneRefDone);
@@ -337,6 +342,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Need to decide between one line or many.
     // Very hard to do a pretty thing here because the objects may be large or small or a mix.
 
+    @Override
     protected void writeObjectList(Resource subject, Property property)
     {
 //        if ( ! doObjectListsAsLists )
@@ -479,6 +485,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         return true ;
     }
 
+    @Override
     protected void writeObject(RDFNode node)
 	{
 		if (node instanceof Literal)

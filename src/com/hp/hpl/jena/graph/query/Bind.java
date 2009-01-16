@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Bind.java,v 1.11 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: Bind.java,v 1.12 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -27,6 +27,7 @@ public class Bind extends Element
         @param d the domain in which to note this element is bound to <code>x</code>.
         @return true [after side-effecting d]
     */		
+    @Override
     public boolean match( Domain d, Node x )
         {
         d.setElement( index, x );
@@ -36,10 +37,12 @@ public class Bind extends Element
     /**
         Answer Node.ANY, as a binding occurance of a variable can match anything.
     */
+    @Override
     public Node asNodeMatch( Domain d )
         { return Node.ANY; } 
         
-	public String toString()
+	@Override
+    public String toString()
 		{ return "<Bind " + index + ">"; }
 	}
 

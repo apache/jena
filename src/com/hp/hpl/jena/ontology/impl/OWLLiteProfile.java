@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.22 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.23 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -65,14 +65,23 @@ public class OWLLiteProfile
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public Resource DATARANGE() {                   return null; }
+    @Override
     public Resource NOTHING() {                     return null; }
+    @Override
     public Property COMPLEMENT_OF() {               return null; }
+    @Override
     public Property DISJOINT_WITH() {               return null; }
+    @Override
     public Property HAS_VALUE() {                   return null; }
+    @Override
     public Property ONE_OF() {                      return null; }
+    @Override
     public Property UNION_OF() {                    return null; }
+    @Override
     public Property SAME_AS() {                     return null; }
+    @Override
     public Property SAME_INDIVIDUAL_AS() {          return null; }
 
 
@@ -82,6 +91,7 @@ public class OWLLiteProfile
      * </p>
      * @return "OWL Lite"
      */
+    @Override
     public String getLabel() {
         return "OWL Lite";
     }
@@ -100,12 +110,14 @@ public class OWLLiteProfile
     protected static Object[][] s_supportsCheckData = new Object[][] {
             // Resource (key),              check method
             {  AllDifferent.class,          new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.AllDifferent.asNode() );
                 }
             }
             },
             {  AnnotationProperty.class,    new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     for (Iterator i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
                         if (((Resource) i.next()).asNode().equals( n )) {
@@ -118,6 +130,7 @@ public class OWLLiteProfile
             }
             },
             {  OntClass.class,              new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph eg ) {
                     Graph g = eg.asGraph();
                     Node rdfTypeNode = RDF.type.asNode();
@@ -135,12 +148,14 @@ public class OWLLiteProfile
             }
             },
             {  DatatypeProperty.class,      new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
                 }
             }
             },
             {  ObjectProperty.class,        new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) ||
@@ -150,12 +165,14 @@ public class OWLLiteProfile
             }
             },
             {  FunctionalProperty.class,    new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() );
                 }
             }
             },
             {  InverseFunctionalProperty.class, new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() ) &&
                     !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
@@ -163,6 +180,7 @@ public class OWLLiteProfile
             }
             },
             {  RDFList.class,               new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return n.equals( RDF.nil.asNode() )  ||
                     g.asGraph().contains( n, RDF.type.asNode(), RDF.List.asNode() );
@@ -170,6 +188,7 @@ public class OWLLiteProfile
             }
             },
             {  OntProperty.class,           new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
                     g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
@@ -183,18 +202,21 @@ public class OWLLiteProfile
             }
             },
             {  Ontology.class,              new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Ontology.asNode() );
                 }
             }
             },
             {  Restriction.class,           new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() );
                 }
             }
             },
             {  AllValuesFromRestriction.class,   new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g, n, OWL.allValuesFrom ) &&
@@ -203,6 +225,7 @@ public class OWLLiteProfile
             }
             },
             {  SomeValuesFromRestriction.class,   new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g,n, OWL.someValuesFrom ) &&
@@ -211,6 +234,7 @@ public class OWLLiteProfile
             }
             },
             {  CardinalityRestriction.class,   new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g, n, OWL.cardinality ) &&
@@ -219,6 +243,7 @@ public class OWLLiteProfile
             }
             },
             {  MinCardinalityRestriction.class,   new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g, n, OWL.minCardinality ) &&
@@ -227,6 +252,7 @@ public class OWLLiteProfile
             }
             },
             {  MaxCardinalityRestriction.class,   new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) &&
                     containsSome( g, n, OWL.maxCardinality ) &&
@@ -235,6 +261,7 @@ public class OWLLiteProfile
             }
             },
             {  SymmetricProperty.class,     new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) &&
                     !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
@@ -242,6 +269,7 @@ public class OWLLiteProfile
             }
             },
             {  TransitiveProperty.class,    new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
                     return g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) &&
                     !g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() );
@@ -249,6 +277,7 @@ public class OWLLiteProfile
             }
             },
             {  Individual.class,    new SupportsCheck() {
+                @Override
                 public boolean doCheck( Node n, EnhGraph eg ) {
                     if (n instanceof Node_URI || n instanceof Node_Blank) {
                         // necessary to be a uri or bNode, but not sufficient
@@ -285,6 +314,7 @@ public class OWLLiteProfile
         }
     }
 
+    @Override
     protected Map getCheckTable() {
         return s_supportsChecks;
     }

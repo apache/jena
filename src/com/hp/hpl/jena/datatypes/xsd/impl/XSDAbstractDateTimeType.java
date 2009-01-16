@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDAbstractDateTimeType.java,v 1.11 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XSDAbstractDateTimeType.java,v 1.12 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Includes support functions for parsing and comparing dates.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XSDAbstractDateTimeType extends XSDDatatype {
 
@@ -36,6 +36,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      * This ignores lang tags and just uses the java.lang.Number 
      * equality.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
        return value1.getValue().equals(value2.getValue());
     }
@@ -449,7 +450,8 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      * @param dt the currently set data type
      * @return a narrower version of the datatype based on the actual value range
       */
-     public RDFDatatype normalizeSubType(Object value, RDFDatatype dt) {
+     @Override
+    public RDFDatatype normalizeSubType(Object value, RDFDatatype dt) {
          if (value instanceof XSDDateTime) {
              if (dt.equals(XSDDatatype.XSDdateTime)) {
                  return ((XSDDateTime)value).getNarrowedDatatype();

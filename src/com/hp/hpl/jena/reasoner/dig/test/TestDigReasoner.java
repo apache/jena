@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:37 $
+ * Last modified on   $Date: 2009-01-16 17:24:01 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.29 2008-12-28 19:32:37 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.30 2009-01-16 17:24:01 andy_seaborne Exp $)
  */
 public class TestDigReasoner
     extends TestCase
@@ -95,17 +95,18 @@ public class TestDigReasoner
     }
 
 
+    @Override
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
     }
 
     public void testAxioms() {
-        DIGReasoner r = (DIGReasoner) ReasonerRegistry.getDIGReasoner();
-        DIGReasoner ro = (DIGReasoner) ReasonerRegistry.getDIGReasoner( OWL.NAMESPACE, null );
-        DIGReasoner rd = (DIGReasoner) ReasonerRegistry.getDIGReasoner( DAML_OIL.NAMESPACE_DAML, null );
-        DIGReasoner roA = (DIGReasoner) ReasonerRegistry.getDIGReasoner( OWL.NAMESPACE, true, null );
-        DIGReasoner rdA = (DIGReasoner) ReasonerRegistry.getDIGReasoner( DAML_OIL.NAMESPACE_DAML, true, null );
+        DIGReasoner r = ReasonerRegistry.getDIGReasoner();
+        DIGReasoner ro = ReasonerRegistry.getDIGReasoner( OWL.NAMESPACE, null );
+        DIGReasoner rd = ReasonerRegistry.getDIGReasoner( DAML_OIL.NAMESPACE_DAML, null );
+        DIGReasoner roA = ReasonerRegistry.getDIGReasoner( OWL.NAMESPACE, true, null );
+        DIGReasoner rdA = ReasonerRegistry.getDIGReasoner( DAML_OIL.NAMESPACE_DAML, true, null );
 
         axiomTestAux( r, OntModelSpec.OWL_MEM, false, false );
         //axiomTestAux( r, OntModelSpec.DAML_MEM, false, false );
@@ -1005,6 +1006,7 @@ public class TestDigReasoner
             m_spec = spec;
         }
 
+        @Override
         public void runTest()
             throws Exception
         {
@@ -1040,6 +1042,7 @@ public class TestDigReasoner
             m_spec = spec;
         }
 
+        @Override
         public void runTest()
             throws Exception
         {

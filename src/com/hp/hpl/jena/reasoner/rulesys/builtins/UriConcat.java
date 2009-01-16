@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UriConcat.java,v 1.3 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: UriConcat.java,v 1.4 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * the concatenation of the lexical form of all the preceeding arguments.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class UriConcat extends StrConcat {
 
@@ -28,6 +28,7 @@ public class UriConcat extends StrConcat {
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
+    @Override
     public String getName() {
         return "uriConcat";
     }
@@ -42,6 +43,7 @@ public class UriConcat extends StrConcat {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         if (length < 1) 
             throw new BuiltinException(this, context, "Must have at least 1 argument to " + getName());

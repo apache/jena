@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.112 $
+ * Revision           $Revision: 1.113 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 01:12:10 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -57,7 +57,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.112 2009-01-16 01:12:10 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.113 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -523,11 +523,13 @@ public class OntModelImpl extends ModelCom implements OntModel
         // no easy shortcut, so we use brute force
         return listClasses()
                  .filterDrop( new Filter() {
-                     public boolean accept( Object o ) {
+                     @Override
+                    public boolean accept( Object o ) {
                          return ((OntResource) o).isOntLanguageTerm();
                      }} )
                  .filterKeep( new Filter() {
-                     public boolean accept( Object o ) {
+                     @Override
+                    public boolean accept( Object o ) {
                          return ((OntClass) o).isHierarchyRoot();
                      }} )
                     ;
@@ -639,6 +641,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator listNamedClasses() {
         return listClasses().filterDrop(
             new Filter() {
+                @Override
                 public boolean accept( Object x ) {
                     return ((Resource) x).isAnon();
                 }
@@ -1856,6 +1859,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * to allow both DAML and RDFS lists to be created.</p>
      * @return An RDF-encoded list of no elements, using the current language profile
      */
+    @Override
     public RDFList createList() {
         Resource list = getResource( getProfile().NIL().getURI() );
 
@@ -2009,6 +2013,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     /**
          @deprecated use getImportModelMaker instead.
     */
+    @Deprecated
     public ModelMaker getModelMaker() {
         return getImportModelMaker();
     }
@@ -2061,6 +2066,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * imported ontologies (according to the document manager policy).</p>
      * @param uri URI to read from, may be mapped to a local source by the document manager
      */
+    @Override
     public Model read( String uri ) {
         return read( uri, null, null );
     }
@@ -2071,6 +2077,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param reader An input reader
      * @param base The base URI
      */
+    @Override
     public Model read( Reader reader, String base ) {
         super.read( reader, base );
 
@@ -2085,6 +2092,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param reader An input stream
      * @param base The base URI
      */
+    @Override
     public Model read(InputStream reader, String base) {
         super.read( reader, base );
 
@@ -2100,6 +2108,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param syntax The source syntax
      * @return This model, to allow chaining calls
      */
+    @Override
     public Model read( String uri, String syntax ) {
         return read( uri, null, syntax );
     }
@@ -2112,6 +2121,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param syntax The source syntax
      * @return This model, to allow chaining calls
      */
+    @Override
     public Model read( String uri, String base, String syntax ) {
         // we don't want to load this document again if imported by one of the imports
         addLoadedImport( uri );
@@ -2165,6 +2175,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param syntax The source syntax
      * @return This model, to allow chaining calls
      */
+    @Override
     public Model read(Reader reader, String base, String syntax) {
         super.read( reader, base, syntax );
 
@@ -2181,6 +2192,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param syntax The source syntax
      * @return This model, to allow chaining calls
      */
+    @Override
     public Model read(InputStream reader, String base, String syntax) {
         super.read( reader, base, syntax );
 
@@ -2217,6 +2229,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @see #listSubModels()
      * @see #listSubModels(boolean)
      */
+    @Deprecated
     public ExtendedIterator listImportedModels() {
         return listSubModels( true );
     }
@@ -2578,11 +2591,17 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     // output operations - delegate to base model
 
+    @Override
     public Model write( Writer writer )                             { return getBaseModel().write( writer ); }
+    @Override
     public Model write( Writer writer, String lang )                { return getBaseModel().write( writer, lang ); }
+    @Override
     public Model write( Writer writer, String lang, String base )   { return getBaseModel().write( writer, lang, base ); }
+    @Override
     public Model write( OutputStream out )                          { return getBaseModel().write( out ); }
+    @Override
     public Model write( OutputStream out, String lang )             { return getBaseModel().write( out, lang ); }
+    @Override
     public Model write( OutputStream out, String lang, String base) { return getBaseModel().write( out, lang, base ); }
 
     public Model writeAll( Writer writer, String lang, String base ) {
@@ -3084,6 +3103,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         protected Class m_asKey;
         protected SubjectNodeCanAs( Class asKey ) { m_asKey = asKey; }
 
+        @Override
         public boolean accept( Object x ) {
             Node n = (x instanceof Triple)
                     ? ((Triple) x).getSubject()
@@ -3130,12 +3150,14 @@ public class OntModelImpl extends ModelCom implements OntModel
     protected class ImportsListener
         extends StatementListener
     {
+        @Override
         public void addedStatement( Statement added ) {
             if (added.getPredicate().equals( getProfile().IMPORTS() )) {
                 getDocumentManager().loadImport( OntModelImpl.this, added.getResource().getURI() );
             }
         }
 
+        @Override
         public void removedStatement( Statement removed ) {
             if (removed.getPredicate().equals( getProfile().IMPORTS() )) {
                 getDocumentManager().unloadImport( OntModelImpl.this, removed.getResource().getURI() );

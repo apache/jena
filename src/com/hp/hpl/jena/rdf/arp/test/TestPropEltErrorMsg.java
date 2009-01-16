@@ -368,7 +368,8 @@ public class TestPropEltErrorMsg extends TestCase {
         testAtts = atts;
         n = i;
 	}
-	public String toString() {
+	@Override
+    public String toString() {
 		return getName();
 	}
 
@@ -419,7 +420,8 @@ public class TestPropEltErrorMsg extends TestCase {
         }
         return s;
 	}
-	protected void runTest() {
+	@Override
+    protected void runTest() {
         Attributes noAtts = new Atts();
 		final StringBuffer buf = new StringBuffer();
 		XMLHandler arp = new XMLHandler();
@@ -491,5 +493,5 @@ public class TestPropEltErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestPropEltErrorMsg.java,v 1.7 2008-12-28 19:32:02 andy_seaborne Exp $
+ * $Id: TestPropEltErrorMsg.java,v 1.8 2009-01-16 17:23:52 andy_seaborne Exp $
  */

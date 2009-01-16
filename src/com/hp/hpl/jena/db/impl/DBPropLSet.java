@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class DBPropLSet extends DBProp {
 
@@ -60,7 +60,8 @@ public class DBPropLSet extends DBProp {
 			return null;
 	}
 
-	public void remove() {
+	@Override
+    public void remove() {
 		DBPropPSet pSet = getPset();
 		if (pSet != null )
 			pSet.remove();

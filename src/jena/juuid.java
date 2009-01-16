@@ -7,7 +7,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: juuid.java,v 1.5 2008-12-28 19:32:20 andy_seaborne Exp $
+ * @version  $Id: juuid.java,v 1.6 2009-01-16 17:23:57 andy_seaborne Exp $
  */
 
 package jena;
@@ -40,11 +40,13 @@ public class juuid extends CmdGeneral
         super.addModule(modJUUID) ;
     }
 
+    @Override
     protected String getSummary()
     {
         return getCommandName()+" [--num=N] [--reset] [--type={1|4}]" ;
     }
 
+    @Override
     protected void exec()
     {
         if ( uuidType == UUID_V1.version )
@@ -70,11 +72,13 @@ public class juuid extends CmdGeneral
         }
     }
 
+    @Override
     protected String getCommandName()
     {
         return "uuid" ;
     }
 
+    @Override
     protected void processModulesAndArgs()
     {
         

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestPellet.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:37 $
+ * Last modified on   $Date: 2009-01-16 17:24:01 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import junit.framework.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestPellet.java,v 1.5 2008-12-28 19:32:37 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestPellet.java,v 1.6 2009-01-16 17:24:01 andy_seaborne Exp $)
  */
 public class TestPellet
     extends TestCase
@@ -60,6 +60,7 @@ public class TestPellet
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );

@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: TestSimpleReifierFragmentsMap.java,v 1.6 2008-12-28 19:31:53 andy_seaborne Exp $
+     $Id: TestSimpleReifierFragmentsMap.java,v 1.7 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -21,6 +21,7 @@ public class TestSimpleReifierFragmentsMap extends AbstractTestReifierFragmentsM
     public static TestSuite suite()
         { return new TestSuite( TestSimpleReifierFragmentsMap.class ); }
     
+    @Override
     public ReifierFragmentsMap getFragmentsMap()
         { return new SimpleReifierFragmentsMap(); }
     }

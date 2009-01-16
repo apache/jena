@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGIteratedQueryTranslator.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.10 2008-12-28 19:32:04 andy_seaborne Exp $
+ * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.11 2009-01-16 17:23:54 andy_seaborne Exp $
  */
 public abstract class DIGIteratedQueryTranslator 
     extends DIGQueryTranslator
@@ -94,6 +94,7 @@ public abstract class DIGIteratedQueryTranslator
      * @param pattern The pattern to translate to a DIG query
      * @param da The DIG adapter through which we communicate with a DIG reasoner
      */
+    @Override
     public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
         ExtendedIterator all = null;
         
@@ -109,10 +110,12 @@ public abstract class DIGIteratedQueryTranslator
     /**
      * Not needed in this class - delegated to the specific query handlers
      */
+    @Override
     public Document translatePattern( TriplePattern query, DIGAdapter da ) {
         return null;
     }
 
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
@@ -121,6 +124,7 @@ public abstract class DIGIteratedQueryTranslator
     /**
      * Not needed in this class - delegated to the specific query handlers
      */
+    @Override
     public ExtendedIterator translateResponseHook(Document Response, TriplePattern query, DIGAdapter da) {
         return null;
     }

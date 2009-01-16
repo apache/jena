@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.15 2008-12-28 19:32:28 andy_seaborne Exp $
+    $Id: HashedBunchMap.java,v 1.16 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -82,6 +82,7 @@ public class HashedBunchMap extends HashCommon implements BunchMap
         Called by HashCommon when a key is removed: remove
         associated element of the <code>values</code> array.
     */
+    @Override
     protected void removeAssociatedValues( int here )
         { values[here] = null; }
     
@@ -89,6 +90,7 @@ public class HashedBunchMap extends HashCommon implements BunchMap
         Called by HashCommon when a key is moved: move the
         associated element of the <code>values</code> array.
     */
+    @Override
     protected void moveAssociatedValues( int here, int scan )
         { values[here] = values[scan]; }
     }

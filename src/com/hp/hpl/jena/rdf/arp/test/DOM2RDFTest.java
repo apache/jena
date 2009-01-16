@@ -49,7 +49,8 @@ class DOM2RDFTest extends SAX2RDFTest {
 	}
 	
 
-	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
+	@Override
+    void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
 		
 		Document document = domParser
 				.parse(in,base);

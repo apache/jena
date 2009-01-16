@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNsPrefix.java,v 1.14 2009-01-08 14:56:41 andy_seaborne Exp $
+  $Id: TestNsPrefix.java,v 1.15 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -34,9 +34,11 @@ public class TestNsPrefix extends ModelTestBase {
     public static TestSuite suite()
         { return new TestSuite( TestNsPrefix.class ); }           
     
+    @Override
     protected void setUp() throws java.lang.Exception {    	
     }
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     }    
         

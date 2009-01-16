@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: MinCardinalityQRestrictionImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MinCardinalityQRestrictionImpl.java,v 1.9 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: MinCardinalityQRestrictionImpl.java,v 1.10 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class MinCardinalityQRestrictionImpl 
     extends QualifiedRestrictionImpl
@@ -54,6 +54,7 @@ public class MinCardinalityQRestrictionImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
                 return new MinCardinalityQRestrictionImpl( n, eg );
@@ -63,6 +64,7 @@ public class MinCardinalityQRestrictionImpl
             } 
         }
             
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) 
             { return isMinCardinalityQRestriction( node, eg ); }
     };
@@ -74,6 +76,7 @@ public class MinCardinalityQRestrictionImpl
         return (profile != null)  &&  profile.isSupported( node, eg, MinCardinalityQRestriction.class );
         }
     
+    @Override
     public boolean isValid()
         { return super.isValid() && isMinCardinalityQRestriction( asNode(), getGraph() ); }
     

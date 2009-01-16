@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.15 2009-01-16 16:33:24 andy_seaborne Exp $
+	 $Id: StatementBase.java,v 1.16 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -150,7 +150,8 @@ public abstract class StatementBase
 	 	Answer a string describing this Statement in a vagely pretty way, with the 
 	 	representations of the subject, predicate, and object in that order.
 	*/
-	public String toString()
+	@Override
+    public String toString()
 		{
 		return
 		    "[" 

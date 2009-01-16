@@ -52,6 +52,7 @@ class LazyURLInputStream extends LazyInputStream {
         this.url = url;
     }
     
+    @Override
     InputStream open() throws IOException {
     	URLConnection conn = url.openConnection();
     //	System.err.println(conn.getClass().getName());

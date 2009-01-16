@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.12 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.13 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -29,12 +29,14 @@ public class NewRegressionListSubjects extends ModelTestBase
     
     protected Model m;
     
+    @Override
     public void setUp()
         { 
         m = getModel();
         fillModel();
         }
     
+    @Override
     public void tearDown()
         { m = null; }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.37 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: AbstractTestReifier.java,v 1.38 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -416,6 +416,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         return new GraphBase() 
             {
+            @Override
             public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.findEither( m, true ); }
             };
         }

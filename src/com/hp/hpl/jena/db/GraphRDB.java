@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -234,10 +234,12 @@ public class GraphRDB extends GraphBase implements Graph {
          
         @see com.hp.hpl.jena.graph.Graph#getCapabilities()
     */
+    @Override
     public Capabilities getCapabilities()
         { 
         if (capabilities == null) capabilities = new AllCapabilities()
-            { public boolean handlesLiteralTyping() { return false; } };
+            { @Override
+            public boolean handlesLiteralTyping() { return false; } };
         return capabilities;
         }
 	
@@ -274,16 +276,19 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected boolean isOpen()
 		{ return !isClosed(); }
     
+    @Override
     public boolean isClosed()
         { return m_specializedGraphs == null; }
 
+    @Override
     protected void checkOpen()
         { if (isClosed()) throw new ClosedException( "GraphRDB", this ); }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void performAdd(Triple t) {
+	@Override
+    public void performAdd(Triple t) {
 		checkOpen();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -325,7 +330,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void performDelete(Triple t) {
+	@Override
+    public void performDelete(Triple t) {
         checkOpen();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -367,7 +373,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
-	public int graphBaseSize() {
+	@Override
+    public int graphBaseSize() {
 		checkOpen();
         int result = 0;		
 		Iterator it = m_specializedGraphs.iterator();
@@ -385,7 +392,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean graphBaseContains(Triple t) {
+	@Override
+    public boolean graphBaseContains(Triple t) {
 		checkOpen();
         SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -405,7 +413,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
-	public ExtendedIterator graphBaseFind(TripleMatch m) {
+	@Override
+    public ExtendedIterator graphBaseFind(TripleMatch m) {
 		checkOpen();
         ExtendedIterator result = NullIterator.instance;
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
@@ -424,23 +433,27 @@ public class GraphRDB extends GraphBase implements Graph {
 		return SimpleEventManager.notifyingRemove( this, result );
 	}
 
+    @Override
     public ExtendedIterator reifierTriples( TripleMatch m )
         { return NullIterator.instance; }
     
+    @Override
     public int reifierSize()
         { return 0; }
     
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getBulkUpdateHandler()
 	 */
-	 public BulkUpdateHandler getBulkUpdateHandler()
+	 @Override
+    public BulkUpdateHandler getBulkUpdateHandler()
 		{ return new DBBulkUpdateHandler( this ); }
 
 	/* 
 	 * (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
 	 */
-	public Reifier getReifier() {
+	@Override
+    public Reifier getReifier() {
 		if (m_reifier == null) 
 				m_reifier = new DBReifier( this, style, m_specializedGraphReifiers, m_specializedGraphReifiers );
 		return m_reifier;
@@ -449,7 +462,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
 	 */
-	public PrefixMapping getPrefixMapping() { 
+	@Override
+    public PrefixMapping getPrefixMapping() { 
 		if( m_prefixMapping == null)
 			m_prefixMapping = new DBPrefixMappingImpl( m_properties );
 		return m_prefixMapping; 
@@ -459,14 +473,16 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getTransactionHandler()
 	 */
-	public TransactionHandler getTransactionHandler() {
+	@Override
+    public TransactionHandler getTransactionHandler() {
 		return new DBTransactionHandler(m_driver, this);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()
 	 */
-	public synchronized void close() {
+	@Override
+    public synchronized void close() {
 		if( m_specializedGraphs != null) {
 			Iterator it = m_specializedGraphs.iterator();
 			while( it.hasNext() ) {
@@ -545,7 +561,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#queryHandler()
 	 */
-	public QueryHandler queryHandler()
+	@Override
+    public QueryHandler queryHandler()
 		{
 		if (q == null) q = new DBQueryHandler( this);
 		return q;

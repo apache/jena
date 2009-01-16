@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestGenericRuleReasonerConfig.java,v 1.7 2009-01-13 14:05:58 chris-dollin Exp $
+ 	$Id: TestGenericRuleReasonerConfig.java,v 1.8 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -24,6 +24,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     public TestGenericRuleReasonerConfig( String name )
         { super( name ); }
 
+    @Override
     protected Model setRequiredPrefixes( Model x )
         {
         x.setNsPrefix( "jr", ReasonerVocabulary.JenaReasonerNS );

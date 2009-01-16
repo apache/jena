@@ -3,7 +3,7 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.18 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestReifiedStatements.java,v 1.19 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -34,6 +34,7 @@ public class TestReifiedStatements extends ModelTestBase
         {
         public TestStandard( String name ) { super( name ); }
         public static final ReificationStyle style = ModelFactory.Standard;
+        @Override
         public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
@@ -42,6 +43,7 @@ public class TestReifiedStatements extends ModelTestBase
         {
         public TestConvenient( String name ) { super( name ); }
         public static final ReificationStyle style = ModelFactory.Convenient;
+        @Override
         public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
@@ -50,6 +52,7 @@ public class TestReifiedStatements extends ModelTestBase
         {
         public TestMinimal( String name ) { super( name ); }
         public static final ReificationStyle style = ModelFactory.Minimal;
+        @Override
         public Model getModel() { return ModelFactory.createDefaultModel( style); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }

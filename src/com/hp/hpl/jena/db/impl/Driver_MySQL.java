@@ -75,7 +75,8 @@ public class Driver_MySQL extends DriverRDB {
 	 * Allocate an identifier for a new graph.
 	 *
 	 */
-	public int graphIdAlloc ( String graphName ) {
+	@Override
+    public int graphIdAlloc ( String graphName ) {
 		DBIDInt result = null;
 		int dbid = 0;
 		try {
@@ -105,7 +106,8 @@ public class Driver_MySQL extends DriverRDB {
 		return;
 	}
 
-	public int getInsertID ( String tableName ) {
+	@Override
+    public int getInsertID ( String tableName ) {
 		DBIDInt result = null;
         PreparedStatement ps = null ;
 		try {
@@ -190,7 +192,8 @@ public class Driver_MySQL extends DriverRDB {
 	 * 
 	 * Return the parameters for database initialization.
 	 */
-	protected String[] getDbInitTablesParams() {
+	@Override
+    protected String[] getDbInitTablesParams() {
 		String [] res = new String[6];
 		
 		getTblParams (res);
@@ -215,7 +218,8 @@ public class Driver_MySQL extends DriverRDB {
 	* make several attempts to create the table.
 	*/	
 
-	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+	@Override
+    protected String[] getCreateTableParams( int graphId, boolean isReif ) {
 		String [] parms = new String[6];
 		String [] res = new String[4];
 				
@@ -228,7 +232,8 @@ public class Driver_MySQL extends DriverRDB {
 		return res;
 	}
 	
-	public String genSQLStringMatchLHS_IC(String var) {
+	@Override
+    public String genSQLStringMatchLHS_IC(String var) {
 		return "cast(" + var + " as char)";
 	}
 	

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.20 2009-01-13 14:05:59 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.21 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -74,6 +74,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
             return already.openAgain();
         }
         
+    @Override
     public Graph openGraph()
         { return getGraph(); }
     

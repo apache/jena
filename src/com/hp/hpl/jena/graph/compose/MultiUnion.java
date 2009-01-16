@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:36 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.29 2008-12-28 19:32:36 andy_seaborne Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.30 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class MultiUnion extends Polyadic
 {
@@ -96,10 +96,12 @@ public class MultiUnion extends Polyadic
     /**
         Unions share the reifiers of their base graphs. THIS WILL CHANGE.
     */
+    @Override
     public Reifier getReifier()
         { Graph base = getBaseGraph();
         return base == null ? super.getReifier() : base.getReifier(); }
 
+    @Override
     protected GraphStatisticsHandler createStatisticsHandler()
         { return new MultiUnionStatisticsHandler( this ); }
     
@@ -112,6 +114,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple to add to the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
+    @Override
     public void performAdd( Triple t ) {
         getRequiredBaseGraph().add( t );
     }
@@ -125,6 +128,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple to from the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
+    @Override
     public void performDelete( Triple t ) {
         getRequiredBaseGraph().delete( t );
     }
@@ -138,6 +142,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
+    @Override
     public boolean graphBaseContains( Triple t ) 
         {
         for (Iterator i = m_subGraphs.iterator();  i.hasNext(); ) 
@@ -145,6 +150,7 @@ public class MultiUnion extends Polyadic
         return false;
         }
 
+    @Override
     public QueryHandler queryHandler()
         { return optimiseOne() ? singleGraphQueryHandler() : super.queryHandler(); }
     
@@ -161,6 +167,7 @@ public class MultiUnion extends Polyadic
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
+    @Override
     public ExtendedIterator graphBaseFind( final TripleMatch t ) 
         { // optimise the case where there's only one component graph.
         ExtendedIterator found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
@@ -198,6 +205,7 @@ public class MultiUnion extends Polyadic
      *
      * @param graph A sub-graph to add to this union
      */
+    @Override
     public void addGraph( Graph graph ) {
         if (!m_subGraphs.contains( graph )) {
             m_subGraphs.add( graph );

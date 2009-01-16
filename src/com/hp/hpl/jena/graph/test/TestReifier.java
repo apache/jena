@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.28 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: TestReifier.java,v 1.29 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -50,9 +50,11 @@ public class TestReifier extends AbstractTestReifier
         return result; 
         }   
         
+    @Override
     public Graph getGraph()
         { return getGraph( style ); }
     
+    @Override
     public Graph getGraph( ReificationStyle style ) 
         {
         try
@@ -73,6 +75,7 @@ public class TestReifier extends AbstractTestReifier
         {
         GraphBase parent = new GraphBase() {
 
+            @Override
             public ExtendedIterator graphBaseFind( TripleMatch m )
                 {
                 // TODO Auto-generated method stub

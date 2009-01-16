@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.18 2008-12-28 19:32:21 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.19 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -147,10 +147,12 @@ public class DBQueryStage extends Stage
 
         }
 
+    @Override
     public Pipe deliver( final Pipe result )
         {
         final Pipe stream = previous.deliver( new BufferPipe() );
-		new Thread() { public void run() { DBQueryStage.this.run( stream, result ); } } .start();
+		new Thread() { @Override
+        public void run() { DBQueryStage.this.run( stream, result ); } } .start();
         return result;
         }  
       

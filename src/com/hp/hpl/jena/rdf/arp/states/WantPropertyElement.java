@@ -177,6 +177,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         return new OuterXMLLiteral(this, x, pt);
     }
 
+    @Override
     String suggestParsetypeLiteral() {
         return (getParent() instanceof WantTopLevelDescription) ? "" : super
                 .suggestParsetypeLiteral();
@@ -201,10 +202,12 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         }
     }
 
+    @Override
     public void endElement() {
         clearObject();
     }
 
+    @Override
     public void abort() {
         clearObject();
     }

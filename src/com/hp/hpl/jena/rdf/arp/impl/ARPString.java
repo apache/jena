@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.7 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: ARPString.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -73,6 +73,7 @@ public class ARPString extends TaintImpl implements ALiteral {
     private boolean isWellFormedXML;
     private String parseType;
     
+    @Override
     public String toString() {
         return value;
     }
@@ -94,6 +95,7 @@ public class ARPString extends TaintImpl implements ALiteral {
     /**
      * @deprecated
      */
+    @Deprecated
     public String getParseType() {
         return parseType;
     }

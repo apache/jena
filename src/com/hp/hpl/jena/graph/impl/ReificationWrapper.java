@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: ReificationWrapper.java,v 1.3 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: ReificationWrapper.java,v 1.4 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -43,6 +43,7 @@ public class ReificationWrapper implements Reifier
     
     protected static final Filter isReificationTriple = new Filter()
         {
+        @Override
         public boolean accept( Object o )
             { return isReificationTriple( (Triple) o ); }  
         };

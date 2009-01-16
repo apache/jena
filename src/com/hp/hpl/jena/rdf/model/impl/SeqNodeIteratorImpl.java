@@ -41,7 +41,7 @@ import java.util.Iterator;
  *  A sequence node iterator.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2009-01-16 17:23:48 $'
  */
 public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator {
     
@@ -59,6 +59,7 @@ public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator
         this.size     = seq.size();
     }
 
+    @Override
     public Object next() throws NoSuchElementException {
         stmt = (Statement) super.next();
         index += 1;
@@ -69,6 +70,7 @@ public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator
         return (RDFNode) next();
     }
             
+    @Override
     public void remove() throws NoSuchElementException {
         if (stmt == null) throw new NoSuchElementException();
         ((ContainerI)seq).remove(index-numDeleted, stmt.getObject());
@@ -76,6 +78,7 @@ public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator
         numDeleted++;
     }
     
+    @Override
     public void close() {
         super.close();
     }

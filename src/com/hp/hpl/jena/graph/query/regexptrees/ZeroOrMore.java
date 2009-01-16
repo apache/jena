@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ZeroOrMore.java,v 1.6 2008-12-28 19:31:59 andy_seaborne Exp $
+  $Id: ZeroOrMore.java,v 1.7 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,12 +15,15 @@ public class ZeroOrMore extends Repeated
     public ZeroOrMore( RegexpTree operand ) 
         { super( operand ); }
     
+    @Override
     public int hashCode()
         { return operand.hashCode(); }
     
+    @Override
     public boolean equals( Object x )
         { return x instanceof ZeroOrMore && operand.equals( ((ZeroOrMore) x).operand ); }
     
+    @Override
     public String toString()
         { return "<zeroOrMore " + operand.toString() + ">"; }
     }

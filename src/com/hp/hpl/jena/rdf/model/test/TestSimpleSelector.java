@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestSimpleSelector.java,v 1.15 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,6 +26,7 @@ public class TestSimpleSelector extends TestCase
     
     Model model = null;    
         
+    @Override
     protected void setUp() throws java.lang.Exception {
     	model = ModelFactory.createDefaultModel();
     	model.createResource()
@@ -39,6 +40,7 @@ public class TestSimpleSelector extends TestCase
     	
     }
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     	model = null;
     }

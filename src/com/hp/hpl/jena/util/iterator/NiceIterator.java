@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.18 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: NiceIterator.java,v 1.19 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -81,6 +81,7 @@ public class NiceIterator implements ExtendedIterator
             
             private Iterator current = a;
             
+            @Override
             public boolean hasNext()
                 { 
                 while (current.hasNext() == false && index < L.size())
@@ -88,18 +89,22 @@ public class NiceIterator implements ExtendedIterator
                 return current.hasNext();
                 }
                 
+            @Override
             public Object next()
                 { return hasNext() ? current.next() : noElements( "concatenation" ); }
                 
+            @Override
             public void close()
                 {
                 close( current );
                 for (int i = index; i < L.size(); i += 1) close( (Iterator) L.get(i) );
                 }
                 
+            @Override
             public void remove()
                 { current.remove(); }
             
+            @Override
             public ExtendedIterator andThen( ClosableIterator other )
                 { L.add( other ); 
                 return this; }

@@ -39,6 +39,7 @@ abstract class AbsWantLiteralValueOrDescription extends
      * InsidePropertyElementFrame, and the second lot of characters do not get
      * here.
      */
+    @Override
     public void characters(char[] ch, int start, int length)
             throws SAXParseException {
         if (checkComposingChar)
@@ -63,16 +64,19 @@ abstract class AbsWantLiteralValueOrDescription extends
         return buf != null;
     }
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         checkComposingChar = true;
         return super.startElement(uri, localName, rawName, atts);
     }
 
+    @Override
     public void comment(char ch[], int st, int lng) {
         checkComposingChar = true;
     }
 
+    @Override
     public void processingInstruction(String a, String b)
             throws SAXParseException {
         checkComposingChar = true;

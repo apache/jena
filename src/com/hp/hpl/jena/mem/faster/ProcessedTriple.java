@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.17 2008-12-28 19:32:32 andy_seaborne Exp $
+ 	$Id: ProcessedTriple.java,v 1.18 2009-01-16 17:24:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -23,13 +23,16 @@ public class ProcessedTriple extends QueryTriple
 
     static final QueryNodeFactory factory = new QueryNodeFactoryBase()
         {
+        @Override
         public QueryTriple createTriple( QueryNode S, QueryNode P, QueryNode O )
             { return new ProcessedTriple( S, P, O ); }
         
+        @Override
         public QueryTriple [] createArray( int size )
             { return new ProcessedTriple[size]; }
         };
 
+    @Override
     public Applyer createApplyer( Graph g )
         { return ((GraphMemFaster) g).createApplyer( this ); }
 

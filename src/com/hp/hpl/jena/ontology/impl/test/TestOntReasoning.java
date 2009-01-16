@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 01:12:10 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-16 17:23:57 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.19 2009-01-16 01:12:10 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.20 2009-01-16 17:23:57 andy_seaborne Exp $
  */
 public class TestOntReasoning
     extends TestCase
@@ -68,6 +68,7 @@ public class TestOntReasoning
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.22 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.23 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -33,9 +33,11 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     
     private GraphMaker gf;
     
+    @Override
     public void setUp()
         { gf = getGraphMaker(); }
         
+    @Override
     public void tearDown()
         { gf.close(); }
 

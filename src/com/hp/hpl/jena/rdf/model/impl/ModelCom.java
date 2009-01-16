@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.130 2009-01-16 16:16:35 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.131 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -143,6 +143,7 @@ public class ModelCom
         { return add( s, p, o, l, false ); }
 
     /** @deprecated */
+    @Deprecated
     public Model addLiteral( Resource s, Property p, Object o )  
         { return add( s, p, asObject( o ) ); }
     
@@ -1053,7 +1054,8 @@ public class ModelCom
    */
     public Filter asFilter( final Selector s )
         { return new Filter()
-                { public boolean accept( Object x ) { return s.test( (Statement) x ); } };
+                { @Override
+                public boolean accept( Object x ) { return s.test( (Statement) x ); } };
         }
         
     
@@ -1230,6 +1232,7 @@ public class ModelCom
         }
     }
     
+    @Override
     public String toString()
         { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
         

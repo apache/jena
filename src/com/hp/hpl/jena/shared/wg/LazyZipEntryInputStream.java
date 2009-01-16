@@ -54,6 +54,7 @@ class LazyZipEntryInputStream extends LazyInputStream {
     }
     
     
+    @Override
     InputStream open() throws IOException {
     	InputStream rslt = zip.getInputStream(entry);
     	if ( rslt == null )

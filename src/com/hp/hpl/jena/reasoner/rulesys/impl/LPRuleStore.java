@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.8 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: LPRuleStore.java,v 1.9 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.9 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -248,6 +248,7 @@ public class LPRuleStore extends RuleStore {
      * @param rule the rule, single headed only
      * @param isAdd true to add, false to remove 
      */
+    @Override
     protected void doAddRemoveRule(Rule rule, boolean isAdd) {
         isCompiled = false;
         super.doAddRemoveRule(rule, isAdd);

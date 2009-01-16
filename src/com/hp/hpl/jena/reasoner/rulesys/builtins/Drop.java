@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Drop.java,v 1.7 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: Drop.java,v 1.8 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * useful for rewrite rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 
 public class Drop  extends BaseBuiltin  {
@@ -47,6 +47,7 @@ public class Drop  extends BaseBuiltin  {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         boolean ok = false;
         InfGraph inf = context.getGraph();
@@ -76,6 +77,7 @@ public class Drop  extends BaseBuiltin  {
      * be an action and makes the overall rule and ruleset non-monotonic. 
      * Most JenaRules are monotonic deductive closure rules in which this should be false.
      */
+    @Override
     public boolean isMonotonic() {
         return false;
     }

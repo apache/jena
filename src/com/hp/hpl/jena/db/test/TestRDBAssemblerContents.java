@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestRDBAssemblerContents.java,v 1.2 2008-12-28 19:32:19 andy_seaborne Exp $
+ 	$Id: TestRDBAssemblerContents.java,v 1.3 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -108,6 +108,7 @@ public class TestRDBAssemblerContents extends AssemblerTestBase
             return this;
             }
         
+        @Override
         public Object open( Assembler a, Resource root, Mode mode )
             {
             Object fromMap = map.get( root );

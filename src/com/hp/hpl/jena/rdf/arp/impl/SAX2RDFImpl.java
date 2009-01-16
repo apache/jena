@@ -41,7 +41,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#endCDATA()
 	 */
-	public void endCDATA() throws SAXException {
+	@Override
+    public void endCDATA() throws SAXException {
 		if (depth > 0)
 			super.endCDATA();
 
@@ -52,7 +53,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#endDTD()
 	 */
-	public void endDTD() throws SAXException {
+	@Override
+    public void endDTD() throws SAXException {
 		if (depth > 0)
 			super.endDTD();
 
@@ -63,7 +65,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#startCDATA()
 	 */
-	public void startCDATA() throws SAXException {
+	@Override
+    public void startCDATA() throws SAXException {
 		if (depth > 0)
 			super.startCDATA();
 
@@ -74,7 +77,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
 	 */
-	public void comment(char[] ch, int start, int length) throws SAXParseException {
+	@Override
+    public void comment(char[] ch, int start, int length) throws SAXParseException {
 		if (depth > 0)
 			super.comment(ch, start, length);
 
@@ -85,7 +89,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
 	 */
-	public void endEntity(String name) throws SAXException {
+	@Override
+    public void endEntity(String name) throws SAXException {
 		if (depth > 0)
 			super.endEntity(name);
 
@@ -96,7 +101,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
 	 */
-	public void startEntity(String name) throws SAXException {
+	@Override
+    public void startEntity(String name) throws SAXException {
 		if (depth > 0)
 			super.startEntity(name);
 
@@ -108,7 +114,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String,
 	 *      java.lang.String, java.lang.String)
 	 */
-	public void startDTD(String name, String publicId, String systemId)
+	@Override
+    public void startDTD(String name, String publicId, String systemId)
 			throws SAXException {
 		if (depth > 0)
 			super.startDTD(name, publicId, systemId);
@@ -120,7 +127,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#endDocument()
 	 */
-	public void endDocument() throws SAXException {
+	@Override
+    public void endDocument() throws SAXException {
 		if (depth > 0)
 			super.endDocument();
 
@@ -131,7 +139,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#startDocument()
 	 */
-	public void startDocument() throws SAXException {
+	@Override
+    public void startDocument() throws SAXException {
 		if (depth > 0)
 			super.startDocument();
 
@@ -142,7 +151,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#characters(char[], int, int)
 	 */
-	public void characters(char[] ch, int start, int length)
+	@Override
+    public void characters(char[] ch, int start, int length)
 			throws SAXException {
 		if (depth > 0)
 			super.characters(ch, start, length);
@@ -154,7 +164,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
 	 */
-	public void ignorableWhitespace(char[] ch, int start, int length)
+	@Override
+    public void ignorableWhitespace(char[] ch, int start, int length)
 			throws SAXException {
 		if (depth > 0)
 			super.ignorableWhitespace(ch, start, length);
@@ -166,7 +177,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#endPrefixMapping(java.lang.String)
 	 */
-	public void endPrefixMapping(String prefix) {
+	@Override
+    public void endPrefixMapping(String prefix) {
 		if (depth > 0)
 			super.endPrefixMapping(prefix);
 
@@ -177,7 +189,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
 	 */
-	public void skippedEntity(String name) throws SAXException {
+	@Override
+    public void skippedEntity(String name) throws SAXException {
 		if (depth > 0)
 			super.skippedEntity(name);
 
@@ -191,7 +204,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * @see org.xml.sax.ContentHandler#processingInstruction(java.lang.String,
 	 *      java.lang.String)
 	 */
-	public void processingInstruction(String target, String data)
+	@Override
+    public void processingInstruction(String target, String data)
 			throws SAXException {
 		if (depth > 0)
 			super.processingInstruction(target, data);
@@ -206,7 +220,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * @see org.xml.sax.ContentHandler#endElement(java.lang.String,
 	 *      java.lang.String, java.lang.String)
 	 */
-	public void endElement(String namespaceURI, String localName, String qName)
+	@Override
+    public void endElement(String namespaceURI, String localName, String qName)
 			throws SAXException {
 		if (depth <= 0) {
 			// Does not return.
@@ -230,7 +245,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * @see org.xml.sax.ContentHandler#startElement(java.lang.String,
 	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
-	public void startElement(String namespaceURI, String localName,
+	@Override
+    public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
 		depth++;
 		super.startElement(namespaceURI, localName, qName, atts);
@@ -242,7 +258,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
-	public void error(SAXParseException exception) throws SAXParseException {
+	@Override
+    public void error(SAXParseException exception) throws SAXParseException {
 		
 			super.error(exception);
 
@@ -252,7 +269,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
-	public void fatalError(SAXParseException exception) throws SAXException {
+	@Override
+    public void fatalError(SAXParseException exception) throws SAXException {
        
 			super.fatalError(exception);
 		
@@ -264,7 +282,8 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 	 * 
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
-	public void warning(SAXParseException exception) throws SAXParseException {
+	@Override
+    public void warning(SAXParseException exception) throws SAXParseException {
 			super.warning(exception);
 
 	}

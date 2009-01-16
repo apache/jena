@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchFilter.java,v 1.14 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: TripleMatchFilter.java,v 1.15 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,6 +27,7 @@ public class TripleMatchFilter extends Filter
          @param t The object to accept or reject.  Must be a Triple
          @return true if the object is wanted.
     */
+    @Override
     public boolean accept( Object t ) 
         { return tMatch.matches( (Triple) t ); }
     }

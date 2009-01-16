@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: AbstractTestReifierFragmentsMap.java,v 1.11 2008-12-28 19:31:53 andy_seaborne Exp $
+     $Id: AbstractTestReifierFragmentsMap.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -21,6 +21,7 @@ public abstract class AbstractTestReifierFragmentsMap extends GraphTestBase
     
     protected ReifierFragmentsMap fragMap;
     
+    @Override
     public void setUp()
         { fragMap = getFragmentsMap(); }
     

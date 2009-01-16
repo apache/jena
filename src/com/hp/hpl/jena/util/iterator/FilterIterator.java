@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: FilterIterator.java,v 1.12 2008-12-28 19:32:08 andy_seaborne Exp $
+    $Id: FilterIterator.java,v 1.13 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -38,7 +38,8 @@ public class FilterIterator extends WrappedIterator
         [Stores reference into <code>current</code>, sets <code>canRemove</code>
         false; answer preserved in `hasCurrent`]
     */        
-	synchronized public boolean hasNext() 
+	@Override
+    synchronized public boolean hasNext() 
         {
 	    while (!hasCurrent && super.hasNext())
             hasCurrent = accept( current = super.next() );
@@ -58,6 +59,7 @@ public class FilterIterator extends WrappedIterator
          after a .next() but before any subsequent .hasNext(), because that
          may advance the underlying iterator.
     */        
+    @Override
     synchronized public void remove() 
         {
         if (!canRemove ) throw new IllegalStateException
@@ -70,7 +72,8 @@ public class FilterIterator extends WrappedIterator
         test of `hasCurrent` appears to make a detectable speed difference.
         Crazy.
     */        
-	synchronized public Object next() 
+	@Override
+    synchronized public Object next() 
         {
 		if (hasCurrent || hasNext()) 
             {
@@ -108,6 +111,6 @@ public class FilterIterator extends WrappedIterator
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.12 2008-12-28 19:32:08 andy_seaborne Exp $
+ * $Id: FilterIterator.java,v 1.13 2009-01-16 17:23:58 andy_seaborne Exp $
  *
 */

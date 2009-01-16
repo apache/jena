@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.6 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: ARPResource.java,v 1.7 2009-01-16 17:23:49 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -88,14 +88,17 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
         return null;
     }
     
+    @Override
     public String toString() {
         return "_:"+getAnonymousID();
     }
     
+    @Override
     public int hashCode() {
        return nodeID==null ?genId: nodeID.hashCode();
     }
     
+    @Override
     public boolean equals(Object o) {
         if ( o == null || !(o instanceof ARPResource))
             return false;

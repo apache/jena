@@ -207,6 +207,7 @@ public class FileUtils
      * 
      * @deprecated Broken: use toURL()
      */
+    @Deprecated
     public static String encodeFileName(String s)
     {
         int len = s.length();

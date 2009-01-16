@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2008-12-28 19:31:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2009-01-16 17:23:52 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -253,6 +253,7 @@ public class GraphMatcher extends java.lang.Object {
         check(HASH_OK);
         return new FilterIterator(
         new Filter() {
+            @Override
             public boolean accept(Object o) {
                 Bucket b = (Bucket)o;
                 if (b.size()==1)
@@ -554,6 +555,7 @@ public class GraphMatcher extends java.lang.Object {
     static private class FixedResource implements SomeResource {
         int hash;
         Node node;
+        @Override
         public String toString() {
             return "f" + hash;
         }
@@ -722,6 +724,7 @@ public class GraphMatcher extends java.lang.Object {
         Set friends = CollectionFactory.createHashedSet(); // Other vars in AnonStatements containing me.
         int myHash;
         
+        @Override
         public String toString() {
             String rslt = r.toString();
             if ( bound!=null )
@@ -843,6 +846,7 @@ public class GraphMatcher extends java.lang.Object {
         private class StatementWrapper {
             int hash;
             AnonStatement statement;
+            @Override
             public boolean equals(Object o) {
                 if (o == null || (!(o instanceof StatementWrapper)))
                     return false;
@@ -850,6 +854,7 @@ public class GraphMatcher extends java.lang.Object {
                 return hash == w.hash &&
                 statement.contextualEquals(AnonResource.this,w.statement,w.asAnonR());
             }
+            @Override
             public int hashCode() {
                 return hash;
             }
@@ -945,5 +950,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.19 2008-12-28 19:31:53 andy_seaborne Exp $
+ * $Id: GraphMatcher.java,v 1.20 2009-01-16 17:23:52 andy_seaborne Exp $
  */

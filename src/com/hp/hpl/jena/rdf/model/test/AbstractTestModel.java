@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.18 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: AbstractTestModel.java,v 1.19 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -24,9 +24,11 @@ public abstract class AbstractTestModel extends ModelTestBase
     
     private Model model;
     
+    @Override
     public void setUp()
         { model = getModel(); }
         
+    @Override
     public void tearDown()
         { model.close(); } 
        

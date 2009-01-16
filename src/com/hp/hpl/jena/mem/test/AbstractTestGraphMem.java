@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AbstractTestGraphMem.java,v 1.3 2008-12-28 19:32:23 andy_seaborne Exp $
+ 	$Id: AbstractTestGraphMem.java,v 1.4 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -72,6 +72,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
         {
         Node special = new Node_URI( "eg:foo" ) 
             {
+            @Override
             public boolean matches( Node s ) 
                 {
                 fail( "Matched called superfluously." );

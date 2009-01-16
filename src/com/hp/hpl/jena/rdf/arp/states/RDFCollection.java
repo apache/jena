@@ -14,12 +14,15 @@ public class RDFCollection extends Collection {
         super(s, x);
     }
 
+    @Override
     ANode nil() {
         return RDF_NIL;
     }
+    @Override
     void restTriple(ANode subj,ANode obj) {
         triple(subj,RDF_REST,obj);
     }
+    @Override
     void firstTriple(ANode subj, ANode obj) {
         triple(subj,RDF_FIRST,obj);
     }

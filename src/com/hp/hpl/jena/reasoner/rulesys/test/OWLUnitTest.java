@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.16 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: OWLUnitTest.java,v 1.17 2009-01-16 17:23:58 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.17 $ on $Date: 2009-01-16 17:23:58 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -217,6 +217,7 @@ public class OWLUnitTest extends TestCase {
     /**
      * The test runner
      */
+    @Override
     protected void runTest() throws IOException {
 //        System.out.println(" - " + manifest + " using " + reasonerFactory.getURI());
         OWLWGTester tester = new OWLWGTester(reasonerFactory, this, null);

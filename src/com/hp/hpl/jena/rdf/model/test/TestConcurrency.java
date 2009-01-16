@@ -11,7 +11,7 @@ import com.hp.hpl.jena.shared.Lock;
 import junit.framework.*;
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.11 2009-01-11 21:34:23 andy_seaborne Exp $
+ * @version 	$Id: TestConcurrency.java,v 1.12 2009-01-16 17:23:50 andy_seaborne Exp $
  */
 public class TestConcurrency  extends TestSuite
 {
@@ -91,6 +91,7 @@ public class TestConcurrency  extends TestSuite
             exceptionExpected = exExpected ;
         }
 
+        @Override
         protected void runTest() throws Throwable
         {
             boolean gotException = false ;
@@ -131,6 +132,7 @@ public class TestConcurrency  extends TestSuite
             super(testName) ;
         }
         
+        @Override
         protected void runTest() throws Throwable
         {
             Model model = ModelFactory.createDefaultModel() ;
@@ -180,7 +182,8 @@ public class TestConcurrency  extends TestSuite
                  model = m ; readLock = withReadLock ;
              }
             
-             public void run()
+             @Override
+            public void run()
              {
                  for ( int i = 0 ; i < 2 ; i++ )
                  {

@@ -52,6 +52,7 @@ public class Driver_Derby extends DriverRDB
         } catch (SQLException ex) {}
     }
     
+    @Override
     String[] getDbInitTablesParams()
     {
         String [] res = new String[3];
@@ -89,6 +90,7 @@ public class Driver_Derby extends DriverRDB
         param[2] = TABLE_NAME_PREFIX;
     }
 
+    @Override
     protected String[] getCreateTableParams( int graphId, boolean isReif )
     {
         String [] parms = new String[3];
@@ -101,6 +103,7 @@ public class Driver_Derby extends DriverRDB
         return res;
     }
     
+    @Override
     protected void setLongObjectHashAndTail(PreparedStatement ps, int argi, RDBLongObject lobj)
     throws SQLException
     {
@@ -109,6 +112,7 @@ public class Driver_Derby extends DriverRDB
         super.setLongObjectHashAndTail_Text(ps, argi, lobj) ;
     }
         
+    @Override
     public int graphIdAlloc ( String graphName )
     {
         DBIDInt result = null;
@@ -172,6 +176,7 @@ public class Driver_Derby extends DriverRDB
         }
     }
     
+    @Override
     protected void doCleanDB(boolean r)
     {
         m_sql.flushPreparedStatementCache() ;

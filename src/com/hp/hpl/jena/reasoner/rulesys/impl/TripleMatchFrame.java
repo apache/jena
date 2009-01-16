@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TripleMatchFrame.java,v 1.8 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: TripleMatchFrame.java,v 1.9 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.9 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class TripleMatchFrame extends GenericTripleMatchFrame {
     
@@ -57,6 +57,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      * LPInterpreter and search for the match defined by the current argument registers
      * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
      */
+    @Override
     public void init(LPInterpreter interpreter) {
         super.init(interpreter);
         this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
@@ -65,6 +66,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
     /**
      * Override close method to reclaim the iterator.
      */
+    @Override
     public void close() {
         if (matchIterator != null) matchIterator.close();
     }

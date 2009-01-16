@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryTriple.java,v 1.12 2008-12-28 19:32:11 andy_seaborne Exp $
+    $Id: QueryTriple.java,v 1.13 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -29,6 +29,7 @@ public class QueryTriple
     public QueryTriple( QueryNode S, QueryNode P, QueryNode O )
         { this.S = S; this.P = P; this.O = O; }   
     
+    @Override
     public String toString()
         { return "<qt " + S.toString() + " " + P.toString() + " " + O.toString() + ">"; }
     
@@ -64,6 +65,7 @@ public class QueryTriple
             case SMATCH + PMATCH + OMATCH:
                 return new Matcher()
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { return S.match( d, t.getSubject() )
                             && P.match( d, t.getPredicate() )
@@ -73,6 +75,7 @@ public class QueryTriple
             case SMATCH + OMATCH:
                 return new Matcher() 
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { 
                         return S.match( d, t.getSubject() ) 
@@ -82,6 +85,7 @@ public class QueryTriple
             case SMATCH + PMATCH:  
                 return new Matcher() 
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { 
                         return S.match( d, t.getSubject() ) 
@@ -92,6 +96,7 @@ public class QueryTriple
             case PMATCH + OMATCH:
                 return new Matcher()
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         {
                         return P.match( d, t.getPredicate() )
@@ -102,6 +107,7 @@ public class QueryTriple
             case SMATCH:                
                 return new Matcher() 
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { return S.match( d, t.getSubject() ); }
                     };
@@ -109,6 +115,7 @@ public class QueryTriple
             case PMATCH:
                 return new Matcher()
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { return P.match( d, t.getPredicate() ); }
                     };
@@ -116,6 +123,7 @@ public class QueryTriple
             case OMATCH:
                 return new Matcher()
                     {
+                    @Override
                     public boolean match( Domain d, Triple t )
                         { return O.match( d, t.getObject() ); }
                     };
@@ -140,6 +148,7 @@ public class QueryTriple
         public Iterator find( Domain d )
             { return g.find( s.finder( d ), p.finder( d ), o.finder( d ) ); }
 
+        @Override
         public void applyToTriples( Domain d, Matcher m, StageElement next )
             {
             Iterator it = find( d );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:22 $
+ * Last modified on   $Date: 2009-01-16 17:23:57 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.14 2008-12-28 19:32:22 andy_seaborne Exp $
+ * @version CVS $Id: TestOntology.java,v 1.15 2009-01-16 17:23:57 andy_seaborne Exp $
  */
 public class TestOntology
     extends OntTestBase 
@@ -69,9 +69,11 @@ public class TestOntology
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
             new OntTestCase( "Ontology.imports", true, true, true, false ) {
+                @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -97,6 +99,7 @@ public class TestOntology
                 }
             },
             new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false, false ) {
+                @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -122,6 +125,7 @@ public class TestOntology
                 }
             },
             new OntTestCase( "Ontology.priorVersion", true, true, false, false ) {
+                @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );
@@ -147,6 +151,7 @@ public class TestOntology
                 }
             },
             new OntTestCase( "Ontology.incompatibleWith", true, true, false, false ) {
+                @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     Ontology x = m.createOntology( NS + "x" );

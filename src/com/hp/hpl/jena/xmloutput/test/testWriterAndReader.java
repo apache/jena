@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.45 2008-12-28 19:32:02 andy_seaborne Exp $
+    $Id: testWriterAndReader.java,v 1.46 2009-01-16 17:23:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2008-12-28 19:32:02 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2009-01-16 17:23:56 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -68,7 +68,8 @@ public class testWriterAndReader
 		this.options = options;
 	}
     
-	public String toString() {
+	@Override
+    public String toString() {
 		return getName()
 			+ " "
 			+ lang
@@ -162,6 +163,7 @@ public class testWriterAndReader
         {
         return new testWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask ) 
             {
+            @Override
             public void runTest() throws IOException { testOptions(); }
             };
         }
@@ -451,5 +453,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.45 2008-12-28 19:32:02 andy_seaborne Exp $
+ * $Id: testWriterAndReader.java,v 1.46 2009-01-16 17:23:56 andy_seaborne Exp $
  */

@@ -21,7 +21,7 @@ import jena.util.DBcmd;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.13 2008-12-28 19:32:19 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.14 2009-01-16 17:23:57 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
@@ -57,6 +57,7 @@ public class dbdump extends DBcmd
         super("dbdump", false);
     }
 
+    @Override
     protected void exec0()
     {
         // This is a streaming syntax.
@@ -76,6 +77,7 @@ public class dbdump extends DBcmd
         
     }
 
+    @Override
     protected boolean exec1(String arg) { return false ; }
 }
  

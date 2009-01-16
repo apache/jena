@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestAssemblerGroupTracing.java,v 1.3 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestAssemblerGroupTracing.java,v 1.4 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -36,6 +36,7 @@ public class TestAssemblerGroupTracing extends AssemblerTestBase
     
     static class ShantAssemble extends AssemblerBase
         {
+        @Override
         public Object open( Assembler a, Resource root, Mode mode )
             {            
             throw new JenaException( "shan't" );

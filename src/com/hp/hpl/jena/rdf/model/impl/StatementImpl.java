@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.33 2008-12-28 19:31:52 andy_seaborne Exp $
+	$Id: StatementImpl.java,v 1.34 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.33 $ $Date: 2008-12-28 19:31:52 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.34 $ $Date: 2009-01-16 17:23:48 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -56,17 +56,20 @@ public class StatementImpl  extends StatementBase implements Statement {
         return new StatementImpl( s, p, o, eg );
         }
     
+    @Override
     public Resource getSubject()
 		{
 		return subject;
 		}
 
-	public Property getPredicate()
+	@Override
+    public Property getPredicate()
 		{
 		return predicate;
 		}
 
-	public RDFNode getObject()
+	@Override
+    public RDFNode getObject()
 		{
 		return object;
 		}
@@ -76,6 +79,7 @@ public class StatementImpl  extends StatementBase implements Statement {
 		return asResource().getRequiredProperty( p );
 		}
     
+    @Override
     public Resource getResource()
         { return mustBeResource( object ); }
     
@@ -90,6 +94,7 @@ public class StatementImpl  extends StatementBase implements Statement {
         get the object field of this statement, insisting that it be a Literal.
         If it isn't, throw LiteralRequiredException.
     */
+    @Override
     public Literal getLiteral()  {        
         if (object instanceof Literal) {
             return (Literal) object;
@@ -125,6 +130,7 @@ public class StatementImpl  extends StatementBase implements Statement {
     }    
     
     /** it turns out to be handy to return the new StatementImpl as the result */ 
+    @Override
     protected StatementImpl replace(RDFNode n)  {
     	StatementImpl s = new StatementImpl( subject, predicate, n, model );
     	model.remove( this ).add( s );
@@ -134,6 +140,7 @@ public class StatementImpl  extends StatementBase implements Statement {
     /**
         .equals() defers to .sameAs so we only get the complexity of one cast.
     */
+    @Override
     public boolean equals(Object o)
         { return o instanceof Statement && sameAs( (Statement) o ); }
         
@@ -148,6 +155,7 @@ public class StatementImpl  extends StatementBase implements Statement {
             && object.equals( o.getObject() );
         }
     
+    @Override
     public int hashCode() {
     	return asTriple().hashCode();
     }

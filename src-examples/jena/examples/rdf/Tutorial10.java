@@ -2,7 +2,7 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial10.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
+ * $Id: Tutorial10.java,v 1.4 2009-01-16 17:23:58 andy_seaborne Exp $
  */
 package jena.examples.rdf ;
 
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Tutorial 10 - demonstrate a container
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2009-01-16 17:23:58 $'
  */
 public class Tutorial10 extends Object {
     
@@ -44,6 +44,7 @@ public class Tutorial10 extends Object {
         StmtIterator iter = model.listStatements(
             new 
                 SimpleSelector(null, VCARD.FN, (RDFNode) null) {
+                    @Override
                     public boolean selects(Statement s) {
                             return s.getString().endsWith("Smith");
                     }

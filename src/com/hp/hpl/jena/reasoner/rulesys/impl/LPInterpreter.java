@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.17 2009-01-16 11:54:30 der Exp $
+ * $Id: LPInterpreter.java,v 1.18 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2009-01-16 11:54:30 $
+ * @version $Revision: 1.18 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class LPInterpreter {
 
@@ -258,7 +258,7 @@ public class LPInterpreter {
                     continue main;
                 }
                 
-                clause = (RuleClauseCode)choice.nextClause();
+                clause = choice.nextClause();
                 // Create an execution environment for the new choice of clause
                 if (recordDerivations) {
                     envFrame = new EnvironmentFrameWithDerivation(clause);

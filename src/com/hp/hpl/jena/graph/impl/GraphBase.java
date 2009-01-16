@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.53 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.54 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -410,7 +410,8 @@ public abstract class GraphBase implements GraphWithPerform
          big graphs, as it generates a big string: intended for debugging purposes.
     */
 
-	public String toString() 
+	@Override
+    public String toString() 
         { return toString( (closed ? "closed " : ""), this ); }
         
     /**

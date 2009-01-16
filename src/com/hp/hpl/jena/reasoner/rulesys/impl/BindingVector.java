@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingVector.java,v 1.27 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: BindingVector.java,v 1.28 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.28 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -193,6 +193,7 @@ public class BindingVector implements BindingEnvironment {
     /**
      * Printable form
      */
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < environment.length; i++) {
@@ -328,6 +329,7 @@ public class BindingVector implements BindingEnvironment {
     }
   
     /** Equality override */
+    @Override
     public boolean equals(Object o) {
         // Pass 1 - just check basic shape
         if (! (o instanceof BindingVector) ) return false;
@@ -346,6 +348,7 @@ public class BindingVector implements BindingEnvironment {
     }
         
     /** hash function override */
+    @Override
     public int hashCode() {
         int hash = 0;
         for (int i = 0; i < environment.length; i++) {

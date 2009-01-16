@@ -459,6 +459,7 @@ public class OntTools
          * @see java.lang.Object#toString()
          * @return A string representation of this set for debugging
          */
+        @Override
         public String toString() {
             StringBuffer buf = new StringBuffer();
             buf.append( "DisjointSet{node=" );
@@ -605,6 +606,7 @@ public class OntTools
             m_preds.add( pred );
         }
 
+        @Override
         public boolean accept( Object s ) {
             return m_preds.contains( ((Statement) s).getPredicate() );
         }

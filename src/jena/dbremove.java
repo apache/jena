@@ -21,7 +21,7 @@ import jena.util.DBcmd;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbremove.java,v 1.11 2008-12-28 19:32:20 andy_seaborne Exp $
+  * @version $Id: dbremove.java,v 1.12 2009-01-16 17:23:57 andy_seaborne Exp $
   */ 
  
 public class dbremove extends DBcmd
@@ -47,11 +47,13 @@ public class dbremove extends DBcmd
         super("dbremove", false);
     }
 
+    @Override
     protected void exec0()
     {
         getRDBModel().remove() ;
     }
     
+    @Override
     protected boolean exec1(String arg) { return false ; } 
 }
  

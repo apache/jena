@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.15 2008-12-28 19:32:38 andy_seaborne Exp $
+ * $Id: AbstractDateTime.java,v 1.16 2009-01-16 17:23:57 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:38 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:57 $
  */
 public class AbstractDateTime {
 
@@ -75,13 +75,14 @@ public class AbstractDateTime {
     protected void extractFractionalSeconds() {
         if (data[ms] != 0) {
             int fs = data[ms];
-            fractionalSeconds = ((double)fs) / Math.pow(10.0, (double)data[msscale]);
+            fractionalSeconds = (fs) / Math.pow(10.0, data[msscale]);
         }
     }
     
     /**
      * Equality function
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof AbstractDateTime) {
             AbstractDateTime adt = (AbstractDateTime) obj;
@@ -96,6 +97,7 @@ public class AbstractDateTime {
     /**
      * hash function
      */
+    @Override
     public int hashCode() {
         int hash = 0;
         for (int i = 0; i < data.length; i++) {

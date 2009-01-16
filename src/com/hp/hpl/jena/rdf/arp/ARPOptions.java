@@ -53,7 +53,7 @@ public class ARPOptions implements ARPErrorNumbers {
         
     }
     private boolean embedding = false;
-    private int errorMode[] = (int[]) defaultErrorMode.clone();
+    private int errorMode[] = defaultErrorMode.clone();
 
     /** Sets or gets the error handling mode for a specific error condition.
      * Changes that cannot be honoured are silently ignored.
@@ -109,7 +109,7 @@ public class ARPOptions implements ARPErrorNumbers {
      * many errors are reported as warnings, and resulting triples are produced.
      */
     public void setDefaultErrorMode() {
-        errorMode = (int[]) defaultErrorMode.clone();
+        errorMode = defaultErrorMode.clone();
     }
 
     /** As many errors as possible are ignored.
@@ -179,7 +179,7 @@ public class ARPOptions implements ARPErrorNumbers {
     public ARPOptions copy() {
         //* @ deprecated
     	ARPOptions rslt = new ARPOptions();
-    	rslt.errorMode = (int[])errorMode.clone() ;
+    	rslt.errorMode = errorMode.clone() ;
     	rslt.embedding = embedding;
     	return rslt;
     }

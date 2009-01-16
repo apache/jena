@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -212,6 +212,7 @@ public class DBReifierGraph implements Graph {
 		return 0;
 	}
     
+    @Override
     public String toString()
         { return GraphBase.toString( "DBReifier ", this ); }
 }

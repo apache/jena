@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: MockTransactionModel.java,v 1.10 2008-12-28 19:31:55 andy_seaborne Exp $
+ $Id: MockTransactionModel.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.assembler.test;
@@ -37,10 +37,12 @@ final class MockTransactionModel extends ModelAssembler
         this.abortsOnAdd = abortsOnAdd;
         }
 
+    @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
         {
         return new ModelCom( Factory.createDefaultGraph() ) 
             {
+            @Override
             public Model begin()
                 {
                 history.add( "begin" );
@@ -48,6 +50,7 @@ final class MockTransactionModel extends ModelAssembler
                 return this;
                 }
 
+            @Override
             public Model add( Model other )
                 {
                 history.add( "add" );
@@ -56,12 +59,14 @@ final class MockTransactionModel extends ModelAssembler
                 return this;
                 }
 
+            @Override
             public Model abort()
                 {
                 history.add( "abort" );
                 return this;
                 }
 
+            @Override
             public Model commit()
                 {
                 TestModelContent.assertIsoModels( expected, this );
@@ -69,6 +74,7 @@ final class MockTransactionModel extends ModelAssembler
                 return this;
                 }
 
+            @Override
             public boolean supportsTransactions()
                 {
                 history.add( "supports[" + supportsTransactions + "]" );

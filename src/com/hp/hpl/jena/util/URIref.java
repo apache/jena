@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIref.java,v 1.9 2009-01-16 16:16:43 andy_seaborne Exp $
+ * * $Id: URIref.java,v 1.10 2009-01-16 17:23:56 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 *//*
@@ -97,7 +97,7 @@ public class URIref extends Object {
                     }
                     rsltAscii[out++] = (byte)'%' ;
                     // Get rid of sign ...
-                    int c = ((int)utf8[in]) & 255 ;
+                    int c = (utf8[in]) & 255 ;
                     rsltAscii[out++] = hexEncode(c / 16) ;
                     rsltAscii[out++] = hexEncode(c % 16) ;
                     in++ ;
@@ -158,13 +158,13 @@ public class URIref extends Object {
     static private int hexDecode(byte b ) {
         switch (b) { 
             case (byte)'a': case (byte)'b': case (byte)'c': case (byte)'d': case (byte)'e': case (byte)'f':
-             return (((int)b)&255)-'a'+10;
+             return ((b)&255)-'a'+10;
             case (byte)'A': case (byte)'B': case (byte)'C': case (byte)'D': case (byte)'E': case (byte)'F': 
             return b - (byte)'A' + 10;
             case (byte)'0': case (byte)'1': case (byte)'2': case (byte)'3': case (byte)'4': case (byte)'5': case (byte)'6': case (byte)'7': case (byte)'8': case (byte)'9':
                 return b - (byte)'0';
                 default:
-                    throw new IllegalArgumentException("Bad Hex escape character: " + (((int)b)&255) );
+                    throw new IllegalArgumentException("Bad Hex escape character: " + ((b)&255) );
         }
     }
     

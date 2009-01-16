@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: StageElement.java,v 1.9 2008-12-28 19:32:11 andy_seaborne Exp $
+ 	$Id: StageElement.java,v 1.10 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -27,6 +27,7 @@ public abstract class StageElement
         public PutBindings( Pipe sink )
             { this.sink = sink; }
         
+        @Override
         public final void run( Domain current )
             { sink.put( current.copy() ); }
         }
@@ -46,6 +47,7 @@ public abstract class StageElement
         public FindTriples( Stage stage, Matcher matcher, Applyer finder, StageElement next )
             { this.stage = stage;  this.matcher = matcher; this.finder = finder; this.next = next; }
     
+        @Override
         public final void run( Domain current )
             { if (stage.stillOpen) finder.applyToTriples( current, matcher, next ); }
         }
@@ -63,6 +65,7 @@ public abstract class StageElement
         public RunValuatorSet( ValuatorSet s, StageElement next )
             { this.s = s; this.next = next; }
         
+        @Override
         public final void run( Domain current )
             { if (s.evalBool( current )) next.run( current ); }
         }

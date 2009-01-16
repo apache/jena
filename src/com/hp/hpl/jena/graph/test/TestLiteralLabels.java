@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.9 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: TestLiteralLabels.java,v 1.10 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -33,7 +33,7 @@ public class TestLiteralLabels extends GraphTestBase
 
     public void testHashCode2() 
         {
-        LiteralLabel ll = new LiteralLabel( (Object) "test",  "", null );
+        LiteralLabel ll = new LiteralLabel( "test",  "", null );
         ll.hashCode();
         }    
     
@@ -55,6 +55,7 @@ public class TestLiteralLabels extends GraphTestBase
         {
         RDFDatatype d = new BaseDatatype( "eh:/FakeDataType" ) 
             {
+            @Override
             public boolean isEqual( LiteralLabel A, LiteralLabel B ) 
                 { 
                 fail( "RDFDatatype::isEquals should not be called if B has no datatype" ); 

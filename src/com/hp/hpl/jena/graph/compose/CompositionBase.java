@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:36 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.16 2008-12-28 19:32:36 andy_seaborne Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.17 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -59,7 +59,8 @@ public abstract class CompositionBase
         {
         final Set suppress = IteratorCollection.iteratorToSet( i );
         return new Filter()
-            { public boolean accept( Object o ) { return !suppress.contains( o ); } };
+            { @Override
+            public boolean accept( Object o ) { return !suppress.contains( o ); } };
         }
         
     /**
@@ -91,16 +92,20 @@ public abstract class CompositionBase
         {
         return new NiceIterator()
             {
+            @Override
             public void remove()
                 { i.remove(); }
             
+            @Override
             public boolean hasNext()
                 { return i.hasNext(); }    
             
+            @Override
             public Object next()
                 { Object x = i.next(); 
                 try { seen.add( x ); } catch (OutOfMemoryError e) { throw e; } return x; }  
                 
+            @Override
             public void close()
                 { i.close(); }
             };
@@ -120,7 +125,8 @@ public abstract class CompositionBase
     public static ExtendedIterator rejecting( final ExtendedIterator i, final Set seen )
         {
         Filter seenFilter = new Filter()
-            { public boolean accept( Object x ) { return seen.contains( x ); } };
+            { @Override
+            public boolean accept( Object x ) { return seen.contains( x ); } };
         return i.filterDrop( seenFilter );
         }
         
@@ -131,7 +137,8 @@ public abstract class CompositionBase
     public static ExtendedIterator rejecting( final ExtendedIterator i, final Graph seen )
         {
         Filter seenFilter = new Filter()
-            { public boolean accept( Object x ) { return seen.contains( (Triple) x ); } };
+            { @Override
+            public boolean accept( Object x ) { return seen.contains( (Triple) x ); } };
         return i.filterDrop( seenFilter );
         }
   
@@ -148,7 +155,8 @@ public abstract class CompositionBase
         {
         final Set allow = IteratorCollection.iteratorToSet( i );
         return new Filter()
-            { public boolean accept( Object x ) { return allow.contains( x ); } };
+            { @Override
+            public boolean accept( Object x ) { return allow.contains( x ); } };
         }
         
     /**
@@ -163,7 +171,8 @@ public abstract class CompositionBase
     public static Filter ifIn( final Graph g )
         {
         return new Filter()
-            { public boolean accept( Object x ) { return g.contains( (Triple) x ); } };
+            { @Override
+            public boolean accept( Object x ) { return g.contains( (Triple) x ); } };
         }
         
 

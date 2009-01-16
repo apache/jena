@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionGet.java,v 1.6 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionGet.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -28,6 +28,7 @@ public class NewRegressionGet extends ModelTestBase
     protected Resource S;
     protected Property P;
     
+    @Override
     public void setUp()
         { 
         m = getModel();
@@ -35,6 +36,7 @@ public class NewRegressionGet extends ModelTestBase
         P = m.createProperty( "http://nowhere.man/predicate" ); 
         }
     
+    @Override
     public void tearDown()
         { m = null; S = null; P = null; }
     

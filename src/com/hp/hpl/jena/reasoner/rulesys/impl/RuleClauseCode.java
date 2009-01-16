@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.13 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RuleClauseCode.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class RuleClauseCode {
     
@@ -324,6 +324,7 @@ public class RuleClauseCode {
     /**
      * Print clause as rule for tracing.
      */
+    @Override
     public String toString() {
         if (rule == null) {
             return "[anon]";
@@ -740,7 +741,7 @@ public class RuleClauseCode {
                     result.add(obj);
                 }
             } else if (term instanceof Functor) {
-                Node[] args = (Node[]) ((Functor)term).getArgs();
+                Node[] args = ((Functor)term).getArgs();
                 for (int i = 0; i < args.length; i++) {
                     result.add(args[i]);
                 }

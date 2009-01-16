@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.12 2008-12-28 19:32:20 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.13 2009-01-16 17:23:57 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd
@@ -54,6 +54,7 @@ public class dblist extends DBcmd
 
     static String defaultModelName = "DEFAULT" ;
     
+    @Override
     protected void exec0()
     {
 //        if ( getConnection().containsDefaultModel() )
@@ -78,6 +79,7 @@ public class dblist extends DBcmd
       
     }
     
+    @Override
     protected boolean exec1(String arg) { return true ; } 
 
     private void properties(String name)

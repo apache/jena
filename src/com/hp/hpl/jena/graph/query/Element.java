@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Element.java,v 1.12 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: Element.java,v 1.13 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -43,8 +43,11 @@ public abstract class Element
     */
 	public static final Element ANY = new Element()
         {
+        @Override
         public boolean match( Domain d, Node n ) { return true; }
+        @Override
         public Node asNodeMatch( Domain d ) { return Node.ANY; }
+        @Override
         public String toString() { return "<any>"; }
         };
         
@@ -65,6 +68,7 @@ public abstract class Element
     */
     public abstract Node asNodeMatch( Domain d );
         
+    @Override
     public String toString()
     	{ return "<" + this.getClass() + " element>"; }
 	}

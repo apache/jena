@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.18 2008-12-28 19:32:29 andy_seaborne Exp $
+  $Id: MixedGraphMem.java,v 1.19 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -27,15 +27,19 @@ public class MixedGraphMem extends GraphMemBase implements Graph
     /**
         MixedGraphMem's don't use TripleStore's at present. 
     */
+    @Override
     protected TripleStore createTripleStore()
         { return null; }
     
+    @Override
     public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) store.add( t ); }
     
+    @Override
     public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) store.remove( t ); }
     
+    @Override
     public int graphBaseSize()  
         { return store.size(); }
 
@@ -44,21 +48,26 @@ public class MixedGraphMem extends GraphMemBase implements Graph
         can use a simple membership test; otherwise we resort to the generic
         method using find.
     */
+    @Override
     public boolean graphBaseContains( Triple t ) 
         { return isSafeForEquality( t ) ? store.contains( t ) : containsByFind( t ); }
     
+    @Override
     protected void destroy()
         { store = null; }
     
+    @Override
     public boolean isEmpty()
         {
         checkOpen();
         return store.isEmpty();
         }
     
+    @Override
     public void clear()
         { store.clear(); }
     
+    @Override
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         {
         Triple t = m.asTriple();

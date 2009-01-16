@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.junit.TestUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleInternalTests.java,v 1.8 2008-12-28 19:32:18 andy_seaborne Exp $
+ * @version 	$Id: TurtleInternalTests.java,v 1.9 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 public class TurtleInternalTests extends TestSuite
 {
@@ -240,7 +240,8 @@ public class TurtleInternalTests extends TestSuite
         
 		Test(String s) { super(TestUtils.safeName(s)) ; testString = s ; }
 		
-		protected void runTest() throws Throwable
+		@Override
+        protected void runTest() throws Throwable
 		{
             TurtleParser parser = new TurtleParser(new StringReader(testString)) ;
             parser.setEventHandler(new TurtleEventNull()) ;

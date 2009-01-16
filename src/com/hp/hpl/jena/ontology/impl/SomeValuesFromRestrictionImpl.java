@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: SomeValuesFromRestrictionImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:15 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.13 2008-12-28 19:32:15 andy_seaborne Exp $
+ * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class SomeValuesFromRestrictionImpl
     extends RestrictionImpl
@@ -56,6 +56,7 @@ public class SomeValuesFromRestrictionImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
                 return new SomeValuesFromRestrictionImpl( n, eg );
@@ -65,6 +66,7 @@ public class SomeValuesFromRestrictionImpl
             } 
         }
             
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a SomeValuesFromRestriction facet if it has rdf:type owl:Restriction or equivalent
             // and the combination of owl:onProperty and owl:someValuesFrom (or equivalents) 

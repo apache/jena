@@ -2,9 +2,9 @@
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
 <<<<<<< TestFindLiterals.java
- 	$Id: TestFindLiterals.java,v 1.11 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
 =======
- 	$Id: TestFindLiterals.java,v 1.11 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
 >>>>>>> 1.4
 */
 
@@ -37,6 +37,7 @@ public class TestFindLiterals extends GraphTestBase
             + " search " + search 
             + " expecting {" + results + "}" )
             {
+            @Override
             public void runBare()
                 { 
                 Graph g = graphWith( graph );

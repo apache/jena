@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestEntityOutput.java,v 1.13 2008-12-28 19:32:02 andy_seaborne Exp $
+ 	$Id: TestEntityOutput.java,v 1.14 2009-01-16 17:23:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -170,10 +170,13 @@ public class TestEntityOutput extends ModelTestBase
     
     private final static class FakeBaseWriter extends BaseXMLWriter
         {
+        @Override
         protected void unblockAll() {}
 
+        @Override
         protected void blockRule( Resource r ) {}
 
+        @Override
         protected void writeBody( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase ) {}
 
         protected boolean getShowDoctypeDeclaration() { return showDoctypeDeclaration.booleanValue(); }

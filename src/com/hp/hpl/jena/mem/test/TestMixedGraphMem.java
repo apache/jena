@@ -1,7 +1,7 @@
 /*
   (c) (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMixedGraphMem.java,v 1.9 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: TestMixedGraphMem.java,v 1.10 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -26,6 +26,7 @@ public class TestMixedGraphMem extends TestGraphMem
     public static TestSuite suite()
         { return new TestSuite( TestMixedGraphMem.class ); }
         
+    @Override
     public Graph getGraph()
         { return new MixedGraphMem(); }
     
@@ -34,6 +35,7 @@ public class TestMixedGraphMem extends TestGraphMem
         final List history = new ArrayList();
         MixedGraphMemStore t = new MixedGraphMemStore( getGraph() )
             {
+            @Override
             protected boolean add( Node key, Triple t )
                 {
                 history.add( key );
@@ -46,6 +48,7 @@ public class TestMixedGraphMem extends TestGraphMem
         assertEquals( nodeList( "s P o s" ), history );
         }
     
+    @Override
     public void testUnnecessaryMatches() { 
         /* test not appropriate for subclass */ 
         }
@@ -54,6 +57,7 @@ public class TestMixedGraphMem extends TestGraphMem
         final List history = new ArrayList();
         MixedGraphMemStore t = new MixedGraphMemStore( getGraph() )
             {
+            @Override
             protected boolean remove( Node key, Triple t )
                 {
                 history.add( key );

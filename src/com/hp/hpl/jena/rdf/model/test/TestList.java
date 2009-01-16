@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:31:52 $
+ * Last modified on   $Date: 2009-01-16 17:23:50 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.16 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.17 2009-01-16 17:23:50 andy_seaborne Exp $
  */
 public class TestList
     extends TestCase
@@ -182,6 +182,7 @@ public class TestList
             this.i = i;
         }
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list" + i + ".rdf" );
@@ -198,6 +199,7 @@ public class TestList
             super( "ValidityTest");
         }
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -234,6 +236,7 @@ public class TestList
     protected static class HeadTest extends ListTest {
         public HeadTest() {super( "HeadTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -257,6 +260,7 @@ public class TestList
             this.i = i;
         }
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list" + i + ".rdf" );
@@ -276,6 +280,7 @@ public class TestList
     protected static class SetHeadTest extends ListTest {
         public SetHeadTest() {super( "SetHeadTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -308,6 +313,7 @@ public class TestList
     protected static class SetTailTest extends ListTest {
         public SetTailTest() {super( "SetTailTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -354,6 +360,7 @@ public class TestList
     protected static class ConsTest extends ListTest {
         public ConsTest() {super( "ConsTest" );}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -396,6 +403,7 @@ public class TestList
     protected static class AddTest extends ListTest {
         public AddTest() {super( "AddTest" );}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -438,6 +446,7 @@ public class TestList
     protected static class TestListGet extends ListTest {
         public TestListGet() {super("TestListGet");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -474,6 +483,7 @@ public class TestList
     protected static class ReplaceTest extends ListTest {
         public ReplaceTest() {super("ReplaceTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -515,6 +525,7 @@ public class TestList
     protected static class IndexTest1 extends ListTest {
         public IndexTest1() {super("IndexTest1");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -541,6 +552,7 @@ public class TestList
     protected static class IndexTest2 extends ListTest {
         public IndexTest2() {super("IndexTest2");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -565,6 +577,7 @@ public class TestList
     protected static class AppendTest extends ListTest {
         public AppendTest() {super("AppendTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -603,6 +616,7 @@ public class TestList
     protected static class ConcatenateTest extends ListTest {
         public ConcatenateTest() {super("ConcatenateTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -638,6 +652,7 @@ public class TestList
     protected static class ConcatenateTest2 extends ListTest {
         public ConcatenateTest2() {super("ConcatenateTest2");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -668,6 +683,7 @@ public class TestList
     protected static class ApplyTest extends ListTest {
         public ApplyTest() {super("ApplyTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -692,6 +708,7 @@ public class TestList
     protected static class ReduceTest extends ListTest {
         public ReduceTest() {super("ReduceTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -711,6 +728,7 @@ public class TestList
     protected static class Map1Test extends ListTest {
         public Map1Test() {super("Map1Test");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             m.read( "file:testing/ontology/list5.rdf" );
@@ -724,6 +742,7 @@ public class TestList
     protected static class RemoveTest extends ListTest {
         public RemoveTest() {super( "RemoveTest" );}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -785,6 +804,7 @@ public class TestList
     protected static class ListEqualsTest extends ListTest {
         public ListEqualsTest() {super("ListEqualsTest");}
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
            
@@ -855,6 +875,7 @@ public class TestList
             super( "ListSubClassTest");
         }
         
+        @Override
         public void runTest() {
             Model m = ModelFactory.createDefaultModel();
             
@@ -896,6 +917,7 @@ public class TestList
             super( "UserDefinedListTest");
         }
         
+        @Override
         public void runTest() {
             BuiltinPersonalities.model.add( UserDefList.class, UserDefListImpl.factory );
             
@@ -929,6 +951,7 @@ public class TestList
          * A factory for generating UserDefList facets from nodes in enhanced graphs.
          */
         public static Implementation factory = new Implementation() {
+            @Override
             public EnhNode wrap( Node n, EnhGraph eg ) { 
                 if (canWrap( n, eg )) {
                     UserDefListImpl impl = new UserDefListImpl( n, eg );
@@ -946,6 +969,7 @@ public class TestList
                 } 
             }
                 
+            @Override
             public boolean canWrap( Node node, EnhGraph eg ) {
                 Graph g = eg.asGraph();
                 
@@ -957,6 +981,7 @@ public class TestList
         };
 
         /** This method returns the Java class object that defines which abstraction facet is presented */
+        @Override
         public Class listAbstractionClass() { 
             return UserDefList.class; 
         }

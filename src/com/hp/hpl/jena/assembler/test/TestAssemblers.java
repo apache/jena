@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblers.java,v 1.6 2008-12-28 19:31:58 andy_seaborne Exp $
+ 	$Id: TestAssemblers.java,v 1.7 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -48,6 +48,7 @@ public class TestAssemblers extends AssemblerTestBase
     
     public void testToSilenceJUnit() {}
 
+    @Override
     protected Class getAssemblerClass()
         { throw new BrokenException( "TestAssemblers does not need this method" ); }
     }

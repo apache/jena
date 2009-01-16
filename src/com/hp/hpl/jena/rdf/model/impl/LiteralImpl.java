@@ -43,14 +43,16 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2009-01-16 15:12:50 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2009-01-16 17:23:48 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
     final static public Implementation factory = new Implementation() {
+        @Override
         public boolean canWrap( Node n, EnhGraph eg )
             { return n.isLiteral(); }
             
+        @Override
         public EnhNode wrap(Node n, EnhGraph eg) {
             if (!n.isLiteral()) throw new LiteralRequiredException( n );
             return new LiteralImpl(n,eg);
@@ -81,10 +83,12 @@ public class LiteralImpl extends EnhNode implements Literal {
      *@deprecated Please use the createLiteral methods on Model.
      *Model implementors should use Literal constructors which include the Model.
      */
+    @Deprecated
     public LiteralImpl( String s, String l, boolean wellFormed, ModelCom m ) {    	
         this(Node.createLiteral(s,l,wellFormed),m);
     }
     
+    @Override
     public String toString() {
         return asNode().toString( PrefixMapping.Standard, false );
     }

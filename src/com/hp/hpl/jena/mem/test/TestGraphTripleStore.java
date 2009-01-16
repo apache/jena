@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestGraphTripleStore.java,v 1.7 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: TestGraphTripleStore.java,v 1.8 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem.test;
 
@@ -24,6 +24,7 @@ public class TestGraphTripleStore extends AbstractTestTripleStore
     public static TestSuite suite()
         { return new TestSuite( TestGraphTripleStore.class ); }
     
+    @Override
     public TripleStore getTripleStore()
         { return new GraphTripleStore( Graph.emptyGraph ); }
     }

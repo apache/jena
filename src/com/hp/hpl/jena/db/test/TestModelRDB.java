@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRDB.java,v 1.7 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: TestModelRDB.java,v 1.8 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.db.test;
 
@@ -29,14 +29,17 @@ public class TestModelRDB extends AbstractTestModel
     private IDBConnection con;
     private int count = 0;
     
+    @Override
     public void setUp()
         { con = TestConnection.makeAndCleanTestConnection();
         super.setUp(); }
     
+    @Override
     public void tearDown() 
         { try { con.close(); }
         catch (SQLException e) { throw new JenaException( e ); } }
     
+    @Override
     public Model getModel()
         {
         return ModelRDB.createModel( con, "db-test-model-" + ++count );

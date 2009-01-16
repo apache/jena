@@ -19,6 +19,7 @@ public class TestSyntax extends TestCase
     String uri ;
     public TestSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
+    @Override
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;

@@ -21,6 +21,7 @@ class TestHandler extends XMLHandler {
             Assert.fail("unexpected warning: "+msg);
     }
 
+    @Override
     public void warning(Taint taintMe,int i, String s) {
         if (i<100)
             return;
@@ -28,9 +29,11 @@ class TestHandler extends XMLHandler {
         if (failOnWarning)
             Assert.fail("unexpected warning: "+s);
     }
+    @Override
     public void endLocalScope(ANode v) {
         scope ++;
     }
+    @Override
     public void triple(ANode s, ANode p, ANode o) {
         triples++;
     }

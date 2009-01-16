@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.14 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.15 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -78,6 +78,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Return the schema graph, if any, bound into this inference graph.
      */
+    @Override
     public Graph getSchemaGraph() {
         return fschema.getGraph();
     }
@@ -90,6 +91,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * rule system) and where an application might wish greater control over when
      * this prepration is done.
      */
+    @Override
     public void prepare() {
         if (!isPrepared) {
             fdeductions = new FGraph( Factory.createGraphMem() );
@@ -113,6 +115,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * inference graph and the raw data, before processing.
      * @param data the new raw data graph
      */
+    @Override
     public synchronized void rebind(Graph data) {
         engine.checkSafeToUpdate();
         fdata = new FGraph(data);
@@ -126,6 +129,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * are made "behind the InfGraph's back" and this forces a full reconsult of
      * the changed data. 
      */
+    @Override
     public synchronized void rebind() {
         version++;
         engine.checkSafeToUpdate();
@@ -135,6 +139,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Flush out all cached results. Future queries have to start from scratch.
      */
+    @Override
     public synchronized void reset() {
         version++;
         engine.checkSafeToUpdate();
@@ -152,6 +157,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
+    @Override
     public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
@@ -167,6 +173,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * This implementation assumes that the underlying findWithContinuation 
      * will have also consulted the raw data.
      */
+    @Override
     public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
     }
@@ -179,6 +186,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
+    @Override
     public ExtendedIterator find(TriplePattern pattern) {
         return findWithContinuation(pattern, null);
     }
@@ -187,6 +195,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
+    @Override
     public synchronized void performAdd(Triple t) {
         version++;
         engine.checkSafeToUpdate();
@@ -197,6 +206,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
+    @Override
     public synchronized void performDelete(Triple t) {
         version++;
         engine.checkSafeToUpdate();
@@ -220,6 +230,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Set to true to enable derivation caching
      */
+    @Override
     public void setDerivationLogging(boolean recordDerivations) {
         engine.setDerivationLogging(recordDerivations);
         if (recordDerivations) {
@@ -233,6 +244,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * Return the derivation of at triple.
      * The derivation is a List of DerivationRecords
      */
+    @Override
     public Iterator getDerivation(Triple t) {
         if (derivations == null) {
             return new NullIterator();

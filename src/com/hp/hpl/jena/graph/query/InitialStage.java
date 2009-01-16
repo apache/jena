@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InitialStage.java,v 1.15 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: InitialStage.java,v 1.16 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -25,6 +25,7 @@ public class InitialStage extends Stage
         
     final int count;
     
+    @Override
     public void close()
         { markClosed(); }
 
@@ -33,6 +34,7 @@ public class InitialStage extends Stage
         width in which all the elements are null, then we close the pipe. Everything else
         is spawned by the following stages.
     */
+    @Override
     public Pipe deliver( Pipe result )
         {
         result.put( new Domain( count ) );

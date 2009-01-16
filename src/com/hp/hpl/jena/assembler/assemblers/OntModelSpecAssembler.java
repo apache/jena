@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.13 2008-12-28 19:32:27 andy_seaborne Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.14 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -27,6 +27,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
     {
     private static final OntModelSpec DEFAULT = OntModelSpec.OWL_MEM_RDFS_INF;
 
+    @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
         checkType( root, JA.OntModelSpec );

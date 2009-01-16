@@ -42,9 +42,11 @@ public class ElementLexer extends QNameLexer  {
             }
         }
     }
+    @Override
     boolean isInRdfns(Taint me) {
         return rdfns.equals(getUri());
     }
+    @Override
     void error(Taint me, int r) throws SAXParseException {
         frame.warning(me,
                 r==E_LI?ERR_LI_AS_TYPE:
@@ -52,18 +54,23 @@ public class ElementLexer extends QNameLexer  {
                 getQName() + " is not allowed as an element tag here.");
         
     }
+    @Override
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
         error(me,r);
     }
+    @Override
     String getLocalName() {
         return localName;
     }
+    @Override
     String getUri() {
         return uri;
     }
+    @Override
     String getQName() {
         return qname;
     }
+    @Override
     void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException {
         error(taintMe,rslt);
         

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRemoveSPO.java,v 1.4 2008-12-28 19:31:52 andy_seaborne Exp $
+ 	$Id: TestRemoveSPO.java,v 1.5 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -34,7 +34,8 @@ public class TestRemoveSPO extends ModelTestBase
         Graph base = Factory.createDefaultGraph();
         final List deleted = new ArrayList();
         Graph wrapped = new WrappedGraph( base )
-            { public void delete( Triple t ) { deleted.add( t ); } };
+            { @Override
+            public void delete( Triple t ) { deleted.add( t ); } };
         Model m = new ModelCom( wrapped );
         m.remove( resource( "R" ), property( "P" ), rdfNode( m, "17" ) );
         assertEquals( listOfOne( Triple.create( "R P 17" ) ), deleted );

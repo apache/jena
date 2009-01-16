@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.18 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.19 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -56,6 +56,7 @@ public class IndividualImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new IndividualImpl( n, eg );
@@ -65,6 +66,7 @@ public class IndividualImpl
             }
         }
 
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an Individual facet if it is a URI node or bNode
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

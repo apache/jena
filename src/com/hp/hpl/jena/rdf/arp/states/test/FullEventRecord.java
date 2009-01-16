@@ -26,6 +26,7 @@ class FullEventRecord extends EventRecord {
         checkStar(state);
         
     }
+    @Override
     public String toString() {
         StringBuffer rslt = new StringBuffer( "|"+state+"| " +  super.toString());
         rslt.append("{ ");

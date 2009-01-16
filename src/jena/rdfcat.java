@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:20 $
+ * Last modified on   $Date: 2009-01-16 17:23:57 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -117,7 +117,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.16 2008-12-28 19:32:20 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.17 2009-01-16 17:23:57 andy_seaborne Exp $)
  */
 public class rdfcat
 {
@@ -435,6 +435,7 @@ public class rdfcat
         }
 
         /** Handle an unrecognised argument by assuming it's a URI to read */
+        @Override
         public void handleUnrecognizedArg( String argStr ) {
             if (argStr.equals("-") || !argStr.startsWith( "-" )) {
                 // queue this action for reading later
@@ -448,6 +449,7 @@ public class rdfcat
 
         /** Hook to test whether this argument should be processed further
          */
+        @Override
         public boolean ignoreArgument( String argStr ) {
             return !argStr.startsWith("-") || argStr.length() == 1;
         }

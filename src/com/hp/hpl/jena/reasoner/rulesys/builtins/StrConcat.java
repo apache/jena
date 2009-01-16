@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: StrConcat.java,v 1.3 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: StrConcat.java,v 1.4 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * for a bNode argument its internal ID.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class StrConcat extends BaseBuiltin {
 
@@ -36,6 +36,7 @@ public class StrConcat extends BaseBuiltin {
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
+    @Override
     public int getArgLength() {
         return 0;
     }
@@ -50,6 +51,7 @@ public class StrConcat extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         if (length < 1) 
             throw new BuiltinException(this, context, "Must have at least 1 argument to " + getName());

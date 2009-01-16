@@ -145,6 +145,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 
    
 
+    @Override
     boolean isInRdfns(Taint taintMe) throws SAXParseException {
         String uri = getUri();
         if (rdfns.equals(uri))
@@ -157,6 +158,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         return false;
     }
 
+    @Override
     void error(Taint taintMe, int r) throws SAXParseException {
 //         TODO: not for 2.3. specialize ERR_SYNTAX_ERROR ?
         int e = ERR_SYNTAX_ERROR;
@@ -176,15 +178,18 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         
     }
 
+    @Override
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
         frame.warning(me,ERR_BAD_RDF_ATTRIBUTE, getQName()
                 + " has been deprecated.");
     }
 
+    @Override
     String getLocalName() {
         return att.getLocalName(index);
     }
 
+    @Override
     String getUri() {
         return att.getURI(index);
     }
@@ -208,6 +213,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         return att.getValue(index);
     }
 
+    @Override
     String getQName() {
         return att.getQName(index);
     }
@@ -216,6 +222,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         return done.get(i);
     }
 
+    @Override
     void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException  {
         deprecatedAttribute(null,rslt);
     }

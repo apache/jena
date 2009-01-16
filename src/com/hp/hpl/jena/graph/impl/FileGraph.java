@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.35 2009-01-08 14:56:43 andy_seaborne Exp $
+  $Id: FileGraph.java,v 1.36 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -138,6 +138,7 @@ public class FileGraph extends GraphMemFaster
     /**
         Write out and then close this FileGraph. 
     */
+    @Override
     public void close()
         {
         saveContents( name );
@@ -198,6 +199,7 @@ public class FileGraph extends GraphMemFaster
             throw new JenaException( "could not rename " + from + " to " + to ); 
         }
 
+    @Override
     public TransactionHandler getTransactionHandler()
         { if (th == null) th = new FileGraphTransactionHandler( this ); 
         return th; }

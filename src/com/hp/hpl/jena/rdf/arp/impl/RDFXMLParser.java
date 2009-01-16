@@ -65,6 +65,7 @@ public class RDFXMLParser extends XMLHandler {
 
         RDFXMLParser a;
 
+        @Override
         public void xmlDecl(String version, String encoding, String standalone,
                 Augmentations augs) {
             try {

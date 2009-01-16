@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.13 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: AssemblerTestBase.java,v 1.14 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -40,6 +40,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
             { this.x = x; }
         
         
+        @Override
         public Object open( Assembler a, Resource root, Mode irrelevant )
             { return x; }
         }
@@ -57,9 +58,11 @@ public abstract class AssemblerTestBase extends ModelTestBase
             public NamedObjectAssembler( Resource name, Object result )
                 { this.name = name; this.result = result; }
             
+            @Override
             public Model openModel( Resource root, Mode mode )
                 { return (Model) open( this, root, mode ); }
             
+            @Override
             public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 assertEquals( name, root );

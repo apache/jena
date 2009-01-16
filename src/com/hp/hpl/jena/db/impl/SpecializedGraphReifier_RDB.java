@@ -60,7 +60,7 @@ public class SpecializedGraphReifier_RDB
 		m_dbPropLSet = lProp;
 		my_GID = new DBIDInt(dbGraphID);
 		m_reifCache = new ReificationCacheMap(this, 1);
-		m_reif = (PSet_ReifStore_RDB) m_pset;
+		m_reif = m_pset;
 	}
 
 	/** 
@@ -73,7 +73,7 @@ public class SpecializedGraphReifier_RDB
 		m_pset = (PSet_ReifStore_RDB) pSet;
 		my_GID = new DBIDInt(dbGraphID);
 		m_reifCache = new ReificationCacheMap(this, 1);
-		m_reif = (PSet_ReifStore_RDB) m_pset;
+		m_reif = m_pset;
 	}
 
 	/* (non-Javadoc)

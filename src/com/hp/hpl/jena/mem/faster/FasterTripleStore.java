@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.24 2008-12-28 19:32:35 andy_seaborne Exp $
+ 	$Id: FasterTripleStore.java,v 1.25 2009-01-16 17:24:00 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem.faster;
 
@@ -52,6 +52,7 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
         { 
         return new Applyer()
             {
+            @Override
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 Triple t = new Triple( pt.S.finder( d ), pt.P.finder( d ), pt.O.finder( d ) );
@@ -75,6 +76,7 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
                     return subjects.iterateAll();
                 }
     
+            @Override
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 Iterator it = find( d );

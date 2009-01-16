@@ -33,6 +33,7 @@ class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
     int oCount;
     int pCount;
     int rCount;
+    @Override
     public void endElement() {
     }
 

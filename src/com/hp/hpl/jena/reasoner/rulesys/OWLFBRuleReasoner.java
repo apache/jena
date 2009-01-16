@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.21 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.22 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.22 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -66,6 +66,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         checkArgGraph(tbox);
         if (schemaGraph != null) {
@@ -88,6 +89,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         checkArgGraph(data);
         FBRuleInfGraph graph =  null;
@@ -106,6 +108,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
     /**
      * Get the single static precomputed rule closure.
      */
+    @Override
     public InfGraph getPreload() {
         synchronized (OWLFBRuleReasoner.class) {
             if (staticPreload == null) {

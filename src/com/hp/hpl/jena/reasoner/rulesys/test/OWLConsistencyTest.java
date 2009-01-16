@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLConsistencyTest.java,v 1.7 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: OWLConsistencyTest.java,v 1.8 2009-01-16 17:23:58 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.FileManager;
  * Utility for checking OWL validation results.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds </a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 
 public class OWLConsistencyTest extends TestCase {
@@ -125,6 +125,7 @@ public class OWLConsistencyTest extends TestCase {
      * @param rf
      *            The factory for the reasoner to test
      */
+    @Override
     public void runTest() {
         ValidityReport report = testResults();
         switch (expected) {

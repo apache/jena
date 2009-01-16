@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2009-01-16 17:23:48 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property
@@ -51,9 +51,11 @@ public class PropertyImpl extends ResourceImpl implements Property
 
     final static public Implementation factory = new Implementation() 
         {
+        @Override
         public boolean canWrap( Node n, EnhGraph eg )
             { return n.isURI(); }
 
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg )
             { return new PropertyImpl( n, eg ); }
     };
@@ -70,6 +72,7 @@ public class PropertyImpl extends ResourceImpl implements Property
         checkOrdinal();
         }
 
+    @Override
     public RDFNode inModel( Model m )
         { return getModel() == m ? this : m.createProperty( getURI() ); }
 

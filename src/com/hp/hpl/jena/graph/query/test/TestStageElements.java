@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestStageElements.java,v 1.6 2008-12-28 19:32:23 andy_seaborne Exp $
+ 	$Id: TestStageElements.java,v 1.7 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -26,6 +26,7 @@ public class TestStageElements extends QueryTestBase
 
         public Domain lastDomain = null;
 
+        @Override
         public void run( Domain current )
             { wasRun = true; lastDomain = current; }
         }
@@ -37,6 +38,7 @@ public class TestStageElements extends QueryTestBase
         public ControlledValuator( boolean result )
             { this.result = result; }
         
+        @Override
         public boolean evalBool( IndexValues vv )
             { return result; }
         }

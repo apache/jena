@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: XMLBaselessContext.java,v 1.7 2008-12-28 19:32:24 andy_seaborne Exp $
+ $Id: XMLBaselessContext.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
  */
 package com.hp.hpl.jena.rdf.arp.impl;
 
@@ -56,11 +56,13 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         errmsg = parent.errmsg;
     }
 
+    @Override
     AbsXMLContext clone(IRI u, Taint baseT, String lng,
             Taint langT) {
         return new XMLBaselessContext(document, u, baseT, lng, langT, this);
     }
 
+    @Override
     public AbsXMLContext withBase(XMLHandler forErrors, String b)
             throws SAXParseException {
         TaintImpl taintB = new TaintImpl();
@@ -74,6 +76,7 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
                 .create(""), taintB, lang, langTaint);
     }
 
+    @Override
     boolean keepDocument(XMLHandler forErrors) {
         return !forErrors.ignoring(IGN_XMLBASE_SIGNIFICANT);
     }
@@ -87,6 +90,7 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
 
     }
+    @Override
     void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri, IRI rslt) throws SAXParseException {
 
         String resolvedURI = rslt.toString();

@@ -44,7 +44,7 @@ The least significant long consists of the following unsigned fields:
 /** Timebased UUIDs.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1.java,v 1.8 2008-12-28 19:32:00 andy_seaborne Exp $
+ * @version 	$Id: UUID_V1.java,v 1.9 2009-01-16 17:23:59 andy_seaborne Exp $
  */
 
 
@@ -69,7 +69,9 @@ public class UUID_V1 extends JenaUUID
         bitsLeastSignificant = leastSigBits;
     }
     
+    @Override
     public long getMostSignificantBits() { return bitsMostSignificant ; }
+    @Override
     public long getLeastSignificantBits() { return bitsLeastSignificant ; }
     
     private boolean check(long mostSigBits, long leastSigBits)
@@ -82,12 +84,15 @@ public class UUID_V1 extends JenaUUID
         return true ;
     }
     
+    @Override
     public String toString()
     { return UUID_V1_Gen.unparse(this) ; } 
 
     // Time low - which includes the incremental count. 
+    @Override
     public int hashCode() { return (int) Bits.unpack(bitsMostSignificant, 32, 64) ; }
     
+    @Override
     public boolean equals(Object other)
     {
         if ( ! ( other instanceof UUID_V1 ) )
@@ -113,8 +118,10 @@ public class UUID_V1 extends JenaUUID
     }
     public long getNode() { return Bits.unpack(bitsLeastSignificant, 0, 48) ; }
     
+    @Override
     public int getVersion() { return super._getVersion(bitsMostSignificant, bitsLeastSignificant) ; }
 
+    @Override
     public int getVariant() { return super._getVariant(bitsMostSignificant, bitsLeastSignificant) ; }
 }
 

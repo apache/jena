@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.14 2008-12-28 19:32:36 andy_seaborne Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.15 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -22,9 +22,11 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     public PolyadicPrefixMappingImpl( Polyadic p )
         { poly = p; }
     
+    @Override
     protected boolean equals( PrefixMappingImpl other )
         { return equalsByMap( other ); }
     
+    @Override
     protected boolean sameAs( PrefixMappingImpl other )
         { return equalsByMap( other ); }
            
@@ -34,6 +36,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return base == null ? pending : base.getPrefixMapping(); 
         }
     
+    @Override
     public PrefixMapping setNsPrefix( String prefix, String uri ) 
         {
         checkUnlocked();
@@ -41,6 +44,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return this;
         }
     
+    @Override
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
@@ -54,6 +58,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         
         @param other the PrefixMapping whose bindings we are to add to this.
     */
+    @Override
     public PrefixMapping setNsPrefixes( PrefixMapping other )
         { return setNsPrefixes( other.getNsPrefixMap() ); }
         
@@ -65,6 +70,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         
          @param other the Map whose bindings we are to add to this.
     */
+    @Override
     public PrefixMapping setNsPrefixes( Map other )
         {
         checkUnlocked();
@@ -72,6 +78,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return this;
         }
          
+    @Override
     public String getNsPrefixURI( String prefix ) 
         {
         PrefixMapping bm = getBaseMapping();
@@ -88,6 +95,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return s;
         }
         
+    @Override
     public Map getNsPrefixMap()
         { 
         Map result = CollectionFactory.createHashedMap();
@@ -99,6 +107,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return result; 
         }
         
+    @Override
     public String getNsURIPrefix( String uri )
         {
         String s = getBaseMapping().getNsURIPrefix( uri );
@@ -119,6 +128,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
         someone takes it into their heads to define eg "http" or "ftp" we have problems.
     */
+    @Override
     public String expandPrefix( String prefixed )
         {
         String s = getBaseMapping().expandPrefix( prefixed );
@@ -137,6 +147,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     /**
         Answer a readable (we hope) representation of this prefix mapping.
     */
+    @Override
     public String toString()
         { return "<polyadic prefix map>"; }
         
@@ -147,6 +158,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         efficient algorithm available, preprocessing the prefix strings into some
         kind of search table, but for the moment we don't need it.
     */
+    @Override
     public String shortForm( String uri )
         {
         String s = getBaseMapping().shortForm( uri );
@@ -162,6 +174,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return s;
         }
     
+    @Override
     public String qnameFor( String uri )
         {
         String result = getBaseMapping().qnameFor( uri );

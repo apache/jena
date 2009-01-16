@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.13 2008-12-28 19:32:29 andy_seaborne Exp $
+  $Id: GraphMemBase.java,v 1.14 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -64,6 +64,7 @@ public abstract class GraphMemBase extends GraphBase
          Close this graph; if it is now fully closed, destroy its resources and run
          the GraphBase close.
     */
+    @Override
     public void close()
         {
         if (--count == 0)
@@ -78,6 +79,7 @@ public abstract class GraphMemBase extends GraphBase
     */
     public abstract void clear();
 
+    @Override
     public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );

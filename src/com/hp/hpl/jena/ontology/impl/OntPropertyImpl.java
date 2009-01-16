@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.27 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.28 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -61,6 +61,7 @@ public class OntPropertyImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new OntPropertyImpl( n, eg );
@@ -70,6 +71,7 @@ public class OntPropertyImpl
             }
         }
 
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an OntProperty facet if it has rdf:type owl:Property or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -107,6 +109,7 @@ public class OntPropertyImpl
      *
      * @return True.
      */
+    @Override
     public boolean isProperty() {
         return true;
     }
@@ -541,6 +544,7 @@ public class OntPropertyImpl
      * @exception ConversionException if the resource cannot be converted to a datatype property
      * given the language profile and the current state of the underlying model.
      */
+    @Override
     public DatatypeProperty asDatatypeProperty() {
         return (DatatypeProperty) as( DatatypeProperty.class );
     }
@@ -551,6 +555,7 @@ public class OntPropertyImpl
      * @exception ConversionException if the resource cannot be converted to an object property
      * given the language profile and the current state of the underlying model.
      */
+    @Override
     public ObjectProperty asObjectProperty() {
         return (ObjectProperty) as( ObjectProperty.class );
     }
@@ -650,6 +655,7 @@ public class OntPropertyImpl
      * <p>Answer true if this property is a datatype property</p>
      * @return True if this this property has an <code>rdf:type</code> that defines it as a datatype property.
      */
+    @Override
     public boolean isDatatypeProperty() {
         return hasRDFType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY", false );
     }
@@ -658,6 +664,7 @@ public class OntPropertyImpl
      * <p>Answer true if this property is an object property</p>
      * @return True if this this property has an <code>rdf:type</code> that defines it as an object property.
      */
+    @Override
     public boolean isObjectProperty() {
         return hasRDFType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY", false );
     }
@@ -776,6 +783,7 @@ public class OntPropertyImpl
                 // of all classes, but we ignore the built-in classes
                 return ((OntModel) getModel()).listClasses()
                                               .filterDrop( new Filter() {
+                                                @Override
                                                 public boolean accept( Object o ) {
                                                     return ((OntClass) o).isOntLanguageTerm();
                                                 }} );
@@ -828,6 +836,7 @@ public class OntPropertyImpl
      * @param m A model
      * @return A property equal to this property that is attached to m.
      */
+    @Override
     public RDFNode inModel( Model m ) {
         return (getModel() == m) ? this : m.createProperty( getURI() );
     }
@@ -853,6 +862,7 @@ public class OntPropertyImpl
             m_direct = direct;
         }
 
+        @Override
         public boolean accept( Object o ) {
             return ((OntClass) o).hasDeclaredProperty( m_prop, m_direct );
         }

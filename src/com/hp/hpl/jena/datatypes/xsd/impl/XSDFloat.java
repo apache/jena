@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDFloat.java,v 1.8 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XSDFloat.java,v 1.9 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * XSDDatatype because the equality function needs overriding.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.9 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XSDFloat extends XSDDatatype {
     /**
@@ -60,7 +60,8 @@ public class XSDFloat extends XSDDatatype {
       * Test whether the given object is a legal value form
       * of this datatype. Brute force implementation.
       */
-     public boolean isValidValue(Object valueForm) {
+     @Override
+    public boolean isValidValue(Object valueForm) {
          return (valueForm instanceof Float);
      }
    
@@ -68,7 +69,8 @@ public class XSDFloat extends XSDDatatype {
       * Parse a lexical form of this datatype to a value
       * @throws DatatypeFormatException if the lexical form is not legal
       */
-     public Object parse(String lexicalForm) throws DatatypeFormatException {
+     @Override
+    public Object parse(String lexicalForm) throws DatatypeFormatException {
          checkWhitespace(lexicalForm);        
          return super.parse(lexicalForm);
      }
@@ -78,6 +80,7 @@ public class XSDFloat extends XSDDatatype {
      * parse implementation and are not convered by the explicit convertValidatedData
      * cases should override this.
      */
+    @Override
     public Object parseValidated(String lex) {
         if (lex.equals("INF")) {
             return new Float(Float.NEGATIVE_INFINITY);
@@ -107,7 +110,8 @@ public class XSDFloat extends XSDDatatype {
       * This ignores lang tags and just uses the java.lang.Number 
       * equality.
       */
-     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+     @Override
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
          return value1.getDatatype() == value2.getDatatype()
               && value1.getValue().equals(value2.getValue());
      }

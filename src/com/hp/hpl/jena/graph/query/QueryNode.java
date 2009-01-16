@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.14 2008-12-28 19:32:10 andy_seaborne Exp $
+    $Id: QueryNode.java,v 1.15 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -69,6 +69,7 @@ public abstract class QueryNode
         Return a handy string representation for debugging purposes. Not for
         machine consumption.
     */
+    @Override
     public String toString()
         { return node.toString() + "[" + index + "]"; }
 
@@ -146,12 +147,15 @@ public abstract class QueryNode
         public Fixed( Node n )
             { super( n ); }
         
+        @Override
         public Node finder( Domain d )
             { return node; }
         
+        @Override
         public boolean matchOrBind( Domain d, Node x )
             { return node.matches( x ); }
         
+        @Override
         public String toString()
             { return node.toString() + "[fixed]"; }
         }
@@ -161,20 +165,25 @@ public abstract class QueryNode
         public Bind( Node n, int index )
             { super( n, index ); }
         
+        @Override
         public boolean mustMatch()
             { return true; }
         
+        @Override
         public boolean isFrozen()
             { return false; }
         
+        @Override
         public boolean match( Domain d, Node value )
             { d.setElement( index, value );
             return true; }
         
+        @Override
         public boolean matchOrBind( Domain d, Node value )
             { d.setElement( index, value );
             return true; }
         
+        @Override
         public String toString()
             { return node.toString() + "[bind " + index + "]"; }
         }
@@ -184,18 +193,23 @@ public abstract class QueryNode
         public JustBound( Node n, int index )
             { super( n, index ); }  
         
+        @Override
         public boolean mustMatch()
             { return true; } 
         
+        @Override
         public boolean isFrozen()
             { return false; }
         
+        @Override
         public boolean match( Domain d, Node X )
             { return X.matches( d.getElement( index ) ); }
         
+        @Override
         public boolean matchOrBind( Domain d, Node x )
             { return x.matches( d.getElement( index ) ); }
 
+        @Override
         public String toString()
             { return node.toString() + "[just " + index + "]"; }
         }
@@ -205,12 +219,15 @@ public abstract class QueryNode
         public Bound( Node n, int index )
             { super( n, index ); }
         
+        @Override
         public Node finder( Domain d )
             { return d.getElement( index ); }
         
+        @Override
         public boolean matchOrBind( Domain d, Node x )
             { return d.getElement( index ).matches( x ); }
         
+        @Override
         public String toString()
             { return node.toString() + "[bound " + index + "]"; }
         }        
@@ -220,9 +237,11 @@ public abstract class QueryNode
         public Any()
             { super( Node.ANY ); }
         
+        @Override
         public boolean matchOrBind( Domain d, Node x )
             { return true; }
         
+        @Override
         public String toString()
             { return "ANY"; }
         }

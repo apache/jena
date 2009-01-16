@@ -10,6 +10,7 @@ class EventRecord {
     String rsltState;
     String rsltCharacter[];  
     
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer(toString(startEvents));
         buf.append(" = "+ rsltState +" " );

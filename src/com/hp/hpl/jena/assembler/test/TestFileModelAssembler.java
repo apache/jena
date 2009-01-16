@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileModelAssembler.java,v 1.9 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestFileModelAssembler.java,v 1.10 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -21,6 +21,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
     public TestFileModelAssembler( String name )
         { super( name );  }
 
+    @Override
     protected Class getAssemblerClass()
         { return FileModelAssembler.class; }
 
@@ -57,6 +58,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         final Model model = ModelFactory.createDefaultModel();
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
                 { return model; }
             };
@@ -71,6 +73,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:; x ja:fileEncoding 'LANG'" );
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
                 {
                 assertEquals( "LANG", lang );
@@ -94,6 +97,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:; x ja:fileEncoding <lang>".replaceAll( "<lang>", lang ) );
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
                 { return model; }
             };
@@ -118,6 +122,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         final Model model = ModelFactory.createDefaultModel();
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle s )
                 { 
                 assertSame( style, s );
@@ -152,6 +157,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         private NoteAssemblerBooleans()
             { this.model = model(); }
 
+        @Override
         public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle s )
             { 
             this.create = create;
@@ -176,6 +182,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         Mode mode = new Mode( mayCreate, mayReuse );
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle s )
                 { 
                 if (mayCreate && mayReuse) 
@@ -230,6 +237,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         root.getModel().add( extras );
         FileModelAssembler a = new FileModelAssembler()
             {
+            @Override
             public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
                 {
                 assertEquals( wantedFullName, fullName );

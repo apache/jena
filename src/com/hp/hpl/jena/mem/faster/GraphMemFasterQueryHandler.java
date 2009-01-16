@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFasterQueryHandler.java,v 1.8 2008-12-28 19:32:35 andy_seaborne Exp $
+ 	$Id: GraphMemFasterQueryHandler.java,v 1.9 2009-01-16 17:24:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -15,6 +15,7 @@ public class GraphMemFasterQueryHandler extends GraphMemBaseQueryHandler impleme
     GraphMemFasterQueryHandler( GraphMemFaster graph ) 
         { super( graph ); }
     
+    @Override
     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
         { return new FasterPatternStage( graph, map, constraints, t ); }
     }

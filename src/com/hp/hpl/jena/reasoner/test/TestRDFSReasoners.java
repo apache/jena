@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.20 2009-01-13 13:22:49 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.21 2009-01-16 17:24:02 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2009-01-13 13:22:49 $
+ * @version $Revision: 1.21 $ on $Date: 2009-01-16 17:24:02 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
@@ -159,6 +159,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
         /**
          * The test runner
          */
+        @Override
         public void runTest() throws IOException {
             tester.runTest(test, reasoner, this);
         }
@@ -196,6 +197,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
         /**
          * The test runner
          */
+        @Override
         public void runTest() throws IOException {
             tester.runTest(test, reasonerFactory, this, config);
         }
@@ -224,6 +226,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
         /**
          * The test runner
          */
+        @Override
         public void runTest() throws IOException {
             ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
             // Test effect of switching off property scan - should break container property test case

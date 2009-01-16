@@ -205,7 +205,8 @@ class NTripleTestSuite extends WGTestSuite {
 		/* (non-Javadoc)
 		 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 		 */
-		public void error(SAXParseException exception) throws SAXException {
+		@Override
+        public void error(SAXParseException exception) throws SAXException {
 			hasErrors = true;
 			super.error(exception);
 
@@ -214,7 +215,8 @@ class NTripleTestSuite extends WGTestSuite {
 		/* (non-Javadoc)
 		 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 		 */
-		public void fatalError(SAXParseException exception)
+		@Override
+        public void fatalError(SAXParseException exception)
 			throws SAXException {
 			hasErrors = true;
 			super.fatalError(exception);
@@ -235,7 +237,8 @@ class NTripleTestSuite extends WGTestSuite {
 
 	}
 
-	Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
+	@Override
+    Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
 		throws IOException {
 		return loadRDFx(in, eh, base, true, 0);
 	}
@@ -259,7 +262,8 @@ class NTripleTestSuite extends WGTestSuite {
 		} else {
 			out = new PrintStream(new OutputStream() {
 
-				public void write(int b) throws IOException {
+				@Override
+                public void write(int b) throws IOException {
 				}
 			});
 			th = new TestHandler(eh, cnt);

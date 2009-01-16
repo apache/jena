@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.22 2008-12-28 19:31:52 andy_seaborne Exp $
+ * $Id: NTripleWriter.java,v 1.23 2009-01-16 17:23:48 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2009-01-16 17:23:48 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -234,7 +234,7 @@ public class NTripleWriter extends Object implements RDFWriter {
             } else if (Character.isLetterOrDigit(c)) {
                 name = name + c;
             } else {
-                name = name + "X" + Integer.toHexString((int) c) + "X";
+                name = name + "X" + Integer.toHexString(c) + "X";
             }
         }
         return name;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.23 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.24 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -367,8 +367,10 @@ public class TestPackage extends GraphTestBase  {
         {
         static final Implementation factory = new Implementation()
             {
+            @Override
             public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
             
+            @Override
             public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
             };
         }
@@ -389,8 +391,10 @@ public class TestPackage extends GraphTestBase  {
         {
         static final Implementation factory = new Implementation()
             {
+            @Override
             public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
             
+            @Override
             public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
             };
         }

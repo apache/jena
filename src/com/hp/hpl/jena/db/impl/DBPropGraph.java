@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -273,7 +273,8 @@ public class DBPropGraph extends DBProp {
 		return res;
 	}
 	
-	public void remove() {
+	@Override
+    public void remove() {
 		Iterator it = getAllPrefixes();
 		while( it.hasNext()) {
 			((DBPropPrefix)it.next()).remove();			

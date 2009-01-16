@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.16 2008-12-28 19:32:29 andy_seaborne Exp $
+ 	$Id: HashCommon.java,v 1.17 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -283,12 +283,14 @@ public abstract class HashCommon
             this.container = container;
             }
 
+        @Override
         public boolean hasNext()
             { 
             if (changes > initialChanges) throw new ConcurrentModificationException();
             return index < keys.size(); 
             }
 
+        @Override
         public Object next()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
@@ -296,6 +298,7 @@ public abstract class HashCommon
             return keys.get( index++ );
             }
 
+        @Override
         public void remove()
             { 
             if (changes > initialChanges) throw new ConcurrentModificationException();
@@ -325,6 +328,7 @@ public abstract class HashCommon
             this.container = container;
             }
 
+        @Override
         public boolean hasNext()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
@@ -332,6 +336,7 @@ public abstract class HashCommon
             return index < capacity;
             }
 
+        @Override
         public Object next()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
@@ -339,6 +344,7 @@ public abstract class HashCommon
             return keys[index++];
             }
 
+        @Override
         public void remove()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();

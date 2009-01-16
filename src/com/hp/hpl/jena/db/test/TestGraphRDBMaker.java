@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.14 2008-12-28 19:32:18 andy_seaborne Exp $
+  $Id: TestGraphRDBMaker.java,v 1.15 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -35,6 +35,7 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
     public static TestSuite suite()
         { return new TestSuite( TestGraphRDBMaker.class ); }
         
+    @Override
     public void setUp()
         { // order is import - super.setUp grabs a graph 
         connection = TestConnection.makeAndCleanTestConnection();
@@ -49,6 +50,7 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
     /**
         Invent a new factory on the connection, record it, and return it.    
     */
+    @Override
     public GraphMaker getGraphMaker()
         { return current = new GraphRDBMaker( connection, ReificationStyle.Minimal ); }    
         
@@ -56,6 +58,7 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
         Run the parent teardown, and then remove all the freshly created graphs.
      * @throws  
     */
+    @Override
     public void tearDown()
         {
         super.tearDown();

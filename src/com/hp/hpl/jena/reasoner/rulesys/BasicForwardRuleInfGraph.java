@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.51 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.52 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.51 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.52 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -143,6 +143,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * inference graph and the raw data, before processing.
      * @param data the new raw data graph
      */
+    @Override
     public void rebind(Graph data) {
         fdata = new FGraph( data );
         rebind();
@@ -155,6 +156,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * are made "behind the InfGraph's back" and this forces a full reconsult of
      * the changed data. 
      */
+    @Override
     public void rebind() {
         version++;
         isPrepared = false;
@@ -163,6 +165,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Return the schema graph, if any, bound into this inference graph.
      */
+    @Override
     public Graph getSchemaGraph() {
         return schemaGraph;
     }
@@ -175,6 +178,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * rule system) and where an application might wish greater control over when
      * this prepration is done.
      */
+    @Override
     public synchronized void prepare() {
         if (isPrepared) return;
         isPrepared = true;
@@ -232,6 +236,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
+    @Override
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
@@ -253,6 +258,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * This implementation assumes that the underlying findWithContinuation 
      * will have also consulted the raw data.
      */
+    @Override
     public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
     }
@@ -265,6 +271,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
+    @Override
     public ExtendedIterator find(TriplePattern pattern) {
         return findWithContinuation(pattern, null);
     }
@@ -274,6 +281,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
+    @Override
     public synchronized void performAdd(Triple t) {
         version++;
         fdata.getGraph().add(t);
@@ -285,6 +293,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Return the number of triples in the inferred graph
      */
+    @Override
     public int graphBaseSize() {
         checkOpen();
         if (!isPrepared) {
@@ -299,6 +308,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
+    @Override
     public void performDelete(Triple t) {
         version++;
         if (fdata != null) {
@@ -315,6 +325,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** 
      * Free all resources, any further use of this Graph is an error.
      */
+    @Override
     public void close() {
         if (!closed) {
             engine = null;
@@ -348,6 +359,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Return the Graph containing all the static deductions available so far.
      */
+    @Override
     public Graph getDeductionsGraph() {
         prepare();
         return fdeductions.getGraph();
@@ -408,6 +420,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Set to true to enable derivation caching
      */
+    @Override
     public void setDerivationLogging(boolean recordDerivations) {
         this.recordDerivations = recordDerivations;
         engine.setDerivationLogging(recordDerivations);
@@ -429,6 +442,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Return the derivation of at triple.
      * The derivation is a List of DerivationRecords
      */
+    @Override
     public Iterator getDerivation(Triple t) {
         if (derivations == null) {
             return new NullIterator();
@@ -461,6 +475,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         return engine.getNRulesFired();
     }
     
+    @Override
     public Reifier constructReifier()
         { 
         BasicFBReifier.GetReifier deductionsReifier = new BasicFBReifier.GetReifier()

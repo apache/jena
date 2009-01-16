@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.20 2009-01-13 14:06:00 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.21 2009-01-16 17:23:51 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -25,6 +25,7 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
     public static TestSuite suite()
         { return new TestSuite( TestPrefixMapping.class ); }
 
+    @Override
     protected PrefixMapping getMapping()
         { return new PrefixMappingImpl(); }
 

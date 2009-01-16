@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Fluid.java,v 1.9 2008-12-28 19:32:04 andy_seaborne Exp $
+  $Id: Node_Fluid.java,v 1.10 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,6 +16,7 @@ public abstract class Node_Fluid extends Node
     protected Node_Fluid(Object label)
         { super(label); }
 
+    @Override
     public boolean isConcrete()
         { return false; }
     }

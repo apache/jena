@@ -118,7 +118,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 * Allocate an identifier for a new graph.
 	 *
 	 */
-	public int graphIdAlloc ( String graphName ) {
+	@Override
+    public int graphIdAlloc ( String graphName ) {
 		int dbid = 0;
 		try {
 			String op = "insertGraph";
@@ -208,7 +209,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	* make several attempts to create the table.
 	*/	
 
-	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+	@Override
+    protected String[] getCreateTableParams( int graphId, boolean isReif ) {
 		String [] parms = new String[3];
 		String [] res = new String[2];
 				
@@ -222,7 +224,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	/**
 	 * Return the parameters for database initialization.
 	 */
-	protected String[] getDbInitTablesParams() {
+	@Override
+    protected String[] getDbInitTablesParams() {
 		String [] res = new String[3];
 		
 		getTblParams (res);
@@ -236,7 +239,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 * This assumes the object is not already in the database.
 	 * @return the db index of the added literal 
 	 */
-	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
+	@Override
+    public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
 		DBIDInt longObjID = null;
 		try {
 			int argi = 1;
@@ -313,6 +317,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
 /**
  * Retrieve LongObject from database.
  */
+@Override
 protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 	RDBLongObject	res = null;
 	try {
@@ -349,6 +354,7 @@ protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
  * Drop all Jena-related sequences from database, if necessary.
  * Override in subclass if sequences must be explicitly deleted.
  */
+@Override
 public void clearSequences() {
 	Iterator seqIt = getSequences().iterator();
 	while (seqIt.hasNext()) {
@@ -356,16 +362,20 @@ public void clearSequences() {
 	}
 }
 	
+@Override
 public String genSQLStringMatchLHS_IC(String var) {
 	return "UPPER(" + var + ")";
 }
 
+@Override
 public String genSQLStringMatchRHS_IC(String strToMatch) {
 	return "UPPER(" + strToMatch + ")";
 }
 
+@Override
 public String stringMatchEscapeChar() { return "\\"; }
 
+@Override
 public String genSQLStringMatchEscape() {
 	return " " + genSQLEscapeKW() + " '" + stringMatchEscapeChar() + "'";
 }

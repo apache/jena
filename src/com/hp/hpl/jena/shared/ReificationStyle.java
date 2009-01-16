@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ReificationStyle.java,v 1.9 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: ReificationStyle.java,v 1.10 2009-01-16 17:24:04 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -39,6 +39,7 @@ public class ReificationStyle
         a description of the fields. <i>code should not rely on these values</i>;
         they may be changed for debugging or convenience.
     */
+    @Override
     public String toString()
         { 
         if (this == Minimal) return "Minimal";

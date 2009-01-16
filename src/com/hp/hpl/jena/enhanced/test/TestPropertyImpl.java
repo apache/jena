@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPropertyImpl.java,v 1.11 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestPropertyImpl.java,v 1.12 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -15,9 +15,11 @@ import com.hp.hpl.jena.graph.*;
 public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
 
     public static final Implementation factory = new Implementation() {
+    @Override
     public EnhNode wrap(Node n,EnhGraph eg) {
         return new TestPropertyImpl(n,eg);
     }    
+    @Override
     public boolean canWrap( Node n, EnhGraph eg )
         { return true; }
 };
@@ -27,6 +29,7 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
         super( n, eg );
     }
     
+    @Override
     public boolean supports( Class t )
         { return t.isInstance( this ) && isProperty(); }
         

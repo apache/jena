@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.15 2009-01-13 14:05:58 chris-dollin Exp $
+ 	$Id: ContentAssembler.java,v 1.16 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -26,6 +26,7 @@ public class ContentAssembler extends AssemblerBase implements Assembler
     public ContentAssembler( FileManager fm )
         { this.defaultFileManager = fm; }
 
+    @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
         checkType( root, JA.Content );
@@ -131,8 +132,10 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         {
         return new Content() 
             { 
+            @Override
             public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } 
             
+            @Override
             public boolean isEmpty() { return m.isEmpty(); }
             };
         }

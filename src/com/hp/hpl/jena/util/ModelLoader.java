@@ -17,7 +17,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.29 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.30 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -25,20 +25,26 @@ public class ModelLoader
     static Log log = LogFactory.getLog(ModelLoader.class)  ;
     
     /** @deprecated Use FileUtils.FileUtils.langXML */
+    @Deprecated
     public static final String langXML          = FileUtils.langXML ;
     
     /** @deprecated Use FileUtils.langXMLAbbrev */
+    @Deprecated
     public static final String langXMLAbbrev    = FileUtils.langXMLAbbrev ;
     
     /** @deprecated Use FileUtils.langNTriple */
+    @Deprecated
     public static final String langNTriple      = FileUtils.langNTriple ;
     
     /** @deprecated Use FileUtils.langN3 */
+    @Deprecated
     public static final String langN3           = FileUtils.langN3 ;
     // Non-standard
     /** @deprecated Use FileUtils.langBDB */
+    @Deprecated
     public static final String langBDB          = FileUtils.langBDB ;
     /** @deprecated Use FileUtils.langSQL */
+    @Deprecated
     public static final String langSQL          = FileUtils.langSQL ;
 
     
@@ -47,6 +53,7 @@ public class ModelLoader
      * @param urlStr    The URL or file name of the model
      */
 
+    @Deprecated
     public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; }
 
 	/** Load a model or attached a persistent store (but not a database).
@@ -55,6 +62,7 @@ public class ModelLoader
 	 * @param lang		The language of the data - if null, the system guesses
 	 */
 
+    @Deprecated
     public static Model loadModel(String urlStr, String lang)
     {
         try {
@@ -146,6 +154,7 @@ public class ModelLoader
      * @return Returns the model passed in.
      */
 
+    @Deprecated
     public static Model loadModel(Model model, String urlStr)
     {
         return loadModel(model, urlStr, null) ;
@@ -158,6 +167,7 @@ public class ModelLoader
      * @return Returns the model passed in.
      */
 
+    @Deprecated
     public static Model loadModel(Model model, String urlStr, String lang)
     {
         try {
@@ -216,6 +226,7 @@ public class ModelLoader
      * @return String   Guessed syntax - or the default supplied
      */
 
+    @Deprecated
     public static String guessLang( String urlStr, String defaultLang )
     {
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
@@ -238,6 +249,7 @@ public class ModelLoader
      * @return String   Guessed syntax - null for no guess.
 	 */
 
+    @Deprecated
     public static String guessLang(String urlStr)
     {
         return FileUtils.guessLang(urlStr) ;

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerVocabulary.java,v 1.12 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: TestAssemblerVocabulary.java,v 1.13 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -14,6 +14,7 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
     public TestAssemblerVocabulary( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return null; }
 

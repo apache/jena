@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.72 $ on $Date: 2009-01-16 12:53:14 $
+* @version $Revision: 1.73 $ on $Date: 2009-01-16 17:23:54 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -912,7 +912,7 @@ public abstract class DriverRDB implements IRDBDriver {
     		if ( tryLockDB() )
     			break;
 			try {
-				Thread.sleep((long)5000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				err = err + " lockDB sleep interrupted" + e;
 			}
@@ -940,7 +940,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		} catch (SQLException e) {
 			err = "Failed to unlock database after "+ lockTryMax + " attempts - " + e;
 			try {
-				Thread.sleep((long)5000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e1) {
 				err = err + " sleep failed" + e;
 			}
@@ -1539,7 +1539,7 @@ public abstract class DriverRDB implements IRDBDriver {
 				// see if it's cached
 				DBIDInt pfxid = URItoPrefix(uri, pos, addIfLong);
 				if ( pfxid == null ) return res;
-				pfx = RDBCodeDelim + ((DBIDInt)pfxid).getIntID() + RDBCodeDelim;
+				pfx = RDBCodeDelim + (pfxid).getIntID() + RDBCodeDelim;
 				qname = uri.substring(pos);
 			}
 			int encodeLen = RDBCodeURI.length() + 1 + pfx.length() + EOS_LEN;

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AnnotationPropertyImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:13 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AnnotationPropertyImpl.java,v 1.12 2008-12-28 19:32:13 andy_seaborne Exp $
+ * @version CVS $Id: AnnotationPropertyImpl.java,v 1.13 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class AnnotationPropertyImpl
     extends OntPropertyImpl
@@ -55,6 +55,7 @@ public class AnnotationPropertyImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new AnnotationPropertyImpl( n, eg );
@@ -64,6 +65,7 @@ public class AnnotationPropertyImpl
             }
         }
 
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an AnnotationProperty facet if it has rdf:type owl:AnnotationProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -101,6 +103,7 @@ public class AnnotationPropertyImpl
      *
      * @return True.
      */
+    @Override
     public boolean isProperty() {
         return true;
     }
@@ -109,6 +112,7 @@ public class AnnotationPropertyImpl
     /**
      * @see Property#getOrdinal()
      */
+    @Override
     public int getOrdinal() {
         return ((Property) as( Property.class )).getOrdinal();
     }

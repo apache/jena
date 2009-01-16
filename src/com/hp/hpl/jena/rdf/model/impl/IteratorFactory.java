@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: IteratorFactory.java,v 1.15 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: IteratorFactory.java,v 1.16 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,14 +29,16 @@ public final class IteratorFactory {
     /**
 	     @deprecated use Model::asRDFNode( Node ) instead. 
 	*/
-	static public RDFNode asRDFNode( Node n, Model m ) {
+	@Deprecated
+    static public RDFNode asRDFNode( Node n, Model m ) {
         return m.asRDFNode( n );
 	}
 		
 	/**
 	    @deprecated use Model::toStatement( Triple )
 	*/
-	static public Statement asStatement( Triple t, ModelCom m ) {
+	@Deprecated
+    static public Statement asStatement( Triple t, ModelCom m ) {
         return StatementImpl.toStatement( t, m );
 	}
 

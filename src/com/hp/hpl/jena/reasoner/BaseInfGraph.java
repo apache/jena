@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.50 2009-01-08 14:56:42 andy_seaborne Exp $
+ * $Id: BaseInfGraph.java,v 1.51 2009-01-16 17:23:59 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.50 $ on $Date: 2009-01-08 14:56:42 $
+ * @version $Revision: 1.51 $ on $Date: 2009-01-16 17:23:59 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -43,6 +43,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
          Inference graphs share the prefix-mapping of their underlying raw graph.
      	@see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
     */
+    @Override
     public PrefixMapping getPrefixMapping()
         { return getRawGraph().getPrefixMapping(); }
 
@@ -52,6 +53,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         TODO write a test case that reveals this.
      	@see com.hp.hpl.jena.graph.Graph#getReifier()
     */    
+    @Override
     public Reifier constructReifier()
         {  return getRawGraph().getReifier(); }
 
@@ -75,6 +77,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
         Answer the InfCapabilities of this InfGraph.
      */
+    @Override
     public Capabilities getCapabilities() {
         if (capabilities == null) {
             return getReasoner().getGraphCapabilities();
@@ -93,9 +96,13 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     */
     public static class InfCapabilities extends AllCapabilities
         {
+        @Override
         public boolean sizeAccurate() { return false; }
+        @Override
         public boolean deleteAllowed( boolean every ) { return !every; }
+        @Override
         public boolean iteratorRemoveAllowed() { return false; }
+        @Override
         public boolean findContractSafe() { return false; }
         }
 
@@ -109,9 +116,11 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     */
     public static class InfFindSafeCapabilities extends InfCapabilities
         {
+        @Override
         public boolean findContractSafe() { return true; }
         }
 
+    @Override
     public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bulkHandler == null) bulkHandler = new InfBulkUpdateHandler( this );
@@ -129,6 +138,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public InfBulkUpdateHandler( BaseInfGraph  graph )
             { super(graph); }
 
+        @Override
         public void remove( Node s, Node p, Node o )
             {
             BaseInfGraph g = (BaseInfGraph) graph;
@@ -138,6 +148,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
             manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
             }
 
+        @Override
         public void removeAll()
             {
             BaseInfGraph g = (BaseInfGraph) graph;
@@ -148,6 +159,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
             }
     	}
 
+    @Override
     public TransactionHandler getTransactionHandler()
         { return new InfTransactionHandler( this ); }
 
@@ -329,6 +341,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      *
      * <p>[Chris, after discussion with Dave]
      */
+    @Override
     public ExtendedIterator graphBaseFind(TripleMatch m) {
         return graphBaseFind(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
              // .filterKeep(new TripleMatchFilter(m.asTriple()))
@@ -340,6 +353,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * This implementation assumes that the underlying findWithContinuation
      * will have also consulted the raw data.
      */
+    @Override
     public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
     }
@@ -392,6 +406,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Return the number of triples in the just the base graph
      */
+    @Override
     public int graphBaseSize() {
         checkOpen();
         return fdata.getGraph().size();
@@ -401,6 +416,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         Answer true iff this graph is empty. [Used to be in QueryHandler, but moved in
         here because it's a more primitive operation.]
     */
+    @Override
     public boolean isEmpty() {
         return fdata.getGraph().isEmpty();
     }
@@ -408,6 +424,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Free all resources, any further use of this Graph is an error.
      */
+    @Override
     public void close() {
         if (!closed) {
             fdata.getGraph().close();
@@ -428,6 +445,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
+    @Override
     public synchronized void performAdd(Triple t) {
         version++;
         if (!isPrepared) prepare();
@@ -437,6 +455,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Removes the triple t (if possible) from the set belonging to this graph.
      */
+    @Override
     public void performDelete(Triple t) {
         version++;
         if (!isPrepared) prepare();

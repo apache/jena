@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.47 2009-01-16 11:49:45 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.48 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -43,6 +43,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     public Graph getGraphWith( String facts )
         { return graphAdd( getGraph(), facts ); }
         
+    @Override
     public void setUp()
         {
 		Q = new Query();
@@ -430,12 +431,15 @@ public abstract class AbstractTestQuery extends QueryTestBase
         final Triple [][] tripleses = new Triple[1][];
         final Graph g = new GraphBase()
             {
+            @Override
             public ExtendedIterator graphBaseFind( TripleMatch tm )
                 { return NullIterator.instance; }
+            @Override
             public QueryHandler queryHandler()
                 {
                 return new SimpleQueryHandler( this )
                     {
+                    @Override
                     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
                         {
                         if (t.length > 1) tripleses[0] = t;
@@ -600,6 +604,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query().addMatch( Triple.ANY );
         Graph g = new GraphBase() 
             {
+            @Override
             protected ExtendedIterator graphBaseFind( TripleMatch m )
                 { throw new BangException(); }
             };
@@ -633,6 +638,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         final String f = ExpressionFunctionURIs.prefix + op;
         return new Dyadic( l, f, r )
             {
+            @Override
             public boolean evalBool( Object l, Object r )
                 { return false; }
             };
@@ -744,22 +750,27 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         int counter;
         private QueryHandler qh;
+        @Override
         public QueryHandler queryHandler( ) { return qh; }
         CountingGraph( Graph base ) 
             { super( base ); qh = new SimpleQueryHandler( this ); }
+        @Override
         public ExtendedIterator find( Node s, Node p, Node o ) 
             { return find( Triple.createMatch( s, p, o )  ); }
+        @Override
         public ExtendedIterator find( TripleMatch tm )
             { return count( base.find( tm ) ); }
         ExtendedIterator count( ExtendedIterator it )
             {
             return new WrappedIterator( it )
                 { 
+                @Override
                 public Object next() { try { return super.next(); } finally { counter += 1; } }
                 };        
             }
         int getCount() 
             { return counter; }
+        @Override
         public String toString()
             { return base.toString(); }
         }

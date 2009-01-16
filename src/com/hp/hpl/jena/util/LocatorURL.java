@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.19 2009-01-12 16:47:48 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.20 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -38,7 +38,7 @@ public class LocatorURL implements Locator
         try
         {
             URL url = new URL(filenameOrURI);
-            URLConnection conn = (HttpURLConnection) url.openConnection();
+            URLConnection conn = url.openConnection();
             conn.setRequestProperty("Accept", acceptHeader) ;
             conn.setRequestProperty("Accept-Charset", "utf-8,*") ;
             conn.setDoInput(true) ;
@@ -90,11 +90,13 @@ public class LocatorURL implements Locator
         }
     }
 
+    @Override
     public boolean equals( Object other )
     {
         return other instanceof LocatorURL;
     }
 
+    @Override
     public int hashCode()
     {
         return LocatorURL.class.hashCode();

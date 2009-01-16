@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.14 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: ModelExpansion.java,v 1.15 2009-01-16 17:24:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -281,6 +281,7 @@ public class ModelExpansion
         LinkedSeq push( Resource item ) 
             { return new LinkedSeq( item, this ); }
         
+        @Override
         public String toString()
             {
             StringBuffer result = new StringBuffer( "[" );

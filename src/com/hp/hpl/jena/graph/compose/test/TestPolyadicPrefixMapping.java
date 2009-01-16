@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPolyadicPrefixMapping.java,v 1.11 2008-12-28 19:32:05 andy_seaborne Exp $
+  $Id: TestPolyadicPrefixMapping.java,v 1.12 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -32,6 +32,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     protected static final String alpha = "something:alpha#";
     protected static final String beta = "something:beta#";
     
+    @Override
     public void setUp()
         {
         gBase = Factory.createDefaultGraph();
@@ -41,6 +42,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
         poly.setBaseGraph( gBase );
         }
     
+    @Override
     protected PrefixMapping getMapping()
         {
         Graph gBase = Factory.createDefaultGraph();

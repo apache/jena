@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDocumentManagerAssembler.java,v 1.7 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: TestDocumentManagerAssembler.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -19,6 +19,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
     public TestDocumentManagerAssembler( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return DocumentManagerAssembler.class; }
 
@@ -58,10 +59,12 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         final List history = new ArrayList();
         Assembler a = new DocumentManagerAssembler()
             {
+            @Override
             protected OntDocumentManager createDocumentManager()
                 {
                 return new OntDocumentManager( "" )
                     {
+                    @Override
                     public void setMetadataSearchPath( String path, boolean replace ) 
                         {
                         assertEquals( false, replace );
@@ -102,10 +105,12 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         final List history = new ArrayList();
         Assembler a = new DocumentManagerAssembler()
             {
+            @Override
             protected OntDocumentManager createDocumentManager()
                 {
                 return new OntDocumentManager( "" )
                     {                    
+                    @Override
                     public void processMetadata( Model m ) 
                         {
                         assertIsoModels( expected, m );

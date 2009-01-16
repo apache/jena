@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MapFilterIterator.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: MapFilterIterator.java,v 1.9 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -36,6 +36,7 @@ public class MapFilterIterator extends NiceIterator implements ExtendedIterator
 /** Are there any more acceptable objects.
  * @return true if there is another acceptable object.
  */        
+    @Override
     synchronized public boolean hasNext() {
         if (current!=null)
             return true;
@@ -49,6 +50,7 @@ public class MapFilterIterator extends NiceIterator implements ExtendedIterator
         return false;
     }
     
+    @Override
     public void close()
         {
         underlying.close();
@@ -58,6 +60,7 @@ public class MapFilterIterator extends NiceIterator implements ExtendedIterator
    <CODE>hasNext()</CODE> may not be called between calls to 
     <CODE>next()</CODE> and <CODE>remove()</CODE>.
  */        
+        @Override
         synchronized public void remove() {
             if ( current != null || dead )
               throw new IllegalStateException(
@@ -68,6 +71,7 @@ public class MapFilterIterator extends NiceIterator implements ExtendedIterator
 /** The next acceptable object in the iterator.
  * @return The next acceptable object.
  */        
+    @Override
     synchronized public Object next() {
         if (hasNext()) {
             Object r = current;

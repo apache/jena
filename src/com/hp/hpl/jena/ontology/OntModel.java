@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 00:36:27 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-16 17:23:59 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -69,7 +69,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.57 2009-01-16 00:36:27 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.58 2009-01-16 17:23:59 andy_seaborne Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1279,6 +1279,7 @@ public interface OntModel
      *
      * @return The local model maker
      */
+    @Deprecated
     public ModelMaker getModelMaker();
 
     /**
@@ -1316,6 +1317,7 @@ public interface OntModel
      * @see #listSubModels()
      * @see #listSubModels(boolean)
      */
+    @Deprecated
     public ExtendedIterator listImportedModels();
 
 

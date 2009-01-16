@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.15 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XSDBaseStringType.java,v 1.16 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -71,6 +71,7 @@ public class XSDBaseStringType extends XSDDatatype {
      * equate to strings. The latter option is currently set by a static
      * global flag in LiteralLabel.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
         if ((value2.getDatatype() == null && JenaParameters.enablePlainLiteralSameAsString) ||

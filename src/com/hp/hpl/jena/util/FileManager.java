@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.42 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.43 2009-01-16 17:23:56 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -129,6 +129,7 @@ public class FileManager
     public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
 
     /** @deprecated Use setLocationMapper */
+    @Deprecated
     public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
     
     
@@ -439,6 +440,7 @@ public class FileManager
 
 
     /** @deprecated Use mapURI */
+    @Deprecated
     public String remap(String filenameOrURI)
     { return mapURI(filenameOrURI) ; }
     

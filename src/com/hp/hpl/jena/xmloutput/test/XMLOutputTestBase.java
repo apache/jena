@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved. [See end of file]
-    $Id: XMLOutputTestBase.java,v 1.7 2008-12-28 19:32:02 andy_seaborne Exp $
+    $Id: XMLOutputTestBase.java,v 1.8 2009-01-16 17:23:56 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -61,7 +61,8 @@ public class XMLOutputTestBase extends ModelTestBase
         public static Change setProperty( final String property, final String value )
             {
             return new Change()
-                { public void modify( RDFWriter writer )
+                { @Override
+                public void modify( RDFWriter writer )
                     { writer.setProperty( property, value ); }
                 };
             }
@@ -69,7 +70,8 @@ public class XMLOutputTestBase extends ModelTestBase
         public static Change setProperty( final String property, final boolean value )
             {
             return new Change()
-                { public void modify( RDFWriter writer )
+                { @Override
+                public void modify( RDFWriter writer )
                     { writer.setProperty( property, Boolean.valueOf( value ) ); }
                 };
             }
@@ -77,7 +79,8 @@ public class XMLOutputTestBase extends ModelTestBase
         public static Change setPrefix( final String prefix, final String URI )
             {
             return new Change()
-                { public void modify( Model m )
+                { @Override
+                public void modify( Model m )
                     { m.setNsPrefix( prefix, URI ); }
                 };
             }
@@ -90,7 +93,8 @@ public class XMLOutputTestBase extends ModelTestBase
         
         private Change and( final Change change )
             { return new Change()
-                { public void modify(  Model m, RDFWriter w )
+                { @Override
+                public void modify(  Model m, RDFWriter w )
                     {
                     Change.this.modify( m, w );
                     change.modify( m, w );

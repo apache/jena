@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleDerivation.java,v 1.13 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: RuleDerivation.java,v 1.14 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * provide more specific information.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class RuleDerivation implements Derivation {
     
@@ -55,6 +55,7 @@ public class RuleDerivation implements Derivation {
     /**
      * Return a short-form description of this derivation.
      */
+    @Override
     public String toString() {
         if (rule == null) {
             return "DUMMY";
@@ -147,6 +148,7 @@ public class RuleDerivation implements Derivation {
      * are the same if they contain the same conclusion, rule and match list. 
      * They do not need to be derived from the same (or any) infGraph.
      */
+    @Override
     public boolean equals(Object other) {
         if (other instanceof RuleDerivation) {
             RuleDerivation otherD = (RuleDerivation)other;

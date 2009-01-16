@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.15 2008-12-28 19:32:36 andy_seaborne Exp $
+  $Id: Delta.java,v 1.16 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -42,7 +42,8 @@ public class Delta extends Dyadic implements Graph
     /**
         Add the triple to the graph, ie add it to the additions, remove it from the removals.
     */
-	public void performAdd( Triple t )
+	@Override
+    public void performAdd( Triple t )
 		{
 		L.add( t );
 		R.delete( t );
@@ -51,7 +52,8 @@ public class Delta extends Dyadic implements Graph
     /**
         Remove the triple, ie, remove it from the adds, add it to the removals.
     */
-	public void performDelete( Triple t )
+	@Override
+    public void performDelete( Triple t )
 		{
 		L.delete( t );
 		R.add( t );
@@ -61,18 +63,21 @@ public class Delta extends Dyadic implements Graph
         Find all the base triples matching tm, exclude the ones that are deleted, add the ones
         that  have been added.
     */
-	public ExtendedIterator graphBaseFind( TripleMatch tm ) 
+	@Override
+    public ExtendedIterator graphBaseFind( TripleMatch tm ) 
 		{
         return base.find( tm ) .filterDrop( ifIn( GraphUtil.findAll( R ) ) ) .andThen( L.find( tm ) );
 		}
 
-	public void close() 
+	@Override
+    public void close() 
 		{
 		super.close();
 		base.close();
 		}
 
-	public int graphBaseSize()
+	@Override
+    public int graphBaseSize()
 		{ return base.size() + L.size() - R.size(); }
 	}
 

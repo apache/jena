@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Union.java,v 1.14 2008-12-28 19:32:36 andy_seaborne Exp $
+  $Id: Union.java,v 1.15 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -27,18 +27,21 @@ public class Union extends Dyadic implements Graph
     /**
         To add a triple to the union, add it to the left operand; this is asymmetric.
     */
-	public void performAdd( Triple t )
+	@Override
+    public void performAdd( Triple t )
 		{ L.add( t ); }
 
     /**
         To remove a triple, remove it from <i>both</i> operands.
     */
-	public void performDelete( Triple t )
+	@Override
+    public void performDelete( Triple t )
 		{
 		L.delete( t );
 		R.delete( t );
 		}
 
+    @Override
     public boolean graphBaseContains( Triple t )
         { return L.contains( t ) || R.contains( t ); }
         
@@ -47,7 +50,8 @@ public class Union extends Dyadic implements Graph
         duplicates. That last is a performance penalty, but I see no way to remove it
         unless we know the graphs do not overlap.
     */
-	public ExtendedIterator graphBaseFind( final TripleMatch t ) 
+	@Override
+    public ExtendedIterator graphBaseFind( final TripleMatch t ) 
 	    {
 	    Set seen = CollectionFactory.createHashedSet();
         return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 

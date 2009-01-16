@@ -5,7 +5,7 @@
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: JenaUUID.java,v 1.4 2008-12-28 19:32:00 andy_seaborne Exp $
+ * @version  $Id: JenaUUID.java,v 1.5 2009-01-16 17:23:59 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
@@ -103,7 +103,7 @@ public abstract class JenaUUID
 		// Char: 0        9    14   19   24  including hyphens
 		
         int x = (int)Bits.unpack(s, 19, 23) ;
-        int variant = (int)(x>>>14) ;
+        int variant = (x>>>14) ;
         int version = (int)Bits.unpack(s, 14, 15) ;
         
         if ( variant == Var_Std )

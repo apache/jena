@@ -21,7 +21,8 @@ abstract class Collection extends WantDescription {
         nextSlot = s;
     }
     ANode bnode;
-   public FrameI startElement(String uri, String localName, String rawName,
+   @Override
+public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
       FrameI fi = super.startElement(uri,localName,rawName,atts);
       ANode prevNode = bnode;
@@ -55,6 +56,7 @@ abstract class Collection extends WantDescription {
    abstract ANode nil() ;
     
 
+    @Override
     final public void endElement() throws SAXParseException {
         nextSlot.theObject(nil());
         if (bnode != null) {
@@ -63,6 +65,7 @@ abstract class Collection extends WantDescription {
         }
         super.endElement();
     }
+    @Override
     public void abort() {
         if (bnode != null) {
             arp.endLocalScope(bnode);

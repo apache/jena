@@ -20,6 +20,7 @@ public class StartStateRDForDescription extends WantTopLevelDescription {
         super(handler, x);
     }
     
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         if (localName.equals("RDF")) {
@@ -34,6 +35,7 @@ public class StartStateRDForDescription extends WantTopLevelDescription {
         return super.startElement(uri,localName,rawName,atts);
     }
     
+    @Override
     public void abort() {
         if (!sawRdfRDF)
             super.abort();

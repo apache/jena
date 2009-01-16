@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.61 2009-01-16 16:16:44 andy_seaborne Exp $
+  $Id: Node.java,v 1.62 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -229,16 +229,20 @@ public abstract class Node {
     static abstract class NodeMaker { abstract Node construct( Object x ); }
 
     static final NodeMaker makeAnon = new NodeMaker()
-        { Node construct( Object x ) { return new Node_Blank( x ); } };
+        { @Override
+        Node construct( Object x ) { return new Node_Blank( x ); } };
         
     static final NodeMaker makeLiteral = new NodeMaker()
-        { Node construct( Object x ) { return new Node_Literal( x ); } };
+        { @Override
+        Node construct( Object x ) { return new Node_Literal( x ); } };
         
     static final NodeMaker makeURI = new NodeMaker()
-        { Node construct( Object x ) { return new Node_URI( x ); } };
+        { @Override
+        Node construct( Object x ) { return new Node_URI( x ); } };
         
     static final NodeMaker makeVariable = new NodeMaker()
-        { Node construct( Object x ) { return new Node_Variable( x ); } };
+        { @Override
+        Node construct( Object x ) { return new Node_Variable( x ); } };
         
     /**
         The canonical NULL. It appears here so that revised definitions [eg as a bnode]
@@ -277,7 +281,7 @@ public abstract class Node {
     public static synchronized Node create( NodeMaker maker, Object label )
         {
         if (label == null) throw new JenaException( "Node.make: null label" );
-        Node node = (Node) present.get( label );
+        Node node = present.get( label );
         return node == null ? cacheNewNode( label, maker.construct( label ) ) : node;
         }
         
@@ -295,6 +299,7 @@ public abstract class Node {
 	/**
 		Nodes only equal other Nodes that have equal labels.
 	*/	
+    @Override
     public abstract boolean equals(Object o);
     
     /**
@@ -310,6 +315,7 @@ public abstract class Node {
     public boolean sameValueAs(Object o) 
         { return equals( o ); }
 
+    @Override
     public int hashCode() 
         { return label.hashCode() * 31; }
     
@@ -329,6 +335,7 @@ public abstract class Node {
         nor quote literals (because at the moment too many places use toString() for 
         something machine-oriented).
     */   
+    @Override
     public String toString()
     	{ return toString( null ); }
     

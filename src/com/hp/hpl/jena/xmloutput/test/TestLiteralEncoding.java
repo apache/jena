@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralEncoding.java,v 1.8 2008-12-28 19:32:02 andy_seaborne Exp $
+ 	$Id: TestLiteralEncoding.java,v 1.9 2009-01-16 17:23:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -95,9 +95,12 @@ public class TestLiteralEncoding extends ModelTestBase
         Model m = ModelFactory.createDefaultModel();
         m.createResource().addProperty(RDF.value, badString);
         Writer w = new Writer(){
-			public void close() throws IOException {}
-			public void flush() throws IOException {}
-			public void write(char[] arg0, int arg1, int arg2) throws IOException {}
+			@Override
+            public void close() throws IOException {}
+			@Override
+            public void flush() throws IOException {}
+			@Override
+            public void write(char[] arg0, int arg1, int arg2) throws IOException {}
         };
         try 
             { 

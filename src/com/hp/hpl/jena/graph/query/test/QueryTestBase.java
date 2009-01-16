@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.10 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: QueryTestBase.java,v 1.11 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -32,6 +32,7 @@ public abstract class QueryTestBase extends GraphTestBase
         { 
         return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/NE", asExpression( y ) )
         	{
+            @Override
             public boolean evalBool( Object x, Object y )
                 { return !x.equals( y ); }
         	};  
@@ -45,6 +46,7 @@ public abstract class QueryTestBase extends GraphTestBase
         { 
         return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/EQ", asExpression( y ) ) 
         	{            
+            @Override
             public boolean evalBool( Object x, Object y )
                 { return x.equals( y ); }
         	};  
@@ -59,7 +61,8 @@ public abstract class QueryTestBase extends GraphTestBase
 	    {
 	    return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/MATCHES", asExpression( y ) ) 
 	        {
-	        public boolean evalBool( Object L, Object R )
+	        @Override
+            public boolean evalBool( Object L, Object R )
 	            {
                 Node l = (Node) L, r = (Node) R;
                 return l.toString( false ).indexOf( r.toString( false ) ) > -1; 
@@ -88,7 +91,8 @@ public abstract class QueryTestBase extends GraphTestBase
 	    {
 	    if( x.isVariable()) return new Expression.Variable()
 	        {
-	        public String getName()
+	        @Override
+            public String getName()
 	            { return x.getName(); }
 	    
 	        public Valuator prepare( VariableIndexes vi )

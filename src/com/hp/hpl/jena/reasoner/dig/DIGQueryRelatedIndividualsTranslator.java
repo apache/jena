@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            April 23rd 2006
  * Filename           $RCSfile: DIGQueryRelatedIndividualsTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRelatedIndividualsTranslator.java,v 1.4 2008-12-28 19:32:04 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRelatedIndividualsTranslator.java,v 1.5 2009-01-16 17:23:54 andy_seaborne Exp $
  */
 public class DIGQueryRelatedIndividualsTranslator
     extends DIGQueryTranslator
@@ -79,6 +79,7 @@ public class DIGQueryRelatedIndividualsTranslator
     /**
      * <p>Answer a query that will list the role fillers for an individual-role pair</p>
      */
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
@@ -93,16 +94,19 @@ public class DIGQueryRelatedIndividualsTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
+    @Override
     public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         return translateIndividualPairSetResponse( response, query );
     }
 
 
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
     }
 
+    @Override
     public boolean checkPredicate( com.hp.hpl.jena.graph.Node predicate, DIGAdapter da, Model premises ) {
         // check that the predicate is not a datatype property
         if (predicate.isConcrete()) {

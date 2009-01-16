@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.23 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: TestReifier.java,v 1.24 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -52,16 +52,20 @@ public class TestReifier extends AbstractTestReifier  {
             { super( con, "testGraph-" + count ++, properties, styleRDB( style ), true ); }   
         } 
         
-	public void setUp() 
+	@Override
+    public void setUp() 
         { con = TestConnection.makeAndCleanTestConnection(); 
         properties = con.getDefaultModelProperties().getGraph(); }
 
-	public void tearDown() throws Exception 
+	@Override
+    public void tearDown() throws Exception 
         { con.close(); }
 
+    @Override
     public Graph getGraph( ReificationStyle style )
         { return new LocalGraphRDB( style ); }
     
+    @Override
     public Graph getGraph()
         { return getGraph( ReificationStyle.Minimal ); }
         

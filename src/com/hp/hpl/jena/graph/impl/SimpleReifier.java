@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.56 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: SimpleReifier.java,v 1.57 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -85,7 +85,7 @@ public class SimpleReifier implements Reifier
     */
     public Node reifyAs( Node tag, Triple toReify )
     	{
-        Triple existing = (Triple) tripleMap.getTriple( tag );
+        Triple existing = tripleMap.getTriple( tag );
         if (existing != null)
             { if (!toReify.equals( existing )) throw new AlreadyReifiedException( tag ); }
         else
@@ -117,7 +117,7 @@ public class SimpleReifier implements Reifier
     */    	
     public void remove( Node n, Triple t )
         {
-        Triple x = (Triple) tripleMap.getTriple( n );
+        Triple x = tripleMap.getTriple( n );
         if (t.equals( x )) 
             { tripleMap.removeTriple( n, t ); 
             if (!concealing) parentRemoveQuad( n, t ); }
@@ -264,6 +264,7 @@ public class SimpleReifier implements Reifier
         our string representation is <R ...> wrapped round the string representation
         of our node map.
     */
+    @Override
     public String toString()
         { return "<R " + fragmentsMap + "|" + tripleMap + ">"; }
 

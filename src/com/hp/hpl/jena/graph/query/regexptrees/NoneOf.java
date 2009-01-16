@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NoneOf.java,v 1.6 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: NoneOf.java,v 1.7 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -17,12 +17,15 @@ public class NoneOf extends RegexpTree
     public NoneOf( String impossibles )
         { this.impossibles = impossibles; }
     
+    @Override
     public boolean equals( Object other )
         { return other instanceof NoneOf && impossibles.equals( ((NoneOf) other).impossibles ); }
 
+    @Override
     public int hashCode()
         { return impossibles.hashCode(); }
 
+    @Override
     public String toString()
         { return "<none '" + impossibles + "'>"; }
     }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.34 2008-12-28 19:32:02 andy_seaborne Exp $
+   $Id: ARPErrorNumbers.java,v 1.35 2009-01-16 17:23:49 andy_seaborne Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -126,6 +126,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * @deprecated {@link #IGN_NO_BASE_URI_SPECIFIED}
      */
 
+    @Deprecated
     public int WARN_XMLBASE_MISSING = 100;
     /**
      A standard rdf attribute like type or about is used 
@@ -214,6 +215,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     
      */
 
+    @Deprecated
     public int WARN_BAD_XML = 111;
     /**
      *
@@ -221,6 +223,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      *(W112)
      *@deprecated No longer used.
      */
+    @Deprecated
     public int WARN_MINOR_INTERNAL_ERROR = 112;
     /**
      *An element is tagged rdf:XXX where XXX is not a recognised RDF element name. 
@@ -270,6 +273,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * @see #WARN_REDEFINITION_OF_ID
      @deprecated Last supported in Jena 2.1 - too expensive.
      */
+    @Deprecated
     public int WARN_LEGAL_REUSE_OF_ID = 120;
     /**
       * String Literals in RDF should not start with a composing char,
@@ -283,6 +287,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
       * No longer used. (W122). 
       * 
       * @deprecated Superceded by the more general {@link #WARN_BAD_NAME} */
+    @Deprecated
     public int WARN_QNAME_AS_ID = 122;
 
     /**
@@ -293,6 +298,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 "http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
       >williams-01</a>.
       **/
+    @Deprecated
     public int WARN_URI_COMPOSING_CHAR = 123;
 
     /**
@@ -423,6 +429,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      (E200)
     @deprecated No longer used.
      */
+    @Deprecated
     public int ERR_INTERNAL_ERROR = 200;
     /** The attributes or element tags contravene the RDF grammar. 
      (XML syntax errors are not reported with this mechanism, 
@@ -446,6 +453,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      *
      */
 
+    @Deprecated
     public int ERR_ABOUTEACH_NOT_TOPLEVEL = 203;
     /**
      * rdf:li is being used in the typed node construction. 
@@ -471,6 +479,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * 
      * *  (E207).
      **/
+    @Deprecated
     public int ERR_STRING_NOT_NORMAL_FORM_C = 207;
     /**
      * No longer used.(E208).
@@ -479,6 +488,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 "http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
       >williams-01</a>.
    */
+    @Deprecated
     public int ERR_URI_NOT_NORMAL_FORM_C = 208;
     /**
     * The SAX Parser generated an error. 
@@ -534,6 +544,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
       /**   No longer used. (E300)
        * @deprecated Not used.
     **/
+    @Deprecated
     public int ERR_UNABLE_TO_RECOVER = 300;
 
     /**   The SAX Parser generated a fatal error. 

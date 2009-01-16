@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Free.java,v 1.9 2008-12-28 19:32:21 andy_seaborne Exp $
+  $Id: Free.java,v 1.10 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -66,15 +66,18 @@ public class Free extends Element
 		return var;
 	}
 
-	public boolean match( Domain d, Node x )
+	@Override
+    public boolean match( Domain d, Node x )
 		{throw new JenaException("Attempt to match a free variable");		
 		}
 	
-	public Node asNodeMatch( Domain d ) {
+	@Override
+    public Node asNodeMatch( Domain d ) {
 		throw new JenaException("asNodeMatch not supported");
 	}
 	
-	public String toString()
+	@Override
+    public String toString()
 		{ return "<Free " + listIx + ">"; }
 	}
 

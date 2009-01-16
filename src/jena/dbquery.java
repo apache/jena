@@ -79,6 +79,7 @@ public class dbquery extends DBcmd
     }
 
     //@Override
+    @Override
     protected void exec0()
     {
         if ( ! getCommandLine().contains(queryDecl) )
@@ -92,6 +93,7 @@ public class dbquery extends DBcmd
     }
 
     //@Override
+    @Override
     protected boolean exec1(String arg)
     {
         if ( arg.startsWith("@") )

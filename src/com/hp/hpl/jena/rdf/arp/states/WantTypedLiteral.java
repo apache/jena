@@ -20,6 +20,7 @@ public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implement
         super(p, ap);
         dtURI = URIReference.resolve(this,xml,datatypeURI);
     }
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         warning(ERR_SYNTAX_ERROR,"Cannot have XML element content <"+rawName+">as part of typed literal");
@@ -27,6 +28,7 @@ public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implement
         return super.startElement(uri,localName,rawName,atts);
     }
 
+    @Override
     public void endElement() throws SAXParseException {
        ARPDatatypeLiteral datatypeLiteral = new ARPDatatypeLiteral(this,getBuf().toString(),
                       dtURI);
@@ -36,6 +38,7 @@ public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implement
               datatypeLiteral); 
        super.endElement();
     }
+    @Override
     public void afterChild() {
     }
     

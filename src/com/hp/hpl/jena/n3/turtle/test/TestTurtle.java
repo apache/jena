@@ -27,6 +27,7 @@ public class TestTurtle extends TestCase
     public TestTurtle(String name, String input, String output, String baseIRI)
     { super(name) ; this.input = input ; this.output = output ; this.baseIRI = baseIRI ; }
     
+    @Override
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;

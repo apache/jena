@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.19 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.20 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -36,6 +36,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     private static final String anotherURI = "jena:test/reifying#anotherURI";
     private static final String anchor = "jena:test/Reifying#";
     
+    @Override
     public void setUp()
         {
         model = getModel();

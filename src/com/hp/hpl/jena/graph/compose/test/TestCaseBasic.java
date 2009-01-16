@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCaseBasic.java,v 1.13 2008-12-28 19:32:05 andy_seaborne Exp $
+  $Id: TestCaseBasic.java,v 1.14 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -30,6 +30,7 @@ public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic
             ( new Object [] { Factory.createGraphMem(), Factory.createGraphMem() } ); 
     	}
     	
+    @Override
     public void setUp() throws Exception
     	{
 		Constructor constructor = graphClass.getConstructor

@@ -22,15 +22,18 @@ public class WantTopLevelDescription extends WantDescription {
     }
 
 
+    @Override
     String suggestParsetypeLiteral() {
         return "";
     }
     
+    @Override
     public void endElement() throws SAXParseException {
         super.endElement();
         arp.endRDF();
     }
     
+    @Override
     public void abort() {
         super.abort();
         arp.endRDF();

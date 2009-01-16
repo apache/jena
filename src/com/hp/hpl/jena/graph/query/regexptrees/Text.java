@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Text.java,v 1.9 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: Text.java,v 1.10 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -33,15 +33,19 @@ public abstract class Text extends RegexpTree
         TextString( String s ) 
             { literal = s; }
         
+        @Override
         public String getString()
             { return literal; }
         
+        @Override
         public String toString()
             { return "<text.s '" + literal + "'>"; }
         
+        @Override
         public boolean equals( Object x )
             { return x instanceof TextString && literal.equals( ((TextString) x).literal ); }
         
+        @Override
         public int hashCode()
             { return literal.hashCode(); }
         }
@@ -53,21 +57,27 @@ public abstract class Text extends RegexpTree
         TextChar( char ch ) 
             { this.ch = ch; }
         
+        @Override
         public String getString()
             { return "" + ch; }
         
+        @Override
         public String toString()
             { return "<text.ch '" + ch + "'>"; }
         
+        @Override
         public boolean equals( Object x )
             { return x instanceof TextChar && ch == ((TextChar) x).ch; }
         
+        @Override
         public int hashCode()
             { return ch; }
         }
     
+    @Override
     public abstract boolean equals( Object x );
     
+    @Override
     public abstract int hashCode();
     
     public abstract String getString();

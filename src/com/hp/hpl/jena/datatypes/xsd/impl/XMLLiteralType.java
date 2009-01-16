@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.13 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XMLLiteralType.java,v 1.14 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import java.io.*;
  * by use of <code>rdf:parsetype='literal'</code>.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
@@ -40,6 +40,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
      * Convert a serialize a value of this datatype out
      * to lexical form.
      */
+    @Override
     public String unparse(Object value) {
         return value.toString();
     }
@@ -48,6 +49,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
+    @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         if ( !isValid(lexicalForm))
           throw new DatatypeFormatException("Bad rdf:XMLLiteral");
@@ -58,6 +60,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
      * Test whether the given string is a legal lexical form
      * of this datatype.
      */
+    @Override
     public boolean isValid(final String lexicalForm) {
         /*
          * To check the lexical form we construct

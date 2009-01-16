@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestOntGraph.java,v 1.8 2008-12-28 19:32:22 andy_seaborne Exp $
+  $Id: TestOntGraph.java,v 1.9 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
@@ -27,6 +27,7 @@ public class TestOntGraph extends AbstractTestGraph
     public static TestSuite suite()
         { return new TestSuite( TestOntGraph.class ); }
 
+    @Override
     public Graph getGraph()
         { return ModelFactory.createOntologyModel().getGraph(); }
     }

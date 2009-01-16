@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.15 2008-12-28 19:31:58 andy_seaborne Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.16 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -20,6 +20,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
     public TestAssemblerHelp( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { throw new BrokenException( "TestAssemblers does not need this method" ); }
     
@@ -159,6 +160,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
         public Imp()
             { impIsConstructed = true; }
         
+        @Override
         public Object open( Assembler a, Resource root, Mode irrelevant )
             { return null; }
         }
@@ -179,6 +181,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
             gremlinInvoked = true;
             }
         
+        @Override
         public Object open( Assembler a, Resource root, Mode irrelevant )
             { return null; }
         }

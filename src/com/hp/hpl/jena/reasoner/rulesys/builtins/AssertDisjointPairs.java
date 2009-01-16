@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AssertDisjointPairs.java,v 1.13 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: AssertDisjointPairs.java,v 1.14 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * Assert the n^2 differtFrom pairs from a distinctMembers list
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class AssertDisjointPairs extends BaseBuiltin {
 
@@ -33,6 +33,7 @@ public class AssertDisjointPairs extends BaseBuiltin {
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
+    @Override
     public int getArgLength() {
         return 1;
     }
@@ -46,6 +47,7 @@ public class AssertDisjointPairs extends BaseBuiltin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         List l = Util.convertList(args[0], context);

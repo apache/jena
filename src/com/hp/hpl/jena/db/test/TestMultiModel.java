@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMultiModel.java,v 1.11 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: TestMultiModel.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -51,6 +51,7 @@ public class TestMultiModel extends TestCase
 	IDBConnection conn = null;
 	IRDBDriver dbDriver;
 	
+    @Override
     protected void setUp() throws java.lang.Exception {
     	conn = TestConnection.makeAndCleanTestConnection();
     	dbDriver = conn.getDriver();
@@ -65,6 +66,7 @@ public class TestMultiModel extends TestCase
 		nmod2 = ModelRDB.createModel(conn,"Named_Model_2");
     }
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     	dmod1.close(); dmod2.close();
     	nmod1.close(); nmod2.close();

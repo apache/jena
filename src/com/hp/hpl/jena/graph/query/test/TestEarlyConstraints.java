@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.9 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: TestEarlyConstraints.java,v 1.10 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -39,15 +39,18 @@ public class TestEarlyConstraints extends QueryTestBase
         Graph gBase = graphWith( "a eg:p1 a; c eg:p1 d; x eg:p2 y" );
         Graph g = new WrappedGraph( gBase )
             {
+            @Override
             public QueryHandler queryHandler()
                 { return new SimpleQueryHandler( this ); }
             
+            @Override
             public ExtendedIterator find( Node S, Node P, Node O ) 
                 {
                 if (P.equals( node( "eg:p2" ) )) count[0] += 1;
                 return super.find( S, P, O ); 
                 }
             
+            @Override
             public ExtendedIterator find( TripleMatch tm ) 
                 {
                 if (tm.getMatchPredicate().equals( node( "eg:p2" ) )) count[0] += 1;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.15 2008-12-28 19:32:20 andy_seaborne Exp $
+ * $Id: RuleMap.java,v 1.16 2009-01-16 17:23:57 andy_seaborne Exp $
  *****************************************************************/
 package jena;
 
@@ -39,7 +39,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:20 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:57 $
  */
 public class RuleMap {
     
@@ -91,6 +91,7 @@ public class RuleMap {
         /**
          * Return the expected number of arguments for this functor or 0 if the number is flexible.
          */
+        @Override
         public int getArgLength() {
             return 3;
         }
@@ -104,6 +105,7 @@ public class RuleMap {
          * for some rule engines
          * @param context an execution context giving access to other relevant data
          */
+        @Override
         public void headAction(Node[] args, int length, RuleContext context) {
             if (context.getGraph() instanceof FBRuleInfGraph) {
                 Triple t = new Triple(args[0], args[1], args[2]);
@@ -159,7 +161,7 @@ public class RuleMap {
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
             Map prefixes = new HashMap();
-            List rules = loadRules((String)cl.getItem(0), prefixes);
+            List rules = loadRules(cl.getItem(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
             
             // Process

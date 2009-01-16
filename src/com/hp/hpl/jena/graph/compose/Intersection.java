@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Intersection.java,v 1.10 2008-12-28 19:32:36 andy_seaborne Exp $
+  $Id: Intersection.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 /*
@@ -29,18 +29,21 @@ public class Intersection extends Dyadic implements Graph
 	    super( L, R );
 	    }
 	    
-	public void performAdd( Triple t )
+	@Override
+    public void performAdd( Triple t )
 	    {
 	    L.add( t );
 	    R.add( t );
 	    }
 
-	public void performDelete( Triple t )
+	@Override
+    public void performDelete( Triple t )
 		{
 		if (this.contains( t )) L.delete( t );
 		}
 		
-	public ExtendedIterator graphBaseFind( TripleMatch s )
+	@Override
+    public ExtendedIterator graphBaseFind( TripleMatch s )
 		{
         return L.find( s ) .filterKeep(  ifIn( R ) );
 		}

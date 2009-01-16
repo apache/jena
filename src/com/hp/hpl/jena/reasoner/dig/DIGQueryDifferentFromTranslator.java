@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGQueryDifferentFromTranslator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryDifferentFromTranslator.java,v 1.9 2008-12-28 19:32:04 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryDifferentFromTranslator.java,v 1.10 2009-01-16 17:23:54 andy_seaborne Exp $
  */
 public class DIGQueryDifferentFromTranslator 
     extends DIGQueryTranslator
@@ -77,6 +77,7 @@ public class DIGQueryDifferentFromTranslator
     /**
      * <p>Answer a query that will test difference between two individuals</p>
      */
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
@@ -95,6 +96,7 @@ public class DIGQueryDifferentFromTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
+    @Override
     public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         List answer = new ArrayList();
         if (isTrue( response )) {
@@ -105,15 +107,18 @@ public class DIGQueryDifferentFromTranslator
         return WrappedIterator.create( answer.iterator() );
     }
     
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // premises not used
         return translatePattern( pattern, da );
     }
 
+    @Override
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
         return da.isIndividual( subject );
     }
     
+    @Override
     public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
         return da.isIndividual( object );
     }

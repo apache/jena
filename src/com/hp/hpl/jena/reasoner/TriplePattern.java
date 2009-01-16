@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.29 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: TriplePattern.java,v 1.30 2009-01-16 17:23:59 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2008-12-28 19:32:04 $
+ * @version $Revision: 1.30 $ on $Date: 2009-01-16 17:23:59 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -235,6 +235,7 @@ public class TriplePattern implements ClauseEntry {
     /**
      * Printable string
      */
+    @Override
     public String toString() {
         return simplePrintString(subject) + 
                 " @" + simplePrintString(predicate) + 
@@ -295,6 +296,7 @@ public class TriplePattern implements ClauseEntry {
     /** 
      * Equality override - used so that TriplePattern variants (same to within variable renaming) test as equals
      */
+    @Override
     public boolean equals(Object o) {
 //        return o instanceof TriplePattern && 
 //                subject.equals(((TriplePattern)o).subject) &&
@@ -316,6 +318,7 @@ public class TriplePattern implements ClauseEntry {
     }
         
     /** hash function override */
+    @Override
     public int hashCode() {
         int hash = 0;
         if (!(subject instanceof Node_RuleVariable)) hash ^= (subject.hashCode() >> 1);

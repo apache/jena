@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.33 2008-12-28 19:32:18 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.34 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -44,9 +44,11 @@ public class TestConnection extends TestCase {
     public static TestSuite suite()
         { return new TestSuite( TestConnection.class ); }           
     
+    @Override
     protected void setUp() throws java.lang.Exception {    	
     }
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     }
     
@@ -514,7 +516,8 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run() {
+			@Override
+            public void run() {
 			    IDBConnection conn = makeAndCleanTestConnection();
 //                try {
 //                    // 0, 1, 2, 4, 8
@@ -570,7 +573,8 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run() {
+			@Override
+            public void run() {
 			    s.waitOnCount(1);
 			    IDBConnection conn = makeTestConnection();
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphPersonality.java,v 1.10 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: GraphPersonality.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -27,12 +27,14 @@ public class GraphPersonality extends Personality {
 	public Personality nodePersonality() 
 		{ return nodePersonality; }
     
+    @Override
     public Personality add( Class interf, Implementation t ) {
         nodePersonality.add( interf, t );
         return this;
     }
     
-	public Personality copy()
+	@Override
+    public Personality copy()
         { return new GraphPersonality( this, nodePersonality.copy() ); }
     
 }

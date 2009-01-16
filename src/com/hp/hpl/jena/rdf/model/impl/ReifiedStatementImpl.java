@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+	$Id: ReifiedStatementImpl.java,v 1.15 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -56,6 +56,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
             _eg_ by looking into this graph's reifier to find the binding for the
             node; throw a DoesNotReify exception if there's no mapping. 
         */
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) 
             {
             Triple x = getTriple( eg, n );
@@ -71,6 +72,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
             @param n the node who's triple is required
             @return true iff there's an associated triple
         */
+        @Override
         public boolean canWrap( Node n, EnhGraph eg )
             { return getTriple( eg, n ) != null; }
             
@@ -90,6 +92,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
     protected Reifier getReifier()
         { return getModel().getGraph().getReifier(); }
         
+    @Override
     public boolean isValid()
         { return getModel().getGraph().getReifier().getTriple( this.asNode() ) != null; }
         
@@ -121,6 +124,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
     public static ReifiedStatementImpl create( EnhGraph eg, Node n, Statement s )
         { return new ReifiedStatementImpl( eg, n, s ).installInReifier(); }
     
+    @Override
     public String toString()
         { return super.toString() + "=>" + statement; }
 

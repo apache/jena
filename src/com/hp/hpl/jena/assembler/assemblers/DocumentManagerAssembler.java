@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: DocumentManagerAssembler.java,v 1.7 2008-12-28 19:32:27 andy_seaborne Exp $
+ 	$Id: DocumentManagerAssembler.java,v 1.8 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.util.*;
 
 public class DocumentManagerAssembler extends AssemblerBase 
     {    
+    @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         { 
         checkType( root, JA.DocumentManager );

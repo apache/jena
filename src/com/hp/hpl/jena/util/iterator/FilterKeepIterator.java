@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FilterKeepIterator.java,v 1.5 2008-12-28 19:32:08 andy_seaborne Exp $
+ 	$Id: FilterKeepIterator.java,v 1.6 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -18,6 +18,7 @@ public class FilterKeepIterator extends FilterIterator implements Iterator
     public FilterKeepIterator( Filter f, Iterator it )
         { super( f, it ); }
     
+    @Override
     protected boolean accept( Object x )
         { return f.accept( x ); }
     }

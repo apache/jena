@@ -138,7 +138,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 */
 	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
 		complete.setDone();
-		return (ExtendedIterator)m_pset.find(t, my_GID);
+		return m_pset.find(t, my_GID);
 		}
 
 	/*

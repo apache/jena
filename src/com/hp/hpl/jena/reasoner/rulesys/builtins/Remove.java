@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Remove.java,v 1.15 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: Remove.java,v 1.16 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class Remove extends BaseBuiltin {
 
@@ -38,6 +38,7 @@ public class Remove extends BaseBuiltin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         boolean ok = false;
         for (int i = 0; i < length; i++) {
@@ -63,6 +64,7 @@ public class Remove extends BaseBuiltin {
      * be an action and makes the overall rule and ruleset non-monotonic. 
      * Most JenaRules are monotonic deductive closure rules in which this should be false.
      */
+    @Override
     public boolean isMonotonic() {
         return false;
     }

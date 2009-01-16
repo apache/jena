@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 public class TurtleReader extends JenaReaderBase
 {
+    @Override
     protected void readWorker(Model model, Reader reader, String base)
     {
         ParserTurtle p =  new ParserTurtle() ;

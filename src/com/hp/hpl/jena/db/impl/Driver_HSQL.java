@@ -46,6 +46,7 @@ public class Driver_HSQL extends DriverRDB
         m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";
     }
 
+    @Override
     public void close()
     {
         // This cause problems with in-memory and on disk because there can be multiple models open.   
@@ -65,6 +66,7 @@ public class Driver_HSQL extends DriverRDB
         }
     }
     
+    @Override
     String[] getDbInitTablesParams()
     {
         String [] res = new String[3];
@@ -102,6 +104,7 @@ public class Driver_HSQL extends DriverRDB
         param[2] = TABLE_NAME_PREFIX;
     }
 
+    @Override
     protected String[] getCreateTableParams( int graphId, boolean isReif )
     {
         String [] parms = new String[3];
@@ -114,6 +117,7 @@ public class Driver_HSQL extends DriverRDB
         return res;
     }
         
+    @Override
     public int graphIdAlloc ( String graphName )
     {
         DBIDInt result = null;

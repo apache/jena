@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.57 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.58 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -72,6 +72,7 @@ public class OntClassImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new OntClassImpl( n, eg );
@@ -81,6 +82,7 @@ public class OntClassImpl
             }
         }
 
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an OntClass facet if it has rdf:type owl:Class or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -653,6 +655,7 @@ public class OntClassImpl
                 .listStatements( null, RDF.type, this )
                 .mapWith( new SubjectAsMapper( Individual.class ) )
                 .filterKeep( new Filter() {
+                    @Override
                     public boolean accept( Object o ) {
                         // if direct, ignore the sub-class typed resources
                         return ((Individual) o).hasRDFType( OntClassImpl.this, direct );

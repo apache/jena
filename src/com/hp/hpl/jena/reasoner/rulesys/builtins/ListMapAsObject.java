@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListMapAsObject.java,v 1.11 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: ListMapAsObject.java,v 1.12 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * forward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class ListMapAsObject extends BaseBuiltin {
 
@@ -36,6 +36,7 @@ public class ListMapAsObject extends BaseBuiltin {
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
+    @Override
     public int getArgLength() {
         return 3;
     }
@@ -49,6 +50,7 @@ public class ListMapAsObject extends BaseBuiltin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         Node n0 = getArg(0, args, context);

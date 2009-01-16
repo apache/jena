@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: QualifiedRestrictionImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.10 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class QualifiedRestrictionImpl
     extends RestrictionImpl
@@ -55,6 +55,7 @@ public class QualifiedRestrictionImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new QualifiedRestrictionImpl( n, eg );
@@ -64,6 +65,7 @@ public class QualifiedRestrictionImpl
             }
         }
 
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) 
             { return isValidQualifiedRestriction( node, eg ); }
     };
@@ -75,6 +77,7 @@ public class QualifiedRestrictionImpl
         return (profile != null)  &&  profile.isSupported( node, eg, QualifiedRestriction.class );
         }
     
+    @Override
     public boolean isValid() 
         { return isValidQualifiedRestriction( asNode(), getGraph() ); }
 

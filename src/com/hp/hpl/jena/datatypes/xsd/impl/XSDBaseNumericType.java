@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.23 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XSDBaseNumericType.java,v 1.24 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.24 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -56,6 +56,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * never considered valid as an xsd:integer (even if it is
      * lexically legal like "1").
      */
+    @Override
     public boolean isValidLiteral(LiteralLabel lit) {
         if (isBaseTypeCompatible(lit)) {
             String lex = lit.getLexicalForm();
@@ -77,6 +78,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * Test whether the given object is a legal value form
      * of this datatype. Brute force implementation.
      */
+    @Override
     public boolean isValidValue(Object valueForm) {
         if (valueForm instanceof Number) {
             return isValid(valueForm.toString());
@@ -91,6 +93,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * the Java object representation to the narrowest of the Number
      * subclasses to ensure that indexing of typed literals works. 
      */
+    @Override
     public Object cannonicalise( Object value ) {
         
         if (value instanceof BigInteger) {
@@ -147,6 +150,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
+    @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         checkWhitespace(lexicalForm);        
         return super.parse(lexicalForm);
@@ -169,6 +173,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * This ignores lang tags and just uses the java.lang.Number 
      * equality.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         if (value1.getDatatype() instanceof XSDBaseNumericType && value2.getDatatype() instanceof XSDBaseNumericType) {
             Number n1 = (Number)value1.getValue();

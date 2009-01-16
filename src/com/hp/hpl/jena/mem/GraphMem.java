@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.61 2008-12-28 19:32:28 andy_seaborne Exp $
+  $Id: GraphMem.java,v 1.62 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -38,21 +38,27 @@ public class GraphMem extends GraphMemBase implements Graph
     public GraphMem( ReificationStyle style )
         { super( style ); }
     
+    @Override
     protected TripleStore createTripleStore()
         { return new GraphTripleStore( this ); }
 
+    @Override
     protected void destroy()
         { store.close(); }
 
+    @Override
     public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) store.add( t ); }
 
+    @Override
     public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) store.delete( t ); }
 
+    @Override
     public int graphBaseSize()  
         { return store.size(); }
     
+    @Override
     public QueryHandler queryHandler()
         {
         if (queryHandler == null) queryHandler = new GraphMemBaseQueryHandler( this );
@@ -63,6 +69,7 @@ public class GraphMem extends GraphMemBase implements Graph
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
      */
+    @Override
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
     
@@ -71,12 +78,14 @@ public class GraphMem extends GraphMemBase implements Graph
          happens to be concrete, then we hand responsibility over to the store.
          Otherwise we use the default implementation.
     */
+    @Override
     public boolean graphBaseContains( Triple t )
         { return isSafeForEquality( t ) ? store.contains( t ) : super.graphBaseContains( t ); }
     
     /**
         Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
+    @Override
     public void clear()
         { 
         store.clear(); 

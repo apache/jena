@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.69 2008-12-28 19:31:53 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.70 2009-01-16 17:23:55 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.69 $ on $Date: 2008-12-28 19:31:53 $
+ * @version $Revision: 1.70 $ on $Date: 2009-01-16 17:23:55 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -1201,6 +1201,7 @@ class RationalType extends BaseDatatype {
      * Convert a value of this datatype out
      * to lexical form.
      */
+    @Override
     public String unparse(Object value) {
         Rational r = (Rational) value;
         return Integer.toString(r.getNumerator()) + "/" + r.getDenominator();
@@ -1210,6 +1211,7 @@ class RationalType extends BaseDatatype {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
+    @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         int index = lexicalForm.indexOf("/");
         if (index == -1) {
@@ -1229,6 +1231,7 @@ class RationalType extends BaseDatatype {
      * This does not allow rationals to be compared to other number
      * formats, lang tag is not significant.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         return value1.getDatatype() == value2.getDatatype()
              && value1.getValue().equals(value2.getValue());
@@ -1283,6 +1286,7 @@ class Rational {
     /**
      * Printable form - not parsable
      */
+    @Override
     public String toString() {
         return "rational[" + numerator + "/" + denominator + "]";
     }
@@ -1290,6 +1294,7 @@ class Rational {
     /**
      * Equality check
      */
+    @Override
     public boolean equals(Object o) {
         if (o == null || !(o instanceof Rational)) return false;
         Rational or = (Rational)o;

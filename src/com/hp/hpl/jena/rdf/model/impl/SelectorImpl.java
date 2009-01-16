@@ -57,7 +57,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2008-12-28 19:31:52 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2009-01-16 17:23:48 $
  */
 
 public final class SelectorImpl extends SimpleSelector  {
@@ -219,6 +219,7 @@ public final class SelectorImpl extends SimpleSelector  {
         Answer true to the question "is this a simple selector". Otherwise the default for
         SimpleSelector subclasses, false, would apply.
     */
+    @Override
     public boolean isSimple()
         { return true; }
     

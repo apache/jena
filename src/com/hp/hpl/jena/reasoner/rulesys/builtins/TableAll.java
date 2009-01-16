@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TableAll.java,v 1.10 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: TableAll.java,v 1.11 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * by the LP engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.11 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class TableAll extends BaseBuiltin {
 
@@ -38,6 +38,7 @@ public class TableAll extends BaseBuiltin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         InfGraph infgraph = context.getGraph();
         if (infgraph instanceof FBRuleInfGraph) {

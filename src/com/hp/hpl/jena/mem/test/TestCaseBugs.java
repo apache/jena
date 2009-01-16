@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.14 2009-01-16 12:53:18 andy_seaborne Exp $
+ * $Id: TestCaseBugs.java,v 1.15 2009-01-16 17:23:57 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     @author  bwm
-    @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2009-01-16 12:53:18 $
+    @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2009-01-16 17:23:57 $
 */
 public class TestCaseBugs 
             extends TestCaseBasic {
@@ -45,6 +45,7 @@ public class TestCaseBugs
         super(name);
     }
     
+    @Override
     public void setUp() {
         model = ModelFactory.createDefaultModel();
     }

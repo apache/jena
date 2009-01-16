@@ -22,14 +22,17 @@ class ElementEvent extends Event {
         q = qn;
     }
 
+    @Override
     boolean isAttribute() {
         return false;
     }
 
+    @Override
     boolean isElement() {
         return true;
     }
 
+    @Override
     FrameI apply(FrameI from, Attributes atts) throws SAXParseException {
         return from.startElement(q.uri,q.localName,q.qName,atts);
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_URI.java,v 1.17 2008-12-28 19:32:04 andy_seaborne Exp $
+  $Id: Node_URI.java,v 1.18 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -18,12 +18,15 @@ public class Node_URI extends Node_Concrete
     protected Node_URI( Object uri )
         { super( uri ); }
 
+    @Override
     public String getURI()
         { return (String) label; }
         
+    @Override
     public Object visitWith( NodeVisitor v )
         { return v.visitURI( this, (String) label ); }
         
+    @Override
     public boolean isURI()
         { return true; }
         
@@ -32,9 +35,11 @@ public class Node_URI extends Node_Concrete
         The horrible test against null is a stopgap to avoid a circularity issue.
         TODO fix the circularity issue
     */
+    @Override
     public String toString( PrefixMapping pm, boolean quoting )
         { return pm == null ? (String) label : pm.shortForm( (String) label ); }
         
+    @Override
     public boolean equals( Object other )
         { return 
             other instanceof Node_URI 
@@ -43,18 +48,21 @@ public class Node_URI extends Node_Concrete
     final boolean same( Node_URI other )
         { return label.equals( other.label ); }
     
+    @Override
     public String getNameSpace()
         { 
         String s = (String) label;
         return s.substring( 0, Util.splitNamespace( s ) );
         }
     
+    @Override
     public String getLocalName()
         {  
         String s = (String) label;
         return s.substring( Util.splitNamespace( s ) );
         }
     
+    @Override
     public boolean hasURI( String uri )
         { return label.equals( uri ); }
     

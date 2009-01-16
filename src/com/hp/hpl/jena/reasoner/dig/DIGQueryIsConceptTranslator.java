@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryIsConceptTranslator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryIsConceptTranslator.java,v 1.9 2008-12-28 19:32:04 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryIsConceptTranslator.java,v 1.10 2009-01-16 17:23:54 andy_seaborne Exp $)
  */
 public class DIGQueryIsConceptTranslator 
     extends DIGQueryTranslator
@@ -83,6 +83,7 @@ public class DIGQueryIsConceptTranslator
      * @param pattern The pattern to translate to a DIG query
      * @param da The DIG adapter through which we communicate with a DIG reasoner
      */
+    @Override
     public ExtendedIterator find( TriplePattern pattern, DIGAdapter da ) {
         List result = new ArrayList();
         if (da.isConcept( pattern.getSubject(), null )) {
@@ -93,32 +94,38 @@ public class DIGQueryIsConceptTranslator
     }
     
     /** For this translation, we ignore premises */
+    @Override
     public ExtendedIterator find( TriplePattern pattern, DIGAdapter da, Model premises ) {
         return find( pattern, da );
     }
     
     
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         // not used
         return null;
     }
 
 
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
     }
 
+    @Override
     public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         // not used
         return null;
     }
 
+    @Override
     public boolean checkObject( Node object, DIGAdapter da, Model premises ) {
         return da.getOntLanguage().CLASS().asNode().equals( object );
     }
     
 
+    @Override
     public boolean checkSubject( Node subject, DIGAdapter da, Model premises ) {
         return subject instanceof Node_Concrete;
     }

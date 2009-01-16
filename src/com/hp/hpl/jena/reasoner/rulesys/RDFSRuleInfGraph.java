@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.12 2009-01-08 14:56:30 andy_seaborne Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.13 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2009-01-08 14:56:30 $
+ * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
@@ -50,6 +50,7 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
      * 
      * @return a ValidityReport structure
      */
+    @Override
     public ValidityReport validate() {
         // The full configuration uses validation rules so check for these
         StandardValidityReport report = (StandardValidityReport)super.validate();

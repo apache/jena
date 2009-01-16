@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.36 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.37 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -246,7 +246,8 @@ final public class LiteralLabel {
 		return b.toString();
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return toString(false);
 	}
 
@@ -316,7 +317,8 @@ final public class LiteralLabel {
      	Answer true iff this literal is syntactically equal to <code>other</code>.
         Note: this is <i>not</i> <code>sameValueAs</code>.
     */
-	public boolean equals(Object other) {
+	@Override
+    public boolean equals(Object other) {
             if (other == null || !(other instanceof LiteralLabel)) {
             	return false;
             }
@@ -399,7 +401,8 @@ final public class LiteralLabel {
      	Answer the hashcode of this literal, derived from its value if it's
         well-formed and otherwise its lexical form.
     */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return dtype == null ? getDefaultHashcode() : dtype.getHashCode( this );
 	}
 

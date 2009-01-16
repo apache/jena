@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.10 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestImportManager.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -22,6 +22,7 @@ public class TestImportManager extends AssemblerTestBase
         {
         Map map = new HashMap();
         
+        @Override
         public Model loadModel( String URL )
             {
             Model result = (Model) map.get( URL );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestStandardModels.java,v 1.7 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestStandardModels.java,v 1.8 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -24,6 +24,7 @@ public class TestStandardModels extends AbstractTestModel
         return new TestSuite( TestStandardModels.class );
         }
 
+    @Override
     public Model getModel()
         {
         return ModelFactory.createDefaultModel();

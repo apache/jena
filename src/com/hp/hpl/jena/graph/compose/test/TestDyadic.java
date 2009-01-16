@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDyadic.java,v 1.13 2008-12-28 19:32:05 andy_seaborne Exp $
+  $Id: TestDyadic.java,v 1.14 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -31,8 +31,10 @@ public class TestDyadic extends GraphTestBase
 		return new NiceIterator()
 			{
 			private StringTokenizer tokens = new StringTokenizer( x );
-			public boolean hasNext() { return tokens.hasMoreTokens(); }
-			public Object next() { return tokens.nextToken(); }
+			@Override
+            public boolean hasNext() { return tokens.hasMoreTokens(); }
+			@Override
+            public Object next() { return tokens.nextToken(); }
 			};
 		}
 		
@@ -55,6 +57,7 @@ public class TestDyadic extends GraphTestBase
         Graph g = Factory.createGraphMem(), h = Factory.createGraphMem();
         Dyadic d = new Dyadic( g, h )
             {
+            @Override
             public ExtendedIterator graphBaseFind( TripleMatch m ) { return null; }
             };
         assertSame( g, d.getL() );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.47 2008-12-28 19:32:29 andy_seaborne Exp $
+  $Id: NodeToTriplesMap.java,v 1.48 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -25,6 +25,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#add(com.hp.hpl.jena.graph.Triple)
     */
+    @Override
     public boolean add( Triple t ) 
         {
         Object o = getIndexField( t );
@@ -50,6 +51,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#remove(com.hp.hpl.jena.graph.Triple)
     */
+    @Override
     public boolean remove( Triple t )
         { 
         Object o = getIndexField( t );
@@ -66,6 +68,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         	} 
         }
     
+    @Override
     public Iterator iterator( Object o, HashCommon.NotifyEmpty container )
         {
         TripleBunch b = bunchMap.get( o );
@@ -75,6 +78,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#contains(com.hp.hpl.jena.graph.Triple)
     */
+    @Override
     public boolean contains( Triple t )
         { 
         TripleBunch s = bunchMap.get( getIndexField( t ) );
@@ -87,6 +91,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         return o.isLiteral() ? o.getLiteralDatatype() == null : true;
         }
 
+    @Override
     public boolean containsBySameValueAs( Triple t )
         { return equalsObjectOK( t ) ? contains( t ) : slowContains( t ); }
     
@@ -117,6 +122,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             ;
         }
 
+    @Override
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
         {
         TripleBunch s = bunchMap.get( index.getIndexingValue() );
@@ -131,6 +137,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
+    @Override
     public Iterator iteratorForIndexed( Object y )
         { return get( y ).iterator();  }
     

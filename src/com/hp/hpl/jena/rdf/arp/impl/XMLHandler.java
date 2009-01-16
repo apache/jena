@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.33 2009-01-16 12:53:19 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.34 2009-01-16 17:23:49 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -101,12 +101,14 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     // This is the current frame.
     FrameI frame;
 
+    @Override
     public void startPrefixMapping(String prefix, String uri)
             throws SAXParseException {
         checkNamespaceURI(uri);
         handlers.getNamespaceHandler().startPrefixMapping(prefix, uri);
     }
 
+    @Override
     public void endPrefixMapping(String prefix) {
         handlers.getNamespaceHandler().endPrefixMapping(prefix);
     }
@@ -117,12 +119,14 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     Locator locator;
 
+    @Override
     public void setDocumentLocator(Locator locator) {
         this.locator = locator;
     }
 
     static final private boolean DEBUG = false;
 
+    @Override
     public void startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXException {
         if (Thread.interrupted())
@@ -135,6 +139,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                     + getSimpleName(frame.getClass()));
     }
 
+    @Override
     public void endElement(String uri, String localName, String rawName)
             throws SAXException {
         frame.endElement();
@@ -150,11 +155,13 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return rslt[rslt.length - 1];
     }
 
+    @Override
     public void characters(char ch[], int start, int length)
             throws SAXException {
         frame.characters(ch, start, length);
     }
 
+    @Override
     public void ignorableWhitespace(char ch[], int start, int length)
             throws SAXException { // Never called.
         characters(ch, start, length);
@@ -168,11 +175,13 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return nodeIdUserData.get(nodeId);
     }
 
+    @Override
     public void comment(char[] ch, int start, int length)
             throws SAXParseException {
         frame.comment(ch, start, length);
     }
 
+    @Override
     public void processingInstruction(String target, String data)
             throws SAXException {
         frame.processingInstruction(target, data);
@@ -229,14 +238,17 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         }
     }
 
+    @Override
     public void error(SAXParseException e) throws SAXParseException {
         warning(null,ERR_SAX_ERROR, e);
     }
 
+    @Override
     public void warning(SAXParseException e) throws SAXParseException {
         warning(null,WARN_SAX_WARNING, e);
     }
 
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
         warning(null,ERR_SAX_FATAL_ERROR, e);
         // If we get here, we shouldn't go on

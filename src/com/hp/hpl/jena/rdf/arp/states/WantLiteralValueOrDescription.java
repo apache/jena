@@ -19,6 +19,7 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
         super(s, x);
     }
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
         if (seenAnElement) {
@@ -51,6 +52,7 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
      *    seenAnElement && non white text as occurred => seenNonWhiteText
      */
     private boolean seenNonWhiteText = false;
+    @Override
     public void characters(char[] ch, int start, int length)  throws SAXParseException {
         if (seenAnElement) {
             if (!isWhite(ch, start, length)) {
@@ -62,6 +64,7 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
         }
         super.characters(ch, start, length);
     }
+    @Override
     public void endElement() throws SAXParseException {
         if ((!seenAnElement)||seenNonWhiteText) {    
             ARPString literal = new ARPString(this,getBuf().toString(),xml);

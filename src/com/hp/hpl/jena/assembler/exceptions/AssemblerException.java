@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+ 	$Id: AssemblerException.java,v 1.9 2009-01-16 17:24:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -90,6 +90,7 @@ public class AssemblerException extends JenaException
     public List getDoing()
         { return doing; }
     
+    @Override
     public String toString()
         { 
         String parent = super.toString();

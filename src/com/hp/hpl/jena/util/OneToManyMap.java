@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:09 $
+ * Last modified on   $Date: 2009-01-16 17:23:56 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.16 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.17 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 public class OneToManyMap
     implements Map
@@ -185,6 +185,7 @@ public class OneToManyMap
      * @param o The object to be compared for equality with this map.
      * @return True if the specified object is equal to this map.
      */
+    @Override
     public boolean equals( Object o ) {
         if (o instanceof java.util.Map) {
             return entrySet().equals( ((Map) o).entrySet() );
@@ -238,6 +239,7 @@ public class OneToManyMap
      * that t1.hashCode()==t2.hashCode() for any two maps t1 and t2,
      * as required by the general contract of Object.hashCode
      */
+    @Override
     public int hashCode() {
         int hc = 0;
 
@@ -386,6 +388,7 @@ public class OneToManyMap
      * <p>Answer a string representation of this map. This can be quite a long string for
      * large maps.<p>
      */
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer( "OneToManyMap{" );
         String sep = "";
@@ -462,6 +465,7 @@ public class OneToManyMap
          * @param x The object to compare against
          * @return True if the given object is equal to this Map.Entry object.
          */
+        @Override
         public boolean equals( Object x ) {
             if (x instanceof java.util.Map.Entry) {
                 Map.Entry e1 = (Map.Entry) x;
@@ -515,6 +519,7 @@ public class OneToManyMap
          * This ensures that e1.equals(e2) implies that e1.hashCode()==e2.hashCode() for any two
          * Entries e1 and e2, as required by the general contract of Object.hashCode.
          */
+        @Override
         public int hashCode() {
             return (getKey()==null   ? 0 : getKey().hashCode()) ^
                    (getValue()==null ? 0 : getValue().hashCode());

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Paren.java,v 1.7 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: Paren.java,v 1.8 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -31,12 +31,15 @@ public class Paren extends RegexpTree
     public int getIndex()
         { return index; };
 
+    @Override
     public boolean equals( Object other )
         { return other instanceof Paren && operand.equals( ((Paren) other).operand ); }
 
+    @Override
     public int hashCode()
         { return operand.hashCode(); }
 
+    @Override
     public String toString()
         { return "(" + operand + ")"; }
     }

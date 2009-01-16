@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.22 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.23 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -237,6 +237,7 @@ public class LocationMapper
         return s_globalMapperPath ;
     }
     
+    @Override
     public int hashCode()
     {
         int x = 0 ;
@@ -257,6 +258,7 @@ public class LocationMapper
         return x ;
     }
     
+    @Override
     public boolean equals(Object obj)
     {
         if ( ! ( obj instanceof LocationMapper ) )
@@ -286,6 +288,7 @@ public class LocationMapper
         return true ;
     }
     
+    @Override
     public String toString()
     {
         String s = "" ;

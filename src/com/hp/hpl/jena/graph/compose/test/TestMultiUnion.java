@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestMultiUnion.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:06 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestMultiUnion.java,v 1.13 2008-12-28 19:32:06 andy_seaborne Exp $
+ * @version CVS $Id: TestMultiUnion.java,v 1.14 2009-01-16 17:23:54 andy_seaborne Exp $
  */
 public class TestMultiUnion
     extends AbstractTestGraph
@@ -74,6 +74,7 @@ public class TestMultiUnion
     public static TestSuite suite()
         { return new TestSuite( TestMultiUnion.class ); }   
     
+    @Override
     public Graph getGraph()
         {
         Graph gBase = graphWith( "" ), g1 = graphWith( "" );

@@ -23,18 +23,22 @@ class AttrEvent extends Event {
         this.value = value;
     }
 
+    @Override
     public boolean finalAttribute() {
         return q.uri.equals(Names.rdfns);
     }
     
+    @Override
     boolean isAttribute() {
         return true;
     }
 
+    @Override
     boolean isElement() {
         return false;
     }
 
+    @Override
     FrameI apply(FrameI from, Attributes att) {
         throw new IllegalStateException("n/a");
     }

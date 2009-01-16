@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            21-Jan-2005
  * Filename           $RCSfile: TestOneToManyMap.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:22 $
+ * Last modified on   $Date: 2009-01-16 17:23:59 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.6 2008-12-28 19:32:22 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.7 2009-01-16 17:23:59 andy_seaborne Exp $)
  */
 public class TestOneToManyMap 
     extends TestCase
@@ -67,9 +67,11 @@ public class TestOneToManyMap
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public void setUp() {
     }
     
+    @Override
     public void tearDown() {
     }
     

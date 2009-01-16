@@ -1219,7 +1219,8 @@ public class SAX2RDFTest extends TestCase {
 		//System.err.println(base+" + "+this.file);
 	}
 
-	public void runTest() throws Exception {
+	@Override
+    public void runTest() throws Exception {
 		//System.err.println(base+" + "+this.file);
 		Model m = ModelFactory.createDefaultModel();
 		Model m2 = ModelFactory.createDefaultModel();

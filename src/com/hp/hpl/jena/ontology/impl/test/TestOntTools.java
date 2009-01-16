@@ -70,6 +70,7 @@ public class TestOntTools
      * @throws java.lang.Exception
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         m_model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
         m_a = m_model.createClass( NS + "A" );

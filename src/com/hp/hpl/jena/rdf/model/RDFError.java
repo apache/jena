@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFError.java,v 1.8 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: RDFError.java,v 1.9 2009-01-16 17:23:52 andy_seaborne Exp $
  */
 package com.hp.hpl.jena.rdf.model;
 
@@ -34,8 +34,9 @@ import java.io.PrintWriter;
 /**
  * @deprecated No longer used.
  * @author  bwm
- * @version $Revision: 1.8 $ $Date: 2008-12-28 19:31:54 $
+ * @version $Revision: 1.9 $ $Date: 2009-01-16 17:23:52 $
  */
+@Deprecated
 public class RDFError extends java.lang.Error {
     
     Throwable nestedException = null;
@@ -48,6 +49,7 @@ public class RDFError extends java.lang.Error {
         super(s);
     }
     
+    @Override
     public void printStackTrace() {
         if (nestedException != null) {
             nestedException.printStackTrace();
@@ -56,6 +58,7 @@ public class RDFError extends java.lang.Error {
         }
     }
     
+    @Override
     public void printStackTrace(PrintStream s) {
         if (nestedException != null) {
             nestedException.printStackTrace(s);
@@ -64,6 +67,7 @@ public class RDFError extends java.lang.Error {
         }
     }    
     
+    @Override
     public void printStackTrace(PrintWriter s) {
         if (nestedException != null) {
             nestedException.printStackTrace(s);

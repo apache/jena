@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.10 2009-01-12 16:47:46 andy_seaborne Exp $
+ 	$Id: TestModelContent.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -17,6 +17,7 @@ public class TestModelContent extends AssemblerTestBase
     public TestModelContent( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return null; }
     

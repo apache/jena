@@ -37,9 +37,11 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#getParseType()
      * @deprecated
      */
+    @Deprecated
     public String getParseType() {
         return null;
     }
+    @Override
     public String toString() {
         return lexForm;
     }

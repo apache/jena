@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Alternatives.java,v 1.6 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: Alternatives.java,v 1.7 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -24,12 +24,15 @@ public class Alternatives extends MultiOperandTree
             return new Alternatives( (RegexpTree []) operands.toArray( new RegexpTree [operands.size()] ));
         }
     
+    @Override
     public boolean equals( Object other )
         { return other instanceof Alternatives && sameOperands( (Alternatives) other ); }
 
+    @Override
     public int hashCode()
         { return hashCode( 1 ); }
 
+    @Override
     public String toString()
         { return toString( "alt" ); }
     }

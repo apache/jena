@@ -90,6 +90,7 @@ public class SAX2Model extends SAX2RDF {
      *            The Namespace URI the prefix is mapped to.
      * 
      */
+    @Override
     public void startPrefixMapping(String prefix, String uri)
             throws SAXParseException {
         super.startPrefixMapping(prefix, uri);
@@ -126,6 +127,7 @@ public class SAX2Model extends SAX2RDF {
     }
     private boolean closed = false;
 
+    @Override
     public void close() {
         // System.err.println("closing;");
         if (!closed) {

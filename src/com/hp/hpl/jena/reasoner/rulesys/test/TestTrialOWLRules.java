@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.16 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestTrialOWLRules.java,v 1.17 2009-01-16 17:23:58 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.17 $ on $Date: 2009-01-16 17:23:58 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -169,6 +169,7 @@ public class TestTrialOWLRules extends TestCase {
     /**
      * The test runner
      */
+    @Override
     protected void runTest() throws IOException {
         OWLWGTester tester = new OWLWGTester(GenericRuleReasonerFactory.theInstance(), this, configuration);
 //        OWLWGTester tester = new OWLWGTester(OWLExptRuleReasonerFactory.theInstance(), this, null);

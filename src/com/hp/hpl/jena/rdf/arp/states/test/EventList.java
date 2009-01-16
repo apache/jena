@@ -60,7 +60,7 @@ class EventList implements Attributes, Cloneable {
     public EventList copy() {
         try {
         EventList rslt = (EventList)clone();
-        rslt.events = (Event[])rslt.events.clone();
+        rslt.events = rslt.events.clone();
         return rslt;
         }
         catch (CloneNotSupportedException e){

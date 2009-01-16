@@ -88,12 +88,15 @@ macEncodings.add("MacUkraine");
         IANAnioEncoding(String name) {
             super(name);
         }
+        @Override
         public boolean isIANA() {
             return true;
         }
+        @Override
         public boolean isInNIO() {
             return true;
         }
+        @Override
         public String warningMessage() {
             return null;
         }
@@ -102,12 +105,15 @@ macEncodings.add("MacUkraine");
         NonIANAnioEncoding(String name) {
             super(name);
         }
+        @Override
         public boolean isIANA() {
             return false;
         }
+        @Override
         public boolean isInNIO() {
             return true;
         }
+        @Override
         public String warningMessage() {
             return "The encoding \"" + name() + "\" is not registered with IANA, and hence not suitable for Web content.";
         }
@@ -116,12 +122,15 @@ macEncodings.add("MacUkraine");
         NotNioEncoding(String name) {
             super(name);
         }
+        @Override
         public boolean isIANA() {
             return false;
         }
+        @Override
         public boolean isInNIO() {
             return false;
         }
+        @Override
         public String warningMessage() {
             return "The encoding \"" + name() + "\" is not fully supported; maybe try using Java 1.5 or higher (if you are not already).";
         }

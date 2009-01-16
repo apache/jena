@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Location.java,v 1.6 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: Location.java,v 1.7 2009-01-16 17:23:49 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -60,6 +60,7 @@ public class Location implements Locator {
         publicId = locator.getPublicId();
     	}
     }
+    @Override
     public String toString() {
         return //"before column " + endColumn +
         "line " + endLine + " in '"

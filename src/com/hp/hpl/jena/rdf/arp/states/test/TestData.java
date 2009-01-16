@@ -107,27 +107,32 @@ public class TestData implements ARPErrorNumbers{
             new AttrEvent("L", QName.rdf("parseType"), "Literal"),
             new AttrEvent("R", QName.rdf("parseType"), "Resource"),
             new InternalEvent("e", "</end>") {
+                @Override
                 FrameI apply(FrameI from, Attributes att) throws SAXParseException {
                     from.endElement();
                     return from.getParent();
                 }
             }, new InternalEvent("O", "object") {
+                @Override
                 FrameI apply(FrameI from, Attributes att) {
                     ((WantsObjectFrameI) from).theObject(foo);
                     return from;
                 }
             }, new InternalEvent("W", "white") {
+                @Override
                 FrameI apply(FrameI from, Attributes att) throws SAXParseException {
                     from.characters(white, 0, 5);
                     return from;
                 }
             }, new InternalEvent("Q", "'abcde'") {
+                @Override
                 FrameI apply(FrameI from, Attributes att) throws SAXParseException {
                     from.characters(black, 0, 5);
                     return from;
                 }
             }, 
             new InternalEvent("P", "pred-object") {
+                @Override
                 FrameI apply(FrameI from, Attributes att) {
                     ((HasSubjectFrameI) from).aPredAndObj(foo,bar);
                     return from;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Driver_MsSQL.java,v 1.9 2009-01-08 14:56:41 andy_seaborne Exp $
+ * $Id: Driver_MsSQL.java,v 1.10 2009-01-16 17:23:54 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.db.impl;
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
  * for impact.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 
 public class Driver_MsSQL extends Driver_PostgreSQL  {
@@ -74,6 +74,7 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
     /**
      * Set the database connection
      */
+    @Override
     public void setConnection( IDBConnection dbcon ) {
         m_dbcon = dbcon;
         
@@ -127,6 +128,7 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
      *
      * @return the db index of the added literal
      */
+    @Override
     public DBIDInt addRDBLongObject(RDBLongObject lobj, String table)  throws RDFRDBException {
         DBIDInt result = null;
         try {
@@ -166,6 +168,7 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
      * Allocate an identifier for a new graph.
      *
      */
+    @Override
     public int graphIdAlloc(String graphName) {
         DBIDInt result = null;
         try {
@@ -195,6 +198,7 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
      * 3) table and index name prefix.
      * @param param array to hold table creation parameters. 
      */
+    @Override
     protected void getTblParams ( String [] param ) {
         String spoColType;
         String headColType;

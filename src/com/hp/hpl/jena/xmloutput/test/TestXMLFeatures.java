@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- $Id: TestXMLFeatures.java,v 1.57 2009-01-12 16:47:47 andy_seaborne Exp $
+ $Id: TestXMLFeatures.java,v 1.58 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.57 $ $Date: 2009-01-12 16:47:47 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.58 $ $Date: 2009-01-16 17:23:56 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -44,7 +44,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		super(name, lang);
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return getName() + " " + lang;
 	}
 
@@ -52,7 +53,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		Model m = ModelFactory.createDefaultModel();
 		m.createResource("foo").addProperty(RDF.value, "bar");
 		m.write(new OutputStream() {
-			public void write(int b) throws IOException {
+			@Override
+            public void write(int b) throws IOException {
 			}
 		}, lang);
 	}
@@ -130,7 +132,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testXMLBase() throws IOException {
 		check(file1, // any will do
 				"xml:base=['\"]" + base2 + "['\"]", new Change() {
-					public void modify(RDFWriter writer) {
+					@Override
+                    public void modify(RDFWriter writer) {
 						String oldvalue = (String) writer.setProperty(
 								"xmlbase", base1);
 						assertTrue("xmlbase valued non-null", oldvalue == null);
@@ -192,7 +195,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testRDFNamespace() throws IOException {
 		check(file1, "xmlns:r=['\"]" + RDF.getURI() + "['\"]", "rdf:",
 				new Change() {
-					public void modify(Model m) {
+					@Override
+                    public void modify(Model m) {
 						m.removeNsPrefix("rdf");
 						m.setNsPrefix("r", RDF.getURI());
 					}
@@ -234,7 +238,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				"xmlns:eg[12]=['\"]http://example.org/#['\"]",
 				"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
 				new Change() {
-					public void modify(Model m) {
+					@Override
+                    public void modify(Model m) {
 						m.setNsPrefix("eg1", "http://example.org/#");
 						m.setNsPrefix("eg2", "http://example.org/#");
 					}
@@ -255,7 +260,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testDuplicatePrefix() throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/file[12]#['\"]", null,
 				new Change() {
-					public void modify(Model m) {
+					@Override
+                    public void modify(Model m) {
 						m.setNsPrefix("eg", "http://example.org/file1#");
 						m.setNsPrefix("eg", "http://example.org/file2#");
 					}
@@ -268,7 +274,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testUseNamespaceSysProp() throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
-			public void modify(RDFWriter writer) {
+			@Override
+            public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
 			}
 		});
@@ -276,7 +283,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testDefaultNamespaceSysProp() throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
-			public void modify(RDFWriter writer) {
+			@Override
+            public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
 			}
 		});
@@ -289,7 +297,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
 				new Change() {
 
-					public void modify(RDFWriter writer) {
+					@Override
+                    public void modify(RDFWriter writer) {
 						setNsPrefixSysProp("eg1", "http://example.org/#");
 						setNsPrefixSysProp("eg2", "http://example.org/#");
 					}
@@ -299,7 +308,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testDuplicatePrefixSysProp() throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/file[12]#['\"]", null,
 				new Change() {
-					public void modify(RDFWriter writer) {
+					@Override
+                    public void modify(RDFWriter writer) {
 						setNsPrefixSysProp("eg", "http://example.org/file1#");
 						setNsPrefixSysProp("eg", "http://example.org/file2#");
 					}
@@ -309,7 +319,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public void testDuplicatePrefixSysPropAndExplicit() throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/file[12]#['\"]", null,
 				new Change() {
-					public void modify(Model m) {
+					@Override
+                    public void modify(Model m) {
 						m.setNsPrefix("eg", "http://example.org/file1#");
 						setNsPrefixSysProp("eg", "http://example.org/file2#");
 					}
@@ -693,5 +704,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestXMLFeatures.java,v 1.57 2009-01-12 16:47:47 andy_seaborne Exp $
+ * $Id: TestXMLFeatures.java,v 1.58 2009-01-16 17:23:56 andy_seaborne Exp $
  */

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.12 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: AnonId.java,v 1.13 2009-01-16 17:23:52 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2008-12-28 19:31:54 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2009-01-16 17:23:52 $
  */
 
 // This version contains experimental modifications by der to 
@@ -90,6 +90,7 @@ public class AnonId extends java.lang.Object {
         @param o the object to be compared
         @return true if and only if the two id's are the same
     */    
+    @Override
     public boolean equals( Object o ) {
         return o instanceof AnonId && id.equals( ((AnonId) o).id );
     }
@@ -97,6 +98,7 @@ public class AnonId extends java.lang.Object {
     /** return a string representation of the id
      * @return a string representation of the id
      */    
+    @Override
     public String toString() {
         return id;
     }
@@ -112,6 +114,7 @@ public class AnonId extends java.lang.Object {
     /** return a hashcode for this id
      * @return the hash code
      */    
+    @Override
     public int hashCode() {
         return id.hashCode();
     }

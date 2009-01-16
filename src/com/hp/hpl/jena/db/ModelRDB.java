@@ -33,7 +33,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -208,6 +208,7 @@ public class ModelRDB extends ModelCom implements Model {
      *     some do, so in general its best to call it when done with the object,
      *     rather than leave it to the finalizer.</p>
      */
+    @Override
     public void close() {
         m_graphRDB.close();
     }

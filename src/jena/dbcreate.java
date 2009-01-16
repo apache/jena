@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.13 2008-12-28 19:32:20 andy_seaborne Exp $
+  * @version $Id: dbcreate.java,v 1.14 2009-01-16 17:23:57 andy_seaborne Exp $
   */ 
  
 public class dbcreate extends DBcmd
@@ -50,6 +50,7 @@ public class dbcreate extends DBcmd
         super("dbcreate", false);
     }
 
+    @Override
     protected void exec0()
     {
         Model m = null;
@@ -68,6 +69,7 @@ public class dbcreate extends DBcmd
         
     }
     
+    @Override
     protected boolean exec1(String arg) { return false ; } 
 }
  

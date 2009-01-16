@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.16 2008-12-28 19:32:03 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.17 2009-01-16 17:24:01 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -35,7 +35,8 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 	}
 
 	
-	protected void makeTest(String inputFile, String resultsFile)
+	@Override
+    protected void makeTest(String inputFile, String resultsFile)
 	{
 		String testName = inputFile ;
 
@@ -74,7 +75,8 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
             writerName = wName ;
 		}
 		
-		protected void runTest() throws Throwable
+		@Override
+        protected void runTest() throws Throwable
 		{
 			try {
 				data = makeReader(new FileInputStream(inputFile)) ;

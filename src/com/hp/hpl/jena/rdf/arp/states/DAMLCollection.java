@@ -14,15 +14,18 @@ public class DAMLCollection extends Collection {
         super(s, x);
     }
 
+    @Override
     void restTriple(ANode subj, ANode obj) {
         triple(subj,DAML_REST,obj);
     }
 
+    @Override
     void firstTriple(ANode subj, ANode obj) {
         triple(subj,DAML_FIRST,obj);
         triple(subj,RDF_TYPE,DAML_LIST);
     }
 
+    @Override
     ANode nil() {
         return DAML_NIL;
     }

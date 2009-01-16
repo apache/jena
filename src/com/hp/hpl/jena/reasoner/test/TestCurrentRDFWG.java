@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.13 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.14 2009-01-16 17:24:02 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:22 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:24:02 $
  */
 public class TestCurrentRDFWG extends ReasonerTestBase {
     
@@ -133,6 +133,7 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
         /**
          * The test runner
          */
+        @Override
         public void runTest() throws IOException {
             boolean success = tester.runTest(test, reasonerFactory, this, config);
 //            Resource resultType = null;

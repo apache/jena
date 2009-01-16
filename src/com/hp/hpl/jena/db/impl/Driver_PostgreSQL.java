@@ -74,7 +74,8 @@ public class Driver_PostgreSQL extends DriverRDB {
 	 * Allocate an identifier for a new graph.
 	 *
 	 */
-	public int graphIdAlloc ( String graphName ) {
+	@Override
+    public int graphIdAlloc ( String graphName ) {
 		DBIDInt result = null;
 		int dbid = 0;
 		try {
@@ -155,7 +156,8 @@ public class Driver_PostgreSQL extends DriverRDB {
 	 * 
 	 * Return the parameters for database initialization.
 	 */
-	protected String[] getDbInitTablesParams() {
+	@Override
+    protected String[] getDbInitTablesParams() {
 		String [] res = new String[3];
 		
 		getTblParams (res);
@@ -172,7 +174,8 @@ public class Driver_PostgreSQL extends DriverRDB {
 	* make several attempts to create the table.
 	*/	
 
-	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+	@Override
+    protected String[] getCreateTableParams( int graphId, boolean isReif ) {
 		String [] parms = new String[3];
 		String [] res = new String[2];
 				
@@ -183,7 +186,8 @@ public class Driver_PostgreSQL extends DriverRDB {
 		return res;
 	}
 	
-	public String genSQLStringMatchOp_IC( String fun ) {
+	@Override
+    public String genSQLStringMatchOp_IC( String fun ) {
 		return "I" + genSQLLikeKW();
 	}
 

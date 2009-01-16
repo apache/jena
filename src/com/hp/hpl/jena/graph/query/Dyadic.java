@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.7 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: Dyadic.java,v 1.8 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -28,12 +28,15 @@ public abstract class Dyadic extends Application
         this.R = R;
         }
     
+    @Override
     public int argCount()
         { return 2; }
     
+    @Override
     public Expression getArg( int i )
         { return i == 0 ? L : R; }
     
+    @Override
     public String getFun()
         { return F; }
     
@@ -76,6 +79,7 @@ public abstract class Dyadic extends Application
             };
         }
     
+    @Override
     public String toString()
         { return L.toString() + " " + F + " " + R.toString(); }
 
@@ -83,6 +87,7 @@ public abstract class Dyadic extends Application
     {
     return new Dyadic( L, ExpressionFunctionURIs.AND, R )
     	{
+        @Override
         public boolean evalBool( Object x, Object y )
             { return ((Boolean) x).booleanValue() && ((Boolean) y).booleanValue(); }
     	};

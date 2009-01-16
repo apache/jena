@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Dyadic.java,v 1.13 2008-12-28 19:32:36 andy_seaborne Exp $
+  $Id: Dyadic.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -34,6 +34,7 @@ public abstract class Dyadic extends CompositionBase
             ;
 		}
 
+    @Override
     public void close()
     	{
     	L.close();
@@ -43,6 +44,7 @@ public abstract class Dyadic extends CompositionBase
     /**
         Generic dependsOn, true iff it depends on either of the subgraphs.
     */
+    @Override
     public boolean dependsOn( Graph other )
         { return other == this || L.dependsOn( other ) || R.dependsOn( other ); }
  				

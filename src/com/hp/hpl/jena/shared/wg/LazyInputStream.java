@@ -57,12 +57,14 @@ abstract class LazyInputStream extends InputStream {
     }
     
     
+    @Override
     public int read() throws IOException {
         if (underlying == null)
             underlying = open();
         return underlying.read();
     }
     
+    @Override
     public void close() throws IOException {
         if (underlying != null) {
             underlying.close();

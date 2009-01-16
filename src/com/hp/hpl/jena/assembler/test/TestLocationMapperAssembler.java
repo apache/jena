@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLocationMapperAssembler.java,v 1.5 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: TestLocationMapperAssembler.java,v 1.6 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -19,6 +19,7 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
     public TestLocationMapperAssembler( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return LocationMapperAssembler.class; }
 

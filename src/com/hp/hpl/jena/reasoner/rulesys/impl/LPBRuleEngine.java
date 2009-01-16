@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.14 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: LPBRuleEngine.java,v 1.15 2009-01-16 17:23:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:53 $
  */
 public class LPBRuleEngine {
     
@@ -410,6 +410,7 @@ public class LPBRuleEngine {
         }
         
         /** Printable form */
+        @Override
         public String toString() {
             return " " + count + "\t - " + clause;
         }

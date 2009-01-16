@@ -30,6 +30,7 @@ public class JenaException extends RuntimeException {
     /* Java 1.3, 1.4 compatibility.
      * Support getCause() and initCause()
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }
@@ -50,12 +51,14 @@ public class JenaException extends RuntimeException {
         the originating exception came from ... essential when debugging. 
     */
     
+    @Override
     public void printStackTrace( PrintStream s )
         {
         if (cause != null) cause.printStackTrace( s );
         super.printStackTrace( s );
         }
         
+    @Override
     public void printStackTrace( PrintWriter w )
         {
         if (cause != null) cause.printStackTrace( w );

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.8 2008-12-28 19:32:24 andy_seaborne Exp $
+ 	$Id: TestHashCommon.java,v 1.9 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -28,6 +28,7 @@ public class TestHashCommon extends ModelTestBase
         protected void set( int index, Item object )
             { keys[index] = object; }
         
+        @Override
         public Object removeFrom( int here )
             { return super.removeFrom( here ); }
         
@@ -40,6 +41,7 @@ public class TestHashCommon extends ModelTestBase
         /*
             Leaving the hashcode alone makes testing simpler. 
         */
+        @Override
         protected int improveHashCode( int hashCode )
             { return hashCode; }   
         }
@@ -51,11 +53,14 @@ public class TestHashCommon extends ModelTestBase
         
         public Item( int n, String s ) { this.n = n; this.s = s; }
         
+        @Override
         public int hashCode() { return n; }
         
+        @Override
         public boolean equals( Object other )
             { return other instanceof Item && s.equals( ((Item) other).s ); }
         
+        @Override
         public String toString()
             { return s + "#" + n; }
         }    
@@ -91,7 +96,7 @@ public class TestHashCommon extends ModelTestBase
     public void testRemoveSimpleMove()
         {
         ProbeHashCommon h = probeWith( "0:2:X 1:1:Y 2:2:Z" );
-        assertSame( null, (Item) h.removeFrom( 1 ) );
+        assertSame( null, h.removeFrom( 1 ) );
         assertAlike( probeWith( "1:2:X 2:2:Z"), h );
         }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhGraph.java,v 1.21 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: EnhGraph.java,v 1.22 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -40,6 +40,7 @@ public class EnhGraph
     /** The unique personality that is bound to this polymorphic instace */
     private Personality personality;
 
+    @Override
     public boolean isValid()
         { return true; }
     
@@ -72,6 +73,7 @@ public class EnhGraph
      * Hashcode for an enhnaced graph is delegated to the underlyin graph.
      * @return The hashcode as an int
      */
+    @Override
     final public int hashCode() {
      	return graph.hashCode();
     }
@@ -90,6 +92,7 @@ public class EnhGraph
      * @return True if o is equal to this node.
      * @see #isIsomorphicWith
      */
+    @Override
     final public boolean equals(Object o) {
         return 
             this == o 
@@ -155,6 +158,8 @@ public class EnhGraph
      @param t A type
      @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
+    @Deprecated
+    @Override
     protected Polymorphic convertTo(Class t) {
         throw new PersonalityConfigException
             ( "Alternative perspectives on graphs has not been implemented yet" );
@@ -164,6 +169,8 @@ public class EnhGraph
         we can't convert to anything. 
         @deprecated
     */
+    @Deprecated
+    @Override
     protected boolean canSupport( Class t )
         { return false; }
         
@@ -172,6 +179,7 @@ public class EnhGraph
      * 
      * @return The personality object
      */
+    @Override
     protected Personality getPersonality() {
         return personality;
     }

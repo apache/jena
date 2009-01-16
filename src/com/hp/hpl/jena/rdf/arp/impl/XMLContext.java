@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.12 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: XMLContext.java,v 1.13 2009-01-16 17:23:49 andy_seaborne Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -84,6 +84,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
         super(b, document, uri, baseT, lang, langT);
     }
 
+    @Override
     boolean keepDocument(XMLHandler forErrors) {
         return true;
     }
@@ -94,6 +95,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
                         .equals(document.uri));
     }
 
+    @Override
     AbsXMLContext clone(IRI u, Taint baseT, String lng,
             Taint langT) {
         return new XMLContext(true, document, u, baseT, lng, langT);
@@ -114,6 +116,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
         }
     }
 
+    @Override
     void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri,
             IRI rslt) throws SAXParseException {
         if (document == null)

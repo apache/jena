@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelEvents.java,v 1.22 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestModelEvents.java,v 1.23 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -28,6 +28,7 @@ public class TestModelEvents extends ModelTestBase
     protected Model model;
     protected RecordingModelListener SL;
     
+    @Override
     public void setUp()
         { 
         model = ModelFactory.createDefaultModel(); 
@@ -234,9 +235,11 @@ public class TestModelEvents extends ModelTestBase
         public String getAddOrRem()
             { return addOrRem; }
                 
+        @Override
         public void addedStatement( Statement s )
             { statements.add( s ); addOrRem = "add"; }
             
+        @Override
         public void removedStatement( Statement s )
             { statements.add( s ); addOrRem = "rem"; }
         }
@@ -301,9 +304,11 @@ public class TestModelEvents extends ModelTestBase
         private Object recorded;
         private String how;
         
+        @Override
         public void added( Object x )
             { recorded = x; how = "add"; }
             
+        @Override
         public void removed( Object x )
             { recorded = x; how = "rem"; }
         

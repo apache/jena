@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.21 2008-12-28 19:32:32 andy_seaborne Exp $
+ 	$Id: GraphMemFaster.java,v 1.22 2009-01-16 17:24:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -24,27 +24,34 @@ public class GraphMemFaster extends GraphMemBase
     public GraphMemFaster( ReificationStyle style )
         { super( style ); }
 
+    @Override
     protected TripleStore createTripleStore()
         { return new FasterTripleStore( this ); }
 
+    @Override
     protected void destroy()
         { store.close(); }
 
+    @Override
     public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) store.add( t ); }
 
+    @Override
     public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) store.delete( t ); }
 
+    @Override
     public int graphBaseSize()  
         { return store.size(); }
     
+    @Override
     public QueryHandler queryHandler()
         { 
         if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
         return queryHandler;
         }
 
+    @Override
     protected GraphStatisticsHandler createStatisticsHandler()
         { return new GraphMemFasterStatisticsHandler( (FasterTripleStore) store, getReifier() ); }
     
@@ -139,6 +146,7 @@ public class GraphMemFaster extends GraphMemBase
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
      */
+    @Override
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
 
@@ -164,6 +172,7 @@ public class GraphMemFaster extends GraphMemBase
         {
         return new Applyer() 
             {
+            @Override
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 plain.applyToTriples( d, m, next );
@@ -181,12 +190,14 @@ public class GraphMemFaster extends GraphMemBase
          happens to be concrete, then we hand responsibility over to the store.
          Otherwise we use the default implementation.
     */
+    @Override
     public boolean graphBaseContains( Triple t )
         { return t.isConcrete() ? store.contains( t ) : super.graphBaseContains( t ); }
     
     /**
         Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
+    @Override
     public void clear()
         { 
         store.clear(); 

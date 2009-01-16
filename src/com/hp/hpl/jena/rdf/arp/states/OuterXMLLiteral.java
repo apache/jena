@@ -24,6 +24,7 @@ public class OuterXMLLiteral extends AbsXMLLiteral {
         
     }
 
+    @Override
     public void endElement() throws SAXParseException {
         ARPString xmlLiteral = new ARPString(this,rslt.toString(),parseType );
         if (taint.isTainted())

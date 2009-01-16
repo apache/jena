@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.10 2008-12-28 19:32:18 andy_seaborne Exp $
+  $Id: TestSimpleSelector.java,v 1.11 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -44,6 +44,7 @@ public class TestSimpleSelector extends TestCase
     Model model = null;    
 	IDBConnection conn = null;
 	   
+    @Override
     protected void setUp() throws java.lang.Exception {
     	
 		conn = TestConnection.makeAndCleanTestConnection();
@@ -60,6 +61,7 @@ public class TestSimpleSelector extends TestCase
     	
     }
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     	model.close();
     	model = null;

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.66 $
+ * Revision           $Revision: 1.67 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 01:12:10 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-16 17:23:59 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.66 2009-01-16 01:12:10 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.67 2009-01-16 17:23:59 andy_seaborne Exp $
  */
 public class OntDocumentManager
 {
@@ -476,6 +476,7 @@ public class OntDocumentManager
      * @return The URI of the representation language, or null.
      * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
      */
+    @Deprecated
     public String getLanguage( String uri ) {
         return (String) m_languageMap.get( uri );
     }
@@ -491,6 +492,7 @@ public class OntDocumentManager
      *          given document's namespace, or null if not known
      * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
+    @Deprecated
     public String getPrefixForURI( String uri ) {
         return m_prefixMap.getNsURIPrefix( uri );
     }
@@ -505,6 +507,7 @@ public class OntDocumentManager
      * @return The basename that the prefix expands to, or null
      * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
+    @Deprecated
     public String getURIForPrefix( String prefix ) {
         return m_prefixMap.getNsPrefixURI( prefix );
     }
@@ -593,6 +596,7 @@ public class OntDocumentManager
      * @param language A string defining the URI of the language
      * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
      */
+    @Deprecated
     public void addLanguageEntry( String docURI, String language ) {
         m_languageMap.put( docURI, language );
     }

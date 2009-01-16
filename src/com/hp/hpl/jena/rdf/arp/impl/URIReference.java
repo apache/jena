@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.14 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: URIReference.java,v 1.15 2009-01-16 17:23:49 andy_seaborne Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -72,6 +72,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
 //        uri = null;
 //    }
 
+    @Override
     public String toString() {
         return uri;
     }
@@ -101,11 +102,13 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     /**
      * Does not compare userData field, only URI.
      */
+    @Override
     public boolean equals(Object o) {
         return o != null && (o instanceof URIReference)
                 && uri.equals(((URIReference) o).uri);
     }
 
+    @Override
     public int hashCode() {
         return uri.hashCode();
     }

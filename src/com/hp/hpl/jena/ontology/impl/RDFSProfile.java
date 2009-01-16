@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.15 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.16 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class RDFSProfile
     extends AbstractProfile
@@ -128,6 +128,7 @@ public class RDFSProfile
     public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
 
 
+    @Override
     protected Resource[][] aliasTable() {
         return new Resource[][] {
             {}
@@ -231,6 +232,7 @@ public class RDFSProfile
     private static Object[][] s_supportsCheckTable = new Object[][] {
         // Resource (key),              check method
         {  OntClass.class,              new SupportsCheck() {
+                                            @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), RDFS.Datatype.asNode() ) ||
@@ -243,6 +245,7 @@ public class RDFSProfile
                                         }
         },
         {  RDFList.class,               new SupportsCheck() {
+                                            @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return n.equals( RDF.nil.asNode() )  ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), RDF.List.asNode() );
@@ -250,6 +253,7 @@ public class RDFSProfile
                                         }
         },
         {  OntProperty.class,           new SupportsCheck() {
+                                            @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() );
                                             }

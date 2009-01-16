@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.97 $
+ * Revision           $Revision: 1.98 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 01:12:10 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-01-16 17:23:57 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -84,6 +84,7 @@ public class TestBugReports
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
@@ -669,6 +670,7 @@ public class TestBugReports
         Resource a = m.createResource("http://example.org#A");
         Resource b = m.createResource("http://example.org#B");
         OntClass A = new OntClassImpl(a.asNode(), (EnhGraph) m) {
+            @Override
             protected boolean hasSuperClassDirect(Resource cls) {
                 throw new RuntimeException("did not find direct reasoner");
             }
@@ -1751,12 +1753,14 @@ public class TestBugReports
         // because ModelCom has private fields it references directly, we have to mock
         // a lot more pieces that I would prefer
         OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
             protected Model readDelegate( String url ) {
                 acceptHeaderSet[0] = true;
                 return super.readDelegate( url );
             }
 
             /** Allow pseudo-conneg even on file: uri's */
+            @Override
             public boolean ignoreFileURI( String url ) {
                 return false;
             }
@@ -1775,6 +1779,7 @@ public class TestBugReports
         // because ModelCom has private fields it references directly, we have to mock
         // a lot more pieces that I would prefer
         OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
             protected Model readDelegate( String url ) {
                 acceptHeaderSet[0] = true;
                 return super.readDelegate( url );
@@ -1794,12 +1799,14 @@ public class TestBugReports
         // because ModelCom has private fields it references directly, we have to mock
         // a lot more pieces that I would prefer
         OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
             protected Model readDelegate( String url, String lang ) {
                 acceptHeaderSet[0] = true;
                 return super.readDelegate( url, lang );
             }
 
             /** Allow pseudo-conneg even on file: uri's */
+            @Override
             public boolean ignoreFileURI( String url ) {
                 return false;
             }
@@ -1818,12 +1825,14 @@ public class TestBugReports
         // because ModelCom has private fields it references directly, we have to mock
         // a lot more pieces that I would prefer
         OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
             protected Model readDelegate( String url, String lang ) {
                 acceptHeaderSet[0] = true;
                 return super.readDelegate( url, lang );
             }
 
             /** Allow pseudo-conneg even on file: uri's */
+            @Override
             public boolean ignoreFileURI( String url ) {
                 return false;
             }
@@ -1855,13 +1864,16 @@ public class TestBugReports
         boolean m_aborted = false;
         boolean m_committed = false;
 
+        @Override
         public void begin() {
             m_inTransaction = true;
         }
+        @Override
         public void abort() {
             m_inTransaction = false;
             m_aborted = true;
         }
+        @Override
         public void commit() {
             m_inTransaction = false;
             m_committed = true;

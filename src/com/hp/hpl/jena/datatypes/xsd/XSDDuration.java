@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.16 2008-12-28 19:32:38 andy_seaborne Exp $
+ * $Id: XSDDuration.java,v 1.17 2009-01-16 17:23:57 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2008-12-28 19:32:38 $
+ * @version $Revision: 1.17 $ on $Date: 2009-01-16 17:23:57 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -103,6 +103,7 @@ public class XSDDuration extends AbstractDateTime {
     /**
      * Serializer
      */
+    @Override
     public String toString() {
          StringBuffer message = new StringBuffer(30);
          int negate = 1;
@@ -172,6 +173,7 @@ public class XSDDuration extends AbstractDateTime {
      * If the strict parameter is false, return LESS_THAN if date1 is less than OR equal to date2 and
      * return GREATER_THAN if date1 is greater than OR equal to date2 
      */
+    @Override
     protected short compareDates(int[] date1, int[] date2, boolean strict) {
 
         //REVISIT: this is unoptimazed vs of comparing 2 durations

@@ -16,6 +16,7 @@ public class WantEmpty extends Frame {
         super(s, x);
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXParseException {
         warning(ERR_SYNTAX_ERROR,"The attributes on this property element, are not permitted with any content; expecting end element tag.");
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.24 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.25 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -61,6 +61,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             final Iterator it = forwardMap.entrySet().iterator();   
             return new FragmentTripleIterator( t, it )
                 {
+                @Override
                 public void fill( GraphAdd ga, Node n, Object fragmentsObject )
                     { 
                     ((Fragments) fragmentsObject).includeInto( ga );    
@@ -276,6 +277,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         /**
             return a readable representation of this Fragment for debugging purposes.
         */
+        @Override
         public String toString()
             { return anchor + " s:" + slots[SUBJECTS_index] + " p:" + slots[PREDICATES_index] + " o:" + slots[OBJECTS_index] + " t:" + slots[TYPES_index]; }
 
@@ -290,10 +292,14 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     protected static final int PREDICATES_index = 2;
     protected static final int OBJECTS_index = 3;
     
-    protected final ReifierFragmentHandler TYPES = new SimpleReifierFragmentHandler( this, TYPES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
-    protected final ReifierFragmentHandler SUBJECTS = new SimpleReifierFragmentHandler( this, SUBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
-    protected final ReifierFragmentHandler PREDICATES = new SimpleReifierFragmentHandler( this, PREDICATES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
-    protected final ReifierFragmentHandler OBJECTS = new SimpleReifierFragmentHandler( this, OBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
+    protected final ReifierFragmentHandler TYPES = new SimpleReifierFragmentHandler( this, TYPES_index) { @Override
+    public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
+    protected final ReifierFragmentHandler SUBJECTS = new SimpleReifierFragmentHandler( this, SUBJECTS_index) { @Override
+    public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
+    protected final ReifierFragmentHandler PREDICATES = new SimpleReifierFragmentHandler( this, PREDICATES_index) { @Override
+    public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
+    protected final ReifierFragmentHandler OBJECTS = new SimpleReifierFragmentHandler( this, OBJECTS_index) { @Override
+    public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
 
     public final Map selectors = makeSelectors();
           

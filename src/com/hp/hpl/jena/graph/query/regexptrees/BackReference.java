@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BackReference.java,v 1.6 2008-12-28 19:31:59 andy_seaborne Exp $
+  $Id: BackReference.java,v 1.7 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -19,12 +19,15 @@ public class BackReference extends RegexpTree
     public int getIndex()
         { return index; }
 
+    @Override
     public boolean equals( Object other )
         { return other instanceof BackReference && index == ((BackReference) other).index; }
 
+    @Override
     public int hashCode()
         { return index; }
 
+    @Override
     public String toString()
         { return "<back " + index + ">"; }
     }

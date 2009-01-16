@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.18 2008-12-28 19:32:02 andy_seaborne Exp $
+ *  * $Id: ParseException.java,v 1.19 2009-01-16 17:23:49 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -124,6 +124,7 @@ public class ParseException extends SAXParseException implements
      * 
      * @return The exception message.
      */
+    @Override
     public String getMessage() {
         // turn 1 to W001
         // turn 204 to E204

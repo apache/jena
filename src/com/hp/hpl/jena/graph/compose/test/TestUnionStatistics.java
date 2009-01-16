@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestUnionStatistics.java,v 1.3 2008-12-28 19:32:06 andy_seaborne Exp $
+ 	$Id: TestUnionStatistics.java,v 1.4 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -83,11 +83,13 @@ public class TestUnionStatistics extends GraphTestBase
         {
         return new GraphBase() 
             {
+            @Override
             protected ExtendedIterator graphBaseFind( TripleMatch m )
                 {    
                 throw new RuntimeException( "should never be called" );
                 }
             
+            @Override
             protected GraphStatisticsHandler createStatisticsHandler()
                 {
                 return new GraphStatisticsHandler()

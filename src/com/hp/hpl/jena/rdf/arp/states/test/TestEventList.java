@@ -46,6 +46,7 @@ public class TestEventList extends TestCase implements Test {
         }
     }
 
+    @Override
     protected void runTest() {
         String state = record1 instanceof FullEventRecord ? ((FullEventRecord) record1).state
                 : ((FullEventRecord) record2).state;

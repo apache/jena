@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-16 17:23:54 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.15 2008-12-28 19:32:04 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.16 2009-01-16 17:23:54 andy_seaborne Exp $
  */
 public class DIGQueryEquivalentsTranslator
     extends DIGQueryTranslator
@@ -76,6 +76,7 @@ public class DIGQueryEquivalentsTranslator
     /**
      * <p>Answer a query that will generate the class hierachy for a concept</p>
      */
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
@@ -90,24 +91,29 @@ public class DIGQueryEquivalentsTranslator
     /**
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
+    @Override
     public ExtendedIterator translateResponseHook( Document response, TriplePattern query, DIGAdapter da ) {
         return translateConceptSetResponse( response, query, !m_subjectFree, da );
     }
 
+    @Override
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
     }
 
 
+    @Override
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
         return (m_subjectFree && !subject.isConcrete()) || da.isConcept( subject, premises );
     }
 
+    @Override
     public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
         return (!m_subjectFree && !object.isConcrete()) || da.isConcept( object, premises );
     }
 
+    @Override
     public boolean checkTriple( TriplePattern pattern, DIGAdapter da, Model premises ) {
         return super.checkTriple( pattern, da, premises ) &&
                (!pattern.getSubject().isConcrete() || !pattern.getObject().isConcrete());

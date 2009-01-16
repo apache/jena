@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResourceMethods.java,v 1.10 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionResourceMethods.java,v 1.11 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -33,6 +33,7 @@ public class NewRegressionResourceMethods extends NewRegressionBase
 
     protected Resource tvResource;
     
+    @Override
     public void setUp()
         { 
         m = getModel();

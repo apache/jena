@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.13 2008-12-28 19:31:42 andy_seaborne Exp $
+ * $Id: XSDDurationType.java,v 1.14 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  *            
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:31:42 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class XSDDurationType extends XSDAbstractDateTimeType {
     
@@ -40,7 +40,8 @@ public class XSDDurationType extends XSDAbstractDateTimeType {
     * XSDDatatype.convertValidatedDataValue rather then from a local
     * parse method to make the implementation of XSDGenericType easier.
     */
-   public Object parseValidated(String str) {
+   @Override
+public Object parseValidated(String str) {
        int len = str.length();
        int[] date=new int[TOTAL_SIZE];
 

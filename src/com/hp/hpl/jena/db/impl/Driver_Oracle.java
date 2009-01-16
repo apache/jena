@@ -98,7 +98,8 @@ public class Driver_Oracle extends DriverRDB {
 	 * Allocate an identifier for a new graph.
 	 *
 	 */
-	public int graphIdAlloc ( String graphName ) {
+	@Override
+    public int graphIdAlloc ( String graphName ) {
 		DBIDInt result = null;
 		int dbid = 0;
 		try {
@@ -189,7 +190,8 @@ public class Driver_Oracle extends DriverRDB {
 	* make several attempts to create the table.
 	*/	
 
-	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+	@Override
+    protected String[] getCreateTableParams( int graphId, boolean isReif ) {
 		String [] parms = new String[3];
 		String [] res = new String[2];
 				
@@ -203,7 +205,8 @@ public class Driver_Oracle extends DriverRDB {
 	/**
 	 * Return the parameters for database initialization.
 	 */
-	protected String[] getDbInitTablesParams() {
+	@Override
+    protected String[] getDbInitTablesParams() {
 		String [] res = new String[3];
 		
 		getTblParams (res);
@@ -232,6 +235,7 @@ public class Driver_Oracle extends DriverRDB {
 //	    return super.IDtoLongObject(dbid, table) ;
 //	}
 
+    @Override
     protected void setLongObjectHashAndTail(PreparedStatement ps, int argi, RDBLongObject lobj)
     throws SQLException
     {
@@ -252,7 +256,8 @@ public class Driver_Oracle extends DriverRDB {
 	 * Drop all Jena-related sequences from database, if necessary.
 	 * Override in subclass if sequences must be explicitly deleted.
 	 */
-	public void clearSequences() {
+	@Override
+    public void clearSequences() {
 	    Iterator seqIt = getSequences().iterator();
 	    while (seqIt.hasNext()) {
 	        removeSequence((String)seqIt.next());
@@ -262,7 +267,8 @@ public class Driver_Oracle extends DriverRDB {
     /** Oracle implementation of getConnection().getMetaData() can see all tables if run sufficiently priviledge.
      * 
      */
-	protected List getAllTables() {
+	@Override
+    protected List getAllTables() {
 	    try {
 //	        DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 //	        String[] tableTypes = { "TABLE" };
@@ -284,17 +290,21 @@ public class Driver_Oracle extends DriverRDB {
 	}
 
 
-	public String genSQLStringMatchLHS_IC(String var) {
+	@Override
+    public String genSQLStringMatchLHS_IC(String var) {
 	    return "UPPER(" + var + ")";
 	}
 
-	public String genSQLStringMatchRHS_IC(String strToMatch) {
+	@Override
+    public String genSQLStringMatchRHS_IC(String strToMatch) {
 	    return "UPPER(" + strToMatch + ")";
 	}
 
-	public String stringMatchEscapeChar() { return "\\"; }
+	@Override
+    public String stringMatchEscapeChar() { return "\\"; }
 
-	public String genSQLStringMatchEscape() {
+	@Override
+    public String genSQLStringMatchEscape() {
 	    return " " + genSQLEscapeKW() + " '" + stringMatchEscapeChar() + "'";
 	}
 }

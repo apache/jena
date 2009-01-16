@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.30 2008-12-28 19:32:40 andy_seaborne Exp $
+  $Id: PrefixMappingImpl.java,v 1.31 2009-01-16 17:24:04 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -173,6 +173,7 @@ public class PrefixMappingImpl implements PrefixMapping
     /**
         Answer a readable (we hope) representation of this prefix mapping.
     */
+    @Override
     public String toString()
         { return "pm:" + prefixToURI; }
         

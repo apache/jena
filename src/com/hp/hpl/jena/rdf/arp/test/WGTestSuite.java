@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.37 2008-12-28 19:32:02 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.38 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -133,7 +133,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		DummyTest() {
 			super("save results");
 		}
-		public void runTest()  throws IOException {
+		@Override
+        public void runTest()  throws IOException {
 			if (logging) {	    
 				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
 				w.setProperty("xmlbase",BASE_RESULTS_URI );
@@ -383,7 +384,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	 ReasoningTest(Resource r) {
     	 	super(r);
     	 }
-	 protected void runTest() throws IOException {
+	 @Override
+    protected void runTest() throws IOException {
 	       int rslt = WGReasonerTester.FAIL;
 	       try {
                    JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
@@ -399,13 +401,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 	/* (non-Javadoc)
          * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
 	 */
-	String createMe() {
+	@Override
+    String createMe() {
 		throw new UnsupportedOperationException();
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#reallyRunTest()
 	 */
-	void reallyRunTest() {
+	@Override
+    void reallyRunTest() {
 		throw new BrokenException("");
 	}
     	 
@@ -458,6 +462,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
             return null;
         }
+        @Override
         protected void runTest()  throws IOException {
         	int rslt = WGReasonerTester.FAIL;
         	try {
@@ -522,6 +527,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
     
     class PositiveTest extends NegativeTest {
+        @Override
         String createMe() {
             return createURI() + "," + create(input) + "," + create(output);
         }
@@ -529,6 +535,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             super(nm);
             expectedLevel = -1;
         }
+        @Override
         protected void reallyRunTest() {
             try {
                 Model m2 = read(output);
@@ -543,12 +550,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(e.getMessage());
             }
         }
+        @Override
         void initExpected()  {
             expected = new HashSet();
         }
     }
     
     class WarningTest extends PositiveTest {
+        @Override
         String createMe() {
             return createURI()
                 + ","
@@ -562,6 +571,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             super(nm);
             expectedLevel = 0;
         }
+        @Override
         void initExpected()  {
             initExpectedFromModel();
         }
@@ -582,6 +592,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 rslt += it.next() + ", ";
             return rslt + "}";
         }
+        @Override
         String createMe() {
             return createURI() + "," + create(input) + "," + createExpected();
         }
@@ -618,6 +629,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         void initExpected()  {
             initExpectedFromModel();
         }
+        @Override
         protected void reallyRunTest() {
             try {
                 m1 = read(input);
@@ -691,6 +703,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
 
         }
+        @Override
         void onError(int level, int id) {
             Integer err = new Integer(id);
             found.add(err);
@@ -816,6 +829,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             this.out = out;
             this.outtype = outtype;
         }
+        @Override
         protected void runTest() {
             try {
                 Model m2 = read(out, outtype);
@@ -895,6 +909,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 expected.add(new Integer(errs[i]));
             }
         }
+        @Override
         protected void runTest() {
             try {
                 m1 = read(in, intype);
@@ -970,6 +985,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
 
         }
+        @Override
         void onError(int level, int id) {
             Integer err = new Integer(id);
             found.add(err);

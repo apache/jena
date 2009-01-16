@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRDBModelAssembler.java,v 1.11 2008-12-28 19:31:58 andy_seaborne Exp $
+ 	$Id: TestRDBModelAssembler.java,v 1.12 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -16,6 +16,7 @@ public class TestRDBModelAssembler extends AssemblerTestBase
     public TestRDBModelAssembler( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return RDBModelAssembler.class; }
 
@@ -37,6 +38,7 @@ public class TestRDBModelAssembler extends AssemblerTestBase
         final Mode theMode = new Mode( true, true );
         Assembler a = new RDBModelAssembler()
             {
+            @Override
             public Model openModel( Resource root, ConnectionDescription c, String name, ReificationStyle style, Content initial, Mode mode )
                 {
                 assertSame( C, c );

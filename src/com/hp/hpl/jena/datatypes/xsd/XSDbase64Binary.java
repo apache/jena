@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDbase64Binary.java,v 1.12 2008-12-28 19:32:38 andy_seaborne Exp $
+ * $Id: XSDbase64Binary.java,v 1.13 2009-01-16 17:23:57 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * This only needs to implement the unparsing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:32:38 $
+ * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:57 $
  */
 public class XSDbase64Binary extends XSDDatatype {
     
@@ -37,6 +37,7 @@ public class XSDbase64Binary extends XSDDatatype {
      * Test whether the given object is a legal value form
      * of this datatype. Brute force implementation.
      */
+    @Override
     public boolean isValidValue(Object valueForm) {
         return (valueForm instanceof byte[]);
     }
@@ -45,6 +46,7 @@ public class XSDbase64Binary extends XSDDatatype {
      * Convert a value of this datatype out
      * to lexical form.
      */
+    @Override
     public String unparse(Object value) {
         if (value instanceof byte[]) {
             return Base64.encode((byte[])value);
@@ -58,12 +60,14 @@ public class XSDbase64Binary extends XSDDatatype {
      * This ignores lang tags and just uses the java.lang.Number 
      * equality.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         return value1.getDatatype() == value2.getDatatype()
             && Arrays.equals((byte[])value1.getValue(), (byte[])value2.getValue());
 //      && value1.getLexicalForm().equals(value2.getLexicalForm());  // bug tracking, not real code
     }
    
+    @Override
     public int getHashCode( LiteralLabel lit )
         { return getHashCode( (byte []) lit.getValue() ); }
 }

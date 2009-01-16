@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.14 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: WrappedIterator.java,v 1.15 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -60,10 +60,12 @@ public class WrappedIterator extends NiceIterator
         this.removeDenied = removeDenied; }
         
     /** hasNext: defer to the base iterator */
+    @Override
     public boolean hasNext()
         { return base.hasNext(); }
         
     /** next: defer to the base iterator */
+    @Override
     public Object next()
         { return base.next(); }
         
@@ -71,6 +73,7 @@ public class WrappedIterator extends NiceIterator
          if .remove() is allowed, delegate to the base iterator's .remove; 
          otherwise, throw an UnsupportedOperationException. 
     */
+    @Override
     public void remove()
         {
         if (removeDenied) throw new UnsupportedOperationException();
@@ -78,6 +81,7 @@ public class WrappedIterator extends NiceIterator
         }
         
     /** close: defer to the base, iff it is closable */
+    @Override
     public void close()
         { close( base ); }
 

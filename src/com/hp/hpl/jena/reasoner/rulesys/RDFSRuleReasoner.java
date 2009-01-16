@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.21 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.22 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.22 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
@@ -102,6 +102,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
+    @Override
     protected boolean doSetParameter(Property parameter, Object value) {
         if (parameter.equals(ReasonerVocabulary.PROPenableCMPScan)) {
             boolean scanProperties = Util.convertBooleanPredicateArg(parameter, value);
@@ -136,6 +137,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         Graph schemaArg = schemaGraph == null ? getPreload() : schemaGraph;
         InfGraph graph = null; 
@@ -158,12 +160,13 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         if (schemaGraph != null) {
             throw new ReasonerException("Can only bind one schema at a time to an RDFSRuleReasoner");
         }
         FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
-        if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
+        if (enableTGCCaching) (graph).setUseTGCCache();
         graph.prepare();
         RDFSRuleReasoner grr = new RDFSRuleReasoner(graph, factory);
         grr.setDerivationLogging(recordDerivations);
@@ -199,6 +202,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * Return the Jena Graph Capabilties that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Override
     public Capabilities getGraphCapabilities() {
         if (capabilities == null) {
             capabilities = new BaseInfGraph.InfFindSafeCapabilities();

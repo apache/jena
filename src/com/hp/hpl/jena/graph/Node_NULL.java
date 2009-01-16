@@ -20,12 +20,15 @@ public class Node_NULL extends Node_Concrete
      *  this incorrect but suits our purposes. really want an isNull
      *  method on Node but that's too much surgery. */
     
+    @Override
     public boolean equals( Object other )
         { return other instanceof Node_NULL; }
         
+    @Override
     public Object visitWith( NodeVisitor v )
         { return null; }
                 
+    @Override
     public String toString()
         { return "NULL"; }
     }

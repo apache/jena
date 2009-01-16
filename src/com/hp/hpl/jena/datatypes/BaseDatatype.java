@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.17 2008-12-28 19:32:37 andy_seaborne Exp $
+ * $Id: BaseDatatype.java,v 1.18 2009-01-16 17:24:01 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2008-12-28 19:32:37 $
+ * @version $Revision: 1.18 $ on $Date: 2009-01-16 17:24:01 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -53,6 +53,7 @@ public class BaseDatatype implements RDFDatatype {
             this.datatypeURI = datatypeURI;
         }
         
+        @Override
         public boolean equals(Object other) {
             if (other instanceof TypedValue) {
                 return lexicalValue.equals(((TypedValue)other).lexicalValue) 
@@ -62,6 +63,7 @@ public class BaseDatatype implements RDFDatatype {
             }
         }
         
+        @Override
         public int hashCode() {
             return lexicalValue.hashCode() ^ datatypeURI.hashCode();
         }
@@ -198,6 +200,7 @@ public class BaseDatatype implements RDFDatatype {
     /**
      * Display format
      */
+    @Override
     public String toString() {
         return "Datatype[" + uri
               + (getJavaClass() == null ? "" : " -> " + getJavaClass())

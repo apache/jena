@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.13 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: FragmentTripleIterator.java,v 1.14 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -37,6 +37,7 @@ public abstract class FragmentTripleIterator extends NiceIterator
         list once we've refilled.
         @return true iff there are more triples to come
     */
+    @Override
     public boolean hasNext() 
         { 
         refill();
@@ -49,6 +50,7 @@ public abstract class FragmentTripleIterator extends NiceIterator
         @return the next triple
         @throws NoSuchElementException if there isn't one
     */
+    @Override
     public Object next()
         {
         ensureHasNext();

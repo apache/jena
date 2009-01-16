@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.30 2009-01-13 14:05:59 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.31 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -78,6 +78,7 @@ public class FileGraphMaker
         Answer a new, anonynous FileGraph. See FileGraph.create().
         @return a new anonymous FileGraph
     */
+    @Override
     public Graph createGraph()
         { return FileGraph.create(); }
         

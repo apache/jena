@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.24 2008-12-28 19:32:18 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.25 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -48,13 +48,15 @@ public class TestBasicOperations extends TestCase {
 	IRDBDriver dbDriver = null;
 	IDBConnection conn = null;
 
-	protected void setUp() throws java.lang.Exception {
+	@Override
+    protected void setUp() throws java.lang.Exception {
 		conn = TestConnection.makeAndCleanTestConnection();
 		model = ModelRDB.createModel(conn);
 		dbDriver = conn.getDriver();
 	}
 
-	protected void tearDown() throws java.lang.Exception {
+	@Override
+    protected void tearDown() throws java.lang.Exception {
 		if ( model != null ) model.close();
 		model = null;
 		if ( conn != null ) {
@@ -527,7 +529,7 @@ public class TestBasicOperations extends TestCase {
 
 	private int countPred(Property o)
 	{
-		Iterator it = model.listStatements((Resource)null,(Property)o,(RDFNode)null);
+		Iterator it = model.listStatements((Resource)null,o,(RDFNode)null);
 		return countIter(it);
 	}
 

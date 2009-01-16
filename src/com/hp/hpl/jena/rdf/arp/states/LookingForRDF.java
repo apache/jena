@@ -18,6 +18,7 @@ public class LookingForRDF extends Frame {
         super(s, x);
     }
     
+    @Override
     String suggestParsetypeLiteral() {
         return "";
     }
@@ -32,6 +33,7 @@ public class LookingForRDF extends Frame {
 
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) {
         // ignore
     }

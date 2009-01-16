@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:36 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.21 2008-12-28 19:32:36 andy_seaborne Exp $
+ * @version CVS $Id: Polyadic.java,v 1.22 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public abstract class Polyadic extends CompositionBase
 {
@@ -93,6 +93,7 @@ public abstract class Polyadic extends CompositionBase
 
     private PrefixMapping pm;
 
+    @Override
     public PrefixMapping getPrefixMapping()
         {
         if (pm == null) pm = new PolyadicPrefixMappingImpl( this );
@@ -128,6 +129,7 @@ public abstract class Polyadic extends CompositionBase
      *
      * @see com.hp.hpl.jena.graph.Graph#close()
      */
+    @Override
     public void close() {
         for (Iterator i = m_subGraphs.iterator();  i.hasNext();  ) {
             ((Graph) i.next()).close();
@@ -145,6 +147,7 @@ public abstract class Polyadic extends CompositionBase
      * @return True if the graph is this graph, or is a sub-graph of this one.
      * @see com.hp.hpl.jena.graph.Graph#dependsOn(Graph)
      */
+    @Override
     public boolean dependsOn( Graph graph ) {
         return (graph == this) || m_subGraphs.contains( graph );
     }
@@ -260,6 +263,7 @@ public abstract class Polyadic extends CompositionBase
         return sg;
     }
 
+    @Override
     public BulkUpdateHandler getBulkUpdateHandler() {
         if (bulkHandler == null)
             bulkHandler = new WrappedBulkUpdateHandler( this, getRequiredBaseGraph().getBulkUpdateHandler() );
@@ -269,10 +273,12 @@ public abstract class Polyadic extends CompositionBase
     // the following methods all delegate handling capabilities to the base graph
     // TODO: this needs to be integrated with WrappedGraph, but we don't have time to do so before Jena 2.0 release
 
+    @Override
     public TransactionHandler getTransactionHandler() {
         return (getBaseGraph() == null) ? super.getTransactionHandler() : getBaseGraph().getTransactionHandler();
         }
 
+    @Override
     public Capabilities getCapabilities() {
         return (getBaseGraph() == null) ? super.getCapabilities() : getBaseGraph().getCapabilities();
     }

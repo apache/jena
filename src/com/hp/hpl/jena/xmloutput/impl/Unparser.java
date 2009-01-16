@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.46 2008-12-28 19:32:27 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.47 2009-01-16 17:24:02 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -649,20 +649,24 @@ class Unparser {
     static private int RDF_HASH = RDF.getURI().length();
 
     private WType wdesc = new WType() {
+        @Override
         void wTypeStart(Resource u) {
             print(prettyWriter.rdfEl(u.getURI().substring(RDF_HASH)));
         }
 
+        @Override
         void wTypeEnd(Resource u) {
             print(prettyWriter.rdfEl(u.getURI().substring(RDF_HASH)));
         }
     };
 
     private WType wtype = new WType() {
+        @Override
         void wTypeStart(Resource u) {
             print(prettyWriter.startElementTag(u.getURI()));
         }
 
+        @Override
         void wTypeEnd(Resource u) {
             print(prettyWriter.endElementTag(u.getURI()));
         }
@@ -1506,6 +1510,7 @@ class Unparser {
      */
     private Iterator allInfiniteLeft() {
         return new LateBindingIterator() {
+            @Override
             public Iterator create() {
                 return infinite.iterator();
             }
@@ -1588,6 +1593,7 @@ class Unparser {
         Iterator pleasing = pleasingTypeIterator();
 
         Iterator fakeStopPleasing = new NullIterator() {
+            @Override
             public boolean hasNext() {
                 pleasingTypeSet = new HashSet();
                 return false;
@@ -1596,6 +1602,7 @@ class Unparser {
 
         // Subjects that are not objects of anything.
         Iterator nonObjects = new FilterIterator(new Filter() {
+            @Override
             public boolean accept(Object o) {
                 return (!objectTable.containsKey(o))
                         && (!wantReification((Resource) o));
@@ -1608,6 +1615,7 @@ class Unparser {
         // stages).
         // We use this to trigger the dependency graph evalaution.
         Iterator fakeLazyEvaluator = new NullIterator() {
+            @Override
             public boolean hasNext() {
                 // Evalaute dependency graph.
                 findInfiniteCycles();
@@ -1617,6 +1625,7 @@ class Unparser {
         // non-anonymous resources that are the object of more than one
         // triple that are in infinite cycles.
         Iterator firstChoiceCyclic = new FilterIterator(new Filter() {
+            @Override
             public boolean accept(Object o) {
                 Resource r = (Resource) o;
                 codeCoverage[4]++;
@@ -1630,6 +1639,7 @@ class Unparser {
         }, this.allInfiniteLeft());
         // any non genuinely anonymous resources that are in infinite cycles
         Iterator nonAnonInfinite = new FilterIterator(new Filter() {
+            @Override
             public boolean accept(Object o) {
                 codeCoverage[5]++;
                 Resource r = (Resource) o;
@@ -1639,12 +1649,14 @@ class Unparser {
         // any other resource in an infinite cyle
         Iterator inf = allInfiniteLeft();
         Iterator anotherFake = new NullIterator() {
+            @Override
             public boolean hasNext() {
                 avoidExplicitReification = false;
                 return false;
             }
         };
         Iterator reifications = new FilterIterator(new Filter() {
+            @Override
             public boolean accept(Object o) {
                 codeCoverage[6]++;
                 return res2statement.containsKey(o);
@@ -1657,6 +1669,7 @@ class Unparser {
                 fakeStopPleasing, nonObjects, fakeLazyEvaluator,
                 firstChoiceCyclic, nonAnonInfinite, inf, anotherFake,
                 reifications, new NullIterator() {
+                    @Override
                     public boolean hasNext() {
                         if (modelListSubjects().hasNext())
                             codeCoverage[7]++;
@@ -1667,6 +1680,7 @@ class Unparser {
 
         // Filter for those that still have something to list.
         return new FilterIterator(new Filter() {
+            @Override
             public boolean accept(Object o) {
                 return hasProperties((Resource) o);
             }

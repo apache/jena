@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETERuleInfGraph.java,v 1.12 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: RETERuleInfGraph.java,v 1.13 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * RETE implementation of the forward rule infernce graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
@@ -70,6 +70,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      * Subclasses can override this to switch to, say, a RETE imlementation.
      * @param rules the rule set or null if there are not rules bound in yet.
      */
+    @Override
     protected void instantiateRuleEngine(List rules) {
         if (rules != null) {
             engine = new RETEEngine(this, rules);
@@ -82,6 +83,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
+    @Override
     public synchronized void performAdd(Triple t) {
         if (!isPrepared) prepare();
         fdata.getGraph().add(t);
@@ -91,6 +93,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
+    @Override
     public void performDelete(Triple t) {
         if (!isPrepared) prepare();
         if (fdata != null) {

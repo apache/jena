@@ -59,7 +59,7 @@ and is used by the clock.
 /** Generator for timebased UUIDs (version 1, variant 2)
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1_Gen.java,v 1.4 2008-12-28 19:32:00 andy_seaborne Exp $
+ * @version 	$Id: UUID_V1_Gen.java,v 1.5 2009-01-16 17:23:59 andy_seaborne Exp $
  */
 
 
@@ -162,7 +162,7 @@ public class UUID_V1_Gen implements UUIDFactory
         // Byte: 0        4    6    8    10
         // Char: 0        9    14   19   24  including hyphens
         int x = (int)Bits.unpack(s, 19, 23) ;
-        int variant = (int)(x>>>14) ;
+        int variant = (x>>>14) ;
         int clockSeq = x & 0x3FFF ;
 
         long timeHigh = Bits.unpack(s, 15, 18) ;
@@ -218,7 +218,7 @@ public class UUID_V1_Gen implements UUIDFactory
     private static UUID_V1 generate(int version, int variant, long timeHigh, long timeMid, long timeLow, long clockSeq, long node)
     {
         long mostSigBits = (timeLow<<32) | (timeMid<<16) | (versionHere<<12) |  timeHigh ;
-        long leastSigBits = (long)variantHere<<62 | (long)(clockSeq << 48) | node ;
+        long leastSigBits = (long)variantHere<<62 | (clockSeq << 48) | node ;
         return new UUID_V1(mostSigBits, leastSigBits) ;
     }
 

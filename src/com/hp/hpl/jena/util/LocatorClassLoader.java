@@ -22,6 +22,7 @@ public class LocatorClassLoader  implements Locator
         classLoader =_classLoader ;
     }
     
+    @Override
     public boolean equals( Object other )
     {
         return 
@@ -29,6 +30,7 @@ public class LocatorClassLoader  implements Locator
             && classLoader == ((LocatorClassLoader) other).classLoader;
     }
     
+    @Override
     public int hashCode()
         { return classLoader.hashCode(); }
     

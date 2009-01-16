@@ -19,7 +19,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.17 2009-01-12 16:47:48 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.18 2009-01-16 17:23:56 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -63,6 +63,7 @@ public class LocatorFile implements Locator
         this(null) ;
     }
     
+    @Override
     public boolean equals( Object other )
     {
         return
@@ -75,6 +76,7 @@ public class LocatorFile implements Locator
         return a == null ? b == null : a.equals(  b  );
     }
 
+    @Override
     public int hashCode()
     {
         return altDir.hashCode();

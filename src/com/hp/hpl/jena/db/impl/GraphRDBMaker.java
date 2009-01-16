@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.28 2009-01-13 14:05:59 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.29 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -46,6 +46,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     /**
         Answer the default graph of this Maker; make it if necessary.
     */
+    @Override
     public Graph getGraph()
         { if (defaultGraph == null) 
             defaultGraph = consGraph( null, !c.containsDefaultModel() ); 
@@ -56,6 +57,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     */
     protected Graph defaultGraph = null;
     
+    @Override
     public Graph openGraph()
         { 
         if (defaultGraph != null)
@@ -73,6 +75,7 @@ public class GraphRDBMaker extends BaseGraphMaker
         
         TODO resolve this issue.
     */
+    @Override
     public Graph createGraph()
         { return createGraph( freshGraphName(), false ); }
 
@@ -144,7 +147,8 @@ public class GraphRDBMaker extends BaseGraphMaker
         { return c.getAllModelNames() .filterDrop ( filterDEFAULT ); }
         
     private Filter filterDEFAULT = new Filter()
-        { public boolean accept( Object x ) { return "DEFAULT".equals( x ); } };
+        { @Override
+        public boolean accept( Object x ) { return "DEFAULT".equals( x ); } };
     }
 
 /*

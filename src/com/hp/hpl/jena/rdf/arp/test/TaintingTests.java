@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: TaintingTests.java,v 1.11 2008-12-28 19:32:02 andy_seaborne Exp $
+ *  $Id: TaintingTests.java,v 1.12 2009-01-16 17:23:52 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -168,11 +168,13 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 		return ModelFactory.createDefaultModel();
 	}
 
-	public void setUp() {
+	@Override
+    public void setUp() {
 		// ensure the ont doc manager is in a consistent state
 		OntDocumentManager.getInstance().reset(true);
 	}
 
+    @Override
     public void runTest() throws IOException {
 
 

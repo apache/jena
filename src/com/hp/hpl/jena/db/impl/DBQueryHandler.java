@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.26 2008-12-28 19:32:20 andy_seaborne Exp $
+  $Id: DBQueryHandler.java,v 1.27 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -63,7 +63,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
         stage if the entire triple pattern can be translated into a single SQL
         statement.
     */
-	public Stage patternStage( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples ) 
+	@Override
+    public Stage patternStage( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples ) 
         {
         return avoidFastpath( constraints, givenTriples )
             ? super.patternStage( varMap, constraints, givenTriples )
@@ -355,6 +356,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             this.stages = (Stage []) stages.toArray( new Stage[this.numStages] );
             }
     
+        @Override
         public Stage connectFrom( Stage s )
             {
             for (int i = 0; i < numStages; i += 1)
@@ -365,6 +367,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             return super.connectFrom( s );
             }
     
+        @Override
         public Pipe deliver( Pipe L )
             { return stages[numStages - 1].deliver( L );  }
         }

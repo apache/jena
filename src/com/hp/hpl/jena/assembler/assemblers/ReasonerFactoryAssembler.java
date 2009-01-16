@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ReasonerFactoryAssembler.java,v 1.13 2008-12-28 19:32:27 andy_seaborne Exp $
+ 	$Id: ReasonerFactoryAssembler.java,v 1.14 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -33,6 +33,7 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 */
 public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     {
+    @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         { 
         checkType( root, JA.ReasonerFactory );
@@ -137,7 +138,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     private static ReasonerFactory resultFromStatic( Class c, String methodName )
         {
         try
-            { return (ReasonerFactory) c.getMethod( methodName, null ).invoke( null, null ); }
+            { return (ReasonerFactory) c.getMethod( methodName, (Class[])null ).invoke( null, (Object[])null ); }
         catch (Exception e)
             { return null; }
         }

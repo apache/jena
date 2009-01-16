@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelAssembler.java,v 1.11 2008-12-28 19:31:59 andy_seaborne Exp $
+ 	$Id: TestModelAssembler.java,v 1.12 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -18,6 +18,7 @@ public class TestModelAssembler extends AssemblerTestBase
     {
     protected static final class FakeModelAssembler extends ModelAssembler
         {
+        @Override
         protected Model openEmptyModel( Assembler a, Resource root, Mode mode )
             { return ModelFactory.createDefaultModel(); }
         }
@@ -25,6 +26,7 @@ public class TestModelAssembler extends AssemblerTestBase
     public TestModelAssembler( String name )
         { super( name ); }
 
+    @Override
     protected Class getAssemblerClass()
         { return null; }
     
@@ -64,6 +66,7 @@ public class TestModelAssembler extends AssemblerTestBase
         final List style = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
+            @Override
             protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
                 {
                 style.add( getReificationStyle( root ) );
@@ -100,6 +103,7 @@ public class TestModelAssembler extends AssemblerTestBase
         final List styles = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
+            @Override
             protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
                 {
                 styles.add( getReificationStyle( root ) );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: IntersectionClassImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IntersectionClassImpl.java,v 1.12 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: IntersectionClassImpl.java,v 1.13 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class IntersectionClassImpl 
     extends BooleanClassDescriptionImpl
@@ -55,6 +55,7 @@ public class IntersectionClassImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
                 return new IntersectionClassImpl( n, eg );
@@ -64,6 +65,7 @@ public class IntersectionClassImpl
             } 
         }
             
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an IntersectionClass facet if it has rdf:type owl:Class and an owl:intersectionOf statement (or equivalents) 
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -96,8 +98,10 @@ public class IntersectionClassImpl
     // External signature methods
     //////////////////////////////////
 
-	public Property operator() {return getProfile().INTERSECTION_OF();}
-	public String getOperatorName() {return "INTERSECTION_OF";}
+	@Override
+    public Property operator() {return getProfile().INTERSECTION_OF();}
+	@Override
+    public String getOperatorName() {return "INTERSECTION_OF";}
     
 
     // Internal implementation methods

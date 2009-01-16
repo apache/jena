@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestObjectImpl.java,v 1.10 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestObjectImpl.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -24,9 +24,11 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
     /** This method should probably always just call a constructor.
      *  Note the constructor can/should be private.
      */
+    @Override
     public EnhNode wrap(Node n,EnhGraph eg) {
         return new TestObjectImpl(n,eg);
     }
+    @Override
     public boolean canWrap( Node n, EnhGraph eg )
         { return true; }
 };
@@ -36,6 +38,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
         super( n, eg );
     }
     
+    @Override
     public boolean supports( Class t )
         { return t.isInstance( this) && isObject(); }
         

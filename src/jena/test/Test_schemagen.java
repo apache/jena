@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:23 $
+ * Last modified on   $Date: 2009-01-16 17:24:02 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.10 2008-12-28 19:32:23 andy_seaborne Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.11 2009-01-16 17:24:02 andy_seaborne Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -300,6 +300,7 @@ public class Test_schemagen
     public void testClassname() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         SchemaGenAux fixture = new SchemaGenAux() {
+            @Override
             protected String getValue( Object option ) {
                 if (option.equals( OPT_INPUT )) {
                     // without the -n option, this will force the classname to be Soggy
@@ -594,10 +595,12 @@ public class Test_schemagen
         }
 
         // override the behaviours from schemagen
+        @Override
         protected void selectInput() {
             m_source.add( m_auxSource );
             m_source.setNsPrefixes( m_auxSource );
         }
+        @Override
         protected void selectOutput() {
             // call super to allow option processing
             super.selectOutput();
@@ -610,6 +613,7 @@ public class Test_schemagen
         }
 
         // option faking
+        @Override
         protected String getValue( Object option ) {
             if (option.equals( OPT_INPUT )) {
                 return "http://example.org/sg";
@@ -619,6 +623,7 @@ public class Test_schemagen
             }
         }
 
+        @Override
         protected Resource getResource( Object option ) {
             if (option.equals( OPT_INPUT )) {
                 return ResourceFactory.createResource( "http://example.org/sg" );
@@ -628,6 +633,7 @@ public class Test_schemagen
             }
         }
 
+        @Override
         protected void abort( String msg, Exception e ) {
             throw new RuntimeException( msg, e );
         }

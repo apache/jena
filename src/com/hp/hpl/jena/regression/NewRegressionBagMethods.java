@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionBagMethods.java,v 1.8 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionBagMethods.java,v 1.9 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -19,9 +19,11 @@ public class NewRegressionBagMethods extends NewRegressionContainerMethods
     public static TestSuite suite()
         { return new TestSuite( NewRegressionBagMethods.class );  }
 
+    @Override
     protected Container createContainer()
         { return m.createBag(); }
        
+    @Override
     protected Resource getContainerType()
         { return RDF.Bag; }
     }

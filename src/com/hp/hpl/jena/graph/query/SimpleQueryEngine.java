@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.12 2009-01-16 12:24:32 chris-dollin Exp $
+  $Id: SimpleQueryEngine.java,v 1.13 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -27,7 +27,8 @@ public class SimpleQueryEngine
          @deprecated NamedTripleBunches are not supported. Use SimpleQueryEngine
              ( List, TripleSorter, ExpressionSet ) instead.
     */
-	public SimpleQueryEngine( NamedTripleBunches triples, TripleSorter ts, ExpressionSet constraint )
+	@Deprecated
+    public SimpleQueryEngine( NamedTripleBunches triples, TripleSorter ts, ExpressionSet constraint )
         { this.constraint = constraint; 
         this.triples = triples; 
         this.sortMethod = ts; }
@@ -69,10 +70,13 @@ public class SimpleQueryEngine
             private void ensurePipe()
                 { if (complete == null) complete = allStages.deliver( new BufferPipe() ); }
             
+            @Override
             public void close() { allStages.close(); clearPipe(); }
             
+            @Override
             public Object next() { ensurePipe(); return complete.get(); }
             
+            @Override
             public boolean hasNext() { ensurePipe(); return complete.hasNext(); }
             
             private void clearPipe()

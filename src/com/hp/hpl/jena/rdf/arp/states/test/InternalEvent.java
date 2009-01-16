@@ -12,10 +12,12 @@ abstract class InternalEvent extends Event {
         super(oneChar, name);
     }
 
+    @Override
     boolean isAttribute() {
         return false;
     }
 
+    @Override
     boolean isElement() {
         return false;
     }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:14 $
+ * Last modified on   $Date: 2009-01-16 17:23:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.13 2008-12-28 19:32:14 andy_seaborne Exp $
+ * @version CVS $Id: ObjectPropertyImpl.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl
@@ -57,6 +57,7 @@ public class ObjectPropertyImpl
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
+        @Override
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
                 return new ObjectPropertyImpl( n, eg );
@@ -66,6 +67,7 @@ public class ObjectPropertyImpl
             } 
         }
             
+        @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an ObjectProperty facet if it has rdf:type owl:ObjectProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -102,6 +104,7 @@ public class ObjectPropertyImpl
      * @return A property inverse to this property
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
      */ 
+    @Override
     public OntProperty getInverseOf() {
         return super.getInverseOf().asObjectProperty();
     }
@@ -112,6 +115,7 @@ public class ObjectPropertyImpl
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
      */ 
+    @Override
     public ExtendedIterator listInverseOf() {
         return super.listInverseOf().mapWith( new AsMapper( ObjectProperty.class ));
     }
@@ -121,6 +125,7 @@ public class ObjectPropertyImpl
      * the object property facet.</p>
      * @return The property that is the inverse of this property, or null. 
      */
+    @Override
     public OntProperty getInverse() {
         OntProperty inv = super.getInverse();
         return (inv != null) ? inv.asObjectProperty() : null;

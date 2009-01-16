@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestArrayTripleBunch.java,v 1.5 2008-12-28 19:32:23 andy_seaborne Exp $
+ 	$Id: TestArrayTripleBunch.java,v 1.6 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -13,6 +13,7 @@ public class TestArrayTripleBunch extends TestTripleBunch
     public TestArrayTripleBunch( String name )
         { super( name ); }
     
+    @Override
     public TripleBunch getBunch()
         { return new ArrayBunch(); }
     }

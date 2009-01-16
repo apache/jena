@@ -26,7 +26,8 @@ public class TestErrorMsg extends TestCase {
 	public TestErrorMsg(String name) {
 		super(name);
 	}
-	public String toString() {
+	@Override
+    public String toString() {
 		return getName();
 	}
 
@@ -140,5 +141,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.14 2008-12-28 19:32:02 andy_seaborne Exp $
+ * $Id: TestErrorMsg.java,v 1.15 2009-01-16 17:23:52 andy_seaborne Exp $
  */

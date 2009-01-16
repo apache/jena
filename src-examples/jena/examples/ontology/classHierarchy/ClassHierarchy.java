@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: ClassHierarchy.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 17:49:07 $
+ * Last modified on   $Date: 2009-01-16 17:24:01 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.1 2005-10-06 17:49:07 andy_seaborne Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.2 2009-01-16 17:24:01 andy_seaborne Exp $
  */
 public class ClassHierarchy {
     // Constants
@@ -71,6 +71,7 @@ public class ClassHierarchy {
         // create an iterator over the root classes that are not anonymous class expressions
         Iterator i = m.listHierarchyRootClasses()
                       .filterDrop( new Filter() {
+                                    @Override
                                     public boolean accept( Object o ) {
                                         return ((Resource) o).isAnon();
                                     }} );

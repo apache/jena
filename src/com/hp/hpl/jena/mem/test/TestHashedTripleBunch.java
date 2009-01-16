@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestHashedTripleBunch.java,v 1.8 2008-12-28 19:32:23 andy_seaborne Exp $
+ 	$Id: TestHashedTripleBunch.java,v 1.9 2009-01-16 17:23:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -19,10 +19,12 @@ public class TestHashedTripleBunch extends TestTripleBunch
         public HTB( TripleBunch b )
             { super( b ); }
     
+        @Override
         protected int improveHashCode( int hashCode )
             { return hashCode; }    
         }
     
+    @Override
     public TripleBunch getBunch()
         { return new HashedTripleBunch( emptyBunch ); }
     
@@ -44,6 +46,7 @@ public class TestHashedTripleBunch extends TestTripleBunch
             return new TripleWithHash( n, t.getSubject(), t.getPredicate(), t.getObject() );            
             }
         
+        @Override
         public int hashCode()
             { return hash; }
         }

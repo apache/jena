@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: MixedGraphMemStore.java,v 1.6 2008-12-28 19:32:28 andy_seaborne Exp $
+ 	$Id: MixedGraphMemStore.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -71,9 +71,11 @@ public class MixedGraphMemStore
             	{
                 private Triple remember = null;
                 
+                @Override
                 public Object next()
                     { return remember = (Triple) it.next(); }
                 
+                @Override
                 public boolean hasNext()
                     { return it.hasNext(); }
     
@@ -82,6 +84,7 @@ public class MixedGraphMemStore
                     if (k != key) MixedGraphMemStore.this.remove( k, triple );
                     }
                 
+                @Override
                 public void remove()
                     {
                     it.remove();
@@ -107,12 +110,14 @@ public class MixedGraphMemStore
             protected Node key = null;
             protected Set seen = CollectionFactory.createHashedSet();
                         
+            @Override
             public Object next()
                 {
                 ensureHasNext();
                 try { return remember = triple; } finally { triple = null; }
                 }
             
+            @Override
             public boolean hasNext()
                 {
                 if (triple == null)
@@ -149,6 +154,7 @@ public class MixedGraphMemStore
                 if (key != this.key) MixedGraphMemStore.this.remove( key, triple );
                 }
             
+            @Override
             public void remove()
                 { 
                 current.remove(); 

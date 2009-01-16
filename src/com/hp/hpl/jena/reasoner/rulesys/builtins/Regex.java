@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Regex.java,v 1.3 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: Regex.java,v 1.4 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -31,6 +31,7 @@ public class Regex extends BaseBuiltin {
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
+    @Override
     public int getArgLength() {
         return 0;
     }
@@ -45,6 +46,7 @@ public class Regex extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         if (length < 2) 
             throw new BuiltinException(this, context, "Must have at least 2 arguments to " + getName());

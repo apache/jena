@@ -8,7 +8,7 @@ import com.hp.hpl.jena.graph.*;
 /**
     RDFS vocabulary items
     @author  bwm, updated by kers/daniel/christopher
-    @version $Id: RDFS.java,v 1.18 2008-12-28 19:32:07 andy_seaborne Exp $
+    @version $Id: RDFS.java,v 1.19 2009-01-16 17:24:00 andy_seaborne Exp $
  */
 public class RDFS {
 
@@ -26,6 +26,7 @@ public class RDFS {
     /**
          @deprecated obsolete: was removed by the most recent standard
     */
+    @Deprecated
     public static final Resource ConstraintProperty  =  resource( "ConstraintProperty");
     
     public static final Resource Container  = resource( "Container");
@@ -36,6 +37,7 @@ public class RDFS {
     /**
         @deprecated obsolete: was removed by the most recent standard
     */
+    @Deprecated
     public static final Resource ConstraintResource  = resource( "ConstraintResource");
     
     public static final Resource Literal = resource( "Literal");

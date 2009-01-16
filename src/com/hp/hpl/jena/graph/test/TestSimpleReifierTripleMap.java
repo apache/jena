@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestSimpleReifierTripleMap.java,v 1.6 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: TestSimpleReifierTripleMap.java,v 1.7 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -24,6 +24,7 @@ public class TestSimpleReifierTripleMap extends AbstractTestReifierTripleMap
     public static TestSuite suite()
         { return new TestSuite( TestSimpleReifierTripleMap.class ); }
 
+    @Override
     protected ReifierTripleMap getTripleMap()
         { return new SimpleReifierTripleMap(); }
     }

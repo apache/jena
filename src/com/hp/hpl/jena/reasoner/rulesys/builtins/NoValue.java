@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NoValue.java,v 1.14 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: NoValue.java,v 1.15 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * for (X, P, *).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class NoValue extends BaseBuiltin {
 
@@ -41,6 +41,7 @@ public class NoValue extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         if (length !=2 && length != 3) {
             throw new BuiltinException(this, context, "builtin " + getName() + " requires 2 or 3 arguments but saw " + length);
@@ -65,6 +66,7 @@ public class NoValue extends BaseBuiltin {
      * Flag as non-monotonic so the guard clause will get rerun after deferal
      * as part of a non-trivial conflict set.
      */
+    @Override
     public boolean isMonotonic() {
         return false;
     }

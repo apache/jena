@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphEvents.java,v 1.9 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: GraphEvents.java,v 1.10 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph;
 
@@ -26,6 +26,7 @@ public class GraphEvents
         { this.title = title;
         this.content = content; }
     
+    @Override
     public boolean equals( Object o )
         { return o instanceof GraphEvents && same( (GraphEvents) o ); }
     
@@ -35,7 +36,8 @@ public class GraphEvents
 	public static GraphEvents remove( Node s, Node p, Node o )
 	    { return new GraphEvents( "remove", Triple.create( s, p, o ) ); }
 	
-	public String toString()
+	@Override
+    public String toString()
 	    { return "<GE " + title + ">"; }
 
     public Object getContent()

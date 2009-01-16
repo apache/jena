@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTransactions.java,v 1.13 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: TestTransactions.java,v 1.14 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -42,6 +42,7 @@ public class TestTransactions extends TestCase
 	IDBConnection conn = null;
 	DriverRDB m_driver = null;
 	
+    @Override
     protected void setUp() throws java.lang.Exception {
     	
 		conn = TestConnection.makeAndCleanTestConnection();
@@ -51,6 +52,7 @@ public class TestTransactions extends TestCase
 		m_driver.setConnection(conn);
 	}
     
+    @Override
     protected void tearDown() throws java.lang.Exception {
     	model.close();
     	model = null;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Difference.java,v 1.10 2008-12-28 19:32:37 andy_seaborne Exp $
+  $Id: Difference.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -27,7 +27,8 @@ public class Difference extends Dyadic implements Graph
         Add a triple to the difference: add it to the left operand, and remove it from the 
         right operand.
     */
-	public void performAdd( Triple t )
+	@Override
+    public void performAdd( Triple t )
 		{
 		L.add( t );
 		R.delete( t );
@@ -37,10 +38,12 @@ public class Difference extends Dyadic implements Graph
         Remove a triple from the difference: remove it from the left operand. [It could
         be added to the right operand instead, but somehow that feels less satisfactory.]
     */
-	public void performDelete( Triple t )
+	@Override
+    public void performDelete( Triple t )
 		{ L.delete( t ); }
 
-	public ExtendedIterator graphBaseFind( TripleMatch t ) 
+	@Override
+    public ExtendedIterator graphBaseFind( TripleMatch t ) 
 		{ return L.find( t ). filterDrop ( ifIn( R ) ); }
 	}
 

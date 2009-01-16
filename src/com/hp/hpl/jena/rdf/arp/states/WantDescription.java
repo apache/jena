@@ -105,9 +105,11 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
     public void makeSubjectReificationWith(ANode r) {
         triple(r,RDF_SUBJECT,subject);
     }
+    @Override
     public void endElement() throws SAXParseException {
         clearSubject();
     }
+    @Override
     public void abort() {
         clearSubject();
     }

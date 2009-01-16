@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
      All rights reserved - see end of file.
-     $Id: Test_rdfcat.java,v 1.5 2008-12-28 19:32:23 andy_seaborne Exp $
+     $Id: Test_rdfcat.java,v 1.6 2009-01-16 17:24:02 andy_seaborne Exp $
 */
 
 package jena.test;
@@ -236,6 +236,7 @@ public class Test_rdfcat extends TestCase
         protected rdfcatFixture( OutputStream so ) {
             m_so = so;
         }
+        @Override
         protected OutputStream getOutputStream() {
             return m_so;
         }

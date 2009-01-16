@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTree.java,v 1.10 2008-12-28 19:31:59 andy_seaborne Exp $
+  $Id: RegexpTree.java,v 1.11 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -23,10 +23,13 @@ public abstract class RegexpTree
     
     public static final RegexpTree NON = new Nothing();
 
+    @Override
     public abstract boolean equals( Object other );
     
+    @Override
     public abstract int hashCode();
     
+    @Override
     public abstract String toString();
     }
 

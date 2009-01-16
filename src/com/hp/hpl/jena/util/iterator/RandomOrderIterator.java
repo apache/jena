@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RandomOrderIterator.java,v 1.7 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: RandomOrderIterator.java,v 1.8 2009-01-16 17:23:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -29,10 +29,12 @@ public class RandomOrderIterator extends WrappedIterator {
 		fill();
 	}
 	
-	public boolean hasNext() {
+	@Override
+    public boolean hasNext() {
 		return top > 0;
 	}
-	public Object next() {
+	@Override
+    public Object next() {
 		int ix = rnd.nextInt(top);
 		Object rslt = buffer[ix];
 		top--;
@@ -41,7 +43,8 @@ public class RandomOrderIterator extends WrappedIterator {
 		return rslt;
 	}
 	
-	public void remove() {
+	@Override
+    public void remove() {
 		throw new UnsupportedOperationException("randomizing does not allow modification");
 	}
 	

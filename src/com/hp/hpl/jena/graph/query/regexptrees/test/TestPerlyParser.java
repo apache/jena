@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.18 2008-12-28 19:32:39 andy_seaborne Exp $
+  $Id: TestPerlyParser.java,v 1.19 2009-01-16 17:24:03 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -31,6 +31,7 @@ public class TestPerlyParser extends GraphTestBase
         {
         RegexpTreeGenerator g = new SimpleGenerator()
             {
+            @Override
             public RegexpTree getAnySingle() { throw new FlagException(); }
             };
         PerlPatternParser p = new PerlPatternParser( ".", g );

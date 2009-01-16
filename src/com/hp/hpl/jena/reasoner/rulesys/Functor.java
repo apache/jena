@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.25 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: Functor.java,v 1.26 2009-01-16 17:23:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.26 $ on $Date: 2009-01-16 17:23:56 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -42,6 +42,7 @@ public class Functor implements ClauseEntry {
     
     /** A static Filter instance that detects triples with Functor objects */
     public static final Filter acceptFilter = new Filter() {
+                @Override
                 public boolean accept(Object t) {
                     if (((Triple)t).getSubject().isLiteral()) return true;
                     Node n = ((Triple)t).getObject();
@@ -192,6 +193,7 @@ public class Functor implements ClauseEntry {
     /**
      * Printable string describing the functor
      */
+    @Override
     public String toString() {
         StringBuffer buff = new StringBuffer(name);
         buff.append("(");
@@ -216,6 +218,7 @@ public class Functor implements ClauseEntry {
     /**
      * Equality is based on structural comparison
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Functor) {
             Functor f2 = (Functor)obj;
@@ -230,6 +233,7 @@ public class Functor implements ClauseEntry {
     }
     
     /** hash function override */
+    @Override
     public int hashCode() {
         return (name.hashCode()) ^ (args.length << 2);
     }

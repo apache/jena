@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Fixed.java,v 1.12 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: Fixed.java,v 1.13 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -29,6 +29,7 @@ public class Fixed extends Element
         @return true iff our value is the same as his
     */
         
+    @Override
     public boolean match( Domain d, Node x ) 
         { return x.sameValueAs(value); }
     
@@ -37,9 +38,11 @@ public class Fixed extends Element
         @param d the variable bindings to use (ignored)
         @return our fixed value
     */
+    @Override
     public Node asNodeMatch( Domain d ) 
         { return value; }
         
+    @Override
     public String toString() 
         { return "<fixed " + value + ">"; }            
 	}

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestInferenceReification.java,v 1.3 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestInferenceReification.java,v 1.4 2009-01-16 17:23:58 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -40,9 +40,11 @@ public class TestInferenceReification extends AbstractTestReifier
         return new TestSuite( TestInferenceReification.class ); 
     }  
     
+    @Override
     public Graph getGraph()
         { return getGraph( ReificationStyle.Minimal ); }
 
+    @Override
     public Graph getGraph( ReificationStyle style )
         { return makeInfGraph( "", "", style ); }
 

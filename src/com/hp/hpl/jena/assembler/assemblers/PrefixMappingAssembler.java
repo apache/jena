@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: PrefixMappingAssembler.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+ 	$Id: PrefixMappingAssembler.java,v 1.11 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class PrefixMappingAssembler extends AssemblerBase implements Assembler
     {
+    @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
         checkType( root, JA.PrefixMapping );

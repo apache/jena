@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.15 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: Rewrite.java,v 1.16 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -56,6 +56,7 @@ public class Rewrite
         public DyadicLiteral( Expression L, String F, String R )
             { super( L, F, new Expression.Fixed( R ) ); }
         
+        @Override
         public boolean evalBool( Object l, Object r )
             { return evalBool( nodeAsString( l ), r.toString() ); }
         
@@ -78,6 +79,7 @@ public class Rewrite
                 {          
                 protected final String lowerContent = content.toLowerCase();
                 
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.toLowerCase().endsWith( lowerContent ); }
                 };
@@ -86,6 +88,7 @@ public class Rewrite
             {
             return new DyadicLiteral( L, ExpressionFunctionURIs.J_EndsWith, content )
                 {            
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.endsWith( r ); }
                 };    
@@ -100,6 +103,7 @@ public class Rewrite
                 { 
                 protected final String lowerContent = content.toLowerCase();
                 
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.toLowerCase().startsWith( lowerContent ); }
                 };  
@@ -108,6 +112,7 @@ public class Rewrite
             {                
             return new DyadicLiteral( L, ExpressionFunctionURIs.J_startsWith, content )
                 { 
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.startsWith( r ); }
                 };  
@@ -122,6 +127,7 @@ public class Rewrite
                 { 
                 protected final String lowerContent = content.toLowerCase();
                 
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.toLowerCase().indexOf( lowerContent ) > -1; }
                 };      
@@ -130,6 +136,7 @@ public class Rewrite
             {
             return new DyadicLiteral( L, ExpressionFunctionURIs.J_contains, content )
                 { 
+                @Override
                 public boolean evalBool( String l, String r )
                     { return l.indexOf( r ) > -1; }
                 };     

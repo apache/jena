@@ -52,6 +52,7 @@ public class MemoryLeakTest extends TestCase {
         PrintStream 
             out = new PrintStream(new OutputStream() {
 
+                @Override
                 public void write(int b) throws IOException {
                 }
             });

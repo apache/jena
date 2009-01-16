@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.23 2008-12-28 19:32:27 andy_seaborne Exp $
+ *  $Id: Abbreviated.java,v 1.24 2009-01-16 17:24:02 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter(String)
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2008-12-28 19:32:27 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2009-01-16 17:24:02 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -73,7 +73,8 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
     boolean sResourcePropertyElt;
 
-	protected void unblockAll() {
+	@Override
+    protected void unblockAll() {
 		sDamlCollection = false;
 		sReification = false;
 		sResourcePropertyElt = false;
@@ -90,6 +91,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
         blockRule(RDFSyntax.propertyAttr);
     }
     
+    @Override
     protected void blockRule(Resource r) {
         if (r.equals(RDFSyntax.sectionReification)) sReification=true;
        // else if (r.equals(RDFSyntax.resourcePropertyElt)) sResourcePropertyElt=true;
@@ -107,13 +109,15 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
             logger.warn("Cannot block rule <"+r.getURI()+">");
         }
     }
-	Resource[] setTypes(Resource[] propValue) {
+	@Override
+    Resource[] setTypes(Resource[] propValue) {
 		Resource[] rslt = types;
 		types = propValue;
 		return rslt;
 	}
 
-	synchronized public void write(Model baseModel, Writer out, String base)
+	@Override
+    synchronized public void write(Model baseModel, Writer out, String base)
 	    { 
 		if (baseModel.getGraph().getCapabilities().findContractSafe() == false) 
             {
@@ -124,7 +128,8 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
             super.write( baseModel, out, base );
 		}
 		
-	protected void writeBody(
+	@Override
+    protected void writeBody(
 		Model model,
 		PrintWriter pw,
 		String base,

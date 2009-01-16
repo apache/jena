@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.13 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.14 2009-01-16 17:23:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -20,6 +20,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
     public TestAssemblerGroup( String name )
         { super( name );  }
 
+    @Override
     protected Class getAssemblerClass()
         { return AssemblerGroup.class; }
     
@@ -69,6 +70,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
     
     static class MockAssembler extends AssemblerBase
         {
+        @Override
         public Object open( Assembler a, Resource root, Mode mode )
             { return "mockmockmock"; }
         }
@@ -110,6 +112,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
     
     private static Assembler mockAssembler = new AssemblerBase() 
         {
+        @Override
         public Object open( Assembler a, Resource root, Mode mode )
             { return null; }
         };
@@ -119,6 +122,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         final Model [] fullModel = new Model[1];
         AssemblerGroup g = new AssemblerGroup.ExpandingAssemblerGroup()
             {
+            @Override
             public void loadClasses( Model full ) { fullModel[0] = full; }
             };
         Resource root = resourceInModel( "root rdf:type typeA" );
@@ -165,6 +169,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         final Object result = new Object();
         Assembler fake = new AssemblerBase() 
             {
+            @Override
             public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 assertSame( "nested call should pass in assembler group:", group, a );

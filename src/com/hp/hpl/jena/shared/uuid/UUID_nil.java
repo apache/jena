@@ -8,7 +8,7 @@ package com.hp.hpl.jena.shared.uuid;
 /** The nil UUID.  There is only one in the system.
  * 
  * @author Andy Seaborne
- * @version $Id: UUID_nil.java,v 1.4 2008-12-28 19:32:00 andy_seaborne Exp $
+ * @version $Id: UUID_nil.java,v 1.5 2009-01-16 17:23:59 andy_seaborne Exp $
  */
 
 public final
@@ -29,12 +29,16 @@ class UUID_nil extends JenaUUID
     {}
     
     
+    @Override
     public long getMostSignificantBits() { return bitsMostSignificant ; }
+    @Override
     public long getLeastSignificantBits() { return bitsLeastSignificant ; }
     
+    @Override
     public String toString()
     { return nilStr ; }
 
+    @Override
     public boolean equals(Object other)
     {
         if ( ! ( other instanceof UUID_nil ) )
@@ -44,7 +48,9 @@ class UUID_nil extends JenaUUID
     }
 
 
+    @Override
     public int getVariant() { return variant ; }
+    @Override
     public int getVersion() { return version ; }
     
     // Testing only.

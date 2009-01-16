@@ -15,6 +15,7 @@ public class InnerXMLLiteral extends AbsXMLLiteral {
         qname = rawName;
     }
 
+    @Override
     public void endElement() {
         append("</");
         append(qname);

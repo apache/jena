@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MakeInstance.java,v 1.15 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: MakeInstance.java,v 1.16 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class MakeInstance extends BaseBuiltin {
 
@@ -46,6 +46,7 @@ public class MakeInstance extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
 //        System.out.println("MakeInstance on ");
 //        for (int i = 0; i < length; i++) {

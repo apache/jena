@@ -11,6 +11,7 @@ class UntaintableURIReference extends URIReference {
         super(str);
     }
     
+    @Override
     public void taint() {}
 
 }

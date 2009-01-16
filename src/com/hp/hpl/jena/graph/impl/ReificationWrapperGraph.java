@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: ReificationWrapperGraph.java,v 1.2 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: ReificationWrapperGraph.java,v 1.3 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -49,9 +49,11 @@ public final class ReificationWrapperGraph extends WrappedGraph
     public Graph getBase()
         { return base; }
     
+    @Override
     public ExtendedIterator find( TripleMatch tm )
         { return find( tm.asTriple() ); }
     
+    @Override
     public ExtendedIterator find( Node s, Node p, Node o )
         { return find( Triple.create( s, p, o ) ); }
     
@@ -69,6 +71,7 @@ public final class ReificationWrapperGraph extends WrappedGraph
         
      	@see com.hp.hpl.jena.graph.impl.WrappedGraph#size()
     */
+    @Override
     public int size()  
         { 
         ReificationWrapper br = (ReificationWrapper) reifier;
@@ -78,6 +81,7 @@ public final class ReificationWrapperGraph extends WrappedGraph
     /**
         An identifying string. For diagnostic messages only.
     */
+    @Override
     public String toString()
         { return "<rwg " + index + ">"; }
     

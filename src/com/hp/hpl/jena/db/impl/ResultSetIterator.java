@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:54 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -254,6 +254,7 @@ public class ResultSetIterator implements ExtendedIterator {
      * Clean up the database cursor. Noramlly the client should read to the end
      * or explicity close but....
      */
+    @Override
     protected void finalize() throws SQLException {
         if (!m_finished && m_resultSet != null) close();
     }
@@ -286,7 +287,8 @@ public class ResultSetIterator implements ExtendedIterator {
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#filterDrop(com.hp.hpl.jena.util.iterator.Filter)
 	 */
 	public ExtendedIterator filterDrop(final Filter f) {
-		Filter notF = new Filter() { public boolean accept( Object x ) { return !f.accept( x ); } };
+		Filter notF = new Filter() { @Override
+        public boolean accept( Object x ) { return !f.accept( x ); } };
 		return new FilterIterator( notF, this ); 
 	}
 

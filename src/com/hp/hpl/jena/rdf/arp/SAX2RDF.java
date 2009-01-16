@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.22 2009-01-16 12:53:18 andy_seaborne Exp $
+ * * $Id: SAX2RDF.java,v 1.23 2009-01-16 17:23:49 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -132,6 +132,7 @@ implements ARPConfig {
      * @param uri The Namespace URI the prefix is mapped to.
      * 
      */
+    @Override
     public void startPrefixMapping (String prefix, String uri) throws SAXParseException
 	 { super.startPrefixMapping(prefix,uri);
     }
@@ -146,7 +147,8 @@ implements ARPConfig {
 
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getHandlers()
 	 */
-	public ARPHandlers getHandlers() {
+	@Override
+    public ARPHandlers getHandlers() {
 		return super.getHandlers();
 	}
     /**Copys handlers used for processing ARP events. 
@@ -154,19 +156,22 @@ implements ARPConfig {
 	
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(ARPHandlers)
 	 */
-	public void setHandlersWith(ARPHandlers handlers) {
+	@Override
+    public void setHandlersWith(ARPHandlers handlers) {
 		super.setHandlersWith(handlers);
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
 	 */
-	public ARPOptions getOptions() {
+	@Override
+    public ARPOptions getOptions() {
 		return super.getOptions();
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
 	 */
-	public void setOptionsWith(ARPOptions opts) {
+	@Override
+    public void setOptionsWith(ARPOptions opts) {
 		super.setOptionsWith(opts);
 		
 	}

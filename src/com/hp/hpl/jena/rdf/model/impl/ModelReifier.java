@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.24 2008-12-28 19:31:52 andy_seaborne Exp $
+	$Id: ModelReifier.java,v 1.25 2009-01-16 17:23:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -67,6 +67,7 @@ public class ModelReifier
         final Reifier r = mGraph.getReifier();
         return new GraphBase()
             {
+            @Override
             public ExtendedIterator graphBaseFind( TripleMatch m ) 
                 { return r.findEither( m, true ); }
             };

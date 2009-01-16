@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.10 2008-12-28 19:32:19 andy_seaborne Exp $
+  $Id: AbstractTestQuery1.java,v 1.11 2009-01-16 17:23:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -206,6 +206,7 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
 
     };
     
+    @Override
     public void setUp() throws Exception
         {        
         super.setUp();
@@ -222,7 +223,8 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
         loadGraph( s );
         return s; }
  
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
         super.tearDown();
 		}
 

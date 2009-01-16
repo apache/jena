@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.44 2008-12-28 19:32:04 andy_seaborne Exp $
+    $Id: Regression.java,v 1.45 2009-01-16 17:23:50 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2008-12-28 19:32:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2009-01-16 17:23:50 $'
  */
 public class Regression extends Object {
 
@@ -302,18 +302,18 @@ public class Regression extends Object {
             }
             {
                 double tv;
-                double maxerror = (double) 0.000000005;
+                double maxerror = 0.000000005;
                 n = 700;
 
-                tv = (double) 0.0;
+                tv = 0.0;
                 l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
-                tv = (double) -1.0;
+                tv = -1.0;
                 l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
-                tv = (double) 12345.67890;
+                tv = 12345.67890;
                 l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
@@ -4837,13 +4837,16 @@ public class Regression extends Object {
             content = Long.parseLong(s.substring(1, s.length()-1));
         }
 
+        @Override
         public String toString() {
             return "[" + Long.toString(content) + "]";
         }
 
+        @Override
         public int hashCode()
             { return (int) (content ^ (content >> 32)); }
             
+        @Override
         public boolean equals(Object o) {
             if (o instanceof LitTestObj) {
                 return content == ((LitTestObj)o).content;
@@ -4890,5 +4893,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.44 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.45 2009-01-16 17:23:50 andy_seaborne Exp $
  */

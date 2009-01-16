@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.19 2009-01-08 14:56:43 andy_seaborne Exp $
+    $Id: PatternStageBase.java,v 1.20 2009-01-16 17:23:54 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -80,6 +80,7 @@ public abstract class PatternStageBase extends Stage
                 { throw new BufferPipe.BoundedBufferTakeException( e ); }
             }
         
+        @Override
         public void run() 
             { 
             while (true)
@@ -105,6 +106,7 @@ public abstract class PatternStageBase extends Stage
     
    public static boolean reuseThreads = JenaRuntime.getSystemProperty( "jena.reusepatternstage.threads", "yes" ).equals( "yes" );
    
+    @Override
     public synchronized Pipe deliver( final Pipe sink )
         {
         final Pipe source = previous.deliver( new BufferPipe() );
@@ -113,7 +115,8 @@ public abstract class PatternStageBase extends Stage
             getAvailableThread().put( new Work( source, sink, s ) ); 
         else
             new Thread( "PatternStage-" + ++count ) 
-                { public void run() { PatternStageBase.this.run( source, sink, s ); } } 
+                { @Override
+                public void run() { PatternStageBase.this.run( source, sink, s ); } } 
             .start();
         return sink;
         }

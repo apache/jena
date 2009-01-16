@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.61 2009-01-11 20:40:15 der Exp $
+ * $Id: TestBugs.java,v 1.62 2009-01-16 17:23:58 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.61 $ on $Date: 2009-01-11 20:40:15 $
+ * @version $Revision: 1.62 $ on $Date: 2009-01-16 17:23:58 $
  */
 public class TestBugs extends TestCase {
 
@@ -61,6 +61,7 @@ public class TestBugs extends TestCase {
 //        return suite;
     }
 
+    @Override
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
@@ -917,6 +918,7 @@ public class TestBugs extends TestCase {
             }
         }
 
+        @Override
         public void addedStatement( Statement s ) {
             if (s.getPredicate().equals(Q)) {
                 lastValue = s.getObject();
@@ -951,6 +953,7 @@ public class TestBugs extends TestCase {
     private static class Flag extends BaseBuiltin {
         public String getName() {  return "flag";  }
         public boolean fired = false;
+        @Override
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             fired = true;
             return true;
@@ -1025,7 +1028,9 @@ public class TestBugs extends TestCase {
      */
     private static class SomeTriple extends BaseBuiltin {
         public String getName() {  return "someTriple";  }
+        @Override
         public int getArgLength() { return 1; }
+        @Override
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();

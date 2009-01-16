@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:31:54 $
+ * Last modified on   $Date: 2009-01-16 17:23:52 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.14 2008-12-28 19:31:54 andy_seaborne Exp $)
+ * @version Release ($Id: RDFList.java,v 1.15 2009-01-16 17:23:52 andy_seaborne Exp $)
  */
 public interface RDFList
     extends Resource
@@ -380,6 +380,7 @@ public interface RDFList
      * again. Therefore, this method name has been deprecated in favour of {@link #removeList}</p>
      * @deprecated Replaced by {@link #removeList}
      */
+    @Deprecated
     public void removeAll();
     
     

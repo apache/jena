@@ -51,6 +51,7 @@ class LazyFileInputStream extends LazyInputStream {
         this.name = name;
     }
     
+    @Override
     InputStream open() throws IOException {
     	return new FileInputStream(name);
     }

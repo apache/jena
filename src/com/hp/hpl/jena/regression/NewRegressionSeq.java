@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeq.java,v 1.6 2008-12-28 19:32:04 andy_seaborne Exp $
+ 	$Id: NewRegressionSeq.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -27,9 +27,11 @@ public class NewRegressionSeq extends NewRegressionBase
 
     protected Model m;
     
+    @Override
     public void setUp()
         { m = getModel(); }
     
+    @Override
     public void tearDown()
         { m = null; }
     
@@ -53,11 +55,11 @@ public class NewRegressionSeq extends NewRegressionBase
     //
         seq.add( tvInt );
         assertTrue( seq.contains( tvInt ) );
-        assertFalse( seq.contains( (int) -101 ) );
+        assertFalse( seq.contains( -101 ) );
     //
         seq.add( tvLong );
         assertTrue( seq.contains( tvLong ) );
-        assertFalse( seq.contains( (long) -102 ) );
+        assertFalse( seq.contains( -102 ) );
    //     
         seq.add( tvChar );
         assertTrue( seq.contains( tvChar ) );
@@ -157,10 +159,10 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( (byte) 1, seq.getByte( 2 ) );
         seq.add( (short) 2 );
         assertEquals( (short) 2, seq.getShort( 3 ) );
-        seq.add( (int) -1 );
-        assertEquals( (int) -1, seq.getInt( 4 ) );
-        seq.add( (long) -2 );
-        assertEquals( (long) -2, seq.getLong( 5 ) );
+        seq.add( -1 );
+        assertEquals( -1, seq.getInt( 4 ) );
+        seq.add( -2 );
+        assertEquals( -2, seq.getLong( 5 ) );
         seq.add( '!' );
         assertEquals( '!', seq.getChar( 6 ) );
         seq.add( 123.456f );
@@ -209,10 +211,10 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( (byte) 1, seq.getByte( 1 ) );
         seq.add( 1, (short) 2 );
         assertEquals( (short) 2, seq.getShort( 1 ) );
-        seq.add( 1, (int) -1 );
-        assertEquals( (int) -1, seq.getInt( 1 ) );
-        seq.add( 1, (long) -2 );
-        assertEquals( (long) -2, seq.getLong( 1 ) );
+        seq.add( 1, -1 );
+        assertEquals( -1, seq.getInt( 1 ) );
+        seq.add( 1, -2 );
+        assertEquals( -2, seq.getLong( 1 ) );
         seq.add( 1, '!' );
         assertEquals( '!', seq.getChar( 1 ) );
         seq.add( 1, 123.456f );
@@ -247,8 +249,8 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( 9, seq.indexOf( 12345.67890 ) );
         assertEquals( 10, seq.indexOf( 123.456f ) );
         assertEquals( 11, seq.indexOf( '!' ) );
-        assertEquals( 12, seq.indexOf( (long) -2 ) );
-        assertEquals( 13, seq.indexOf( (int) -1 ) );
+        assertEquals( 12, seq.indexOf( -2 ) );
+        assertEquals( 13, seq.indexOf( -1 ) );
         assertEquals( 14, seq.indexOf( (short) 2 ) );
         assertEquals( 15, seq.indexOf( (byte) 1 ) );
         assertEquals( 16, seq.indexOf( true ) );

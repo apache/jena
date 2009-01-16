@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.20 2008-12-28 19:32:04 andy_seaborne Exp $
+  $Id: Node_Literal.java,v 1.21 2009-01-16 17:23:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,30 +19,39 @@ public class Node_Literal extends Node_Concrete
     /* package */ Node_Literal( Object label )
         { super( label ); }
 
+    @Override
     public LiteralLabel getLiteral()
         { return (LiteralLabel) label; }
     
+    @Override
     public final Object getLiteralValue()
         { return getLiteral().getValue(); }
     
+    @Override
     public final String getLiteralLexicalForm()
         { return getLiteral().getLexicalForm(); }
     
+    @Override
     public final String getLiteralLanguage()
         { return getLiteral().language(); }
     
+    @Override
     public final String getLiteralDatatypeURI()
         { return getLiteral().getDatatypeURI(); }
     
+    @Override
     public final RDFDatatype getLiteralDatatype()
         { return getLiteral().getDatatype(); }
     
+    @Override
     public final boolean getLiteralIsXML()
         { return getLiteral().isXML(); }
     
+    @Override
     public String toString( PrefixMapping pm, boolean quoting )
         { return ((LiteralLabel) label).toString( quoting ); }
         
+    @Override
     public boolean isLiteral() 
         { return true; }    
         
@@ -50,12 +59,15 @@ public class Node_Literal extends Node_Concrete
         Literal nodes defer their indexing value to the component literal.
         @see com.hp.hpl.jena.graph.Node#getIndexingValue()
     */
+    @Override
     public Object getIndexingValue()
         { return getLiteral().getIndexingValue(); }
     
+    @Override
     public Object visitWith( NodeVisitor v )
         { return v.visitLiteral( this, getLiteral() ); }
         
+    @Override
     public boolean equals( Object other )
         { return other instanceof Node_Literal && label.equals( ((Node_Literal) other).label ); }
         
@@ -69,11 +81,13 @@ public class Node_Literal extends Node_Concrete
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
+    @Override
     public boolean sameValueAs(Object o) {
         return o instanceof Node_Literal 
               && ((LiteralLabel)label).sameValueAs( ((Node_Literal) o).getLiteral() );
     }
     
+    @Override
     public boolean matches( Node x )
         { return sameValueAs( x ); }
     

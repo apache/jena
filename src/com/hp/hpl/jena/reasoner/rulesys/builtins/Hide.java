@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: Hide.java,v 1.8 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: Hide.java,v 1.9 2009-01-16 17:23:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * result iterators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.9 $ on $Date: 2009-01-16 17:23:51 $
  */
 public class Hide extends BaseBuiltin {
 
@@ -40,6 +40,7 @@ public class Hide extends BaseBuiltin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         doHide(args, length, context);
         return true;   
@@ -55,7 +56,8 @@ public class Hide extends BaseBuiltin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
-     public void headAction(Node[] args, int length, RuleContext context) {
+     @Override
+    public void headAction(Node[] args, int length, RuleContext context) {
         doHide(args, length, context);
     }
 

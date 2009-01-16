@@ -18,6 +18,7 @@ public class TestBadSyntax extends TestCase
     String uri ;
     public TestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
+    @Override
     public void runTest()
     {
         Model model = ModelFactory.createDefaultModel() ;

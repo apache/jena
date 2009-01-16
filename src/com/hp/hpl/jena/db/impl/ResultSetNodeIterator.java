@@ -26,7 +26,7 @@ import java.util.ArrayList;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.6 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.7 $ on $Date: 2009-01-16 17:23:54 $
 */
 
 public class ResultSetNodeIterator extends ResultSetIterator {
@@ -35,6 +35,7 @@ public class ResultSetNodeIterator extends ResultSetIterator {
      * Extract the current row
      * Override in subclasses.
      */
+    @Override
     protected void extractRow() throws Exception {
         if (m_row == null) {
             m_nCols = m_resultSet.getMetaData().getColumnCount();
