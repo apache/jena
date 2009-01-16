@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.22 2008-12-28 19:31:54 andy_seaborne Exp $
+	$Id: Statement.java,v 1.23 2009-01-16 16:33:24 andy_seaborne Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2008-12-28 19:31:54 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2009-01-16 16:33:24 $
  */
 
 public interface Statement extends FrontsTriple
@@ -293,21 +293,6 @@ public interface Statement extends FrontsTriple
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( double o );
-    
-    /** @deprecated use changeLiteralObject etc */
-    public Statement changeObject( float o );
-
-    /** @deprecated use changeLiteralObject etc */
-    public Statement changeObject( boolean o );
-
-    /** @deprecated use changeLiteralObject etc */
-    public Statement changeObject( long o );
-    
-    /** @deprecated use changeLiteralObject etc */
-    public Statement changeObject( double o );
-
-    /** @deprecated use changeLiteralObject etc */
-    public Statement changeObject(Object o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 

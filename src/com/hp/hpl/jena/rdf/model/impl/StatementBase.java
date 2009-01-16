@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+	 $Id: StatementBase.java,v 1.15 2009-01-16 16:33:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -69,12 +69,6 @@ public abstract class StatementBase
 	public Statement changeLiteralObject( boolean o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
 	
-    public Statement changeObject( boolean o )
-        { return stringReplace( String.valueOf( o ) ); }
-
-	public Statement changeObject( long o )
-		{ return stringReplace( String.valueOf( o ) ); }
-	
     public Statement changeLiteralObject( long o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
@@ -89,15 +83,6 @@ public abstract class StatementBase
 	
     public Statement changeLiteralObject( int o )
         { return changeObject( model.createTypedLiteral( o ) ); }
-	
-    public Statement changeObject( float o )
-        { return changeObject( String.valueOf( o ) ); }
-
-    public Statement changeObject( double o )
-        { return stringReplace( String.valueOf( o ) ); }
-    
-	public Statement changeTypedObject( double o )
-		{ return changeObject( model.createTypedLiteral( o ) ); }
 
 	public Statement changeObject( String o )
 		{ return stringReplace( String.valueOf( o ) ); }
@@ -113,13 +98,6 @@ public abstract class StatementBase
 
 	public Statement changeObject( RDFNode o )
 		{ return replace( o ); }
-
-	public Statement changeObject( Object o )
-		{
-		return o instanceof RDFNode 
-			? replace( (RDFNode) o ) 
-		    : stringReplace( o.toString() );
-		}
 
 	public boolean getBoolean()
 		{ return getLiteral().getBoolean(); }
