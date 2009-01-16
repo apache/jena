@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2008-12-28 19:31:54 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2009-01-16 15:12:49 $
  */
 public interface Literal extends RDFNode {
     
@@ -207,14 +207,6 @@ public interface Literal extends RDFNode {
          @return the language for this literal if it exists, or empty string if none
     */    
     public String getLanguage();
-    
-    /** Return whether Literal is well formed XML
-     * @deprecated use isWellFormedXML instead.
-     *  @return true if the literal is well formed XML, e.g. as
-     *               would be produced from a parseType="Literal"
-     *               element.
-     */
-    public boolean getWellFormed();
     
     /**
         Answer true iff this literal is (or claims to be) well-formed XML.

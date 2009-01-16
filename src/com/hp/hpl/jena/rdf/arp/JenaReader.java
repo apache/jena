@@ -25,13 +25,9 @@ import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.shared.DoesNotExistException;
 import com.hp.hpl.jena.shared.JenaException;
@@ -45,17 +41,17 @@ import com.hp.hpl.jena.shared.WrappedIOException;
  */
 public class JenaReader implements RDFReader, ARPErrorNumbers {
     
-    /**
-     * Sets the reader for the languages RDF/XML and RDF/XML-ABBREV to be
-     * JenaReader.
-     * @deprecated This is the default behaviour
-     * @param m
-     *            The Model on which to set the reader properties.
-     */
-    static public void useMe(Model m) {
-        m.setReaderClassName("RDF/XML", JenaReader.class.getName());
-        m.setReaderClassName("RDF/XML-ABBREV", JenaReader.class.getName());
-    }
+//    /**
+//     * Sets the reader for the languages RDF/XML and RDF/XML-ABBREV to be
+//     * JenaReader.
+//     * @deprecated This is the default behaviour
+//     * @param m
+//     *            The Model on which to set the reader properties.
+//     */
+//    static public void useMe(Model m) {
+//        m.setReaderClassName("RDF/XML", JenaReader.class.getName());
+//        m.setReaderClassName("RDF/XML-ABBREV", JenaReader.class.getName());
+//    }
 
     static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 
@@ -106,34 +102,17 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
     }
 
-//    static public void main(String [] a){
-//    	String url = 
-//    		"http://www.bbc.co.uk/portuguese/index.xml";
-////    		"http://jena.sourceforge.net/test/mime/test1";
-//    	try {
-//			URLConnection conn = new URL(url).openConnection();
-//			conn.setRequestProperty("accept", "application/rdf+xml, application/xml, text/xml, */*; q=0.5");
-//			System.err.println(conn.getContentType());
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        
+//    /**
+//     * Converts an ARP literal into a Jena Literal.
+//     * 
+//     * @param lit
+//     *            The ARP literal.
+//     * @return The Jena Literal.
+//     */
+//    static private Literal translate(ALiteral lit) {
+//        return new LiteralImpl(lit.toString(), lit.getLang(), lit
+//                .isWellFormedXML(), null);
 //    }
-    /**
-     * Converts an ARP literal into a Jena Literal.
-     * 
-     * @param lit
-     *            The ARP literal.
-     * @return The Jena Literal.
-     */
-    static private Literal translate(ALiteral lit) {
-        return new LiteralImpl(lit.toString(), lit.getLang(), lit
-                .isWellFormedXML(), null);
-    }
 
     private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
@@ -171,18 +150,18 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         return Triple.create(convert(s), convert(p), convert(o));
     }
 
-    /**
-     * Converts an ARP resource into a Jena property.
-     * 
-     * @param r
-     *            The ARP resource.
-     * @throws JenaException
-     *             If r is anonymous, or similarly ill-formed.
-     * @return The Jena property.
-     */
-    static private Property translatePred(AResource r) throws JenaException {
-        return new PropertyImpl(r.getURI());
-    }
+//    /**
+//     * Converts an ARP resource into a Jena property.
+//     * 
+//     * @param r
+//     *            The ARP resource.
+//     * @throws JenaException
+//     *             If r is anonymous, or similarly ill-formed.
+//     * @return The Jena property.
+//     */
+//    static private Property translatePred(AResource r) throws JenaException {
+//        return new PropertyImpl(r.getURI());
+//    }
 
     /**
      * Reads from reader, using base URI xmlbase, adding triples to model. If

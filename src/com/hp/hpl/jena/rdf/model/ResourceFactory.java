@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceFactory.java,v 1.16 2008-12-28 19:31:54 andy_seaborne Exp $
+  $Id: ResourceFactory.java,v 1.17 2009-01-16 15:12:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -217,7 +217,7 @@ public class ResourceFactory {
         }
         
         public Literal createPlainLiteral( String string ) {
-            return new LiteralImpl( string );
+            return new LiteralImpl(  Node.createLiteral( string, "", false ), null );
         }
 
         public Literal createTypedLiteral( String string , RDFDatatype dType)
