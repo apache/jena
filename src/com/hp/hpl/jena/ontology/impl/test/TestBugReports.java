@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.96 $
+ * Revision           $Revision: 1.97 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-08 14:56:43 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -755,8 +755,8 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/bugs/test_dk_01.xml" );
 
-        String NS = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#";
-        String[] classes = new String[] {NS+"C1", NS+"C3", NS+"C2"};
+        String ns = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#";
+        String[] classes = new String[] {ns+"C1", ns+"C3", ns+"C2"};
 
         for (int i = 0; i < classes.length; i++) {
             OntClass c = m.getOntClass( classes[i] );
@@ -766,7 +766,7 @@ public class TestBugReports
 
     /** Bug report by anon at SourceForge - Bug ID 887409 */
     public void test_anon_0() {
-        String NS = "http://example.org/foo#";
+        String ns = "http://example.org/foo#";
         String sourceT =
             "<rdf:RDF "
             + "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
@@ -789,7 +789,7 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
         m.read(new ByteArrayInputStream(sourceT.getBytes()), "http://example.org/foo");
 
-        OntClass B = m.getOntClass( NS + "B");
+        OntClass B = m.getOntClass( ns + "B");
         Restriction r = B.getEquivalentClass().asRestriction();
         HasValueRestriction hvr = r.asHasValueRestriction();
         RDFNode n = hvr.getHasValue();
@@ -799,7 +799,7 @@ public class TestBugReports
 
     /** Bug report by Zhao Jun [jeff@seu.edu.cn] - throws no such element exception */
     public void test_zj_0() {
-        String NS = "file:/C:/orel/orel0_5.owl#";
+        String ns = "file:/C:/orel/orel0_5.owl#";
         String sourceT =
             "<rdf:RDF " +
             "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
@@ -840,7 +840,7 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
         m.read(new ByteArrayInputStream(sourceT.getBytes()), "file:/C:/orel/orel0_5.owl");
 
-        OntClass myPlay = m.getOntClass( NS + "MyPlay");
+        OntClass myPlay = m.getOntClass( ns + "MyPlay");
         for (Iterator i = myPlay.listDeclaredProperties(); i.hasNext(); ) {
             //System.err.println( "prop " + i.next() );
             i.next();
@@ -907,9 +907,9 @@ public class TestBugReports
         "  <owl:Class rdf:ID='Dummy'>" +
         "  </owl:Class>" +
         "</rdf:RDF>";
-        String NS = "http://jena.hpl.hp.com/test#";
+        String ns = "http://jena.hpl.hp.com/test#";
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, null);
-        m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
+        m.read(new ByteArrayInputStream( SOURCE.getBytes()), ns );
 
         //OntClass dummy = m.getOntClass( NS + "Dummy" );
         // assert commented out - bug not accepted -ijd
@@ -919,11 +919,11 @@ public class TestBugReports
 
     /** Bug report from Dave - cycles checking code still not correct */
     public void test_der_03() {
-        String NS = "http://jena.hpl.hp.com/test#";
+        String ns = "http://jena.hpl.hp.com/test#";
         OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        OntClass A = om.createClass(NS+"A");
-        OntClass B = om.createClass(NS+"B");
-        OntClass C = om.createClass(NS+"C");
+        OntClass A = om.createClass(ns+"A");
+        OntClass B = om.createClass(ns+"B");
+        OntClass C = om.createClass(ns+"C");
         A.addSuperClass(B);
         A.addSuperClass(C);
         B.addSuperClass(C);
@@ -963,9 +963,9 @@ public class TestBugReports
             "    </owl:DatatypeProperty>" +
             "    <owl:Thing rdf:ID='Category5'/>" +
             "</rdf:RDF>";
-        String NS = "http://iasi.cnr.it/leks/localSchema1#";
+        String ns = "http://iasi.cnr.it/leks/localSchema1#";
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM, null);
-        m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
+        m.read(new ByteArrayInputStream( SOURCE.getBytes()), ns );
 
         for (ExtendedIterator j = m.listRestrictions(); j.hasNext(); ) {
               Restriction r = (Restriction) j.next();
@@ -978,15 +978,15 @@ public class TestBugReports
 
     /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
     public void xxtest_oh_01() {
-        String NS = "http://www.idi.ntnu.no/~herje/ja/";
+        String ns = "http://www.idi.ntnu.no/~herje/ja/";
         Resource[] expected = new Resource[] {
-            ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
-            ResourceFactory.createResource( NS+"hotell.owl#Hotell" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#Restaurant" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#UteRestaurant" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#UteBadRestaurant" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#UteDoRestaurant" ),
-            ResourceFactory.createResource( NS+"restaurant.owl#SkogRestaurant" ),
+            ResourceFactory.createResource( ns+"reiseliv.owl#Reiseliv" ),
+            ResourceFactory.createResource( ns+"hotell.owl#Hotell" ),
+            ResourceFactory.createResource( ns+"restaurant.owl#Restaurant" ),
+            ResourceFactory.createResource( ns+"restaurant.owl#UteRestaurant" ),
+            ResourceFactory.createResource( ns+"restaurant.owl#UteBadRestaurant" ),
+            ResourceFactory.createResource( ns+"restaurant.owl#UteDoRestaurant" ),
+            ResourceFactory.createResource( ns+"restaurant.owl#SkogRestaurant" ),
         };
 
         test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
@@ -996,12 +996,12 @@ public class TestBugReports
     }
 
     private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
-        String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
+        String ns = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
         OntModel m = ModelFactory.createOntologyModel(s, null);
         m.read( "file:testing/ontology/bugs/test_oh_01.owl");
 
         System.out.println( prompt );
-        OntClass r = m.getOntClass( NS + "Reiseliv" );
+        OntClass r = m.getOntClass( ns + "Reiseliv" );
         List q = new ArrayList();
         Set seen = new HashSet();
         q.add( r );
@@ -1048,12 +1048,12 @@ public class TestBugReports
 
     /** Test case for SF bug 927641 - list direct subclasses */
     public void test_sf_927641() {
-        String NS = "http://example.org/test#";
+        String ns = "http://example.org/test#";
         OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
-        OntClass c0 = m0.createClass( NS + "C0" );
-        OntClass c1 = m0.createClass( NS + "C1" );
-        OntClass c2 = m0.createClass( NS + "C2" );
-        OntClass c3 = m0.createClass( NS + "C3" );
+        OntClass c0 = m0.createClass( ns + "C0" );
+        OntClass c1 = m0.createClass( ns + "C1" );
+        OntClass c2 = m0.createClass( ns + "C2" );
+        OntClass c3 = m0.createClass( ns + "C3" );
 
         c0.addSubClass( c1 );
         c1.addSubClass( c2 );
@@ -1067,10 +1067,10 @@ public class TestBugReports
 
         // second pass - with inference
         m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
-        c0 = m0.createClass( NS + "C0" );
-        c1 = m0.createClass( NS + "C1" );
-        c2 = m0.createClass( NS + "C2" );
-        c3 = m0.createClass( NS + "C3" );
+        c0 = m0.createClass( ns + "C0" );
+        c1 = m0.createClass( ns + "C1" );
+        c2 = m0.createClass( ns + "C2" );
+        c3 = m0.createClass( ns + "C3" );
 
         c0.addSubClass( c1 );
         c1.addSubClass( c2 );

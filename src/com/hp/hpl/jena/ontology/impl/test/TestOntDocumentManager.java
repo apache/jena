@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 00:36:33 $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.31 2009-01-16 00:36:33 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.32 2009-01-16 01:12:10 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -161,7 +161,6 @@ public class TestOntDocumentManager
         assertTrue( "Should be at least one specification loaded", mgr.listDocuments().hasNext() );
         assertNotNull( "cache URL for owl should not be null", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "cache URL for owl not correct", "file:vocabularies/owl.owl", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
-        assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
     }
 
     public void testGetInstance() {
@@ -252,36 +251,12 @@ public class TestOntDocumentManager
         assertFalse( mgr.getCacheModels() );
         mgr.reset();
         assertTrue( mgr.getCacheModels() );
-
-        assertTrue( mgr.useDeclaredPrefixes() );
-        mgr.setUseDeclaredPrefixes( false );
-        assertFalse( mgr.useDeclaredPrefixes() );
-        mgr.reset();
-        assertTrue( mgr.useDeclaredPrefixes() );
     }
 
     public void testDoAltMapping() {
         OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "http://example.com/nocache", odm.doAltURLMapping( "http://example.com/nocache" ));
-    }
-
-    public void testGetLanguage() {
-        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-        assertEquals( ProfileRegistry.OWL_LANG, odm.getLanguage( "http://www.w3.org/2002/07/owl" ));
-        assertNull( odm.getLanguage( "http://example.com/notthere" ));
-    }
-
-    public void testGetPrefixForURI() {
-        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-        assertEquals( "owl", odm.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
-        assertNull( odm.getPrefixForURI( "http://example.com/notthere" ));
-    }
-
-    public void testGetURIForPrefix() {
-        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-        assertEquals( "http://www.w3.org/2002/07/owl#", odm.getURIForPrefix( "owl" ));
-        assertNull( odm.getURIForPrefix( "http://example.com/notthere" ));
     }
 
     public void testAddModel0() {
@@ -323,7 +298,6 @@ public class TestOntDocumentManager
     public void testForget() {
         OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
-        assertEquals( "http://www.w3.org/2002/07/owl#", odm.getLanguage( "http://www.w3.org/2002/07/owl"));
         OntModel m = ModelFactory.createOntologyModel();
         odm.addModel( "http://www.w3.org/2002/07/owl#", m );
         assertNotNull( odm.getModel( "http://www.w3.org/2002/07/owl#" ));
@@ -332,7 +306,6 @@ public class TestOntDocumentManager
         odm.forget( "http://www.w3.org/2002/07/owl" );
 
         assertEquals( "http://www.w3.org/2002/07/owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
-        assertNull( odm.getLanguage( "http://www.w3.org/2002/07/owl"));
         assertNull( odm.getModel( "http://www.w3.org/2002/07/owl#" ));
     }
 
@@ -362,15 +335,8 @@ public class TestOntDocumentManager
     public void testManualAssociation() {
         OntDocumentManager odm = new OntDocumentManager( (String) null );
 
-        odm.addPrefixMapping( "http://www.w3.org/2002/07/owl#", "owl" );
-        assertEquals( "prefix for owl not correct", "owl", odm.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
-        assertEquals( "URI for owl not correct", "http://www.w3.org/2002/07/owl#", odm.getURIForPrefix( "owl" ));
-
         odm.addAltEntry( "http://www.w3.org/2002/07/owl", "file:foo.bar" );
         assertEquals( "Failed to retrieve cache location", "file:foo.bar", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
-
-        odm.addLanguageEntry( "http://www.w3.org/2002/07/owl", "http://www.w3.org/2002/07/owl" );
-        assertEquals( "Failed to retrieve language", "http://www.w3.org/2002/07/owl", odm.getLanguage( "http://www.w3.org/2002/07/owl" ) );
     }
 
 

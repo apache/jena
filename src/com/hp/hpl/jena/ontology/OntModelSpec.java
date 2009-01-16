@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.55 $
+ * Revision           $Revision: 1.56 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * <p>
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.shared.JenaException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.55 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.56 2009-01-16 01:12:10 ian_dickinson Exp $
  */
 public class OntModelSpec {
     // Constants
@@ -140,6 +141,14 @@ public class OntModelSpec {
     /** the ModelGetter which will be used - eventually - for imports */
     protected ModelGetter importModelGetter;
 
+    /** Known default namespace prefixes */
+    protected String[][] defaultPrefixes = new String[][] {
+            {"owl", OWL.getURI()},
+            {"rdf", RDF.getURI()},
+            {"rdfs", RDFS.getURI()},
+            {"xsd", XSD.getURI()}
+    };
+
     // Constructors
     //////////////////////////////////
 
@@ -170,7 +179,7 @@ public class OntModelSpec {
 
 
     protected ModelMaker maker;
-    
+
     /**
      * Construct a new ontology model specification from the supplied components.
      * @param baseModelName the name of the model in the baseModelMaker
@@ -466,6 +475,13 @@ public class OntModelSpec {
         return ModelFactory.createDefaultModel();
     }
 
+    /**
+     * Returns the set of known (built-in) namespace prefixes for this OntModelSpec
+     * @return Known prefixes as an array of length-2 arrays
+     */
+    public String[][] getKnownPrefixes() {
+        return defaultPrefixes;
+    }
 }
 
 

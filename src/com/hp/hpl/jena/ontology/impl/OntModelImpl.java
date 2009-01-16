@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.111 $
+ * Revision           $Revision: 1.112 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 00:36:33 $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -57,7 +57,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.111 2009-01-16 00:36:33 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.112 2009-01-16 01:12:10 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -146,13 +146,17 @@ public class OntModelImpl extends ModelCom implements OntModel
                         ((MultiUnion) getGraph()) :
                         (MultiUnion) ((InfGraph) getGraph()).getRawGraph();
 
-        // add the global prefixes, if required
-        if (getDocumentManager().useDeclaredPrefixes()) {
-            withDefaultMappings( getDocumentManager().getDeclaredPrefixMapping() );
-        }
-
         if (withImports) {
             loadImports();
+        }
+
+        // set the default prefixes
+        if (spec != null && spec.getKnownPrefixes() != null) {
+            String[][] p = spec.getKnownPrefixes();
+            for (int i = 0; i < p.length; i++) {
+                String[] pair = p[i];
+                setNsPrefix( pair[0], pair[1] );
+            }
         }
 
         // force the inference engine, if we have one, to see the new graph data

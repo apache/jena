@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.65 $
+ * Revision           $Revision: 1.66 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -29,7 +29,6 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.*;
@@ -64,7 +63,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.65 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.66 2009-01-16 01:12:10 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -534,57 +533,6 @@ public class OntDocumentManager
 
 
     /**
-     * <p>Answer true if, according to the policy expressed by this document manager, newly
-     * generated ontology models should include the pre-declared namespace prefixes.
-     * </p>
-     *
-     * @return True if pre-declared prefixes should be added to the models
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    public boolean useDeclaredPrefixes() {
-        return m_useDeclaredPrefixes;
-    }
-
-    /**
-     * <p>Set the flag that determines whether pre-declared namespace prefixes will be added to newly
-     * generated ontology models.</p>
-     *
-     * @param useDeclaredPrefixes If true, new models will include the pre-declared prefixes set held
-     * by this document manager.
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    public void setUseDeclaredPrefixes( boolean useDeclaredPrefixes ) {
-        m_useDeclaredPrefixes = useDeclaredPrefixes;
-    }
-
-    /**
-     * <p>Answer the namespace prefix map that contains the shared prefixes managed by this
-     * document manager.</p>
-     *
-     * @return The namespace prefix mapping
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    public PrefixMapping getDeclaredPrefixMapping() {
-        return m_prefixMap;
-    }
-
-
-    /**
-     * <p>
-     * Add a prefix mapping between the given public base URI and the
-     * given prefix.
-     * </p>
-     *
-     * @param uri The base URI that <code>prefix</code> expands to
-     * @param prefix A qname prefix
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    public void addPrefixMapping( String uri, String prefix ) {
-        m_prefixMap.setNsPrefix( prefix, uri );
-    }
-
-
-    /**
      * <p>
      * Add an entry for an alternative copy of the document with the given document
      * URI.
@@ -1050,9 +998,6 @@ public class OntDocumentManager
                 else if (pred.equals( IGNORE_IMPORT )) {
                     addIgnoreImport( s.getResource().getURI() );
                 }
-                else if (pred.equals( USE_DECLARED_NS_PREFIXES )) {
-                    setUseDeclaredPrefixes( s.getBoolean() );
-                }
             }
         }
 
@@ -1068,20 +1013,6 @@ public class OntDocumentManager
                 // there may be a cached copy for this ontology
                 s = root.getProperty( ALT_URL );
                 if (s != null) addAltEntry( publicURI, s.getResource().getURI() );
-
-                // there may be a standard prefix for this ontology
-                s = root.getProperty( PREFIX );
-                if (s != null) {
-                    // if the namespace doesn't end with a suitable split point character, add a #
-                    boolean endWithNCNameCh = XMLChar.isNCName( publicURI.charAt( publicURI.length() - 1 ) );
-                    String prefixExpansion = endWithNCNameCh ? (publicURI + ANCHOR) : publicURI;
-
-                    addPrefixMapping( prefixExpansion, s.getString() );
-                }
-
-                // there may be a language specified for this ontology
-                s = root.getProperty( LANGUAGE );
-                if (s != null) addLanguageEntry( publicURI, s.getResource().getURI() );
             }
             else {
                 log.warn( "Ontology specification node lists no public URI - node ignored");
@@ -1219,7 +1150,6 @@ public class OntDocumentManager
      */
     protected void setDefaults() {
         setCacheModels( true );
-        setUseDeclaredPrefixes( true );
         setProcessImports( true );
         setDefaultPrefixMappings();
     }

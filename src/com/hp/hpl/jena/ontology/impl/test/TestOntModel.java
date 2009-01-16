@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:22 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-16 01:12:10 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,10 +31,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.rulesys.test.TestBugs;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -47,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.32 2008-12-28 19:32:22 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.33 2009-01-16 01:12:10 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -148,26 +147,6 @@ public class TestOntModel
         om.setNsPrefix( "bill", "http://bill.and.ben/flowerpot#" );
         om.setNsPrefix( "grue", "ftp://grue.and.bleen/2000#" );
         assertEquals( om.getNsPrefixMap(), om.getBaseModel().getNsPrefixMap() );
-        }
-
-    /**
-         The prefixes of an OntModel should be the prefixes of its base model,
-         plus any non-clashing ones from the document manager's prefix mapping.
-         (which this test assume includes rdfs and daml).
-    */
-    public void testPrefixDefaulting()
-        {
-        Model base = ModelFactory.createDefaultModel();
-        base.setNsPrefix( "hedgehog", "http://hedgehog.hog/" );
-        base.setNsPrefix( "daml", "not:the-DAML-URI/" );
-        base.setNsPrefix( "mine", RDF.getURI() );
-        OntModel m = new OntModelImpl( OntModelSpec.RDFS_MEM, base );
-        PrefixMapping given = m.getDocumentManager().getDeclaredPrefixMapping();
-        assertEquals( "http://hedgehog.hog/", m.getNsPrefixURI( "hedgehog" ) );
-        assertEquals( "not:the-DAML-URI/", m.getNsPrefixURI( "daml" ) );
-        assertEquals( RDF.getURI(), m.getNsPrefixURI( "mine" ) );
-        assertEquals( null, m.getNsPrefixURI( "rdf" ) );
-        assertEquals( given.getNsPrefixURI( "rdfs" ), m.getNsPrefixURI( "rdfs" ) );
         }
 
     public void testWritesPrefixes()
