@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.12 $ on $Date: 2009-01-16 18:03:18 $
 */
 
 public class LRUCache implements ICache {
@@ -52,8 +52,8 @@ public class LRUCache implements ICache {
     
 	*/
 	
-	protected Map keyCache;
-	protected Map valCache;
+	protected Map<IDBID, Object> keyCache;
+	protected Map<Object, IDBID> valCache;
 
 	protected IDBID Keys[];
 	protected Random rand;

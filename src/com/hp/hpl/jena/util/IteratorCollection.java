@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: IteratorCollection.java,v 1.6 2008-12-28 19:32:09 andy_seaborne Exp $
+  $Id: IteratorCollection.java,v 1.7 2009-01-16 18:03:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -31,9 +31,9 @@ public class IteratorCollection
         @param i the iterator to convert
         @return A set of the members of i
     */
-    public static Set iteratorToSet( Iterator i )
+    public static <T> Set<T> iteratorToSet( Iterator<T> i )
         {
-        Set result = CollectionFactory.createHashedSet();
+        Set<T> result = CollectionFactory.createHashedSet();
         try { while (i.hasNext()) result.add( i.next() ); }
         finally { NiceIterator.close( i ); }
         return result;
@@ -46,9 +46,9 @@ public class IteratorCollection
     	@param it the iterator to convert
     	@return a list of the elements of <code>it</code>, in order
      */
-    public static List iteratorToList( Iterator it )
+    public static <T> List<T> iteratorToList( Iterator<T> it )
         {
-        List result = new ArrayList();
+        List<T> result = new ArrayList<T>();
         try { while (it.hasNext()) result.add( it.next() ); }
         finally { NiceIterator.close( it ); }
         return result;

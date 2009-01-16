@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.20 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.21 $ on $Date: 2009-01-16 18:03:18 $
 */
 
 public class SQLCache {
@@ -59,11 +59,11 @@ public class SQLCache {
 
     /** Cache of prepared versions of the statements. Each map entry is a list
      *  of copies of the prepared statement for multi-threaded apps. */
-    protected Map m_preparedStatements = CollectionFactory.createHashedMap();
+    protected Map<String, List<PreparedStatement>> m_preparedStatements = CollectionFactory.createHashedMap();
 
 	/** Track which cached, prepared statements are in use and the corresponding
 	 *  list to which the statement should be returned. */
-	protected Map m_cachedStmtInUse = CollectionFactory.createHashedMap();
+	protected Map<PreparedStatement, List<PreparedStatement>> m_cachedStmtInUse = CollectionFactory.createHashedMap();
 
     /** the packaged jdbc connection to the database itself. */
     protected IDBConnection m_connection;
@@ -113,11 +113,11 @@ public class SQLCache {
      */
     public void flushPreparedStatementCache() throws RDFRDBException {
         try {
-            Iterator it = m_preparedStatements.values().iterator();
+            Iterator<List<PreparedStatement>> it = m_preparedStatements.values().iterator();
             while (it.hasNext()) {
-                Iterator psit = ((List)it.next()).iterator();
+                Iterator<PreparedStatement> psit = it.next().iterator();
                 while (psit.hasNext()) {
-                    ((PreparedStatement)psit.next()).close();
+                    psit.next().close();
                 }
             }
         } catch (SQLException e) {
@@ -198,14 +198,14 @@ public class SQLCache {
      * it is assumed the caller knows which is correct. Compound statements are not called
      * repeatedly so don't currently cache the parsed statement set.
      */
-    public Collection getSQLStatementGroup(String opname) throws SQLException {
+    public Collection<String> getSQLStatementGroup(String opname) throws SQLException {
         String statementSrc = m_sql.getProperty(opname);
         if (statementSrc == null) {
             throw new SQLException("Unable to find SQL for operation: " + opname);
         }
         int start = 0;
         int split = 0;
-        List statements = new LinkedList();
+        List<String> statements = new LinkedList<String>();
         while (split != -1) {
             split = statementSrc.indexOf(";;\n", start);
             String statement = null;
@@ -249,10 +249,10 @@ public class SQLCache {
 		if ( attrCnt > 2 ) aop = concatOpName(aop, attr[2]);
 		if ( attrCnt > 3 ) throw new JenaException("Too many arguments");
         
-		List psl = (List) m_preparedStatements.get(aop);
+		List<PreparedStatement> psl = m_preparedStatements.get(aop);
 		// OVERRIDE: added proper PreparedStatement removal.
 		if (psl!=null && !psl.isEmpty()) {
-			ps = (PreparedStatement) psl.remove(0);
+			ps = psl.remove(0);
 			try{
     			ps.clearParameters();
     		}catch(SQLException e) {
@@ -265,7 +265,7 @@ public class SQLCache {
 				throw new SQLException("No SQL defined for operation: " + opname);
 			}
 			if (psl == null && CACHE_PREPARED_STATEMENTS) {
-				psl = new LinkedList();
+				psl = new LinkedList<PreparedStatement>();
 				m_preparedStatements.put(aop, psl);
 			} 
 			ps = doPrepareSQLStatement(sql);
@@ -342,7 +342,7 @@ public class SQLCache {
             }
             return;
         }
-        List psl = (List) m_cachedStmtInUse.get(ps);
+        List<PreparedStatement> psl = m_cachedStmtInUse.get(ps);
         if (psl != null) {
         	if (psl.size() >= MAX_PS_CACHE) {
            		try {
@@ -543,14 +543,14 @@ public class SQLCache {
 		String op = null;
 		SQLException eignore = null;
 		java.sql.Statement sql = getConnection().createStatement();
-		Iterator ops = getSQLStatementGroup(opname).iterator();
+		Iterator<String> ops = getSQLStatementGroup(opname).iterator();
 		
 		try {
     		int attrCnt = attr == null ? 0 : attr.length;
     		if ( attrCnt > 6 )
     			throw new RDFRDBException("Too many parameters");
     		while (ops.hasNext()) {
-    			op = (String) ops.next();
+    			op = ops.next();
     			if ( attrCnt > 0 ) op = substitute(op,"${a}",attr[0]);
     			if ( attrCnt > 1 ) op = substitute(op,"${b}",attr[1]);
     			if ( attrCnt > 2 ) op = substitute(op,"${c}",attr[2]);
@@ -615,12 +615,12 @@ public class SQLCache {
      * Close all prepared statements
      */
     public void close() throws SQLException {
-        Iterator it = m_preparedStatements.values().iterator();
+        Iterator<List<PreparedStatement>> it = m_preparedStatements.values().iterator();
         while (it.hasNext()) {
-            List psl = (List) it.next();
-            Iterator itl = psl.iterator();
+            List<PreparedStatement> psl = it.next();
+            Iterator<PreparedStatement> itl = psl.iterator();
             while (itl.hasNext()) {
-                PreparedStatement ps = (PreparedStatement)itl.next();
+                PreparedStatement ps = itl.next();
                 ps.close();
             }
             it.remove();

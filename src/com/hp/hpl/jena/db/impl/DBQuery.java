@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQuery.java,v 1.12 2008-12-28 19:32:21 andy_seaborne Exp $
+  $Id: DBQuery.java,v 1.13 2009-01-16 18:03:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -17,7 +17,7 @@ public class DBQuery
 	{
 	int argCnt;         // number of arguments to query
 	String argType;     // list of argument types
-	List argIndex;		// index of argument in input
+	List<Integer> argIndex;		// index of argument in input
 	int varCnt;         // number of variables in query
 	int aliasCnt;        // number of tables aliases (scans) in from clause
 	String stmt;        // query string
@@ -39,12 +39,12 @@ public class DBQuery
 	boolean isEmpty;		// true if compiler determines query has no results
 
 	
-	public DBQuery ( SpecializedGraph sg, List varList,
+	public DBQuery ( SpecializedGraph sg, List<VarDesc> varList,
 		boolean queryOnlyStmt,  boolean queryOnlyReif, boolean queryFullReif ) {
 
 		argCnt = 0;
 		argType = "";
-		argIndex = new ArrayList();	
+		argIndex = new ArrayList<Integer>();	
 		aliasCnt = 0;
 		stmt = "";
 		isMultiModel = true;  // for now
@@ -70,7 +70,7 @@ public class DBQuery
 		// array of variable bound by query
 		vars = new VarDesc[varList.size()];
 		for ( varCnt=0; varCnt<varList.size(); varCnt++ ) {
-			vars[varCnt] = (VarDesc) varList.get(varCnt);
+			vars[varCnt] = varList.get(varCnt);
 		}
 
 	}

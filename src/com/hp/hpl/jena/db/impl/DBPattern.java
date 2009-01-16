@@ -36,13 +36,13 @@ public class DBPattern
     private boolean isStmt;  // pattern is over only asserted statement tables (no reified)
 	private boolean isReif;  // pattern is over only reified statement tables (no asserted)
     
-	private List sources; // specialized graphs with triples for this pattern
+	private List<SpecializedGraph> sources; // specialized graphs with triples for this pattern
 	
     private char subsumed;
 	
 	public DBPattern ( Triple pat, Mapping varMap ) {
 		pattern = pat;
-		sources = new ArrayList();
+		sources = new ArrayList<SpecializedGraph>();
 		isBusy = false;
 		isConnected = false;
 		isStmt = isReif = false;
@@ -107,9 +107,9 @@ public class DBPattern
 	public boolean isSingleSource() 
         { return sources.size() == 1; }
 	
-    public SpecializedGraph singleSource() { return (SpecializedGraph) sources.get(0); }
+    public SpecializedGraph singleSource() { return sources.get(0); }
 
-	protected void addFreeVars ( List varList ) {
+	protected void addFreeVars ( List<VarDesc> varList ) {
 		if (freeVarCnt > 0) {
 			if (S instanceof Free)
 				addVar(varList, (Free) S);
@@ -120,15 +120,15 @@ public class DBPattern
 		}
 	}
 	
-	private int findVar ( List varList, Node_Variable var ) {
+	private int findVar ( List<VarDesc> varList, Node_Variable var ) {
 		for (int i = 0; i < varList.size(); i += 1 ) {
-			Node_Variable v = ((VarDesc) varList.get(i)).var;
+			Node_Variable v = varList.get(i).var;
 			if (var.equals( v )) return i;
 		}
 		return -1;		
 	}
 
-	private void addVar ( List varList, Free var ) {
+	private void addVar ( List<VarDesc> varList, Free var ) {
 		int i = findVar(varList,var.var());
 		if ( i < 0 ) {
 			i = varList.size();
@@ -150,7 +150,7 @@ public class DBPattern
         do the join.
     */
 	public boolean joinsWith
-        ( DBPattern other, List varList, boolean onlyStmt, boolean onlyReif, boolean implicitJoin )
+        ( DBPattern other, List<VarDesc> varList, boolean onlyStmt, boolean onlyReif, boolean implicitJoin )
         {
         boolean includesSource = other.isSingleSource() && sources.contains( other.sources.get( 0 ) );
         boolean newSourceTest = sources.containsAll( other.sources );
@@ -182,7 +182,7 @@ public class DBPattern
      	Answer true iff <code>e</code> is a free variable that appears in
         <code>varList</code>.
     */
-    private boolean appearsIn( Element e, List varList )
+    private boolean appearsIn( Element e, List<VarDesc> varList )
         { return e instanceof Free && findVar( varList, ((Free) e).var() ) >= 0; }
 	
 	/**

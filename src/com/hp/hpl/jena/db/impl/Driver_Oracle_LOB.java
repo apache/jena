@@ -356,9 +356,9 @@ protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
  */
 @Override
 public void clearSequences() {
-	Iterator seqIt = getSequences().iterator();
+	Iterator<String> seqIt = getSequences().iterator();
 	while (seqIt.hasNext()) {
-		removeSequence((String)seqIt.next());
+		removeSequence(seqIt.next());
 	}
 }
 	

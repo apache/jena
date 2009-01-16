@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -59,10 +59,10 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected IRDBDriver m_driver = null;
 	protected DBPropGraph m_properties = null; 
 	protected DBPrefixMappingImpl m_prefixMapping = null;
-	protected List m_specializedGraphs = null;
-	protected List m_specializedGraphReifiers = null;
-	protected List m_specializedGraphAsserted = null;
-	protected List m_specializedGraphsAll = null;
+	protected List<SpecializedGraph> m_specializedGraphs = null;
+	protected List<SpecializedGraph> m_specializedGraphReifiers = null;
+	protected List<SpecializedGraph> m_specializedGraphAsserted = null;
+	protected List<SpecializedGraph> m_specializedGraphsAll = null;
 	protected Reifier m_reifier = null;
 
 	protected int m_reificationBehaviour = 0;
@@ -214,11 +214,11 @@ public class GraphRDB extends GraphBase implements Graph {
 		// Keep a list of the specialized graphs that handle reification
 		// (we'll need this later to support getReifier)
 		
-		m_specializedGraphReifiers = new ArrayList();
-		m_specializedGraphAsserted = new ArrayList();
-		Iterator it = m_specializedGraphsAll.iterator();
+		m_specializedGraphReifiers = new ArrayList<SpecializedGraph>();
+		m_specializedGraphAsserted = new ArrayList<SpecializedGraph>();
+		Iterator<SpecializedGraph> it = m_specializedGraphsAll.iterator();
 		while( it.hasNext() ) {
-			Object o = it.next();
+		    SpecializedGraph o = it.next();
 			if( o instanceof SpecializedGraphReifier )
 				m_specializedGraphReifiers.add(o);
 			else 
@@ -291,9 +291,9 @@ public class GraphRDB extends GraphBase implements Graph {
     public void performAdd(Triple t) {
 		checkOpen();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
 				continue; // don't let the reifier graphs see partial reifications
 			sg.add( t, complete);
@@ -309,13 +309,13 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * 
 	 * @param triples List to be added. This is unchanged by the call
 	 */
-	public void add(List triples) {
+	public void add(List<Triple> triples) {
 		checkOpen();
-		ArrayList localTriples = new ArrayList( triples );
+		List<Triple> localTriples = new ArrayList<Triple>( triples );
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
 				continue; // don't let the reifier graphs see partial reifications
 			sg.add( localTriples, complete);
@@ -334,9 +334,9 @@ public class GraphRDB extends GraphBase implements Graph {
     public void performDelete(Triple t) {
         checkOpen();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
 				continue; // don't let the reifier graphs see partial reifications
 			sg.delete( t, complete);
@@ -352,13 +352,13 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * 
 	 * @param triples List to be deleted. This is unchanged by the call.
 	 */
-	public void delete( List triples ) {
+	public void delete( List<Triple> triples ) {
 		checkOpen();
-		ArrayList localTriples = new ArrayList( triples );
+		List<Triple> localTriples = new ArrayList<Triple>( triples );
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
 				continue; // don't let the reifier graphs see partial reifications
 			sg.delete( localTriples, complete);
@@ -377,9 +377,9 @@ public class GraphRDB extends GraphBase implements Graph {
     public int graphBaseSize() {
 		checkOpen();
         int result = 0;		
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && 
 				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
 				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
@@ -396,9 +396,9 @@ public class GraphRDB extends GraphBase implements Graph {
     public boolean graphBaseContains(Triple t) {
 		checkOpen();
         SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && 
 				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
 				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
@@ -418,9 +418,9 @@ public class GraphRDB extends GraphBase implements Graph {
 		checkOpen();
         ExtendedIterator result = NullIterator.instance;
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			if( sg instanceof SpecializedGraphReifier && 
 				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
 				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
@@ -484,9 +484,9 @@ public class GraphRDB extends GraphBase implements Graph {
 	@Override
     public synchronized void close() {
 		if( m_specializedGraphs != null) {
-			Iterator it = m_specializedGraphs.iterator();
+			Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 			while( it.hasNext() ) {
-				SpecializedGraph sg = (SpecializedGraph) it.next();
+				SpecializedGraph sg = it.next();
 				sg.close();
 			}
 			m_specializedGraphs = null;
@@ -515,9 +515,9 @@ public class GraphRDB extends GraphBase implements Graph {
      */
     public synchronized void clear() {
         if( m_specializedGraphs != null) {
-            Iterator it = m_specializedGraphs.iterator();
+            Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
             while( it.hasNext() ) {
-                SpecializedGraph sg = (SpecializedGraph) it.next();
+                SpecializedGraph sg = it.next();
                 sg.clear();
             }
         }
@@ -552,7 +552,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * 
 	 * @return Iterator over the list of specialized graphs.
 	 */
-	public Iterator getSpecializedGraphs() {
+	public Iterator<SpecializedGraph> getSpecializedGraphs() {
 		return m_specializedGraphs.iterator();
 	}
 
@@ -590,9 +590,9 @@ public class GraphRDB extends GraphBase implements Graph {
 		m_driver.setDoDuplicateCheck(bool);
 		boolean nb = !bool;
 		if (isOpen()) {
-			Iterator it = m_specializedGraphs.iterator();
+			Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 			while (it.hasNext()) {
-				SpecializedGraph sg = (SpecializedGraph) it.next();
+				SpecializedGraph sg = it.next();
 				sg.getPSet().setSkipDuplicateCheck(nb);
 			}
 		}

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: DriverMap.java,v 1.5 2008-12-28 19:32:21 andy_seaborne Exp $
+ 	$Id: DriverMap.java,v 1.6 2009-01-16 18:03:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -26,7 +26,7 @@ public class DriverMap
     public static final Property driverClass = property( "driverClass" );
     public static final Property driverName = property( "driverName" );
     
-    private final static Map mapped = new HashMap();
+    private final static Map<String, String> mapped = new HashMap<String, String>();
     
     static
         {
@@ -43,7 +43,7 @@ public class DriverMap
     */
     
     public static String get( String name )
-        { return (String) mapped.get( name.toLowerCase() ); }
+        { return mapped.get( name.toLowerCase() ); }
     
     /**
         Add a mapping from a driver name to its class name. The driver name

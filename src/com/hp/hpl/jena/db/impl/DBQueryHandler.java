@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.27 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: DBQueryHandler.java,v 1.28 2009-01-16 18:03:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -96,8 +96,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
     private Stage patternStageWithFullpath( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples )
         {
         int i;
-        List stages = new ArrayList();
-        List patternsToDo = new ArrayList();
+        List<Stage> stages = new ArrayList<Stage>();
+        List<Integer> patternsToDo = new ArrayList<Integer>();
         for (i = 0; i < givenTriples.length; i++) patternsToDo.add( new Integer( i ) );
         DBPattern[] source = createDBPatterns( varMap, givenTriples );
     //
@@ -106,10 +106,10 @@ public class DBQueryHandler extends SimpleQueryHandler {
             DBPattern src = findCheapPattern( varMap, patternsToDo, source );
 
             // now we have a pattern for the next stage.
-            List varList = new ArrayList(); // list of VarDesc
+            List<VarDesc> varList = new ArrayList<VarDesc>(); // list of VarDesc
             ExpressionSet evalCons = new ExpressionSet(); // constraints
                                                             // to eval
-            List queryPatterns = new ArrayList(); // list of DBPattern
+            List<DBPattern> queryPatterns = new ArrayList<DBPattern>(); // list of DBPattern
             queryPatterns.add( src );
             boolean pushQueryIntoSQL = false;
             // fastpath is only supported for patterns over one table.
@@ -127,7 +127,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
                     {
                     for (i = 0; i < varList.size(); i++)
                         {
-                        VarDesc vx = (VarDesc) varList.get( i );
+                        VarDesc vx = varList.get( i );
                         // see if any constraints on a result var.
                         // if so, push down constraint.
                         /*/ UNCOMMENT THE LINES BELOW TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB. */
@@ -141,7 +141,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
                     // add result vars to reslist for query
                     for (i = 0; i < varList.size(); i++)
                         {
-                        VarDesc vx = (VarDesc) varList.get( i );
+                        VarDesc vx = varList.get( i );
                         if (vx.isArgVar == false) vx.bindToVarMap( varMap );
                         }
                     }
@@ -157,7 +157,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             // stages[stageCount++] = newStage;
             stages.add( newStage );
             }
-        return stages.size() == 1 ? (Stage) stages.get(0) : new StageSequence( stages );
+        return stages.size() == 1 ? stages.get(0) : new StageSequence( stages );
         }
 
     /**
@@ -168,7 +168,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
      	@param queryPatterns
      	@return
     */
-    private boolean attemptJoiningOthers( List patternsToDo, DBPattern[] source, DBPattern src, List varList, List queryPatterns )
+    private boolean attemptJoiningOthers( List<Integer> patternsToDo, DBPattern[] source, DBPattern src, List<VarDesc> varList, List<DBPattern> queryPatterns )
         {
         boolean didJoin = false;
         // see if other patterns can join with it.
@@ -177,7 +177,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             boolean foundJoin = false;
             for (int i = 0; i < patternsToDo.size(); i++)
                 {
-                DBPattern candidate = source[((Integer) patternsToDo.get( i )).intValue()];
+                DBPattern candidate = source[patternsToDo.get( i ).intValue()];
                 if (candidate.joinsWith( src, varList, queryOnlyStmt, queryOnlyReif, doImplicitJoin ))
                     {
                     queryPatterns.add( candidate );
@@ -199,7 +199,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
          There will always be a minimal cost pattern (because <code>sources</code>
          is never empty).
     */
-    private DBPattern findCheapPattern( Mapping varMap, List patternsToDo, DBPattern[] sources )
+    private DBPattern findCheapPattern( Mapping varMap, List<Integer> patternsToDo, DBPattern[] sources )
         {
         DBPattern cheapSource = null;
         boolean haveConnectedPattern = false;
@@ -207,7 +207,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
         int selectedPatternIndex = -1;
         for (int i = 0; i < patternsToDo.size(); i++)
             {
-            DBPattern unstaged = sources[((Integer) patternsToDo.get( i )).intValue()];
+            DBPattern unstaged = sources[patternsToDo.get( i ).intValue()];
             int cost = unstaged.cost( varMap );
             if (unstaged.isConnected())
                 {
@@ -260,10 +260,10 @@ public class DBQueryHandler extends SimpleQueryHandler {
     */
     private void associateWithSources( DBPattern src, Triple pat, int reifBehavior )
         {
-        Iterator it = graph.getSpecializedGraphs();
+        Iterator<SpecializedGraph> it = graph.getSpecializedGraphs();
         while (it.hasNext())
             {
-            SpecializedGraph sg = (SpecializedGraph) it.next();
+            SpecializedGraph sg = it.next();
             char sub = sg.subsumes( pat, reifBehavior );
             if (sub != SpecializedGraph.noTriplesForPattern) src.sourceAdd( sg, sub );
             if (sub == SpecializedGraph.allTriplesForPattern) break;
@@ -308,10 +308,10 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
 	private boolean findConstraints ( ExpressionSet constraints, ExpressionSet evalCons, VarDesc vx ) {
 		boolean res = false;
-		Iterator it = constraints.iterator();
+		Iterator<Expression> it = constraints.iterator();
 		Expression e;
 		while (it.hasNext()) {
-			e = (Expression) it.next();
+			e = it.next();
 			if (e.isApply() && e.argCount() == 2) {
 				Expression l = e.getArg(0);
 				if ( l.isVariable() && vx.var.getName().equals(l.getName()) ) {
@@ -350,10 +350,10 @@ public class DBQueryHandler extends SimpleQueryHandler {
     
         private final Stage[] stages;
     
-        protected StageSequence( List stages )
+        protected StageSequence( List<Stage> stages )
             {
             this.numStages = stages.size();
-            this.stages = (Stage []) stages.toArray( new Stage[this.numStages] );
+            this.stages = stages.toArray( new Stage[this.numStages] );
             }
     
         @Override

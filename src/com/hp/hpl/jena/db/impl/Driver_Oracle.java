@@ -258,9 +258,9 @@ public class Driver_Oracle extends DriverRDB {
 	 */
 	@Override
     public void clearSequences() {
-	    Iterator seqIt = getSequences().iterator();
+	    Iterator<String> seqIt = getSequences().iterator();
 	    while (seqIt.hasNext()) {
-	        removeSequence((String)seqIt.next());
+	        removeSequence(seqIt.next());
 	    }
 	}
 
@@ -268,7 +268,7 @@ public class Driver_Oracle extends DriverRDB {
      * 
      */
 	@Override
-    protected List getAllTables() {
+    protected List<String> getAllTables() {
 	    try {
 //	        DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 //	        String[] tableTypes = { "TABLE" };
@@ -279,7 +279,7 @@ public class Driver_Oracle extends DriverRDB {
             String sql = "SELECT TNAME AS TABLE_NAME FROM tab WHERE TNAME LIKE '"+TABLE_NAME_PREFIX+"%'" ;
             ResultSet rs = m_dbcon.getConnection().createStatement().executeQuery(sql) ;
 
-	        List tables = new ArrayList() ;
+	        List<String> tables = new ArrayList<String>() ;
 	        while(rs.next())
 	            tables.add(rs.getString("TABLE_NAME"));
 	        rs.close() ;

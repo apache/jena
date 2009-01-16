@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BulkUpdateHandler.java,v 1.15 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: BulkUpdateHandler.java,v 1.16 2009-01-16 18:03:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -32,7 +32,7 @@ public interface BulkUpdateHandler
         Each element of the List must be a Triple.
         @param triples a list of Triple objects to add
     */
-    void add( List triples );
+    void add( List<Triple> triples );
     
     /**
         Add all the elements from the iterator into the graph this is handler for.
@@ -41,7 +41,7 @@ public interface BulkUpdateHandler
         elements; hence long iterators may be expensive on store. 
         @param it an Iterator delivering Triples
     */
-    void add( Iterator it );
+    void add( Iterator<Triple> it );
     
     /**
         Add all the triples of the given graph into the graph this is handler for.
@@ -69,7 +69,7 @@ public interface BulkUpdateHandler
         Each element of the List must be a Triple.
         @param triples a list of triples to remove
     */
-    void delete( List triples );
+    void delete( List<Triple> triples );
     
     /**
         Remove all the triples in the iterator from the graph this is handler for.
@@ -79,7 +79,7 @@ public interface BulkUpdateHandler
         
         @param it an iterator over Triple
     */
-    void delete( Iterator it );
+    void delete( Iterator<Triple> it );
     
     /**
         Remove all the triples of the given graph from the graph this is handler for.

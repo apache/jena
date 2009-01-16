@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.73 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.74 $ on $Date: 2009-01-16 18:03:18 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -491,7 +491,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	/**
 	 * Construct and return a new specialized graph.
 	 */
-	public List createSpecializedGraphs(String graphName,
+	public List<SpecializedGraph> createSpecializedGraphs(String graphName,
 			Graph requestedProperties) {
 
 		/*
@@ -661,9 +661,9 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphProperties
 	 *            A set of customization properties for the graph.
 	 */
-	public List recreateSpecializedGraphs(DBPropGraph graphProperties) {
+	public List<SpecializedGraph> recreateSpecializedGraphs(DBPropGraph graphProperties) {
 		
-		List result = new ArrayList();
+		List<SpecializedGraph> result = new ArrayList<SpecializedGraph>();
 		int dbGraphId = graphProperties.getGraphId();
 
 		// to ensure that reifier graphs occur before stmt graphs, make two passes
@@ -710,9 +710,9 @@ public abstract class DriverRDB implements IRDBDriver {
 	private SpecializedGraph createLSetInstanceFromName(String lSetName, IPSet pset, int dbGraphID) {
 		SpecializedGraph sg = null;		
 		try {
-			Class cls = Class.forName(lSetName);
-			Class[] params = {IPSet.class, Integer.class};
-			java.lang.reflect.Constructor con = cls.getConstructor(params);
+			Class<?> cls = Class.forName(lSetName);
+			Class<?>[] params = {IPSet.class, Integer.class};
+			java.lang.reflect.Constructor<?> con = cls.getConstructor(params);
 			Object[] args = {pset, new Integer(dbGraphID)};
 			sg = (SpecializedGraph) con.newInstance(args);
 		} catch (Exception e) {
@@ -726,8 +726,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphId The identity of the Graph which these specialized graphs should hold
 	 * @param graphProperties The properties for the graph to be removed.
 	 */
-	public void removeSpecializedGraphs( DBPropGraph graphProperties,
-		List specializedGraphs) {
+	public void removeSpecializedGraphs( DBPropGraph graphProperties, List<SpecializedGraph> specializedGraphs) {
 			
 		int graphId = graphProperties.getGraphId();
 		
@@ -776,9 +775,9 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		// now remove the statement tables or else delete all triples.
 		if ( stInUse || rtInUse ) {
-			Iterator it = specializedGraphs.iterator();
+			Iterator<SpecializedGraph> it = specializedGraphs.iterator();
 			while (it.hasNext()){
-			   SpecializedGraph sg = (SpecializedGraph) it.next();
+			   SpecializedGraph sg = it.next();
 			   removeSpecializedGraph(sg);
 			}
 		} else {
@@ -855,9 +854,9 @@ public abstract class DriverRDB implements IRDBDriver {
 		int i = 0;
 		for (i = 0; i < SYSTEM_TABLE_CNT; i++) found[i] = false;
 		try {
-            for ( Iterator iter = getAllTables().iterator() ; iter.hasNext(); )
+            for ( Iterator<String> iter = getAllTables().iterator() ; iter.hasNext(); )
             {
-                String tblName = (String)iter.next();
+                String tblName = iter.next();
                 for (i = 0; i < SYSTEM_TABLE_CNT; i++)
                     if (SYSTEM_TABLE_NAME[i].equals(tblName))
                         found[i] = true;
@@ -1005,11 +1004,11 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		//ResultSet alltables=null;
 		try {
-            List tablesPresent = getAllTables() ; 
-            Iterator it = tablesPresent.iterator();            
+            List<String> tablesPresent = getAllTables() ; 
+            Iterator<String> it = tablesPresent.iterator();            
             // Do the MUTEX clean after all other tables.
             while (it.hasNext()) {
-                String tblName = (String) it.next();
+                String tblName = it.next();
                 if ( tblName.equals(MUTEX_TABLE) )
                     continue;
                 m_sql.runSQLGroup("dropTable", tblName);
@@ -1032,13 +1031,13 @@ public abstract class DriverRDB implements IRDBDriver {
 		prefixCache = null;
 	}	
 
-	protected List getAllTables() {
+	protected List<String> getAllTables() {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
 			String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
 			ResultSet rs = dbmd.getTables(null, null, prefixMatch, tableTypes);
-            List tables = new ArrayList() ;
+            List<String> tables = new ArrayList<String>() ;
             while(rs.next())
                 tables.add(rs.getString("TABLE_NAME"));
             rs.close() ;
@@ -1102,8 +1101,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * Check database and see if named sequence exists.
 	 * @param seqName
 	 */
-	public List getSequences() {
-		List results =  new ArrayList(10);
+	public List<String> getSequences() {
+		List<String> results =  new ArrayList<String>(10);
 		Object[] args = {};
 		ResultSet rs = null;
 		PreparedStatement ps = null;

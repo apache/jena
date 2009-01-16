@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.62 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.63 2009-01-16 18:03:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.62 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.63 $ on $Date: 2009-01-16 18:03:18 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -280,7 +280,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
    *
    **/
 	public void deleteTriple(Triple t, IDBID graphID, boolean isBatch,
-		Hashtable batchedPreparedStatements) {
+		Hashtable<String, PreparedStatement> batchedPreparedStatements) {
 			deleteTripleAR(t,graphID,null,isBatch,batchedPreparedStatements);
 		}
 	/**
@@ -302,7 +302,7 @@ public void deleteTripleAR(
 	IDBID graphID,
 	Node reifNode,
 	boolean isBatch,
-	Hashtable batchedPreparedStatements) {
+	Hashtable<String, PreparedStatement> batchedPreparedStatements) {
 	boolean isReif = reifNode != null;
 
 	String subj =
@@ -399,11 +399,11 @@ public void deleteTripleAR(
 	  public PreparedStatement getPreparedStatement(String op, 
 	  				String tableName, 
 	  				boolean isBatch, 
-	  				Hashtable batchedPreparedStatements) throws SQLException {
+	  				Hashtable<String, PreparedStatement> batchedPreparedStatements) throws SQLException {
 	  	PreparedStatement ps = null;
 		String opname = SQLCache.concatOpName(op,tableName);
 		if (isBatch) {
-			ps = (PreparedStatement) batchedPreparedStatements.get(opname);
+			ps = batchedPreparedStatements.get(opname);
 			if (ps == null) {
 				ps = m_sql.getPreparedSQLStatement(op,tableName);
 				batchedPreparedStatements.put(opname,ps);
@@ -433,7 +433,7 @@ public void deleteTripleAR(
 	  public void storeTriple(Triple t, 
 	  						IDBID graphID,
 	  						boolean isBatch, 
-	  						Hashtable batchedPreparedStatements) {
+	  						Hashtable<String, PreparedStatement> batchedPreparedStatements) {
 	  		 storeTripleAR(t,graphID,null,false,isBatch,batchedPreparedStatements);
 	  }
 	  
@@ -456,7 +456,7 @@ public void deleteTripleAR(
 		Node reifNode,
 		boolean hasType,
 		boolean isBatch,
-		Hashtable batchedPreparedStatements) {
+		Hashtable<String, PreparedStatement> batchedPreparedStatements) {
 		String objURI;
 		Object obj_val;
 		boolean isReif = reifNode != null;
@@ -584,7 +584,7 @@ public void deleteTripleAR(
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
 		Iterator it = triples.iterator();
-		Hashtable batchedPreparedStatements = null;
+		Hashtable<String, PreparedStatement> batchedPreparedStatements = null;
 
 		if ( SKIP_DUPLICATE_CHECK == false ) {
 //		if ( false ) {
@@ -595,16 +595,16 @@ public void deleteTripleAR(
 		} else 
 		try {
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
-			batchedPreparedStatements = new Hashtable();
+			batchedPreparedStatements = new Hashtable<String, PreparedStatement>();
 			while (it.hasNext()) {
 				t = (Triple) it.next();
 				storeTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
-			Enumeration en = batchedPreparedStatements.keys();
+			Enumeration<String> en = batchedPreparedStatements.keys();
 			while (en.hasMoreElements()) {
-				String op = (String) en.nextElement();
-				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+				String op = en.nextElement();
+				PreparedStatement p = batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
 				batchedPreparedStatements.remove(op);
@@ -638,10 +638,10 @@ public void deleteTripleAR(
 			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
 		} finally {
 			if ( batchedPreparedStatements != null ) {
-			Enumeration en = batchedPreparedStatements.keys();
+			Enumeration<String> en = batchedPreparedStatements.keys();
 			while (en.hasMoreElements()) {
-				String op = (String) en.nextElement();
-				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+				String op = en.nextElement();
+				PreparedStatement p = batchedPreparedStatements
 						.get(op);
 				batchedPreparedStatements.remove(op);
 				m_sql.returnPreparedSQLStatement(p);
@@ -676,7 +676,7 @@ public void deleteTripleAR(
 		// For now, we support only jdbc 2.0 batched updates
 
 		/** Set of PreparedStatements that need executeBatch() * */
-		Hashtable batchedPreparedStatements = null;
+		Hashtable<String, PreparedStatement> batchedPreparedStatements = null;
 		Triple t;
 		String cmd;
 		boolean autoState = false;
@@ -693,16 +693,16 @@ public void deleteTripleAR(
 		} else 
 		try {
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
-			batchedPreparedStatements = new Hashtable();
+			batchedPreparedStatements = new Hashtable<String, PreparedStatement>();
 			while (it.hasNext()) {
 				t = (Triple) it.next();
 				deleteTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
-			Enumeration en = batchedPreparedStatements.keys();
+			Enumeration<String> en = batchedPreparedStatements.keys();
 			while (en.hasMoreElements()) {
-				String op = (String) en.nextElement();
-				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+				String op = en.nextElement();
+				PreparedStatement p = batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
 				batchedPreparedStatements.remove(op);
@@ -737,10 +737,10 @@ public void deleteTripleAR(
 		}
 		finally {
 			if ( batchedPreparedStatements != null ) {
-				Enumeration en = batchedPreparedStatements.keys();
+				Enumeration<String> en = batchedPreparedStatements.keys();
 				while (en.hasMoreElements()) {
-					String op = (String) en.nextElement();
-					PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+					String op = en.nextElement();
+					PreparedStatement p = batchedPreparedStatements
 							.get(op);
 					batchedPreparedStatements.remove(op);
 					m_sql.returnPreparedSQLStatement(p);

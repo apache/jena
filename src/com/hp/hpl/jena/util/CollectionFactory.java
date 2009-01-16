@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: CollectionFactory.java,v 1.8 2008-12-28 19:32:09 andy_seaborne Exp $
+  $Id: CollectionFactory.java,v 1.9 2009-01-16 18:03:19 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util;
 
@@ -18,35 +18,35 @@ public class CollectionFactory
     /**
          Answer a new Map which uses hashing for lookup.
     */
-    public static Map createHashedMap() 
-        { return new HashMap(); }
+    public static <K,V> Map<K,V> createHashedMap() 
+        { return new HashMap<K,V>(); }
     
     /**
          Answer a new Map which uses hashing for lookup and has initial size
          <code>size</code>.
     */
-    public static Map createHashedMap( int size ) 
-        { return new HashMap( size ); }
+    public static <K,V> Map<K,V> createHashedMap( int size ) 
+        { return new HashMap<K,V>( size ); }
     
     /**
          Answer a new Map which uses hashing for lookup and is initialised to be
          a copy of <code>toCopy</code>.
     */
-    public static Map createHashedMap( Map toCopy ) 
-        { return new HashMap( toCopy ); }
+    public static <K,V> Map<K,V> createHashedMap( Map<K,V> toCopy ) 
+        { return new HashMap<K,V>( toCopy ); }
     
     /**
          Answer a new Set which uses haashing for lookup.
     */
-    public static Set createHashedSet() 
-        { return new HashSet(); }
+    public static <T> Set<T> createHashedSet() 
+        { return new HashSet<T>(); }
     
     /**
          Answer a new Set which uses hashing for lookup and is initialised as a copy
          of <code>toCopy</code>.
     */
-    public static Set createHashedSet( Collection toCopy ) 
-        { return new HashSet( toCopy ); }
+    public static <T> Set<T> createHashedSet( Collection<T> toCopy ) 
+        { return new HashSet<T>( toCopy ); }
     }
 
 /*

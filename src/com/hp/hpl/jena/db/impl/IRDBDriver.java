@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.27 $
+* @version $Revision: 1.28 $
 */
 
 public interface IRDBDriver {
@@ -63,7 +63,7 @@ public interface IRDBDriver {
 	 * 
 	 * @since Jena 2.0
 	 */
-	public List createSpecializedGraphs(String graphName, Graph requestedProperties);
+	public List<SpecializedGraph> createSpecializedGraphs(String graphName, Graph requestedProperties);
 	
 	/**
 	 * Reconstruct and return a list of specialized graphs.
@@ -72,7 +72,7 @@ public interface IRDBDriver {
 	 * 
 	 * @since Jena 2.0
 	 */
-	public List recreateSpecializedGraphs(DBPropGraph graphProperties);
+	public List<SpecializedGraph> recreateSpecializedGraphs(DBPropGraph graphProperties);
 	
 	/**
 	 * Remove the specialized graph, erasing all trace of a Graph.
@@ -80,7 +80,7 @@ public interface IRDBDriver {
 	 * 
 	 * @since Jena 2.0
 	 */
-	public void removeSpecializedGraphs(DBPropGraph graphProperties, List specializedGraphs);
+	public void removeSpecializedGraphs(DBPropGraph graphProperties, List<SpecializedGraph> specializedGraphs);
 	
 	/**
 	 * Test if the database has previously been formatted (there's no other
