@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.11 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: SimpleQueryEngine.java,v 1.12 2009-01-16 12:24:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -23,11 +23,28 @@ public class SimpleQueryEngine
     private TripleSorter sortMethod;
     private int variableCount;
     
+    /**
+         @deprecated NamedTripleBunches are not supported. Use SimpleQueryEngine
+             ( List, TripleSorter, ExpressionSet ) instead.
+    */
 	public SimpleQueryEngine( NamedTripleBunches triples, TripleSorter ts, ExpressionSet constraint )
         { this.constraint = constraint; 
         this.triples = triples; 
         this.sortMethod = ts; }
         
+    public SimpleQueryEngine( List pattern, TripleSorter sorter, ExpressionSet constraints )
+        { this.constraint = constraints; 
+        this.triples = asNamedTripleBunches( pattern ); 
+        this.sortMethod = sorter; }
+
+    private static NamedTripleBunches asNamedTripleBunches( List pattern )
+        {
+        NamedTripleBunches result = new NamedTripleBunches();
+        for (Iterator elements = pattern.iterator(); elements.hasNext();)
+            result.add( NamedTripleBunches.anon, (Triple) elements.next() );
+        return result;
+        }
+
     int getVariableCount()
         { return variableCount; }
         

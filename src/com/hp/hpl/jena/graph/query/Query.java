@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.43 2009-01-16 11:49:54 chris-dollin Exp $
+  $Id: Query.java,v 1.44 2009-01-16 12:24:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -80,22 +80,7 @@ public class Query
         @return this Query, for cascading
     */
     public Query addMatch( Node s, Node p, Node o )
-        { return addNamedMatch( NamedTripleBunches.anon, s, p, o ); }     
-
-//    /**
-//        Add an (S, P, O) match triple to this query to match against the graph labelled
-//        with <code>name</code>. Return this query for cascading.
-//        
-//        @deprecated named triple patterns are not supported
-//        
-//        @param name the name that will identify the graph in the matching
-//        @param s the node to match the subject
-//        @param p the node to match the predicate
-//        @param o the node to match the object
-//        @return this Query, for cascading.
-//    */
-//    public Query addMatch( String name, Node s, Node p, Node o )
-//        { return addNamedMatch( name, s, p, o ); }   
+        { return addNamedMatch( NamedTripleBunches.anon, s, p, o ); }    
     
     /**
         Add a triple to the query's collection of match triples. Return this query
@@ -172,19 +157,13 @@ public class Query
     */
     public ExtendedIterator executeBindings( List outStages, NamedGraphMap args, Node [] nodes )
         {
-        SimpleQueryEngine e = new SimpleQueryEngine( triples, sortMethod, constraint );
+        SimpleQueryEngine e = new SimpleQueryEngine( triplePattern, sortMethod, constraint );
         ExtendedIterator result = e.executeBindings( outStages, args, nodes );
         lastQueryEngine = e;
         return result;
         }
     
     private SimpleQueryEngine lastQueryEngine = null;
-    
-    /**
-        @deprecated use getPattern for the raw triples
-     */
-    public NamedTripleBunches getTriples()
-        { return triples; }
         
     /** mapping of graph name -> graph */
     private NamedGraphMap argMap = new NamedGraphMap();
@@ -197,11 +176,6 @@ public class Query
         
     public void setTripleSorter( TripleSorter ts )
         { sortMethod = ts == null ? TripleSorter.dontSort : ts; }
-        
-    /**
-        @deprecated - use TripleSorter.dontSort instead.
-    */
-    public static final TripleSorter dontSort = TripleSorter.dontSort;
         
     private TripleSorter sortMethod = TripleSorter.dontSort;
     
