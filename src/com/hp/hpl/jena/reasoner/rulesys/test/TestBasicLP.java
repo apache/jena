@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.19 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestBasicLP.java,v 1.20 2009-01-16 18:49:59 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -29,7 +29,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.20 $ on $Date: 2009-01-16 18:49:59 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1255,7 +1255,7 @@ public class TestBasicLP  extends TestCase {
         data.add(new Triple(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(new Triple(a, q, C1));
-        data.add(new Triple(a, q, Util.makeLongNode(3)));;
+        data.add(new Triple(a, q, Util.makeLongNode(3)));
         data.add(new Triple(a, q, C2));
         infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 

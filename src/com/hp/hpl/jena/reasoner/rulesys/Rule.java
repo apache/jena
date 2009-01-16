@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.52 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.53 2009-01-16 18:50:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -66,7 +66,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.52 $ on $Date: 2009-01-16 17:23:56 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.53 $ on $Date: 2009-01-16 18:50:00 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -633,7 +633,7 @@ public class Rule implements ClauseEntry {
         private static final int STARTED_LITERAL = 1;
         
         /** Literal parse state */
-        private int literalState = NORMAL;;
+        private int literalState = NORMAL;
         
         /** Trace back of recent tokens for error reporting */
         protected List priorTokens = new ArrayList();

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.45 2009-01-16 17:23:50 andy_seaborne Exp $
+    $Id: Regression.java,v 1.46 2009-01-16 18:50:01 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2009-01-16 17:23:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2009-01-16 18:50:01 $'
  */
 public class Regression extends Object {
 
@@ -4087,7 +4087,7 @@ public class Regression extends Object {
             n++; if (! (cont1.size()==13)) error(test,n);
 
             {
-                n=(n/100+1)*100;;
+                n=(n/100+1)*100;
                      for (int i=0; i<num; i++) {
                         cont2.add(i);
                     }
@@ -4106,7 +4106,7 @@ public class Regression extends Object {
                   {true,  true,  true,  false, false,
                    false, false, false, true,  true };
 
-                n=(n/100+1)*100;;
+                n=(n/100+1)*100;
                 n++; nIter=cont2.iterator();
                      for (int i=0; i<num; i++) {
                 n++;    nIter.nextNode();
@@ -4114,7 +4114,7 @@ public class Regression extends Object {
                         found[i] = false;
                      }
                 n++; nIter.close();
-                n=(n/100+1)*100;;
+                n=(n/100+1)*100;
                 n++; nIter = cont2.iterator();
                      while (nIter.hasNext()) {
                         int v = ((Literal) nIter.nextNode()).getInt();
@@ -4218,7 +4218,7 @@ public class Regression extends Object {
                         found[i] = false;
                      }
                 n++; nIter.close();
-                n=(n/100+1)*100;;
+                n=(n/100+1)*100;
                 n++; nIter = bag3.iterator();
                      while (nIter.hasNext()) {
                         int v = ((Literal) nIter.nextNode()).getInt();
@@ -4893,5 +4893,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.45 2009-01-16 17:23:50 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.46 2009-01-16 18:50:01 andy_seaborne Exp $
  */

@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.74 $ on $Date: 2009-01-16 18:03:18 $
+* @version $Revision: 1.75 $ on $Date: 2009-01-16 18:50:01 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -643,10 +643,10 @@ public abstract class DriverRDB implements IRDBDriver {
 				// the order of creation above.
 				if (reifTbl != null)
 					try { deleteTable(reifTbl); }
-					catch ( Exception e ) {};
+					catch ( Exception e ) {}
 				if (stmtTbl != null)
 					try { deleteTable(stmtTbl); }
-					catch ( Exception e ) {};
+					catch ( Exception e ) {}
 			}
 			xactOp(xactCommit);
 			if (autoOn) xactOp(xactAutoOn);
