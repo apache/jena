@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- $Id: TestXMLFeatures.java,v 1.58 2009-01-16 17:23:56 andy_seaborne Exp $
+ $Id: TestXMLFeatures.java,v 1.59 2009-01-16 18:24:40 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.58 $ $Date: 2009-01-16 17:23:56 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.59 $ $Date: 2009-01-16 18:24:40 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -490,7 +490,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	}
 
 	private void relative(String relativeParam, String base,
-			Collection regexesPresent, Collection regexesAbsent)
+			Collection<String> regexesPresent, Collection<String> regexesAbsent)
 			throws IOException {
 
 		Model m = createMemModel();
@@ -507,9 +507,9 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			Model m2 = createMemModel();
 			m2.read(new StringReader(contents), base);
 			assertTrue(m.isIsomorphicWith(m2));
-			Iterator it = regexesPresent.iterator();
+			Iterator<String> it = regexesPresent.iterator();
 			while (it.hasNext()) {
-				String regexPresent = (String) it.next();
+				String regexPresent = it.next();
 				assertTrue("Looking for /" + regexPresent + "/", Pattern
 						.compile(Util.substituteStandardEntities(regexPresent),
 								Pattern.DOTALL).matcher(contents).find()
@@ -522,7 +522,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			}
 			it = regexesAbsent.iterator();
 			while (it.hasNext()) {
-				String regexAbsent = (String) it.next();
+				String regexAbsent = it.next();
 				assertTrue(
 						"Looking for (not) /" + regexAbsent + "/",
 						!Pattern
@@ -628,8 +628,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			{ "grandparent", null, null, null, null, null, null, null, }, };
 
 	private void relative(int i, String base, String d[][]) throws IOException {
-		Set in = new HashSet();
-		Set out = new HashSet();
+		Set<String> in = new HashSet<String>();
+		Set<String> out = new HashSet<String>();
 		for (int j = 1; j < d[i].length; j++) {
 
 			in.add(d[i][j] == null ? d[0][j] : d[i][j]);
@@ -704,5 +704,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestXMLFeatures.java,v 1.58 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: TestXMLFeatures.java,v 1.59 2009-01-16 18:24:40 andy_seaborne Exp $
  */

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.16 2008-12-28 19:32:03 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.17 2009-01-16 18:24:32 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
@@ -47,14 +47,14 @@ public abstract class N3ExternalTestsCom extends TestSuite
 		
 		for ( ; tests.hasNext() ; )
 		{
-			List l = (List)tests.next() ;
+			List<TupleItem> l = tests.next() ;
 			if ( l.size() != 2 )
 			{
 				System.err.println("Error in N3 test configuration file: "+filename+": length of an entry is "+l.size()) ;
 				return ;
 			}
-			String n3File = ((TupleItem)l.get(0)).get() ;
-			String resultsFile = ((TupleItem)l.get(1)).get() ;
+			String n3File = l.get(0).get() ;
+			String resultsFile = l.get(1).get() ;
 
 			makeTest(n3File, resultsFile) ;
 		}

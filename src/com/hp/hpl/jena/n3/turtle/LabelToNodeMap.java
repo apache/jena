@@ -14,19 +14,19 @@ import com.hp.hpl.jena.graph.Node;
 /** Map from _:* form to bNodes
  * 
  * @author Andy Seaborne
- * @version $Id: LabelToNodeMap.java,v 1.5 2008-12-28 19:32:27 andy_seaborne Exp $
+ * @version $Id: LabelToNodeMap.java,v 1.6 2009-01-16 18:24:40 andy_seaborne Exp $
  */
 
 public class LabelToNodeMap
 {
-    Map bNodeLabels = new HashMap() ;
+    Map<String, Node> bNodeLabels = new HashMap<String, Node>() ;
     
     public LabelToNodeMap()
     {}
 
     public Node asNode(String label)
     {
-        Node n = (Node)bNodeLabels.get(label) ;
+        Node n = bNodeLabels.get(label) ;
         if ( n != null )
             return n ;
         n = allocNode() ;

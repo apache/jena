@@ -10,13 +10,13 @@ import java.util.* ;
 /** A command line argument that has been foundspecification.
  *
  * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.10 2008-12-28 19:32:32 andy_seaborne Exp $
+ * @version $Id: Arg.java,v 1.11 2009-01-16 18:28:40 andy_seaborne Exp $
  */
 public class Arg
 {
     String name ;
     String value ;
-    List values = new ArrayList() ; 
+    List<String> values = new ArrayList<String>() ; 
     
     Arg() { name = null ; value = null ; }
     
@@ -31,7 +31,7 @@ public class Arg
     
     public String getName() { return name ; }
     public String getValue() { return value; }
-    public List getValues() { return values; }
+    public List<String> getValues() { return values; }
     
     public boolean hasValue() { return value != null ; }
     

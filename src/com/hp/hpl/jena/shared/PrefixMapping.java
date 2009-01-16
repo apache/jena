@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.40 2009-01-13 14:05:59 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.41 2009-01-16 18:24:39 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -78,7 +78,7 @@ public interface PrefixMapping
         @param map the Map whose maplets are to be added
         @return this PrefixMapping
     */
-    PrefixMapping setNsPrefixes( Map map );
+    PrefixMapping setNsPrefixes( Map<String, String> map );
 
     /**
          Update this PrefixMapping with the bindings in <code>map</code>, only
@@ -112,7 +112,7 @@ public interface PrefixMapping
 
         @return a copy of the internal String -> String mapping
     */
-    Map getNsPrefixMap();
+    Map<String, String> getNsPrefixMap();
 
     /**
         Expand the uri using the prefix mappings if possible. If prefixed has the

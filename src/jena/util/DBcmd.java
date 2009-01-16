@@ -16,7 +16,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.11 2008-12-28 19:32:39 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.12 2009-01-16 18:28:40 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -49,7 +49,7 @@ public abstract class DBcmd
     protected String argModelName = null;
 
     // DB types to JDBC driver name (some common choices)
-    private static Map jdbcDrivers = new HashMap();
+    private static Map<String, String> jdbcDrivers = new HashMap<String, String>();
     static {
         jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver") ;
         jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
@@ -59,7 +59,7 @@ public abstract class DBcmd
     }
     
     // DB types to name Jena uses internally
-    private static Map jenaDriverName = new HashMap();
+    private static Map<String, String> jenaDriverName = new HashMap<String, String>();
     static {
         jenaDriverName.put("mssql",       "MsSQL");
         jenaDriverName.put("mysql",       "MySQL");
@@ -168,8 +168,8 @@ public abstract class DBcmd
 
         // Canonical form (for DBcmd)
         argDbType = argDbType.toLowerCase() ;
-        argDriverName = (String)jdbcDrivers.get(argDbType);
-        argDriverTypeName = (String)jenaDriverName.get(argDbType) ;
+        argDriverName = jdbcDrivers.get(argDbType);
+        argDriverTypeName = jenaDriverName.get(argDbType) ;
         
         if (cmdLine.contains(argDeclDbDriver))
             argDriverName = cmdLine.getArg(argDeclDbDriver).getValue();

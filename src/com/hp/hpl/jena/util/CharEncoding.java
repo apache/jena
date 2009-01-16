@@ -17,27 +17,32 @@ import java.util.*;
  *  
  */
 abstract public class CharEncoding {
-    static Set macEncodings = new HashSet();
-    static {
-macEncodings.add("MacArabic");
-macEncodings.add("MacCentralEurope");
-macEncodings.add("MacCroatian");
-macEncodings.add("MacCyrillic");
-macEncodings.add("MacDingbat");
-macEncodings.add("MacGreek");
-macEncodings.add("MacHebrew");
-macEncodings.add("MacIceland");
-macEncodings.add("MacRoman");
-macEncodings.add("MacRomania");
-macEncodings.add("MacSymbol");
-macEncodings.add("MacThai");
-macEncodings.add("MacTurkish");
-macEncodings.add("MacUkraine");
+    static Set<String> macEncodings = new HashSet<String>() ;
+    static
+    {
+        macEncodings.add("MacArabic") ;
+        macEncodings.add("MacCentralEurope") ;
+        macEncodings.add("MacCroatian") ;
+        macEncodings.add("MacCyrillic") ;
+        macEncodings.add("MacDingbat") ;
+        macEncodings.add("MacGreek") ;
+        macEncodings.add("MacHebrew") ;
+        macEncodings.add("MacIceland") ;
+        macEncodings.add("MacRoman") ;
+        macEncodings.add("MacRomania") ;
+        macEncodings.add("MacSymbol") ;
+        macEncodings.add("MacThai") ;
+        macEncodings.add("MacTurkish") ;
+        macEncodings.add("MacUkraine") ;
     }
-    private String name;
-    private CharEncoding(){}
-    private CharEncoding(String name) {
-      this.name = name;
+    private String     name ;
+
+    private CharEncoding()
+    {}
+
+    private CharEncoding(String name)
+    {
+        this.name = name ;
     }
     /**
      * Gives the canonical name for this charset.

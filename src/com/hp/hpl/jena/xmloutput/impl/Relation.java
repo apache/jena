@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Relation.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+ * $Id: Relation.java,v 1.11 2009-01-16 18:24:40 andy_seaborne Exp $
  *
  */
 
@@ -45,18 +45,18 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  *
  * Complete with transitive closure algorithm.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2008-12-28 19:32:27 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2009-01-16 18:24:40 $'
  */
 class Relation {
-    final private Map rows;
-    final private Map cols;
-    final private Set index;
+    final private Map<Object, Set> rows;
+    final private Map<Object, Set> cols;
+    final private Set<Object> index;
     /** The empty Relation.
      */
     public Relation() {
-        rows = new HashMap();
-        cols = new HashMap();
-        index = new HashSet();
+        rows = new HashMap<Object, Set>();
+        cols = new HashMap<Object, Set>();
+        index = new HashSet<Object>();
     }
     /** <code>a</code> is now related to <code>b</code>
      *
@@ -121,16 +121,16 @@ class Relation {
         while (it.hasNext())
             clear(a, it.next());
     }
-    static private void innerAdd(Map s, Object a, Object b) {
-        Set vals = (Set) s.get(a);
+    static private void innerAdd(Map<Object, Set> s, Object a, Object b) {
+        Set<Object> vals = s.get(a);
         if (vals == null) {
-            vals = new HashSet();
+            vals = new HashSet<Object>();
             s.put(a, vals);
         }
         vals.add(b);
     }
-    static private void innerClear(Map s, Object a, Object b) {
-        Set vals = (Set) s.get(a);
+    static private void innerClear(Map<Object, Set> s, Object a, Object b) {
+        Set vals = s.get(a);
         if (vals != null) {
             vals.remove(b);
         }
@@ -139,23 +139,23 @@ class Relation {
      *
      */
     public boolean get(Object a, Object b) {
-        Set vals = (Set) rows.get(a);
+        Set vals = rows.get(a);
         return vals != null && vals.contains(b);
     }
     /**
      * Takes this to its transitive closure.
-    See B. Roy. <b>Transitivité et connexité.</b> <i>C.R. Acad. Sci.</i> Paris <b>249</b>, 1959 pp 216-218.
+    See B. Roy. <b>Transitivitï¿½ et connexitï¿½.</b> <i>C.R. Acad. Sci.</i> Paris <b>249</b>, 1959 pp 216-218.
     or
     S. Warshall, <b>A theorem on Boolean matrices</b>, <i>Journal of the ACM</i>, <b>9</b>(1), 1962, pp11-12
     
     
      */
     synchronized public void transitiveClosure() {
-        Iterator j = index.iterator();
+        Iterator<Object> j = index.iterator();
         while (j.hasNext()) {
             Object oj = j.next();
-            Set si = (Set) cols.get(oj);
-            Set sk = (Set) rows.get(oj);
+            Set si = cols.get(oj);
+            Set sk = rows.get(oj);
             if (si != null && sk != null) {
                 Iterator i = si.iterator();
                 while (i.hasNext()) {
@@ -176,9 +176,9 @@ class Relation {
      * The set of <code>a</code> such that <code>a</code> is related to <code>a</code>.
      *
      */
-    synchronized public Set getDiagonal() {
-        Set rslt = new HashSet();
-        Iterator it = index.iterator();
+    synchronized public Set<Object> getDiagonal() {
+        Set<Object> rslt = new HashSet<Object>();
+        Iterator<Object> it = index.iterator();
         while (it.hasNext()) {
             Object o = it.next();
             if (get(o, o))
@@ -191,14 +191,14 @@ class Relation {
      *
      */
     public Set forward(Object a) {
-        return (Set) rows.get(a);
+        return rows.get(a);
     }
     /**
      * The set of <code>a</code> such that <code>a</code> is related to <code>b</code>.
      *
      */
     public Set backward(Object b) {
-        return (Set) cols.get(b);
+        return cols.get(b);
     }
     /**
      * An Iterator over the pairs of the Relation.
@@ -218,7 +218,7 @@ class Relation {
                 // Converts a b into a Map.Entry pair.
                 new Map1() {
                     public Object map1(Object b) {
-                        return new PairEntry(a, b);
+                        return new PairEntry<Object, Object>(a, b);
                     }
                 }, bs.iterator());
             }

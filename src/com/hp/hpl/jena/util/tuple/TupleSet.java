@@ -13,17 +13,17 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author  Andy Seaborne
- * @version $Id: TupleSet.java,v 1.10 2008-12-28 19:32:38 andy_seaborne Exp $
+ * @version $Id: TupleSet.java,v 1.11 2009-01-16 18:24:39 andy_seaborne Exp $
  */
 
-public class TupleSet implements Iterator
+public class TupleSet implements Iterator<List<TupleItem>>
 {
     BufferedReader in ;
     public String line = null ;
     public int lineNumber = 0 ;
 
     static final char COMMENTCHAR = '#' ;
-    List current = null ;
+    List<TupleItem> current = null ;
     boolean finished = false ;
 
     protected static Log logger = LogFactory.getLog( TupleSet.class );
@@ -46,11 +46,11 @@ public class TupleSet implements Iterator
         return current != null ;
     }
 
-    public Object next()
+    public List<TupleItem> next()
     {
         if ( hasNext() )
         {
-            List x = current ;
+            List<TupleItem> x = current ;
             current = null ;
             return x ;
         }
@@ -64,7 +64,7 @@ public class TupleSet implements Iterator
         throw new java.lang.UnsupportedOperationException("TupleSet.remove") ;
     }
 
-    private List tuple()
+    private List<TupleItem> tuple()
     {
 
         try {
@@ -79,7 +79,7 @@ public class TupleSet implements Iterator
         }
 
         //System.out.println("Line: "+line) ;
-        List tuple = new ArrayList() ;
+        List<TupleItem> tuple = new ArrayList<TupleItem>() ;
         int i = 0 ;
         int j = 0 ;
         boolean errorFound = false ;

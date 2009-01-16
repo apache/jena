@@ -14,7 +14,7 @@ import java.security.PrivilegedAction;
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.12 2008-12-28 19:32:39 andy_seaborne Exp $
+ * @version $Id: JenaRuntime.java,v 1.13 2009-01-16 18:24:40 andy_seaborne Exp $
  */
 
 public class JenaRuntime
@@ -25,7 +25,7 @@ public class JenaRuntime
     /** The JVM does not implement java.nio.charset.Charset operations (correctly) */
     public static final String featureNoCharset = "http://jena.hpl.hp.com/2004/07/feature/noCharset" ; 
         
-    static Map features = new HashMap() ;
+    static Map<String, String> features = new HashMap<String, String>() ;
     static {
             // Note getSystemProperty uses featureNoSecurity but works if it
             // has not been initialized
@@ -61,12 +61,12 @@ public class JenaRuntime
             if ( runUnder(featureNoSecurity))
                 return defaultValue ;
             try {
-                PrivilegedAction a = new PrivilegedAction() {
-                    public Object run() {
+                PrivilegedAction<String> a = new PrivilegedAction<String>() {
+                    public String run() {
                         return System.getProperty(propName);
                     }
                 } ;
-                return (String) AccessController.doPrivileged(a) ;
+                return AccessController.doPrivileged(a) ;
             } catch (Exception ex2)
             {
                 // Give up

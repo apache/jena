@@ -22,7 +22,7 @@ import org.apache.commons.logging.*;
  *  <ul>
  *   
  * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.6 2008-12-28 19:32:00 andy_seaborne Exp $
+ * @version     $Id: LockMRSW.java,v 1.7 2009-01-16 18:24:39 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 
@@ -30,7 +30,7 @@ public class LockMRSW implements Lock
     static Log log = LogFactory.getLog(LockMRSW.class) ;
     
     // Map of threads to lock state for this lock
-    Map threadStates = new HashMap() ;
+    Map<Thread, LockState> threadStates = new HashMap<Thread, LockState>() ;
     // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;
     
@@ -188,7 +188,7 @@ public class LockMRSW implements Lock
     synchronized LockState getLockState()
     {
         Thread thisThread = Thread.currentThread() ;
-        LockState state = (LockState)threadStates.get(thisThread) ;
+        LockState state = threadStates.get(thisThread) ;
         if ( state == null )
         {
             state = new LockState(this) ;

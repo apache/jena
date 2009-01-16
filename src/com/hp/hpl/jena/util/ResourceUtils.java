@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:09 $
+ * Last modified on   $Date: 2009-01-16 18:24:39 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.17 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.18 2009-01-16 18:24:39 andy_seaborne Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -139,8 +139,8 @@ public class ResourceUtils {
      * @param ref A reference resource
      * @return A list of the resources removed from the parameter list l
      */
-    public static List removeEquiv( List l, Property p, Resource ref ) {
-        List equiv = new ArrayList();
+    public static List<Resource> removeEquiv( List l, Property p, Resource ref ) {
+        List<Resource> equiv = new ArrayList<Resource>();
         
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Resource r = (Resource) i.next();
@@ -167,17 +167,17 @@ public class ResourceUtils {
      * @return A list of lists which are the partitions of <code>l</code> 
      * under <code>p</code>
      */
-    public static List partition( List l, Property p ) {
+    public static List<List<Resource>> partition( List l, Property p ) {
         // first copy the input so we can mess with it
         List source = new ArrayList();
         source.addAll( l );
-        List parts = new ArrayList();
+        List<List<Resource>> parts = new ArrayList<List<Resource>>();
         
         while (!source.isEmpty()) {
             // each step through the loop we pick a random element, and
             // create a list of that element and all its equivalent values
             Resource seed = (Resource) source.remove( 0 );
-            List part = removeEquiv( source, p, seed );
+            List<Resource> part = removeEquiv( source, p, seed );
             part.add( seed );
             
             // add to the partition list
@@ -247,10 +247,10 @@ public class ResourceUtils {
         Model m = ModelFactory.createDefaultModel();
         
         // set of resources we have passed through already (i.e. the occurs check)
-        Set seen = CollectionFactory.createHashedSet();
+        Set<Resource> seen = CollectionFactory.createHashedSet();
         
         // queue of resources we have not yet visited
-        List queue = new LinkedList();
+        List<RDFNode> queue = new LinkedList<RDFNode>();
         queue.add( root );
         
         while (!queue.isEmpty()) {

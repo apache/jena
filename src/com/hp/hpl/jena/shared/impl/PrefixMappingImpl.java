@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.31 2009-01-16 17:24:04 andy_seaborne Exp $
+  $Id: PrefixMappingImpl.java,v 1.32 2009-01-16 18:24:40 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 import java.util.*;
+import java.util.Map.Entry;
+
 import org.apache.xerces.util.XMLChar;
 
 /**
@@ -22,8 +24,8 @@ import org.apache.xerces.util.XMLChar;
 */
 public class PrefixMappingImpl implements PrefixMapping
     {
-    protected Map prefixToURI;
-    protected Map URItoPrefix;
+    protected Map<String, String> prefixToURI;
+    protected Map<String, String> URItoPrefix;
     protected boolean locked;
     
     public PrefixMappingImpl()
@@ -31,11 +33,13 @@ public class PrefixMappingImpl implements PrefixMapping
         URItoPrefix = CollectionFactory.createHashedMap(); }
     
     protected void set( String prefix, String uri )
-        { prefixToURI.put( prefix, uri );
-        URItoPrefix.put( uri, prefix ); }
+    {
+        prefixToURI.put(prefix, uri) ;
+        URItoPrefix.put(uri, prefix) ;
+    }
     
     protected String get( String prefix )
-        { return (String) prefixToURI.get( prefix ); }
+        { return prefixToURI.get( prefix ); }
            
     public PrefixMapping lock()
         { 
@@ -56,7 +60,7 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
-        String uri = (String) prefixToURI.remove( prefix );
+        String uri = prefixToURI.remove( prefix );
         regenerateReverseMapping();
         return this;
         }
@@ -64,10 +68,10 @@ public class PrefixMappingImpl implements PrefixMapping
     protected void regenerateReverseMapping()
         {
         URItoPrefix.clear();
-        Iterator it = prefixToURI.entrySet().iterator();
+        Iterator<Entry<String, String>> it = prefixToURI.entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
+            Map.Entry<String, String> e = it.next();
             URItoPrefix.put( e.getValue(), e.getKey() );
             } 
         }
@@ -104,11 +108,11 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping withDefaultMappings( PrefixMapping other )
         {
         checkUnlocked();
-        Iterator it = other.getNsPrefixMap().entrySet().iterator();
+        Iterator<Entry<String, String>> it = other.getNsPrefixMap().entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            String prefix = (String) e.getKey(), uri = (String) e.getValue();
+            Entry<String, String> e = it.next();
+            String prefix = e.getKey(), uri = e.getValue();
             if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
                 setNsPrefix( prefix, uri );
             }
@@ -123,14 +127,14 @@ public class PrefixMappingImpl implements PrefixMapping
         
          @param other the Map whose bindings we are to add to this.
     */
-    public PrefixMapping setNsPrefixes( Map other )
+    public PrefixMapping setNsPrefixes( Map<String, String> other )
         {
         checkUnlocked();
-        Iterator it = other.entrySet().iterator();
+        Iterator<Entry<String, String>> it = other.entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            setNsPrefix( (String) e.getKey(), (String) e.getValue() );
+            Entry<String, String> e = it.next();
+            setNsPrefix( e.getKey(), e.getValue() );
             }
         return this;
         }
@@ -147,11 +151,11 @@ public class PrefixMappingImpl implements PrefixMapping
     public String getNsPrefixURI( String prefix ) 
         { return get( prefix ); }
         
-    public Map getNsPrefixMap()
+    public Map<String, String> getNsPrefixMap()
         { return CollectionFactory.createHashedMap( prefixToURI ); }
         
     public String getNsURIPrefix( String uri )
-        { return (String) URItoPrefix.get( uri ); }
+        { return URItoPrefix.get( uri ); }
         
     /**
         Expand a prefixed URI. There's an assumption that any URI of the form
@@ -192,7 +196,7 @@ public class PrefixMappingImpl implements PrefixMapping
         int split = Util.splitNamespace( uri );
         String ns = uri.substring( 0, split ), local = uri.substring( split );
         if (local.equals( "" )) return null;
-        String prefix = (String) URItoPrefix.get( ns );
+        String prefix = URItoPrefix.get( ns );
         return prefix == null ? null : prefix + ":" + local;
         }
     
@@ -205,8 +209,8 @@ public class PrefixMappingImpl implements PrefixMapping
     */
     public String shortForm( String uri )
         {
-        Map.Entry e = findMapping( uri, true );
-        return e == null ? uri : e.getKey() + ":" + uri.substring( ((String) e.getValue()).length() );
+        Entry<String, String> e = findMapping( uri, true );
+        return e == null ? uri : e.getKey() + ":" + uri.substring( (e.getValue()).length() );
         }
         
     public boolean samePrefixMappingAs( PrefixMapping other )
@@ -236,13 +240,13 @@ public class PrefixMappingImpl implements PrefixMapping
         @param true if the match can be any leading substring, false for exact match
         @return some entry (k, v) such that uri starts with v [equal for partial=false]
     */
-    private Map.Entry findMapping( String uri, boolean partial )
+    private Entry<String, String> findMapping( String uri, boolean partial )
         {
-        Iterator it = prefixToURI.entrySet().iterator();
+        Iterator<Entry<String, String>> it = prefixToURI.entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            String ss = (String) e.getValue();
+            Entry<String, String> e = it.next();
+            String ss = e.getValue();
             if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) return e;
             } 
         return null;         

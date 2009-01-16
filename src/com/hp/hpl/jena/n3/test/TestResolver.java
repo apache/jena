@@ -15,7 +15,7 @@ import com.hp.hpl.jena.n3.JenaURIException;
 /** com.hp.hpl.jena.query.util.test.TestCaseURI
  * 
  * @author Andy Seaborne
- * @version $Id: TestResolver.java,v 1.7 2008-12-28 19:32:03 andy_seaborne Exp $
+ * @version $Id: TestResolver.java,v 1.8 2009-01-16 18:24:32 andy_seaborne Exp $
  */
 
 public class TestResolver extends TestCase
@@ -276,17 +276,9 @@ public class TestResolver extends TestCase
         assertTrue("Not absolute: ("+fn+"=>"+s+")", s.startsWith("file:///") ) ;
     }
     
-    private void execException(String u, String base, Class ex)
+    private void execException(String u, String base, Class<?> ex)
     {
-        // 1.5.0-ism
-        //String s = ex.getSimpleName() ;
-        String s = ex.getName() ;
-        
-        // Tidy it up.
-        int i = s.lastIndexOf('.') ;
-        if ( i >= 0 )
-            s = s.substring(i+1) ;
-        
+        String s = ex.getSimpleName() ;
         try {
             IRIResolver resolver = new IRIResolver(base) ;
             String res = resolver.resolve(u) ;
@@ -300,17 +292,9 @@ public class TestResolver extends TestCase
             assertEquals(ex, ex2.getClass()) ;
         }
     }
-    private void execException(String base, Class ex)
+    private void execException(String base, Class<?> ex)
     {
-        // 1.5.0-ism
-        //String s = ex.getSimpleName() ;
-        String s = ex.getName() ;
-        
-        // Tidy it up.
-        int i = s.lastIndexOf('.') ;
-        if ( i >= 0 )
-            s = s.substring(i+1) ;
-        
+        String s = ex.getSimpleName() ;
         try {
             new IRIResolver(base) ;
                  fail("("+base+") => OK :: Expected exception: " +s) ;
@@ -326,17 +310,9 @@ public class TestResolver extends TestCase
             IRIResolver.chooseBaseURI(base) ;
         
     }
-    private void chooseException(String base, Class ex)
+    private void chooseException(String base, Class<?> ex)
     {
-        // 1.5.0-ism
-        //String s = ex.getSimpleName() ;
-        String s = ex.getName() ;
-        
-        // Tidy it up.
-        int i = s.lastIndexOf('.') ;
-        if ( i >= 0 )
-            s = s.substring(i+1) ;
-        
+        String s = ex.getSimpleName() ;
         try {
             IRIResolver.chooseBaseURI(base) ;
                  fail("("+base+") => OK :: Expected exception: " +s) ;

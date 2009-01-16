@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MonitorGraph.java,v 1.5 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: MonitorGraph.java,v 1.6 2009-01-16 18:24:39 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.impl.*;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 
 public class MonitorGraph extends WrappedGraph {
@@ -48,8 +48,8 @@ public class MonitorGraph extends WrappedGraph {
         boolean wantAdditions = listening || additions != null;
         boolean wantDeletions = listening || deletions != null;
         
-        List additionsTemp = (additions != null) ? additions : new ArrayList();
-        List deletionsTemp = (deletions != null) ? deletions : new ArrayList();
+        List<Object> additionsTemp = (additions != null) ? additions : new ArrayList();
+        List<Object> deletionsTemp = (deletions != null) ? deletions : new ArrayList();
         Set  deletionsTempSet = (wantDeletions) ? new HashSet() : null;
         
         if (wantAdditions || wantDeletions) {

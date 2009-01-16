@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.26 2009-01-16 17:23:51 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.27 2009-01-16 18:24:39 andy_seaborne Exp $
  */
 
 
@@ -34,12 +34,11 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     
 	// Data structures used in controlling the formatting
 
-    protected Set rdfLists      	= null ; 		// Heads of lists
-    protected Set rdfListsAll   	= null ;		// Any resources in a daml lists
-    protected Set rdfListsDone  	= null ;		// RDF lists written
-    protected Set roots          	= null ;		// Things to put at the top level
-    protected Set oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
-    protected Set oneRefDone   	= null ;		// Things done - so we can check for missed items
+    protected Set<Resource> rdfLists      	= null ; 		// Heads of lists
+    protected Set<Resource> rdfListsAll   	= null ;		// Any resources in a daml lists
+    protected Set<Resource> rdfListsDone  	= null ;		// RDF lists written
+    protected Set<RDFNode> oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
+    protected Set<Resource> oneRefDone   	= null ;		// Things done - so we can check for missed items
 
     // Do we do nested (one reference) nodes?
     protected boolean allowDeep = true ;
@@ -64,7 +63,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
 	protected void prepareLists(Model model)
 	{
-		Set thisListAll = new HashSet();
+		Set<Resource> thisListAll = new HashSet<Resource>();
 
 		StmtIterator listTailsIter = model.listStatements(null, RDF.rest, RDF.nil);
 
@@ -222,10 +221,10 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     @Override
     protected ClosableIterator preparePropertiesForSubject(Resource r)
     {
-        Set seen = new HashSet() ;
+        Set<Property> seen = new HashSet<Property>() ;
         boolean hasTypes = false ;
-        SortedMap tmp1 = new TreeMap() ;
-        SortedMap tmp2 = new TreeMap() ;
+        SortedMap<String, Property> tmp1 = new TreeMap<String, Property>() ;
+        SortedMap<String, Property> tmp2 = new TreeMap<String, Property>() ;
         
         StmtIterator sIter = r.listProperties();
         for ( ; sIter.hasNext() ; )
@@ -299,7 +298,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     {
         oneRefObjects.removeAll(oneRefDone);
 
-        for (Iterator leftOverIter = oneRefObjects.iterator(); leftOverIter.hasNext();)
+        for (Iterator<RDFNode> leftOverIter = oneRefObjects.iterator(); leftOverIter.hasNext();)
         {
             out.println();
             if (N3JenaWriter.DEBUG)
@@ -312,9 +311,9 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
         // Are there any unattached RDF lists?
         // We missed these earlier (assumed all DAML lists are values of some statement)
-        for (Iterator leftOverIter = rdfLists.iterator(); leftOverIter.hasNext();)
+        for (Iterator<Resource> leftOverIter = rdfLists.iterator(); leftOverIter.hasNext();)
         {
-            Resource r = (Resource) leftOverIter.next();
+            Resource r = leftOverIter.next();
             if (rdfListsDone.contains(r))
                 continue;
             out.println();
@@ -356,8 +355,8 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         // Find which objects are simple (i.e. not nested structures)             
 
         StmtIterator sIter = subject.listProperties(property);
-        Set simple = new HashSet() ;
-        Set complex = new HashSet() ;
+        Set<RDFNode> simple = new HashSet<RDFNode>() ;
+        Set<RDFNode> complex = new HashSet<RDFNode>() ;
 
         for (; sIter.hasNext();)
         {
@@ -393,9 +392,9 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 else
                     out.println() ;
             
-                for (Iterator iter = simple.iterator(); iter.hasNext();)
+                for (Iterator<RDFNode> iter = simple.iterator(); iter.hasNext();)
                 {
-                    RDFNode n = (RDFNode) iter.next();
+                    RDFNode n = iter.next();
                     writeObject(n);
                     
                     // As an object list
@@ -407,7 +406,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             }
             else
             {
-                for (Iterator iter = simple.iterator(); iter.hasNext();)
+                for (Iterator<RDFNode> iter = simple.iterator(); iter.hasNext();)
                 {
                     // This is also the same as the complex case 
                     // except the width the property can go in is different.
@@ -418,7 +417,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                     else
                         out.println() ;
                     
-                    RDFNode n = (RDFNode) iter.next();
+                    RDFNode n = iter.next();
                     writeObject(n);
                     out.decIndent(indentObject) ;
                     
@@ -453,7 +452,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 padSp = pad(padding) ;
             }
 
-            for (Iterator iter = complex.iterator(); iter.hasNext();)
+            for (Iterator<RDFNode> iter = complex.iterator(); iter.hasNext();)
             {
                 int thisIndent = indentObject ;
                 //if ( i )
@@ -464,7 +463,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
                 else
                     out.println() ;
             
-                RDFNode n = (RDFNode) iter.next();
+                RDFNode n = iter.next();
                 writeObject(n);
                 out.decIndent(thisIndent);
                 if ( iter.hasNext() )
@@ -537,12 +536,12 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		out.print( "(");
 		out.incIndent(2) ;
 		boolean listFirst = true;
-		for (Iterator iter = rdfListIterator(resource); iter.hasNext();)
+		for (Iterator<RDFNode> iter = rdfListIterator(resource); iter.hasNext();)
 		{
 			if (!listFirst)
 				out.print( " ");
 			listFirst = false;
-			RDFNode n = (RDFNode) iter.next();
+			RDFNode n = iter.next();
 			writeObject(n) ;
 		}
 		out.print( ")");
@@ -554,11 +553,11 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Called before each writing run.
 	protected void allocateDatastructures()
 	{
-		rdfLists 		= new HashSet() ;
-		rdfListsAll 	= new HashSet() ;
-		rdfListsDone 	= new HashSet() ;
-		oneRefObjects 	= new HashSet() ;
-		oneRefDone 		= new HashSet() ;
+		rdfLists 		= new HashSet<Resource>() ;
+		rdfListsAll 	= new HashSet<Resource>() ;
+		rdfListsDone 	= new HashSet<Resource>() ;
+		oneRefObjects 	= new HashSet<RDFNode>() ;
+		oneRefDone 		= new HashSet<Resource>() ;
 	}
 
 	// Especially release large intermediate memory objects

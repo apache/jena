@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: PairEntry.java,v 1.11 2009-01-16 17:24:02 andy_seaborne Exp $
+ * $Id: PairEntry.java,v 1.12 2009-01-16 18:24:40 andy_seaborne Exp $
  *
  */
 
@@ -32,34 +32,34 @@ package com.hp.hpl.jena.xmloutput.impl;
 
 /*
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2009-01-16 17:24:02 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2009-01-16 18:24:40 $'
  */
-class PairEntry implements java.util.Map.Entry {
-    Object a;
-    Object b;
+class PairEntry<K,V>  implements java.util.Map.Entry<K,V>  {
+    K a;
+    V b;
     @Override
     public boolean equals(Object o) {
         if (o != null && (o instanceof PairEntry)) {
-            PairEntry e = (PairEntry) o;
+            PairEntry<?,?> e = (PairEntry<?,?>) o;
             return e.a.equals(a) && e.b.equals(b);
         } 
         return false;
         
     }
-    public Object getKey() {
+    public K getKey() {
         return a;
     }
-    public Object getValue() {
+    public V getValue() {
         return b;
     }
     @Override
     public int hashCode() {
         return a.hashCode() ^ b.hashCode();
     }
-    public Object setValue(Object value) {
+    public V setValue(Object value) {
         throw new UnsupportedOperationException();
     }
-    PairEntry(Object a, Object b) {
+    PairEntry(K a, V b) {
         this.a = a;
         this.b = b;
     }

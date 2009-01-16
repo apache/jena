@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.43 2009-01-16 17:23:56 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.44 2009-01-16 18:24:39 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -66,7 +66,7 @@ public class FileManager
     static FileManager instance = null ;
 
     static boolean logAllLookups = true ; 
-    List handlers = new ArrayList() ;
+    List<Locator> handlers = new ArrayList<Locator>() ;
     LocationMapper mapper = null ;
     boolean cacheModelLoads = false ;
     ModelCache modelCache = null ;
@@ -140,7 +140,7 @@ public class FileManager
     public LocationMapper getLocationMapper() { return mapper ; }
     
     /** Return an iterator over all the handlers */
-    public Iterator locators() { return handlers.listIterator() ; }
+    public Iterator<Locator> locators() { return handlers.listIterator() ; }
 
     /** Add a locator to the end of the locators list */ 
     public void addLocator(Locator loc)
@@ -516,9 +516,9 @@ public class FileManager
     
     public TypedStream openNoMapOrNull(String filenameOrURI)
     {
-        for ( Iterator iter = handlers.iterator() ; iter.hasNext() ; )
+        for ( Iterator<Locator> iter = handlers.iterator() ; iter.hasNext() ; )
         {
-            Locator loc = (Locator)iter.next() ;
+            Locator loc = iter.next() ;
             TypedStream in = loc.open(filenameOrURI) ;
             if ( in != null )
             {
@@ -534,7 +534,7 @@ public class FileManager
 
 class ModelCache
 {
-    Map modelCache = new HashMap() ;
+    Map<String, Model> modelCache = new HashMap<String, Model>() ;
     ModelCache() {}
     
     /** Reset the model cache */
@@ -554,7 +554,7 @@ class ModelCache
     }
     
     public Model get(String filenameOrURI)
-    { return (Model)modelCache.get(filenameOrURI) ; }
+    { return modelCache.get(filenameOrURI) ; }
     
     public boolean contains(String filenameOrURI)
     { return modelCache.containsKey(filenameOrURI) ; }

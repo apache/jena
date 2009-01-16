@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Arguments with values can use "="</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.15 2008-12-28 19:32:32 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.16 2009-01-16 18:28:40 andy_seaborne Exp $
  */
 
 
@@ -48,15 +48,15 @@ public class CommandLine
      */
     protected ArgHandler argHook = null ;
     protected String usage = null ;
-    protected Map argMap = new HashMap() ;    // Map from string name to ArgDecl
-    protected Map args = new HashMap() ;      // Map from string name to Arg
+    protected Map<String, ArgDecl> argMap = new HashMap<String, ArgDecl>() ;
+    protected Map<String, Arg> args = new HashMap<String, Arg>() ;
     //protected boolean ignoreUnknown = false ;
 
     // Rest of the items found on the command line
     String indirectionMarker = "@" ;
     protected boolean allowItemIndirect = false ;   // Allow @ to mean contents of file
     boolean ignoreIndirectionMarker = false ;       // Allow comand line items to have leading @ but strip it.
-    protected List items = new ArrayList() ;
+    protected List<String> items = new ArrayList<String>() ;
 
 
     /** Creates new CommandLine */
@@ -74,7 +74,7 @@ public class CommandLine
     public boolean hasArgs() { return args.size() > 0 ; }
     public boolean hasItems() { return items.size() > 0 ; }
 
-    public Iterator args() { return args.values().iterator() ; }
+    public Iterator<Arg> args() { return args.values().iterator() ; }
 //    public Map args() { return args ; }
 //    public List items() { return items ; }
 
@@ -83,7 +83,7 @@ public class CommandLine
     public void pushItem(String s) { items.add(s) ; }
 
     public boolean isIndirectItem(int i)
-    { return allowItemIndirect && ((String)items.get(i)).startsWith(indirectionMarker) ; }
+    { return allowItemIndirect && items.get(i).startsWith(indirectionMarker) ; }
 
     public String getItem(int i)
     {
@@ -96,7 +96,7 @@ public class CommandLine
             return null ;
 
 
-        String item = (String)items.get(i) ;
+        String item = items.get(i) ;
 
         if ( withIndirect && item.startsWith(indirectionMarker) )
         {
@@ -115,13 +115,13 @@ public class CommandLine
      */
     public void process(String[] argv) throws java.lang.IllegalArgumentException
     {
-        List argList = new ArrayList() ;
+        List<String> argList = new ArrayList<String>() ;
         argList.addAll(Arrays.asList(argv)) ;
 
         int i = 0 ;
         for ( ; i < argList.size() ; i++ )
         {
-            String argStr = (String)argList.get(i) ;
+            String argStr = argList.get(i) ;
             if (endProcessing(argStr))
                 break ;
             
@@ -154,15 +154,15 @@ public class CommandLine
                 if ( ! args.containsKey(argStr))
                     args.put(argStr, new Arg(argStr)) ;
 
-                Arg arg = (Arg)args.get(argStr) ;
-                ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
+                Arg arg = args.get(argStr) ;
+                ArgDecl argDecl = argMap.get(argStr) ;
 
                 if ( argDecl.takesValue() )
                 {
                     if ( i == (argList.size()-1) )
                         throw new IllegalArgumentException("No value for argument: "+arg.getName()) ;
                     i++ ;
-                    val = (String)argList.get(i) ;
+                    val = argList.get(i) ;
                     arg.setValue(val) ;
                     arg.addValue(val) ;
                 }
@@ -174,7 +174,7 @@ public class CommandLine
                 argDecl.trigger(arg) ;
             }
             else
-                handleUnrecognizedArg( (String)argList.get(i) );
+                handleUnrecognizedArg( argList.get(i) );
 //                if ( ! getIgnoreUnknown() )
 //                    // Not recognized
 //                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
@@ -187,7 +187,7 @@ public class CommandLine
                 i++ ;
             for ( ; i < argList.size() ; i++ )
             {
-                String item = (String)argList.get(i) ;
+                String item = argList.get(i) ;
                 items.add(item) ;
             }
         }
@@ -252,9 +252,9 @@ public class CommandLine
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
-        for ( Iterator iter = args.values().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Arg> iter = args.values().iterator() ; iter.hasNext() ; )
         {
-            Arg a = (Arg)iter.next() ;
+            Arg a = iter.next() ;
             if ( argDecl.matches(a) )
                 arg = a ;
         }
@@ -270,7 +270,7 @@ public class CommandLine
     public Arg getArg(String s)
     {
         s = ArgDecl.canonicalForm(s) ;
-        return (Arg)args.get(s) ;
+        return args.get(s) ;
     }
 
     /**
@@ -308,7 +308,7 @@ public class CommandLine
      * @param argDecl
      * @return List
      */
-    public List getValues(ArgDecl argDecl)
+    public List<String> getValues(ArgDecl argDecl)
     {
         Arg arg = getArg(argDecl) ;
         if ( arg == null )
@@ -321,7 +321,7 @@ public class CommandLine
      * @param argDecl
      * @return List
      */
-    public List getValues(String argName)
+    public List<String> getValues(String argName)
     {
         Arg arg = getArg(argName) ;
         if ( arg == null )
@@ -361,7 +361,7 @@ public class CommandLine
 
     public CommandLine add(ArgDecl arg)
     {
-        for ( Iterator iter = arg.names() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = arg.names() ; iter.hasNext() ; )
             argMap.put(iter.next(), arg) ;
         return this ;
     }

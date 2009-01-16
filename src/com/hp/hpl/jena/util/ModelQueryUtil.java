@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelQueryUtil.java,v 1.11 2008-12-28 19:32:09 andy_seaborne Exp $
+  $Id: ModelQueryUtil.java,v 1.12 2009-01-16 18:24:39 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -42,10 +42,10 @@ public class ModelQueryUtil
     public static RDFNode asRDF( Model m, Node n )
         { return m.asRDFNode( n ); }
         
-    public static List mappy( Model m, Object x )
+    public static List<RDFNode> mappy( Model m, Object x )
         {
         List L = (List) x;
-        ArrayList result = new ArrayList( L.size() );
+        ArrayList<RDFNode> result = new ArrayList<RDFNode>( L.size() );
         for (int i = 0; i < L.size(); i += 1) result.add( asRDF( m, (Node) L.get( i ) ) );
         return result;
         }
