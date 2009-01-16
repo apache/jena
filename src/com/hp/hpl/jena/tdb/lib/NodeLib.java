@@ -45,6 +45,10 @@ public class NodeLib
     {
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeLabel() ;
+        if ( node.isURI() && node.getURI().indexOf(' ') >= 0 )
+            // Pesky spaces
+            throw new TDBException("Spece found in URI: "+node) ;
+        
         return FmtUtils.stringForNode(node, pmap) ;
     }
 
