@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.10 2008-12-28 19:32:03 andy_seaborne Exp $
+      $Id: GraphExtract.java,v 1.11 2009-01-16 20:53:22 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -53,7 +53,7 @@ public class GraphExtract
         {
         protected Graph toUpdate;
         protected Graph extractFrom;
-        protected Set active;
+        protected Set<Node> active;
         protected TripleBoundary b;
         
         Extraction( TripleBoundary b, Graph toUpdate, Graph extractFrom )

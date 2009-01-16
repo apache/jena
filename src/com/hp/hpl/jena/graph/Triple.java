@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.30 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: Triple.java,v 1.31 2009-01-16 20:53:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -205,7 +205,7 @@ public class Triple implements TripleMatch
         public final Filter filterOn( Triple t )
             { return filterOn( getField( t ) ); }
         
-        public static final Field getSubject = new Field() 
+        public static final Field fieldSubject = new Field() 
             { 
             @Override
             public Node getField( Triple t ) 
@@ -223,7 +223,7 @@ public class Triple implements TripleMatch
                 }
             };
             
-        public static final Field getObject = new Field() 
+        public static final Field fieldObject = new Field() 
             { 
             @Override
             public Node getField( Triple t ) 
@@ -240,7 +240,7 @@ public class Triple implements TripleMatch
                 }
             };
         
-        public static final Field getPredicate = new Field() 
+        public static final Field fieldPredicate = new Field() 
             { 
             @Override
             public Node getField( Triple t ) 

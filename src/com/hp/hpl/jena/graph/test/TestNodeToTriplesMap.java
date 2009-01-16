@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.20 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.21 2009-01-16 20:53:22 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -28,11 +28,11 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestNodeToTriplesMap.class ); }
     
-    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.getSubject, Field.getPredicate, Field.getObject );
+    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject );
     	
-    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.getPredicate, Field.getObject, Field.getSubject );
+    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject );
     	
-    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.getObject, Field.getPredicate, Field.getSubject );
+    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.fieldObject, Field.fieldPredicate, Field.fieldSubject );
 
     protected static final Node x = node( "x" );
     

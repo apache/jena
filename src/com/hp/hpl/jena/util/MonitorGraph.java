@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MonitorGraph.java,v 1.6 2009-01-16 18:24:39 andy_seaborne Exp $
+ * $Id: MonitorGraph.java,v 1.7 2009-01-16 20:53:16 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util;
@@ -23,13 +23,13 @@ import com.hp.hpl.jena.graph.impl.*;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 
 public class MonitorGraph extends WrappedGraph {
     
     /** The last known snapshot, a set of triples */
-    protected Set snapshot = new HashSet();
+    protected Set<Triple> snapshot = new HashSet<Triple>();
 
     /** Constructor, wrap the given graph with a state monitor */
     public MonitorGraph(Graph g) {
@@ -43,21 +43,21 @@ public class MonitorGraph extends WrappedGraph {
      * @param additions a place in which the set of newly added triples should be noted, can be null
      * @param deletions a place in which the set of newly deleted triples should be noted, can be null
      */
-    public void snapshot(List additions, List deletions) {
+    public void snapshot(List<Triple> additions, List<Triple> deletions) {
         boolean listening = getEventManager().listening();
         boolean wantAdditions = listening || additions != null;
         boolean wantDeletions = listening || deletions != null;
         
-        List<Object> additionsTemp = (additions != null) ? additions : new ArrayList();
-        List<Object> deletionsTemp = (deletions != null) ? deletions : new ArrayList();
-        Set  deletionsTempSet = (wantDeletions) ? new HashSet() : null;
+        List<Triple> additionsTemp = (additions != null) ? additions : new ArrayList<Triple>();
+        List<Triple> deletionsTemp = (deletions != null) ? deletions : new ArrayList<Triple>();
+        Set<Triple>  deletionsTempSet = (wantDeletions) ? new HashSet<Triple>() : null;
         
         if (wantAdditions || wantDeletions) {
             if (wantDeletions) {
                 deletionsTempSet.addAll(snapshot);
             }
-            for (Iterator i = base.find(Node.ANY, Node.ANY, Node.ANY); i.hasNext(); ) {
-                Object triple = i.next();
+            for (Iterator<Triple> i = base.find(Node.ANY, Node.ANY, Node.ANY); i.hasNext(); ) {
+                Triple triple = i.next();
                 if (wantAdditions && ! snapshot.contains(triple)) {
                     additionsTemp.add(triple);
                 }
@@ -81,7 +81,7 @@ public class MonitorGraph extends WrappedGraph {
         // In somecases applying the already computed changes may be cheaper, could optmize
         // this based on relative sizes if it becomes an issue.
         snapshot.clear();
-        for (Iterator i = base.find(Node.ANY, Node.ANY, Node.ANY); i.hasNext(); ) {
+        for (Iterator<Triple> i = base.find(Node.ANY, Node.ANY, Node.ANY); i.hasNext(); ) {
             snapshot.add(i.next());
         }
 

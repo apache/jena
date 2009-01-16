@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphEventManager.java,v 1.17 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: GraphEventManager.java,v 1.18 2009-01-16 20:53:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -48,13 +48,13 @@ public interface GraphEventManager extends GraphListener
         Notify all attached listeners that an iterator [of triples] has been added to
         the graph; its content has been captured in the list <code>triples</code>.
      */
-    void notifyAddIterator( Graph g, List triples );
+    void notifyAddIterator( Graph g, List<Triple> triples );
 
     /**
         Notify all attached listeners that an iterator [of triples] has been removed from
         the graph; its content has been captured in the list <code>triples</code>.
      */
-    void notifyDeleteIterator( Graph g, List triples );
+    void notifyDeleteIterator( Graph g, List<Triple> triples );
     }
 
 /*

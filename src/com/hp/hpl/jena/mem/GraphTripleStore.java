@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.30 2008-12-28 19:32:29 andy_seaborne Exp $
+  $Id: GraphTripleStore.java,v 1.31 2009-01-16 20:53:22 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -22,9 +22,9 @@ public class GraphTripleStore extends GraphTripleStoreBase implements TripleStor
     public GraphTripleStore( Graph parent )
         { 
         super( parent,
-            new NodeToTriplesMap( Field.getSubject, Field.getPredicate, Field.getObject ),
-            new NodeToTriplesMap( Field.getPredicate, Field.getObject, Field.getSubject ),
-            new NodeToTriplesMap( Field.getObject, Field.getSubject, Field.getPredicate )
+            new NodeToTriplesMap( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
+            new NodeToTriplesMap( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject ),
+            new NodeToTriplesMap( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
             ); 
         }
     }
