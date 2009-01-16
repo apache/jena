@@ -103,13 +103,11 @@ public class PrefixMapping2 implements PrefixMapping
     
     public Map<String, String> getNsPrefixMap(boolean includeGlobalMap)
     {
-        @SuppressWarnings("unchecked")
         Map<String, String> m1 = pmapLocal.getNsPrefixMap() ;
         if ( pmapGlobal == null )
             return m1 ;
         if ( includeGlobalMap )
         {
-            @SuppressWarnings("unchecked")
             Map<String, String> m2 = pmapGlobal.getNsPrefixMap() ;
             m1.putAll(m2) ;
         }
@@ -167,7 +165,6 @@ public class PrefixMapping2 implements PrefixMapping
 
     public PrefixMapping withDefaultMappings(PrefixMapping map)
     {
-        @SuppressWarnings("unchecked")
         Iterator<Map.Entry<String, String>> it = map.getNsPrefixMap().entrySet().iterator();
         while (it.hasNext())
             {

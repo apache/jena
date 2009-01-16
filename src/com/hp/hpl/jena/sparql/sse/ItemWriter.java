@@ -66,7 +66,6 @@ public class ItemWriter
                 PrefixMapping pmap = sCxt.getPrefixMapping() ;
                 if ( pmap != null )
                 {
-                    @SuppressWarnings("unchecked")
                     Map<String,String> pm = pmap.getNsPrefixMap() ;
                     donePrefix = ( pm.size() != 0 ) ;
                     if ( pm.size() != 0 )

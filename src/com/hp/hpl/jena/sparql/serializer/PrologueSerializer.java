@@ -60,7 +60,6 @@ public class PrologueSerializer
         }
         else
         {
-            @SuppressWarnings("unchecked")
             Map<String, String> _pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
             pmap = _pmap ;
         }

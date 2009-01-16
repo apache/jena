@@ -63,7 +63,6 @@ public class WriterBasePrefix
 
         if ( prefixMapping != null )
         {
-            @SuppressWarnings("unchecked")
             Map<String, String> m = prefixMapping.getNsPrefixMap() ;
             if ( ! m.isEmpty() )
             {

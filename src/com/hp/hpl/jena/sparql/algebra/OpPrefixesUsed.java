@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public class OpPrefixesUsed
 {
-    @SuppressWarnings("unchecked")
     static public PrefixMapping used(Op op, PrefixMapping pmap)
     {
         PrefixMapping pmap2 = new PrefixMappingImpl() ;
