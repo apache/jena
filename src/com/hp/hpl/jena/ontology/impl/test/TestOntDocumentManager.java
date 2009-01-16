@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:22 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-16 00:36:33 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.30 2008-12-28 19:32:22 andy_seaborne Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.31 2009-01-16 00:36:33 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -509,7 +509,7 @@ public class TestOntDocumentManager
         assertNull( o1.getReadFailureHandler() );
 
         OntDocumentManager.ReadFailureHandler rfh = new OntDocumentManager.ReadFailureHandler() {
-            public void handleFailedRead( String url, Model model, Exception e ) {}};
+            public void handleFailedRead( String url, Model model, Exception e ) {/**/}};
 
         o1.setReadFailureHandler( rfh );
         assertSame( rfh, o1.getReadFailureHandler() );
