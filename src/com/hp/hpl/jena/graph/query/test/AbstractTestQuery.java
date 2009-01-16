@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.46 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: AbstractTestQuery.java,v 1.47 2009-01-16 11:49:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -270,20 +270,20 @@ public abstract class AbstractTestQuery extends QueryTestBase
         assertEquals( "testTwoPatterns: Y = SF", d.get(1), node("SF") );        
         }
                 
-    public void testTwoGraphs()
-        {
-        Graph a = getGraphWith( "chris reads blish; chris reads norton; chris eats curry" );
-        Graph b = getGraphWith( "blish inGenre SF; curry inGenre food" );
-        Node reads = node("reads"), inGenre = node("inGenre");
-        Q.addMatch( "a", X, reads, Y ).addMatch( "b", Y, inGenre, Z );
-        NamedGraphMap args = Q.args().put( "a", a ).put( "b", b );
-        List bindings = iteratorToList( Q.executeBindings( args, new Node [] {X, Z} ) ); // TODO
-        assertEquals( "testTwoGraphs: one binding", 1, bindings.size() );
-        Domain  d = (Domain) bindings.get( 0 );
-        assertTrue( "testTwoGraphs: width 2", d.size() >= 2 );
-        assertEquals( "testTwoGraphs: X = chris", d.get(0), node("chris") );
-        assertEquals( "testTwoGraphs: Y = SF", d.get(1), node("SF") );     
-        }
+//    public void testTwoGraphs()
+//        {
+//        Graph a = getGraphWith( "chris reads blish; chris reads norton; chris eats curry" );
+//        Graph b = getGraphWith( "blish inGenre SF; curry inGenre food" );
+//        Node reads = node("reads"), inGenre = node("inGenre");
+//        Q.addMatch( "a", X, reads, Y ).addMatch( "b", Y, inGenre, Z );
+//        NamedGraphMap args = Q.args().put( "a", a ).put( "b", b );
+//        List bindings = iteratorToList( Q.executeBindings( args, new Node [] {X, Z} ) ); // TODO
+//        assertEquals( "testTwoGraphs: one binding", 1, bindings.size() );
+//        Domain  d = (Domain) bindings.get( 0 );
+//        assertTrue( "testTwoGraphs: width 2", d.size() >= 2 );
+//        assertEquals( "testTwoGraphs: X = chris", d.get(0), node("chris") );
+//        assertEquals( "testTwoGraphs: Y = SF", d.get(1), node("SF") );     
+//        }
                 
     public void testGraphConstraints( String title, Expression constraint, String wanted )
         { 
