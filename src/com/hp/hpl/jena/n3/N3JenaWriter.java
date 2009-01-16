@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.33 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.34 2009-01-16 16:16:44 andy_seaborne Exp $
  */
 
 
@@ -41,12 +41,6 @@ public class N3JenaWriter implements RDFWriter
     
     // Note: properties are URIs, not java convention package/class names.
     static protected final String propBase = "http://jena.hpl.hp.com/n3/properties/" ;
-    
-    /** Compatibility.
-     * @deprecated Set <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to the name of the writer instead.
-     */
-    
-    static public final String propWriteSimple = "com.hp.hpl.jena.n3.N3JenaWriter.writeSimple" ;
     
     /** System property name that sets the default N3 writer name */   
     static public final String propWriterName = propBase+"writer" ;
@@ -99,10 +93,6 @@ public class N3JenaWriter implements RDFWriter
     
     N3JenaWriterCommon chooseWriter()
     {
-        // Compatibility with Jena1
-        if ( JenaRuntime.getSystemProperty(propWriteSimple, "false").equals("true"))
-            return new N3JenaWriterCommon() ;
-        
         // Choose the writer
         String writerName = JenaRuntime.getSystemProperty(propWriterName) ;
         if ( writerName == null ||

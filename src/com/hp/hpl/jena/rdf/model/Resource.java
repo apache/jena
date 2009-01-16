@@ -32,7 +32,7 @@
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PropertyNotFoundException;
 
 
 /** An RDF Resource.
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.graph.Node;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2008-12-28 19:31:54 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2009-01-16 16:16:43 $'
 */
 public interface Resource extends RDFNode {
 
@@ -78,12 +78,6 @@ public interface Resource extends RDFNode {
      * @return A unique id for an anonymous resource.
      */
     public AnonId getId();
-
-    /**
-        Answer the underlying [SPI] Node of this Resource.
-        @deprecated use asNode().
-    */
-    public Node getNode();
 
     /**
         Answer true iff this Resource is a URI resource with the given URI.

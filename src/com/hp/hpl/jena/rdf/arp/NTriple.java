@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.26 2008-12-28 19:32:02 andy_seaborne Exp $
+ * * $Id: NTriple.java,v 1.27 2009-01-16 16:16:44 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -405,7 +405,7 @@ int debugC = 0;
 		try {
 			File ff = new File(surl);
 			in = new FileInputStream(ff);
-			url = ff.toURL();
+			url = ff.toURI().toURL() ;
 			baseURL = url.toExternalForm();
 			if (baseURL.startsWith("file:/")
 				&& !baseURL.startsWith("file://")) {

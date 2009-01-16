@@ -1,17 +1,18 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.60 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: Node.java,v 1.61 2009-01-16 16:16:44 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.datatypes.DatatypeFormatException;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
-
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
@@ -35,38 +36,6 @@ public abstract class Node {
     public static final Node ANY = new Node_ANY();
        
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    
-    /**
-        Returns a Node described by the string, primarily for testing purposes.
-        The string represents a URI, a numeric literal, a string literal, a bnode label,
-        or a variable.        
-        <ul>
-        <li> 'some text' :: a string literal with that text
-        <li> 'some text'someLanguage:: a string literal with that text and language
-        <li> 'some text'someURI:: a typed literal with that text and datatype
-        <li> digits :: a literal [OF WHAT TYPE] with that [numeric] value
-        <li> _XXX :: a bnode with an AnonId built from _XXX
-        <li> ?VVV :: a variable with name VVV
-        <li> &PPP :: to be done
-        <li> name:stuff :: the URI; name may be expanded using the Extended map
-        </ul>
-        @param x the string describing the node
-        @return a node of the appropriate type with the appropriate label
-     * @deprecated Use {@link NodeCreateUtils#create(String)} instead
-    */
-    public static Node create( String x )
-        { return NodeCreateUtils.create( x ); }
-        
-    /**
-        As for create(String), but the PrefixMapping used to translate URI strings
-        is an additional argument.
-        @param pm the PrefixMapping for translating pre:X strings
-        @param x the string encoding the node to create
-        @return a node with the appropriate type and label
-     * @deprecated Use {@link NodeCreateUtils#create(PrefixMapping,String)} instead
-    */
-    public static Node create( PrefixMapping pm, String x )
-        { return NodeCreateUtils.create( pm, x ); }
             
     public static RDFDatatype getType( String s )
         { return TypeMapper.getInstance().getSafeTypeByName( s ); }

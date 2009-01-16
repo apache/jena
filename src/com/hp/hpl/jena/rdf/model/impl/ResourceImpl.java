@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.48 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: ResourceImpl.java,v 1.49 2009-01-16 16:16:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date: 2009-01-16 16:16:35 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -108,9 +108,6 @@ public class ResourceImpl extends EnhNode implements Resource {
     private static Node fresh( String uri )
         { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
 
-    public Node getNode() 
-        { return asNode(); }
-
     public AnonId getId() 
         { return asNode().getBlankNodeId(); }
 
@@ -151,14 +148,6 @@ public class ResourceImpl extends EnhNode implements Resource {
     public StmtIterator listProperties() 
     	{ return mustHaveModel().listStatements( this, null, (RDFNode) null ); }	
     
-    /**
-     * @deprecated Use {@link #addLiteral(Property,boolean)} instead
-     */
-    public Resource addTypedProperty( Property p, boolean o ) 
-        {
-            return addLiteral( p, o );
-            }
-
     public Resource addLiteral( Property p, boolean o ) 
         {
         ModelCom m = mustHaveModel();
@@ -226,14 +215,6 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this ;
     }
 
-    /**
-     * @deprecated Use {@link #addLiteral(Property,Object)} instead
-     */
-    public Resource addTypedProperty( Property p, Object o ) 
-        {
-            return addLiteral( p, o );
-            }
-
     public Resource addLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
@@ -250,14 +231,6 @@ public class ResourceImpl extends EnhNode implements Resource {
         return mustHaveModel().contains( this, p );
     }
     
-    /**
-     * @deprecated Use {@link #hasLiteral(Property,boolean)} instead
-     */
-    public boolean hasTypedProperty( Property p, boolean o )  
-        {
-            return hasLiteral( p, o );
-            }
-
     public boolean hasLiteral( Property p, boolean o )  
         {
         ModelCom m = mustHaveModel();

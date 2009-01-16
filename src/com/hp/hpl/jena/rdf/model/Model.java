@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.74 2009-01-12 16:47:48 andy_seaborne Exp $
+  $Id: Model.java,v 1.75 2009-01-16 16:16:43 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.74 $Date: 2008/12/28 19:31:54 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.75 $Date: 2009/01/12 16:47:48 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -203,20 +203,6 @@ public interface Model
 	 */
 
 	public Literal createLiteral(String v, String language);
-
-//    /**
-//     * @deprecated since Jena2. It is no longer legal to have a language
-//     * tag on a well-formed XMLLiteral. Use the 2-argument form of
-//     * {@link #createLiteral(String, boolean) createLiteral} instead.
-//     *
-//     *   Create a literal from a String value with a specified language. An existing literal
-//     *   of the right value may be returned, or a fresh one created.
-//     *  @param v the lexical form of the literal
-//     *  @param language the language associated with the literal
-//     *  @param wellFormed true if the Literal is well formed XML
-//     *  @return a new literal representing the value v with the given language
-//     */
-//    public Literal createLiteral(String v, String language, boolean wellFormed);
 
     /**
         Create a literal from a String value. An existing literal
@@ -1029,5 +1015,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.74 2009-01-12 16:47:48 andy_seaborne Exp $
+ * $Id: Model.java,v 1.75 2009-01-16 16:16:43 andy_seaborne Exp $
  */

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.129 2009-01-12 16:47:48 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.130 2009-01-16 16:16:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -93,14 +93,6 @@ public class ModelCom
         }
     }
     
-    /**
-     * @deprecated Use {@link #addLiteral(Resource,Property,boolean)} instead
-     */
-    public Model addTyped( Resource s, Property p, boolean o )  
-        {
-            return addLiteral( s, p, o );
-            }
-
     public Model addLiteral( Resource s, Property p, boolean o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
@@ -150,6 +142,7 @@ public class ModelCom
     public Model add( Resource s, Property p, String o, String l )
         { return add( s, p, o, l, false ); }
 
+    /** @deprecated */
     public Model addLiteral( Resource s, Property p, Object o )  
         { return add( s, p, asObject( o ) ); }
     
@@ -321,14 +314,6 @@ public class ModelCom
         return this;
         }
         
-    /**
-     * @deprecated Use {@link #containsLiteral(Resource,Property,boolean)} instead
-     */
-    public boolean containsTyped( Resource s, Property p, boolean o )
-        {
-            return containsLiteral( s, p, o );
-            }
-
     public boolean containsLiteral( Resource s, Property p, boolean o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     

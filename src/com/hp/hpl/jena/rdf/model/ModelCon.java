@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.32 $'
-            Date='$Date: 2009-01-08 18:49:17 $'
+            Revision='$Revision: 1.33 $'
+            Date='$Date: 2009-01-16 16:16:43 $'
  */
 public interface ModelCon {
 
@@ -543,6 +543,16 @@ public interface ModelCon {
     Model addLiteral( Resource s, Property p, double o ) ;
 
     /** add a statement to this model.
+     * Applications should use typed literals whereever possible. 
+     *
+     * @return this model
+     * @param s the subject of the statement to add
+     * @param p the predicate of the statement to add
+     * @param o the object of the statement to add
+     */ 
+        Model addLiteral( Resource s, Property p, Object o );
+
+    /** add a statement to this model.
      *
      * @return this model
      * @param s the subject of the statement to add
@@ -584,34 +594,7 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, String o, String l) ;
 
-/** 
- * @deprecated since Jena2. It is no longer legal to have a language
- * tag on a well-formed XMLLiteral. Use the 4-argument form of
- * {@link #add(Resource, Property, String, boolean) add} instead.
- * 
- * add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @param l the language associated with the object
- * @param wellFormed true if o is well formed XML
- 
- */ 
-    Model add(Resource s, Property p, String o, String l, boolean wellFormed);
-
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * deprecated Applications should use typed literals 
- */ 
-    Model addLiteral( Resource s, Property p, Object o );
-
-    /**
+/**
         remove the statement <code>(s, p, o)</code> from this model and
         answer this model. None of <code>s, p, o</code> are permitted to
         be <code>null</code>: for wildcard removal, see <code>removeAll</code>.

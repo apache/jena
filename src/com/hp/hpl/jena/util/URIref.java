@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIref.java,v 1.8 2008-12-28 19:32:09 andy_seaborne Exp $
+ * * $Id: URIref.java,v 1.9 2009-01-16 16:16:43 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 *//*
@@ -72,32 +72,37 @@ public class URIref extends Object {
                     out++;
                     in++;
                     break;
-                case (byte) '%':
-                    try {
-                        if ( in+2 < utf8.length ) {
-                            byte first = hexEncode(hexDecode(utf8[in+1]));
-                            byte second = hexEncode(hexDecode(utf8[in+2]));
-                            rsltAscii[out++] = (byte)'%';
-                            rsltAscii[out++] = first;
-                            rsltAscii[out++] = second;
-                            in += 3;
-                            break;
+                default : // case (byte) '%':
+                    if (utf8[in] == '%')
+                    {
+
+                        try
+                        {
+                            if (in + 2 < utf8.length)
+                            {
+                                byte first = hexEncode(hexDecode(utf8[in + 1])) ;
+                                byte second = hexEncode(hexDecode(utf8[in + 2])) ;
+                                rsltAscii[out++] = (byte)'%' ;
+                                rsltAscii[out++] = first ;
+                                rsltAscii[out++] = second ;
+                                in += 3 ;
+                                break ;
+                            }
+                        } catch (IllegalArgumentException e)
+                        {
+                            // Illformed - should issue message ....
+                            System.err.println("Confusing IRI to encode - contains literal '%': " + unicode) ;
+                            // Fall through.
                         }
                     }
-                    catch (IllegalArgumentException e) {
-                        // Illformed - should issue message ....
-                        System.err.println("Confusing IRI to encode - contains literal '%': " + unicode);
-                        // Fall through.
-                    }
-                default:
-                        rsltAscii[out++] = (byte)'%';
-                        // Get rid of sign ...
-                        int c = ((int)utf8[in])&255;
-                        rsltAscii[out++] = hexEncode( c/16 );
-                        rsltAscii[out++] = hexEncode( c%16 );
-                        in++;
-                        break;
-            }
+                    rsltAscii[out++] = (byte)'%' ;
+                    // Get rid of sign ...
+                    int c = ((int)utf8[in]) & 255 ;
+                    rsltAscii[out++] = hexEncode(c / 16) ;
+                    rsltAscii[out++] = hexEncode(c % 16) ;
+                    in++ ;
+                    break ;
+                }
         }
         return new String(rsltAscii,0,out,"US-ASCII");
         }
