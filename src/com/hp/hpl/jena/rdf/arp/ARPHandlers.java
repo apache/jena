@@ -41,9 +41,12 @@ public class ARPHandlers {
         ARPHandlers handlers = arp.getHandlers();
         handlers.setStatementHandler(new MyStatementHandler());
      </pre>
-     *@deprecated Use {@link ARPConfig#getHandlers()}
      */
-    public ARPHandlers() {}
+    //*@ deprecated Use {@link ARPConfig#getHandlers()}
+    private ARPHandlers() {}
+    
+    /** Internal use only */
+    public static ARPHandlers createNewHandlers() { return new ARPHandlers() ; }
 
     private ErrorHandler errorHandler = new DefaultErrorHandler();
 

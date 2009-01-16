@@ -33,44 +33,11 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
     protected GraphRDB m_graphRDB = null;
-
-    /**
-     * Construct a model which is stored persistently in a Relational DataBase
-     * 
-     * If a model already exists in the database, then it is opened, otherwise
-     * a new model with default name and formatting is inserted and opened.
-     * @param dbcon a Connection specifying the database connection
-     * @deprecated Since Jena 2.0, this call is not recommended - 
-     * in the short-term use ModelRDB.open or ModelRDB.createModel;
-     * in the longer-term use factory methods to construct persistent models.
-     */
-     public ModelRDB( IDBConnection dbcon) throws RDFRDBException {
-		this(BuiltinPersonalities.model, new GraphRDB(dbcon, null, null, !dbcon.containsDefaultModel()));
-     }
-
-
-    /**
-     * Construct a model which is stored persistently in a Relational DataBase
-     * 
-     * If a model with the specified identifier already exists in the 
-     * database, then it is opened, otherwise a new model with default 
-     * formatting is inserted and opened.
-     * @param dbcon a Connection specifying the database connection
-     * @param modelID is the identifier of an RDF model within the database.
-     * The modelID "DEFAULT" is reserved and may not be used for user models.
-     * @deprecated Since Jena 2.0, this call is not recommended -
-     * in the short-term use ModelRDB.open or ModelRDB.createModel;
-     * in the longer-term use factory methods to construct persistent models.
-     */
-     public ModelRDB( IDBConnection dbcon, String modelID) throws RDFRDBException {
-		this(BuiltinPersonalities.model, new GraphRDB(dbcon, modelID, null, !dbcon.containsDefaultModel()));
-     }
-
 
     /** 
      * A model which is stored persistently in a Relational DataBase
@@ -193,54 +160,6 @@ public class ModelRDB extends ModelCom implements Model {
         return new ModelRDB(BuiltinPersonalities.model, graph);
     }
 
-    /**
-     * Create a new database suitable for storing RDF data. In fact the database has
-     * to exist since jdbc can't create an empty database from a vacuum but it can be empty
-     * and this call will format it with appropriate tables and stored procedures.
-     * <p>
-     * The appropriate RDF-RDB driver to use is assumed to be the class Driver<DatabaseType><LayoutType>.
-     * If that can't be found it defaults to looking for a property file in /etc/Driver<DatabaseType><LayoutType>.config
-     * and uses that to determine the driver class and parameters.</p>
-     *
-     * @param dbcon a DBConnection specifying the database connection
-     * @param layoutType the name of the layout style to use. Currently one of:
-     * "Generic", "Hash", "MMGeneric", "MMHash", "Proc", "ThinProc".
-     * @param databaseType the name of the database type. Currently one of:
-     * "Interbase" "Postgresql" "Mysql" "Oracle". This may seem a little redundant
-     * given that the jdbc uri implicitly contains this information but there is no
-     * standard way of extracting this (esp. if the user connects via a bridge).
-     * @deprecated Since Jena 2.0 this call is no longer needed - it is preferable 
-     * to specify the database type when constructing the DBConnection and to modify
-     * the layout by using the properties in the DBConnection.  Then use the 
-     * call ModelRDB.createModel(IDBConnection)
-     */
-    public static ModelRDB create(IDBConnection dbcon, String layoutType, String databaseType) throws RDFRDBException {
-        dbcon.setDatabaseType(databaseType);
-        return createModel(dbcon, null, getDefaultModelProperties(dbcon));
-    }
-
-    /**
-     * Create a new database suitable for storing RDF data. In fact the database has
-     * to exist since jdbc can't create an empty database from a vacuum but it can be empty
-     * and this call will format it with appropriate tables and stored procedures.
-     * <p>
-     * Uses a default layout format which is able to support multiple models in a single database.
-     * </p>
-     * @param dbcon a DBConnectionI specifying the database connection
-     * @param databaseType the name of the database type. Currently one of:
-     * "Interbase" "Postgresql" "Mysql" "Oracle". This may seem a little redundant
-     * given that the jdbc uri implicitly contains this information but there is no
-     * standard way of extracting this (esp. if the user connects via a bridge).
-     * @deprecated Since Jena 2.0 this call is no longer needed - it is preferable to 
-     * specify the database type when constructing the DBConnection.  Then use the call 
-     * ModelRDB.createModel(IDBConnection)
-     */
-
-    public static ModelRDB create(IDBConnection dbcon, String databaseType) throws RDFRDBException {
-        dbcon.setDatabaseType(databaseType);
-        return createModel(dbcon, null, getDefaultModelProperties(dbcon));
-    }
-
 	/** 
 	 * Returns a Jena Model containing model-specific properties.
 	 * These describe the optimization/layout for this model in the database.
@@ -305,45 +224,6 @@ public class ModelRDB extends ModelCom implements Model {
 	 */
 	public IDBConnection getConnection() {
 		return m_graphRDB.getConnection();
-	}
-	
-	/**
-	 * Remove all the statements from the database which are associated with just this model.
-	 * This no longer reformats the database (which makes it safer and useful for multi-model
-	 * databases) but means that it is not guaranteed to garbage collect the resource table.
-     * @deprecated Since Jena 2.0 this call is not recommended (it's name
-     * is misleading) - to clear an entire database use DBConnection.cleanDB, 
-     * to remove just this Model use Model.remove().
-     */
-     public void clear() throws RDFRDBException {
-     	remove();
-     }
-
-	/**
-	 * Remove a named model from an existing multi-model database.
-	 * Will throw an RDFDBException if the database layout does not support
-	 * multiple models or if the database does not seem to formated.
-	 * @param dbcon a DBConnectionI specifying the database connection
-	 * @param name the name to give the newly created model
-	 * @deprecated Since Jena 2.0, to remove a model use the ModelRDB.remove()
-	 */
-	public static void deleteModel(IDBConnection dbcon, String name) throws RDFRDBException {
-		ModelRDB modelToDelete = ModelRDB.open(dbcon, name);
-		modelToDelete.remove();
-	}
-
-	/**
-	 * Loads all the statements for this model into an in-memory model.
-	 * @return a ModelMem containing the whole of the RDB model
-	 * @deprecated Since Jena 2.0, this call is not recommended.  Instead use
-	 * the soon-to-be-released bulk-load functions.
-	 */
-	public Model loadAll()  {
-		Model m = ModelFactory.createDefaultModel();
-		for (StmtIterator i = this.listStatements(); i.hasNext(); ) {
-			m.add( i.nextStatement() );
-		}
-		return m;
 	}
 	
 	/**

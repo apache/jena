@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -159,32 +159,6 @@ public class DBPropGraph extends DBProp {
             { A.close(); }
         }
     
-    /**
-         @deprecated this method should never have been publically visible
-        @param prefix
-     */
-	public void addPrefix( DBPropPrefix prefix ) {
-		// First drop existing uses of prefix or URI
-		DBPropPrefix existing = getPrefix( prefix.getValue() );
-		if( existing != null)
-            {
-			removePrefix( existing);
-            }
-		putPropNode( graphPrefix, prefix.getNode() );
-	}
-    
-	/**
-        @deprecated this method should never habve been publically visible 
-	*/
-	public void removePrefix( DBPropPrefix prefix ) {
-		SpecializedGraph.CompletionFlag complete = newComplete();
-		Iterator matches = graph.find( self, graphPrefix, prefix.getNode(), complete);
-		if( matches.hasNext() ) {
-			graph.delete( (Triple)(matches.next()), complete );
-			prefix.remove();
-		}
-	}
-    
     public void removePrefix( String prefix ) {
         Node prefixNode = Node.createLiteral( prefix );
         boolean commit = begin();
@@ -236,38 +210,6 @@ public class DBPropGraph extends DBProp {
             .mapWith ( new MapToPrefix() );
 	}
 	
-    /**
-        @deprecated this method should not have been visible
-        @param prefix
-        @return
-     */
-	public DBPropPrefix getPrefix( String prefix ) {
-		ExtendedIterator prefixes = 
-            graph.find( self, graphPrefix, null, newComplete() )
-            .mapWith ( new MapToPrefix() );
-		while( prefixes.hasNext() ) {
-			DBPropPrefix dbp = (DBPropPrefix)prefixes.next();
-			if( dbp.getValue().compareTo(prefix)==0) 
-				return dbp;
-		}
-		return null;
-	}
-	
-    /**
-        @deprecated this method should not have been visible
-        @param uri
-        @return
-     */
-	public DBPropPrefix getURI( String uri ) {
-		ExtendedIterator prefixes = getAllPrefixes();
-		while( prefixes.hasNext() ) {
-			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
-			if( prefix.getURI().compareTo(uri)==0) 
-				return prefix;
-		}
-		return null;
-	}
-	
 	public ExtendedIterator listTriples() {
 		// First get all the triples that directly desrcribe this graph
 		ExtendedIterator result = DBProp.listTriples( graph, self );
@@ -295,7 +237,6 @@ public class DBPropGraph extends DBProp {
 	}
 	
     /**
-        @deprecated only required in deprecated code
         @author kers
      */
 	private class MapToPrefix implements Map1 {

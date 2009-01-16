@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.*;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.20 $
+* @version $Revision: 1.21 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -57,25 +57,6 @@ public class DBConnection implements IDBConnection {
      * </pre>
      * @param user the user name to log on with
      * @param password the password corresponding to this user
-     * @deprecated As of Jena 2.0, it is recommended to use one of the DBConnection
-     * constructors which takes a database type as an argument.  (The DBConnection can
-     * operate more efficiently if it knows the database type).
-     */
-    public DBConnection(String url, String user, String password) {
-        this( url, user, password, null);
-    }
-
-    /**
-     * Create a connection specification based on jdbc address and
-     * appropriate authentication information.
-     * @param url the jdbc url for the database, note that the format of this
-     * is database dependent and that the appropriate jdbc driver will need to
-     * be specified via the standard pattern
-     * <pre>
-     *     Class.forName("my.sql.driver");
-     * </pre>
-     * @param user the user name to log on with
-     * @param password the password corresponding to this user
      * @param databaseType the type of database to which we are connecting.
      * 
 	 * @since Jena 2.0
@@ -85,18 +66,6 @@ public class DBConnection implements IDBConnection {
         m_user = user;
         m_password = password;
 		setDatabaseType(databaseType);
-    }
-
-    /**
-     * Create a connection specification that just wraps up an existing database
-     * connection.
-     * @param connection the open jdbc connection to use
-     * @deprecated As of Jena 2.0, it is recommended to use one of the DBConnection
-     * constructors which takes a database type as an argument.  (The DBConnection can
-     * operate more efficiently if it knows the database type).
-     */
-    public DBConnection(Connection connection) {
-		this(connection, null);
     }
 
     /**
@@ -305,22 +274,6 @@ public class DBConnection implements IDBConnection {
 	public void setDriver(IRDBDriver driver) {
     	m_driver = driver;
     }
-
-	/**
-	 * Helper function to locate and instantiate the driver class corresponding
-	 * to a given layout and database name
-	 * Throws an RDFRDBexception if the driver can't be instantiated
-	 * @deprecated As of Jena 2.0 this call should not be used.  Instead specify the database type
-	 * when constructing a DBConnection and then pass that connection to the GraphRDB.  There is
-	 * no longer any need for applications to interact with the IRDBDriver.  To customize the
-	 * database configuration/layout use the formatDB(propertyModel) call.
-	 */
-	public IRDBDriver getDriver(String layout, String database) throws RDFRDBException {
-    	// the layout is not supported in Jena2 - ignore this parameter
-    	setDatabaseType(database);
-    	return getDriver();
-    }
-    
 }
 
 /*

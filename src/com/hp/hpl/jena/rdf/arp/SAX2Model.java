@@ -20,26 +20,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * 
  */
 public class SAX2Model extends SAX2RDF {
-    /**
-     * Factory method to create a new SAX2Model.
-     * 
-     * @param base
-     *            The retrieval URL, or the base URI to be used while parsing.
-     * @param m
-     *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a
-     *            {@link StatementHandler}, and usually an
-     *            {@link org.xml.sax.ErrorHandler}
-     * @return A new SAX2Model
-     * @throws MalformedURIException
-     * @deprecated Use {@link #create(String, Model)}
-     */
-    static public SAX2Model newInstance(String base, Model m)
-            throws MalformedURIException {
-        return new SAX2Model(base, m, "");
-
-    }
 
     /**
      * Factory method to create a new SAX2Model.
@@ -58,7 +38,7 @@ public class SAX2Model extends SAX2RDF {
      */
     static public SAX2Model create(String base, Model m)
             throws SAXParseException {
-        return new SAX2Model(base, m, "", 0);
+        return new SAX2Model(base, m, "");
     }
 
     /**
@@ -85,34 +65,6 @@ public class SAX2Model extends SAX2RDF {
      */
     static public SAX2Model create(String base, Model m, String lang)
             throws SAXParseException {
-        return new SAX2Model(base, m, lang, 0);
-    }
-
-    /**
-     * Factory method to create a new SAX2Model. This is particularly intended
-     * for when parsing a non-root element within an XML document. In which case
-     * the application needs to find this value in the outer context.
-     * Optionally, namespace prefixes can be passed from the outer context using
-     * {@link #startPrefixMapping}.
-     * 
-     * @param base
-     *            The retrieval URL, or the base URI to be used while parsing.
-     * @param m
-     *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a
-     *            {@link StatementHandler}, and usually an
-     *            {@link org.xml.sax.ErrorHandler}
-     * @param lang
-     *            The current value of <code>xml:lang</code> when parsing
-     *            starts, usually "".
-     * @return A new SAX2Model
-     * @throws MalformedURIException
-     * @deprecated Use {@link #create(String, Model, String)}
-     */
-    static public SAX2Model newInstance(String base, Model m, String lang)
-            throws MalformedURIException {
-
         return new SAX2Model(base, m, lang);
     }
 
@@ -159,25 +111,9 @@ public class SAX2Model extends SAX2RDF {
      *             (If base is malformed, and treated as error rather than
      *             warning)
      */
-    protected SAX2Model(String base, Model m, String lang)
-            throws MalformedURIException {
-        super(base, lang, true);
-        handler = initHandler(m);
-        initParseX(base, lang);
-    }
-
-    protected SAX2Model(String base, Model m, String lang, int dummy)
-            throws SAXParseException {
-        super(base, lang, true);
-        handler = initHandler(m);
-        initParse(base, lang);
-    }
-
-    /**
-     * @deprecated
-     */
-    SAX2Model(String base, Model m, String lang, boolean dummy) {
-        super(base, lang, dummy);
+    protected SAX2Model(String base, Model m, String lang) throws SAXParseException
+    {
+        super(base, lang);
         handler = initHandler(m);
     }
 

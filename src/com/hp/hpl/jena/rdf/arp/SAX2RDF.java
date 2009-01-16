@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.21 2008-12-28 19:32:02 andy_seaborne Exp $
+ * * $Id: SAX2RDF.java,v 1.22 2009-01-16 12:53:18 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -74,53 +74,8 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * */
 public class SAX2RDF extends SAX2RDFImpl
 implements ARPConfig {
+
 	/**
-	 * Factory method to create a new SAX2RDF.
-	 * Use
-     * {@link #getHandlers} or {@link #setHandlersWith} to provide
-     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
-	 *
-	 * @param base The retrieval URL, or the base URI to be 
-     * used while parsing.
-     * @deprecated Use {@link #create(String)}.
-     *  @return A new SAX2RDF
-	 * @throws MalformedURIException
-	 */
-	static public SAX2RDF newInstance(String base) throws MalformedURIException { 
-        try {
-            return  create(base);    
-            }
-            catch (SAXParseException e) {
-                throw new MalformedURIException(e.getMessage());
-            }
-	}
-	/**
-	 * Factory method to create a new SAX2RDF.
-	 * This is particularly
-     * intended for when parsing a non-root element within
-     * an XML document. In which case the application
-     * needs to find this value in the outer context.
-     * Optionally, namespace prefixes can be passed from the
-     * outer context using {@link #startPrefixMapping}.
-	 * @param base The retrieval URL, or the base URI to be 
-     * used while parsing. Use
-     * {@link #getHandlers} or {@link #setHandlersWith} to provide
-     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
-	 * @param lang The current value of xml:lang when parsing starts, usually "".
-	 * @return A new SAX2RDF
-	 * @throws MalformedURIException If base is bad.
-     * @deprecated Use {@link #create(String,String)}.
-	 */
-	static public SAX2RDF newInstance(String base, String lang) throws MalformedURIException { 
-		try {
-        return  create(base,lang);    
-        }
-        catch (SAXParseException e) {
-            throw new MalformedURIException(e.getMessage());
-        }
-        
-	}    
-    /**
      * Factory method to create a new SAX2RDF.
      * Use
      * {@link #getHandlers} or {@link #setHandlersWith} to provide
@@ -183,28 +138,9 @@ implements ARPConfig {
 
     SAX2RDF(String base,  String lang) throws SAXParseException {
     	super(base,lang);
-        
     	initParse(base);
     }
 
-    /**
-     * @deprecated
-     */
-    void initParseX(String base, String lang) throws MalformedURIException {
-        try {
-            initParse(base,lang);
-        } catch (SAXParseException e) {
-            throw new MalformedURIException(e);
-        }
-    }
-    /**
-     * Must call initParse after this.
-     * @deprecated
-     */
-    SAX2RDF(String base,  String lang, boolean dummy){
-        super(base,lang);
-        
-    }
     /**The handlers used for processing ARP events. 
      * Do not use with a {@link SAX2Model}.
 

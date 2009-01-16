@@ -37,11 +37,15 @@ public class ARPOptions implements ARPErrorNumbers {
         ARP arp = new ARP();
         ARPOptions options = arp.getOptions();
      </pre>
-     *@deprecated Use {@link ARPConfig#getOptions()}
      */
-    public ARPOptions() {
+    private ARPOptions() {
+        //*@ deprecated Use {@link ARPConfig#getOptions()}
         
     }
+    
+    /** Internal use only */
+    public static ARPOptions createNewOptions() { return new ARPOptions() ; }
+    
     private static int defaultErrorMode[] = new int[400];
     static {
         for (int i = 0; i < defaultErrorMode.length; i++)
@@ -168,11 +172,12 @@ public class ARPOptions implements ARPErrorNumbers {
     }
 
     /**
+     * Internal use only.
      * Copies this object.
      * @return A copy.
-     * @deprecated Not intended for public use, will be removed from API
      */
     public ARPOptions copy() {
+        //* @ deprecated
     	ARPOptions rslt = new ARPOptions();
     	rslt.errorMode = (int[])errorMode.clone() ;
     	rslt.embedding = embedding;

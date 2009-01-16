@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based on earlier code by der)
-* @version $Revision: 1.9 $ on $Date: 2008-12-28 19:32:25 $
+* @version $Revision: 1.10 $ on $Date: 2009-01-16 12:53:18 $
 */
 
 public interface IDBConnection {
@@ -212,18 +212,6 @@ public interface IDBConnection {
      * standard driver package.
      */
     public void setDriver(IRDBDriver driver);
-
-    /**
-     * Helper function to locate and instantiate the driver class corresponding
-     * to a given layout and database name
-     * Throws an RDFRDBexception if the driver can't be instantiated
-     * @deprecated As of Jena 2.0 this call should not be used.  Instead specify the database type
-     * when constructing a DBConnection and then pass that connection to the GraphRDB.  There is
-     * no longer any need for applications to interact with the IRDBDriver.  To customize the
-     * database configuration/layout use the formatDB(propertyModel) call.
-     */
-    public IRDBDriver getDriver(String layout, String database) throws RDFRDBException;
-
 }
 
 /*

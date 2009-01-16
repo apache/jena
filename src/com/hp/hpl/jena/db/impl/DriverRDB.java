@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.71 $ on $Date: 2008-12-28 19:32:20 $
+* @version $Revision: 1.72 $ on $Date: 2009-01-16 12:53:14 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1128,16 +1128,6 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 	
 	/**
-	 * Initialise a database ready to store RDF tables.
-	 * @throws RDFDBException if the is a problem opening the connection or an internal SQL error.
-	 * @deprecated Since Jena 2.0 this call is no longer needed - formatting 
-	 * happens automatically as a side effect of creating Models - there should
-	 * be no need for an application to interact directly with the driver.
-	 */
-	public void formatDB() throws RDFRDBException {
-	}
-	
-	/**
 	 * Create a table for storing asserted or reified statements.
 	 * 
 	 * @param graphId the graph which the table is created.
@@ -1398,51 +1388,17 @@ public abstract class DriverRDB implements IRDBDriver {
 			
 		}
 
-
-
-    //--------------------------------------------------jena 1 backward compatability
-
     /**
      * Close the driver 
-     * 
      * Nothing to do for now.
      * 
      * @throws RDFDBException if there is an access problem
-     * @deprecated Since Jena 2.0 this call is no longer required - just 
-     * close the DBConnection - there should be no need for an application
-     * to interact directly with the driver.
-     * 
      */
 
-    public void close() throws RDFRDBException {
-    }
-
-
-    /**
-     * Returns true if the database layout supports multiple RDF models
-     * in the same database.
-     * @deprecated Since Jena 2.0 all databases support multiple models.
-     */
-
-    public boolean supportsMultipleModels() {
-    	return true;
-    }
-
-    /**
-     * Returns true if the database layout supports implicit reification
-     * of statements (i.e. statements can be treated as resources).
-     * @deprecated Since Jena 2.0 the reification API has changed.  The
-     * new API is supported in all models, but the old Jena 1 API is no
-     * longer supported.  This call will return false to indicate
-     * to old code that the old style of jena reification is not supported.
-     */
-
-    public boolean supportsJenaReification() {
-    	return false;
-    }
-    	
-	
-	/*
+    public void close() throws RDFRDBException
+    { }
+    
+ 	/*
 	 * The following routines are responsible for encoding nodes
 	 * as database structures. For each node type stored (currently,
 	 * literals, URI, blank), there are two possible encodings

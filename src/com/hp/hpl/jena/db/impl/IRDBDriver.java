@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.26 $
+* @version $Revision: 1.27 $
 */
 
 public interface IRDBDriver {
@@ -126,24 +126,12 @@ public interface IRDBDriver {
     public void cleanDB();
 
     /**
-     * Close the databse connection.
+     * Close the driver (does not close the DB connection)
      * @throws RDFDBException if there is an access problem
      */
 
     public void close() throws RDFRDBException;
 
-    /**
-     * Initialise a database ready to store RDF tables.
-     * Currently the table format depends on the RDBSpec type. In future it
-     * may become an explicit part of operations like this.
-     * @throws RDFDBException if the is a problem opening the connection or an internal SQL error.
-	 * @deprecated Since Jena 2.0 this call is no longer needed - formatting 
-	 * happens automatically as a side effect of creating Models - there should
-	 * be no need for an application to interact directly with the driver.
-     */
-
-    public void formatDB() throws RDFRDBException;
-    
     /**
      * Acquire the mutex lock in the database. This
      * is used to implement critical sections to prevent
@@ -214,26 +202,6 @@ public interface IRDBDriver {
 	 */
 	public boolean transactionsSupported();    
 
-    /**
-     * Returns true if the database layout supports multiple RDF models in the same database.
-     * @return boolean true if the database supports multiple models
-     * @deprecated Since Jena 2.0 all databases support multiple models.
-     */
-
-    public boolean supportsMultipleModels();
-
-    /**
-     * Returns true if the database layout supports implicit reification.
-     * of statements (i.e. statements can be treated as resources).
-     * @return boolean true if the database supports jena 1.0 reification.
-     * @deprecated Since Jena 2.0 the reification API has changed.  The
-     * new API is supported in all models, but the old Jena 1 API is no
-     * longer supported.  This call will return false to indicate
-     * to old code that the old style of jena reification is not supported.
-     */
-
-    public boolean supportsJenaReification();
-    
 	/**
 	 * Allocate an identifier for a new graph.
 	 * @param graphName The name of a new graph.

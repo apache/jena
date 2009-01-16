@@ -68,54 +68,9 @@ public class DOM2Model extends SAX2Model {
         return new DOM2Model(base,  m, lang, true) ;
     }
 
-
-    /**
-     * Create a new DOM2Model.
-     * 
-     * @param base
-     *            The retrieval URL, or the base URI to be used while parsing.
-     * @param m
-     *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link SAX2RDF#getHandlers}or
-     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @throws MalformedURIException 
-     * @deprecated Use {@link #createD2M(String, Model)}
-     */
-    public DOM2Model(String base, Model m) throws  MalformedURIException {
-        this(base, m, "");
-    }
-
-
-    /**
-     * Create a new DOM2Model. This is particularly intended for when parsing a
-     * non-root element within an XML document. In which case the application
-     * needs to find this value in the outer context. Optionally, namespace
-     * prefixes can be passed from the outer context using
-     * {@link SAX2RDF#startPrefixMapping}.
-     * 
-     * @param base
-     *            The retrieval URL, or the base URI to be used while parsing.
-     * @param m
-     *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link SAX2RDF#getHandlers}or
-     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @param lang
-     *            The current value of <code>xml:lang</code> when parsing
-     *            starts, usually "".
-     * @throws MalformedURIException 
-     * @deprecated Use {@link #createD2M(String, Model, String)}
-     */
-    public DOM2Model(String base, Model m, String lang)
-            throws  MalformedURIException {
-        super(base, m, lang);
-    }
-    
-
     DOM2Model(String base, Model m, String lang, boolean dummy)
             throws  SAXParseException {
-        super(base, m, lang, 0);
+        super(base, m, lang);
     }
 
     /**

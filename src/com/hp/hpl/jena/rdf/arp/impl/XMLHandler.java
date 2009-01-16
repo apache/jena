@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.32 2009-01-08 14:56:42 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.33 2009-01-16 12:53:19 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -350,9 +350,8 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
     */
 
-    private ARPOptions options = new ARPOptions();
-
-    private ARPHandlers handlers = new ARPHandlers();
+    private ARPOptions options = ARPOptions.createNewOptions() ;
+    private ARPHandlers handlers = ARPHandlers.createNewHandlers() ;
 
     StatementHandler getStatementHandler() {
         return handlers.getStatementHandler();
@@ -372,7 +371,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public void setHandlersWith(ARPHandlers newHh) {
-        handlers = new ARPHandlers();
+        handlers = ARPHandlers.createNewHandlers() ;
         handlers.setErrorHandler(newHh.getErrorHandler());
         handlers.setExtendedHandler(newHh.getExtendedHandler());
         handlers.setNamespaceHandler(newHh.getNamespaceHandler());

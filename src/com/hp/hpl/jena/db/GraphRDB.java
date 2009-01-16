@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -153,23 +153,6 @@ public class GraphRDB extends GraphBase implements Graph {
             return ReificationStyle.Minimal;
         throw new JenaException( "unsupported reification behaviour" );
         }
-                
-	/**
-	 * Construct a new GraphRDB using an unusual reification style.
-	 * @param con an open connection to the database
-	 * @param graphID is the name of a graph or GraphRDB.DEFAULT
-	 * @param requestedProperties a set of default properties. 
-	 * (May be null, if non-null should be a superset of the properties 
-	 * obtained by calling ModelRDB.getDefaultModelProperties ).
-	 * @param isNew is true if the graph doesn't already exist and 
-	 * false otherwise.  (If unsure, test for existance by using 
-	 * IDBConnection.containsGraph ).
-	 * @deprecated Please use the alternate constructor and choose the desired 
-	 * reification behaviour.
-	 */
-	public GraphRDB( IDBConnection con, String graphID, Graph requestedProperties, boolean isNew) {
-		this(con, graphID, requestedProperties, OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS, isNew);
-	}
 		
 	/**
 	 * Construct a new GraphRDB

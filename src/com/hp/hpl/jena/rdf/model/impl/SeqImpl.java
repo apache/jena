@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.26 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: SeqImpl.java,v 1.27 2009-01-16 12:53:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2008-12-28 19:31:52 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2009-01-16 12:53:18 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
@@ -182,7 +182,12 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     public Seq set(int index, Object o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeObject(o);
+        Statement s = getRequiredProperty(RDF.li(index)) ;
+        Model m = s.getModel() ;
+        Statement s2 = m.createLiteralStatement(s.getSubject(), s.getPredicate(), o) ; 
+        s.getModel().remove(s) ;
+        s.getModel().add(s2) ;
+        //getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
