@@ -5,4 +5,4 @@
 
 SELECT *
 FROM   <model9.n3>
-WHERE  (?x ?y "value"@en^^rdf:XMLLiteral)
+WHERE  (?x ?y "<value/>"^^rdf:XMLLiteral)

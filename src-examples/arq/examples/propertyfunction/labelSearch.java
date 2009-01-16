@@ -1,25 +1,19 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.propertyfunction;
 
-import java.util.List;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -45,7 +39,8 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
-import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.query.*;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends
@@ -79,8 +74,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class labelSearch implements PropertyFunction
 {
-    List myArgs = null;
-    
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         if ( argSubject.isList() || argObject.isList() )
@@ -218,7 +211,7 @@ public class labelSearch implements PropertyFunction
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

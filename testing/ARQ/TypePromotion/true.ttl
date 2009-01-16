@@ -1,5 +1,5 @@
 # Simple true result to an ASK query.
-# $Id: true.ttl,v 1.11 2008-11-30 20:29:45 andy_seaborne Exp $
+# $Id: true.ttl,v 1.12 2009-01-16 17:02:01 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .

@@ -95,7 +95,7 @@
                                 rs:variable
                                             "x"
                               ] ;
-                  rs:binding  [ rs:value    "value"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
+                  rs:binding  [ rs:value    "<value/>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
                                 rs:variable
                                             "z"
                               ] ;

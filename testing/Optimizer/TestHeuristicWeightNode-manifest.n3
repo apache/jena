@@ -8,7 +8,7 @@
 # testing/Optimizer/Test-data.n3
 # 	
 # Author: Markus Stocker
-# Version: $Id: TestHeuristicWeightNode-manifest.n3,v 1.5 2008-11-30 20:29:45 andy_seaborne Exp $
+# Version: $Id: TestHeuristicWeightNode-manifest.n3,v 1.6 2009-01-16 17:02:00 andy_seaborne Exp $
 # ---------------------------------------------
 
 <http://jena.hpl.hp.com/ARQo/test/#TC001> 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -44,6 +44,7 @@ public class MyQueryEngine extends QueryEngineMain
         this(query, dataset, null, null) ;
     }
 
+    @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         // To extend: rewrite op with a Transform
@@ -70,6 +71,7 @@ public class MyQueryEngine extends QueryEngineMain
 class MyTransform extends TransformCopy
 {
     // Example, do nothing tranform. 
+    @Override
     public Op transform(OpBGP opBGP)                { return opBGP ; }
 }
 
@@ -98,7 +100,7 @@ class MyQueryEngineFactory implements QueryEngineFactory
 } 
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

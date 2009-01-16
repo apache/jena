@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -75,7 +75,7 @@ public class AlgebraExec
         {
             // -------- Or make ResultSet from it (but not both - reading an
             //          iterator consumes the current solution)
-            List varNames = new ArrayList() ;
+            List<String> varNames = new ArrayList<String>() ;
             varNames.add("x") ;
             varNames.add("z") ;
             ResultSet rs = new ResultSetStream(varNames, m, qIter);
@@ -107,7 +107,7 @@ public class AlgebraExec
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

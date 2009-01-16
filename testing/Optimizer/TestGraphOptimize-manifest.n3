@@ -8,7 +8,7 @@
 # testing/Optimizer/Test-data.n3
 # 	
 # Author: Markus Stocker
-# Version: $Id: TestGraphOptimize-manifest.n3,v 1.5 2008-11-30 20:29:45 andy_seaborne Exp $
+# Version: $Id: TestGraphOptimize-manifest.n3,v 1.6 2009-01-16 17:02:00 andy_seaborne Exp $
 # ---------------------------------------------
 
 <http://jena.hpl.hp.com/ARQo/test/#TB001> 
@@ -46,12 +46,12 @@
 					  
 <http://jena.hpl.hp.com/ARQo/test/#TB004> 
 	rdf:type 		:TestCase ;
-	rdfs:comment	"There is no optimization for this BGP. Although the order of the triple
+	rdfs:comment	"""There is no optimization for this BGP. Although the order of the triple
 					 patterns may potentially be reordered differently after optimization,
 					 internally triple patterns are processed in the order they are added
 					 to the graph (nodes and edges are lists ordered by OID, not unordered sets,
 					 which is for convenience only, as by definition the set of nodes of an
-					 undirected graph is unordered)" ;
+					 undirected graph is unordered)""" ;
 	dc:title 		"TB004" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -96,11 +96,11 @@
 					  
 <http://jena.hpl.hp.com/ARQo/test/#TB008> 
 	rdf:type 		:TestCase ;
-	rdfs:comment	"This example includes the problem of new variable introduction during triple pattern processing.
+	rdfs:comment	"""This example includes the problem of new variable introduction during triple pattern processing.
 					 At no stage, there should be a triple pattern which introduces only new variables and, thus, cannot
 					 be joined with the previous triple patterns. The :s3 join is the most selectivite, thus, it is executed
 					 first. The pattern with subject :s1 is executed last, because at the third position it would not be
-					 joined with the previous patterns." ;
+					 joined with the previous patterns.""" ;
 	dc:title 		"TB008" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -449,9 +449,9 @@
 <http://jena.hpl.hp.com/ARQo/test/#TB037> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TB037" ;
-	rdfs:comment	"This is an interesting example: the ex:msn is more selective than the ex:firstname, hence it is executed first.
+	rdfs:comment	"""This is an interesting example: the ex:msn is more selective than the ex:firstname, hence it is executed first.
 					 However, the ex:firstname pattern does not join with the ex:msn pattern, thus, the less selective pattern is joined
-					 with the ex:msn pattern and the intermediate result set finally with the ex:firstname pattern." ;
+					 with the ex:msn pattern and the intermediate result set finally with the ex:firstname pattern.""" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
 				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
@@ -886,8 +886,8 @@
 <http://jena.hpl.hp.com/ARQo/test/#TB075> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TB075" ;
-	rdfs:comment	"This is different to the variable counting heuristic. The bound join between the two predicates is weighted 1.0
-					 and, hence, the query is optimized differently" ;
+	rdfs:comment	"""This is different to the variable counting heuristic. The bound join between the two predicates is weighted 1.0
+					 and, hence, the query is optimized differently""" ;
 	:heuristic		"BGP_VARIABLE_COUNTING_UNBOUND" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
 				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;

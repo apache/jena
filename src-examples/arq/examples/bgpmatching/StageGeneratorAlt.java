@@ -1,12 +1,11 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.bgpmatching;
 
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -46,17 +45,14 @@ public class StageGeneratorAlt implements StageGenerator
 
         // Stream the triple matches together, one triple matcher at a time. 
         QueryIterator qIter = input ;
-        for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
-        {
-            Triple triple = (Triple)iter.next();
+        for (Triple triple : pattern.getList())
             qIter = new QueryIterTriplePattern(qIter, triple, execCxt) ;
-        }
         return qIter ;
     }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
