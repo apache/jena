@@ -13,15 +13,12 @@ import java.util.Map;
 import com.hp.hpl.jena.tdb.TDBException;
 
 /**
- * LRU cache using @link{java.util.LinkedHashMap}
  * @author Andy Seaborne
  */
 
 public class CacheLRU<K,V> implements Cache<K,V>
 {
     private CacheImpl<K,V> cache ;
-    
-    //public CacheLRU(int maxSize) { cache = new CacheImpl<K, V>(maxSize) ; }
     
     public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
 
