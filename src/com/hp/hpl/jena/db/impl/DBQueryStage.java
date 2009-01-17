@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.20 2009-01-16 18:03:18 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.21 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -32,18 +32,18 @@ public class DBQueryStage extends Stage
     protected DBQuery compiled;
             
 	public DBQueryStage
-        ( GraphRDB graph, SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
+        ( GraphRDB graph, SpecializedGraph sg, List<VarDesc> varList, List<DBPattern> dbPat, ExpressionSet constraints )
 		{
 		this.graph = graph;
 		this.compiled = compile ( sg, varList, dbPat, constraints );
         // System.err.println( " " + this.compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ).replaceAll( " Where ", "\n Where " ).replaceAll( " From ", "\n From " ) );
 		}
 
-	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
+	protected DBQuery compile( SpecializedGraph sg, List<VarDesc> varList, List<DBPattern> dbPat, ExpressionSet constraints )
         { return compile( compiler, sg, varList, dbPat, constraints ); }
         
     protected DBQuery compile( DBQueryStageCompiler compiler, SpecializedGraph sg,
-    			List varList, List dbPat, ExpressionSet constraints )
+    			List<VarDesc> varList, List<DBPattern> dbPat, ExpressionSet constraints )
         {
         return DBQueryStageCompiler.compile( compiler, (DBQueryHandler) graph.queryHandler(),
         			sg, varList, dbPat, constraints );
@@ -84,11 +84,12 @@ public class DBQueryStage extends Stage
             while (it.hasNext())
                 {
                 Domain useme = current.copy();
-                List row = (List) it.next();
+                @SuppressWarnings("unchecked")
+                List<String> row = (List<String>) it.next();
                 for (int i = 0; i < compiled.resList.length; i++)
                     {
                     int j = compiled.resList[i];
-                    String o = (String) row.get( i );
+                    String o = row.get( i );
                     Node n = compiled.driver.RDBStringToNode( o );
                     useme.setElement( j, n );
                     }

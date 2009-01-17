@@ -18,25 +18,25 @@ package com.hp.hpl.jena.db.impl;
 * are needed but could specialize it to RDFNodes.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.8 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.9 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 
-public interface ICache {
+public interface ICache<K, V> {
 
     /**
      * Add an entry to the cache
      * @param id the database ID to be used as an index
      * @param val the literal or resources to be stored
      */
-    public void put(IDBID id, Object val);
+    public void put(K id, V val);
 
     /**
      * Retreive an object from the cache
      * @param id the database ID of the object to be retrieved
      * @return the object or null if it is not in the cache
      */
-    public Object get(IDBID id);
+    public V get(K id);
 
     /**
      * Set a threshold for the cache size in terms of the count of cache entries.

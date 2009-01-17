@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db.impl;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
+
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -97,7 +98,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(List triples, CompletionFlag complete) {
+	public void add(List<Triple> triples, CompletionFlag complete) {
 		m_pset.storeTripleList(triples,my_GID);
 		complete.setDone();
 	}
@@ -113,7 +114,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(List triples, CompletionFlag complete) {
+	public void delete(List<Triple> triples, CompletionFlag complete) {
 		m_pset.deleteTripleList(triples,my_GID);
 		complete.setDone();
 	}

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.18 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.19 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.18 $
+ 	@version $Revision: 1.19 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -39,16 +39,17 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * 
 	 * @param graphProperties the system properties of a persistent graph.
 	 */
-	public DBPrefixMappingImpl( DBPropGraph graphProperties) {
+    public DBPrefixMappingImpl( DBPropGraph graphProperties) {
 		super();
 		m_graphProperties = graphProperties;
 		
 		// Populate the prefix map using data from the 
 		// persistent graph properties
         boolean commit = m_graphProperties.begin();
-		Iterator it = m_graphProperties.getAllPrefixes();
+        @SuppressWarnings("unchecked")
+		Iterator<DBPropPrefix> it = m_graphProperties.getAllPrefixes();
 		while( it.hasNext()) {
-			DBPropPrefix prefix = (DBPropPrefix)it.next();
+			DBPropPrefix prefix = it.next();
 			super.setNsPrefix( prefix.getValue(), prefix.getURI() );
 		}
         m_graphProperties.conditionalCommit( commit );
@@ -97,12 +98,12 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map)
 	 */
 	@Override
-    public PrefixMapping setNsPrefixes(Map other) {
+    public PrefixMapping setNsPrefixes(Map<String, String> other) {
         checkUnlocked();
-		Iterator it = other.entrySet().iterator();
+		Iterator<Map.Entry<String, String>> it = other.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry e = (Map.Entry) it.next();
-			setNsPrefix((String) e.getKey(), (String) e.getValue());
+			Map.Entry<String, String> e = it.next();
+			setNsPrefix(e.getKey(), e.getValue());
 		}
         return this;
 	}

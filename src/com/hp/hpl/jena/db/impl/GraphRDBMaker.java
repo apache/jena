@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.29 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: GraphRDBMaker.java,v 1.30 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -29,7 +29,7 @@ import java.util.*;
 public class GraphRDBMaker extends BaseGraphMaker
     {
     protected IDBConnection c;
-    protected Set created = CollectionFactory.createHashedSet();
+    protected Set<String> created = CollectionFactory.createHashedSet();
     int reificationStyle;
     
     /**
@@ -136,8 +136,8 @@ public class GraphRDBMaker extends BaseGraphMaker
     */
     public void removeAll()
         {
-        Iterator it = CollectionFactory.createHashedSet( created ).iterator();
-        while (it.hasNext()) removeGraph( (String) it.next() );
+        Iterator<String> it = CollectionFactory.createHashedSet( created ).iterator();
+        while (it.hasNext()) removeGraph( it.next() );
         }
         
     public void close()

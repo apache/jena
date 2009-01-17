@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery1.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestQuery1.java,v 1.13 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -29,13 +29,13 @@ public class TestQuery1 extends AbstractTestQuery1
     private IDBConnection theConnection;
     private int count = 0;
     
-    private List graphs;
+    private List<GraphRDB> graphs;
     
     @Override
     public void setUp() throws Exception
         {
         theConnection = TestConnection.makeTestConnection();
-        graphs = new ArrayList();
+        graphs = new ArrayList<GraphRDB>();
         super.setUp();
         }
         
@@ -48,7 +48,7 @@ public class TestQuery1 extends AbstractTestQuery1
         }
         
     private void removeGraphs()
-        { for (int i = 0; i < graphs.size(); i += 1) ((GraphRDB) graphs.get(i)).remove(); }
+        { for (int i = 0; i < graphs.size(); i += 1) graphs.get(i).remove(); }
 
 	@Override
     public Graph getGraph ( ) {

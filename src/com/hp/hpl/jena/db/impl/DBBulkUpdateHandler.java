@@ -1,25 +1,29 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.25 2009-01-16 18:03:18 andy_seaborne Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.26 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.IteratorCollection;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
+import com.hp.hpl.jena.db.GraphRDB;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
 
 /**
     An implementation of the bulk update interface. Updated by kers to permit event
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.25 $
+ 	@version $Revision: 1.26 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -87,9 +91,10 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     public void add( Graph g )
         { add( g, false ); }
         
-	public void add( Graph g, boolean withReifications ) {
-		ExtendedIterator triplesToAdd = GraphUtil.findAll( g );
-		try { addIterator( triplesToAdd ); } finally { triplesToAdd.close(); }
+    public void add( Graph g, boolean withReifications ) {
+        @SuppressWarnings("unchecked")
+		Iterator<Triple> triplesToAdd = GraphUtil.findAll( g );
+		try { addIterator( triplesToAdd ); } finally { NiceIterator.close(triplesToAdd); }
         if (withReifications) SimpleBulkUpdateHandler.addReifications( graph, g );
         manager.notifyAddGraph( graph, g );
 	}
@@ -148,8 +153,9 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         { delete( g, false ); }
         
     public void delete( Graph g, boolean withReifications ) {
-		ExtendedIterator triplesToDelete = GraphUtil.findAll( g );
-		try { deleteIterator( triplesToDelete ); } finally { triplesToDelete.close(); }
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> triplesToDelete = GraphUtil.findAll( g );
+		try { deleteIterator( triplesToDelete ); } finally { NiceIterator.close(triplesToDelete) ; }
         if (withReifications) SimpleBulkUpdateHandler.deleteReifications( graph, g );
         manager.notifyDeleteGraph( graph, g );
    	}

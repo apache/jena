@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.75 $ on $Date: 2009-01-16 18:50:01 $
+* @version $Revision: 1.76 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -235,7 +235,7 @@ public abstract class DriverRDB implements IRDBDriver {
     
     protected IDBConnection m_dbcon = null;
     
-    protected LRUCache prefixCache = null;
+    protected LRUCache<DBIDInt, String> prefixCache = null;
     
     public static final int PREFIX_CACHE_SIZE = 50;
     
@@ -301,7 +301,7 @@ public abstract class DriverRDB implements IRDBDriver {
 						// throw new JenaException("The database is not
 						// formatted.\n");
 						doCleanDB(false);
-						prefixCache = new LRUCache(PREFIX_CACHE_SIZE); 
+						prefixCache = new LRUCache<DBIDInt, String>(PREFIX_CACHE_SIZE); 
 						res = formatAndConstructSystemSpecializedGraph();
 					} catch (Exception e) {
 						unlockDB();
@@ -320,7 +320,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			unlockDB();
 		}
 
-		prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
+		prefixCache = new LRUCache<DBIDInt, String>(PREFIX_CACHE_SIZE);
 		getDbInitTablesParams(); //this call is a hack. it's needed because
 		// it has the side effect of initializing some vars (e.g., EOS).
 		IPSet pSet = createIPSetInstanceFromName(m_psetClassName,
@@ -661,7 +661,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphProperties
 	 *            A set of customization properties for the graph.
 	 */
-	public List<SpecializedGraph> recreateSpecializedGraphs(DBPropGraph graphProperties) {
+    public List<SpecializedGraph> recreateSpecializedGraphs(DBPropGraph graphProperties) {
 		
 		List<SpecializedGraph> result = new ArrayList<SpecializedGraph>();
 		int dbGraphId = graphProperties.getGraphId();
@@ -670,9 +670,10 @@ public abstract class DriverRDB implements IRDBDriver {
 		String[] lsetTypes = {m_lsetClassName, m_lsetReifierClassName};
 		int i;
 		for(i=0;i<2;i++) {
-			Iterator it = graphProperties.getAllLSets();
+		    @SuppressWarnings("unchecked")
+		    Iterator<DBPropLSet> it = graphProperties.getAllLSets();
 			while(it.hasNext() ) {
-				DBPropLSet lSetProps = (DBPropLSet)it.next();
+				DBPropLSet lSetProps = it.next();
 				if ( lSetProps.getType().equals(lsetTypes[i]) ) continue;
 				DBPropPSet pSetProps = lSetProps.getPset();
 
@@ -726,7 +727,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphId The identity of the Graph which these specialized graphs should hold
 	 * @param graphProperties The properties for the graph to be removed.
 	 */
-	public void removeSpecializedGraphs( DBPropGraph graphProperties, List<SpecializedGraph> specializedGraphs) {
+    public void removeSpecializedGraphs( DBPropGraph graphProperties, List<SpecializedGraph> specializedGraphs) {
 			
 		int graphId = graphProperties.getGraphId();
 		
@@ -766,9 +767,10 @@ public abstract class DriverRDB implements IRDBDriver {
 		if ( graphId != DEFAULT_ID ) {
 			stInUse = false;
 			rtInUse = false;
-			Iterator it =  m_dbProps.getAllGraphs();
+			@SuppressWarnings("unchecked")
+			Iterator<DBPropGraph> it =  m_dbProps.getAllGraphs();
 			while ( it.hasNext() ) {
-				DBPropGraph gp = (DBPropGraph) it.next();
+				DBPropGraph gp = it.next();
 				if ( gp.getStmtTable().equals(stmtTbl) ) stInUse = true;
 				if ( gp.getReifTable().equals(reifTbl) ) rtInUse = true;
 			}
@@ -2089,7 +2091,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	protected String IDtoPrefix ( int prefixID ) {
 		// check cache
 		DBIDInt dbid = new DBIDInt(prefixID);
-		String res = (String) prefixCache.get(dbid);
+		String res = prefixCache.get(dbid);
 		if ( res != null)
 			return res;
 		else {

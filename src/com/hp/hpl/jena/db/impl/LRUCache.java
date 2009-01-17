@@ -24,38 +24,16 @@ import com.hp.hpl.jena.util.CollectionFactory;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.12 $ on $Date: 2009-01-16 18:03:18 $
+* @version $Revision: 1.13 $ on $Date: 2009-01-17 14:40:18 $
 */
 
-public class LRUCache implements ICache {
-	
-	/* don't use until jena moves to jre 1.4
-	public class myLinkedHashMap extends LinkedHashMap {
-		
-		int threshold;
-		
-		public myLinkedHashMap ( int max ) {
-			super(max);
-			threshold = max;
-		}
-		
-		protected boolean removeEldestEntry ( Map.Entry eldest ) {
-			return size() > threshold;
-		}
-	 }
-	protected myLinkedHashMap cache;
-	
-    public LRUCache(int max) {
-    	maxCount = max;
-		cache = new myLinkedHashMap(max);
-    }
-    
-	*/
-	
-	protected Map<IDBID, Object> keyCache;
-	protected Map<Object, IDBID> valCache;
+public class LRUCache<K,T> implements ICache<K,T>
+{
+	// Predates LinkedHashMap
+	protected Map<K, T> keyCache;
+	protected Map<T, K> valCache;
 
-	protected IDBID Keys[];
+	protected K Keys[];
 	protected Random rand;
 
 	public LRUCache(int max) {
@@ -63,18 +41,19 @@ public class LRUCache implements ICache {
 		resize(max);
 	}
 	
-	protected void resize ( int max ) {
+	@SuppressWarnings("unchecked")
+    protected void resize ( int max ) {
 		maxCount = max;
 		keyCache = CollectionFactory.createHashedMap(max);
 		valCache = CollectionFactory.createHashedMap(max);
-		Keys = new IDBID[max];
+		Keys = (K[]) new Object[max];
 		count = 0;
 	}
 
 	protected int maxCount;
 	protected int count;
 
-	public Object get(IDBID id) {
+	public T get(K id) {
 		return keyCache.get(id);
 	}
 	
@@ -83,7 +62,7 @@ public class LRUCache implements ICache {
 	}
 
 
-	public void put(IDBID id, Object val) {
+	public void put(K id, T val) {
 		synchronized (this) {
 			int curSize = keyCache.size();
 			keyCache.put(id, val);
@@ -109,27 +88,12 @@ public class LRUCache implements ICache {
 		}
 	}
 
-	/* save for java 1.4
-    public void put(IDBID id, Object val) {
-        cache.put(id, val);
-        if ( cache.size() > maxCount ) {
-			throw new JenaException("LRUCache exceeds threshold");
-		}
-    }
-    */
-    
     public void clear() {
     	keyCache.clear();
     	valCache.clear();
     	count = 0;
     }
     
-	/*
-	public void setLimit(int max) {
-		maxCount = max;
-		cache = new myLinkedHashMap(max);
-	}
-	*/
 	public void setLimit(int max) {
 		resize(max);
 	}

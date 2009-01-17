@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.15 $ on $Date: 2009-01-17 14:40:18 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator {
 
@@ -46,7 +46,7 @@ public class ResultSetTripleIterator extends ResultSetIterator {
     /** HasType flag if iterating over reified statements */
     protected boolean m_hasType;
 
-    static protected Log logger = LogFactory.getLog( ResultSetTripleIterator.class );
+    static private Log logger = LogFactory.getLog( ResultSetTripleIterator.class );
     
 	// Constructor
 	public ResultSetTripleIterator(IPSet p, IDBID graphID) {

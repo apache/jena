@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.13 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestReifierCompareToMem.java,v 1.14 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -77,34 +77,39 @@ public class TestReifierCompareToMem extends TestCase
 	}
 
 	private void compareModels() {
-		
-		Iterator it = modelmem.listStatements();
-		while( it.hasNext()) {
-			Statement s = (Statement)it.next();
-			if( ! modelrdb.contains(s)) {
-				logger.error( "Statment:"+s+" is in mem but not rdf");
-				logModel(modelmem, "Mem");
-				logModel(modelrdb, "RDF");
-			}
-			assertTrue( modelrdb.contains(s));
-		}
-		it = modelrdb.listStatements();
-		while( it.hasNext()) {
-			Statement s = (Statement)it.next();
-			if( ! modelmem.contains(s)) {
-				logger.error("Statment:"+s+" is in rdf but not memory");
-				logModel(modelmem, "Mem");
-				logModel(modelrdb, "RDF");
-			}
-			assertTrue( modelmem.contains(s));
-		}
-		
-		assertTrue( modelmem.size() == modelrdb.size() );
-    }
+	    {
+	        @SuppressWarnings("unchecked")
+	        Iterator<Statement> it = modelmem.listStatements();
+	        while( it.hasNext()) {
+	            Statement s = it.next();
+	            if( ! modelrdb.contains(s)) {
+	                logger.error( "Statment:"+s+" is in mem but not rdf");
+	                logModel(modelmem, "Mem");
+	                logModel(modelrdb, "RDF");
+	            }
+	            assertTrue( modelrdb.contains(s));
+	        }
+	    }
+	    {
+	        @SuppressWarnings("unchecked")
+	        Iterator<Statement> it = modelrdb.listStatements();
+	        while( it.hasNext()) {
+	            Statement s = it.next();
+	            if( ! modelmem.contains(s)) {
+	                logger.error("Statment:"+s+" is in rdf but not memory");
+	                logModel(modelmem, "Mem");
+	                logModel(modelrdb, "RDF");
+	            }
+	            assertTrue( modelmem.contains(s));
+	        }
+	    }
+	    assertTrue( modelmem.size() == modelrdb.size() );
+	}
     
     private void logModel(Model m, String name) {
     	logger.debug("Model");
-		Iterator it = m.listStatements();
+    	@SuppressWarnings("unchecked")
+        Iterator<Statement> it = m.listStatements();
 		while( it.hasNext()) { 
             logger.debug( name + ": " + it.next() );
 //			Statement s = (Statement)it.next();

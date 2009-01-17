@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.11 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: AbstractTestQuery1.java,v 1.12 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -475,7 +475,7 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
         int n = 0;
         while (it.hasNext()) {
             n++;
-            ((List) it.next()).size();  // hedgehog asks, do we need to check this works?
+            ((List<?>) it.next()).size();  // hedgehog asks, do we need to check this works?
         }
         return n;
     }

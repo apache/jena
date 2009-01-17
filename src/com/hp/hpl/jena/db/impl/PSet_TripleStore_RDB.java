@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.63 2009-01-16 18:03:18 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.64 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.63 $ on $Date: 2009-01-16 18:03:18 $
+* @version $Revision: 1.64 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -72,10 +72,10 @@ public  class PSet_TripleStore_RDB implements IPSet {
     protected final static int DEFAULT_CACHE = 1000;
 
     /** Cache of literals */
-    protected ICache literalCache = new SimpleCache(DEFAULT_CACHE);
+    protected ICache<IDBID, Node_Literal> literalCache = new SimpleCache<IDBID, Node_Literal>(DEFAULT_CACHE);
 
     /** Cache of resources */
-    protected ICache resourceCache = new SimpleCache(DEFAULT_CACHE);
+    protected ICache<IDBID, Node> resourceCache = new SimpleCache<IDBID, Node>(DEFAULT_CACHE);
 	
 	/** 
 	 * The IRDBDriver for the database.	 
@@ -98,7 +98,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		m_driver = driver;
 	}
 
-    protected static Log logger = LogFactory.getLog(PSet_TripleStore_RDB.class);
+    private static Log logger = LogFactory.getLog(PSet_TripleStore_RDB.class);
     
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
@@ -168,7 +168,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * If it is not in the cache, do not attempt to retrieve it from the database.
 	 */
 	public Node_Literal getLiteralFromCache(IDBID id) {
-		return (Node_Literal) literalCache.get(id);
+		return literalCache.get(id);
 	}
 
     /**
@@ -470,7 +470,7 @@ public void deleteTripleAR(
 		}
 		
 		String obj_res, obj_lex, obj_lit;
-		// TODO: Node.NULL is only valid for reif triple stores. should check this.
+		// TO DO: Node.NULL is only valid for reif triple stores. should check this.
 		String subj =
 			t.getSubject().equals(Node.NULL) ? null : m_driver.nodeToRDBString(t.getSubject(),true);
 		String pred =
@@ -573,7 +573,7 @@ public void deleteTripleAR(
 	 * @param my_GID
 	 *            ID of the graph.
 	 */
-	public void storeTripleList(List triples, IDBID my_GID) {
+	public void storeTripleList(List<Triple> triples, IDBID my_GID) {
 		// for relational dbs, there are two styles for bulk inserts.
 		// JDBC 2.0 supports batched updates.
 		// MySQL also supports a multiple-row insert.
@@ -583,13 +583,13 @@ public void deleteTripleAR(
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-		Iterator it = triples.iterator();
+		Iterator<Triple> it = triples.iterator();
 		Hashtable<String, PreparedStatement> batchedPreparedStatements = null;
 
 		if ( SKIP_DUPLICATE_CHECK == false ) {
 //		if ( false ) {
 			while (it.hasNext()) {
-				t = (Triple) it.next();
+				t = it.next();
 				storeTriple(t, my_GID, false, null);
 			}
 		} else 
@@ -597,7 +597,7 @@ public void deleteTripleAR(
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
 			batchedPreparedStatements = new Hashtable<String, PreparedStatement>();
 			while (it.hasNext()) {
-				t = (Triple) it.next();
+				t = it.next();
 				storeTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
@@ -648,8 +648,9 @@ public void deleteTripleAR(
 			}
 			}
 		}
-		ArrayList c = new ArrayList(triples);
-		triples.removeAll(c);
+		//ArrayList<Triple> c = new ArrayList<Triple>(triples);
+		// triples.removeAll(c);
+		triples.removeAll(triples);
 	}
 
 	/**
@@ -669,7 +670,7 @@ public void deleteTripleAR(
 	 * @param my_GID
 	 *            ID of the graph.
 	 */
-	public void deleteTripleList(List triples, IDBID my_GID) {
+	public void deleteTripleList(List<Triple> triples, IDBID my_GID) {
 		// for relational dbs, there are two styles for bulk operations.
 		// JDBC 2.0 supports batched updates.
 		// MySQL also supports a multiple-row update.
@@ -681,13 +682,13 @@ public void deleteTripleAR(
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-		Iterator it = triples.iterator();
+		Iterator<Triple> it = triples.iterator();
 		
 		if ( SKIP_DUPLICATE_CHECK == false ) {
 //		if ( false ) {
 
 			while (it.hasNext()) {
-				t = (Triple) it.next();
+				t = it.next();
 				deleteTriple(t, my_GID, false, null);
 			}
 		} else 
@@ -695,7 +696,7 @@ public void deleteTripleAR(
 			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
 			batchedPreparedStatements = new Hashtable<String, PreparedStatement>();
 			while (it.hasNext()) {
-				t = (Triple) it.next();
+				t = it.next();
 				deleteTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
@@ -747,7 +748,7 @@ public void deleteTripleAR(
 				}
 			}
 		}
-		ArrayList c = new ArrayList(triples);
+		ArrayList<Triple> c = new ArrayList<Triple>(triples);
 		triples.removeAll(c);
 	}
 

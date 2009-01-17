@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.24 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestReifier.java,v 1.25 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -31,7 +31,7 @@ public class TestReifier extends AbstractTestReifier  {
     /** 
         Initialiser required for MetaTestGraph interface.
      */
-    public TestReifier( Class graphClass, String name, ReificationStyle style ) 
+    public TestReifier( Class<?> graphClass, String name, ReificationStyle style ) 
         { super( name ); }
         
 	public static TestSuite suite() {

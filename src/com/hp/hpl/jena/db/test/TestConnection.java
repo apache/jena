@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.34 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.35 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -465,10 +465,10 @@ public class TestConnection extends TestCase {
 	
 
 	// helper class to sync threads
-    public class syncOnCount {
+    public class SyncOnCount {
     	private int count;
     	
-    	public syncOnCount () { count = 0; }
+    	public SyncOnCount () { count = 0; }
     	
     	public synchronized boolean testCount ( int i ) {
     		return count >= i;
@@ -503,15 +503,15 @@ public class TestConnection extends TestCase {
 
     }
     
-	syncOnCount s;
+	//syncOnCount s;
     volatile String msg = "" ;
     
     public void testConcurrentThread() {
         
 		class thread1 extends Thread {
-			syncOnCount s;
+			SyncOnCount s;
 
-			public thread1(syncOnCount sc) {
+			public thread1(SyncOnCount sc) {
 				super("thread1");
 				s = sc;
 			}
@@ -566,9 +566,9 @@ public class TestConnection extends TestCase {
         }
 
 		class thread2 extends Thread {
-			syncOnCount s;
+			SyncOnCount s;
 
-			public thread2(syncOnCount sc) {
+			public thread2(SyncOnCount sc) {
 				super("thread2");
 				s = sc;
 			}
@@ -624,7 +624,7 @@ public class TestConnection extends TestCase {
             logger.warn("Transaction isolation test surpressed");
             return;
         }
-		syncOnCount s = new syncOnCount();
+		SyncOnCount s = new SyncOnCount();
 		Thread t1 = new thread1(s);
 		Thread t2 = new thread2(s);
 		t2.start();

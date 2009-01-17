@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.16 2009-01-16 17:23:51 andy_seaborne Exp $
+ * $Id: XSDBaseStringType.java,v 1.17 2009-01-17 14:40:09 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:51 $
+ * @version $Revision: 1.17 $ on $Date: 2009-01-17 14:40:09 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -39,7 +39,7 @@ public class XSDBaseStringType extends XSDDatatype {
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
      */
-    public XSDBaseStringType(String typeName, Class javaClass) {
+    public XSDBaseStringType(String typeName, Class<?> javaClass) {
         super(typeName, javaClass);
     }
 

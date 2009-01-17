@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  */
 public interface SpecializedGraph {
@@ -68,7 +68,7 @@ public interface SpecializedGraph {
 	 * @param triples List of triples to be added.  This is modified by the call.
 	 * @param complete is true if a subsequent call to contains(triple) will return true for all triples originally in the List.
 	 */
-	public void add(List triples, CompletionFlag complete);
+	public void add(List<Triple> triples, CompletionFlag complete);
     
     /** 
      * Attempt to add all the triples from a graph to the specialized graph
@@ -112,7 +112,7 @@ public interface SpecializedGraph {
 	 * @param complete is true iff delete(Triple, complete) would have set 
 	 * complete==true for all triples in the List.
 	 */
-	public void delete(List triples, CompletionFlag complete);
+	public void delete(List<Triple> triples, CompletionFlag complete);
 
     /** 
      * Compute the number of unique triples added to the Specialized Graph.

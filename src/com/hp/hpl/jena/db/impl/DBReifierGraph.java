@@ -24,11 +24,11 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class DBReifierGraph implements Graph {
 
-	protected List m_specializedGraphs = null; // list of SpecializedGraphReifiers
+	protected List<SpecializedGraphReifier> m_specializedGraphs = null;
 	protected GraphRDB m_parent = null;        // parent graph;
 	
 	/**
@@ -37,7 +37,7 @@ public class DBReifierGraph implements Graph {
 	 * @param reifiers List of SpecializedGraphReifers which holds the reified triples.  This
 	 * list may be empty and, in that case, the DBReifierGraph just appears to hold no triples.
 	 */
-	public DBReifierGraph( GraphRDB parent, List reifiers) {
+	public DBReifierGraph( GraphRDB parent, List<SpecializedGraphReifier> reifiers) {
 	
 		m_parent = parent;
 		m_specializedGraphs = reifiers;
@@ -64,9 +64,9 @@ public class DBReifierGraph implements Graph {
 	public int size() {
         checkUnclosed();
 		int result =0;		
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			result += sg.tripleCount();
 		}
 		return result;
@@ -81,9 +81,9 @@ public class DBReifierGraph implements Graph {
 	public boolean contains(Triple t) {
         checkUnclosed();
 		SpecializedGraph.CompletionFlag complete = newComplete();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			boolean result = sg.contains( t, newComplete() );
 			if (result || complete.isDone()) return result;
 		}
@@ -110,9 +110,9 @@ public class DBReifierGraph implements Graph {
         checkUnclosed();
 		ExtendedIterator result = new NiceIterator();
 		SpecializedGraph.CompletionFlag complete = newComplete();
-		Iterator it = m_specializedGraphs.iterator();
+		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
+			SpecializedGraph sg = it.next();
 			ExtendedIterator partialResult = sg.find( m, complete);
 			result = result.andThen(partialResult);
 			if( complete.isDone())

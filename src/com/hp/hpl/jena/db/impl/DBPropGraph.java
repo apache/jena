@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -53,20 +53,21 @@ public class DBPropGraph extends DBProp {
 	}	
 	
 	public DBPropGraph( SpecializedGraph g, String newSymbolicName, Graph oldProperties) {
-		super(g);
-		
-		putPropString(graphName, newSymbolicName);
-		// only copy user-configurable properties
-		Iterator it = oldProperties.find( Node.ANY, Node.ANY, Node.ANY);
-		while ( it.hasNext() ) {
-			Triple t = (Triple) it.next();
-			if ( t.getPredicate().equals(graphName) ||
-				t.getPredicate().equals(graphId) ||
-				t.getPredicate().equals(stmtTable) ||
-				t.getPredicate().equals(reifTable) )
-				continue;
-			putPropNode((Node_URI)t.getPredicate(),t.getObject());
-		}
+	    super(g);
+
+	    putPropString(graphName, newSymbolicName);
+	    // only copy user-configurable properties
+	    @SuppressWarnings("unchecked")
+	    Iterator<Triple> it = oldProperties.find( Node.ANY, Node.ANY, Node.ANY);
+	    while ( it.hasNext() ) {
+	        Triple t = it.next();
+	        if ( t.getPredicate().equals(graphName) ||
+	        t.getPredicate().equals(graphId) ||
+	        t.getPredicate().equals(stmtTable) ||
+	        t.getPredicate().equals(reifTable) )
+	            continue;
+	        putPropNode((Node_URI)t.getPredicate(),t.getObject());
+	    }
 	}
 
     /**
@@ -275,7 +276,7 @@ public class DBPropGraph extends DBProp {
 	
 	@Override
     public void remove() {
-		Iterator it = getAllPrefixes();
+		ExtendedIterator it = getAllPrefixes();
 		while( it.hasNext()) {
 			((DBPropPrefix)it.next()).remove();			
 		}

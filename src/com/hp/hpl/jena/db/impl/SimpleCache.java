@@ -24,13 +24,13 @@ import com.hp.hpl.jena.util.CollectionFactory;
 * when the threshold limit is exceeded.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.9 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.10 $ on $Date: 2009-01-17 14:40:18 $
 */
 
-public class SimpleCache implements ICache {
+public class SimpleCache<K, V> implements ICache<K, V> {
 
     /** The cache itself */
-    protected Map cache = CollectionFactory.createHashedMap();
+    protected Map<K, V> cache = CollectionFactory.createHashedMap();
 
     /** The current size limit */
     protected int threshold;
@@ -53,7 +53,7 @@ public class SimpleCache implements ICache {
      * @param id the database ID to be used as an index
      * @param val the literal or resources to be stored
      */
-    public void put(IDBID id, Object val) {
+    public void put(K id, V val) {
         if (threshold == 0) return;
         if (threshold > 0 && count >= threshold) {
             cache = CollectionFactory.createHashedMap();
@@ -68,7 +68,7 @@ public class SimpleCache implements ICache {
      * @param id the database ID of the object to be retrieved
      * @return the object or null if it is not in the cache
      */
-    public Object get(IDBID id) {
+    public V get(K id) {
         return cache.get(id);
     }
 

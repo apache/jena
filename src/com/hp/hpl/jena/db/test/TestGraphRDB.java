@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.15 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestGraphRDB.java,v 1.16 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,7 +24,7 @@ public class TestGraphRDB extends MetaTestGraph
     public TestGraphRDB( String name )
         { super( name ); }
     
-    public TestGraphRDB( Class graphClass, String name, ReificationStyle style ) 
+    public TestGraphRDB( Class<?> graphClass, String name, ReificationStyle style ) 
         { super( graphClass, name, style ); }
         
     public static TestSuite suite()

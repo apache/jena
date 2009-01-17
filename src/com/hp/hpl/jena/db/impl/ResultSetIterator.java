@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.17 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -53,7 +53,7 @@ public class ResultSetIterator implements ExtendedIterator {
     protected String m_opname;
 
     /** The contents of the current row */
-    protected ArrayList m_row;
+    protected ArrayList<Object> m_row;
 
     /** The number of columns in this result set */
     protected int m_nCols;
@@ -64,7 +64,7 @@ public class ResultSetIterator implements ExtendedIterator {
     /** Flag if we have prefeteched the next row but not yet returned it */
     protected boolean m_prefetched = false;
 
-    protected static Log logger = LogFactory.getLog( ResultSetIterator.class );
+    private static Log logger = LogFactory.getLog( ResultSetIterator.class );
     /**
      * Create an empty iterator.
      * Needs to be initialized by reset
@@ -195,7 +195,7 @@ public class ResultSetIterator implements ExtendedIterator {
     protected void extractRow() throws Exception {
         if (m_row == null) {
             m_nCols = m_resultSet.getMetaData().getColumnCount();
-            m_row = new ArrayList(m_nCols);
+            m_row = new ArrayList<Object>(m_nCols);
             for (int i = 0; i < m_nCols; i++) m_row.add(null);
         }
         for (int i = 0; i < m_nCols; i++) {
@@ -245,7 +245,7 @@ public class ResultSetIterator implements ExtendedIterator {
      * This may be too specialized but seems to come up a lot - rethink.
      */
     public Object getSingleton() throws SQLException {
-        List row = (List) next();
+        List<?> row = (List<?>)next();
         close();
         return row.get(0);
     }
@@ -268,11 +268,11 @@ public class ResultSetIterator implements ExtendedIterator {
 		return NiceIterator.andThen(this, other);
 	}
 
-    public Set toSet() {
+    public Set<?> toSet() {
         return NiceIterator.asSet( this ); 
         }
     
-    public List toList() {
+    public List<?> toList() {
         return NiceIterator.asList( this ); 
         }
     

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.7 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.8 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 public class ResultSetNodeIterator extends ResultSetIterator {
@@ -39,7 +39,7 @@ public class ResultSetNodeIterator extends ResultSetIterator {
     protected void extractRow() throws Exception {
         if (m_row == null) {
             m_nCols = m_resultSet.getMetaData().getColumnCount();
-            m_row = new ArrayList(m_nCols);
+            m_row = new ArrayList<Object>(m_nCols);
             for (int i = 0; i < m_nCols; i++) m_row.add(null);
         }
         for (int i = 0; i < m_nCols; i++) {

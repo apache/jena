@@ -11,22 +11,25 @@ package com.hp.hpl.jena.db.impl;
 
 //=======================================================================
 // Imports
-import java.sql.*;
-
-import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 //=======================================================================
 /**
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:54 $
+* @version $Revision: 1.16 $ on $Date: 2009-01-17 14:40:18 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 

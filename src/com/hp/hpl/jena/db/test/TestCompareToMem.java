@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.15 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestCompareToMem.java,v 1.16 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,12 +24,15 @@ package com.hp.hpl.jena.db.test;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.rdf.model.*;
-
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.ModelRDB;
 
 public class TestCompareToMem extends TestCase
     {    
@@ -82,34 +85,41 @@ public class TestCompareToMem extends TestCase
 	}
 
 	private void compareModels() {
-		
-		Iterator it = modelmem.listStatements();
-		while( it.hasNext()) {
-			Statement s = (Statement)it.next();
-			if( ! modelrdf.contains(s)) {
-				logger.error("Statment:"+s+" is in mem but not rdf");
-				logModel(modelmem, "Mem");
-				logModel(modelrdf, "RDF");
-			}
-			assertTrue( modelrdf.contains(s));
-		}
-		it = modelrdf.listStatements();
-		while( it.hasNext()) {
-			Statement s = (Statement)it.next();
-			if( ! modelmem.contains(s)) {
-				logger.error("Statment:"+s+" is in rdf but not memory");
-				logModel(modelmem, "Mem");
-				logModel(modelrdf, "RDF");
-			}
-			assertTrue( modelmem.contains(s));
-		}
-    }
+
+	    {
+	        @SuppressWarnings("unchecked")
+	        Iterator<Statement> it = modelmem.listStatements();
+	        while( it.hasNext()) {
+	            Statement s = it.next();
+	            if( ! modelrdf.contains(s)) {
+	                logger.error("Statment:"+s+" is in mem but not rdf");
+	                logModel(modelmem, "Mem");
+	                logModel(modelrdf, "RDF");
+	            }
+	            assertTrue( modelrdf.contains(s));
+	        }
+	    }
+	    {
+	        @SuppressWarnings("unchecked")
+	        Iterator<Statement> it = modelrdf.listStatements();
+	        while( it.hasNext()) {
+	            Statement s = it.next();
+	            if( ! modelmem.contains(s)) {
+	                logger.error("Statment:"+s+" is in rdf but not memory");
+	                logModel(modelmem, "Mem");
+	                logModel(modelrdf, "RDF");
+	            }
+	            assertTrue( modelmem.contains(s));
+	        }
+	    }
+	}
     
     private void logModel(Model m, String name) {
     	logger.debug("Model");
-		Iterator it = m.listStatements();
+    	@SuppressWarnings("unchecked")
+        Iterator<Statement> it = m.listStatements();
 		while( it.hasNext()) { 
-			Statement s = (Statement)it.next();
+			Statement s = it.next();
 			RDFNode object = s.getObject();
 			if( object instanceof Literal )
 				logger.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());

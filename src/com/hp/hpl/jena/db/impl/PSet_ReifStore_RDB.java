@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.31 $ on $Date: 2008-12-28 19:32:21 $
+* @version $Revision: 1.32 $ on $Date: 2009-01-17 14:40:18 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -47,7 +47,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	//=======================================================================
 	// Internal variables
     
-    protected static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
+    private static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
     
 	//=======================================================================
 	// Constructors and accessors
@@ -281,9 +281,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		 * @see com.hp.hpl.jena.util.iterator.Map1#map1(java.lang.Object)
 		 */
 		public Object map1(Object o) {
-			// TODO Auto-generated method stub
-			List l = (List) o;
-            // TODO we have a BUG here somewhere, hence the message.
+			List<?> l = (List<?>) o;
             String s = null;
             Object n = l.get(0);
             if ( (n instanceof String) || (n instanceof Byte) )

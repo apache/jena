@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.*;
+
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -360,11 +361,11 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(List triples, CompletionFlag complete) {
-		ArrayList remainingTriples = new ArrayList();
+	public void add(List<Triple> triples, CompletionFlag complete) {
+		List<Triple> remainingTriples = new ArrayList<Triple>();
 		for( int i=0; i< triples.size(); i++) {
 			CompletionFlag partialResult = newComplete();
-			add( (Triple)triples.get(i), partialResult);
+			add( triples.get(i), partialResult);
 			if( !partialResult.isDone())
 				remainingTriples.add(triples.get(i));
 		}
@@ -378,12 +379,12 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(List triples, CompletionFlag complete) {
+	public void delete(List<Triple> triples, CompletionFlag complete) {
 		boolean result = true;
-		Iterator it = triples.iterator();
+		Iterator<Triple> it = triples.iterator();
 		while(it.hasNext()) {
 			CompletionFlag partialResult = newComplete();
-			delete( (Triple)it.next(), partialResult);
+			delete( it.next(), partialResult);
 			result = result && partialResult.isDone();
 		}
 		if( result )

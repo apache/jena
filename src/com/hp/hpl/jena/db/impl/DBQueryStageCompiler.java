@@ -36,14 +36,14 @@ public final class DBQueryStageCompiler
     */  
     public static DBQuery compile
         ( DBQueryStageCompiler compiler, DBQueryHandler qh, SpecializedGraph sg,
-    		List varList, List dbPat, ExpressionSet constraints )
+    		List<VarDesc> varList, List<DBPattern> dbPat, ExpressionSet constraints )
         {
         DBQuery query = new DBQuery( sg,varList,qh.queryOnlyStmt, qh.queryOnlyReif,qh.queryFullReif );
         if ( qh.getQueryOnlyReified() && !qh.getQueryFullReified() )
         	throw new JenaException("Fastpath currently requires QueryFullReified to be true if QueryOnlyReified is also true");
         if (!query.isEmpty) 
             {
-        	for (int i = 0; i < dbPat.size(); i += 1) compilePattern ( compiler, query, (DBPattern) dbPat.get(i) );
+        	for (int i = 0; i < dbPat.size(); i += 1) compilePattern ( compiler, query, dbPat.get(i) );
             compileConstraints( compiler, query, constraints );
 			compileQuery( compiler, query );
             }
@@ -149,20 +149,20 @@ public final class DBQueryStageCompiler
 	/**
 		compile the constraints.
 	*/
-	private static void compileConstraints
-        ( DBQueryStageCompiler compiler, DBQuery query, ExpressionSet constraints ) 
-        {
-		Iterator it = constraints.iterator();
-		while (it.hasNext()) 
-            {
-            Expression e = (Expression) it.next();
-			VarDesc bind = query.findBinding( e.getArg(0).getName() );
-			if ( bind == null ) throw new JenaException( "Unbound variable in constraint" );
-			String strMat = ((Expression.Fixed) e.getArg(1)).toString();
-			query.stmt += query.sqlAnd.gen
-                ( query.driver.genSQLStringMatch( bind.alias, bind.column, e.getFun(), strMat ) );
-            }		
-        }
+	private static void compileConstraints ( DBQueryStageCompiler compiler, DBQuery query, ExpressionSet constraints ) 
+	{
+	    @SuppressWarnings("unchecked")
+	    Iterator<Expression> it = constraints.iterator();
+	    while (it.hasNext()) 
+	    {
+	        Expression e = it.next();
+	        VarDesc bind = query.findBinding( e.getArg(0).getName() );
+	        if ( bind == null ) throw new JenaException( "Unbound variable in constraint" );
+	        String strMat = ((Expression.Fixed) e.getArg(1)).toString();
+	        query.stmt += query.sqlAnd.gen
+	        ( query.driver.genSQLStringMatch( bind.alias, bind.column, e.getFun(), strMat ) );
+	    }		
+	}
 			
 	/**
 		compile the final form of the query statement.

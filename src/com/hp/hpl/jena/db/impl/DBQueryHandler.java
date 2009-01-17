@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.28 2009-01-16 18:03:18 andy_seaborne Exp $
+  $Id: DBQueryHandler.java,v 1.29 2009-01-17 14:40:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -306,8 +306,9 @@ public class DBQueryHandler extends SimpleQueryHandler {
 	}
 
 
-	private boolean findConstraints ( ExpressionSet constraints, ExpressionSet evalCons, VarDesc vx ) {
+    private boolean findConstraints ( ExpressionSet constraints, ExpressionSet evalCons, VarDesc vx ) {
 		boolean res = false;
+	    @SuppressWarnings("unchecked")
 		Iterator<Expression> it = constraints.iterator();
 		Expression e;
 		while (it.hasNext()) {
