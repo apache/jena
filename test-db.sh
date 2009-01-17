@@ -35,7 +35,7 @@ DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
 ## HSQL does not support full transaction isolation.
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC=${JDBC:-$JDBCDIR/HSQL/hsqldb.jar}
+JDBC=${JDBC:-$JDBCDIR/HSQLDB/hsqldb.jar}
 ;;
 
 hsqldb-mem|hsql-mem)
@@ -46,7 +46,7 @@ DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC=${JDBC:-$JDBCDIR/HSQL/hsqldb.jar}
+JDBC=${JDBC:-$JDBCDIR/HSQLDB/hsqldb.jar}
 ;;
 
 derby)

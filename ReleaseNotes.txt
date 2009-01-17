@@ -2,7 +2,12 @@ Release Notes
 =============
 
 
-==== Jena 2.5.8/2.6.0
+==== Jena 2.6.0
+
+** Codebase converted to Java 5
+
+Deprecation clearance.
+   Methods, classes and statics marked deprecated in previous releases have been largely removed.
 
 Reasoners:
    o Extended validity checking for OWL configurations to include 
@@ -22,9 +27,10 @@ JenaModelSpec:
      ModelSpec system, which was removed in previous releases.
 
 N3:
-   o N3 parser is now the Trutle parser.
+   o N3 parser is now the Turtle parser.
      The dialect of N3 that Jena supported (which is quite old) has some idioms that are not legal
      Turtle although they are nowadays not correct N3 either.
+   o Turtle writer now speeded up when many namespaces in use.
         
 ==== Jena 2.5.7
 

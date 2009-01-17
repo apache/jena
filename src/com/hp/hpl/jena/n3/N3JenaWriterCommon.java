@@ -5,28 +5,33 @@
 
 package com.hp.hpl.jena.n3;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.util.iterator.* ;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.vocabulary.OWL ;
-import com.hp.hpl.jena.vocabulary.XSD ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-
-import java.util.* ;
-import java.io.* ;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.* ;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
+import java.util.*;
+import java.util.Map.Entry;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
+
+import com.hp.hpl.jena.JenaRuntime;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.47 2009-01-16 18:24:39 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.48 2009-01-17 22:01:20 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -49,13 +54,14 @@ public class N3JenaWriterCommon implements RDFWriter
     // Common variables
     protected RDFErrorHandler errorHandler = null;
 
-    protected static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
-
-	protected Map<String, String> prefixMap 	   	= new HashMap<String, String>() ;	// Prefixes to actually use
+    protected Map<String, String> prefixMap 	   	= new HashMap<String, String>() ;	// Prefixes to actually use
+    protected Map<String, String> reversePrefixMap  = new HashMap<String, String>() ;   // URI->prefix
 	protected Map<Resource, String>	bNodesMap       = null ;		    // BNodes seen.
 	protected int bNodeCounter    = 0 ;
 
     // Specific properties that have a short form.
+	// Not Turtle.
+    protected static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
 	protected static Map<String, String> wellKnownPropsMap = new HashMap<String, String>() ;
 	static {
 		wellKnownPropsMap.put(NS_W3_log+"implies",		"=>" ) ;
@@ -209,6 +215,10 @@ public class N3JenaWriterCommon implements RDFWriter
         Model model = ModelFactory.withHiddenStatements( baseModel );
         bNodesMap = new HashMap<Resource, String>() ;
 
+        // PrefixMapping (to Jena 2.5.7 at least)
+        // is specialized to XML-isms and Turle prefixed names aren't quite qnames. 
+        // Build temporary maps of acceptable prefixes and URIs. 
+        
         // If no base defined for the model, but one given to writer,
         // then use this.
         String base2 = prefixMap.get("") ;
@@ -217,11 +227,19 @@ public class N3JenaWriterCommon implements RDFWriter
 //        if ( base2 == null && baseURIrefHash != null )
 //            prefixMap.put("", baseURIrefHash) ;
 
-        for ( Iterator<String> iter = prefixMap.keySet().iterator() ; iter.hasNext() ; )
+        for ( Iterator<Entry<String, String>> iter = prefixMap.entrySet().iterator() ; iter.hasNext() ; )
         {
-            String prefix = iter.next() ;
-            if ( prefix.indexOf('.') != -1 )
+            Entry<String, String> e = iter.next() ;
+            String prefix = e.getKey() ;
+            String uri = e.getValue(); 
+            
+            // XML namespaces name can include '.'
+            // Turtle prefixed names can't.
+            if ( ! checkPrefixPart(prefix) ) 
                 iter.remove() ;
+            else
+                // Build acceptable reverse mapping  
+                reversePrefixMap.put(uri, prefix) ;
         }
         
         startWriting() ;
@@ -597,60 +615,94 @@ public class N3JenaWriterCommon implements RDFWriter
 //        if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )
 //            return "<>" ;
 
-		// Try for a prefix and write as qname.  Find the longest if several.
-        // Possible optimization: split URI and have URI=> ns: map.
-        // Ordering prefixes by length, then first hit is better.
-        // 
-        // Also: could just assume that the split is on / or #
-        // Means we need to find a prefix just once. 
-		for ( Iterator<String> pIter = prefixMap.keySet().iterator() ; pIter.hasNext() ; )
+		// Try for a prefix and write as prefixed name.
+		// 1/ Try splitting as a prefixed name
+		// 2/ Search for possibilities
+		
+		// Stage 1.
+		int idx = splitIdx(uriStr) ;
+		// Depends on legal URIs.
+		if ( idx >= 0 )
 		{
-			String p = pIter.next() ;
-			String u = prefixMap.get(p) ;
-			if ( uriStr.startsWith(u) )
-				if ( matchURI.length() < u.length() )
-				{
-					matchPrefix = p ;
-					matchURI = u ;
-				}
+		    // Include the # itself.
+		    String x = uriStr.substring(0,idx+1) ;
+		    String prefix = reversePrefixMap.get(x) ;
+		    if ( prefix != null )
+		    {
+		        String localPart = uriStr.substring(idx+1) ;
+		        if ( checkLocalPart(localPart) )
+		            return prefix+':'+localPart ;
+		    }
 		}
-		if ( matchPrefix != null )
-		{
-			String localname = uriStr.substring(matchURI.length()) ;
-            
-            if ( checkQName(matchPrefix, localname) )
-                return matchPrefix+":"+localname ;
+		
+		// Unsplit. Could just return here. 
+//		// Find the longest if several.
+//        // Possible optimization: split URI and have URI=> ns: map.
+//        // Ordering prefixes by length, then first hit is better.
+//        // 
+//        // Also: could just assume that the split is on / or #
+//        // Means we need to find a prefix just once. 
+//		for ( Iterator<String> pIter = prefixMap.keySet().iterator() ; pIter.hasNext() ; )
+//		{
+//			String p = pIter.next() ;
+//			String u = prefixMap.get(p) ;
+//			if ( uriStr.startsWith(u) )
+//				if ( matchURI.length() < u.length() )
+//				{
+//					matchPrefix = p ;
+//					matchURI = u ;
+//				}
+//		}
+//		if ( matchPrefix != null )
+//		{
+//			String localname = uriStr.substring(matchURI.length()) ;
+//            
+//            if ( checkPrefixedName(matchPrefix, localname) )
+//                return matchPrefix+":"+localname ;
+//
+//            // Continue and return quoted URIref
+//		}
 
-            // Continue and return quoted URIref
-		}
-
-		// Not as a qname - write as a quoted URIref
+		// Not as a prefixed name - write as a quoted URIref
 		// Should we unicode escape here?
         // It should be right - the writer should be UTF-8 on output.
 		return "<"+uriStr+">" ;
 	}
 
-    // Qnames in N3 aren't really qnames
-    //   No dots; digit can be first
-    // These tests must agree, or be more restrictive, than the parser. 
-    protected static boolean checkQName(String ns, String local)
+    protected static int splitIdx(String uriStr)
     {
-        return checkQNameNamespace(ns) && checkQNameLocalname(local) ;
+        int idx = uriStr.lastIndexOf('#') ;
+        if ( idx >= 0 )
+            return idx ;
+        // No # - try for /
+        idx = uriStr.lastIndexOf('/') ;
+        return idx ;
     }
     
-    protected static boolean checkQNameNamespace(String s)
+    
+    // Prefxied names in N3 and Turtle aren't really qnames
+    //    No dots in preifx part; digit can be first in local part
+    // These tests must agree, or be more restrictive, than the parser. 
+    protected static boolean checkPrefixedName(String ns, String local)
     {
-        return checkQNamePart(s) ;
+        return checkPrefixPart(ns) && checkLocalPart(local) ;
     }
-    protected static boolean checkQNameLocalname(String s)
+    
+    protected static boolean checkPrefixPart(String s)
     {
-        return checkQNamePart(s) ;
+        return checkNamePart(s) ;
+    }
+    
+    protected static boolean checkLocalPart(String s)
+    {
+        // This is too restrictive (but safe)
+        // local parts with dots are legal.
+        return checkNamePart(s) ;
     }
 
     
-    protected static boolean checkQNamePart(String s)
+    protected static boolean checkNamePart(String s)
     {
-        boolean isOK = true ;
         CharacterIterator cIter = new StringCharacterIterator(s) ;
         
         for ( char ch = cIter.first() ;
@@ -664,11 +716,10 @@ public class N3JenaWriterCommon implements RDFWriter
                 case '_': case '-':
                     continue ;
             }
-            // Not an acceptable characters
-            isOK = false ;
-            break ;
+            // Not an acceptable character
+            return false ;
         }
-        return isOK ; 
+        return true ; 
     }
     
     protected final static String WS = "\n\r\t" ;
