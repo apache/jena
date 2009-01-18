@@ -13,8 +13,6 @@ public class Dev
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
 
-    // More prefix tests
-    
     // removeAll
     // listSubjects etc
     
