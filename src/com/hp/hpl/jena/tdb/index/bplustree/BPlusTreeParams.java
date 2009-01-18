@@ -159,7 +159,6 @@ public class BPlusTreeParams
     
     public int getBlockSize()
     {
-        // Min size.
         return calcBlockSize(order, recordFactory) ;
     }
     
@@ -189,9 +188,9 @@ public class BPlusTreeParams
     }
 
     /** return the size of a block */
-    public static int calcBlockSize(int bTreeOrder, RecordFactory factory) 
+    public static int calcBlockSize(int bpTreeOrder, RecordFactory factory) 
     {
-        BPlusTreeParams p = new BPlusTreeParams(bTreeOrder, factory) ;
+        BPlusTreeParams p = new BPlusTreeParams(bpTreeOrder, factory) ;
         int x = p.getMaxRec()*factory.recordLength() + p.getMaxPtr()*SizeOfPointer ;
         x += BlockHeaderSize ;
         return x ;
