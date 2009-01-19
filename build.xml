@@ -32,6 +32,10 @@
   <property name="src.examples.dir"       value="src-examples"/>
   <property name="src.dev.dir"            value="src-dev"/>
 
+  <!-- Coordinate with ivysetting.xml -->
+  <property name="publish.resolver"       value="dev-publish"/>
+
+
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
   <property name="build.metadata.file.src"     value="tdb-properties.xml"/>
@@ -68,9 +72,6 @@
   
    <echo>${fileset.src}</echo>
 -->
-
-  <!-- Publication (name in ivysettings.xml) -->
-  <property name="publish.resolver"                value="dev-publish"/>
 
   <import file="build-lib.xml"/>
   <import file="build-dist.xml"/>
