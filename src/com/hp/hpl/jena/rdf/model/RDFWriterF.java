@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterF.java,v 1.9 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: RDFWriterF.java,v 1.10 2009-01-19 14:47:48 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -44,7 +44,7 @@ package com.hp.hpl.jena.rdf.model;
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
  * @author bwm
- * @version $Version$ $Date: 2008-12-28 19:31:54 $
+ * @version $Version$ $Date: 2009-01-19 14:47:48 $
  */
 
 public interface RDFWriterF {
@@ -67,8 +67,5 @@ public interface RDFWriterF {
  * @return the old class name for this language
  */    
     public String setWriterClassName(String lang, String className);
-    
-// * @deprecated Replaced by setWriter.
-
 }
 
