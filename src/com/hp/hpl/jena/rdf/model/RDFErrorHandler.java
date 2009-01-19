@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFErrorHandler.java,v 1.7 2008-12-28 19:31:54 andy_seaborne Exp $
+ * $Id: RDFErrorHandler.java,v 1.8 2009-01-19 14:33:56 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -32,7 +32,7 @@ package com.hp.hpl.jena.rdf.model;
 /** A generic error handler.
  *
  * @author bwm
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public interface RDFErrorHandler {
     
@@ -46,7 +46,6 @@ public interface RDFErrorHandler {
     public void error(Exception e);
 /** report a catastrophic error.  Must not return.
  * @param e an exception representing the error
- * @throws RDFError a generic RDF exception
  */    
     public void fatalError(Exception e);
 }

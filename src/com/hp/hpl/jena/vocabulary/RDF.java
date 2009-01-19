@@ -1,7 +1,7 @@
 /*
     (c)  Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: RDF.java,v 1.15 2008-12-28 19:32:07 andy_seaborne Exp $
+    $Id: RDF.java,v 1.16 2009-01-19 14:33:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
     The standard RDF vocabulary.
     @author  bwm; updated by kers/daniel/christopher
-    @version $Id: RDF.java,v 1.15 2008-12-28 19:32:07 andy_seaborne Exp $
+    @version $Id: RDF.java,v 1.16 2009-01-19 14:33:57 chris-dollin Exp $
 */
 
 public class RDF{
@@ -54,7 +54,7 @@ public class RDF{
         The same items of vocabulary, but at the Node level, parked inside a
         nested class so that there's a simple way to refer to them.
     */
-    public static final class Nodes
+    @SuppressWarnings("hiding") public static final class Nodes
         {
         public static final Node Alt = RDF.Alt.asNode();
         public static final Node Bag = RDF.Bag.asNode();

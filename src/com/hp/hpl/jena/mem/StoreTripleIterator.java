@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StoreTripleIterator.java,v 1.10 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: StoreTripleIterator.java,v 1.11 2009-01-19 14:33:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -39,8 +39,7 @@ public class StoreTripleIterator extends TrackingTripleIterator
         this.toNotify = toNotify;
         }
 
-    @Override
-    public void remove()
+    @Override public void remove()
         {
         super.remove();
         X.removedOneViaIterator();
