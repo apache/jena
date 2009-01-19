@@ -41,18 +41,6 @@ import com.hp.hpl.jena.shared.WrappedIOException;
  */
 public class JenaReader implements RDFReader, ARPErrorNumbers {
     
-//    /**
-//     * Sets the reader for the languages RDF/XML and RDF/XML-ABBREV to be
-//     * JenaReader.
-//     * @deprecated This is the default behaviour
-//     * @param m
-//     *            The Model on which to set the reader properties.
-//     */
-//    static public void useMe(Model m) {
-//        m.setReaderClassName("RDF/XML", JenaReader.class.getName());
-//        m.setReaderClassName("RDF/XML-ABBREV", JenaReader.class.getName());
-//    }
-
     static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 
     static private final String saxPropertiesURL = "http://xml.org/sax/properties/";
@@ -102,18 +90,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
     }
 
-//    /**
-//     * Converts an ARP literal into a Jena Literal.
-//     * 
-//     * @param lit
-//     *            The ARP literal.
-//     * @return The Jena Literal.
-//     */
-//    static private Literal translate(ALiteral lit) {
-//        return new LiteralImpl(lit.toString(), lit.getLang(), lit
-//                .isWellFormedXML(), null);
-//    }
-
     private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
         if (dtURI == null)
@@ -149,19 +125,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     static Triple convert(AResource s, AResource p, ALiteral o) {
         return Triple.create(convert(s), convert(p), convert(o));
     }
-
-//    /**
-//     * Converts an ARP resource into a Jena property.
-//     * 
-//     * @param r
-//     *            The ARP resource.
-//     * @throws JenaException
-//     *             If r is anonymous, or similarly ill-formed.
-//     * @return The Jena property.
-//     */
-//    static private Property translatePred(AResource r) throws JenaException {
-//        return new PropertyImpl(r.getURI());
-//    }
 
     /**
      * Reads from reader, using base URI xmlbase, adding triples to model. If
@@ -450,23 +413,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		arpf.setOptionsWith(opts);
 	}
 
-
-//    /**
-//     * @deprecated Use {@link ParseException#errorCodeName(int)}
-//     */
-//    static public String errorCodeName(int errNo) {
-//        return ParseException.errorCodeName(errNo);
-//    }
-//
-//
-//
-//
-//    /**
-//     * @deprecated Use {@link ParseException#errorCode(String)}
-//     */
-//    static public int errorCode(String upper) {
-//        return ParseException.errorCode(upper);
-//    }
     /**
      * Supported proprties: error-mode (String) default, lax, strict,
      * strict-ignore, strict-warning, strict-error, strict-fatal embedding
@@ -578,8 +524,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         eh.error(new UnknownPropertyException(str));
         return null;
     }
-
-    
 
 }
 

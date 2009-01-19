@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhGraph.java,v 1.22 2009-01-16 17:23:53 andy_seaborne Exp $
+  $Id: EnhGraph.java,v 1.23 2009-01-19 12:06:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -10,6 +10,8 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
 
 /**
+   TODO: remove the polymorphic aspect of EnhGraphs.
+<p>
     A specialisation of Polymorphic that models an extended graph - that is, one that 
     contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
     capabilities beyond the graph API.
@@ -40,8 +42,7 @@ public class EnhGraph
     /** The unique personality that is bound to this polymorphic instace */
     private Personality personality;
 
-    @Override
-    public boolean isValid()
+    @Override public boolean isValid()
         { return true; }
     
     // Constructors
@@ -73,8 +74,7 @@ public class EnhGraph
      * Hashcode for an enhnaced graph is delegated to the underlyin graph.
      * @return The hashcode as an int
      */
-    @Override
-    final public int hashCode() {
+    @Override final public int hashCode() {
      	return graph.hashCode();
     }
 
@@ -92,8 +92,7 @@ public class EnhGraph
      * @return True if o is equal to this node.
      * @see #isIsomorphicWith
      */
-    @Override
-    final public boolean equals(Object o) {
+    @Override final public boolean equals(Object o) {
         return 
             this == o 
             || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
@@ -127,8 +126,7 @@ public class EnhGraph
             return eh.viewAs( interf );
             
         // not in the cache, so build a new one
-        eh = (EnhNode) ((GraphPersonality) personality).nodePersonality()
-            .newInstance( interf, n, this );
+        eh = (EnhNode) ((GraphPersonality) personality).nodePersonality().newInstance( interf, n, this );
         enhNodes.put( n, eh );        
         return eh;
     }
@@ -154,24 +152,18 @@ public class EnhGraph
     /** 
      * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
      * t.  This is a stub method that has not yet been implemented.
-     @deprecated
      @param t A type
      @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
-    @Deprecated
-    @Override
-    protected Polymorphic convertTo(Class t) {
+    @Override protected Polymorphic convertTo(Class t) {
         throw new PersonalityConfigException
             ( "Alternative perspectives on graphs has not been implemented yet" );
     }
     
     /**
         we can't convert to anything. 
-        @deprecated
     */
-    @Deprecated
-    @Override
-    protected boolean canSupport( Class t )
+    @Override protected boolean canSupport( Class t )
         { return false; }
         
     /**
@@ -179,11 +171,9 @@ public class EnhGraph
      * 
      * @return The personality object
      */
-    @Override
-    protected Personality getPersonality() {
+    @Override protected Personality getPersonality() {
         return personality;
     }
-    
     
 }
 

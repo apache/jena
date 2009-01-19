@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
+  $Id: Polymorphic.java,v 1.15 2009-01-19 12:06:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -113,8 +113,7 @@ public abstract class Polymorphic {
         to nowadays ... I have expunged the clever facet-identity test
         (and indeed facets).
     */
-    @Override
-    public abstract boolean equals( Object o );
+    @Override public abstract boolean equals( Object o );
     
     /**
         add another view for this object. <code>other</code> must be freshly 

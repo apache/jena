@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.131 2009-01-16 17:23:48 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.132 2009-01-19 12:07:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -142,9 +142,7 @@ public class ModelCom
     public Model add( Resource s, Property p, String o, String l )
         { return add( s, p, o, l, false ); }
 
-    /** @deprecated */
-    @Deprecated
-    public Model addLiteral( Resource s, Property p, Object o )  
+    @Deprecated public Model addLiteral( Resource s, Property p, Object o )  
         { return add( s, p, asObject( o ) ); }
     
     private RDFNode asObject( Object o )

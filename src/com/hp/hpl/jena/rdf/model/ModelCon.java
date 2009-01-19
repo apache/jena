@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.33 $'
-            Date='$Date: 2009-01-16 16:16:43 $'
+            Revision='$Revision: 1.34 $'
+            Date='$Date: 2009-01-19 12:07:12 $'
  */
 public interface ModelCon {
 
@@ -549,8 +549,9 @@ public interface ModelCon {
      * @param s the subject of the statement to add
      * @param p the predicate of the statement to add
      * @param o the object of the statement to add
+     * @deprecated Freshly (should have been done a while ago)
      */ 
-        Model addLiteral( Resource s, Property p, Object o );
+      @Deprecated Model addLiteral( Resource s, Property p, Object o );
 
     /** add a statement to this model.
      *

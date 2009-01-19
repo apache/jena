@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Personality.java,v 1.12 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: Personality.java,v 1.13 2009-01-19 12:06:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -81,11 +81,11 @@ public class Personality {
         {
         Implementation impl = (Implementation) types.get( interf );
         if (impl == null) throw new PersonalityConfigException( interf + " not in Personality." );
-        Polymorphic rslt = impl.wrap(  n, (EnhGraph) that  );
-        if (!interf.isInstance(rslt))
+        Polymorphic result = impl.wrap(  n, (EnhGraph) that  );
+        if (!interf.isInstance(result))
         	throw new PersonalityConfigException( interf + " misconfigured." );
 
-        return rslt;
+        return result;
         }
     
     protected Map getMap() {return types;}
