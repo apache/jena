@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.15 2008-12-28 19:32:20 andy_seaborne Exp $
+ * $Id: rdfcopy.java,v 1.16 2009-01-19 15:23:49 andy_seaborne Exp $
  */
 
 package jena;
@@ -59,7 +59,7 @@ import java.io.*;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2008-12-28 19:32:20 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2009-01-19 15:23:49 $
  */
 public class rdfcopy extends java.lang.Object {
 
@@ -76,14 +76,18 @@ public class rdfcopy extends java.lang.Object {
 		String in = args[0];
 		String inlang = "RDF/XML";
 		int j;
-		for (j = 1; j < args.length && args[j].indexOf("=") != -1; j++);
+		for (j = 1; j < args.length && args[j].indexOf("=") != -1; j++)
+        {}
 		int lastInProp = j;
 		if (j < args.length) {
 			inlang = args[j];
 		}
 		j++;
 		String outlang = "N-TRIPLE";
-		for (; j < args.length && args[j].indexOf("=") != -1; j++);
+		
+		for (; j < args.length && args[j].indexOf("=") != -1; j++)
+		{}
+		
 		int lastOutProp = j;
 		if (j < args.length) {
 			outlang = args[j];
