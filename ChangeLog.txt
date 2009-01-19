@@ -13,8 +13,8 @@ Bug fixes:
   Now returns true if there are any triples in that graph.
   
 - removeAll could cause an exception.
-  Known issue but coudl manifest itself in strange ways
-  Temporary fix applied - functionaly correct but may use signficiant amounts of memory.
+  Known issue but could manifest itself in strange ways
+  Temporary fix applied - functionally correct but may use significant amounts of memory.
   
 - Persistent prefixes might not work with RDF/XML even if they did for other formats.
   Fixed. 
