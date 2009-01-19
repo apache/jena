@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.38 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.39 2009-01-19 15:38:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -53,9 +53,9 @@ public class GraphTestBase extends JenaTestBase
         Answer a set of the nodes described (as per <code>node()</code>) by
         the space-separated substrings of <code>nodes</code>.
     */
-    public Set nodeSet( String nodes )
+    public Set<Node> nodeSet( String nodes )
         {
-        Set result = CollectionFactory.createHashedSet();
+        Set<Node> result = CollectionFactory.createHashedSet();
         StringTokenizer st = new StringTokenizer( nodes );
         while (st.hasMoreTokens()) result.add( node( st.nextToken() ) );
         return result;
@@ -64,7 +64,7 @@ public class GraphTestBase extends JenaTestBase
     /**
         Answer a set of the elements of <code>A</code>.
     */
-    public Set arrayToSet( Object [] A )
+    public Set<Object> arrayToSet( Object [] A )
         { return CollectionFactory.createHashedSet( Arrays.asList( A ) ); }
     
     /**
@@ -90,10 +90,10 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Triple [] tripleArray( String facts )
         {
-        ArrayList al = new ArrayList();
+        ArrayList<Triple> al = new ArrayList<Triple>();
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) al.add( triple( PrefixMapping.Extended, semis.nextToken() ) );   
-        return (Triple []) al.toArray( new Triple [al.size()] );
+        return al.toArray( new Triple [al.size()] );
         }
     
     /**
@@ -101,9 +101,9 @@ public class GraphTestBase extends JenaTestBase
         semi-separated substrings of <code>facts</code>, as per 
         <code>triple</code>.
     */
-    public static Set tripleSet( String facts )
+    public static Set<Triple> tripleSet( String facts )
         {
-        Set result = new HashSet();
+        Set<Triple> result = new HashSet<Triple>();
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) result.add( triple( semis.nextToken() ) );   
         return result;
@@ -114,9 +114,9 @@ public class GraphTestBase extends JenaTestBase
         space-separated substrings of <code>items</code> as per
         <code>node()</code>.
     */
-    public static List nodeList( String items )
+    public static List<Node> nodeList( String items )
         {
-        ArrayList nl = new ArrayList();
+        ArrayList<Node> nl = new ArrayList<Node>();
         StringTokenizer nodes = new StringTokenizer( items );
         while (nodes.hasMoreTokens()) nl.add( node( nodes.nextToken() ) );   
         return nl;
@@ -128,8 +128,8 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Node [] nodeArray( String items )
         {
-        List nl = nodeList( items );  
-        return (Node []) nl.toArray( new Node [nl.size()] );
+        List<Node> nl = nodeList( items );  
+        return nl.toArray( new Node [nl.size()] );
         } 
     
     /**
@@ -179,7 +179,7 @@ public class GraphTestBase extends JenaTestBase
         {
         if (!expected.isIsomorphicWith( got ))
             {
-            Map map = CollectionFactory.createHashedMap();
+            Map<Node, Object> map = CollectionFactory.createHashedMap();
             fail( title + ": wanted " + nice( expected, map ) + "\nbut got " + nice( got, map ) );
             }
         }
@@ -189,7 +189,7 @@ public class GraphTestBase extends JenaTestBase
         produced by niceTriple) in the graph <code>g</code>. The map 
         <code>bnodes</code> maps already-seen bnodes to their "nice" strings. 
     */
-    public static String nice( Graph g, Map bnodes )
+    public static String nice( Graph g, Map<Node, Object> bnodes )
         {
         StringBuffer b = new StringBuffer( g.size() * 100 );
         ExtendedIterator it = GraphUtil.findAll( g );
@@ -202,7 +202,7 @@ public class GraphTestBase extends JenaTestBase
         of the triple <code>t</code> on a new line, using (and updating)
         <code>bnodes</code> to supply "nice" strings for any blank nodes.
     */
-    protected static void niceTriple( StringBuffer b, Map bnodes, Triple t )
+    protected static void niceTriple( StringBuffer b, Map<Node, Object> bnodes, Triple t )
         {
         b.append( "\n    " );
         appendNode( b, bnodes, t.getSubject() );
@@ -222,7 +222,7 @@ public class GraphTestBase extends JenaTestBase
         is a bnode, re-use any existing string for it from <code>bnodes</code>
         or make a new one of the form <i>_bNNNN</i> with NNNN a new integer.
     */
-    protected static void appendNode( StringBuffer b, Map bnodes, Node n )
+    protected static void appendNode( StringBuffer b, Map<Node, Object> bnodes, Node n )
         {
         b.append( ' ' );
         if (n.isBlank())
