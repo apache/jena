@@ -95,6 +95,7 @@
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
+  <property name="javadoc.window.title"   value="${Name}-${versio-major}.${version-minor} Javadoc"/>
 
   <property name="build.metadata.file"          value="unset"/>
   <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
@@ -230,7 +231,7 @@
              sourcepathref="java.source.path.main"
              source="${java.source}"
              version="true"
-             windowtitle="${Name}-${version} Javadoc"
+             windowtitle="${javadoc.window.title}"
              doctitle="${javadoc.title}"
              Public="true"
              Use="true"
@@ -251,7 +252,7 @@
              sourcepathref="java.source.path.main"
              source="${java.source}"
              version="true"
-             windowtitle="${Name}-${version} Javadoc"
+             windowtitle="${javadoc.window.title}"
              doctitle="${javadoc.title}"
              Public="true"
              Use="true"

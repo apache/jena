@@ -11,8 +11,8 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   	value="0"/>
   <property name="version-minor"        value="7"/>
-  <property name="version-revision"     value="1"/>
-  <property name="version-status"       value=""/>
+  <property name="version-revision"     value="2"/>
+  <property name="version-status"       value="-SNAPSHOT"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
@@ -25,7 +25,6 @@
   <target name="main" depends="jar"/>
 
   <!-- Sources as a path -->
-
   <property name="src.dir"                value="src"/>
   <property name="src.test.dir"           value="src-test"/>
   <property name="src.lib.dir"            value="src-lib"/>
@@ -36,7 +35,8 @@
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
   <property name="build.metadata.file.src"     value="tdb-properties.xml"/>
-  
+
+  <!-- Source code -->
   <path id="java.source.path.main">
     <pathelement path="${src.dir}"/>
     <pathelement path="${src.lib.dir}"/>
@@ -68,6 +68,10 @@
   
    <echo>${fileset.src}</echo>
 -->
+
+  <!-- Publication (name in ivysettings.xml) -->
+  <property name="publish.resolver"                value="dev-publish"/>
+
   <import file="build-lib.xml"/>
   <import file="build-dist.xml"/>
 
