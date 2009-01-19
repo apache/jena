@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.21 2009-01-16 17:24:02 andy_seaborne Exp $
+  $Id: Basic.java,v 1.22 2009-01-19 14:18:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2009-01-16 17:24:02 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2009-01-19 14:18:16 $'
  */
 public class Basic extends BaseXMLWriter 
     {
@@ -32,8 +32,7 @@ public class Basic extends BaseXMLWriter
     
     private String space;
 	
-    @Override
-    protected void writeBody
+    @Override protected void writeBody
         ( Model model, PrintWriter pw, String base, boolean inclXMLBase ) 
         {
         setSpaceFromTabCount();
@@ -112,14 +111,12 @@ public class Basic extends BaseXMLWriter
 		}
 	}
     
-    @Override
-    protected void unblockAll() 
+    @Override protected void unblockAll() 
         { blockLiterals = false; }
     
     private boolean blockLiterals = false;
     
-    @Override
-    protected void blockRule( Resource r ) {
+    @Override protected void blockRule( Resource r ) {
         if (r.equals( RDFSyntax.parseTypeLiteralPropertyElt )) {
      //       System.err.println("Blocking");
             blockLiterals = true;
@@ -130,13 +127,6 @@ public class Basic extends BaseXMLWriter
 	protected void writeDescriptionTrailer( Resource subject, PrintWriter writer ) 
         { writer.println( space + "</" + rdfEl( "Description" ) + ">" ); }
     
-    /**
-        @deprecated - use writeDescriptionTrailer( Resource subject, PrintWriter writer )
-        @param writer
-    */
-    @Deprecated
-    protected void writeDescriptionTrailer( PrintWriter writer )
-        { writeDescriptionTrailer( null, writer ); }
     
     protected void writeResourceId( Resource r, PrintWriter writer )
         {

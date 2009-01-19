@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.30 2009-01-16 17:23:49 andy_seaborne Exp $
+   $Id: ARP.java,v 1.31 2009-01-19 14:18:07 chris-dollin Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -220,87 +220,7 @@ IOException {
     public void setOptionsWith(ARPOptions opts){
     	arpf.setOptionsWith(opts);
     }
-	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setExtendedHandler setExtendedHandler(eh)}
-	 */
-	@Deprecated
-    public ExtendedHandler setExtendedHandler(ExtendedHandler eh) {
-		
-		return getHandlers().setExtendedHandler(eh);
-	}
-	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setNamespaceHandler setNamespaceHandler(nh)}
-	 */
-	@Deprecated
-    public NamespaceHandler setNamespaceHandler(NamespaceHandler nh) {
 
-		return getHandlers().setNamespaceHandler(nh);
-	}
-	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setStatementHandler setStatementHandler(sh)}
-	 */
-	@Deprecated
-    public StatementHandler setStatementHandler(StatementHandler sh) {
-		
-		return getHandlers().setStatementHandler(sh);
-	}
-	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setErrorHandler setErrorHandler(eh)}
-	 */
-	@Deprecated
-    public void setErrorHandler(ErrorHandler eh) {
-		getHandlers().setErrorHandler(eh);
-	}
-    /**
-     * 
-    @deprecated Use {@link #getOptions}.{@link ARPOptions#setErrorMode(int,int) setErrorMode(errno,mode)}
-	 */
-	@Deprecated
-    public int setErrorMode(int errno, int mode) {
-		return 
-		getOptions().setErrorMode(errno,mode);
-
-	}
-	/**
-    @deprecated Use {@link #getOptions}.{@link ARPOptions#setDefaultErrorMode() setDefaultErrorMode()}
-	 */
-	@Deprecated
-    public void setDefaultErrorMode() {
-
-		getOptions().setDefaultErrorMode();
-	}
-	/**
-    @deprecated Use {@link #getOptions}.{@link ARPOptions#setLaxErrorMode() setLaxErrorMode()}
-	 */
-	@Deprecated
-    public void setLaxErrorMode() {
-
-		getOptions().setLaxErrorMode();
-	}
-	/**
-    @deprecated Use {@link #getOptions}.{@link ARPOptions#setStrictErrorMode() setStrictErrorMode()}
-	 */
-	@Deprecated
-    public void setStrictErrorMode() {
-
-		getOptions().setStrictErrorMode();
-	}
-	/**
-    @deprecated Use {@link #getOptions}.{@link ARPOptions#setStrictErrorMode(int) setStrictErrorMode(nonErrorMode)}
-	 */	
-	@Deprecated
-    public void setStrictErrorMode(int nonErrorMode) {
-
-		getOptions().setStrictErrorMode(nonErrorMode);
-	}
-	/**
-     @deprecated Use {@link #getOptions}.{@link ARPOptions#setEmbedding(boolean) setEmbedding(embed)}
-	 */
-	@Deprecated
-    public void setEmbedding(boolean embed) {
-		
-		getOptions().setEmbedding(embed);
-	}
     void setBadStatementHandler(StatementHandler sh) {
         arpf.setBadStatementHandler(sh);
         

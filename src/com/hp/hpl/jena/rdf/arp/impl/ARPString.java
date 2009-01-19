@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
+ * * $Id: ARPString.java,v 1.9 2009-01-19 14:18:16 chris-dollin Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -92,6 +92,7 @@ public class ARPString extends TaintImpl implements ALiteral {
     public boolean isWellFormedXML() {
         return this.isWellFormedXML;
     }
+    
     /**
      * @deprecated
      */

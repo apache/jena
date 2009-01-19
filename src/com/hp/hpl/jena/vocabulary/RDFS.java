@@ -8,7 +8,7 @@ import com.hp.hpl.jena.graph.*;
 /**
     RDFS vocabulary items
     @author  bwm, updated by kers/daniel/christopher
-    @version $Id: RDFS.java,v 1.19 2009-01-16 17:24:00 andy_seaborne Exp $
+    @version $Id: RDFS.java,v 1.20 2009-01-19 14:18:17 chris-dollin Exp $
  */
 public class RDFS {
 
@@ -23,22 +23,10 @@ public class RDFS {
     public static final Resource Class = resource( "Class");
     public static final Resource Datatype = resource( "Datatype");
     
-    /**
-         @deprecated obsolete: was removed by the most recent standard
-    */
-    @Deprecated
-    public static final Resource ConstraintProperty  =  resource( "ConstraintProperty");
-    
     public static final Resource Container  = resource( "Container");
     
     public static final Resource ContainerMembershipProperty
                                                      = resource( "ContainerMembershipProperty");  
- 
-    /**
-        @deprecated obsolete: was removed by the most recent standard
-    */
-    @Deprecated
-    public static final Resource ConstraintResource  = resource( "ConstraintResource");
     
     public static final Resource Literal = resource( "Literal");
     public static final Resource Resource = resource( "Resource");
@@ -56,11 +44,10 @@ public class RDFS {
     /**
         The RDFS vocabulary, expressed for the SPI layer in terms of .graph Nodes.
     */
-    public static class Nodes
+    @SuppressWarnings("hiding") public static class Nodes
         {
         public static final Node Class = RDFS.Class.asNode();
         public static final Node Datatype = RDFS.Datatype.asNode();
-        public static final Node ConstraintProperty  = RDFS. ConstraintProperty.asNode();
         public static final Node Container  = RDFS.Container.asNode();
         public static final Node ContainerMembershipProperty
                                                          = RDFS.ContainerMembershipProperty.asNode();

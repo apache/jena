@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.32 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: Factory.java,v 1.33 2009-01-19 14:18:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,18 +19,6 @@ public class Factory
     {
     private Factory()
         { super(); }
-
-    /**
-        @deprecated -- doesn't do anything anymore.
-    */
-    @Deprecated
-    public static final boolean faster = true;
-
-    /**
-        @deprecated -- doesn't do anything anymore.
-    */
-    @Deprecated
-    public static final boolean newHashing = true;
     
     /**
         Answer a memory-based Graph with the Standard reification style.
