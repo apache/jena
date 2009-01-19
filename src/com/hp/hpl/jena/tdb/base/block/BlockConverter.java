@@ -33,7 +33,6 @@ public class BlockConverter<T extends PageBase>
     // Sometimes, the subclass must pass null to the constructor then call this. 
     protected void setConverter(Converter<T> pageFactory) { this.pageFactory = pageFactory ; }
     
-    
     public BlockMgr getBlockMgr() { return blockMgr ; } 
     
     /** Allocate an uninitialized slot.  Fill with a .put later */ 

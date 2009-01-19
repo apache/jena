@@ -27,7 +27,7 @@ final public class BPTreeNodeMgr
     private BlockMgr blockMgr ;
     private Block2BTreeNode converter ;
 
-    BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
+    public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
     {
         this.bpTree = bpTree ;
         this.blockMgr = blockMgr ;
