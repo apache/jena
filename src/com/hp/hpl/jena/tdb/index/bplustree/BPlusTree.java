@@ -198,7 +198,8 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         }
     }
 
-    BPlusTreeParams getParams()     { return bpTreeParams ; } 
+    /** Get the parameters describing this B+Tree */
+    public BPlusTreeParams getParams()     { return bpTreeParams ; } 
 
     /** Only use for careful manipulation of structures */
     public BPTreeNodeMgr getNodeManager()          { return nodeManager ; }

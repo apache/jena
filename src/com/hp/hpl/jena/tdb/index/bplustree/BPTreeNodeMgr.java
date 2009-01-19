@@ -215,11 +215,11 @@ final public class BPTreeNodeMgr
         BPTreeNode n = new BPTreeNode(bTree, -1, byteBuffer) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBTreeNode(n, bTree, byteBuffer, asLeaf, count) ; 
+        formatBPTreeNode(n, bTree, byteBuffer, asLeaf, count) ; 
         return n ;
     }
         
-    static BPTreeNode formatBTreeNode(BPTreeNode n, BPlusTree bTree, ByteBuffer byteBuffer, boolean leaf, int count)
+    static BPTreeNode formatBPTreeNode(BPTreeNode n, BPlusTree bTree, ByteBuffer byteBuffer, boolean leaf, int count)
     {
         BPlusTreeParams params = bTree.getParams() ;
 
@@ -270,7 +270,7 @@ final public class BPTreeNodeMgr
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf)
     {
-        BPTreeNodeMgr.formatBTreeNode(n, n.bpTree, n.getBackingByteBuffer(), asLeaf, 0) ;
+        BPTreeNodeMgr.formatBPTreeNode(n, n.bpTree, n.getBackingByteBuffer(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
         // Has one dangling pointer.
         n.setId(0) ;
