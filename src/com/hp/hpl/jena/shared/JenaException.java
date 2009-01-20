@@ -10,10 +10,10 @@ package com.hp.hpl.jena.shared;
  */
 public class JenaException extends RuntimeException 
 {
-    public JenaException()                                     { super(); }
-	public JenaException(String message)                     { super(message); }
-	public JenaException(Throwable cause)                    { super(cause) ; }
-    public JenaException(String message, Throwable cause )    { super(message, cause) ; }
+    public JenaException()                                  { super(); }
+	public JenaException(String message)                    { super(message); }
+	public JenaException(Throwable cause)                   { super(cause) ; }
+    public JenaException(String message, Throwable cause)   { super(message, cause) ; }
 }
 /*
  *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
