@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // INSERT triples recursion - remove 
+    
     // SPARQL/Update - Sort out GraphStores/Datasets
     
     // E_Aggregator should not be a subclass of ExprVar, but as a (funny?) subclass of OpAssign.

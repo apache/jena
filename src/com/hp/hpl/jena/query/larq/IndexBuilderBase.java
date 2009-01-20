@@ -75,7 +75,7 @@ public class IndexBuilderBase implements IndexBuilder
     private void makeIndex()
     {
         try {
-            indexWriter = new IndexWriter(dir, new StandardAnalyzer(), true) ;
+            indexWriter = new IndexWriter(dir, new StandardAnalyzer()) ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
     }
