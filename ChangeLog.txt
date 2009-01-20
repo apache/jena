@@ -4,6 +4,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.7
 
++ The IndexBuilder constructors taking a directory name as a string would 
+  clear the Lucene index.  Changed so they do not do so - and behave like
+  the other constructors which reuse an existing index.   
+
++ Uses the Java5 version of Jena2. 
 
 ==== ARQ 2.6
 
