@@ -5,66 +5,15 @@
  
 package com.hp.hpl.jena.shared;
  
-import java.io.*;
-
 /**
- * This should be a superclass of most exceptions
- * arising from Jena code.
- * @author jjc
- *
+ * This should be a superclass of exceptions arising from Jena code.
  */
-public class JenaException extends RuntimeException {
-
-	/**
-	 * Constructor for JenaException.
-	 * @param message
-	 */
-	public JenaException( String message ) {
-		super(message);
-	}
-    
-    public JenaException()
-        { super(); }
-        
-    private Throwable cause;
-    /* Java 1.3, 1.4 compatibility.
-     * Support getCause() and initCause()
-     */
-    @Override
-    public Throwable getCause() {
-        return cause;
-    }
-
-	/**
-	 * Java 1.4 bits ....
-     * Constructor for JenaException.
-	 * @param cause
-	 * */
-	public JenaException( Throwable cause )
-		{ this( "rethrew: " + cause.toString(), cause ); }
-    
-    public JenaException( String message, Throwable cause )
-        { super( message ); this.cause = cause; }
-    
-    /*
-        These are so that the printout of a nested exception reveals where
-        the originating exception came from ... essential when debugging. 
-    */
-    
-    @Override
-    public void printStackTrace( PrintStream s )
-        {
-        if (cause != null) cause.printStackTrace( s );
-        super.printStackTrace( s );
-        }
-        
-    @Override
-    public void printStackTrace( PrintWriter w )
-        {
-        if (cause != null) cause.printStackTrace( w );
-        super.printStackTrace( w );
-        }
-
+public class JenaException extends RuntimeException 
+{
+    public JenaException()                                     { super(); }
+	public JenaException(String message)                     { super(message); }
+	public JenaException(Throwable cause)                    { super(cause) ; }
+    public JenaException(String message, Throwable cause )    { super(message, cause) ; }
 }
 /*
  *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
