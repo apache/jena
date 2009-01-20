@@ -5,6 +5,9 @@ ChangeLog for TDB
 
 + Upgrade to Java5 version of ARQ.
 
+==== 0.7.2
+
+
 ==== 0.7.1
 
 Bug fixes:
