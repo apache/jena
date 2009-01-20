@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.30 2009-01-16 18:24:41 andy_seaborne Exp $
+  $Id: JenaTestBase.java,v 1.31 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -96,9 +96,9 @@ public class JenaTestBase extends TestCase
     /**
         Answer a list containing the single object <code>x</code>.
     */
-    protected static List<Object> listOfOne( Object x )
+    protected static <T> List<T> listOfOne( T x )
         {
-        List<Object> result = new ArrayList<Object>();
+        List<T> result = new ArrayList<T>();
         result.add( x );
         return result;
         }
@@ -106,9 +106,9 @@ public class JenaTestBase extends TestCase
     /**
         Answer a Set containing the single object <code>x</code>.
     */
-    protected static Set<Object> setOfOne( Object x )
+    protected static <T> Set<T> setOfOne( T x )
         {
-        Set<Object> result = new HashSet<Object>();
+        Set<T> result = new HashSet<T>();
         result.add( x );
         return result;
         }

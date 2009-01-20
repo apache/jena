@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestUnionModelAssembler.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestUnionModelAssembler.java,v 1.9 2009-01-20 15:12:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.AddDeniedException;
@@ -19,8 +20,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
     public TestUnionModelAssembler( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return UnionModelAssembler.class; }
 
     public void testUnionModelAssemblerType()
@@ -52,7 +52,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
     
     static class SmudgeAssembler extends AssemblerBase 
         {
-        Map map = new HashMap();
+        Map<Resource, Model> map = new HashMap<Resource, Model>();
         
         public SmudgeAssembler add( String name, Model m )
             {
@@ -74,7 +74,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:UnionModel; x ja:subModel A; x ja:subModel B" );
         Assembler a = new UnionModelAssembler();
         Model modelA = model( "" ), modelB = model( "" );
-        Set expected = new HashSet(); expected.add( modelA.getGraph() ); expected.add( modelB.getGraph() );
+        Set<Graph> expected = new HashSet<Graph>(); expected.add( modelA.getGraph() ); expected.add( modelB.getGraph() );
         Assembler mock = new SmudgeAssembler().add( "A", modelA ).add( "B", modelB );
         Model m = (Model) a.open( mock, root );
         assertInstanceOf( MultiUnion.class, m.getGraph() );
@@ -105,7 +105,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:UnionModel; x ja:subModel A; x ja:rootModel B" );
         Assembler a = new UnionModelAssembler();
         Model modelA = model( "" ), modelB = model( "" );
-        Set expected = new HashSet(); expected.add( modelA.getGraph() ); 
+        Set<Graph> expected = new HashSet<Graph>(); expected.add( modelA.getGraph() ); 
         Assembler mock = new SmudgeAssembler().add( "A", modelA ).add( "B", modelB );
         Model m = (Model) a.open( mock, root );
         assertInstanceOf( MultiUnion.class, m.getGraph() );

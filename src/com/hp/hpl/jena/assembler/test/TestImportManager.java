@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestImportManager.java,v 1.12 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -20,12 +20,11 @@ public class TestImportManager extends AssemblerTestBase
     
     static class FixedFileManager extends FileManager
         {
-        Map map = new HashMap();
+        Map<String, Model> map = new HashMap<String, Model>();
         
-        @Override
-        public Model loadModel( String URL )
+        @Override public Model loadModel( String URL )
             {
-            Model result = (Model) map.get( URL );
+            Model result = map.get( URL );
             if (result == null) fail( "no model for " + URL );
             return result;
             }

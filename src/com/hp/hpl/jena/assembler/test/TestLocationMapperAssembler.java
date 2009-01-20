@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLocationMapperAssembler.java,v 1.6 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestLocationMapperAssembler.java,v 1.7 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -19,8 +19,7 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
     public TestLocationMapperAssembler( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return LocationMapperAssembler.class; }
 
     public void testLocationMapperAssemblerType()
@@ -51,20 +50,20 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
 
     private void assertEqualMaps( LocationMapper expected, LocationMapper got )
         {
-        Set eAltEntryKeys = IteratorCollection.iteratorToSet( expected.listAltEntries() );
-        Set gAltEntryKeys = IteratorCollection.iteratorToSet( got.listAltEntries() );
-        Set eAltPrefixKeys = IteratorCollection.iteratorToSet( expected.listAltPrefixes() );
-        Set gAltPrefixKeys = IteratorCollection.iteratorToSet( got.listAltPrefixes() );
+        Set<String> eAltEntryKeys = IteratorCollection.iteratorToSet( expected.listAltEntries() );
+        Set<String> gAltEntryKeys = IteratorCollection.iteratorToSet( got.listAltEntries() );
+        Set<String> eAltPrefixKeys = IteratorCollection.iteratorToSet( expected.listAltPrefixes() );
+        Set<String> gAltPrefixKeys = IteratorCollection.iteratorToSet( got.listAltPrefixes() );
         assertEquals( "altEntry keys dhould be equal", eAltEntryKeys, gAltEntryKeys );
         assertEquals( "prefixEntry keys should be equal", eAltPrefixKeys, gAltPrefixKeys );
-        for (Iterator altKeys = eAltEntryKeys.iterator(); altKeys.hasNext();)
+        for (Iterator<String> altKeys = eAltEntryKeys.iterator(); altKeys.hasNext();)
             {
-            String key = (String) altKeys.next();
+            String key = altKeys.next();
             assertEquals( "alt entrys should be equal", expected.getAltEntry( key ), got.getAltEntry( key ) );
             }        
-        for (Iterator preKeys = eAltPrefixKeys.iterator(); preKeys.hasNext();)
+        for (Iterator<String> preKeys = eAltPrefixKeys.iterator(); preKeys.hasNext();)
                 {
-                String key = (String) preKeys.next();
+                String key = preKeys.next();
                 assertEquals( "prefix entiries should be equal", expected.getAltPrefix( key ), got.getAltPrefix( key ) );
                 }
         }

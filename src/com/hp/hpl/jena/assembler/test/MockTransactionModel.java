@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: MockTransactionModel.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
+ $Id: MockTransactionModel.java,v 1.12 2009-01-20 15:12:07 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler.test;
@@ -22,13 +22,13 @@ import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 */
 final class MockTransactionModel extends ModelAssembler
     {
-    private final List history;
+    private final List<String> history;
     private final Model expected;
     private final boolean supportsTransactions;
     private final boolean abortsOnAdd;
 
     protected MockTransactionModel
-        ( List history, Model expected, boolean supportsTransactions, boolean abortsOnAdd )
+        ( List<String> history, Model expected, boolean supportsTransactions, boolean abortsOnAdd )
         {
         super();
         this.history = history;

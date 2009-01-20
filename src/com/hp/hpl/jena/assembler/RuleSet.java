@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RuleSet.java,v 1.8 2009-01-16 17:24:03 andy_seaborne Exp $
+ 	$Id: RuleSet.java,v 1.9 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -33,12 +33,10 @@ public class RuleSet
     public List getRules()
         { return rules; }
     
-    @Override
-    public int hashCode()
+    @Override public int hashCode()
         { return rules.hashCode(); }
     
-    @Override
-    public boolean equals( Object other )
+    @Override public boolean equals( Object other )
         { return other instanceof RuleSet && rules.equals( ((RuleSet) other).rules ); }
 
     }

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRDBModelAssembler.java,v 1.12 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestRDBModelAssembler.java,v 1.13 2009-01-20 15:12:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -16,8 +16,7 @@ public class TestRDBModelAssembler extends AssemblerTestBase
     public TestRDBModelAssembler( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return RDBModelAssembler.class; }
 
     public void testRDBModelAssemblerType()

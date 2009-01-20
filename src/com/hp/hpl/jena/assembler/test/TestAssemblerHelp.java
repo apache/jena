@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.16 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.17 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -133,10 +133,10 @@ public class TestAssemblerHelp extends AssemblerTestBase
             }
         }
 
-    private Set resources( Resource root, String items )
+    private Set<Resource> resources( Resource root, String items )
         {
         List L = listOfStrings( items );
-        Set result = new HashSet();
+        Set<Resource> result = new HashSet<Resource>();
         for (int i = 0; i < L.size(); i += 1)
             result.add( resource( root.getModel(), (String) L.get(i) ) );
         return result;

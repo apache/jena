@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: AmbiguousSpecificTypeException.java,v 1.3 2008-12-28 19:32:08 andy_seaborne Exp $
+ 	$Id: AmbiguousSpecificTypeException.java,v 1.4 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -18,30 +18,30 @@ import com.hp.hpl.jena.rdf.model.Resource;
 */
 public class AmbiguousSpecificTypeException extends AssemblerException
     {
-    protected final List types;
+    protected final List<Resource> types;
     
-    public AmbiguousSpecificTypeException( Resource root, ArrayList types )
+    public AmbiguousSpecificTypeException( Resource root, ArrayList<Resource> types )
         {
         super( root, makeMessage( root, types ) );
         this.types = types;
         }
 
-    private static String makeMessage( Resource root, List types )
+    private static String makeMessage( Resource root, List<Resource> types )
         { return 
             "cannot find a most specific type for " + nice( root )
             + ", which has as possibilities:" + nice( types )
             + "."; 
         }
 
-    private static String nice( List types )
+    private static String nice( List<Resource> types )
         {
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < types.size(); i += 1)
-            result.append( " " ).append( nice( (Resource) types.get(i) ) );
+            result.append( " " ).append( nice( types.get(i) ) );
         return result.toString();
         }
 
-    public List getTypes()
+    public List<Resource> getTypes()
         { return types; }
     }
 

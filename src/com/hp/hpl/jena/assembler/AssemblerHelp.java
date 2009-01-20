@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.25 2009-01-13 14:05:58 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.26 2009-01-20 15:12:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -179,12 +179,12 @@ public class AssemblerHelp
     */
     public static Resource findSpecificType( Resource root, Resource baseType )
         {
-        Set types = findSpecificTypes( root, baseType );
+        Set<Resource> types = findSpecificTypes( root, baseType );
         if (types.size() == 1)
-            return (Resource) types.iterator().next();
+            return types.iterator().next();
         if (types.size() == 0)
             return baseType;
-        throw new AmbiguousSpecificTypeException( root, new ArrayList( types ) );
+        throw new AmbiguousSpecificTypeException( root, new ArrayList<Resource>( types ) );
         }
 
     /**
@@ -192,10 +192,10 @@ public class AssemblerHelp
         <code>baseType</code> and which do not have subtypes which are
         also types of <code>root</code>.
     */
-    public static Set findSpecificTypes( Resource root, Resource baseType )
+    public static Set<Resource> findSpecificTypes( Resource root, Resource baseType )
         {
         List types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
-        Set results = new HashSet();
+        Set<Resource> results = new HashSet<Resource>();
         for (int i = 0; i < types.size(); i += 1)
             {
             Resource candidate = (Resource) types.get( i );

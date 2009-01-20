@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.15 2009-01-16 17:24:03 andy_seaborne Exp $
+ 	$Id: ModelExpansion.java,v 1.16 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -79,9 +79,9 @@ public class ModelExpansion
     */
     public static void addSubClassClosure( Model m )
         {
-        Set roots = selectRootClasses( m, findClassesBySubClassOf( m ) );
-        for (Iterator it = roots.iterator(); it.hasNext();)
-            addSuperClasses( m, (Resource) it.next() );
+        Set<Resource> roots = selectRootClasses( m, findClassesBySubClassOf( m ) );
+        for (Iterator<Resource> it = roots.iterator(); it.hasNext();)
+            addSuperClasses( m, it.next() );
         }
     
     /**
@@ -125,10 +125,10 @@ public class ModelExpansion
          Answer the subset of <code>classes</code> which have no
          superclass in <code>m</code>.
     */
-    private static Set selectRootClasses( Model m, Set classes )
+    private static Set<Resource> selectRootClasses( Model m, Set<RDFNode> classes )
         {
-        Set roots = new HashSet();
-        for (Iterator it = classes.iterator(); it.hasNext();)
+        Set<Resource> roots = new HashSet<Resource>();
+        for (Iterator<RDFNode> it = classes.iterator(); it.hasNext();)
             {
             Resource type = (Resource) it.next();
             if (!m.contains( type, RDFS.subClassOf, (RDFNode) null ) ) roots.add( type ); 
@@ -140,9 +140,9 @@ public class ModelExpansion
         Answer the set of all classes which appear in <code>m</code> as the
         subject or object of a <code>rdfs:subClassOf</code> statement.
     */
-    private static Set findClassesBySubClassOf( Model m )
+    private static Set<RDFNode> findClassesBySubClassOf( Model m )
         {
-        Set classes = new HashSet();
+        Set<RDFNode> classes = new HashSet<RDFNode>();
         StmtIterator it = m.listStatements( null, RDFS.subClassOf, (RDFNode) null );
         while (it.hasNext()) addClasses( classes, it.nextStatement() );
         return classes;
@@ -152,7 +152,7 @@ public class ModelExpansion
         Add to <code>classes</code> the subject and object of the statement
         <code>xSubClassOfY</code>.
     */
-    private static void addClasses( Set classes, Statement xSubClassOfY )
+    private static void addClasses( Set<RDFNode> classes, Statement xSubClassOfY )
         {
         classes.add( xSubClassOfY.getSubject() );
         classes.add( xSubClassOfY.getObject() );
@@ -225,18 +225,18 @@ public class ModelExpansion
 
     private static void addTypeToAll( Resource type, Set candidates )
         {
-        List types = equivalentTypes( type );
+        List<Resource> types = equivalentTypes( type );
         for (Iterator it = candidates.iterator(); it.hasNext();)
             {
             Resource resource = ((Resource) it.next());
             for (int i = 0; i < types.size(); i += 1)
-                resource.addProperty( RDF.type, (Resource) types.get(i) );
+                resource.addProperty( RDF.type, types.get(i) );
             }
         }
 
-    private static List equivalentTypes( Resource type )
+    private static List<Resource> equivalentTypes( Resource type )
         {
-        List types = new ArrayList();
+        List<Resource> types = new ArrayList<Resource>();
         types.add( type );
         for (StmtIterator it = type.getModel().listStatements( ANY, OWL.equivalentClass, type ); it.hasNext();)
             types.add( it.nextStatement().getSubject() );

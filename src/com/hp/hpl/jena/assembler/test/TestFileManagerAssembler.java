@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileManagerAssembler.java,v 1.8 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestFileManagerAssembler.java,v 1.9 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -18,8 +18,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
     public TestFileManagerAssembler( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return FileManagerAssembler.class; }
 
     public void testFileModelAssemblerType()
@@ -67,7 +66,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
         assertEquals( wanted, obtained );
         }
 
-    private Iterator standardLocators()
+    private Iterator<Locator> standardLocators()
         {
         FileManager fm = new FileManager();
         FileManager.setStdLocators( fm );

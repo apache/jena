@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.9 2009-01-16 17:24:03 andy_seaborne Exp $
+ 	$Id: AssemblerException.java,v 1.10 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.assembler.exceptions;
 import java.util.*;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup.Frame;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -22,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class AssemblerException extends JenaException
     {
     protected final Resource root;
-    protected List doing = new ArrayList();
+    protected List<Frame> doing = new ArrayList<Frame>();
     
     public AssemblerException( Resource root, String string, Throwable t )
         { 
@@ -87,7 +88,7 @@ public class AssemblerException extends JenaException
     protected static String nice( RDFNode r )
         { return r.isLiteral() ? r.asNode().toString(): nice( (Resource) r ); }
 
-    public List getDoing()
+    public List<Frame> getDoing()
         { return doing; }
     
     @Override
@@ -101,7 +102,7 @@ public class AssemblerException extends JenaException
     protected String frameStrings()
         {
         StringBuffer result = new StringBuffer();
-        for (Iterator it = doing.iterator(); it.hasNext();)
+        for (Iterator<Frame> it = doing.iterator(); it.hasNext();)
             result.append( "    " ).append( it.next().toString() ).append( "\n" );
         return result.toString();
         }

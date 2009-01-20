@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.17 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: AssemblerGroup.java,v 1.18 2009-01-20 15:12:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -19,8 +19,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
     public abstract Assembler assemblerFor( Resource type );
 
-    @Override
-    public Model openModel( Resource resource )
+    @Override public Model openModel( Resource resource )
         { return (Model) open( resource ); }
     
     public static AssemblerGroup create()
@@ -37,13 +36,12 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         public final Resource root;
         public final Resource type;
-        public final Class assembler;
+        public final Class< ? extends Assembler> assembler;
         
-        public Frame( Resource root, Resource type, Class assembler )
+        public Frame( Resource root, Resource type, Class< ? extends Assembler> assembler )
             { this.root = root; this.type = type; this.assembler = assembler; }
         
-        @Override
-        public boolean equals( Object other )
+        @Override public boolean equals( Object other )
             { return other instanceof Frame && same( (Frame) other ); }
         
         protected boolean same( Frame other )
@@ -54,8 +52,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
                 ; 
             }
         
-        @Override
-        public String toString()
+        @Override public String toString()
             { return "root: " + root + " with type: " + type + " assembler class: " + assembler; }
         }
 
@@ -64,8 +61,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         PlainAssemblerGroup internal = new PlainAssemblerGroup();
         Model implementTypes = ModelFactory.createDefaultModel();
         
-        @Override
-        public Object open( Assembler a, Resource suppliedRoot, Mode mode )
+        @Override public Object open( Assembler a, Resource suppliedRoot, Mode mode )
             {
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
             loadClasses( root.getModel() );
@@ -79,16 +75,14 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
             AssemblerHelp.loadAssemblerClasses( this, model ); 
             }
 
-        @Override
-        public AssemblerGroup implementWith( Resource type, Assembler a )
+        @Override public AssemblerGroup implementWith( Resource type, Assembler a )
             {
             implementTypes.add( type, RDFS.subClassOf, JA.Object );
             internal.implementWith( type, a );
             return this;
             }
 
-        @Override
-        public Assembler assemblerFor( Resource type )
+        @Override public Assembler assemblerFor( Resource type )
             { return internal.assemblerFor( type ); }
         
         public Set implementsTypes()
@@ -98,7 +92,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     
     static class PlainAssemblerGroup extends AssemblerGroup
         {
-        Map mappings = new HashMap();
+        Map<Resource, Assembler> mappings = new HashMap<Resource, Assembler>();
 
         @Override
         public Object open( Assembler a, Resource root, Mode mode )
@@ -115,7 +109,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         private Object openBySpecificType( Assembler a, Resource root, Mode mode, Resource type )
             {
             Assembler toUse = assemblerFor( type );
-            Class aClass = toUse == null ? null : toUse.getClass();
+            Class<? extends Assembler> aClass = toUse == null ? null : toUse.getClass();
             Frame frame = new Frame( root, type, aClass );
             try 
                 { 
@@ -135,16 +129,14 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
                 }
             }
         
-        @Override
-        public AssemblerGroup implementWith( Resource type, Assembler a )
+        @Override public AssemblerGroup implementWith( Resource type, Assembler a )
             {
             mappings.put( type, a );
             return this;
             }
 
-        @Override
-        public Assembler assemblerFor( Resource type )
-            { return (Assembler) mappings.get( type ); }
+        @Override public Assembler assemblerFor( Resource type )
+            { return mappings.get( type ); }
         }
     }
 

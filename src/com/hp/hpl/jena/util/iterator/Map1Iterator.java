@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Map1Iterator.java,v 1.11 2009-01-16 17:23:58 andy_seaborne Exp $
+  $Id: Map1Iterator.java,v 1.12 2009-01-20 15:12:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -12,26 +12,33 @@ import java.util.Iterator;
     An iterator that consumes an underlying iterator and maps its results before
     delivering them; supports remove if the underlying iterator does.
     @author jjc + kers
-    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2009-01-16 17:23:58 $'
+    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2009-01-20 15:12:29 $'
 */
 
-public class Map1Iterator extends WrappedIterator implements ClosableIterator
+public class Map1Iterator extends NiceIterator implements ClosableIterator
     {
 	private Map1 map;
+	private Iterator base;
+	
         /**
          * Construct a list of the converted.
          * @param m The conversion to apply.
          * @param it the iterator of elements to convert
          */
-	public Map1Iterator( Map1 m, Iterator it ) 
+	public Map1Iterator( Map1 map, Iterator base ) 
         {
-        super( it ); 
-        map = m;
+        this.map = map;
+        this.base = base;
         }
     
-	@Override
-    public Object next() 
-        { return map.map1( super.next() ); }
+	public @Override Object next() 
+        { return map.map1( base.next() ); }
+	
+	public @Override boolean hasNext()
+	    { return base.hasNext(); }
+	
+	public @Override void remove()
+	    { base.remove(); }
     }
 /*
  * (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

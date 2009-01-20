@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelExpansion.java,v 1.8 2008-12-28 19:31:55 andy_seaborne Exp $
+ 	$Id: TestModelExpansion.java,v 1.9 2009-01-20 15:12:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -79,7 +79,7 @@ public class TestModelExpansion extends AssemblerTestBase
     private String rdfList( String base, String types )
         {
         StringBuffer result = new StringBuffer();
-        List L = listOfStrings( types );
+        List<String> L = listOfStrings( types );
         String rest = "rdf:nil";
         for (int i = L.size(); i > 0; i -= 1)
             {

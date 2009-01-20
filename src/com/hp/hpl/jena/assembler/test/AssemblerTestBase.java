@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.14 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: AssemblerTestBase.java,v 1.15 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.*;
 */
 public abstract class AssemblerTestBase extends ModelTestBase
     {
-    protected Class getAssemblerClass()
+    protected Class<? extends Assembler> getAssemblerClass()
         { throw new BrokenException( "this class must define getAssemblerClass" ); }
     
     /**

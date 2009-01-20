@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestModelContent.java,v 1.12 2009-01-20 15:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -17,8 +17,7 @@ public class TestModelContent extends AssemblerTestBase
     public TestModelContent( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return null; }
     
     public void testMemoryModelLoadsSingleContent()
@@ -48,7 +47,7 @@ public class TestModelContent extends AssemblerTestBase
 
     public void testContentTransactionsNone()
         {
-        final List history = new ArrayList();
+        final List<String> history = new ArrayList<String>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, false, true );
         Resource root = resourceInModel
@@ -59,7 +58,7 @@ public class TestModelContent extends AssemblerTestBase
     
     public void testContentTransactionsCommit()
         {
-        final List history = new ArrayList();
+        final List<String> history = new ArrayList<String>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, true, false );
         Resource root = resourceInModel
@@ -71,7 +70,7 @@ public class TestModelContent extends AssemblerTestBase
 
     public void testContentTransactionsAbort()
         {
-        final List history = new ArrayList();
+        final List<String> history = new ArrayList<String>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         final Model toDeliver = model( "" ).add( expected );
         Assembler a = new MockTransactionModel( history, toDeliver, true, true );
