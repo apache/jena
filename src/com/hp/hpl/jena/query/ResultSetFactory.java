@@ -11,8 +11,11 @@ import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.sparql.core.Var;
+
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.resultset.*;
@@ -21,7 +24,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.util.FileManager;
 
 /** ResultSetFactory - make result sets from places other than a query.
  * 
@@ -335,11 +337,11 @@ public class ResultSetFactory
     /** Build a result set from one of ARQ's lower level query iterator.
      *  @param queryIterator
      *  @param vars     List of variables, by name, for the result set
-     * @return ResultSet 
+     *  @return ResultSet 
      */
-    static public ResultSet create(QueryIterator queryIterator, List<?> vars)
+    static public ResultSet create(QueryIterator queryIterator, List<String> vars)
     {
-        return new ResultSetStream(Var.varNames(vars), null, queryIterator) ;
+        return new ResultSetStream(vars, null, queryIterator) ;
     }
 }
 

@@ -25,14 +25,6 @@ public class BuilderResultSet
     public static ResultSet build(Item item)
     {
         BuilderLib.checkTagged(item, Tags.tagResultSet, "Not a (resultset ...)") ;
-        
-        //SPARQLResult result = new SPARQLResult() ;
-        /*
-         * (resultset (vars) ROWS) <-----
-         * or 
-         * (resultset (vars) ROWS)
-         */
-        
         ItemList list = item.getList() ; 
         
         List<Var> vars = BuilderNode.buildVarList(list.get(1)) ;
@@ -45,8 +37,6 @@ public class BuilderResultSet
             Item itemRow = list.get(i) ;
             Binding b = BuilderBinding.build(itemRow) ;
             bindings.add(b) ;
-//            for ( Iterator iter = b.vars() ; iter.hasNext() ; )
-//            { }
         }
         
         QueryIterator qIter = new QueryIterPlainWrapper(bindings.listIterator()) ;

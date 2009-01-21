@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.core ;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -140,56 +139,21 @@ public class Var extends Node_Variable
     public static boolean isAllocVarName(String x)
     { return x.startsWith(ARQConstants.allocVarMarker) ; }
     
-    public static List<Var> varList(List<?> varNames)
+    /** Convert a collection of variable names to variables */ 
+    public static List<Var> varList(Collection<String> varNames)
     {
         List<Var> x = new ArrayList<Var>() ;
-        for ( Iterator<?> iter = varNames.listIterator() ; iter.hasNext() ; )
-        {
-            Object obj = iter.next() ;
-            if ( obj instanceof String )
-                x.add(Var.alloc((String)obj)) ;
-            else if ( obj instanceof Var )
-                x.add((Var)obj) ;
-            else
-                throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
-        }
+        for (String obj : varNames)
+            x.add(Var.alloc(obj)) ;
         return x ;
     }
     
-    /** return a list of String names */ 
-    public static List<String> varNames(Collection<?> vars)
+    /** Return a list of String names from a collection of variables */ 
+    public static List<String> varNames(Collection<Var> vars)
     {
         List<String> x = new ArrayList<String>() ;
-        for ( Iterator< ? > iter = vars.iterator() ; iter.hasNext() ; )
-        {
-            Object obj = iter.next(); 
-            String name = null ; 
-            
-            if ( obj instanceof Var )
-                name = ((Var)obj).getVarName() ;
-            else if ( obj instanceof String )
-                name = (String)obj ;
-            else
-                throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
-//            if ( x.contains(name) )
-//                throw new ARQInternalErrorException("Duplicate name") ;
-            x.add(name) ;
-        }
-        return x ;
-    }
-    
-    public static Collection<String> names(Collection<?> vars)
-    {
-        List<String> x = new ArrayList<String>() ;
-        for (Object obj : vars)
-        {
-            if ( obj instanceof Var )
-                x.add(((Var)obj).getVarName()) ;
-            else if ( obj instanceof String )
-                x.add((String)obj) ;
-            else
-                throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
-        }
+        for (Var var : vars)
+            x.add(var.getVarName()) ;
         return x ;
     }
 }
