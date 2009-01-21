@@ -1605,44 +1605,22 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   final public void ConstructTriples(TemplateGroup acc) throws ParseException {
     TriplesSameSubject(acc);
+    label_21:
+    while (true) {
+      if (jj_2_1(2)) {
+        ;
+      } else {
+        break label_21;
+      }
+      jj_consume_token(DOT);
+      TriplesSameSubject(acc);
+    }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
       jj_consume_token(DOT);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case IRIref:
-      case PNAME_NS:
-      case PNAME_LN:
-      case BLANK_NODE_LABEL:
-      case VAR1:
-      case VAR2:
-      case TRUE:
-      case FALSE:
-      case INTEGER:
-      case DECIMAL:
-      case DOUBLE:
-      case INTEGER_POSITIVE:
-      case DECIMAL_POSITIVE:
-      case DOUBLE_POSITIVE:
-      case INTEGER_NEGATIVE:
-      case DECIMAL_NEGATIVE:
-      case DOUBLE_NEGATIVE:
-      case STRING_LITERAL1:
-      case STRING_LITERAL2:
-      case STRING_LITERAL_LONG1:
-      case STRING_LITERAL_LONG2:
-      case LPAREN:
-      case NIL:
-      case LBRACKET:
-      case ANON:
-        ConstructTriples(acc);
-        break;
-      default:
-        jj_la1[71] = jj_gen;
-        ;
-      }
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[71] = jj_gen;
       ;
     }
   }
@@ -1685,7 +1663,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       PropertyList(s, acc);
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1695,15 +1673,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       Node p = null ;
     p = Verb();
     ObjectList(s, p, null, acc);
-    label_21:
+    label_22:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SEMICOLON:
         ;
         break;
       default:
-        jj_la1[74] = jj_gen;
-        break label_21;
+        jj_la1[73] = jj_gen;
+        break label_22;
       }
       jj_consume_token(SEMICOLON);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1717,7 +1695,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ObjectList(s, p, null, acc);
         break;
       default:
-        jj_la1[75] = jj_gen;
+        jj_la1[74] = jj_gen;
         ;
       }
     }
@@ -1734,7 +1712,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       PropertyListNotEmpty(s, acc);
       break;
     default:
-      jj_la1[76] = jj_gen;
+      jj_la1[75] = jj_gen;
       ;
     }
   }
@@ -1742,15 +1720,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
     Object(s, p, path, acc);
-    label_22:
+    label_23:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
         ;
         break;
       default:
-        jj_la1[77] = jj_gen;
-        break label_22;
+        jj_la1[76] = jj_gen;
+        break label_23;
       }
       jj_consume_token(COMMA);
       Object(s, p, path, acc);
@@ -1779,7 +1757,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  p = nRDFtype ;
       break;
     default:
-      jj_la1[78] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1825,7 +1803,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       PropertyListPath(s, acc);
       break;
     default:
-      jj_la1[79] = jj_gen;
+      jj_la1[78] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1847,20 +1825,20 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       p = VerbSimple();
       break;
     default:
-      jj_la1[80] = jj_gen;
+      jj_la1[79] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     ObjectList(s, p, path, acc);
-    label_23:
+    label_24:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SEMICOLON:
         ;
         break;
       default:
-        jj_la1[81] = jj_gen;
-        break label_23;
+        jj_la1[80] = jj_gen;
+        break label_24;
       }
       jj_consume_token(SEMICOLON);
       path = null ; p = null ;
@@ -1887,14 +1865,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           p = VerbSimple();
           break;
         default:
-          jj_la1[82] = jj_gen;
+          jj_la1[81] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         ObjectList(s, p, path, acc);
         break;
       default:
-        jj_la1[83] = jj_gen;
+        jj_la1[82] = jj_gen;
         ;
       }
     }
@@ -1911,7 +1889,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       PropertyListNotEmpty(s, acc);
       break;
     default:
-      jj_la1[84] = jj_gen;
+      jj_la1[83] = jj_gen;
       ;
     }
   }
@@ -1962,7 +1940,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         {if (true) return new P_Alt(p1, p2) ;}
       break;
     default:
-      jj_la1[85] = jj_gen;
+      jj_la1[84] = jj_gen;
       ;
     }
      {if (true) return p1 ;}
@@ -1987,13 +1965,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         {if (true) return new P_Seq(p1, new P_Reverse(p2)) ;}
         break;
       default:
-        jj_la1[86] = jj_gen;
+        jj_la1[85] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[87] = jj_gen;
+      jj_la1[86] = jj_gen;
       ;
     }
      {if (true) return p1;}
@@ -2017,7 +1995,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
        p = new P_Reverse(p) ;
       break;
     default:
-      jj_la1[88] = jj_gen;
+      jj_la1[87] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2029,7 +2007,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       p = PathMod(p);
       break;
     default:
-      jj_la1[89] = jj_gen;
+      jj_la1[88] = jj_gen;
       ;
     }
      {if (true) return p ;}
@@ -2069,7 +2047,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                       {if (true) return new P_Mod(p, i1, i2) ;}
           break;
         default:
-          jj_la1[90] = jj_gen;
+          jj_la1[89] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2079,13 +2057,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                        {if (true) return new P_Mod(p, i1) ;}
         break;
       default:
-        jj_la1[91] = jj_gen;
+        jj_la1[90] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[92] = jj_gen;
+      jj_la1[91] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2111,7 +2089,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(RPAREN);
       break;
     default:
-      jj_la1[93] = jj_gen;
+      jj_la1[92] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2142,7 +2120,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                    {if (true) return n ;}
       break;
     default:
-      jj_la1[94] = jj_gen;
+      jj_la1[93] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2162,7 +2140,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node Collection(TripleCollector acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ;
     jj_consume_token(LPAREN);
-    label_24:
+    label_25:
     while (true) {
       Node cell = createListNode() ;
       if ( listHead == nRDFnil )
@@ -2202,8 +2180,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[95] = jj_gen;
-        break label_24;
+        jj_la1[94] = jj_gen;
+        break label_25;
       }
     }
     jj_consume_token(RPAREN);
@@ -2249,7 +2227,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                          {if (true) return n ;}
       break;
     default:
-      jj_la1[96] = jj_gen;
+      jj_la1[95] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2287,7 +2265,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       n = GraphTerm();
       break;
     default:
-      jj_la1[97] = jj_gen;
+      jj_la1[96] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2310,7 +2288,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  n = createNode(iri) ;
       break;
     default:
-      jj_la1[98] = jj_gen;
+      jj_la1[97] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2328,7 +2306,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       t = jj_consume_token(VAR2);
       break;
     default:
-      jj_la1[99] = jj_gen;
+      jj_la1[98] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2379,7 +2357,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[100] = jj_gen;
+      jj_la1[99] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2397,15 +2375,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Expr ConditionalOrExpression() throws ParseException {
                                    Expr expr1, expr2 ;
     expr1 = ConditionalAndExpression();
-    label_25:
+    label_26:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_OR:
         ;
         break;
       default:
-        jj_la1[101] = jj_gen;
-        break label_25;
+        jj_la1[100] = jj_gen;
+        break label_26;
       }
       jj_consume_token(SC_OR);
       expr2 = ConditionalAndExpression();
@@ -2418,15 +2396,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Expr ConditionalAndExpression() throws ParseException {
                                     Expr expr1, expr2 ;
     expr1 = ValueLogical();
-    label_26:
+    label_27:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SC_AND:
         ;
         break;
       default:
-        jj_la1[102] = jj_gen;
-        break label_26;
+        jj_la1[101] = jj_gen;
+        break label_27;
       }
       jj_consume_token(SC_AND);
       expr2 = ValueLogical();
@@ -2485,13 +2463,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[103] = jj_gen;
+        jj_la1[102] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[104] = jj_gen;
+      jj_la1[103] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -2508,7 +2486,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Expr AdditiveExpression() throws ParseException {
                               Expr expr1, expr2, expr3 ; boolean addition ; Node n ;
     expr1 = MultiplicativeExpression();
-    label_27:
+    label_28:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER_POSITIVE:
@@ -2522,8 +2500,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[105] = jj_gen;
-        break label_27;
+        jj_la1[104] = jj_gen;
+        break label_28;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -2560,7 +2538,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          addition = false ;
           break;
         default:
-          jj_la1[106] = jj_gen;
+          jj_la1[105] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -2579,13 +2557,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                             expr2 = new E_Divide(expr2, expr3) ;
             break;
           default:
-            jj_la1[107] = jj_gen;
+            jj_la1[106] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
         default:
-          jj_la1[108] = jj_gen;
+          jj_la1[107] = jj_gen;
           ;
         }
       if ( addition )
@@ -2594,7 +2572,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          expr1 = new E_Subtract(expr1, expr2) ;
         break;
       default:
-        jj_la1[109] = jj_gen;
+        jj_la1[108] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2606,7 +2584,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Expr MultiplicativeExpression() throws ParseException {
                                     Expr expr1, expr2 ;
     expr1 = UnaryExpression();
-    label_28:
+    label_29:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -2614,8 +2592,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[110] = jj_gen;
-        break label_28;
+        jj_la1[109] = jj_gen;
+        break label_29;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -2629,7 +2607,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[111] = jj_gen;
+        jj_la1[110] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2694,7 +2672,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[112] = jj_gen;
+      jj_la1[111] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2763,7 +2741,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                              {if (true) return expr ;}
       break;
     default:
-      jj_la1[113] = jj_gen;
+      jj_la1[112] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2862,7 +2840,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[114] = jj_gen;
+      jj_la1[113] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2882,7 +2860,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[115] = jj_gen;
+      jj_la1[114] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -2910,7 +2888,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       agg = AggregateSum();
       break;
     default:
-      jj_la1[116] = jj_gen;
+      jj_la1[115] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2950,13 +2928,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                     agg = new AggCountVarDistinct(v) ;
         break;
       default:
-        jj_la1[117] = jj_gen;
+        jj_la1[116] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[118] = jj_gen;
+      jj_la1[117] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2992,7 +2970,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       a = ArgList();
       break;
     default:
-      jj_la1[119] = jj_gen;
+      jj_la1[118] = jj_gen;
       ;
     }
       if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
@@ -3017,13 +2995,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         uri = IRIref();
         break;
       default:
-        jj_la1[120] = jj_gen;
+        jj_la1[119] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[121] = jj_gen;
+      jj_la1[120] = jj_gen;
       ;
     }
       {if (true) return createLiteral(lex, lang, uri) ;}
@@ -3049,7 +3027,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       n = NumericLiteralNegative();
       break;
     default:
-      jj_la1[122] = jj_gen;
+      jj_la1[121] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3073,7 +3051,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                  {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[123] = jj_gen;
+      jj_la1[122] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3096,7 +3074,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[124] = jj_gen;
+      jj_la1[123] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3119,7 +3097,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[125] = jj_gen;
+      jj_la1[124] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3137,7 +3115,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[126] = jj_gen;
+      jj_la1[125] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3164,7 +3142,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[127] = jj_gen;
+      jj_la1[126] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3186,7 +3164,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                          {if (true) return iri ;}
       break;
     default:
-      jj_la1[128] = jj_gen;
+      jj_la1[127] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3205,7 +3183,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[129] = jj_gen;
+      jj_la1[128] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3224,7 +3202,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[130] = jj_gen;
+      jj_la1[129] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3238,6 +3216,389 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
+  private boolean jj_2_1(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_1(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(0, xla); }
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_66() {
+    if (jj_scan_token(STRING_LITERAL1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_33() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_3R_36()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_56() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_66()) {
+    jj_scanpos = xsp;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
+    if (jj_3R_68()) {
+    jj_scanpos = xsp;
+    if (jj_3R_69()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_60()) {
+    jj_scanpos = xsp;
+    if (jj_3R_61()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_60() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_83() {
+    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_81() {
+    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_72() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_81()) {
+    jj_scanpos = xsp;
+    if (jj_3R_82()) {
+    jj_scanpos = xsp;
+    if (jj_3R_83()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_80() {
+    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_79() {
+    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_78() {
+    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_71() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_78()) {
+    jj_scanpos = xsp;
+    if (jj_3R_79()) {
+    jj_scanpos = xsp;
+    if (jj_3R_80()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_77() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_76() {
+    if (jj_scan_token(DECIMAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_75() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_70() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_75()) {
+    jj_scanpos = xsp;
+    if (jj_3R_76()) {
+    jj_scanpos = xsp;
+    if (jj_3R_77()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_41() {
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    if (jj_3R_72()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_58() {
+    if (jj_3R_71()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_57() {
+    if (jj_3R_70()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_57()) {
+    jj_scanpos = xsp;
+    if (jj_3R_58()) {
+    jj_scanpos = xsp;
+    if (jj_3R_59()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    if (jj_scan_token(LBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_50() {
+    if (jj_3R_56()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_64() {
+    if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_53() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_62()) {
+    jj_scanpos = xsp;
+    if (jj_3R_63()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_74() {
+    if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
+    if (jj_3R_53()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_46() {
+    if (jj_3R_52()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    if (jj_3R_51()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_73() {
+    if (jj_scan_token(PNAME_LN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_44() {
+    if (jj_3R_50()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_43()) {
+    jj_scanpos = xsp;
+    if (jj_3R_44()) {
+    jj_scanpos = xsp;
+    if (jj_3R_45()) {
+    jj_scanpos = xsp;
+    if (jj_3R_46()) {
+    jj_scanpos = xsp;
+    if (jj_3R_47()) {
+    jj_scanpos = xsp;
+    if (jj_3R_48()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_65() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_73()) {
+    jj_scanpos = xsp;
+    if (jj_3R_74()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_31() {
+    if (jj_3R_33()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(12)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(13)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_36() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_3R_65()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_49() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_54()) {
+    jj_scanpos = xsp;
+    if (jj_3R_55()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    if (jj_3R_64()) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_69() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_68() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
   /** Generated Token Manager. */
   public ARQParserTokenManager token_source;
   JavaCharStream jj_input_stream;
@@ -3246,8 +3607,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   /** Next token. */
   public Token jj_nt;
   private int jj_ntk;
+  private Token jj_scanpos, jj_lastpos;
+  private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[131];
+  final private int[] jj_la1 = new int[130];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -3261,20 +3624,23 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1_init_4();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x3900000,0x40000,0x80000,0x600000,0x600000,0x0,0x3700,0x3700,0x3700,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x700,0x0,0x0,0x0,0x10000000,0xc000000,0x3700,0x0,0x3700,0x700,0xc0003700,0xc0000000,0x3700,0xc0003700,0x8000000,0x4000000,0xc000000,0x0,0x0,0x0,0x0,0x0,0x700,0x700,0x0,0x700,0x0,0x0,0x700,0x700,0x0,0x700,0x0,0x0,0x700,0x0,0x0,0x0,0x0,0x0,0x0,0x1c0000,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x3f00,0x23700,0x0,0x23700,0x23700,0x23700,0x0,0x0,0x0,0x20700,0x0,0x0,0x0,0x0,0x20700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x3000,0x203000,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
+      jj_la1_0 = new int[] {0x3900000,0x40000,0x80000,0x600000,0x600000,0x0,0x3700,0x3700,0x3700,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x700,0x0,0x0,0x0,0x10000000,0xc000000,0x3700,0x0,0x3700,0x700,0xc0003700,0xc0000000,0x3700,0xc0003700,0x8000000,0x4000000,0xc000000,0x0,0x0,0x0,0x0,0x0,0x700,0x700,0x0,0x700,0x0,0x0,0x700,0x700,0x0,0x700,0x0,0x0,0x700,0x0,0x0,0x0,0x0,0x0,0x0,0x1c0000,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x3f00,0x23700,0x0,0x23700,0x23700,0x23700,0x0,0x0,0x0,0x20700,0x0,0x0,0x0,0x0,0x20700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x3000,0x203000,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x200,0xffc24000,0xffc24000,0xffc24000,0x2,0x2,0x0,0x0,0x2,0x4,0x2,0x1,0x4,0x800,0x1000,0x0,0x0,0xffc00000,0x200,0xffc00000,0xffc00000,0xffc00000,0x0,0xffc00000,0xffc00000,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x4,0x2,0x2,0x2,0x2,0x2,0x4,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x10,0x0,0x0,0x0,0x4,0x0,0x0,0x3004b0,0x3004b0,0x0,0x0,0x0,0x0,0x1004b0,0x40,0xffc00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffc24000,0xffc24000,0xffc00000,0x0,0x24000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x200,0xffc24000,0xffc24000,0xffc24000,0x2,0x2,0x0,0x0,0x2,0x4,0x2,0x1,0x4,0x800,0x1000,0x0,0x0,0xffc00000,0x200,0xffc00000,0xffc00000,0xffc00000,0x0,0xffc00000,0xffc00000,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x4,0x2,0x2,0x2,0x2,0x2,0x4,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x10,0x0,0x0,0x0,0x4,0x0,0x0,0x3004b0,0x3004b0,0x0,0x0,0x0,0x0,0x1004b0,0x40,0xffc00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffc24000,0xffc24000,0xffc00000,0x0,0x24000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0x1,0x0,0x1,0x1,0x0,0x0,0x0,0x2e38,0x2e38,0x638,0x0,0x0,0x40,0x0,0x0,0x0,0x0,0x0,0x4040,0x4000,0x4000,0x4000,0x4000,0x0,0x0,0x4000,0x0,0x2800,0x1000,0x1000,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0xe1ff0006,0xe1ff0006,0x0,0x0,0x0,0x1,0x0,0x0,0xe1ff0006,0xe1ff0006,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0xe1ff0006,0xe1ff0006,0xe1ff0006,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x1f80000,0x1f80000,0x0,0x0,0x1f80000,0x0,0x0,0xe1ff0007,0xe1ff0007,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1ff0000,0x70000,0x380000,0x1c00000,0x6,0xe0000000,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0x1,0x0,0x1,0x1,0x0,0x0,0x0,0x2e38,0x2e38,0x638,0x0,0x0,0x40,0x0,0x0,0x0,0x0,0x0,0x4040,0x4000,0x4000,0x4000,0x4000,0x0,0x0,0x4000,0x0,0x2800,0x1000,0x1000,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0xe1ff0006,0xe1ff0006,0x0,0x0,0x0,0x1,0x0,0x0,0xe1ff0006,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0xe1ff0006,0xe1ff0006,0xe1ff0006,0x0,0x0,0xe1ff0006,0x0,0x0,0x0,0x0,0x1f80000,0x1f80000,0x0,0x0,0x1f80000,0x0,0x0,0xe1ff0007,0xe1ff0007,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1ff0000,0x70000,0x380000,0x1c00000,0x6,0xe0000000,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x2000002,0x0,0x0,0x0,0x2000000,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x2,0x2,0x2,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14b,0x10,0x10,0x800,0x14b,0x14b,0x800,0x10,0x0,0x2,0x400,0xa,0x14b,0x14b,0x800,0x14b,0x200,0x0,0x0,0x400,0x0,0x14b,0x80000002,0x200,0x80000002,0x80000002,0x0,0x40000000,0x84000000,0x84000000,0x80000002,0x2800010,0x20,0x420,0x2800010,0x2,0x42,0x14b,0x14b,0x109,0x0,0x0,0x109,0x200000,0x400000,0x3f000,0x3f000,0x1800000,0x0,0x6000000,0x6000000,0x1800000,0x6000000,0x6000000,0x1840003,0x3,0x0,0x400,0x0,0x2000000,0x2000000,0xa,0x8000000,0x8000000,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x100,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x2000002,0x0,0x0,0x0,0x2000000,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x2,0x2,0x2,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14b,0x10,0x10,0x800,0x14b,0x14b,0x800,0x10,0x0,0x2,0x400,0xa,0x14b,0x800,0x14b,0x200,0x0,0x0,0x400,0x0,0x14b,0x80000002,0x200,0x80000002,0x80000002,0x0,0x40000000,0x84000000,0x84000000,0x80000002,0x2800010,0x20,0x420,0x2800010,0x2,0x42,0x14b,0x14b,0x109,0x0,0x0,0x109,0x200000,0x400000,0x3f000,0x3f000,0x1800000,0x0,0x6000000,0x6000000,0x1800000,0x6000000,0x6000000,0x1840003,0x3,0x0,0x400,0x0,0x2000000,0x2000000,0xa,0x8000000,0x8000000,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x100,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
+  final private JJCalls[] jj_2_rtns = new JJCalls[1];
+  private boolean jj_rescan = false;
+  private int jj_gc = 0;
 
   /** Constructor with InputStream. */
   public ARQParser(java.io.InputStream stream) {
@@ -3287,7 +3653,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -3301,7 +3668,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor. */
@@ -3311,7 +3679,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -3321,7 +3690,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor with generated Token Manager. */
@@ -3330,7 +3700,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -3339,7 +3710,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 131; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 130; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -3349,11 +3721,44 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
+      if (++jj_gc > 100) {
+        jj_gc = 0;
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+          JJCalls c = jj_2_rtns[i];
+          while (c != null) {
+            if (c.gen < jj_gen) c.first = null;
+            c = c.next;
+          }
+        }
+      }
       return token;
     }
     token = oldToken;
     jj_kind = kind;
     throw generateParseException();
+  }
+
+  static private final class LookaheadSuccess extends java.lang.Error { }
+  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+  private boolean jj_scan_token(int kind) {
+    if (jj_scanpos == jj_lastpos) {
+      jj_la--;
+      if (jj_scanpos.next == null) {
+        jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
+      } else {
+        jj_lastpos = jj_scanpos = jj_scanpos.next;
+      }
+    } else {
+      jj_scanpos = jj_scanpos.next;
+    }
+    if (jj_rescan) {
+      int i = 0; Token tok = token;
+      while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
+      if (tok != null) jj_add_error_token(kind, i);
+    }
+    if (jj_scanpos.kind != kind) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
+    return false;
   }
 
 
@@ -3386,6 +3791,33 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   private int[] jj_expentry;
   private int jj_kind = -1;
+  private int[] jj_lasttokens = new int[100];
+  private int jj_endpos;
+
+  private void jj_add_error_token(int kind, int pos) {
+    if (pos >= 100) return;
+    if (pos == jj_endpos + 1) {
+      jj_lasttokens[jj_endpos++] = kind;
+    } else if (jj_endpos != 0) {
+      jj_expentry = new int[jj_endpos];
+      for (int i = 0; i < jj_endpos; i++) {
+        jj_expentry[i] = jj_lasttokens[i];
+      }
+      jj_entries_loop: for (java.util.Iterator<int[]> it = jj_expentries.iterator(); it.hasNext();) {
+        int[] oldentry = (it.next());
+        if (oldentry.length == jj_expentry.length) {
+          for (int i = 0; i < jj_expentry.length; i++) {
+            if (oldentry[i] != jj_expentry[i]) {
+              continue jj_entries_loop;
+            }
+          }
+          jj_expentries.add(jj_expentry);
+          break jj_entries_loop;
+        }
+      }
+      if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
+    }
+  }
 
   /** Generate ParseException. */
   public ParseException generateParseException() {
@@ -3395,7 +3827,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 131; i++) {
+    for (int i = 0; i < 130; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -3423,6 +3855,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         jj_expentries.add(jj_expentry);
       }
     }
+    jj_endpos = 0;
+    jj_rescan_token();
+    jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
       exptokseq[i] = jj_expentries.get(i);
@@ -3436,6 +3871,41 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   /** Disable tracing. */
   final public void disable_tracing() {
+  }
+
+  private void jj_rescan_token() {
+    jj_rescan = true;
+    for (int i = 0; i < 1; i++) {
+    try {
+      JJCalls p = jj_2_rtns[i];
+      do {
+        if (p.gen > jj_gen) {
+          jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
+          switch (i) {
+            case 0: jj_3_1(); break;
+          }
+        }
+        p = p.next;
+      } while (p != null);
+      } catch(LookaheadSuccess ls) { }
+    }
+    jj_rescan = false;
+  }
+
+  private void jj_save(int index, int xla) {
+    JJCalls p = jj_2_rtns[index];
+    while (p.gen > jj_gen) {
+      if (p.next == null) { p = p.next = new JJCalls(); break; }
+      p = p.next;
+    }
+    p.gen = jj_gen + xla - jj_la; p.first = token; p.arg = xla;
+  }
+
+  static final class JJCalls {
+    int gen;
+    Token first;
+    int arg;
+    JJCalls next;
   }
 
 }

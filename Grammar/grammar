@@ -76,10 +76,11 @@ function grammar
 	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
     mv F $F
 
-## ##     echo "---- Fixing Java warnings in ${CLASS} ..."
-## ##     F="$DIR/${CLASS}.java"
-## ##     cat $F > F
-## ##     mv F $F
+    echo "---- Fixing Java warnings in ${CLASS}Parser ..."
+    F="$DIR/${CLASS}Parser.java"
+    sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
+	-e 's/(int\[\])//' < $F > F
+    mv F $F
 
     echo "---- Done"
 }
