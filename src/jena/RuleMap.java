@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.16 2009-01-16 17:23:57 andy_seaborne Exp $
+ * $Id: RuleMap.java,v 1.17 2009-01-22 10:55:55 chris-dollin Exp $
  *****************************************************************/
 package jena;
 
@@ -39,7 +39,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:57 $
+ * @version $Revision: 1.17 $ on $Date: 2009-01-22 10:55:55 $
  */
 public class RuleMap {
     
@@ -48,7 +48,7 @@ public class RuleMap {
      * comment lines and any initial prefix definition lines.
      * Also notes the prefix definitions for adding to a later inf model.
      */
-    public static List loadRules(String filename, Map prefixes) throws IOException {
+    public static List<Rule> loadRules(String filename, Map<String, String> prefixes) throws IOException {
         String fname = filename;
         if (fname.startsWith("file:///")) {
             fname = File.separator + fname.substring(8);
@@ -67,9 +67,9 @@ public class RuleMap {
      * comment lines and any initial prefix definition lines.
      * Also notes the prefix definitions for adding to a later inf model.
      */
-    public static List loadRules(BufferedReader src, Map prefixes) throws IOException {
+    public static List<Rule> loadRules(BufferedReader src, Map<String, String> prefixes) throws IOException {
         Rule.Parser parser = Rule.rulesParserFromReader(src);
-        List rules = Rule.parseRules(parser);
+        List<Rule> rules = Rule.parseRules(parser);
         prefixes.putAll(parser.getPrefixMap());
         return rules;
     }
@@ -160,8 +160,8 @@ public class RuleMap {
             
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
-            Map prefixes = new HashMap();
-            List rules = loadRules(cl.getItem(0), prefixes);
+            Map<String, String> prefixes = new HashMap<String, String>();
+            List<Rule> rules = loadRules(cl.getItem(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
             
             // Process
