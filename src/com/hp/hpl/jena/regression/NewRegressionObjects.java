@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionObjects.java,v 1.8 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionObjects.java,v 1.9 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -49,16 +49,16 @@ public class NewRegressionObjects extends ModelTestBase
     
     public void testListSubjects()
         {
-        Set statements = fill( m );
+        Set<Statement> statements = fill( m );
         List L = iteratorToList( m.listSubjects() );
         assertEquals( numberSubjects, L.size() );
-        Set wanted = subjectSet( numberSubjects );
+        Set<Resource> wanted = subjectSet( numberSubjects );
         assertEquals( wanted, iteratorToSet( L.iterator() ) );
         }    
     
     public void testListNamespaces()
         {
-        Set statements = fill( m );
+        Set<Statement> statements = fill( m );
         List L = iteratorToList( m.listNameSpaces() );
         assertEquals( numberPredicates, L.size() );
         Set wanted = predicateSet( numberPredicates );
@@ -67,7 +67,7 @@ public class NewRegressionObjects extends ModelTestBase
     
     public void testListStatements()
         {
-        Set statements = fill( m );
+        Set<Statement> statements = fill( m );
         List L = iteratorToList( m.listStatements() );
         assertEquals( statements.size(), L.size() );
         assertEquals( statements, new HashSet( L ) );
@@ -75,11 +75,11 @@ public class NewRegressionObjects extends ModelTestBase
     
     public void testListObjectsOfPropertyByProperty()
         {
-        Set statements = fill( m );
+        Set<Statement> statements = fill( m );
         List L = iteratorToList
             ( m.listObjectsOfProperty( property( predicatePrefix + "0/p" ) ) );
         assertEquals( numberSubjects, L.size() );
-        Set wanted = literalsFor( 0 );
+        Set<Literal> wanted = literalsFor( 0 );
         assertEquals( wanted, new HashSet( L ) );
         }
     
@@ -90,20 +90,20 @@ public class NewRegressionObjects extends ModelTestBase
         for (int i = 0; i < size; i += 1) m.addLiteral( s, RDF.value, i );
         List L = iteratorToList( m.listObjectsOfProperty( s, RDF.value ) );
         assertEquals( size, L.size() );
-        Set wanted = literalsUpto( size );
+        Set<Literal> wanted = literalsUpto( size );
         assertEquals( wanted, new HashSet( L ) );
         }
     
     public void testListObjects()
         {
         fill( m );
-        Set wanted = literalsUpto( numberSubjects * numberPredicates );
+        Set<Literal> wanted = literalsUpto( numberSubjects * numberPredicates );
         assertEquals( wanted, iteratorToSet( m.listObjects() ) );
         }
     
-    protected Set subjectSet( int limit )
+    protected Set<Resource> subjectSet( int limit )
         {
-        Set result = new HashSet();
+        Set<Resource> result = new HashSet<Resource>();
         for (int i = 0; i < limit; i += 1) result.add( resource( subjectPrefix + i ) );
         return result;
         }
@@ -115,24 +115,24 @@ public class NewRegressionObjects extends ModelTestBase
         return result;
         }
     
-    protected Set literalsUpto( int limit )
+    protected Set<Literal> literalsUpto( int limit )
         {
-        Set result = new HashSet();
+        Set<Literal> result = new HashSet<Literal>();
         for (int i = 0; i < limit; i += 1) result.add( m.createTypedLiteral( i ) );
         return result;
         }
     
-    protected Set literalsFor( int predicate )
+    protected Set<Literal> literalsFor( int predicate )
         {
-        Set result = new HashSet();
+        Set<Literal> result = new HashSet<Literal>();
         for (int i = 0; i < numberSubjects; i += 1)
             result.add( m.createTypedLiteral( i * numberPredicates + predicate ) );
         return result;
         }
     
-    protected Set fill( Model m )
+    protected Set<Statement> fill( Model m )
         {
-        Set statements = new HashSet();
+        Set<Statement> statements = new HashSet<Statement>();
         for (int i = 0; i < numberSubjects; i += 1)
             for (int j = 0; j < numberPredicates; j += 1)
                 {

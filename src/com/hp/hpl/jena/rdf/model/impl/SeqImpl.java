@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.28 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: SeqImpl.java,v 1.29 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,11 +15,12 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2009-01-16 17:23:48 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2009-01-22 15:27:15 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
 
+    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() {
         @Override
         public boolean canWrap( Node n, EnhGraph eg )

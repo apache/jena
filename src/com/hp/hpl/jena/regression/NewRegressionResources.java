@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.14 2009-01-08 14:56:42 andy_seaborne Exp $
+ 	$Id: NewRegressionResources.java,v 1.15 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -149,9 +149,9 @@ public class NewRegressionResources extends NewRegressionBase
        //                       m.createSeq() );
         }
     
-    protected Set setOf( Object x )
+    protected Set<Object> setOf( Object x )
         {
-        Set result = new HashSet();
+        Set<Object> result = new HashSet<Object>();
         result.add( x );
         return result;
         }

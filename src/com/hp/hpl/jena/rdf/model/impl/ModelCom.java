@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.132 2009-01-19 12:07:12 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.133 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -664,11 +664,11 @@ public class ModelCom
      * @param members An iterator, each value of which is expected to be an RDFNode.
      * @return An RDF-encoded list of the elements of the iterator
      */
-    public RDFList createList( Iterator members ) {
+    public RDFList createList( Iterator<RDFNode> members ) {
         RDFList list = createList();
         
         while (members != null && members.hasNext()) {
-            list = list.with( (RDFNode) members.next() );
+            list = list.with( members.next() );
         }
         
         return list;
@@ -726,11 +726,11 @@ public class ModelCom
     public boolean isEmpty()
         { return graph.isEmpty(); }
         
-    private void updateNamespace( Set set, Iterator it )
+    private void updateNamespace( Set<String> set, Iterator<Node> it )
         {
         while (it.hasNext())
             {
-            Node node = (Node) it.next();
+            Node node = it.next();
             if (node.isURI())
                 {
                 String uri = node.getURI();
@@ -741,19 +741,19 @@ public class ModelCom
             }
         }
         
-    private Iterator listPredicates()
+    private Iterator<Node> listPredicates()
         { return getGraph().queryHandler().predicatesFor( Node.ANY, Node.ANY ); }
      
-    private Iterator listTypes()
+    private Iterator<Node> listTypes()
         {
-        Set types = CollectionFactory.createHashedSet();
+        Set<Node> types = CollectionFactory.createHashedSet();
         ClosableIterator it = graph.find( null, RDF.type.asNode(), null );
         while (it.hasNext()) types.add( ((Triple) it.next()).getObject() );
         return types.iterator();
         }
      
     public NsIterator listNameSpaces()  {
-        Set nameSpaces = CollectionFactory.createHashedSet();
+        Set<String> nameSpaces = CollectionFactory.createHashedSet();
         updateNamespace( nameSpaces, listPredicates() );
         updateNamespace( nameSpaces, listTypes() );
         return new NsIteratorImpl(nameSpaces.iterator(), nameSpaces);
@@ -789,7 +789,7 @@ public class ModelCom
         return this;
         }
         
-    public PrefixMapping setNsPrefixes( Map map )
+    public PrefixMapping setNsPrefixes( Map<String, String> map )
         { 
         getPrefixMapping().setNsPrefixes( map ); 
         return this;
@@ -837,7 +837,7 @@ public class ModelCom
             Map.Entry e = (Map.Entry) it.next();
             String key = (String) e.getKey();
             Set  values = (Set) e.getValue();
-            Set niceValues = CollectionFactory.createHashedSet();
+            Set<String> niceValues = CollectionFactory.createHashedSet();
             Iterator them = values.iterator();
             while (them.hasNext())
                 {
@@ -845,7 +845,7 @@ public class ModelCom
                 if (PrefixMappingImpl.isNiceURI( uri )) niceValues.add( uri );
                 }
             if (niceValues.size() == 1)
-                pm.setNsPrefix( key, (String) niceValues.iterator().next() );
+                pm.setNsPrefix( key, niceValues.iterator().next() );
             }            
         }
         
@@ -878,21 +878,21 @@ public class ModelCom
         Add all the statements to the model by converting the list to an array of
         Statement and removing that.
     */
-    public Model add( List statements )
+    public Model add( List<Statement> statements )
         {
         getBulkUpdateHandler().add( asTriples( statements ) );
         return this;
         }
         
-    private List asTriples( List statements )
+    private List<Triple> asTriples( List<Statement> statements )
         {
-        List L = new ArrayList( statements.size() );
+        List<Triple> L = new ArrayList<Triple>( statements.size() );
         for (int i = 0; i < statements.size(); i += 1) 
-            L.add( ((Statement) statements.get(i)).asTriple() );
+            L.add( statements.get(i).asTriple() );
         return L;
         }
         
-    private Iterator asTriples( StmtIterator it )
+    private Iterator<Triple> asTriples( StmtIterator it )
         { return new Map1Iterator( mapAsTriple, it ); }
         
     private Map1 mapAsTriple = new Map1()
@@ -912,7 +912,7 @@ public class ModelCom
         Remove all the Statements from the model by converting the List to a
         List(Statement) and removing that.
     */
-    public Model remove( List statements )
+    public Model remove( List<Statement> statements )
         {
         getBulkUpdateHandler().delete( asTriples( statements ) );
         return this;
@@ -1134,9 +1134,9 @@ public class ModelCom
         return result;    
         }
         
-    public List asStatements( List triples )
+    public List<Statement> asStatements( List triples )
         {
-        List L = new ArrayList( triples.size() );
+        List<Statement> L = new ArrayList<Statement>( triples.size() );
         for (int i = 0; i < triples.size(); i += 1) L.add( asStatement( (Triple) triples.get(i) ) );
         return L;
         }

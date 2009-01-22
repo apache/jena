@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeq.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionSeq.java,v 1.8 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -128,7 +128,7 @@ public class NewRegressionSeq extends NewRegressionBase
         Seq seq = m.createSeq();
         for (int i = 0; i < num; i += 1) seq.add( i );
     //                         
-        List retained = new ArrayList();
+        List<RDFNode> retained = new ArrayList<RDFNode>();
     //    
         NodeIterator nIter = seq.iterator();
         for (int i = 0; i < num; i += 1) 

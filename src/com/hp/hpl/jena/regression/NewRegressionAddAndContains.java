@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddAndContains.java,v 1.11 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionAddAndContains.java,v 1.12 2009-01-22 15:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -110,12 +110,12 @@ public class NewRegressionAddAndContains extends NewRegressionBase
         assertTrue( m.containsLiteral( S, P, tvDouble ) );
         }
 
-    public void testAddContainsObject()
-        {
-        LitTestObj O = new LitTestObj( 12345 );
-        m.addLiteral( S, P, O );
-        assertTrue( m.containsLiteral( S, P, O ) );
-        }
+//    public void testAddContainsObject()
+//        {
+//        LitTestObj O = new LitTestObj( 12345 );
+//        m.addLiteral( S, P, O );
+//        assertTrue( m.containsLiteral( S, P, O ) );
+//        }
     
     public void testAddContainsPlainString()
         {

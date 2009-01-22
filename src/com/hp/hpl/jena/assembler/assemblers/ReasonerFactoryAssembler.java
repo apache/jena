@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ReasonerFactoryAssembler.java,v 1.14 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: ReasonerFactoryAssembler.java,v 1.15 2009-01-22 15:27:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -79,7 +79,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
 
     private ReasonerFactory addRules( Resource root, Assembler a, final ReasonerFactory r )
         {
-        final List rules = RuleSetAssembler.addRules( new ArrayList(), a, root );
+        final List<Rule> rules = RuleSetAssembler.addRules( new ArrayList<Rule>(), a, root );
         if (rules.size() > 0)
             if (r instanceof GenericRuleReasonerFactory)
                 {
