@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNamespace.java,v 1.15 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestNamespace.java,v 1.16 2009-01-22 15:43:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -36,7 +36,7 @@ public class TestNamespace extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         m.read( "file:testing/wg/rdf-ns-prefix-confusion/test0014.rdf" );
-        Map ns = m.getNsPrefixMap(); 
+        Map<String, String> ns = m.getNsPrefixMap(); 
         // System.err.println( ">> " + ns );
         assertEquals( "namespace eg", "http://example.org/", ns.get( "eg" ) );
         assertEquals( "namespace rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", ns.get( "rdf" ) );
@@ -63,7 +63,7 @@ public class TestNamespace extends ModelTestBase
     /* */
         Model m2 = ModelFactory.createDefaultModel();
         m2.read( "file:" + f.getAbsolutePath() );
-        Map ns = m2.getNsPrefixMap();
+        Map<String, String> ns = m2.getNsPrefixMap();
         assertEquals( "namespace spoo", "http://spoo.net/", ns.get( "spoo" ) );
         assertEquals( "namespace fred", "ftp://net.fred.org/", ns.get( "fred" ) );
     /* */
@@ -73,9 +73,9 @@ public class TestNamespace extends ModelTestBase
     /**
         turn a semi-separated set of P=U definitions into a namespace map.
     */
-    private Map makePrefixes( String prefixes )
+    private Map<String, Set<String>> makePrefixes( String prefixes )
         {
-        Map result = new HashMap();
+        Map<String, Set<String>> result = new HashMap<String, Set<String>>();
         StringTokenizer st = new StringTokenizer( prefixes, ";" );
         while (st.hasMoreTokens())
             {
@@ -93,9 +93,9 @@ public class TestNamespace extends ModelTestBase
         @param element the single element to contain
         @return a set whose only element == element
     */
-    private Set set( String element )
+    private Set<String> set( String element )
         {
-        Set s = CollectionFactory.createHashedSet();
+        Set<String> s = CollectionFactory.createHashedSet();
         s.add( element );
         return s;
         }

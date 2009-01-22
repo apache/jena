@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.133 2009-01-22 15:27:15 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.134 2009-01-22 15:43:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -664,15 +664,12 @@ public class ModelCom
      * @param members An iterator, each value of which is expected to be an RDFNode.
      * @return An RDF-encoded list of the elements of the iterator
      */
-    public RDFList createList( Iterator<RDFNode> members ) {
+    public RDFList createList( Iterator<RDFNode> members ) 
+        {
         RDFList list = createList();
-        
-        while (members != null && members.hasNext()) {
-            list = list.with( members.next() );
-        }
-        
+        while (members != null && members.hasNext()) list = list.with( members.next() );
         return list;
-    }
+        }
     
     
     /**
@@ -807,7 +804,7 @@ public class ModelCom
     public String getNsURIPrefix( String uri )
         { return getPrefixMapping().getNsURIPrefix( uri ); }
                 
-    public Map getNsPrefixMap()
+    public Map<String, String> getNsPrefixMap()
         { return getPrefixMapping().getNsPrefixMap(); }
         
     public String expandPrefix( String prefixed )
@@ -828,20 +825,20 @@ public class ModelCom
         @param the Model who's namespace is to be updated
         @param ns the namespace map to add to the Model      
     */
-    public static void addNamespaces( Model m, Map ns )
+    public static void addNamespaces( Model m, Map<String, Set<String>> ns )
         { 
         PrefixMapping pm = m;
-        Iterator it  = ns.entrySet().iterator();
+        Iterator<Map.Entry<String, Set<String>>> it  = ns.entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            String key = (String) e.getKey();
-            Set  values = (Set) e.getValue();
+            Map.Entry<String, Set<String>> e = it.next();
+            String key = e.getKey();
+            Set<String>  values = e.getValue();
             Set<String> niceValues = CollectionFactory.createHashedSet();
-            Iterator them = values.iterator();
+            Iterator<String> them = values.iterator();
             while (them.hasNext())
                 {
-                String uri = (String) them.next();
+                String uri = them.next();
                 if (PrefixMappingImpl.isNiceURI( uri )) niceValues.add( uri );
                 }
             if (niceValues.size() == 1)
@@ -1134,17 +1131,17 @@ public class ModelCom
         return result;    
         }
         
-    public List<Statement> asStatements( List triples )
+    public List<Statement> asStatements( List<Triple> triples )
         {
         List<Statement> L = new ArrayList<Statement>( triples.size() );
-        for (int i = 0; i < triples.size(); i += 1) L.add( asStatement( (Triple) triples.get(i) ) );
+        for (int i = 0; i < triples.size(); i += 1) L.add( asStatement( triples.get(i) ) );
         return L;
         }
         
     public Model asModel( Graph g )
         { return new ModelCom( g ); }
         
-	public StmtIterator asStatements( final Iterator it ) 
+	public StmtIterator asStatements( final Iterator<Triple> it ) 
         { return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) ); }
     
     protected Map1 mapAsStatement = new Map1()

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.23 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: PrintUtil.java,v 1.24 2009-01-22 15:43:53 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.24 $ on $Date: 2009-01-22 15:43:53 $
  */
 public class PrintUtil {
     
@@ -67,7 +67,7 @@ public class PrintUtil {
      * Register a set of new prefix/namespace mapping which will be used to shorten
      * the print strings for resources in known namespaces.
      */
-    public static void registerPrefixMap(Map map) {
+    public static void registerPrefixMap(Map<String, String> map) {
         prefixMapping.setNsPrefixes( map );
     }
     
