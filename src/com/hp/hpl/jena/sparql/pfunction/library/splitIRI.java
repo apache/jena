@@ -108,10 +108,8 @@ public class splitIRI extends PropertyFunctionBase
             // Fall through and proceed to localname 
         }
         
-        if ( Var.isVar(localnameNode) ) // localnameNode.isVariable() )
-        {
+        if ( Var.isVar(localnameNode) )
             b.add(Var.alloc(localnameNode), Node.createLiteral(localname)) ;
-        }
         else
         {
             // Only string literals (plain strings or datatype xsd:string) 

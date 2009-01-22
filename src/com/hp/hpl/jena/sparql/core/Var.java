@@ -41,6 +41,11 @@ public class Var extends Node_Variable
         throw new NotAVariableException("Node: "+v) ;
     }
     
+    public static Var alloc(Var v)
+    { 
+        return v ;
+    }
+    
     
     public static Var alloc(ExprVar nv)         { return new Var(nv) ; }
     
