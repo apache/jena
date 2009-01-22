@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Personality.java,v 1.13 2009-01-19 12:06:59 chris-dollin Exp $
+  $Id: Personality.java,v 1.14 2009-01-22 15:10:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -22,7 +22,7 @@ public class Personality {
 
     // Instance variables
     /** Records the bindings from type specifications to implementations.  */
-    private Map types = CollectionFactory.createHashedMap();
+    private Map<Class, Implementation> types = CollectionFactory.createHashedMap();
     
     // Constructors
     
@@ -61,7 +61,7 @@ public class Personality {
         isn't one available. 
     */
     Implementation getImplementation( Class t )
-        { return (Implementation) types.get( t ); }
+        { return types.get( t ); }
     
     /**
     	extend this personality by adding in all the mappins from the argument _p_.
@@ -79,7 +79,7 @@ public class Personality {
     */
     public Polymorphic newInstance(Class interf, Node n, Polymorphic that ) 
         {
-        Implementation impl = (Implementation) types.get( interf );
+        Implementation impl = types.get( interf );
         if (impl == null) throw new PersonalityConfigException( interf + " not in Personality." );
         Polymorphic result = impl.wrap(  n, (EnhGraph) that  );
         if (!interf.isInstance(result))
@@ -88,7 +88,7 @@ public class Personality {
         return result;
         }
     
-    protected Map getMap() {return types;}
+    protected Map<Class, Implementation> getMap() {return types;}
 }
 
 /*

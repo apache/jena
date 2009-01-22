@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Content.java,v 1.8 2008-12-28 19:31:54 andy_seaborne Exp $
+ 	$Id: Content.java,v 1.9 2009-01-22 15:10:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -25,20 +25,20 @@ public class Content
     /**
         The list of component Content objects. 
     */
-    protected final List contents;
+    protected final List<Content> contents;
     
     /**
         Initialise a content object that includes the contents of each (Content) item
         in the list <code>contents</code>.
     */
-    public Content( List contents )
+    public Content( List<Content> contents )
         { this.contents = contents; }
     
     /**
         Initialise an empty Content object.
     */
     public Content()
-        { this( new ArrayList() ); }
+        { this( new ArrayList<Content>() ); }
 
     /**
         Answer the model <code>m</code> after filling it with the contents
@@ -46,13 +46,13 @@ public class Content
     */
     public Model fill( Model m )
         {
-        for (int i = 0; i < contents.size(); i += 1) ((Content) contents.get(i)).fill( m );
+        for (int i = 0; i < contents.size(); i += 1) contents.get(i).fill( m );
         return m; 
         }
 
     public boolean isEmpty()
         {
-        for (int i = 0; i < contents.size(); i += 1) if (!((Content) contents.get( i )).isEmpty()) return false;
+        for (int i = 0; i < contents.size(); i += 1) if (!contents.get( i ).isEmpty()) return false;
         return true;
         }
     }

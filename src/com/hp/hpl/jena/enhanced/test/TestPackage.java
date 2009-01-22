@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.24 2009-01-16 17:23:49 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.25 2009-01-22 15:10:44 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -93,7 +93,7 @@ public class TestPackage extends GraphTestBase  {
     /**
      * View n as intf. This is supported iff rslt.
      */
-    private static void miniAsSupports(String title, TestNode n, Class intf, boolean rslt ) {
+    private static void miniAsSupports(String title, TestNode n, Class<?> intf, boolean rslt ) {
         assertTrue(title +":sanity",n instanceof Polymorphic);
         
         // It is always possible to view any node with any interface.
@@ -363,7 +363,7 @@ public class TestPackage extends GraphTestBase  {
     	}
     }
     
-    static class Example 
+    static abstract class Example implements RDFNode 
         {
         static final Implementation factory = new Implementation()
             {

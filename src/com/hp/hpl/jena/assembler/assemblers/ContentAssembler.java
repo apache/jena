@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.17 2009-01-20 15:12:28 chris-dollin Exp $
+ 	$Id: ContentAssembler.java,v 1.18 2009-01-22 15:10:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -26,30 +26,29 @@ public class ContentAssembler extends AssemblerBase implements Assembler
     public ContentAssembler( FileManager fm )
         { this.defaultFileManager = fm; }
 
-    @Override
-    public Object open( Assembler a, Resource root, Mode irrelevant )
+    @Override public Object open( Assembler a, Resource root, Mode irrelevant )
         {
         checkType( root, JA.Content );
-        return new Content( loadContent( new ArrayList<Object>(), a, root ) );
+        return new Content( loadContent( new ArrayList<Content>(), a, root ) );
         }
     
-    public final static Set contentProperties = new HashSetWith()
+    public final static Set<Property> contentProperties = new HashSetWith<Property>()
         .with( JA.content )
         .with( JA.literalContent )
         .with( JA.externalContent )
         .with( JA.quotedContent )
         ;
     
-    static class HashSetWith extends HashSet
+    static class HashSetWith<T> extends HashSet<T>
         {
-        public HashSetWith with( Object x )
+        public HashSetWith<T> with( T x )
             {
             this.add( x );
             return this;
             }
         }
 
-    public List<Object> loadContent( List<Object> contents, Assembler a, Resource root )
+    public List<Content> loadContent( List<Content> contents, Assembler a, Resource root )
         {
         FileManager fm = getFileManager( a, root );
         addLiteralContent( contents, root );
@@ -59,19 +58,19 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         return contents;
         }
     
-    private static void addIndirectContent( List<Object> contents, Assembler a, Resource root )
+    private static void addIndirectContent( List<Content> contents, Assembler a, Resource root )
         {
         StmtIterator it = root.listProperties( JA.content );
-        while (it.hasNext()) contents.add( a.open( getResource( it.nextStatement() ) ) );
+        while (it.hasNext()) contents.add( (Content) a.open( getResource( it.nextStatement() ) ) );
         }
 
-    protected void addExternalContents( List<Object> contents, FileManager fm, Resource root )
+    protected void addExternalContents( List<Content> contents, FileManager fm, Resource root )
         {
         StmtIterator it = root.listProperties( JA.externalContent );
         while (it.hasNext()) contents.add( objectAsContent( fm, it.nextStatement() ) );
         }
 
-    private static void addQuotedContent( List<Object> contents, Resource root )
+    private static void addQuotedContent( List<Content> contents, Resource root )
         {
         StmtIterator it = root.listProperties( JA.quotedContent );
         while (it.hasNext())
@@ -82,7 +81,7 @@ public class ContentAssembler extends AssemblerBase implements Assembler
             }
         }
 
-    protected static void addLiteralContent( List<Object> contents, Resource root )
+    protected static void addLiteralContent( List<Content> contents, Resource root )
         {
         String encoding = getEncoding( root );
         StmtIterator it = root.listProperties( JA.literalContent );
@@ -132,11 +131,9 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         {
         return new Content() 
             { 
-            @Override
-            public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } 
+            @Override public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } 
             
-            @Override
-            public boolean isEmpty() { return m.isEmpty(); }
+            @Override public boolean isEmpty() { return m.isEmpty(); }
             };
         }
 

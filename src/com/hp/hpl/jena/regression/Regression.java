@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.46 2009-01-16 18:50:01 andy_seaborne Exp $
+    $Id: Regression.java,v 1.47 2009-01-22 15:10:36 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 
 import java.net.*;
-import java.util.*;
 import java.io.*;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2009-01-16 18:50:01 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2009-01-22 15:10:36 $'
  */
 public class Regression extends Object {
 
@@ -851,14 +850,14 @@ public class Regression extends Object {
                 error(test, n, e);
             }
 
-            try {
-                n=190;
-                n++; m.addLiteral(subject, RDF.value, tvObject);
-                n++; if (! m.containsLiteral(subject,RDF.value,tvObject))
-                         error(test,n);
-            } catch (Exception e) {
-                error(test, n, e);
-            }
+//            try {
+//                n=190;
+//                n++; m.addLiteral(subject, RDF.value, tvObject);
+//                n++; if (! m.containsLiteral(subject,RDF.value,tvObject))
+//                         error(test,n);
+//            } catch (Exception e) {
+//                error(test, n, e);
+//            }
 
             try {
                 n=200;
@@ -1334,7 +1333,6 @@ public class Regression extends Object {
 
         Resource  subject[] = new Resource[num];
         Property  predicate[] = new Property[num];
-        Vector    stmtv = new Vector();
         Statement stmts[];
         Statement stmt;
 
@@ -2091,7 +2089,6 @@ public class Regression extends Object {
 
         Resource  subject[] = new Resource[num];
         Property  predicate[] = new Property[num];
-        Vector    stmtv = new Vector();
         Statement stmts[];
         Statement stmt;
 
@@ -2241,7 +2238,6 @@ public class Regression extends Object {
 
         Resource  subject[] = new Resource[num];
         Property  predicate[] = new Property[num];
-        Vector    stmtv = new Vector();
         Statement stmts[];
         Statement stmt;
 
@@ -4837,23 +4833,14 @@ public class Regression extends Object {
             content = Long.parseLong(s.substring(1, s.length()-1));
         }
 
-        @Override
-        public String toString() {
-            return "[" + Long.toString(content) + "]";
-        }
+        @Override public String toString() 
+            { return "[" + Long.toString(content) + "]"; }
 
-        @Override
-        public int hashCode()
+        @Override public int hashCode()
             { return (int) (content ^ (content >> 32)); }
             
-        @Override
-        public boolean equals(Object o) {
-            if (o instanceof LitTestObj) {
-                return content == ((LitTestObj)o).content;
-            } else {
-                return false;
-            }
-        }
+        @Override public boolean equals( Object o ) 
+            { return o instanceof LitTestObj && content == ((LitTestObj)o).content; }
     }
 
     public static class LitTestObjF implements ObjectF {
@@ -4893,5 +4880,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.46 2009-01-16 18:50:01 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.47 2009-01-22 15:10:36 chris-dollin Exp $
  */

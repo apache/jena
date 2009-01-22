@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RuleSet.java,v 1.9 2009-01-20 15:12:28 chris-dollin Exp $
+ 	$Id: RuleSet.java,v 1.10 2009-01-22 15:10:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -17,20 +17,22 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
  */
 public class RuleSet
     {
-    public static final RuleSet empty = create( Collections.EMPTY_LIST );
+    private static final List<Rule> emptyRules = Collections.emptyList();
     
-    public static RuleSet create( List rules )
+    public static final RuleSet empty = create( emptyRules );
+    
+    public static RuleSet create( List<Rule> rules )
         { return new RuleSet( rules ); }
 
     public static RuleSet create( String ruleString )
         { return create( Rule.parseRules( ruleString ) ); }
     
-    private final List rules;
+    private final List<Rule> rules;
     
-    protected RuleSet( List rules )
-        { this.rules = new ArrayList( rules ); }
+    protected RuleSet( List<Rule> rules )
+        { this.rules = new ArrayList<Rule>( rules ); }
 
-    public List getRules()
+    public List<Rule> getRules()
         { return rules; }
     
     @Override public int hashCode()

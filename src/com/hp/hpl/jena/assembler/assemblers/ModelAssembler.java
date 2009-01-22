@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.15 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: ModelAssembler.java,v 1.16 2009-01-22 15:10:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -26,8 +26,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
         return m;
         }
     
-    @Override
-    public Object open( Assembler a, Resource root, Mode mode )
+    @Override public Object open( Assembler a, Resource root, Mode mode )
         { 
         Model m = openModel( a, root, getInitialContent( a, root ), mode );
         addContent( root, m, getContent( a, root ) );
@@ -67,8 +66,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
             ( a, root, PrefixMapping.Factory.create() );
         }
 
-    @Override
-    public Model openModel( Resource root, Mode mode )
+    @Override public Model openModel( Resource root, Mode mode )
         { return (Model) open( this, root, mode ); }
 
     protected Content getInitialContent( Assembler a, Resource root )
@@ -112,8 +110,8 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     private void transferContentProperties( Model partial, Resource someInitial, Resource combined )
         {
         Map1 replace = replaceSubjectMap( partial, combined );
-        for (Iterator it = ContentAssembler.contentProperties.iterator(); it.hasNext();)
-            partial.add( copyProperties( someInitial, replace, (Property) it.next() ) );
+        for (Iterator<Property> it = ContentAssembler.contentProperties.iterator(); it.hasNext();)
+            partial.add( copyProperties( someInitial, replace, it.next() ) );
         }
     
     private List copyProperties( Resource root, Map1 replace, Property property )

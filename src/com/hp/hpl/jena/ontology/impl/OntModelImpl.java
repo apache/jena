@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.113 $
+ * Revision           $Revision: 1.114 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-22 15:10:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -57,7 +57,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.113 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.114 2009-01-22 15:10:44 chris-dollin Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -3089,6 +3089,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         protected SubjectNodeAs( Class asKey ) { m_asKey = asKey; }
 
         public Object map1( Object x ) {
+//            Triple t = (Triple) x;
             Node n = (x instanceof Triple)
                          ? ((Triple) x).getSubject()
                          : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);

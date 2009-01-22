@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestObjectImpl.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
+  $Id: TestObjectImpl.java,v 1.12 2009-01-22 15:10:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -20,31 +20,30 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
      * from a Node. Note that caching has already happened, so
      * there is no point in implementing another cache here.
      */
-    public static final Implementation factory = new Implementation() {
-    /** This method should probably always just call a constructor.
-     *  Note the constructor can/should be private.
-     */
-    @Override
-    public EnhNode wrap(Node n,EnhGraph eg) {
-        return new TestObjectImpl(n,eg);
-    }
-    @Override
-    public boolean canWrap( Node n, EnhGraph eg )
-        { return true; }
-};
+    public static final Implementation factory = new Implementation() 
+        {
+        /** This method should probably always just call a constructor.
+            Note the constructor can/should be private.
+        */
+        @Override public EnhNode wrap(Node n,EnhGraph eg) 
+            { return new TestObjectImpl(n,eg); }
+    
+        @Override public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
+        };
     
     /** Creates a new instance of TestAllImpl */
     private TestObjectImpl(Node n,EnhGraph eg) {
         super( n, eg );
     }
     
-    @Override
-    public boolean supports( Class t )
+    @Override public boolean supports( Class t )
         { return t.isInstance( this) && isObject(); }
         
     public boolean isObject() {
         return findObject() != null;
     }
+    
     /**
      * The code first checks that the interface is appropriate at this point.
      * This is not obligatory but should be considered.
