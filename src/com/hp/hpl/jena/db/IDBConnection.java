@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based on earlier code by der)
-* @version $Revision: 1.10 $ on $Date: 2009-01-16 12:53:18 $
+* @version $Revision: 1.11 $ on $Date: 2009-01-22 10:34:57 $
 */
 
 public interface IDBConnection {
@@ -32,10 +32,10 @@ public interface IDBConnection {
     public void close() throws SQLException;
 
     /**
-     * Clear all RDF information from the database.
-     * 
-     * This wipes all the information stored by Jena from the database.
-     * Obviously should be used with care.
+     * Clear all RDF information from the database. All the Jena RDF tables
+     * are dropped. This wipes all the information stored by Jena from the 
+     * database. Obviously should be used with care. The next atempt to
+     * open a DB model will (attempt to) recreate the Jena tables.
      */
     public void cleanDB() throws SQLException;
 
