@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.53 2009-01-16 18:50:00 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.54 2009-01-22 10:52:05 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -66,7 +66,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.53 $ on $Date: 2009-01-16 18:50:00 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.54 $ on $Date: 2009-01-22 10:52:05 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -108,10 +108,10 @@ public class Rule implements ClauseEntry {
      * @param body a list of TriplePatterns or Functors.
      * @param head a list of TriplePatterns, Functors or rules
      */
-    public Rule(String name, List head, List body) {
+    public Rule(String name, List<Object> head, List<Object> body) {
         this(name, 
-                (ClauseEntry[]) head.toArray(new ClauseEntry[head.size()]),
-                (ClauseEntry[]) body.toArray(new ClauseEntry[body.size()]) );
+                head.toArray(new ClauseEntry[head.size()]),
+                body.toArray(new ClauseEntry[body.size()]) );
     }
     
     /**
@@ -296,7 +296,7 @@ public class Rule implements ClauseEntry {
      * for trail implementations.
      */
     public Rule instantiate(BindingEnvironment env) {
-        HashMap vmap = new HashMap();
+        HashMap<Node_RuleVariable, Node> vmap = new HashMap<Node_RuleVariable, Node>();
         return new Rule(name, cloneClauseArray(head, vmap, env), cloneClauseArray(body, vmap, env));
     }
     
@@ -305,7 +305,7 @@ public class Rule implements ClauseEntry {
      */
     public Rule cloneRule() {
         if (getNumVars() > 0) {
-            HashMap vmap = new HashMap();
+            HashMap<Node_RuleVariable, Node> vmap = new HashMap<Node_RuleVariable, Node>();
             return new Rule(name, cloneClauseArray(head, vmap, null), cloneClauseArray(body, vmap, null));
         } else {
             return this;
@@ -315,7 +315,7 @@ public class Rule implements ClauseEntry {
     /**
      * Clone a clause array.
      */
-    private ClauseEntry[] cloneClauseArray(ClauseEntry[] clauses, Map vmap, BindingEnvironment env) {
+    private ClauseEntry[] cloneClauseArray(ClauseEntry[] clauses, Map<Node_RuleVariable, Node> vmap, BindingEnvironment env) {
         ClauseEntry[] cClauses = new ClauseEntry[clauses.length];
         for (int i = 0; i < clauses.length; i++ ) {
             cClauses[i] = cloneClause(clauses[i], vmap, env);
@@ -326,7 +326,7 @@ public class Rule implements ClauseEntry {
     /**
      * Clone a clause, cloning any embedded variables.
      */
-    private ClauseEntry cloneClause(ClauseEntry clause, Map vmap, BindingEnvironment env) {
+    private ClauseEntry cloneClause(ClauseEntry clause, Map<Node_RuleVariable, Node> vmap, BindingEnvironment env) {
         if (clause instanceof TriplePattern) {
             TriplePattern tp = (TriplePattern)clause;
             return new TriplePattern (
@@ -342,7 +342,7 @@ public class Rule implements ClauseEntry {
     /**
      * Clone a functor, cloning any embedded variables.
      */
-    private Functor cloneFunctor(Functor f, Map vmap, BindingEnvironment env) {
+    private Functor cloneFunctor(Functor f, Map<Node_RuleVariable, Node> vmap, BindingEnvironment env) {
         Node[] args = f.getArgs();
         Node[] cargs = new Node[args.length];
         for (int i = 0; i < args.length; i++) {
@@ -356,11 +356,11 @@ public class Rule implements ClauseEntry {
     /**
      * Close a single node.
      */
-    private Node cloneNode(Node nIn, Map vmap, BindingEnvironment env) {
+    private Node cloneNode(Node nIn, Map<Node_RuleVariable, Node> vmap, BindingEnvironment env) {
         Node n = (env == null) ? nIn : env.getGroundVersion(nIn);
         if (n instanceof Node_RuleVariable) {
             Node_RuleVariable nv = (Node_RuleVariable)n;
-            Node c = (Node)vmap.get(nv);
+            Node c = vmap.get(nv);
             if (c == null) {
                 c = ((Node_RuleVariable)n).cloneNode();
                 vmap.put(nv, c);
@@ -460,7 +460,7 @@ public class Rule implements ClauseEntry {
      * Answer the list of rules parsed from the given URL.
      * @throws RulesetNotFoundException
      */
-    public static List rulesFromURL( String uri ) {
+    public static List<Rule> rulesFromURL( String uri ) {
         try {
             BufferedReader br = FileUtils.asBufferedUTF8( FileManager.get().open(uri) );
             return parseRules( Rule.rulesParserFromReader( br ) );
@@ -479,8 +479,8 @@ public class Rule implements ClauseEntry {
        try {
            StringBuffer result = new StringBuffer();
            String line;
-           Map prefixes = new HashMap();
-           List preloadedRules = new ArrayList();
+           Map<String, String> prefixes = new HashMap<String, String>();
+           List<Rule> preloadedRules = new ArrayList<Rule>();
            while ((line = src.readLine()) != null) {
                if (line.startsWith("#")) continue;     // Skip comment lines
                line = line.trim();
@@ -585,9 +585,9 @@ public class Rule implements ClauseEntry {
      * @return a list of rules
      * @throws ParserException if there is a problem
      */
-    public static List parseRules(Parser parser) throws ParserException {
+    public static List<Rule> parseRules(Parser parser) throws ParserException {
         boolean finished = false;
-        List ruleset = new ArrayList();
+        List<Rule> ruleset = new ArrayList<Rule>();
         ruleset.addAll(parser.getRulesPreload());
         while (!finished) {
             try {
@@ -607,7 +607,7 @@ public class Rule implements ClauseEntry {
      * @return a list of rules
      * @throws ParserException if there is a problem
      */
-    public static List parseRules(String source) throws ParserException {
+    public static List<Rule> parseRules(String source) throws ParserException {
         return parseRules(new Parser(source));
     }
     
@@ -636,19 +636,19 @@ public class Rule implements ClauseEntry {
         private int literalState = NORMAL;
         
         /** Trace back of recent tokens for error reporting */
-        protected List priorTokens = new ArrayList();
+        protected List<String> priorTokens = new ArrayList<String>();
         
         /** Maximum number of recent tokens to remember */
         private static final int maxPriors = 20;
         
         /** Variable table */
-        private Map varMap;
+        private Map<String, Node_RuleVariable> varMap;
         
         /** Local prefix map */
         private PrefixMapping prefixMapping = PrefixMapping.Factory.create();
         
         /** Pre-included rules */
-        private List preloadedRules = new ArrayList();
+        private List<Rule> preloadedRules = new ArrayList<Rule>();
         
         /**
          * Constructor
@@ -669,28 +669,28 @@ public class Rule implements ClauseEntry {
         /**
          * Register a set of prefix to namespace mappings with the parser
          */
-        public void registerPrefixMap(Map map) {
+        public void registerPrefixMap(Map<String, String> map) {
             prefixMapping.setNsPrefixes(map);
         }
         
         /**
          * Return a map of all the discovered prefixes
          */
-        public Map getPrefixMap() {
+        public Map<String, String> getPrefixMap() {
             return prefixMapping.getNsPrefixMap();
         }
         
         /**
          * Add a new set of preloaded rules.
          */
-        void addRulesPreload(List rules) {
+        void addRulesPreload(List<Rule> rules) {
             preloadedRules.addAll(rules);
         }
         
         /**
          * Return the complete set of preloaded rules;
          */
-        public List getRulesPreload() {
+        public List<Rule> getRulesPreload() {
             return preloadedRules;
         }
         
@@ -782,7 +782,7 @@ public class Rule implements ClauseEntry {
          * and return a Node_RuleVariable with that index.
          */
         Node_RuleVariable getNodeVar(String name) {
-            Node_RuleVariable node = (Node_RuleVariable)varMap.get(name);
+            Node_RuleVariable node = varMap.get(name);
             if (node == null) {
                 node = new Node_RuleVariable(name, varMap.size());
                 varMap.put(name, node);
@@ -889,13 +889,13 @@ public class Rule implements ClauseEntry {
         /**
          * Parse a list of nodes delimited by parentheses
          */
-        List parseNodeList() {
+        List<Node> parseNodeList() {
             String token = nextToken();
             if (!token.equals("(")) {
                 throw new ParserException("Expected '(' at start of clause, found " + token, this);
             }
             token = nextToken();
-            List nodeList = new ArrayList();
+            List<Node> nodeList = new ArrayList<Node>();
             while (!isSyntax(token)) {
                 nodeList.add(parseNode(token));
                 token = nextToken();
@@ -912,23 +912,23 @@ public class Rule implements ClauseEntry {
         Object parseClause() {
             String token = peekToken();
             if (token.equals("(")) {
-                List nodes = parseNodeList();
+                List<Node> nodes = parseNodeList();
                 if (nodes.size() != 3) {
                     throw new ParserException("Triple with " + nodes.size() + " nodes!", this);
                 }
-                if (Functor.isFunctor((Node)nodes.get(0))) {
+                if (Functor.isFunctor(nodes.get(0))) {
                     throw new ParserException("Functors not allowed in subject position of pattern", this);
                 }
-                if (Functor.isFunctor((Node)nodes.get(1))) {
+                if (Functor.isFunctor(nodes.get(1))) {
                     throw new ParserException("Functors not allowed in predicate position of pattern", this);
                 }
-                return new TriplePattern((Node)nodes.get(0), (Node)nodes.get(1), (Node)nodes.get(2));
+                return new TriplePattern(nodes.get(0), nodes.get(1), nodes.get(2));
             } else if (token.equals("[")) {
                 nextToken();
                 return doParseRule(true);
             } else {
                 String name = nextToken();
-                List args = parseNodeList();
+                List<Node> args = parseNodeList();
                 Functor clause = new Functor(name, args, BuiltinRegistry.theRegistry);
                 if (clause.getImplementor() == null) {
                     // Not a fatal error becase later processing can add this
@@ -966,16 +966,16 @@ public class Rule implements ClauseEntry {
                     nextToken();
                 }
                 // Start rule parsing with empty variable table
-                if (!retainVarMap) varMap = new HashMap();
+                if (!retainVarMap) varMap = new HashMap<String, Node_RuleVariable>();
                 // Body
-                List body = new ArrayList();
+                List<Object> body = new ArrayList<Object>();
                 token = peekToken();
                 while ( !(token.equals("->") || token.equals("<-")) ) {
                     body.add(parseClause());
                     token = peekToken();
                 }
                 boolean backwardRule = token.equals("<-");
-                List head = new ArrayList();
+                List<Object> head = new ArrayList<Object>();
                 token = nextToken();   // skip -> token
                 token = peekToken();
                 while ( !(token.equals(".") || token.equals("]")) ) {
