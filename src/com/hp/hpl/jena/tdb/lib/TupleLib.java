@@ -52,7 +52,7 @@ public class TupleLib
     }
     
     //@Deprecated
-    //Leave - bypasses extrat step in Tuple<NodeId> -> Tuple<Node> -> Triple
+    //Leave - bypasses extract step in Tuple<NodeId> -> Tuple<Node> -> Triple
     public static Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Triple> action =  new Transform<Tuple<NodeId>, Triple>(){
@@ -91,12 +91,17 @@ public class TupleLib
         NodeId[] n = new NodeId[N] ;
         for ( int i = 0 ; i < N ; i++ )
             n[i] = nodeTable.getNodeIdForNode(nodes.get(i)) ;
-            
         return Tuple.create(n) ;
     }
+    
+    private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
+    {
+        if ( tuple.size() != 3 )
+            throw new TDBException("Tuple is not of length 3: "+tuple) ;
+        return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
+    }
 
-    @Deprecated
-    public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
+    private static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
         Node sNode = nodeTable.getNodeForNodeId(s) ;
         Node pNode = nodeTable.getNodeForNodeId(p) ;
@@ -104,8 +109,14 @@ public class TupleLib
         return new Triple(sNode, pNode, oNode) ;
     }
     
-    @Deprecated
-    public static Quad quad(NodeTable nodeTable, NodeId g, NodeId s, NodeId p, NodeId o) 
+    private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 
+    {
+        if ( tuple.size() != 4 )
+            throw new TDBException("Tuple is not of length 4: "+tuple) ;
+        return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
+    }
+    
+    private static Quad quad(NodeTable nodeTable, NodeId g, NodeId s, NodeId p, NodeId o) 
     {
         Node gNode = nodeTable.getNodeForNodeId(g) ;
         Node sNode = nodeTable.getNodeForNodeId(s) ;
@@ -114,22 +125,6 @@ public class TupleLib
         return new Quad(gNode, sNode, pNode, oNode) ;
     }
 
-    //@Deprecated
-    private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
-    {
-        if ( tuple.size() != 3 )
-            throw new TDBException("Tuple is not of length 3: "+tuple) ;
-        return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
-    }
-    
-    //@Deprecated
-    private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 
-    {
-        if ( tuple.size() != 4 )
-            throw new TDBException("Tuple is not of length 4: "+tuple) ;
-        return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
-    }
-    
     // ---- Tuples, Triples and Quads
 
 //    /** Triple to Tuple, not remapped by a ColumnMap. */
@@ -199,26 +194,6 @@ public class TupleLib
     }
 
 
-    // OLD to go.
-    @Deprecated
-    public static Record record(RecordFactory factory, NodeId...nodeIds)
-    {
-        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
-        for ( int i = 0 ; i < nodeIds.length ; i++ )
-            Bytes.setLong(nodeIds[i].getId(), b, i*SizeOfLong) ;  
-        return factory.create(b) ;
-    }
-
-
-    // OLD to go.
-    @Deprecated
-    public static Record record(RecordFactory factory, long...nodeIds)
-    {
-        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
-        for ( int i = 0 ; i < nodeIds.length ; i++ )
-            Bytes.setLong(nodeIds[i], b, i*SizeOfLong) ;  
-        return factory.create(b) ;
-    }
 
 }
 

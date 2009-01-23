@@ -256,8 +256,17 @@ public class TupleIndexRecord implements TupleIndex
         index.sync(force) ;
     }
 
-    public final RangeIndex getRangeIndex()       { return index ; } 
+    public final RangeIndex getRangeIndex()                 { return index ; } 
     
+    protected final ColumnMap getColumnMap()                { return colMap ; }
+    protected final RecordFactory getRecordFactory()        { return factory ; }
+    
+    @Override
+    public final int getTupleLength()
+    {
+        return tupleLength ;
+    }
+
     @Override
     public boolean isEmpty()
     {
@@ -268,12 +277,6 @@ public class TupleIndexRecord implements TupleIndex
     public long size()
     {
         return index.size() ;
-    }
-
-    @Override
-    public final int getTupleLength()
-    {
-        return tupleLength ;
     }
 
     @Override

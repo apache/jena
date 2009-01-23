@@ -60,7 +60,7 @@ public class FactoryGraphTDB
         return createGraph(IndexBuilder.get(), location) ;
     }  
     
-    // Detect existsing (other technology) indexes.
+    // Detect existing (other technology) indexes.
 //    public static PGraph create(Location location)
 //    { 
 //        if ( location == null )
@@ -151,7 +151,7 @@ public class FactoryGraphTDB
     
     // ---- Process
     public static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
-                                        Location location, String primary, String...descs)
+                                       Location location, String primary, String...descs)
     {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         int i = 0 ;
@@ -177,7 +177,7 @@ public class FactoryGraphTDB
         return new TripleTable(indexes, indexRecordTripleFactory, nodeTable, location) ;
     }
 
-    // ---- All creation happnes here
+    // ---- All creation happens here
     
     private static GraphTriplesTDB _createGraph(IndexBuilder indexBuilder, Location location)
     {
