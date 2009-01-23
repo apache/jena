@@ -204,7 +204,7 @@
   
   <!-- Zipped files -->
   
-  <target name="src-zip" description="Create zip file of the sources (file name = ${build.dir}/${src.zipfile})">
+  <target name="src-zip" description="Create zip file of the sources">
     <zip destfile="${build.dir}/${src.zipfile}">
       <fileset refid="fileset.src"/>
     </zip>
