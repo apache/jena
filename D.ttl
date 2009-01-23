@@ -1,4 +1,4 @@
 @prefix   x:         <http://example/> .
 
-x:z <http://example/and> "xyz" .
+x:123 <http://example/and> "xyz" .
 

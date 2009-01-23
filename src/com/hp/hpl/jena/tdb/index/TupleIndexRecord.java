@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-public final class TupleIndexRecord implements TupleIndex
+public class TupleIndexRecord implements TupleIndex
 {
     private static final boolean Check = false ;
     private RangeIndex index ; 
@@ -82,17 +82,18 @@ public final class TupleIndexRecord implements TupleIndex
         return findOrScan(pattern) ;
     }
 
-    Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
+    // Package visibility for testing.
+    final Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
     {
         return findWorker(pattern, true, true) ;
     }
     
-    Iterator<Tuple<NodeId>> findOrPartialScan(Tuple<NodeId> pattern)
+    final Iterator<Tuple<NodeId>> findOrPartialScan(Tuple<NodeId> pattern)
     {
         return findWorker(pattern, true, false) ;
     }
 
-    Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern)
+    final Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern)
     {
         return findWorker(pattern, false, false) ;
     }
@@ -223,7 +224,7 @@ public final class TupleIndexRecord implements TupleIndex
         return Iter.filter(iter, filter) ;
     }
     
-    /** Weight a pattern IN normal order (not index order) */
+    /** Weight a pattern in normal order (not index order) */
     @Override
     public int weight(Tuple<NodeId> pattern)
     {
@@ -255,7 +256,7 @@ public final class TupleIndexRecord implements TupleIndex
         index.sync(force) ;
     }
 
-    public RangeIndex getRangeIndex()       { return index ; } 
+    public final RangeIndex getRangeIndex()       { return index ; } 
     
     @Override
     public boolean isEmpty()
@@ -270,7 +271,7 @@ public final class TupleIndexRecord implements TupleIndex
     }
 
     @Override
-    public int getTupleLength()
+    public final int getTupleLength()
     {
         return tupleLength ;
     }
