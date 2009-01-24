@@ -9,30 +9,20 @@ package dev;
 public class Dev
 {
     // SPARQL/Update - Sort out GraphStores/Datasets
+    // ---- SPARQL/Update
+    // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
+    //   Check for already a GraphStore [DONE]
+    //   Sync, close on Datasets?  Model-level "ModelStore"
     
     // Upgrade 
-    // + Var - several list loops of string or var - check each usage.
     // + Registries taking Class<?> can be tidied up
     
     // (Jena) Cached IRI checking (minor)
     
     // Initial bindings ==> Initial table.
 
-    // ----
-    
     // Document:
     //   example: algebra transform (split MyQueryEngine) 
-    
-    // ---- [quad paths]
-    
-    // ?? Extends Algebra back to reading graphs and making datasets?
-    // What's the generalization?
-    // FETCH : visitor, syntax tests, Algebra, execution
-
-    // ---- SPARQL/Update
-    // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
-    //   Check for already a GraphStore [DONE]
-    //   Sync, close on Datasets?  Model-level "ModelStore"
     
     // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
     
