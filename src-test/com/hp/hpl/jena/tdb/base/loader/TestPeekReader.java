@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.loader;
 
+import com.hp.hpl.jena.tdb.base.reader.PeekReader;
+
 import org.junit.Test;
 import test.BaseTest;
 

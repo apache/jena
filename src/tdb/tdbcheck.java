@@ -28,8 +28,10 @@ import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink;
-import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
-import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
+
+import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
+import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
+
 import com.hp.hpl.jena.util.FileManager;
 
 /** Check an N-Triples file (or any other syntax). */

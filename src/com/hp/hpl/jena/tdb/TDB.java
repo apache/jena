@@ -30,7 +30,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
+import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;

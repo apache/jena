@@ -20,7 +20,8 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
+
+import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
 
 public class TestNTriples extends BaseTest
 {
