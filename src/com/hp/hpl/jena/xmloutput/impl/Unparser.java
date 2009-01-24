@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.47 2009-01-16 17:24:02 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.48 2009-01-24 19:14:33 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -113,7 +113,7 @@ class Unparser {
         out = w;
         model = m;
         addTypeNameSpaces();
-        objectTable = new HashMap();
+        objectTable = new HashMap<Resource, Integer>();
         StmtIterator ss = m.listStatements();
         try {
             while (ss.hasNext()) {
@@ -127,8 +127,8 @@ class Unparser {
             ss.close();
         }
         try {
-            res2statement = new HashMap();
-            statement2res = new HashMap();
+            res2statement = new HashMap<Resource, Statement>();
+            statement2res = new HashMap<Statement, Resource>();
             ClosableIterator reified = new MapFilterIterator(new MapFilter() {
                 public Object accept(Object o) {
                     Resource r = (Resource) o;
@@ -210,7 +210,7 @@ class Unparser {
      */
     void setTopLevelTypes(Resource types[]) {
         pleasingTypes = types;
-        pleasingTypeSet = new HashSet(Arrays.asList(types));
+        pleasingTypeSet = new HashSet<Resource>(Arrays.asList(types));
     }
 
     private String xmlBase;
@@ -230,7 +230,7 @@ class Unparser {
 
     private String localName;
 
-    private Map objectTable; // This is a map from Resource to Integer
+    private Map<Resource, Integer> objectTable; // This is a map from Resource to Integer
 
     // which indicates how many times each resource
     // occurs as an object of a triple.
@@ -238,13 +238,13 @@ class Unparser {
 
     private PrintWriter out;
 
-    private Set doing = new HashSet(); // Some of the resources that
+    private Set<Resource> doing = new HashSet<Resource>(); // Some of the resources that
 
     // are currently being written.
-    private Set doneSet = new HashSet(); // The triples that have been
+    private Set<Statement> doneSet = new HashSet<Statement>(); // The triples that have been
                                             // output.
 
-    private Set haveReified = new HashSet(); // Those local resources that
+    private Set<Resource> haveReified = new HashSet<Resource>(); // Those local resources that
                                                 // are
 
     // the id's of a reification, used to ensure that anonymous
@@ -252,7 +252,7 @@ class Unparser {
 
     private Resource pleasingTypes[] = null;
 
-    private Set pleasingTypeSet = new HashSet();
+    private Set<Resource> pleasingTypeSet = new HashSet<Resource>();
 
     final private Abbreviated prettyWriter;
 
@@ -262,9 +262,9 @@ class Unparser {
 
     // Reification stuff.
 
-    Map res2statement;
+    Map<Resource, Statement> res2statement;
 
-    Map statement2res;
+    Map<Statement, Resource> statement2res;
 
     /*
      * The top-down recursive descent unparser. The methods starting in w all
@@ -591,7 +591,7 @@ class Unparser {
     private void wPropAttrSome(Resource r) {
         ClosableIterator ss = listProperties(r);
         try {
-            Set seen = new HashSet();
+            Set<Property> seen = new HashSet<Property>();
             while (ss.hasNext()) {
                 Statement s = (Statement) ss.next();
                 if (canBeAttribute(s, seen)) {
@@ -697,7 +697,7 @@ class Unparser {
 
     private boolean wTypedNodeOrDescription(WType wt, Resource ty, Resource r) {
         // preparation - look for the li's.
-        Vector found = new Vector();
+        Vector<Statement> found = new Vector<Statement>();
         ClosableIterator ss = listProperties(r);
         try {
             int greatest = 0;
@@ -821,7 +821,7 @@ class Unparser {
      * [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr we use [6.5a]
      * idAboutAttr ::= idAttr | aboutAttr
      */
-    private Set idDone = new HashSet();
+    private Set<Resource> idDone = new HashSet<Resource>();
 
     private boolean wIdAboutAttrOpt(Resource r) {
         return wIdAttrOpt(r) || wNodeIDAttr(r) || wAboutAttr(r);
@@ -900,7 +900,7 @@ class Unparser {
              * System.err.println("!!!");
              */
             Statement reify[] = reification(s);
-            Resource res = (Resource) statement2res.get(s);
+            Resource res = statement2res.get(s);
             idDone.add(res);
             int i;
             for (i = 0; i < reify.length; i++)
@@ -1158,7 +1158,7 @@ class Unparser {
     private boolean isGenuineAnon(Resource r) {
         if (!r.isAnon())
             return false;
-        Integer v = (Integer) objectTable.get(r);
+        Integer v = objectTable.get(r);
         return v == null
                 || ((!prettyWriter.sResourcePropertyElt) && v.intValue() <= 1 && (!haveReified
                         .contains(r)));
@@ -1196,7 +1196,7 @@ class Unparser {
     private void increaseObjectCount(Resource r) {
 //        if (!r.isAnon())
 //            return;
-        Integer cnt = (Integer) objectTable.get(r);
+        Integer cnt = objectTable.get(r);
         if (cnt == null) {
             cnt = one;
         } else {
@@ -1212,11 +1212,11 @@ class Unparser {
      * Is the use of ID in rule [6.12] to create a reification helpful or not?
      */
     private boolean wantReification(Statement s) {
-        return wantReification(s, (Resource) statement2res.get(s));
+        return wantReification(s, statement2res.get(s));
     }
 
     private boolean wantReification(Resource res) {
-        return wantReification((Statement) res2statement.get(res), res);
+        return wantReification(res2statement.get(res), res);
     }
 
     private boolean wantReification(Statement s, Resource ref) {
@@ -1235,7 +1235,7 @@ class Unparser {
 
     private Statement[] reification(Statement s) {
         Model m = s.getModel();
-        Resource r = (Resource) statement2res.get(s);
+        Resource r = statement2res.get(s);
         return new Statement[] { m.createStatement(r, RDF.type, RDF.Statement),
                 m.createStatement(r, RDF.subject, s.getSubject()),
                 m.createStatement(r, RDF.predicate, s.getPredicate()),
@@ -1275,7 +1275,7 @@ class Unparser {
 
     // Good type statement, or simple string valued statement with no langID
     // See http://www.w3.org/TR/REC-xml#AVNormalize
-    private boolean canBeAttribute(Statement s, Set seen) {
+    private boolean canBeAttribute(Statement s, Set<Property> seen) {
         Property p = s.getPredicate();
         // Check seen first.
         if (prettyWriter.sPropertyAttr || seen.contains(p)) // We can't use the
@@ -1322,7 +1322,7 @@ class Unparser {
 
     private boolean allPropsAreAttr(Resource r) {
         ClosableIterator ss = listProperties(r);
-        Set seen = new HashSet();
+        Set<Property> seen = new HashSet<Property>();
         try {
             while (ss.hasNext()) {
                 Statement s = (Statement) ss.next();
@@ -1362,8 +1362,8 @@ class Unparser {
     private Statement[][] getList(RDFNode r, Resource list, Property first,
             Property rest, Resource nil) {
        
-        Vector rslt = new Vector();
-        Set seen = new HashSet();
+        Vector<Statement[]> rslt = new Vector<Statement[]>();
+        Set<RDFNode> seen = new HashSet<RDFNode>();
         RDFNode next = r;
         // We walk down the list and check each member.
         try {
@@ -1481,12 +1481,12 @@ class Unparser {
     /**
      * The order of outputting the resources. This all supports wObjStar.
      */
-    private Set infinite;
+    private Set<RDFNode> infinite;
 
     private void findInfiniteCycles() {
         // find all statements that haven't been done.
         StmtIterator ss = model.listStatements();
-        Relation relation = new Relation();
+        Relation<RDFNode> relation = new Relation<RDFNode>();
         try {
             while (ss.hasNext()) {
                 Statement s = ss.nextStatement();
@@ -1511,7 +1511,7 @@ class Unparser {
     private Iterator allInfiniteLeft() {
         return new LateBindingIterator() {
             @Override
-            public Iterator create() {
+            public Iterator<RDFNode> create() {
                 return infinite.iterator();
             }
         };
@@ -1520,7 +1520,7 @@ class Unparser {
     private Iterator pleasingTypeIterator() {
         if (pleasingTypes == null)
             return new NullIterator();
-        Map buckets = new HashMap();
+        Map<Resource, Set> buckets = new HashMap<Resource, Set>();
         Set bucketArray[] = new Set[pleasingTypes.length];
         // Set up buckets and bucketArray. Each is a collection
         // of the same buckets, one ordered, the other hashed.
@@ -1535,10 +1535,10 @@ class Unparser {
                 Resource r = rs.nextResource();
                 Statement s = getType(r);
                 if (s != null) {
-                    Set bucket = (Set) buckets.get(s.getObject());
+                    Set<Resource> bucket = buckets.get(s.getObject());
                     if (bucket != null) {
                         if (isGenuineAnon(r)) {
-                            Integer v = (Integer) objectTable.get(r);
+                            Integer v = objectTable.get(r);
                             if (v != null && v.intValue() == 1)
                                 continue;
                         }
@@ -1595,7 +1595,7 @@ class Unparser {
         Iterator fakeStopPleasing = new NullIterator() {
             @Override
             public boolean hasNext() {
-                pleasingTypeSet = new HashSet();
+                pleasingTypeSet = new HashSet<Resource>();
                 return false;
             }
         };
@@ -1631,7 +1631,7 @@ class Unparser {
                 codeCoverage[4]++;
                 if (r.isAnon())
                     return false;
-                Integer cnt = (Integer) objectTable.get(r);
+                Integer cnt = objectTable.get(r);
                 if (cnt == null || cnt.intValue() <= 1)
                     return false;
                 return true;
@@ -1687,16 +1687,16 @@ class Unparser {
         }, allAsOne);
     }
 
-    private Set openResIterators = new HashSet();
+    private Set<ResIterator> openResIterators = new HashSet<ResIterator>();
 
    
 
     private synchronized void closeAllResIterators() {
-        Iterator members = openResIterators.iterator();
+        Iterator<ResIterator> members = openResIterators.iterator();
         while (members.hasNext()) {
-            ((ResIterator) members.next()).close();
+            members.next().close();
         }
-        openResIterators = new HashSet();
+        openResIterators = new HashSet<ResIterator>();
     }
 
     private Iterator modelListSubjects() {

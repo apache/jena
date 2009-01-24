@@ -2,13 +2,14 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.69 2009-01-16 18:24:40 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.70 2009-01-24 19:14:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.*;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.69 $' Date='$Date: 2009-01-16 18:24:40 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.70 $' Date='$Date: 2009-01-24 19:14:33 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -181,7 +182,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     */
     private boolean writingAllModelPrefixNamespaces = true;
         
-    private Relation nameSpaces = new Relation();
+    private Relation<String> nameSpaces = new Relation<String>();
     
     private Map<String, String> ns;
     
@@ -204,13 +205,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     private void primeNamespace( Model model )
         {
-        Map m = model.getNsPrefixMap();
-        Iterator it  = m.entrySet().iterator();
+        Map<String, String> m = model.getNsPrefixMap();
+        Iterator<Map.Entry<String, String>> it  = m.entrySet().iterator();
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-//            String key = (String) e.getKey();
-            String value = (String) e.getValue();
+            Map.Entry<String, String> e = it.next();
+//            String key = e.getKey();
+            String value = e.getValue();
             String already = this.getPrefixFor( value );
             if (already == null) 
                 { this.setNsPrefix( model.getNsURIPrefix( value ), value ); 
@@ -256,11 +257,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			if (ns.containsKey(uri))
 				continue;
 			String val = null;
-			Set s = nameSpaces.forward(uri);
+			Set<String> s = nameSpaces.forward(uri);
 			if (s != null) {
-				Iterator it2 = s.iterator();
+				Iterator<String> it2 = s.iterator();
 				if (it2.hasNext())
-					val = (String) it2.next();
+					val = it2.next();
 				if (prefixesUsed.contains(val))
 					val = null;
 			}
@@ -282,19 +283,19 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     final public String getPrefixFor( String uri )
         {
-        Set s = nameSpaces.backward( uri );
-        if (s != null && s.size() == 1) return (String) s.iterator().next();
+        Set<String> s = nameSpaces.backward( uri );
+        if (s != null && s.size() == 1) return s.iterator().next();
         return null; 
         }
 
 	String xmlnsDecl() {
 		workOutNamespaces();
 		StringBuffer result = new StringBuffer();
-		Iterator it = ns.entrySet().iterator();
+		Iterator<Entry<String, String>> it = ns.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry ent = (Map.Entry) it.next();
-			String prefix = (String) ent.getValue();
-			String uri = (String) ent.getKey();
+			Entry<String, String> ent = it.next();
+			String prefix = ent.getValue();
+			String uri = ent.getKey();
             result.append( newline ).append( "    xmlns" );
 			if (prefix.length() > 0) result.append( ':' ).append( prefix );
 			result.append( '=' ).append( substitutedAttribute( checkURI( uri ) ) );
@@ -494,14 +495,14 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         	model.setNsPrefix("rdf",rdfns);
         	rdfRDF = "rdf:RDF";
         }
-        Map prefixes = model.getNsPrefixMap();
+        Map<String, String> prefixes = model.getNsPrefixMap();
         pw.print( "<!DOCTYPE " + rdfRDF +" [" );
-        for (Iterator it = prefixes.keySet().iterator(); it.hasNext();)
-            {
-            String prefix = (String) it.next();
+        for (Iterator<String> it = prefixes.keySet().iterator(); it.hasNext();)
+        {
+            String prefix = it.next();
             if (!isPredefinedEntityName( prefix ) )
-                pw.print(  newline + "  <!ENTITY " + prefix + " '" + Util.substituteEntitiesInEntityValue((String)prefixes.get( prefix )) + "'>" );
-            }
+                pw.print(  newline + "  <!ENTITY " + prefix + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix )) + "'>" );
+        }
         pw.print( "]>" + newline );
         }
 

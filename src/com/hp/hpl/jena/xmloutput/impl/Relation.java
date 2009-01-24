@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Relation.java,v 1.11 2009-01-16 18:24:40 andy_seaborne Exp $
+ * $Id: Relation.java,v 1.12 2009-01-24 19:14:33 andy_seaborne Exp $
  *
  */
 
@@ -45,23 +45,23 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  *
  * Complete with transitive closure algorithm.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2009-01-16 18:24:40 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2009-01-24 19:14:33 $'
  */
-class Relation {
-    final private Map<Object, Set> rows;
-    final private Map<Object, Set> cols;
-    final private Set<Object> index;
+class Relation<T> {
+    final private Map<T, Set<T>> rows;
+    final private Map<T, Set<T>> cols;
+    final private Set<T> index;
     /** The empty Relation.
      */
     public Relation() {
-        rows = new HashMap<Object, Set>();
-        cols = new HashMap<Object, Set>();
-        index = new HashSet<Object>();
+        rows = new HashMap<T, Set<T>>();
+        cols = new HashMap<T, Set<T>>();
+        index = new HashSet<T>();
     }
     /** <code>a</code> is now related to <code>b</code>
      *
      */
-    synchronized public void set(Object a, Object b) {
+    synchronized public void set(T a, T b) {
         index.add(a);
         index.add(b);
         innerAdd(rows, a, b);
@@ -73,7 +73,7 @@ class Relation {
      *  When this is called any other <code>b</code> related to this <code>a</code> is removed.
      *
      */
-    synchronized public void set11(Object a, Object b) {
+    synchronized public void set11(T a, T b) {
         clearX(a, forward(a));
         clearX(backward(b), b);
         set(a, b);
@@ -82,7 +82,7 @@ class Relation {
      *  Many <code>b</code>'s can be related to each <code>a</code>.
      *  When this is called any other <code>a</code> related to this <code>b</code> is removed.
      */
-    synchronized public void set1N(Object a, Object b) {
+    synchronized public void set1N(T a, T b) {
         clearX(backward(b), b);
         set(a, b);
     }
@@ -90,47 +90,47 @@ class Relation {
      *  Many <code>a</code>'s can be related to each <code>b</code>.
      *  When this is called any other <code>b</code> related to this <code>a</code> is removed.
      */
-    synchronized public void setN1(Object a, Object b) {
+    synchronized public void setN1(T a, T b) {
         clearX(a, forward(a));
         set(a, b);
     }
     /** <code>a</code> is now related to <code>b</code>
      *
      */
-    synchronized public void setNN(Object a, Object b) {
+    synchronized public void setNN(T a, T b) {
         set(a, b);
     }
     /** <code>a</code> is now <em>not</em> related to <code>b</code>
      *
      */
-    synchronized public void clear(Object a, Object b) {
+    synchronized public void clear(T a, T b) {
         innerClear(rows, a, b);
         innerClear(cols, b, a);
     }
-    private void clearX(Set s, Object b) {
+    private void clearX(Set<T> s, T b) {
         if (s == null)
             return;
-        Iterator it = s.iterator();
+        Iterator<T> it = s.iterator();
         while (it.hasNext())
             clear(it.next(), b);
     }
-    private void clearX(Object a, Set s) {
+    private void clearX(T a, Set<T> s) {
         if (s == null)
             return;
-        Iterator it = s.iterator();
+        Iterator<T> it = s.iterator();
         while (it.hasNext())
             clear(a, it.next());
     }
-    static private void innerAdd(Map<Object, Set> s, Object a, Object b) {
-        Set<Object> vals = s.get(a);
+    static private <T> void innerAdd(Map<T, Set<T>> s, T a, T b) {
+        Set<T> vals = s.get(a);
         if (vals == null) {
-            vals = new HashSet<Object>();
+            vals = new HashSet<T>();
             s.put(a, vals);
         }
         vals.add(b);
     }
-    static private void innerClear(Map<Object, Set> s, Object a, Object b) {
-        Set vals = s.get(a);
+    static private <T> void innerClear(Map<T, Set<T>> s, T a, T b) {
+        Set<T> vals = s.get(a);
         if (vals != null) {
             vals.remove(b);
         }
@@ -138,8 +138,8 @@ class Relation {
     /** Is <code>a</code> related to <code>b</code>?
      *
      */
-    public boolean get(Object a, Object b) {
-        Set vals = rows.get(a);
+    public boolean get(T a, T b) {
+        Set <T> vals = rows.get(a);
         return vals != null && vals.contains(b);
     }
     /**
@@ -151,19 +151,19 @@ class Relation {
     
      */
     synchronized public void transitiveClosure() {
-        Iterator<Object> j = index.iterator();
+        Iterator<T> j = index.iterator();
         while (j.hasNext()) {
             Object oj = j.next();
-            Set si = cols.get(oj);
-            Set sk = rows.get(oj);
+            Set<T> si = cols.get(oj);
+            Set<T> sk = rows.get(oj);
             if (si != null && sk != null) {
-                Iterator i = si.iterator();
+                Iterator<T> i = si.iterator();
                 while (i.hasNext()) {
-                    Object oi = i.next();
+                    T oi = i.next();
                     if (oi != oj) {
-                        Iterator k = sk.iterator();
+                        Iterator<T> k = sk.iterator();
                         while (k.hasNext()) {
-                            Object ok = k.next();
+                            T ok = k.next();
                             if (ok != oj)
                                 set(oi, ok);
                         }
@@ -176,11 +176,11 @@ class Relation {
      * The set of <code>a</code> such that <code>a</code> is related to <code>a</code>.
      *
      */
-    synchronized public Set<Object> getDiagonal() {
-        Set<Object> rslt = new HashSet<Object>();
-        Iterator<Object> it = index.iterator();
+    synchronized public Set<T> getDiagonal() {
+        Set<T> rslt = new HashSet<T>();
+        Iterator<T> it = index.iterator();
         while (it.hasNext()) {
-            Object o = it.next();
+            T o = it.next();
             if (get(o, o))
                 rslt.add(o);
         }
@@ -190,14 +190,14 @@ class Relation {
      * The set of <code>b</code> such that <code>a</code> is related to <code>b</code>.
      *
      */
-    public Set forward(Object a) {
+    public Set<T> forward(T a) {
         return rows.get(a);
     }
     /**
      * The set of <code>a</code> such that <code>a</code> is related to <code>b</code>.
      *
      */
-    public Set backward(Object b) {
+    public Set<T> backward(T b) {
         return cols.get(b);
     }
     /**
@@ -207,7 +207,7 @@ class Relation {
      * the second through <code>getValue()</code>.
      *@see java.util.Map.Entry
      */
-    public Iterator iterator() {
+    public Iterator<Map.Entry<T, T>> iterator() {
         return new IteratorIterator(new Map1Iterator(new Map1() {
             // Convert a Map.Entry into an iterator over Map.Entry
             public Object map1(Object o) {
@@ -225,11 +225,11 @@ class Relation {
         }, rows.entrySet().iterator()));
     }
     
-    synchronized public Relation copy() {
-        Relation rslt = new Relation();
-        Iterator it = iterator();
+    synchronized public Relation<T> copy() {
+        Relation<T> rslt = new Relation<T>();
+        Iterator<Map.Entry<T, T>> it = iterator();
         while ( it.hasNext() ) {
-            Map.Entry e = (Map.Entry)it.next();
+            Map.Entry<T, T> e = it.next();
             rslt.set(e.getKey(),e.getValue());
         }
         return rslt;
