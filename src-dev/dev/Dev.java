@@ -17,11 +17,8 @@ public class Dev
     //   Sync, close on Datasets?  Model-level "ModelStore"
     
     // Merge optimizer: Opimization.enable: 
-    // ==> BasicPatternOptimizer on new Config()
-    // ==> HeuristicsBroker.getBasicPatternHeuristic() -> 
-    //   getBasicPatternHeuristic(HeuristicsRegistry.BGP_OPTIMAL_NO_STATS)
-    //  --> OptimalNoStats
-    // --> VariableCountingUnbound or GraphStatisticsHeuristic
+    //  --> ...engine.optimizer.heuristic.OptimalNoStats
+    //  --> VariableCountingUnbound or GraphStatisticsHeuristic
     
     // Upgrade 
     // + Registries taking Class<?> can be tidied up
