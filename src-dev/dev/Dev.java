@@ -16,7 +16,7 @@ public class Dev
     //   Check for already a GraphStore [DONE]
     //   Sync, close on Datasets?  Model-level "ModelStore"
     
-    // Merge optimizer: Opimization.enable: 
+    // Merge optimizers: Opimization.enable: 
     //  --> ...engine.optimizer.heuristic.OptimalNoStats
     //  --> VariableCountingUnbound or GraphStatisticsHeuristic
     
