@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.base.block.TS_Block;
 import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
+import com.hp.hpl.jena.tdb.base.reader.TS_Loader;
 import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
