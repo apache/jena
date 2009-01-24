@@ -16,10 +16,7 @@ public class AbstractTestGraphTDB extends AbstractTestGraph
     }
     
     @Override public void testBulkAddWithReification() {}
-    @Override public void testBulkRemoveWithReification() {}
     
-    @Override public void testRemoveAll() {}
-    @Override public void testRemoveSPO() {}
     @Override public void testIsomorphismFile() {}
 }
 

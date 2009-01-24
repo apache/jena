@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
+import com.hp.hpl.jena.graph.GraphEvents;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
 import com.hp.hpl.jena.tdb.store.GraphTDBBase;
@@ -66,9 +68,16 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
 //    public void delete(Graph g, boolean withReifications)
 //    {}
 //
-//    @Override
-//    public void remove(Node s, Node p, Node o)
-//    {}
+    @Override
+    public void remove(Node s, Node p, Node o)
+    {
+        // Reliable but slow
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> iter = graph.find(s, p, o) ;
+        List<Triple> x = Iter.toList(iter) ;
+        delete(x, false) ;
+        manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
+    }
 
     @Override
     public void removeAll()
