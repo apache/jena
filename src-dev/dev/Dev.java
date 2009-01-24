@@ -6,6 +6,8 @@
 
 package dev;
 
+
+
 public class Dev
 {
     // SPARQL/Update - Sort out GraphStores/Datasets
@@ -13,6 +15,13 @@ public class Dev
     // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
     //   Check for already a GraphStore [DONE]
     //   Sync, close on Datasets?  Model-level "ModelStore"
+    
+    // Merge optimizer: Opimization.enable: 
+    // ==> BasicPatternOptimizer on new Config()
+    // ==> HeuristicsBroker.getBasicPatternHeuristic() -> 
+    //   getBasicPatternHeuristic(HeuristicsRegistry.BGP_OPTIMAL_NO_STATS)
+    //  --> OptimalNoStats
+    // --> VariableCountingUnbound or GraphStatisticsHeuristic
     
     // Upgrade 
     // + Registries taking Class<?> can be tidied up
