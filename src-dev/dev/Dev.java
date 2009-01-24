@@ -8,8 +8,6 @@ package dev;
 
 public class Dev
 {
-    // Improve reporting for errorous triples.
-    
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
 
