@@ -56,6 +56,7 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.SyntaxError;
 import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import event.Event;
 import event.EventListener;
@@ -452,8 +453,12 @@ public final class NodeTupleReader
                 emit(subject, predicate, object) ;
             } catch (JenaException ex)
             {
+                String sStr = FmtUtils.stringForNode(subject) ;
+                String pStr = FmtUtils.stringForNode(predicate) ;
+                String oStr = FmtUtils.stringForNode(object) ;
+                String x = sStr+" "+pStr+" "+oStr ;
                 // We no longer know the column
-                warning(ex.getMessage(), in.getLineNum(), -1) ;
+                warning(x+" : "+ex.getMessage(), in.getLineNum(), -1) ;
             }
         }
     }
