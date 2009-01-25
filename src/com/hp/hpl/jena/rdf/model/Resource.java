@@ -63,7 +63,7 @@ import com.hp.hpl.jena.shared.PropertyNotFoundException;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2009-01-16 16:16:43 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2009-01-25 19:43:00 $'
 */
 public interface Resource extends RDFNode {
 
@@ -206,7 +206,9 @@ public interface Resource extends RDFNode {
         to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
         this resource. The typed literal is equal to one constructed by using
         <code>this.getModel().createTypedLiteral(o)</code>.
+        @deprecated Use addProperty
     */
+    @Deprecated
     public Resource addLiteral( Property p, Object o );
     
     /** Add a property to this resource.

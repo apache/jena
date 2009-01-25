@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.50 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: ResourceImpl.java,v 1.51 2009-01-25 19:42:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date: 2009-01-16 17:23:48 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date: 2009-01-25 19:42:53 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -220,6 +220,8 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this ;
     }
 
+    /** @deprecated */
+    @Deprecated
     public Resource addLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
