@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.14 2008-12-28 19:31:53 andy_seaborne Exp $
+ $Id: ReifierFragmentsMap.java,v 1.15 2009-01-26 08:37:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -20,7 +20,7 @@ public interface ReifierFragmentsMap
     /**
          Answer an iterator over all the fragments that match <code>m</code>.
     */
-    public ExtendedIterator find( TripleMatch m );
+    public ExtendedIterator<Triple> find( TripleMatch m );
     
     /**
          Answer the number of fragments in this map.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.17 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: Domain.java,v 1.18 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ import java.util.*;
 */
 
 
-public final class Domain extends AbstractList implements IndexValues
+public final class Domain extends AbstractList<Node> implements IndexValues
 	{
     /**
         The array holding the bound values. 
@@ -43,11 +43,9 @@ public final class Domain extends AbstractList implements IndexValues
     public Domain( int size ) 
         { this.value = new Node[size]; }
 	
-	@Override
-    public int size() { return value.length; }
+	@Override public int size() { return value.length; }
 	
-    @Override
-    public Object get( int i ) { return value[i]; }	  
+    @Override public Node get( int i ) { return value[i]; }	  
     
     public void setElement( int i, Node x ) { value[i] = x; }
 	
@@ -55,16 +53,14 @@ public final class Domain extends AbstractList implements IndexValues
     
 	public Domain copy() { return new Domain( this.value ); }
         
-    @Override
-    public boolean equals( Object x )
+    @Override public boolean equals( Object x )
         {
         return 
             x instanceof Domain && Arrays.equals( this.value, ((Domain) x).value )
             || super.equals( x );
         }
 		
-	@Override
-    public String toString()
+	@Override public String toString()
 		{
 		StringBuffer b = new StringBuffer( 200 );
         b.append( "<domain" );

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILLegacyProfile.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:09 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.8 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.9 2009-01-26 08:37:09 chris-dollin Exp $
  */
 public class DAML_OILLegacyProfile
     extends AbstractProfile
@@ -222,7 +222,7 @@ public class DAML_OILLegacyProfile
     }
 
     /** There are no first-class axioms in DAML */
-    public Iterator getAxiomTypes() {
+    public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
             }
@@ -230,14 +230,14 @@ public class DAML_OILLegacyProfile
     }
 
     /** The annotation properties of DAML (currently none) */
-    public Iterator getAnnotationProperties() {
+    public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
             }
         ).iterator();
     }
 
-    public Iterator getClassDescriptionTypes() {
+    public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
                 DAML_OIL.Class,
@@ -263,7 +263,7 @@ public class DAML_OILLegacyProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
-    public boolean isSupported( Node n, EnhGraph g, Class type ) {
+    public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
 
@@ -513,7 +513,7 @@ public class DAML_OILLegacyProfile
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    protected static HashMap s_supportsChecks = new HashMap();
+    protected static HashMap<Object, Object> s_supportsChecks = new HashMap<Object, Object>();
 
     static {
         // initialise the map of supports checks from a table of static data

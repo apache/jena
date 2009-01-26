@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.58 $
+ * Revision           $Revision: 1.59 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:59 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:08 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.query.BindingQueryPlan;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -69,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.58 2009-01-16 17:23:59 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.59 2009-01-26 08:37:08 chris-dollin Exp $
  */
 public interface OntModel
     extends InfModel
@@ -95,7 +96,7 @@ public interface OntModel
      *
      * @return An iterator over ontology resources.
      */
-    public ExtendedIterator listOntologies();
+    public ExtendedIterator<Ontology> listOntologies();
 
 
     /**
@@ -123,7 +124,7 @@ public interface OntModel
      *
      * @return An iterator over property resources.
      */
-    public ExtendedIterator listOntProperties();
+    public ExtendedIterator<OntProperty> listOntProperties();
 
 
     /**
@@ -139,7 +140,7 @@ public interface OntModel
      * whether a reasoner is available to perform <code>rdf:type</code> entailments.
      * Each property will appear exactly once in the iterator.
      */
-    public ExtendedIterator listAllOntProperties();
+    public ExtendedIterator<OntProperty> listAllOntProperties();
 
     /**
      * <p>
@@ -156,7 +157,7 @@ public interface OntModel
      *
      * @return An iterator over object property resources.
      */
-    public ExtendedIterator listObjectProperties();
+    public ExtendedIterator<ObjectProperty> listObjectProperties();
 
 
     /**
@@ -174,7 +175,7 @@ public interface OntModel
      *
      * @return An iterator over datatype property resources.
      */
-    public ExtendedIterator listDatatypeProperties();
+    public ExtendedIterator<DatatypeProperty> listDatatypeProperties();
 
 
     /**
@@ -192,7 +193,7 @@ public interface OntModel
      *
      * @return An iterator over functional property resources.
      */
-    public ExtendedIterator listFunctionalProperties();
+    public ExtendedIterator<FunctionalProperty> listFunctionalProperties();
 
 
     /**
@@ -208,7 +209,7 @@ public interface OntModel
      *
      * @return An iterator over transitive property resources.
      */
-    public ExtendedIterator listTransitiveProperties();
+    public ExtendedIterator<TransitiveProperty> listTransitiveProperties();
 
 
     /**
@@ -224,7 +225,7 @@ public interface OntModel
      *
      * @return An iterator over symmetric property resources.
      */
-    public ExtendedIterator listSymmetricProperties();
+    public ExtendedIterator<SymmetricProperty> listSymmetricProperties();
 
 
     /**
@@ -240,7 +241,7 @@ public interface OntModel
      *
      * @return An iterator over inverse functional property resources.
      */
-    public ExtendedIterator listInverseFunctionalProperties();
+    public ExtendedIterator<InverseFunctionalProperty> listInverseFunctionalProperties();
 
 
     /**
@@ -252,7 +253,7 @@ public interface OntModel
      *
      * @return An iterator over individual resources.
      */
-    public ExtendedIterator listIndividuals();
+    public ExtendedIterator<Individual> listIndividuals();
 
 
     /**
@@ -264,7 +265,7 @@ public interface OntModel
      * @return An iterator over individual resources whose <code>rdf:type</code>
      * is <code>cls</code>.
      */
-    public ExtendedIterator listIndividuals( Resource cls );
+    public ExtendedIterator<Individual> listIndividuals( Resource cls );
 
 
     /**
@@ -277,7 +278,7 @@ public interface OntModel
      * </p>
      * @return An iterator over class description resources.
      */
-    public ExtendedIterator listClasses();
+    public ExtendedIterator<OntClass> listClasses();
 
 
     /**
@@ -288,7 +289,7 @@ public interface OntModel
      * as a direct super-class, or the classes which have no declared super-class.</p>
      * @return An iterator of the root classes in the local class hierarchy
      */
-    public ExtendedIterator listHierarchyRootClasses();
+    public ExtendedIterator<OntClass> listHierarchyRootClasses();
 
 
     /**
@@ -301,7 +302,7 @@ public interface OntModel
      * @return An iterator over enumerated class resources.
      * @see Profile#ONE_OF
      */
-    public ExtendedIterator listEnumeratedClasses();
+    public ExtendedIterator<EnumeratedClass> listEnumeratedClasses();
 
 
     /**
@@ -314,7 +315,7 @@ public interface OntModel
      * @return An iterator over union class resources.
      * @see Profile#UNION_OF
      */
-    public ExtendedIterator listUnionClasses();
+    public ExtendedIterator<UnionClass> listUnionClasses();
 
 
     /**
@@ -327,7 +328,7 @@ public interface OntModel
      * @return An iterator over complement class resources.
      * @see Profile#COMPLEMENT_OF
      */
-    public ExtendedIterator listComplementClasses();
+    public ExtendedIterator<ComplementClass> listComplementClasses();
 
 
     /**
@@ -340,7 +341,7 @@ public interface OntModel
      * @return An iterator over complement class resources.
      * @see Profile#INTERSECTION_OF
      */
-    public ExtendedIterator listIntersectionClasses();
+    public ExtendedIterator<IntersectionClass> listIntersectionClasses();
 
 
     /**
@@ -352,7 +353,7 @@ public interface OntModel
      *
      * @return An iterator over named class resources.
      */
-    public ExtendedIterator listNamedClasses();
+    public ExtendedIterator<OntClass> listNamedClasses();
 
 
     /**
@@ -365,7 +366,7 @@ public interface OntModel
      * @return An iterator over restriction class resources.
      * @see Profile#RESTRICTION
      */
-    public ExtendedIterator listRestrictions();
+    public ExtendedIterator<Restriction> listRestrictions();
 
 
     /**
@@ -378,7 +379,7 @@ public interface OntModel
      * @return An iterator over annotation properties.
      * @see Profile#getAnnotationProperties()
      */
-    public ExtendedIterator listAnnotationProperties();
+    public ExtendedIterator<AnnotationProperty> listAnnotationProperties();
 
 
     /**
@@ -389,7 +390,7 @@ public interface OntModel
      *
      * @return An iterator over AllDifferent nodes.
      */
-    public ExtendedIterator listAllDifferent();
+    public ExtendedIterator<AllDifferent> listAllDifferent();
 
 
     /**
@@ -397,7 +398,7 @@ public interface OntModel
      * are any.</p>
      * @return An iterator, whose values are {@link DataRange} objects.
      */
-    public ExtendedIterator listDataRanges();
+    public ExtendedIterator<DataRange> listDataRanges();
 
 
     /**
@@ -1202,7 +1203,7 @@ public interface OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public Set listImportedOntologyURIs();
+    public Set<String> listImportedOntologyURIs();
 
 
     /**
@@ -1219,7 +1220,7 @@ public interface OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public Set listImportedOntologyURIs( boolean closure );
+    public Set<String> listImportedOntologyURIs( boolean closure );
 
 
     /**
@@ -1300,7 +1301,7 @@ public interface OntModel
      *
      * @return A list of graphs that are contained in this ontology model
      */
-    public List getSubGraphs();
+    public List<Graph> getSubGraphs();
 
 
     /**
@@ -1318,7 +1319,7 @@ public interface OntModel
      * @see #listSubModels(boolean)
      */
     @Deprecated
-    public ExtendedIterator listImportedModels();
+    public ExtendedIterator<OntModel> listImportedModels();
 
 
     /**
@@ -1344,7 +1345,7 @@ public interface OntModel
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing a sub-model of this ontology.
      */
-    public ExtendedIterator listSubModels( boolean withImports );
+    public ExtendedIterator<OntModel> listSubModels( boolean withImports );
 
 
     /**
@@ -1364,7 +1365,7 @@ public interface OntModel
      * representing a sub-model of this ontology.
      * @see #listSubModels(boolean)
      */
-    public ExtendedIterator listSubModels();
+    public ExtendedIterator<OntModel> listSubModels();
 
     /**
      * <p>Answer the number of sub-models of this model, not including the

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.15 2009-01-16 17:23:58 andy_seaborne Exp $
+  $Id: WrappedIterator.java,v 1.16 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -17,7 +17,7 @@ import java.util.*;
     @author kers
 */
 
-public class WrappedIterator extends NiceIterator
+public class WrappedIterator<T> extends NiceIterator<T>
     {
     /**
          set to <code>true</code> if this wrapping doesn't permit the use of 
@@ -30,24 +30,24 @@ public class WrappedIterator extends NiceIterator
         If <code>it</code> is itself an ExtendedIterator, return that; otherwise
         wrap <code>it</code>.
     */
-    public static ExtendedIterator create( Iterator it )
-        { return it instanceof ExtendedIterator ? (ExtendedIterator) it : new WrappedIterator( it, false ); }
+    public static <T> ExtendedIterator<T> create( Iterator<T> it )
+        { return it instanceof ExtendedIterator ? (ExtendedIterator<T>) it : new WrappedIterator<T>( it, false ); }
     
     /**
         Answer an ExtendedIterator wrapped round <code>it</code> which does not
         permit <code>.remove()</code> even if <code>it</code> does.
     */
-    public static WrappedIterator createNoRemove( Iterator it )
-        { return new WrappedIterator( it, true ); }
+    public static <T> WrappedIterator<T> createNoRemove( Iterator<T> it )
+        { return new WrappedIterator<T>( it, true ); }
       
     /** the base iterator that we wrap */  
-    protected final Iterator base;
+    protected final Iterator<T> base;
     
-    public Iterator forTestingOnly_getBase()
+    public Iterator<T> forTestingOnly_getBase()
         { return base; }
     
     /** constructor: remember the base iterator */
-    protected WrappedIterator( Iterator base )
+    protected WrappedIterator( Iterator<T> base )
         { this( base, false ); }
     
     /**
@@ -55,7 +55,7 @@ public class WrappedIterator extends NiceIterator
          @param base the base iterator that this tierator wraps
          @param removeDenied true if .remove() must throw an exception
     */
-    protected WrappedIterator( Iterator base, boolean removeDenied )
+    protected WrappedIterator( Iterator<T> base, boolean removeDenied )
         { this.base = base; 
         this.removeDenied = removeDenied; }
         
@@ -66,7 +66,7 @@ public class WrappedIterator extends NiceIterator
         
     /** next: defer to the base iterator */
     @Override
-    public Object next()
+    public T next()
         { return base.next(); }
         
     /** 
@@ -89,7 +89,7 @@ public class WrappedIterator extends NiceIterator
         if <code>it</code> is a Closableiterator, close it. Abstracts away from
         tests [that were] scattered through the code.
     */
-    public static void close( Iterator it )
+    public static void close( Iterator<?> it )
         { NiceIterator.close( it ); }
     }
 

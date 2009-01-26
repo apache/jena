@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.19 2009-01-16 17:23:58 andy_seaborne Exp $
+  $Id: NiceIterator.java,v 1.20 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -16,7 +16,7 @@ import java.util.*;
 	@author kers
 */
 
-public class NiceIterator implements ExtendedIterator
+public class NiceIterator<T> implements ExtendedIterator<T>
     {
     public NiceIterator()
         { super(); }
@@ -39,8 +39,8 @@ public class NiceIterator implements ExtendedIterator
     /**
         default next: throw an exception.
     */
-    public Object next()
-        { return noElements( "empty NiceIterator" ); }
+    public T next()
+        { throw new NoSuchElementException( "empty NiceIterator" ); }
         
     /**
         Utility method for this and other (sub)classes: raise the appropriate
@@ -50,7 +50,7 @@ public class NiceIterator implements ExtendedIterator
         @param message the string to include in the exception
         @return never - but we have a return type to please the compiler
     */
-    protected Object noElements( String message )
+    protected T noElements( String message )
         { throw new NoSuchElementException( message ); }
         
     /**
@@ -64,40 +64,40 @@ public class NiceIterator implements ExtendedIterator
     /**
          Answer the next object, and remove it.
     */
-    public Object removeNext()
-        { Object result = next(); remove(); return result; }
+    public T removeNext()
+        { T result = next(); remove(); return result; }
         
     /**
         concatenate two closable iterators.
     */
     
-    public static ExtendedIterator andThen( final Iterator a, final Iterator b )
+    public static <T> ExtendedIterator<T> andThen( final Iterator<T> a, final Iterator<? extends T> b )
         {
-        final List L = new ArrayList( 2 );
+        final List<Iterator<? extends T>> L = new ArrayList<Iterator<? extends T>>( 2 );
         L.add( b );
-        return new NiceIterator()
+        return new NiceIterator<T>()
             {
             private int index = 0;
             
-            private Iterator current = a;
+            private Iterator<? extends T> current = a;
             
             @Override
             public boolean hasNext()
                 { 
                 while (current.hasNext() == false && index < L.size())
-                    current = (Iterator) L.get( index++ );
+                    current = L.get( index++ );
                 return current.hasNext();
                 }
                 
             @Override
-            public Object next()
+            public T next()
                 { return hasNext() ? current.next() : noElements( "concatenation" ); }
                 
             @Override
             public void close()
                 {
                 close( current );
-                for (int i = index; i < L.size(); i += 1) close( (Iterator) L.get(i) );
+                for (int i = index; i < L.size(); i += 1) close( L.get(i) );
                 }
                 
             @Override
@@ -105,7 +105,7 @@ public class NiceIterator implements ExtendedIterator
                 { current.remove(); }
             
             @Override
-            public ExtendedIterator andThen( ClosableIterator other )
+            public ExtendedIterator<T> andThen( ClosableIterator<? extends T> other )
                 { L.add( other ); 
                 return this; }
             };
@@ -114,33 +114,33 @@ public class NiceIterator implements ExtendedIterator
     /**
         make a new iterator, which is us then the other chap.
     */   
-    public ExtendedIterator andThen( ClosableIterator other )
+    public ExtendedIterator<T> andThen( ClosableIterator<? extends T> other )
         { return andThen( this, other ); }
         
     /**
         make a new iterator, which is our elements that pass the filter
     */
-    public ExtendedIterator filterKeep( Filter f )
-        { return new FilterKeepIterator( f, this ); }
+    public ExtendedIterator<T> filterKeep( Filter<T> f )
+        { return new FilterKeepIterator<T>( f, this ); }
 
     /**
         make a new iterator, which is our elements that do not pass the filter
     */        
-    public ExtendedIterator filterDrop( final Filter f )
-        { return new FilterDropIterator( f, this ); }
+    public ExtendedIterator<T> filterDrop( final Filter<T> f )
+        { return new FilterDropIterator<T>( f, this ); }
    
     /**
         make a new iterator which is the elementwise _map1_ of the base iterator.
     */     
-    public ExtendedIterator mapWith( Map1 map1 )
-        { return new Map1Iterator( map1, this ); }
+    public <U> ExtendedIterator<U> mapWith( Map1<T, U> map1 )
+        { return new Map1Iterator<T, U>( map1, this ); }
 
     /**
         If <code>it</code> is a Closableiterator, close it. Abstracts away from
         tests [that were] scattered through the code.
     */
-    public static void close( Iterator it )
-        { if (it instanceof ClosableIterator) ((ClosableIterator) it).close(); }
+    public static void close( Iterator<?> it )
+        { if (it instanceof ClosableIterator) ((ClosableIterator<?>) it).close(); }
    
     static final private NiceIterator emptyInstance = new NiceIterator();
     
@@ -154,22 +154,22 @@ public class NiceIterator implements ExtendedIterator
     /**
         Answer a list of the elements in order, consuming this iterator.
     */
-    public List toList()
+    public List<T> toList()
         { return asList( this ); }
 
     /**
         Answer a list of the elements in order, consuming this iterator.
     */
-    public Set toSet()
+    public Set<T> toSet()
         { return asSet( this ); }
 
     /**
         Answer a list of the elements of <code>it</code> in order, consuming this iterator.
         Canonical implementation of toSet().
     */
-    public static Set asSet( ExtendedIterator it )
+    public static <T> Set<T> asSet( ExtendedIterator<T> it )
         {
-        Set result = new HashSet();
+        Set<T> result = new HashSet<T>();
         while (it.hasNext()) result.add( it.next() );
         return result;
         }
@@ -178,9 +178,9 @@ public class NiceIterator implements ExtendedIterator
         Answer a list of the elements from <code>it</code>, in order, consuming
         that iterator. Canonical implementation of toList().
     */
-    public static List asList( ExtendedIterator it )
+    public static <T> List<T> asList( ExtendedIterator<T> it )
         {
-        List result = new ArrayList();
+        List<T> result = new ArrayList<T>();
         while (it.hasNext()) result.add( it.next() );
         return result;
         }

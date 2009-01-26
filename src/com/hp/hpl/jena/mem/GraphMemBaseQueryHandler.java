@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: GraphMemBaseQueryHandler.java,v 1.8 2009-01-16 17:23:50 andy_seaborne Exp $
+    $Id: GraphMemBaseQueryHandler.java,v 1.9 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -26,16 +26,13 @@ public class GraphMemBaseQueryHandler extends SimpleQueryHandler
     public GraphMemBaseQueryHandler( GraphMemBase graph )
         { super( graph ); this.store = graph.store; }
 
-    @Override
-    public ExtendedIterator objectsFor( Node s, Node p )
+    @Override public ExtendedIterator<Node> objectsFor( Node s, Node p )
         { return bothANY( s, p ) ? findObjects() : super.objectsFor( s, p ); }
 
-    @Override
-    public ExtendedIterator predicatesFor( Node s, Node o )
+    @Override public ExtendedIterator<Node> predicatesFor( Node s, Node o )
         { return bothANY( s, o ) ? findPredicates() : super.predicatesFor( s, o ); }
 
-    @Override
-    public ExtendedIterator subjectsFor( Node p, Node o )
+    @Override public ExtendedIterator<Node> subjectsFor( Node p, Node o )
         { return bothANY( p, o ) ? findSubjects() : super.subjectsFor( p, o ); }
 
     /**
@@ -45,13 +42,13 @@ public class GraphMemBaseQueryHandler extends SimpleQueryHandler
     private boolean bothANY( Node a, Node b )
         { return (a == null || a.equals( Node.ANY )) && (b == null || b.equals( Node.ANY )); }
 
-    public ExtendedIterator findPredicates()
+    public ExtendedIterator<Node> findPredicates()
         { return store.listPredicates(); }
 
-    public ExtendedIterator findObjects()
+    public ExtendedIterator<Node> findObjects()
         { return store.listObjects(); }
 
-    public ExtendedIterator findSubjects()
+    public ExtendedIterator<Node> findSubjects()
         { return store.listSubjects(); }
 
     }

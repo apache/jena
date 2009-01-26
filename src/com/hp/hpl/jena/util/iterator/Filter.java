@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.12 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -13,22 +13,22 @@ import java.util.Iterator;
     
     @author jjc, kers
 */
-public abstract class Filter
+public abstract class Filter<T>
     {
     /**
         Answer true iff the object <code>o</code> is acceptable. This method
         may also throw an exception if the argument is of a wrong type; it
         is not required to return <code>false</code> in such a case.
     */
-	public abstract boolean accept( Object o );
+	public abstract boolean accept( T o );
     
-    public ExtendedIterator filterKeep( Iterator it )
-        { return new FilterKeepIterator( this, it ); }
+    public ExtendedIterator<T> filterKeep( Iterator<T> it )
+        { return new FilterKeepIterator<T>( this, it ); }
     
-    public Filter and( final Filter other )
-        { return other == any ? this : new Filter()
+    public Filter<T> and( final Filter<T> other )
+        { return other == any ? this : new Filter<T>()
             { @Override
-            public boolean accept( Object x ) 
+            public boolean accept( T x ) 
                 { return Filter.this.accept( x ) && other.accept( x ); } 
             };
         }
@@ -77,6 +77,6 @@ public abstract class Filter
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.12 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
  *
  */

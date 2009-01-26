@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.54 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.55 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -235,7 +235,7 @@ public abstract class GraphBase implements GraphWithPerform
          the appending of reification quadlets; instead they must implement
          graphBaseFind(TripleMatch).
 	*/
-	public final ExtendedIterator find( TripleMatch m )
+	public final ExtendedIterator<Triple> find( TripleMatch m )
         { checkOpen(); 
         return reifierTriples( m ) .andThen( graphBaseFind( m ) ); }
 
@@ -244,19 +244,19 @@ public abstract class GraphBase implements GraphWithPerform
         that match <code>m</code>. Subclasses <i>must</i> override; it is the core
         implementation for <code>find(TripleMatch)</code>.
     */
-    protected abstract ExtendedIterator graphBaseFind( TripleMatch m );
+    protected abstract ExtendedIterator<Triple> graphBaseFind( TripleMatch m );
 
-    public ExtendedIterator forTestingOnly_graphBaseFind( TripleMatch tm )
+    public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( TripleMatch tm )
         { return graphBaseFind( tm ); }
     
     /**
          
     */
-    public final ExtendedIterator find( Node s, Node p, Node o ) 
+    public final ExtendedIterator<Triple> find( Node s, Node p, Node o ) 
         { checkOpen();
         return graphBaseFind( s, p, o ); }
     
-    protected ExtendedIterator graphBaseFind( Node s, Node p, Node o )
+    protected ExtendedIterator<Triple> graphBaseFind( Node s, Node p, Node o )
         { return find( Triple.createMatch( s, p, o ) ); }
 
     /**
@@ -276,7 +276,7 @@ public abstract class GraphBase implements GraphWithPerform
          probably have specialised reifiers).
     */
     protected boolean reifierContains( Triple t )
-        { ClosableIterator it = getReifier().findExposed( t );
+        { ClosableIterator<Triple> it = getReifier().findExposed( t );
         try { return it.hasNext(); } finally { it.close(); } }
 
 	/**
@@ -305,7 +305,7 @@ public abstract class GraphBase implements GraphWithPerform
     */
     final protected boolean containsByFind( Triple t )
         {
-        ClosableIterator it = find( t );
+        ClosableIterator<Triple> it = find( t );
         try { return it.hasNext(); } finally { it.close(); }
         }
     
@@ -314,7 +314,7 @@ public abstract class GraphBase implements GraphWithPerform
         match <code>m</code>. The default implementation delegates this to
         the reifier; subclasses probably don't need to override this.
     */
-    protected ExtendedIterator reifierTriples( TripleMatch m )
+    protected ExtendedIterator<Triple> reifierTriples( TripleMatch m )
         { return getReifier().findExposed( m ); }
 
     /**
@@ -376,7 +376,7 @@ public abstract class GraphBase implements GraphWithPerform
     */
     protected int graphBaseSize()
         {
-		ExtendedIterator it = GraphUtil.findAll( this );
+		ExtendedIterator<Triple> it = GraphUtil.findAll( this );
         try 
             {
             int tripleCount = 0;
@@ -426,12 +426,12 @@ public abstract class GraphBase implements GraphWithPerform
         PrefixMapping pm = that.getPrefixMapping();
 		StringBuffer b = new StringBuffer( prefix + " {" );
 		String gap = "";
-		ClosableIterator it = GraphUtil.findAll( that );
+		ClosableIterator<Triple> it = GraphUtil.findAll( that );
 		while (it.hasNext()) 
             {
 			b.append( gap );
 			gap = "; ";
-			b.append( ((Triple) it.next()).toString( pm ) );
+			b.append( it.next().toString( pm ) );
 		    } 
 		b.append( "}" );
 		return b.toString();

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Map1.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+ * $Id: Map1.java,v 1.9 2009-01-26 08:37:09 chris-dollin Exp $
  *
  */
 
@@ -32,13 +32,13 @@ package com.hp.hpl.jena.util.iterator;
 
 /** Converts an Object to another Object.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2008-12-28 19:32:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2009-01-26 08:37:09 $'
  */
-public interface Map1
+public interface Map1<From, To>
 {  /** Convert an object.
     * @param o The thing to be converted.
     * @return The converted thing.
     * 
     */
-    Object map1(Object o);
+    To map1( From o );
 }

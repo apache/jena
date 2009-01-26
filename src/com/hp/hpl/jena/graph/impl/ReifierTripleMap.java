@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierTripleMap.java,v 1.10 2008-12-28 19:31:53 andy_seaborne Exp $
+ $Id: ReifierTripleMap.java,v 1.11 2009-01-26 08:37:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -55,7 +55,7 @@ public interface ReifierTripleMap
          Answer an iterator over all the quadlets that match <code>m</code> that
          correspond to complete reified triples held in this map.
     */
-    public ExtendedIterator find( TripleMatch m );
+    public ExtendedIterator<Triple> find( TripleMatch m );
     
     /**
          Answer the number of quadlets in this map.
@@ -65,13 +65,13 @@ public interface ReifierTripleMap
     /**
          Answer an iterator over all the bound tags in this map.
     */
-    public abstract ExtendedIterator tagIterator();
+    public abstract ExtendedIterator<Node> tagIterator();
 
     /**
          Answer an iterator over all the tags in this map that are bound to
          <code>t</code>.
     */
-    public abstract ExtendedIterator tagIterator( Triple t );
+    public abstract ExtendedIterator<Node> tagIterator( Triple t );
     
     /**
         Clear away all the triples.

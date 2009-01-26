@@ -1,7 +1,7 @@
 /* (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
      [See end of file]
 
-     $Id: NullIterator.java,v 1.12 2009-01-16 17:23:58 andy_seaborne Exp $
+     $Id: NullIterator.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -10,15 +10,15 @@ package com.hp.hpl.jena.util.iterator;
      An empty iterator. The specialised versions of andThen() eliminate left operands
      that are empty iterators from cascaded sequences.
 */
-public class NullIterator extends NiceIterator 
+public class NullIterator<T> extends NiceIterator<T> 
     {
     public static NullIterator instance = new NullIterator();
     
     @Override
-    public ExtendedIterator andThen( ClosableIterator it )
+    public ExtendedIterator<T> andThen( ClosableIterator<? extends T> it )
         { 
         return it instanceof ExtendedIterator 
-            ? (ExtendedIterator) it 
+            ? (ExtendedIterator<T>) it 
             : super.andThen( it )
             ;
         }

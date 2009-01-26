@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:08 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.22 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: Polyadic.java,v 1.23 2009-01-26 08:37:08 chris-dollin Exp $
  */
 public abstract class Polyadic extends CompositionBase
 {
@@ -60,7 +60,7 @@ public abstract class Polyadic extends CompositionBase
     //////////////////////////////////
 
     /** A list of the sub-graphs that this composition contains */
-    protected List m_subGraphs = new ArrayList();
+    protected List<Graph> m_subGraphs = new ArrayList<Graph>();
 
     /** The distinguished graph for adding to. If null, use the 0'th graph in the list. */
     protected Graph m_baseGraph = null;
@@ -108,13 +108,13 @@ public abstract class Polyadic extends CompositionBase
      * @param graphs An iterator of the sub-graphs of this composition. If graphs is
      *               a closable iterator, it will be automatically closed.
      */
-    public Polyadic( Iterator graphs ) {
+    public Polyadic( Iterator<Graph> graphs ) {
         while (graphs.hasNext()) {
             m_subGraphs.add( graphs.next() );
         }
 
         if (graphs instanceof ClosableIterator) {
-            ((ClosableIterator) graphs).close();
+            ((ClosableIterator<Graph>) graphs).close();
         }
     }
 
@@ -131,8 +131,8 @@ public abstract class Polyadic extends CompositionBase
      */
     @Override
     public void close() {
-        for (Iterator i = m_subGraphs.iterator();  i.hasNext();  ) {
-            ((Graph) i.next()).close();
+        for (Iterator<Graph> i = m_subGraphs.iterator();  i.hasNext();  ) {
+            i.next().close();
         }
         super.close();
     }
@@ -196,7 +196,7 @@ public abstract class Polyadic extends CompositionBase
     public Graph getBaseGraph() {
         if (m_baseGraph == null) {
             // no designated graph, so default to the first graph on the list
-            return (m_subGraphs.size() == 0) ? null : ((Graph) m_subGraphs.get( 0 ));
+            return (m_subGraphs.size() == 0) ? null : m_subGraphs.get( 0 );
         }
         else {
             return m_baseGraph;
@@ -253,8 +253,8 @@ public abstract class Polyadic extends CompositionBase
      *
      * @return A list of all of the sub-graphs, excluding the base graph.
      */
-    public List getSubGraphs() {
-        List sg = new ArrayList( m_subGraphs );
+    public List<Graph> getSubGraphs() {
+        List<Graph> sg = new ArrayList<Graph>( m_subGraphs );
 
         if (getBaseGraph() != null) {
             sg.remove( getBaseGraph() );

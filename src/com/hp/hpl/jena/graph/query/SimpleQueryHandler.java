@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.26 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: SimpleQueryHandler.java,v 1.27 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -37,36 +37,36 @@ public class SimpleQueryHandler implements QueryHandler
     public TreeQueryPlan prepareTree( Graph pattern )
     	{ return new SimpleTreeQueryPlan( graph, pattern ); }
     	
-	public ExtendedIterator objectsFor( Node s, Node p )
+	public ExtendedIterator<Node> objectsFor( Node s, Node p )
 		{ return objectsFor( graph, s, p ); }
 		
-	public ExtendedIterator subjectsFor( Node p, Node o )
+	public ExtendedIterator<Node> subjectsFor( Node p, Node o )
 		{ return subjectsFor( graph, p, o ); }
     
-    public ExtendedIterator predicatesFor( Node s, Node o )
+    public ExtendedIterator<Node> predicatesFor( Node s, Node o )
         { return predicatesFor( graph, s, o ); }
     
-    public static ExtendedIterator objectsFor( Graph g, Node s, Node p )
+    public static ExtendedIterator<Node> objectsFor( Graph g, Node s, Node p )
         { 
-        Set objects = CollectionFactory.createHashedSet();
-        ClosableIterator it = g.find( s, p, Node.ANY );
-        while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
+        Set<Node> objects = CollectionFactory.createHashedSet();
+        ClosableIterator<Triple> it = g.find( s, p, Node.ANY );
+        while (it.hasNext()) objects.add( it.next().getObject() );
         return WrappedIterator.createNoRemove( objects.iterator() );
         }
         
-    public static ExtendedIterator subjectsFor( Graph g, Node p, Node o )
+    public static ExtendedIterator<Node> subjectsFor( Graph g, Node p, Node o )
         { 
-        Set objects = CollectionFactory.createHashedSet();
-        ClosableIterator it = g.find( Node.ANY, p, o );
-        while (it.hasNext()) objects.add( ((Triple) it.next()).getSubject() );
+        Set<Node> objects = CollectionFactory.createHashedSet();
+        ClosableIterator<Triple> it = g.find( Node.ANY, p, o );
+        while (it.hasNext()) objects.add( it.next().getSubject() );
         return WrappedIterator.createNoRemove( objects.iterator() );
         }
     
-    public static ExtendedIterator predicatesFor( Graph g, Node s, Node o )
+    public static ExtendedIterator<Node> predicatesFor( Graph g, Node s, Node o )
         {
-        Set predicates = CollectionFactory.createHashedSet();
-        ClosableIterator it = g.find( s, Node.ANY, o );
-        while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
+        Set<Node> predicates = CollectionFactory.createHashedSet();
+        ClosableIterator<Triple> it = g.find( s, Node.ANY, o );
+        while (it.hasNext()) predicates.add( it.next().getPredicate() );
         return WrappedIterator.createNoRemove( predicates.iterator() );
         }
         

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: ReificationWrapper.java,v 1.4 2009-01-16 17:23:52 andy_seaborne Exp $
+ 	$Id: ReificationWrapper.java,v 1.5 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -27,31 +27,30 @@ public class ReificationWrapper implements Reifier
         this.base = this.graph.getBase(); 
         }
     
-    public ExtendedIterator allNodes()
+    public ExtendedIterator<Node> allNodes()
         { // TODO needs constraining for :subject :object etc
         return base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( Triple.getSubject );
         }
     
-    public ExtendedIterator allNodes( Triple t )
+    public ExtendedIterator<Node> allNodes( Triple t )
         { throw new BrokenException( "this reifier operation" ); }
     
     public void close()
         { /* nothing to do */ }
     
-    public ExtendedIterator find( TripleMatch m )
+    public ExtendedIterator<Triple>find( TripleMatch m )
         { return base.find( m ).filterKeep( isReificationTriple ); }
     
-    protected static final Filter isReificationTriple = new Filter()
+    protected static final Filter<Triple> isReificationTriple = new Filter<Triple>()
         {
-        @Override
-        public boolean accept( Object o )
-            { return isReificationTriple( (Triple) o ); }  
+        @Override public boolean accept( Triple o )
+            { return isReificationTriple( o ); }  
         };
     
-    public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
-        { return showHidden == style.conceals() ? find( m ) : NullIterator.instance; }
+    public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden )
+        { return showHidden == style.conceals() ? find( m ) : Triple.None; }
     
-    public ExtendedIterator findExposed( TripleMatch m )
+    public ExtendedIterator<Triple> findExposed( TripleMatch m )
         { return find( m ); }
     
     public Graph getParentGraph()
@@ -89,7 +88,7 @@ public class ReificationWrapper implements Reifier
     
     private void checkQuadElementFree( Node n, Node predicate, Node object )
         {
-        List L = base.find( n, predicate, Node.ANY ).mapWith( Triple.getObject ).toList();
+        List<Node> L = base.find( n, predicate, Node.ANY ).mapWith( Triple.getObject ).toList();
         if (L.size() == 0) return;
         if (L.size() == 1 && L.get( 0 ).equals( object )) return;
         throw new CannotReifyException( n );
@@ -109,7 +108,7 @@ public class ReificationWrapper implements Reifier
     public int size()
         { return style.conceals() ? 0: countQuadlets(); }
     
-    int count( ExtendedIterator find )
+    int count( ExtendedIterator<?> find )
         { 
         int result = 0;
         while (find.hasNext()) { result += 1; find.next(); }
@@ -133,8 +132,8 @@ public class ReificationWrapper implements Reifier
         { // CHECK: there's one match AND it matches the triple t.
         Node X = Query.X,  S = Query.S, P = Query.P, O = Query.O;
         Query q = quadsQuery( Query.X );
-        List bindings = base.queryHandler().prepareBindings( q, new Node[] {X, S, P, O} ).executeBindings().toList();
-        return bindings.size() == 1 && t.equals( tripleFromRSPO( (Domain) bindings.get( 0 ) ) );
+        List<Domain> bindings = base.queryHandler().prepareBindings( q, new Node[] {X, S, P, O} ).executeBindings().toList();
+        return bindings.size() == 1 && t.equals( tripleFromRSPO( bindings.get( 0 ) ) );
         }
     
     private Triple tripleFromRSPO( Domain domain )
@@ -147,8 +146,8 @@ public class ReificationWrapper implements Reifier
         {
         Node S = Query.S, P = Query.P, O = Query.O;
         Query q = quadsQuery( n );
-        List bindings = base.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
-        return bindings.size() == 1 ? tripleFromSPO( (Domain) bindings.get(0) ) : null;
+        List<Domain> bindings = base.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
+        return bindings.size() == 1 ? tripleFromSPO( bindings.get(0) ) : null;
         }
     
     private static Query quadsQuery( Node subject )

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:56 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:09 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -34,10 +34,9 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.17 2009-01-16 17:23:56 andy_seaborne Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.18 2009-01-26 08:37:09 chris-dollin Exp $
  */
-public class OneToManyMap
-    implements Map
+public class OneToManyMap<From, To> implements Map<From, To>
 {
     // Constants
     //////////////////////////////////
@@ -51,7 +50,7 @@ public class OneToManyMap
     //////////////////////////////////
 
     /** Encapsulated hash table stores the values */
-    private Map m_table = new HashMap();
+    private Map<From, List<To>> m_table = new HashMap<From, List<To>>();
 
 
     // Constructors
@@ -70,21 +69,17 @@ public class OneToManyMap
      *
      * @param map An existing one-to-many map
      */
-    public OneToManyMap( OneToManyMap map ) {
+    public OneToManyMap( OneToManyMap<From, To> map ) {
         // copy the contents of the existing map
         // note we can't just use the copying constructor for hashmap
         // as we don't want to share the arraylists that are the key values
-        for (Iterator i = map.keySet().iterator();  i.hasNext(); ) {
-            Object key = i.next();
-
-            for (Iterator j = map.getAll( key );  j.hasNext();  ) {
+        for (Iterator<From> i = map.keySet().iterator();  i.hasNext(); ) {
+            From key = i.next();
+            for (Iterator<To> j = map.getAll( key );  j.hasNext();  ) {
                 put( key, j.next() );
             }
         }
     }
-
-
-
 
     // External signature methods
     //////////////////////////////////
@@ -205,8 +200,8 @@ public class OneToManyMap
      * @return One of the values this key corresponds to, or null.
      * @see #getAll
      */
-    public Object get( Object key ) {
-        ArrayList entry = (ArrayList) m_table.get( key );
+    public To get( Object key ) {
+        List<To> entry = m_table.get( key );
 
         if (entry != null) {
             if (!entry.isEmpty()) {
@@ -226,9 +221,9 @@ public class OneToManyMap
      * @param key The key object
      * @return An iterator over all of the values for this key in the map
      */
-    public Iterator getAll( Object key ) {
-        ArrayList entry = (ArrayList) m_table.get( key );
-        return (entry != null) ? entry.iterator() : NullIterator.instance;
+    public Iterator<To> getAll( Object key ) {
+        List<To> entry = m_table.get( key );
+        return (entry != null) ? entry.iterator() : new NullIterator<To>();
     }
 
 
@@ -281,7 +276,7 @@ public class OneToManyMap
      * @param value The value object
      * @return Null.
      */
-    public Object put( Object key, Object value ) {
+    public To put( From key, To value ) {
         ArrayList entries = (ArrayList) m_table.get( key );
         entries = entries == null ? new ArrayList() : entries;
 
@@ -298,13 +293,13 @@ public class OneToManyMap
      * OneToManyMap, and, if so, copies all of the entries for each key.</p>
      * @param m The map whose contents are to be copied into this map
      */
-    public void putAll( Map m ) {
+    public void putAll( Map<? extends From, ? extends To> m ) {
         boolean many = (m instanceof OneToManyMap);
         
-        for (Iterator i = m.keySet().iterator(); i.hasNext(); ) {
-            Object key = i.next();
+        for (Iterator<? extends From> i = m.keySet().iterator(); i.hasNext(); ) {
+            From key = i.next();
             if (many) {
-                for (Iterator j = ((OneToManyMap) m).getAll( key ); j.hasNext(); ) {
+                for (Iterator<? extends To> j = ((OneToManyMap<? extends From, ? extends To>) m).getAll( key ); j.hasNext(); ) {
                     put( key, j.next() );
                 }
             }
@@ -325,7 +320,7 @@ public class OneToManyMap
      * @param key All associations with this key will be removed
      * @return null
      */
-    public Object remove( Object key ) {
+    public To remove( Object key ) {
         m_table.remove( key );
         return null;
     }
@@ -341,7 +336,7 @@ public class OneToManyMap
      * @param value The value object
      */
     public void remove( Object key, Object value ) {
-        List entries = (List) m_table.get( key );
+        List<To> entries = m_table.get( key );
 
         if (entries != null) {
             entries.remove( value );

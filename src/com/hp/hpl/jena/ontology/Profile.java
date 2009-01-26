@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:02 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:08 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.20 2008-12-28 19:32:02 andy_seaborne Exp $
+ * @version CVS $Id: Profile.java,v 1.21 2009-01-26 08:37:08 chris-dollin Exp $
  */
 public interface Profile
 {
@@ -680,7 +680,7 @@ public interface Profile
      * 
      * @return An iterator over axiom types.
      */
-    public Iterator getAxiomTypes();
+    public Iterator<Resource> getAxiomTypes();
     
     
     /**
@@ -692,7 +692,7 @@ public interface Profile
      * 
      * @return An iterator over annotation properties.
      */
-    public Iterator getAnnotationProperties();
+    public Iterator<Resource> getAnnotationProperties();
     
     
     /**
@@ -703,7 +703,7 @@ public interface Profile
      * 
      * @return An iterator over the various rdf:types of class descriptions.
      */
-    public Iterator getClassDescriptionTypes();
+    public Iterator<Resource> getClassDescriptionTypes();
     
     
     // Alias management
@@ -741,7 +741,7 @@ public interface Profile
      * @return An iterator over the aliases for <code>res</code>. If there are
      * no aliases, the empty iterator is returned.
      */
-    public Iterator listAliasesFor( Resource res );
+    public Iterator<Resource> listAliasesFor( Resource res );
     
     
     /**
@@ -759,7 +759,7 @@ public interface Profile
      * @return True if strict checking is off, or if <code>n</code> can be 
      * viewed according to the facet resource <code>res</code>
      */
-    public boolean isSupported( Node n, EnhGraph g, Class type );
+    public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type );
     
     // Other stuff
     

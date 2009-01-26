@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.36 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: Reifier.java,v 1.37 2009-01-26 08:37:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,20 +23,20 @@ public interface Reifier extends GetTriple
          Answer an iterator over all the reification triples in this Reifier that match
          <code>m</code>.
     */
-    ExtendedIterator find( TripleMatch m );
+    ExtendedIterator<Triple> find( TripleMatch m );
     
     /**
          Answer an iterator over all the reification triples that this Reifier exposes
          (ie all if Standard, none otherwise) that match m.
     */
-    ExtendedIterator findExposed( TripleMatch m );
+    ExtendedIterator<Triple> findExposed( TripleMatch m );
     
     /**
          Answer an iterator over the reification triples of this Reifier, or an empty 
          iterator - if showHidden is false, only the exposed triples, otherwise only
          the concealed ones.
     */
-    ExtendedIterator findEither( TripleMatch m, boolean showHidden );
+    ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden );
     
     /**
          Answer the number of exposed reification quadlets held in this reifier.
@@ -73,13 +73,13 @@ public interface Reifier extends GetTriple
         return an iterator over all the nodes that are reifiying something in 
         this reifier.
     */
-    ExtendedIterator allNodes();
+    ExtendedIterator<Node> allNodes();
     
     /**
         return an iterator over all the nodes that are reifiying t in 
         this reifier.
     */    
-    ExtendedIterator allNodes( Triple t );
+    ExtendedIterator<Node> allNodes( Triple t );
     
     /**
         remove any existing binding for _n_; hasNode(n) will return false

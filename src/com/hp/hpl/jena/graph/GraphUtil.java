@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphUtil.java,v 1.15 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: GraphUtil.java,v 1.16 2009-01-26 08:37:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,7 +27,7 @@ public class GraphUtil
     	@param g the graph from which to extract triples
     	@return an iterator over all the graph's triples
     */
-    public static ExtendedIterator findAll( Graph g )
+    public static ExtendedIterator<Triple> findAll( Graph g )
         { return g.find( Triple.ANY ); }
                 
     }

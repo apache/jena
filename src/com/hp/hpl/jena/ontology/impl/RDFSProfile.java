@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 08:37:09 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.16 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.17 2009-01-26 08:37:09 chris-dollin Exp $
  */
 public class RDFSProfile
     extends AbstractProfile
@@ -136,7 +136,7 @@ public class RDFSProfile
     }
 
     /** The only first-class axiom type in OWL is AllDifferent */
-    public Iterator getAxiomTypes() {
+    public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
             }
@@ -144,7 +144,7 @@ public class RDFSProfile
     }
 
     /** The annotation properties of OWL */
-    public Iterator getAnnotationProperties() {
+    public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
                 RDFS.label,
@@ -155,7 +155,7 @@ public class RDFSProfile
         ).iterator();
     }
 
-    public Iterator getClassDescriptionTypes() {
+    public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
                 RDFS.Class            }
@@ -178,7 +178,7 @@ public class RDFSProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
-    public boolean isSupported( Node n, EnhGraph g, Class type ) {
+    public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
 
@@ -266,7 +266,7 @@ public class RDFSProfile
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    protected static HashMap s_supportsChecks = new HashMap();
+    protected static HashMap<Object, Object> s_supportsChecks = new HashMap<Object, Object>();
 
     static {
         // initialise the map of supports checks from a table of static data

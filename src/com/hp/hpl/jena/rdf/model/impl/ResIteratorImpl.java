@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResIteratorImpl.java,v 1.12 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: ResIteratorImpl.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,21 +14,21 @@ import java.util.*;
 /** An implementation of ResIterator.
  *
  * @author  bwm, kers
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2009-01-26 08:37:09 $'
  */
-public class ResIteratorImpl extends WrappedIterator implements ResIterator {
+public class ResIteratorImpl extends WrappedIterator<Resource> implements ResIterator {
     
     /** Creates new ResIterator; _object_ is ignored */
-    public ResIteratorImpl( Iterator iter, Object object ) {
+    public ResIteratorImpl( Iterator<Resource> iter, Object object ) {
         this( iter );
     }
     
     /** create a new ResIterator */
-    public ResIteratorImpl( Iterator iter )
+    public ResIteratorImpl( Iterator<Resource> iter )
         { super( iter ); }
 
     public Resource nextResource() {
-        return (Resource) next();
+        return next();
     }
     
 }

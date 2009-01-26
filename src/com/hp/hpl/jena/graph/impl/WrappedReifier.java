@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReifier.java,v 1.11 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: WrappedReifier.java,v 1.12 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -34,11 +34,11 @@ public class WrappedReifier implements Reifier
 	*/
 	public Graph getParentGraph() { return parent; }
     
-    public ExtendedIterator find( TripleMatch m ) { return base.find( m ); }
+    public ExtendedIterator<Triple> find( TripleMatch m ) { return base.find( m ); }
     
-    public ExtendedIterator findExposed( TripleMatch m ) { return base.findExposed( m ); }
+    public ExtendedIterator<Triple> findExposed( TripleMatch m ) { return base.findExposed( m ); }
     
-    public ExtendedIterator findEither( TripleMatch m, boolean showHidden ) 
+    public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden ) 
         { return base.findEither( m, showHidden ); }
     
     public int size() { return base.size(); }
@@ -61,12 +61,12 @@ public class WrappedReifier implements Reifier
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#allNodes()
 	*/
-	public ExtendedIterator allNodes() { return base.allNodes(); }
+	public ExtendedIterator<Node> allNodes() { return base.allNodes(); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#allNodes(com.hp.hpl.jena.graph.Triple)
 	*/
-	public ExtendedIterator allNodes( Triple t ) { return base.allNodes( t ); }
+	public ExtendedIterator<Node> allNodes( Triple t ) { return base.allNodes( t ); }
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	*/

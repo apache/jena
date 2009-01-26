@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.18 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.19 2009-01-26 08:37:09 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,22 +18,22 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2009-01-16 17:23:58 $
+ * @version $Revision: 1.19 $ on $Date: 2009-01-26 08:37:09 $
  */
-public class UniqueExtendedIterator extends WrappedIterator {
+public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 
     /** The set of objects already seen */
-    protected HashSet seen = new HashSet();
+    protected HashSet<T> seen = new HashSet<T>();
     
     /** One level lookahead */
-    protected Object next = null;
+    protected T next = null;
     
     /**
      * Constructor. Note the use of {@link #create} as reliable means of
      * creating a unique iterator without double-wrapping iterators that 
      * are already unique iterators.
      */
-    public UniqueExtendedIterator(Iterator underlying) {
+    public UniqueExtendedIterator(Iterator<T> underlying) {
         super(underlying, true);
     }
     
@@ -46,9 +46,9 @@ public class UniqueExtendedIterator extends WrappedIterator {
      * iterator exactly once.  If <code>it</code> is already a unique
      * extended iteator, it is not further wrapped.
      */
-    public static ExtendedIterator create( Iterator it ) {
+    public static <T> ExtendedIterator<T> create( Iterator<T> it ) {
         return (it instanceof UniqueExtendedIterator) ? 
-                    ((UniqueExtendedIterator) it) : new UniqueExtendedIterator( it );
+                    ((UniqueExtendedIterator<T>) it) : new UniqueExtendedIterator<T>( it );
     }
     
     /**
@@ -57,16 +57,15 @@ public class UniqueExtendedIterator extends WrappedIterator {
      * return values should override this method.
      * @return the object to be returned or null if the object has been filtered.
      */
-    protected Object nextIfNew() {
-        Object value = super.next();
+    protected T nextIfNew() {
+        T value = super.next();
         return seen.add( value ) ? value : null;
     }
     
     /**
      * @see Iterator#hasNext()
      */
-    @Override
-    public boolean hasNext() {
+    @Override public boolean hasNext() {
         while (next == null && super.hasNext()) next = nextIfNew();
         return next != null;
     }
@@ -74,10 +73,9 @@ public class UniqueExtendedIterator extends WrappedIterator {
     /**
      * @see Iterator#next()
      */
-    @Override
-    public Object next() {
+    @Override public T next() {
         ensureHasNext();
-        Object result = next;
+        T result = next;
         next = null;
         return result;
     }

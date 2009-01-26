@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.134 2009-01-22 15:43:53 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.135 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -744,8 +744,8 @@ public class ModelCom
     private Iterator<Node> listTypes()
         {
         Set<Node> types = CollectionFactory.createHashedSet();
-        ClosableIterator it = graph.find( null, RDF.type.asNode(), null );
-        while (it.hasNext()) types.add( ((Triple) it.next()).getObject() );
+        ClosableIterator<Triple> it = graph.find( null, RDF.type.asNode(), null );
+        while (it.hasNext()) types.add( it.next().getObject() );
         return types.iterator();
         }
      
@@ -890,10 +890,10 @@ public class ModelCom
         }
         
     private Iterator<Triple> asTriples( StmtIterator it )
-        { return new Map1Iterator( mapAsTriple, it ); }
+        { return it.mapWith( mapAsTriple ); }
         
-    private Map1 mapAsTriple = new Map1()
-        { public Object map1( Object s ) { return ((Statement) s).asTriple(); } };
+    private Map1<Statement, Triple> mapAsTriple = new Map1<Statement, Triple>()
+        { public Triple map1( Statement s ) { return s.asTriple(); } };
         
     /**
         remove all the Statements from the model by converting them to triples and
@@ -1001,13 +1001,13 @@ public class ModelCom
         
     private NodeIterator listObjectsFor( RDFNode s, RDFNode p )
         {
-        ClosableIterator xit = graph.queryHandler().objectsFor( asNode( s ), asNode( p ) );
+        ClosableIterator<Node> xit = graph.queryHandler().objectsFor( asNode( s ), asNode( p ) );
         return IteratorFactory.asRDFNodeIterator( xit, this );
         }
 
     private ResIterator listSubjectsFor( RDFNode p, RDFNode o )
         {
-        ClosableIterator xit = graph.queryHandler().subjectsFor( asNode( p ), asNode( o ) );
+        ClosableIterator<Node> xit = graph.queryHandler().subjectsFor( asNode( p ), asNode( o ) );
         return IteratorFactory.asResIterator( xit, this );
         }
                 
@@ -1047,10 +1047,9 @@ public class ModelCom
         @param s a Selector on statements
         @return a Filter that accepts statements that s passes tests on
    */
-    public Filter asFilter( final Selector s )
-        { return new Filter()
-                { @Override
-                public boolean accept( Object x ) { return s.test( (Statement) x ); } };
+    public Filter<Statement> asFilter( final Selector s )
+        { return new Filter<Statement>()
+                { @Override public boolean accept( Statement x ) { return s.test( x ); } };
         }
         
     
@@ -1062,7 +1061,7 @@ public class ModelCom
         @param s a Selector used to supply subject, predicate, and object
         @return an extended iterator over the matching (S, P, O) triples
     */
-    public ExtendedIterator findTriplesFrom( Selector s )
+    public ExtendedIterator<Triple> findTriplesFrom( Selector s )
         {
         return graph.find
             ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );    
@@ -1142,10 +1141,10 @@ public class ModelCom
         { return new ModelCom( g ); }
         
 	public StmtIterator asStatements( final Iterator<Triple> it ) 
-        { return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) ); }
+        { return new StmtIteratorImpl( new Map1Iterator<Triple, Statement>( mapAsStatement, it ) ); }
     
-    protected Map1 mapAsStatement = new Map1()
-        { public Object map1( Object t ) { return asStatement( (Triple) t ); } };
+    protected Map1<Triple, Statement> mapAsStatement = new Map1<Triple, Statement>()
+        { public Statement map1( Triple t ) { return asStatement( t ); } };
 	
 	public StmtIterator listBySubject( Container cont )
         { return listStatements( cont, null, (RDFNode) null ); }

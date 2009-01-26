@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RSIteratorImpl.java,v 1.8 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: RSIteratorImpl.java,v 1.9 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,15 +9,16 @@ package com.hp.hpl.jena.rdf.model.impl;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 //import com.hp.hpl.jena.util.iterator.*;
 
-public class RSIteratorImpl extends ResIteratorImpl implements RSIterator
+public class RSIteratorImpl extends WrappedIterator<ReifiedStatement> implements RSIterator
     {
-    public RSIteratorImpl( Iterator iterator )
+    public RSIteratorImpl( Iterator<ReifiedStatement> iterator )
         { super( iterator ); }
 
     public ReifiedStatement nextRS()
-        { return (ReifiedStatement) ((RDFNode) next()).as( ReifiedStatement.class ); }
+        { return next(); }
     }
 
 /*

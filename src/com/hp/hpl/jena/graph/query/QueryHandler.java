@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.20 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: QueryHandler.java,v 1.21 2009-01-26 08:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -47,21 +47,21 @@ public interface QueryHandler
     	underlying graph; nulls count as wildcards.  .remove() is not defined 
         on this iterator.
     */
-    public ExtendedIterator objectsFor( Node s, Node p );
+    public ExtendedIterator<Node> objectsFor( Node s, Node p );
 
     /**
     	deliver an iterator over all the subjects _s_ such that _(s, p, o)_ is in the
     	underlying graph; nulls count as wildcards.  .remove() is not defined 
         on this iterator.
     */
-    public ExtendedIterator subjectsFor( Node p, Node o );
+    public ExtendedIterator<Node> subjectsFor( Node p, Node o );
 
     /**
          Answer an iterator over all the predicates <code>p</code> such that
          <code>(s, p, o)</code> is in the underlying graph.  .remove() is not 
          defined on this iterator.
     */
-    public ExtendedIterator predicatesFor( Node s, Node o );
+    public ExtendedIterator<Node> predicatesFor( Node s, Node o );
     
     /**
         true iff the graph contains a triple in which n appears somewhere.

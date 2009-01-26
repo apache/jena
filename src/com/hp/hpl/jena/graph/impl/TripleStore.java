@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: TripleStore.java,v 1.9 2008-12-28 19:31:53 andy_seaborne Exp $
+ $Id: TripleStore.java,v 1.10 2009-01-26 08:37:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -48,23 +48,23 @@ public interface TripleStore
     /**
          Answer an setwise iterator over all the subjects of triples in this store.
     */
-    public ExtendedIterator listSubjects();
+    public ExtendedIterator<Node> listSubjects();
     
     /**
          Answer an iterator over all the predicates of triples in this store.
     */
-    public ExtendedIterator listPredicates();
+    public ExtendedIterator<Node> listPredicates();
     
     /**
          Answer an setwise iterator over all the objects of triples in this store.
     */    
-    public ExtendedIterator listObjects();
+    public ExtendedIterator<Node> listObjects();
     
     /** 
          Answer an ExtendedIterator returning all the triples from this store that
          match the pattern <code>m = (S, P, O)</code>.
     */
-    public abstract ExtendedIterator find( TripleMatch tm );
+    public abstract ExtendedIterator<Triple> find( TripleMatch tm );
 
     /**
         Clear this store, ie remove all triples from it.

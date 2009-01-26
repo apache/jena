@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * Interface for a specialized graphs that are optimized for reification.
  *
  * @author csayers
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  */
 public interface SpecializedGraphReifier extends SpecializedGraph {
@@ -66,7 +66,7 @@ public interface SpecializedGraphReifier extends SpecializedGraph {
 	 * @return ExtendedIterator which iterates over any matching nodes
 	 */
 //	public ExtendedIterator findReifiedNodes(TripleMatch t, CompletionFlag complete);
-	public ExtendedIterator findReifiedNodes(Triple t, CompletionFlag complete);
+	public ExtendedIterator<Node> findReifiedNodes(Triple t, CompletionFlag complete);
 
 
 	/**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.114 $
+ * Revision           $Revision: 1.115 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-22 15:10:44 $
+ * Last modified on   $Date: 2009-01-26 08:37:09 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -35,6 +35,7 @@ import com.hp.hpl.jena.enhanced.EnhNode;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.query.BindingQueryPlan;
+import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.Query;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
@@ -57,7 +58,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.114 2009-01-22 15:10:44 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.115 2009-01-26 08:37:09 chris-dollin Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -78,7 +79,7 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     /** Found from {@link owlSyntaxCheckerClassName}, must implement
      * {@link OWLSyntaxChecker}. */
-    static private Class owlSyntaxCheckerClass;
+    static private Class<?> owlSyntaxCheckerClass;
 
     // Instance variables
     //////////////////////////////////
@@ -87,7 +88,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     protected OntModelSpec m_spec;
 
     /** List of URI strings of documents that have been imported into this one */
-    protected Set m_imported = new HashSet();
+    protected Set<String> m_imported = new HashSet<String>();
 
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
@@ -203,7 +204,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over ontology resources.
      */
-    public ExtendedIterator listOntologies() {
+    public ExtendedIterator<Ontology> listOntologies() {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().ONTOLOGY(), Ontology.class ) );
@@ -235,8 +236,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over property resources.
      */
-    public ExtendedIterator listOntProperties() {
-        ExtendedIterator i = UniqueExtendedIterator.create(
+    public ExtendedIterator<OntProperty> listOntProperties() {
+        ExtendedIterator<OntProperty> i = UniqueExtendedIterator.create(
                                 findByTypeAs( RDF.Property, OntProperty.class ) );
 
         // if we are in OWL_FULL, the properties should also include the annotation properties
@@ -262,8 +263,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * whether a reasoner is available to perform <code>rdf:type</code> entailments.
      * Each property will appear exactly once in the iterator.
      */
-    public ExtendedIterator listAllOntProperties() {
-        ExtendedIterator i = findByTypeAs( RDF.Property, OntProperty.class )
+    public ExtendedIterator<OntProperty> listAllOntProperties() {
+        ExtendedIterator<OntProperty> i = findByTypeAs( RDF.Property, OntProperty.class )
                                                    .andThen( listObjectProperties() )
                                                    .andThen( listDatatypeProperties() )
                                                    .andThen( listAnnotationProperties() )
@@ -295,7 +296,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over object property resources.
      */
-    public ExtendedIterator listObjectProperties() {
+    public ExtendedIterator<ObjectProperty> listObjectProperties() {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class ) );
@@ -322,7 +323,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over datatype property resources.
      */
-    public ExtendedIterator listDatatypeProperties() {
+    public ExtendedIterator<DatatypeProperty> listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class ) );
@@ -344,7 +345,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over functional property resources.
      */
-    public ExtendedIterator listFunctionalProperties() {
+    public ExtendedIterator<FunctionalProperty> listFunctionalProperties() {
         checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class ) );
@@ -364,7 +365,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over transitive property resources.
      */
-    public ExtendedIterator listTransitiveProperties() {
+    public ExtendedIterator<TransitiveProperty> listTransitiveProperties() {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class ) );
@@ -384,7 +385,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over symmetric property resources.
      */
-    public ExtendedIterator listSymmetricProperties() {
+    public ExtendedIterator<SymmetricProperty> listSymmetricProperties() {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class ) );
@@ -404,7 +405,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over inverse functional property resources.
      */
-    public ExtendedIterator listInverseFunctionalProperties() {
+    public ExtendedIterator<InverseFunctionalProperty> listInverseFunctionalProperties() {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class ) );
@@ -425,7 +426,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over Individuals.
      */
-    public ExtendedIterator listIndividuals() {
+    public ExtendedIterator<Individual> listIndividuals() {
         // since the reasoner implements some OWL full functionality for RDF compatability, we
         // have to decide which strategy to use for indentifying individuals depending on whether
         // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
@@ -471,7 +472,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over individual resources whose <code>rdf:type</code>
      * is <code>cls</code>.
      */
-    public ExtendedIterator listIndividuals( Resource cls ) {
+    public ExtendedIterator<Individual> listIndividuals( Resource cls ) {
         return UniqueExtendedIterator.create(
                 findByTypeAs( cls, Individual.class ) );
     }
@@ -493,7 +494,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over class description resources.
      */
-    public ExtendedIterator listClasses() {
+    public ExtendedIterator<OntClass> listClasses() {
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class ) );
     }
@@ -507,7 +508,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * as a direct super-class, or the classes which have no declared super-class.</p>
      * @return An iterator of the root classes in the local class hierarchy
      */
-    public ExtendedIterator listHierarchyRootClasses() {
+    public ExtendedIterator<OntClass> listHierarchyRootClasses() {
         // look for the shortcut of using direct subClass on :Thing
         if (getReasoner() != null) {
             Model conf = getReasoner().getReasonerCapabilities();
@@ -522,15 +523,15 @@ public class OntModelImpl extends ModelCom implements OntModel
 
         // no easy shortcut, so we use brute force
         return listClasses()
-                 .filterDrop( new Filter() {
+                 .filterDrop( new Filter<OntClass>() {
                      @Override
-                    public boolean accept( Object o ) {
+                    public boolean accept( OntClass o ) {
                          return ((OntResource) o).isOntLanguageTerm();
                      }} )
-                 .filterKeep( new Filter() {
+                 .filterKeep( new Filter<OntClass>() {
                      @Override
-                    public boolean accept( Object o ) {
-                         return ((OntClass) o).isHierarchyRoot();
+                    public boolean accept( OntClass o ) {
+                         return o.isHierarchyRoot();
                      }} )
                     ;
     }
@@ -551,7 +552,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over enumerated class resources.
      * @see Profile#ONE_OF
      */
-    public ExtendedIterator listEnumeratedClasses()  {
+    public ExtendedIterator<EnumeratedClass> listEnumeratedClasses()  {
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         return UniqueExtendedIterator.create(
             findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class ) );
@@ -573,7 +574,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over union class resources.
      * @see Profile#UNION_OF
      */
-    public ExtendedIterator listUnionClasses() {
+    public ExtendedIterator<UnionClass> listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
         return UniqueExtendedIterator.create(
             findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) );
@@ -595,7 +596,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over complement class resources.
      * @see Profile#COMPLEMENT_OF
      */
-    public ExtendedIterator listComplementClasses() {
+    public ExtendedIterator<ComplementClass> listComplementClasses() {
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         return UniqueExtendedIterator.create(
             findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class ) );
@@ -617,7 +618,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over complement class resources.
      * @see Profile#INTERSECTION_OF
      */
-    public ExtendedIterator listIntersectionClasses() {
+    public ExtendedIterator<IntersectionClass> listIntersectionClasses() {
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         return UniqueExtendedIterator.create(
             findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class ) );
@@ -638,12 +639,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over named class resources.
      */
-    public ExtendedIterator listNamedClasses() {
+    public ExtendedIterator<OntClass> listNamedClasses() {
         return listClasses().filterDrop(
-            new Filter() {
+            new Filter<OntClass>() {
                 @Override
-                public boolean accept( Object x ) {
-                    return ((Resource) x).isAnon();
+                public boolean accept( OntClass x ) {
+                    return x.isAnon();
                 }
             }
         );
@@ -665,7 +666,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over restriction class resources.
      * @see Profile#RESTRICTION
      */
-    public ExtendedIterator listRestrictions() {
+    public ExtendedIterator<Restriction> listRestrictions() {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().RESTRICTION(), Restriction.class ) );
@@ -685,7 +686,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over AllDifferent nodes.
      */
-    public ExtendedIterator listAllDifferent() {
+    public ExtendedIterator<AllDifferent> listAllDifferent() {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class ) );
@@ -696,7 +697,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * are any.</p>
      * @return An iterator, whose values are {@link DataRange} objects.
      */
-    public ExtendedIterator listDataRanges() {
+    public ExtendedIterator<DataRange> listDataRanges() {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
         return UniqueExtendedIterator.create(
                 findByTypeAs( getProfile().DATARANGE(), DataRange.class ) );
@@ -718,12 +719,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over annotation properties.
      * @see Profile#getAnnotationProperties()
      */
-    public ExtendedIterator listAnnotationProperties() {
+    public ExtendedIterator<AnnotationProperty> listAnnotationProperties() {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         Resource r = getProfile().ANNOTATION_PROPERTY();
 
         if (r == null) {
-            return NullIterator.instance;
+            return new NullIterator<AnnotationProperty>();
         }
         else {
             return UniqueExtendedIterator.create(
@@ -1946,7 +1947,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public Set listImportedOntologyURIs() {
+    public Set<String> listImportedOntologyURIs() {
         return listImportedOntologyURIs( false );
     }
 
@@ -1965,13 +1966,13 @@ public class OntModelImpl extends ModelCom implements OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public Set listImportedOntologyURIs( boolean closure ) {
-        Set results = new HashSet();
-        List queue = new ArrayList();
+    public Set<String> listImportedOntologyURIs( boolean closure ) {
+        Set<String> results = new HashSet<String>();
+        List<Model> queue = new ArrayList<Model>();
         queue.add( getBaseModel() );
 
         while (!queue.isEmpty()) {
-            Model m = (Model) queue.remove( 0 );
+            Model m = queue.remove( 0 );
 
             // list the ontology nodes
             if (getProfile().ONTOLOGY() != null  &&  getProfile().IMPORTS() != null) {
@@ -2210,7 +2211,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return A list of sub graphs for this ontology model
      */
-    public List getSubGraphs() {
+    public List<Graph> getSubGraphs() {
         return getUnionGraph().getSubGraphs();
     }
 
@@ -2230,7 +2231,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @see #listSubModels(boolean)
      */
     @Deprecated
-    public ExtendedIterator listImportedModels() {
+    public ExtendedIterator<OntModel> listImportedModels() {
         return listSubModels( true );
     }
 
@@ -2258,12 +2259,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing a sub-model of this ontology.
      */
-    public ExtendedIterator listSubModels( final boolean withImports ) {
-        ExtendedIterator i = WrappedIterator.create( getSubGraphs().iterator() );
+    public ExtendedIterator<OntModel> listSubModels( final boolean withImports ) {
+        ExtendedIterator<Graph> i = WrappedIterator.create( getSubGraphs().iterator() );
 
-        return i.mapWith( new Map1() {
-                    public Object map1( Object o ) {
-                        Model base = ModelFactory.createModelForGraph( (Graph) o );
+        return i.mapWith( new Map1<Graph, OntModel>() {
+                    public OntModel map1( Graph o ) {
+                        Model base = ModelFactory.createModelForGraph( o );
                         OntModel om = new OntModelImpl( m_spec, base, withImports );
                         return om;
                     }} );
@@ -2287,7 +2288,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * representing a sub-model of this ontology.
      * @see #listSubModels(boolean)
      */
-    public ExtendedIterator listSubModels() {
+    public ExtendedIterator<OntModel> listSubModels() {
         return listSubModels( false );
     }
 
@@ -2299,7 +2300,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public int countSubModels() {
         int count = 0;
-        for (Iterator i = getSubGraphs().iterator(); i.hasNext(); ) {
+        for (Iterator<Graph> i = getSubGraphs().iterator(); i.hasNext(); ) {
             count++;
             i.next();
         }
@@ -2574,12 +2575,12 @@ public class OntModelImpl extends ModelCom implements OntModel
         GetBinding firstBinding  = new GetBinding( 0 );
 
         // get the results from the main query
-        ExtendedIterator mainQuery = query.executeBindings().mapWith( firstBinding );
+        ExtendedIterator<Node> mainQuery = query.executeBindings().mapWith( firstBinding );
 
         // now add the alternate queries, if defined
         if (altQueries != null) {
             for (Iterator i = altQueries.iterator();  i.hasNext();  ) {
-                ExtendedIterator altQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
+                ExtendedIterator<Node> altQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
                 mainQuery = mainQuery.andThen( altQuery );
             }
         }
@@ -2728,7 +2729,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         if (getGraph() instanceof InfGraph) {
-            Iterator iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
+            Iterator iter = getInfGraph().find( asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
             return IteratorFactory.asStmtIterator(iter,this);
         }
         else {
@@ -2804,7 +2805,7 @@ public class OntModelImpl extends ModelCom implements OntModel
 
 
     /** Answer the resource with the given URI, if present, as the given facet */
-    protected Resource findByURIAs( String uri, Class asKey ) {
+    protected <T> Resource findByURIAs( String uri, Class<T> asKey ) {
         if (uri == null) {
             throw new IllegalArgumentException( "Cannot get() ontology value with a null URI" );
         }
@@ -2833,7 +2834,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * want to match
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
-    protected ExtendedIterator findByType( Resource type ) {
+    protected ExtendedIterator<Triple> findByType( Resource type ) {
         return getGraph().find( null, RDF.type.asNode(), type.asNode() );
     }
 
@@ -2850,16 +2851,14 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over all triples <code>_x rdf:type t</code> where t
      * is <code>type</code> or one of the values from <code>types</code>.
      */
-    protected ExtendedIterator findByType( Resource type, Iterator alternates ) {
-        ExtendedIterator i = findByType( type );
-
+    protected ExtendedIterator<Triple> findByType( Resource type, Iterator<Resource> alternates ) {
+        ExtendedIterator<Triple> i = findByType( type );
         // compose onto i the find iterators for the alternate types
         if (alternates != null) {
             while (alternates.hasNext()) {
-                i = i.andThen( findByType( (Resource) alternates.next() ) );
+                i = i.andThen( findByType( alternates.next() ) );
             }
         }
-
         return UniqueExtendedIterator.create( i );
     }
 
@@ -2877,10 +2876,9 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey The value to use to present the polymorphic results
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
-    protected ExtendedIterator findByTypeAs( Resource type, Iterator types, Class asKey ) {
-        return findByType( type, types ).mapWith( new SubjectNodeAs( asKey ) );
+    protected <T> ExtendedIterator<T> findByTypeAs( Resource type, Iterator<Resource> types, Class<T> asKey ) {
+        return findByType( type, types ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
     }
-
 
     /**
      * <p>
@@ -2894,8 +2892,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey The value to use to present the polymorphic results
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
-    protected ExtendedIterator findByTypeAs( Iterator types, Class asKey ) {
-        return findByTypeAs( (Resource) types.next(), types, asKey );
+    protected <T> ExtendedIterator<T> findByTypeAs( Iterator<Resource> types, Class<T> asKey ) {
+        return findByTypeAs( types.next(), types, asKey );
     }
 
 
@@ -2911,8 +2909,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over subjects with the given type, presenting as
      * the given polymorphic class.
      */
-    protected ExtendedIterator findByTypeAs( Resource type, Class asKey ) {
-        return findByType( type ).mapWith( new SubjectNodeAs( asKey ) );
+    protected <T> ExtendedIterator<T> findByTypeAs( Resource type, Class<T> asKey ) {
+        return findByType( type ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
     }
 
 
@@ -2948,7 +2946,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param p A property
      * @return ExtendedIterator over subjects of p.
      */
-    protected ExtendedIterator findByDefiningProperty( Property p ) {
+    protected ExtendedIterator<Triple> findByDefiningProperty( Property p ) {
         return getGraph().find( null, p.asNode(), null );
     }
 
@@ -2963,8 +2961,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey A facet type
      * @return ExtendedIterator over subjects of p, presented as the facet.
      */
-    protected ExtendedIterator findByDefiningPropertyAs( Property p, Class asKey ) {
-        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs( asKey ) );
+    protected <T> ExtendedIterator<T> findByDefiningPropertyAs( Property p, Class<T> asKey ) {
+        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
     }
 
 
@@ -3082,27 +3080,27 @@ public class OntModelImpl extends ModelCom implements OntModel
     //==============================================================================
 
     /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
-    protected class SubjectNodeAs implements Map1
+    protected class SubjectNodeAs<From, To> implements Map1<From, To>
     {
-        protected Class m_asKey;
+        protected Class<To> m_asKey;
 
-        protected SubjectNodeAs( Class asKey ) { m_asKey = asKey; }
+        protected SubjectNodeAs( Class<To> asKey ) { m_asKey = asKey; }
 
-        public Object map1( Object x ) {
+        public To map1( From x ) {
 //            Triple t = (Triple) x;
             Node n = (x instanceof Triple)
                          ? ((Triple) x).getSubject()
                          : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);
-            return getNodeAs( n, m_asKey );
+            return (To) getNodeAs( n, m_asKey );
         }
 
     }
 
     /** Filter that accepts nodes that can be mapped to the given facet */
-    protected class SubjectNodeCanAs extends Filter
+    protected class SubjectNodeCanAs<T> extends Filter<T>
     {
-        protected Class m_asKey;
-        protected SubjectNodeCanAs( Class asKey ) { m_asKey = asKey; }
+        protected Class<T> m_asKey;
+        protected SubjectNodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
         public boolean accept( Object x ) {
@@ -3115,18 +3113,16 @@ public class OntModelImpl extends ModelCom implements OntModel
             catch (Exception ignore) {
                 return false;
             }
-
             return true;
         }
-
     }
 
     /** Project out the first element of a list of bindings */
-    protected class GetBinding implements Map1
+    protected class GetBinding implements Map1<Domain, Node>
     {
         protected int m_index;
         protected GetBinding( int index ) { m_index = index; }
-        public Object map1( Object x )    { return ((List) x).get( m_index );  }
+        public Node map1( Domain x ) { return x.get( m_index );  }
     }
 
     /** Function to test the rdf type of a list */

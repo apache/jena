@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedIterator.java,v 1.10 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: ExtendedIterator.java,v 1.11 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -23,52 +23,52 @@ import java.util.*;
      @author kers 
 */
 
-public interface ExtendedIterator extends ClosableIterator
+public interface ExtendedIterator<T> extends ClosableIterator<T>
     {
     /**
          Answer the next object, and remove it. Equivalent to next(); remove().
     */
-    public Object removeNext();
+    public T removeNext();
     
     /**
          return a new iterator which delivers all the elements of this iterator and
          then all the elements of the other iterator. Does not copy either iterator;
          they are consumed as the result iterator is consumed.
      */
-     public ExtendedIterator andThen( ClosableIterator other );
+     public ExtendedIterator<T> andThen( ClosableIterator<? extends T> other );
 
      /**
          return a new iterator containing only the elements of _this_ which
          pass the filter _f_. The order of the elements is preserved. Does not
          copy _this_, which is consumed as the result is consumed.
      */
-     public ExtendedIterator filterKeep( Filter f );
+     public ExtendedIterator<T> filterKeep( Filter<T> f );
 
      /**
          return a new iterator containing only the elements of _this_ which
          are rejected by the filter _f_. The order of the elements is preserved.
-         Does not copy _this_, which is consumed as the reult is consumed.
+         Does not copy _this_, which is consumed as the result is consumed.
      */
-     public ExtendedIterator filterDrop( Filter f );
+     public ExtendedIterator<T> filterDrop( Filter<T> f );
 
      /**
          return a new iterator where each element is the result of applying
          _map1_ to the corresponding element of _this_. _this_ is not
          copied; it is consumed as the result is consumed.
      */
-     public ExtendedIterator mapWith( Map1 map1 );
+     public <U> ExtendedIterator<U> mapWith( Map1<T, U> map1 );
 
     /**
          Answer a list of the [remaining] elements of this iterator, in order,
          consuming this iterator.
     */
-    public List toList();
+    public List<T> toList();
 
     /**
         Answer a set of the [remaining] elements of this iterator, in order,
         consuming this iterator.
     */
-    public Set toSet();
+    public Set<T> toSet();
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: StmtIteratorImpl.java,v 1.15 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: StmtIteratorImpl.java,v 1.16 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,34 +14,32 @@ import java.util.Iterator;
 /** An implementation of StmtIterator.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2009-01-16 17:23:48 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2009-01-26 08:37:09 $' 
  */
 
 
-public class StmtIteratorImpl extends WrappedIterator implements StmtIterator
+public class StmtIteratorImpl extends WrappedIterator<Statement> implements StmtIterator
     {
     private Statement current;
     
-    public StmtIteratorImpl( Iterator iterator )
+    public StmtIteratorImpl( Iterator<Statement>iterator )
         { super( iterator ); }
 
     /**
         return *and remember* the next element. It must be remembered
         so that remove works whichever next-method is called.
     */
-    @Override
-    public Object next()
-        { return current = (Statement) super.next(); }
+    @Override public Statement next()
+        { return current = super.next(); }
         
-    @Override
-    public void remove()
+    @Override public void remove()
         {
         super.remove();
         current.remove();
         }
         
     public Statement nextStatement()
-        { return (Statement) next(); }
+        { return next(); }
     }
 
 /*

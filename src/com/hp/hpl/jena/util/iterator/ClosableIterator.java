@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ClosableIterator.java,v 1.12 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: ClosableIterator.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -21,10 +21,10 @@ import java.util.Iterator;
     Implementors are encouraged to dispose of resources as soon as is convenient.
  
     @author bwm
-    @version $Id: ClosableIterator.java,v 1.12 2008-12-28 19:32:08 andy_seaborne Exp $
+    @version $Id: ClosableIterator.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
  */
 
-public interface ClosableIterator extends Iterator 
+public interface ClosableIterator<T> extends Iterator<T> 
     {
     /** 
         Close the iterator. Other oeprations on this iterator may now throw an exception. A

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.31 2009-01-16 20:53:21 andy_seaborne Exp $
+  $Id: Triple.java,v 1.32 2009-01-26 08:37:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -32,6 +32,11 @@ public class Triple implements TripleMatch
 		pred = p;
 		obj = o;
         }
+	
+	/**
+	    A triple-iterator with no elements.
+	*/
+	public static final ExtendedIterator<Triple> None = new NiceIterator<Triple>();
 	
     /**
         return a human-readable string "subject @predicate object" describing the triple
@@ -68,14 +73,14 @@ public class Triple implements TripleMatch
     public Node getMatchSubject()
         { return anyToNull( subj ); }
     
-    public static final Map1 getSubject = new Map1() 
-        { public Object map1( Object t ) { return ((Triple) t).getSubject(); } };
+    public static final Map1<Triple, Node> getSubject = new Map1<Triple, Node>() 
+        { public Node map1( Triple t ) { return t.getSubject(); } };
         
-    public static final Map1 getPredicate = new Map1() 
-        { public Object map1( Object t ) { return ((Triple) t).getPredicate(); } };
+    public static final Map1<Triple, Node> getPredicate = new Map1<Triple, Node>() 
+        { public Node map1( Triple t ) { return t.getPredicate(); } };
         
-    public static final Map1 getObject = new Map1() 
-        { public Object map1( Object t ) { return ((Triple) t).getObject(); } };
+    public static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
+        { public Node map1( Triple t ) { return t.getObject(); } };
         
     public Node getMatchPredicate()
         { return anyToNull( pred ); }
