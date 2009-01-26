@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TransactionAbortedException.java,v 1.7 2008-12-28 19:32:08 andy_seaborne Exp $
+ 	$Id: TransactionAbortedException.java,v 1.8 2009-01-26 17:35:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -11,17 +11,13 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
     Exception used to report that a transaction was aborted when loading
     content into a model.
+    
     @author kers
 */
 public class TransactionAbortedException extends AssemblerException
-    {
-    protected final Resource root;
-    
+    {    
     public TransactionAbortedException( Resource root, Throwable t )
-        { 
-        super( root, makeMessage( root, t ), t ); 
-        this.root = root;
-        }
+        { super( root, makeMessage( root, t ), t ); }
 
     private static String makeMessage( Resource root, Throwable t )
         {

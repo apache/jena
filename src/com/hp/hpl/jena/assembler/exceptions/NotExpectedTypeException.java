@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: NotExpectedTypeException.java,v 1.3 2008-12-28 19:32:08 andy_seaborne Exp $
+ 	$Id: NotExpectedTypeException.java,v 1.4 2009-01-26 17:35:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -16,20 +16,20 @@ import com.hp.hpl.jena.rdf.model.Resource;
 */
 public class NotExpectedTypeException extends AssemblerException
     {
-    protected final Class expectedType;
-    protected final Class actualType;
+    protected final Class<?> expectedType;
+    protected final Class<?> actualType;
     
-    public NotExpectedTypeException( Resource root, Class expectedType, Class actualType )
+    public NotExpectedTypeException( Resource root, Class<?> expectedType, Class<?> actualType )
         {
         super( root, "expected class " + expectedType.getName() + ", but had class " + actualType.getName() );
         this.expectedType = expectedType;
         this.actualType = actualType;
         }
 
-    public Class getExpectedType()
+    public Class<?> getExpectedType()
         { return expectedType; }
 
-    public Class getActualType()
+    public Class<?> getActualType()
         { return actualType; }
     }
 

@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.23 2009-01-16 16:33:24 andy_seaborne Exp $
+	$Id: Statement.java,v 1.24 2009-01-26 17:35:35 chris-dollin Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2009-01-16 16:33:24 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.24 $ $Date: 2009-01-26 17:35:35 $
  */
 
 public interface Statement extends FrontsTriple
@@ -394,19 +394,19 @@ public interface Statement extends FrontsTriple
     */
     public static class Util
         {
-        public static final Map1 getSubject = new Map1() 
+        public static final Map1<Statement, Resource> getSubject = new Map1<Statement, Resource>() 
             {
-            public Object map1( Object o ) { return ((Statement) o).getSubject(); }
+            public Resource map1( Statement o ) { return o.getSubject(); }
             };
             
-        public static final Map1 getPredicate = new Map1() 
+        public static final Map1<Statement, Property> getPredicate = new Map1<Statement, Property>() 
             {
-            public Object map1( Object o ) { return ((Statement) o).getPredicate(); }
+            public Property map1( Statement o ) { return o.getPredicate(); }
             };
             
-        public static final Map1 getObject = new Map1() 
+        public static final Map1<Statement, RDFNode> getObject = new Map1<Statement, RDFNode>() 
             {
-            public Object map1( Object o ) { return ((Statement) o).getObject(); }
+            public RDFNode map1( Statement o ) { return o.getObject(); }
             };
         }
 }

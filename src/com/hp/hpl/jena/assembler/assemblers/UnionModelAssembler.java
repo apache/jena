@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnionModelAssembler.java,v 1.10 2009-01-26 15:24:34 andy_seaborne Exp $
+ 	$Id: UnionModelAssembler.java,v 1.11 2009-01-26 17:35:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -18,7 +18,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
     private static final Graph immutable = new GraphBase() 
         {
         @Override
-        protected ExtendedIterator graphBaseFind( TripleMatch m )
+        protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
             { return NullIterator.instance(); }
         };
     
