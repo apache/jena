@@ -64,6 +64,8 @@ public class Run
     }
     
     
+    
+    
     private static void checkOp(Op op, boolean optimizeAlgebra, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
@@ -105,14 +107,9 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
         execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
-        
-        
         {
         String x1 = "SELECT  (count(?x) AS ?countX) {}" ;
         String x2 = "SELECT  (1+2 AS ?countX) {}" ;
-        
-        
-        
         
 //        String y = "(project (?countX)\n"+
 //                    "(assign ((?countX ?.0))\n"+
