@@ -777,7 +777,7 @@ Triple
     o Added Field class, which gives three constants (getSubject, getObject,
       Predicate) which have a getField(Triple) method to extract that field.
       Fields also have filterOn() methods to create filters over nodes and
-      fields of triples; filtering over ANY nodes delivers Filter.any, which
+      fields of triples; filtering over ANY nodes delivers any(), which
       composes cheaply.
 
 Filters & Iterators
@@ -801,7 +801,7 @@ Filters & Iterators
       which filters the iterator in the same way as ExtendedIterator's
       filterKeep operation does.
 
-    o Filter.any has fast implementations for these operations, allowing
+    o any() has fast implementations for these operations, allowing
       it to be used as a fairly cheap identity element.
 
 ModelSpecs

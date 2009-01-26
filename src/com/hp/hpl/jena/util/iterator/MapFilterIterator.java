@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MapFilterIterator.java,v 1.9 2009-01-16 17:23:58 andy_seaborne Exp $
+  $Id: MapFilterIterator.java,v 1.10 2009-01-26 16:02:45 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -15,18 +15,18 @@ import java.util.*;
     @author kers
 */
 
-public class MapFilterIterator extends NiceIterator implements ExtendedIterator
+public class MapFilterIterator<T,X> extends NiceIterator<X> implements ExtendedIterator<X>
     {
-    MapFilter f;
-    Object current;
+    MapFilter<T,X> f;
+    X current;
     boolean dead;
-    ClosableIterator underlying;
+    ClosableIterator<T> underlying;
     
 /** Creates a sub-Iterator.
  * @param fl An object is included if it is accepted by this Filter.
  * @param e The parent Iterator.
  */        
-    public MapFilterIterator( MapFilter fl, ExtendedIterator e) {
+    public MapFilterIterator( MapFilter<T,X> fl, ExtendedIterator<T> e) {
         f = fl;
         current = null;
         dead = false;
@@ -72,9 +72,9 @@ public class MapFilterIterator extends NiceIterator implements ExtendedIterator
  * @return The next acceptable object.
  */        
     @Override
-    synchronized public Object next() {
+    synchronized public X next() {
         if (hasNext()) {
-            Object r = current;
+            X r = current;
             current = null;
             return r;
         }
