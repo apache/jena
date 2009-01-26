@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:25 $
+ * Last modified on   $Date: 2009-01-26 12:10:26 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -27,14 +27,12 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
-
-
 /**
  * An extension to a standard map that supports one-to-many mappings: that is, there
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.19 2009-01-26 10:28:25 chris-dollin Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.20 2009-01-26 12:10:26 chris-dollin Exp $
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {
@@ -112,17 +110,10 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @return True if the value is in the map
      */
     public boolean containsValue( Object value ) {
-        for (Iterator values = m_table.values().iterator();  values.hasNext(); ) {
-            Object x = values.next();
-
-            if (x.equals( value )) {
-                return true;
-            }
-            else if (x instanceof List && ((List) x).contains( value )) {
-                return true;
-            }
+        for (Iterator<List<To>> values = m_table.values().iterator();  values.hasNext(); ) {
+            List<To> x = values.next();
+            if (x.contains( value )) return true;
         }
-
         return false;
     }
 
@@ -136,10 +127,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * as one of its values in this mapping
      */
     public boolean contains( Object key, Object value ) {
-        for (Iterator i = getAll( key ); i.hasNext(); ) {
-            if (i.next().equals( value )) {
-                return true;
-            }
+        for (Iterator<To> i = getAll( key ); i.hasNext(); ) {
+            if (i.next().equals( value )) return true;
         }
         return false;
     }
@@ -154,12 +143,12 @@ public class OneToManyMap<From, To> implements Map<From, To>
     public Set entrySet() {
         Set s = CollectionFactory.createHashedSet();
 
-        for (Iterator e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
-            Object key = e0.next();
-            List values = m_table.get( key );
+        for (Iterator<From> e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
+            From key = e0.next();
+            List<To> values = m_table.get( key );
 
             // add each key-value pair to the result set
-            for (ListIterator e1 = values.listIterator();  e1.hasNext(); ) {
+            for (ListIterator<To> e1 = values.listIterator();  e1.hasNext(); ) {
                 s.add( new Entry( key, e1.next() ) );
             }
         }
@@ -261,7 +250,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @return The keys of the map as a Set
      */
-    public Set keySet() {
+    public Set<From> keySet() {
         return m_table.keySet();
     }
 
@@ -277,13 +266,11 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @return Null.
      */
     public To put( From key, To value ) {
-        ArrayList entries = (ArrayList) m_table.get( key );
-        entries = entries == null ? new ArrayList() : entries;
-
+        List<To> entries = m_table.get( key );
+        if (entries == null) entries = new ArrayList<To>();
         // add the new value to the list of values held against this key
         entries.add( value );
         m_table.put( key, entries );
-
         return null;
     }
 
@@ -354,11 +341,9 @@ public class OneToManyMap<From, To> implements Map<From, To>
      */
     public int size() {
         int size = 0;
-
-        for (Iterator i = m_table.keySet().iterator();  i.hasNext();  ) {
-            size += ((List) m_table.get( i.next() )).size();
+        for (Iterator<From> i = m_table.keySet().iterator();  i.hasNext();  ) {
+            size += m_table.get( i.next() ).size();
         }
-
         return size;
     }
 
@@ -369,13 +354,11 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * for multiple keys are suppressed.</p>
      * @return A set of the values contained in this map.
      */
-    public Collection values() {
-        Set s = CollectionFactory.createHashedSet();
-
-        for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
+    public Collection<To> values() {
+        Set<To> s = CollectionFactory.createHashedSet();
+        for (Iterator<From> e = m_table.keySet().iterator();  e.hasNext();  ) {
             s.addAll( m_table.get(e.next()) );
         }
-
         return s;
     }
 
@@ -388,14 +371,14 @@ public class OneToManyMap<From, To> implements Map<From, To>
         StringBuffer buf = new StringBuffer( "OneToManyMap{" );
         String sep = "";
         
-        for (Iterator i = keySet().iterator(); i.hasNext(); ) {
+        for (Iterator<From> i = keySet().iterator(); i.hasNext(); ) {
             Object key = i.next();
             buf.append( sep );
             buf.append( key );
             buf.append( "={" );
             
             String sep1 = "";
-            for (Iterator j = getAll(key); j.hasNext(); ) {
+            for (Iterator<To> j = getAll(key); j.hasNext(); ) {
                 buf.append( sep1 );
                 buf.append( j.next() );
                 sep1=",";
