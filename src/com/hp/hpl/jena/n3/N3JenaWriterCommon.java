@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.48 2009-01-17 22:01:20 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.49 2009-01-26 15:24:28 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -298,18 +298,18 @@ public class N3JenaWriterCommon implements RDFWriter
         // Does not take effect until newline.
         out.incIndent(indentProperty) ;
         writeSubject(subject);
-        ClosableIterator iter = preparePropertiesForSubject(subject);
+        ClosableIterator<Property> iter = preparePropertiesForSubject(subject);
         writePropertiesForSubject(subject, iter) ;
         out.decIndent(indentProperty) ; 
         out.println(" .");
     }
 
-    protected void writePropertiesForSubject(Resource subj, ClosableIterator iter)
+    protected void writePropertiesForSubject(Resource subj, ClosableIterator<Property> iter)
     {
         // For each property.
         for (; iter.hasNext();)
         {
-            Property property = (Property) iter.next();
+            Property property = iter.next();
 
             // Object list
             writeObjectList(subj, property);
@@ -461,7 +461,7 @@ public class N3JenaWriterCommon implements RDFWriter
         out.print(formatLiteral(literal)) ;
     }
     
-    protected ClosableIterator preparePropertiesForSubject(Resource r)
+    protected ClosableIterator<Property> preparePropertiesForSubject(Resource r)
     {
         // Properties to do.
         Set<Property> properties = new HashSet<Property>() ;

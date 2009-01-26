@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.76 $ on $Date: 2009-01-17 14:40:18 $
+* @version $Revision: 1.77 $ on $Date: 2009-01-26 15:24:27 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -670,7 +670,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		String[] lsetTypes = {m_lsetClassName, m_lsetReifierClassName};
 		int i;
 		for(i=0;i<2;i++) {
-		    @SuppressWarnings("unchecked")
 		    Iterator<DBPropLSet> it = graphProperties.getAllLSets();
 			while(it.hasNext() ) {
 				DBPropLSet lSetProps = it.next();
@@ -767,7 +766,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		if ( graphId != DEFAULT_ID ) {
 			stInUse = false;
 			rtInUse = false;
-			@SuppressWarnings("unchecked")
 			Iterator<DBPropGraph> it =  m_dbProps.getAllGraphs();
 			while ( it.hasNext() ) {
 				DBPropGraph gp = it.next();

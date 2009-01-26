@@ -45,9 +45,9 @@ public abstract class TestFactoryManifest implements ManifestItemHandler
             ts1.setName("Unnamed Manifest") ; 
 
         // Recurse
-        for (Iterator iter = m.includedManifests() ; iter.hasNext() ; )
+        for (Iterator <String>iter = m.includedManifests() ; iter.hasNext() ; )
         {
-            String n = (String)iter.next() ;
+            String n = iter.next() ;
             TestSuite ts2 = oneManifest(n) ;
             currentTestSuite = ts2 ;
             ts1.addTest(ts2) ;

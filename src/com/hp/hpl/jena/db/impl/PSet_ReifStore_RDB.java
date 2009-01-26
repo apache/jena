@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.32 $ on $Date: 2009-01-17 14:40:18 $
+* @version $Revision: 1.33 $ on $Date: 2009-01-26 15:24:27 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -227,11 +227,11 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	 * need to do distinct here since we only return nodes for reified statments.
 	 */
 	
-	public ExtendedIterator findReifStmtURIByTriple(Triple t, IDBID my_GID) {
+	public ExtendedIterator<Node> findReifStmtURIByTriple(Triple t, IDBID my_GID) {
 		String stmtStr = null;
 		int argc = 1;
 		PreparedStatement ps = null;
-		ResultSetIterator result = new ResultSetNodeIterator();
+		ResultSetStringIterator result = new ResultSetStringIterator();
 		boolean notFound = false;
 
 		stmtStr = "selectReifNode";
@@ -275,66 +275,65 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		return result.mapWith(new MapResultSetToNode());
 	}
 	
-	private class MapResultSetToNode implements Map1 {
+	private class MapResultSetToNode implements Map1<List<String>,Node> {
 
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.util.iterator.Map1#map1(java.lang.Object)
 		 */
-		public Object map1(Object o) {
-			List<?> l = (List<?>) o;
-            String s = null;
-            Object n = l.get(0);
-            if ( (n instanceof String) || (n instanceof Byte) )
-            		s = (String) n;
-			else 
-                throw new JenaException( "String required: " + l.get(0).getClass() + " " + l.get(0) );
-			Node r = m_driver.RDBStringToNode(s);
+		public Node map1(List<String> l) {
+//            String s = null;
+            String n = l.get(0);
+//            if ( (n instanceof String) || (n instanceof Byte) )
+//            		s = (String) n; **************
+//			else 
+//                throw new JenaException( "String required: " + l.get(0).getClass() + " " + l.get(0) );
+			Node r = m_driver.RDBStringToNode(n);
 			return r;
 		}
 		
 	}
 
-	/* (non-Javadoc)
-		*  return (distinct) nodes which reify something (have any fragment)
-		*/
-
-	public ExtendedIterator findReifNodes(Node stmtURI, IDBID graphID) {
-		String astName = getTblName();
-		int gid = graphID.getIntID() ;
-		ResultSetIterator result = new ResultSetNodeIterator();
-		int argc = 1;
-		PreparedStatement ps = null;
-		boolean notFound = false;
-
-		String stmtStr =
-			stmtURI == null ? "selectReifNode" : "selectReifNodeN";
-		try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
-
-			if (stmtURI != null) {
-				String stmt_uri = m_driver.nodeToRDBString(stmtURI,false);
-				if ( stmt_uri == null ) notFound = true;
-				else ps.setString(argc++, stmt_uri);
-			}
-
-			ps.setInt(argc, gid);
-
-		} catch (Exception e) {
-			notFound = true;
-			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
-            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
-		}
-
-		if ( notFound )
-			result.close();
-		else try {
-			result = m_sql.executeSQL(ps, stmtStr, result);
-		} catch (Exception e) {
-			logger.debug("find encountered exception ", e);
-            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
-		}
-		return result;
-	}
+//	/* (non-Javadoc)
+//		*  return (distinct) nodes which reify something (have any fragment)
+//		*/
+//
+//	public ExtendedIterator<Node> findReifNodes(Node stmtURI, IDBID graphID) {
+//		String astName = getTblName();
+//		int gid = graphID.getIntID() ;
+//		ResultSetIterator<Node> result = new ResultSetIterator<Node>();
+//		int argc = 1;
+//		PreparedStatement ps = null;
+//		boolean notFound = false;
+//
+//		String stmtStr =
+//			stmtURI == null ? "selectReifNode" : "selectReifNodeN";
+//		try {
+//			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
+//
+//			if (stmtURI != null) {
+//				String stmt_uri = m_driver.nodeToRDBString(stmtURI,false);
+//				if ( stmt_uri == null ) notFound = true;
+//				else ps.setString(argc++, stmt_uri);
+//			}
+//
+//			ps.setInt(argc, gid);
+//
+//		} catch (Exception e) {
+//			notFound = true;
+//			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+//            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
+//		}
+//
+//		if ( notFound )
+//			result.close();
+//		else try {
+//			result = m_sql.executeSQL(ps, stmtStr, result);
+//		} catch (Exception e) {
+//			logger.debug("find encountered exception ", e);
+//            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
+//		}
+//		return result;
+//	}
 
 	public void storeFrag(
 		Node stmtURI,

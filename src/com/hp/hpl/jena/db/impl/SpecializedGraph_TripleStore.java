@@ -80,8 +80,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
      */
     public void add(Graph g, CompletionFlag complete) {
-    	ExtendedIterator it = GraphUtil.findAll( g );
-    	while (it.hasNext()) add( (Triple)it.next(), complete );
+    	ExtendedIterator<Triple> it = GraphUtil.findAll( g );
+    	while (it.hasNext()) add( it.next(), complete );
 		complete.setDone();
     }
     
@@ -137,7 +137,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
+	public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
 		complete.setDone();
 		return m_pset.find(t, my_GID);
 		}

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.17 $
+* @version $Revision: 1.18 $
 */
 
 public interface IPSet {
@@ -118,8 +118,7 @@ public interface IPSet {
 	 * @param graphID of the graph to search
 	 * @return ExtendedIterator holding results
 	 */
-	public ExtendedIterator find(TripleMatch t, 
-	IDBID graphID);
+	public ExtendedIterator<Triple>  find(TripleMatch t, IDBID graphID);
 	
 	/**
 	 * Return a count of the rows in a given table

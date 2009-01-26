@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -102,40 +102,39 @@ public class DBPropDatabase extends DBProp {
 
 	public void removeGraph( DBPropGraph g ) {
 		SpecializedGraph.CompletionFlag complete = newComplete();
-		ClosableIterator matches = graph.find( self, dbGraph, g.getNode(), complete);
+		ClosableIterator<Triple> matches = graph.find( self, dbGraph, g.getNode(), complete);
 		if( matches.hasNext() ) {
-			graph.delete( (Triple)(matches.next()), complete );
+			graph.delete(matches.next(), complete );
 			g.remove();
             matches.close();
 		}
 	}
 	
-	public ExtendedIterator getAllGraphs() {
+	public ExtendedIterator<DBPropGraph> getAllGraphs() {
 		return 
             graph.find( self, dbGraph, null, newComplete() ) 
             .mapWith( new MapToLSet() );
 	}
 	
-	public ExtendedIterator getAllGraphNames() {
+	public ExtendedIterator<String> getAllGraphNames() {
         return getAllGraphs() .mapWith( graphToName ); 
 	}
 
-    static final Map1 graphToName = new Map1() 
-        { public Object map1( Object o)  { return ((DBPropGraph) o).getName(); } };
+    static final Map1<DBPropGraph,String> graphToName = new Map1<DBPropGraph,String>() 
+        { public String map1( DBPropGraph o)  { return o.getName(); } };
 
-	private class MapToLSet implements Map1 {
-		public Object map1( Object o) {
-			Triple t = (Triple) o;
+	private class MapToLSet implements Map1<Triple,DBPropGraph> {
+		public DBPropGraph map1( Triple t) {
 			return new DBPropGraph( graph, t.getObject() );			
 		}
 	}
     
 	static Node findDBPropNode( SpecializedGraph g) {
 		Node res = null;
-		ClosableIterator matches = g.find( null, dbEngineType, null, newComplete() );
+		ClosableIterator<Triple> matches = g.find( null, dbEngineType, null, newComplete() );
 		if (matches.hasNext()) {
 			try {
-				res = ((Triple) matches.next()).getSubject();
+				res = matches.next().getSubject();
 				if (matches.hasNext())
 					res = null;
 				return res;
@@ -150,11 +149,11 @@ public class DBPropDatabase extends DBProp {
 		// similar to getPropString but doesn't match on the subject field.
 		// there should only be one instance of the db properties in the database.
 		// if zero or multiple instances of the property, return null.
-		ClosableIterator it = graph.find(null, predicate, null, newComplete());
+		ClosableIterator<Triple> it = graph.find(null, predicate, null, newComplete());
 		if (it.hasNext()) {
 			try {
 				String res = null;
-				Node obj = ((Triple) it.next()).getObject();
+				Node obj = it.next().getObject();
 				if (!it.hasNext())
 					res = obj.getLiteralLexicalForm();
 				return res;

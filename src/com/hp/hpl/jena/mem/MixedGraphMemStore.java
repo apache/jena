@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: MixedGraphMemStore.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: MixedGraphMemStore.java,v 1.8 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -63,7 +63,7 @@ public class MixedGraphMemStore
         {
         Set s = (Set) map.get( key );
         if (s == null)
-            return NullIterator.instance;
+            return NullIterator.instance();
         else
             {
             final Iterator it = s.iterator();
@@ -104,7 +104,7 @@ public class MixedGraphMemStore
         return new NiceIterator()
             {
             protected Iterator keys = map.keySet().iterator();
-            protected Iterator current = NullIterator.instance;
+            protected Iterator current = NullIterator.instance();
             protected Triple triple = null;
             protected Triple remember = null;
             protected Node key = null;

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.20 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.21 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -101,7 +101,7 @@ public abstract class NodeToTriplesMapBase
         // System.err.println( "*>> NTM:iterateAll: nodes = " + IteratorCollection.iteratorToList( domain() ) );
         return new NiceIterator() 
             {
-            private Iterator current = NullIterator.instance;
+            private Iterator current = NullIterator.instance();
             private NotifyMe emptier = new NotifyMe();
             
             // private Object cn = "(none)";

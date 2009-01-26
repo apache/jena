@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public abstract class DBProp {
 
@@ -81,8 +81,8 @@ public abstract class DBProp {
         graph, or null if there's no such n.
     */
     protected Node getPropNode( Node subject, Node predicate ) {
-        ClosableIterator it = graph.find( subject, predicate, Node.ANY, newComplete() );
-        Node result = it.hasNext() ? ((Triple) it.next()).getObject() : null;
+        ClosableIterator<Triple> it = graph.find( subject, predicate, Node.ANY, newComplete() );
+        Node result = it.hasNext() ? it.next().getObject() : null;
         it.close();
         return result;
     }               
@@ -97,8 +97,8 @@ public abstract class DBProp {
 	
 	protected void remove() {
 		SpecializedGraph.CompletionFlag complete = newComplete();
-		ClosableIterator it = graph.find( self, null, null, complete);
-		while( it.hasNext() ) graph.delete( (Triple) it.next(), complete );
+		ClosableIterator<Triple> it = graph.find( self, null, null, complete);
+		while( it.hasNext() ) graph.delete( it.next(), complete );
 		it.close();
 		self = null;
 		graph = null;
@@ -107,11 +107,11 @@ public abstract class DBProp {
     void showGraph()
         {
         SpecializedGraph.CompletionFlag complete = newComplete();
-        ExtendedIterator it = graph.find( self, null, null, complete );
+        ExtendedIterator<Triple> it = graph.find( self, null, null, complete );
         while (it.hasNext()) System.err.println( ">> " + it.next() );
         }
 	
-	public static ExtendedIterator listTriples( SpecializedGraph g, Node self ) {
+	public static ExtendedIterator<Triple> listTriples( SpecializedGraph g, Node self ) {
 		// Get all the triples about the requested node.
 		return g.find( self, null, null, newComplete() );
 	}

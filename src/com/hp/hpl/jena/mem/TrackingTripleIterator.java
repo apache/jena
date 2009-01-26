@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TrackingTripleIterator.java,v 1.9 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: TrackingTripleIterator.java,v 1.10 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -18,9 +18,9 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 	@author kers
 */
-public class TrackingTripleIterator extends WrappedIterator
+public class TrackingTripleIterator extends WrappedIterator<Triple>
     {
-    public TrackingTripleIterator( Iterator it ) 
+    public TrackingTripleIterator( Iterator<Triple> it ) 
         { super( it ); }    
     
     /**
@@ -33,8 +33,8 @@ public class TrackingTripleIterator extends WrappedIterator
      	@see java.util.Iterator#next()
     */
     @Override
-    public Object next()
-        { return current = (Triple) super.next(); }       
+    public Triple next()
+        { return current = super.next(); }       
     }
 
 /*

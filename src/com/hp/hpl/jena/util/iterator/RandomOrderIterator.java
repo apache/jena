@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RandomOrderIterator.java,v 1.8 2009-01-16 17:23:58 andy_seaborne Exp $
+  $Id: RandomOrderIterator.java,v 1.9 2009-01-26 15:24:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -14,7 +14,7 @@ import java.util.*;
  * @author jjc
  *
  */
-public class RandomOrderIterator extends WrappedIterator {
+public class RandomOrderIterator<T> extends WrappedIterator<T> {
 	private Random rnd = new Random();
     private Object buffer[];
     // one more than the index of the last non-null element.
@@ -22,7 +22,7 @@ public class RandomOrderIterator extends WrappedIterator {
 	/**
 	 * Wrap the base iterator, randomizing with a buffer of length sz.
 	 */
-	public RandomOrderIterator(int sz, Iterator base) {
+	public RandomOrderIterator(int sz, Iterator<T> base) {
 		super(base);
 		buffer = new Object[sz];
 		top = 0;
@@ -33,14 +33,16 @@ public class RandomOrderIterator extends WrappedIterator {
     public boolean hasNext() {
 		return top > 0;
 	}
-	@Override
-    public Object next() {
+    @Override
+    public T next() {
 		int ix = rnd.nextInt(top);
 		Object rslt = buffer[ix];
 		top--;
 		buffer[ix] = buffer[top];
 		fill();
-		return rslt;
+	    @SuppressWarnings("unchecked")
+	    T obj = (T)rslt;
+	    return obj ;
 	}
 	
 	@Override

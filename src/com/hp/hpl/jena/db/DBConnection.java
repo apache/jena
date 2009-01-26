@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.*;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.21 $
+* @version $Revision: 1.22 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -172,13 +172,13 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getAllModelNames()
 	 */
-	public ExtendedIterator getAllModelNames() throws RDFRDBException {
+	public ExtendedIterator<String> getAllModelNames() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		SpecializedGraph sg = m_driver.getSystemSpecializedGraph(false);
-		ExtendedIterator it;
+		ExtendedIterator<String> it;
 		if ( sg == null )
-			it = new ResultSetIterator();
+			it = NullIterator.instance() ;
 		else {
 			DBPropDatabase dbprops = new DBPropDatabase(sg);
 			it = dbprops.getAllGraphNames();
@@ -218,9 +218,9 @@ public class DBConnection implements IDBConnection {
 	static void copySpecializedGraphToModel( SpecializedGraph fromGraph, Model toModel, TripleMatch filter) throws RDFRDBException {
 		Graph toGraph = toModel.getGraph();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		ExtendedIterator it = fromGraph.find( filter, complete);
+		ExtendedIterator<Triple> it = fromGraph.find( filter, complete);
 		while(it.hasNext())
-			toGraph.add((Triple)(it.next())); 
+			toGraph.add(it.next()); 
 		it.close();
 	}
 		

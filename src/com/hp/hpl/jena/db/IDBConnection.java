@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based on earlier code by der)
-* @version $Revision: 1.11 $ on $Date: 2009-01-22 10:34:57 $
+* @version $Revision: 1.12 $ on $Date: 2009-01-26 15:24:31 $
 */
 
 public interface IDBConnection {
@@ -172,7 +172,7 @@ public interface IDBConnection {
 	 * @throws RDFDBException
 	 * @since Jena 2.0
 	 */
-	public ExtendedIterator getAllModelNames() throws RDFRDBException;
+	public ExtendedIterator<String> getAllModelNames() throws RDFRDBException;
 
 	/**
 	 * Test if a given model is contained in the database.

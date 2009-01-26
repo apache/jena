@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
+ * Last modified on   $Date: 2009-01-26 15:24:28 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.17 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.18 2009-01-26 15:24:28 andy_seaborne Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -88,9 +88,9 @@ public abstract class CompositionBase
      * @param seen A set that will record each element of i in turn
      * @return An iterator that records the elements of i.
      */
-    public static ExtendedIterator recording( final ClosableIterator i, final Set seen )
+    public static <T> ExtendedIterator<T> recording( final ClosableIterator<T> i, final Set seen )
         {
-        return new NiceIterator()
+        return new NiceIterator<T>()
             {
             @Override
             public void remove()
@@ -101,8 +101,8 @@ public abstract class CompositionBase
                 { return i.hasNext(); }    
             
             @Override
-            public Object next()
-                { Object x = i.next(); 
+            public T next()
+                { T x = i.next(); 
                 try { seen.add( x ); } catch (OutOfMemoryError e) { throw e; } return x; }  
                 
             @Override

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.12 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: AbstractTestQuery1.java,v 1.13 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -459,7 +459,7 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
     private void checkCount( int expected, Graph g, Query q, Node [] results ) 
        {
        BindingQueryPlan plan = g.queryHandler().prepareBindings( q, results );
-       ExtendedIterator it = plan.executeBindings();
+       ExtendedIterator<Domain> it = plan.executeBindings();
        assertEquals( "number of reified statements", expected, queryResultCount( it ) ); 
        it.close();
 	   }
@@ -471,11 +471,11 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
      	@param it the iterator to run down
      	@return the number of elements in that iterator
      */
-    protected int queryResultCount( ExtendedIterator it ) {
+    protected static int queryResultCount( ExtendedIterator<Domain> it ) {
         int n = 0;
         while (it.hasNext()) {
             n++;
-            ((List<?>) it.next()).size();  // hedgehog asks, do we need to check this works?
+            it.next().size();  // hedgehog asks, do we need to check this works?
         }
         return n;
     }

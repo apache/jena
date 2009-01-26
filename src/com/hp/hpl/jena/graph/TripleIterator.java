@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleIterator.java,v 1.8 2008-12-28 19:32:03 andy_seaborne Exp $
+  $Id: TripleIterator.java,v 1.9 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     An extended iterator that can return its next element as a Triple.
  	@author kers
 */
-public interface TripleIterator extends ExtendedIterator
+public interface TripleIterator extends ExtendedIterator<Triple>
     {
     /**
         Answer the next() element cast to Triple.

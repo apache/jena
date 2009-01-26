@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.13 2008-12-28 19:32:04 andy_seaborne Exp $
+  $Id: TripleMatchIterator.java,v 1.14 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,11 +15,11 @@ import java.util.Iterator;
  	It used to take TripleMatch's, but those are obsolete.
  	@author  bwm, kers
 */
-public class TripleMatchIterator 
-    extends FilterKeepIterator
-    implements ExtendedIterator 
+public class TripleMatchIterator
+    extends FilterKeepIterator<Triple>
+    implements ExtendedIterator<Triple>
     {
-    public TripleMatchIterator( Triple m, Iterator iter ) 
+    public TripleMatchIterator( Triple m, Iterator<Triple> iter ) 
         { super( new TripleMatchFilter( m ), iter ); }
     }
 

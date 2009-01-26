@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -57,7 +57,6 @@ public class DBPropGraph extends DBProp {
 
 	    putPropString(graphName, newSymbolicName);
 	    // only copy user-configurable properties
-	    @SuppressWarnings("unchecked")
 	    Iterator<Triple> it = oldProperties.find( Node.ANY, Node.ANY, Node.ANY);
 	    while ( it.hasNext() ) {
 	        Triple t = it.next();
@@ -146,12 +145,12 @@ public class DBPropGraph extends DBProp {
     */
     public Node bnodeForPrefix( Node prefixNode )
         {
-        ExtendedIterator A = graph.find( self, graphPrefix, Node.ANY, newComplete() );
+        ExtendedIterator<Triple> A = graph.find( self, graphPrefix, Node.ANY, newComplete() );
         try
             {
             while (A.hasNext())
                 {
-                Node B = ((Triple) A.next()).getObject();
+                Node B = A.next().getObject();
                 if (graph.contains( Triple.create( B, DBPropPrefix.prefixValue, prefixNode ), newComplete() ) ) return B;
                 }
             return null;
@@ -199,40 +198,39 @@ public class DBPropGraph extends DBProp {
 		return i == null ? -1 : Integer.parseInt(i);
 	}	
 	
-	public ExtendedIterator getAllLSets() {
+	public ExtendedIterator<DBPropLSet> getAllLSets() {
 		return 
             graph.find( self, graphLSet, null, newComplete() )
              .mapWith ( new MapToLSet() );
 	}
 	
-	public ExtendedIterator getAllPrefixes() {
+	public ExtendedIterator<DBPropPrefix> getAllPrefixes() {
 		return 
             graph.find( self, graphPrefix, null, newComplete() )
             .mapWith ( new MapToPrefix() );
 	}
 	
-	public ExtendedIterator listTriples() {
+	public ExtendedIterator<Triple> listTriples() {
 		// First get all the triples that directly desrcribe this graph
-		ExtendedIterator result = DBProp.listTriples( graph, self );
+		ExtendedIterator<Triple> result = DBProp.listTriples( graph, self );
 		
 		// Now get all the triples that describe any lsets
-		ExtendedIterator lsets = getAllLSets();
+		ExtendedIterator<DBPropLSet> lsets = getAllLSets();
 		while( lsets.hasNext()) {
-			result = result.andThen( ((DBPropLSet)lsets.next()).listTriples() );
+			result = result.andThen( lsets.next().listTriples() );
 		}
 
 		// Now get all the triples that describe any prefixes
-		ExtendedIterator prefixes = getAllPrefixes();
+		ExtendedIterator<DBPropPrefix> prefixes = getAllPrefixes();
 		while( prefixes.hasNext()) {
-			result = result.andThen( ((DBPropPrefix)prefixes.next()).listTriples() );
+			result = result.andThen( prefixes.next().listTriples() );
 		}
 		return result;
 	}
 	
 	
-	private class MapToLSet implements Map1 {
-		public Object map1( Object o) {
-			Triple t = (Triple) o;
+	private class MapToLSet implements Map1<Triple, DBPropLSet> {
+		public DBPropLSet map1( Triple t) {
 			return new DBPropLSet( graph, t.getObject() );			
 		}
 	}
@@ -240,20 +238,19 @@ public class DBPropGraph extends DBProp {
     /**
         @author kers
      */
-	private class MapToPrefix implements Map1 {
-		public Object map1( Object o) {
-			Triple t = (Triple) o;
+	private class MapToPrefix implements Map1<Triple,DBPropPrefix> {
+		public DBPropPrefix map1(Triple t) {
 			return new DBPropPrefix( graph, t.getObject() );			
 		}
 	}
 	
 	public static DBPropGraph findPropGraphByName( SpecializedGraph graph, String name ) {
 		Node myNode = Node.createLiteral( name );
-		ClosableIterator it = graph.find( null, graphName, myNode, newComplete() );
+		ClosableIterator<Triple> it = graph.find( null, graphName, myNode, newComplete() );
         
         try {
             if( it.hasNext() )
-                return new DBPropGraph( graph, ((Triple)it.next()).getSubject());
+                return new DBPropGraph( graph, it.next().getSubject());
             return null;
         }
         finally { it.close(); }
@@ -276,13 +273,13 @@ public class DBPropGraph extends DBProp {
 	
 	@Override
     public void remove() {
-		ExtendedIterator it = getAllPrefixes();
+		ExtendedIterator<DBPropPrefix> it = getAllPrefixes();
 		while( it.hasNext()) {
-			((DBPropPrefix)it.next()).remove();			
+			it.next().remove();			
 		}
-		it = getAllLSets();
+		ExtendedIterator<DBPropLSet> it2 = getAllLSets();
 		while( it.hasNext()) {
-			((DBPropLSet)it.next()).remove();			
+			it.next().remove();			
 		}
 		super.remove();
 	}

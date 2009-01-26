@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SpecializedGraphBase.java,v 1.7 2008-12-28 19:32:20 andy_seaborne Exp $
+  $Id: SpecializedGraphBase.java,v 1.8 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -24,7 +24,7 @@ public abstract class SpecializedGraphBase implements SpecializedGraph
     public CompletionFlag newComplete()
         { return new CompletionFlag(); }
         
-    public ExtendedIterator find( Node s, Node p, Node o, CompletionFlag complete )
+    public ExtendedIterator<Triple> find( Node s, Node p, Node o, CompletionFlag complete )
         { return find( Triple.createMatch( s, p, o ), complete ); }
     }
 

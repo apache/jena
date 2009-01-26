@@ -33,7 +33,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 
 public class ModelRDB extends ModelCom implements Model {    
@@ -175,8 +175,8 @@ public class ModelRDB extends ModelCom implements Model {
 	public Model getModelProperties() {
 		Model m = ModelFactory.createDefaultModel();
         Graph g = m.getGraph();
-		ExtendedIterator it = m_graphRDB.getPropertyTriples();
-		while (it.hasNext()) g.add( (Triple) it.next());
+		ExtendedIterator<Triple> it = m_graphRDB.getPropertyTriples();
+		while (it.hasNext()) g.add( it.next());
 		return m;
 	}
 	
@@ -199,7 +199,7 @@ public class ModelRDB extends ModelCom implements Model {
      * @return ExtendedIterator over the model names.
      */
      
-     public static ExtendedIterator listModels(IDBConnection dbcon) throws RDFRDBException {
+     public static ExtendedIterator<String> listModels(IDBConnection dbcon) throws RDFRDBException {
         return dbcon.getAllModelNames();
      }
 

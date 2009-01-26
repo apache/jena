@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -267,7 +267,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * 
 	 * @since Jena 2.0
 	 */	
-	public ExtendedIterator getPropertyTriples() {
+	public ExtendedIterator<Triple> getPropertyTriples() {
 		if(m_properties == null)
 			throw new RDFRDBException("Error - attempt to call getPropertyTriples on a GraphRDB that has been removed.");
 		return m_properties.listTriples();
@@ -414,9 +414,9 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
 	@Override
-    public ExtendedIterator graphBaseFind(TripleMatch m) {
+    public ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
 		checkOpen();
-        ExtendedIterator result = NullIterator.instance;
+        ExtendedIterator<Triple> result = NullIterator.instance();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator<SpecializedGraph> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
@@ -425,7 +425,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
 				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
 				continue; // don't let the reifier graphs see partial reifications
-			ExtendedIterator partialResult = sg.find( m, complete);
+			ExtendedIterator<Triple> partialResult = sg.find( m, complete);
 			result = result.andThen(partialResult);
 			if( complete.isDone())
 				break;
@@ -434,8 +434,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	}
 
     @Override
-    public ExtendedIterator reifierTriples( TripleMatch m )
-        { return NullIterator.instance; }
+    public ExtendedIterator<Triple> reifierTriples( TripleMatch m )
+        { return NullIterator.instance(); }
     
     @Override
     public int reifierSize()

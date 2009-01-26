@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class DBPropLSet extends DBProp {
 
@@ -51,9 +51,9 @@ public class DBPropLSet extends DBProp {
 	public String getType() { return getPropString( lSetType); }
 	
 	public DBPropPSet getPset() {
-		ClosableIterator matches = graph.find( self, lSetPSet, null, newComplete() );
+		ClosableIterator<Triple> matches = graph.find( self, lSetPSet, null, newComplete() );
 		if( matches.hasNext() ) {
-			try { return new DBPropPSet( graph, ((Triple) matches.next()).getObject()); }
+			try { return new DBPropPSet( graph, matches.next().getObject()); }
             finally { matches.close(); }
 		}
 		else
@@ -68,9 +68,9 @@ public class DBPropLSet extends DBProp {
 		super.remove();
 	}
 
-	public ExtendedIterator listTriples() {
+	public ExtendedIterator<Triple> listTriples() {
 		// First get all the triples that directly desrcribe this graph
-		ExtendedIterator result = DBProp.listTriples(graph, self);
+		ExtendedIterator<Triple> result = DBProp.listTriples(graph, self);
 		
 		// Now get all the triples that describe the pset
 		DBPropPSet pset = getPset();

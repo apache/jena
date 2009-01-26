@@ -146,7 +146,7 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedNodes(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator findReifiedNodes(Triple t, CompletionFlag complete) {
+	public ExtendedIterator<Node> findReifiedNodes(Triple t, CompletionFlag complete) {
 		complete.setDone();
 		return m_reif.findReifStmtURIByTriple(t, my_GID);
 	}
@@ -158,7 +158,7 @@ public class SpecializedGraphReifier_RDB
 		ResultSetReifIterator it = m_reif.findReifStmt(n, true, my_GID, false);
 		Triple res = null;
 		if ( it.hasNext() ) {
-				res = (Triple) it.next();
+				res = it.next();
 		}
 		complete.setDone();
 		return res;
@@ -184,7 +184,7 @@ public class SpecializedGraphReifier_RDB
 	 * @param complete is true if we know we've returned all the triples which may exist.
 	 * @return ExtendedIterator.
 	 */
-	public ExtendedIterator findReifiedTriples(Node n, CompletionFlag complete) {
+	public ExtendedIterator<Triple> findReifiedTriples(Node n, CompletionFlag complete) {
 		complete.setDone();
 		return m_reif.findReifStmt(n, false, my_GID, true);
 	}
@@ -234,7 +234,7 @@ public class SpecializedGraphReifier_RDB
 				boolean dup = fragHasType && cachedMask.hasType();
 				if (dup == false) {
 					// not a type fragement; have to search db to check for dup
-					ExtendedIterator it = m_reif.findFrag (stmtURI, frag, fragMask, my_GID);
+					ExtendedIterator<Triple> it = m_reif.findFrag (stmtURI, frag, fragMask, my_GID);
 					dup = it.hasNext();
 					if ( dup == false ) {
 						if ( cachedMask.isStmt())
@@ -308,7 +308,7 @@ public class SpecializedGraphReifier_RDB
 		itHasType = m_reif.findReifStmt(stmtURI,true,my_GID, false);
 		if ( itHasType.hasNext() ) {
 			/* something to do */
-			t = (Triple) itHasType.next();
+			t = itHasType.next();
 			if ( itHasType.hasNext() ) 
                 throw new JenaException("Multiple HasType fragments for URI");			
 			ReificationStatementMask htMask = new ReificationStatementMask(t);
@@ -318,7 +318,7 @@ public class SpecializedGraphReifier_RDB
 			ResultSetReifIterator itFrag = m_reif.findReifStmt(stmtURI,false,my_GID, false);
 			ReificationStatementMask upMask = new ReificationStatementMask();
 			while ( itFrag.hasNext() ) {
-				t = (Triple) itFrag.next();
+				t = itFrag.next();
 				if ( itFrag.getHasType() ) continue;
 				ReificationStatementMask fm = new ReificationStatementMask(rowToFrag(stmtURI, t));
 				if ( htMask.hasIntersect(fm) )
@@ -395,7 +395,7 @@ public class SpecializedGraphReifier_RDB
 	 */
 	public int tripleCount() {
 		// A very inefficient, but simple implementation
-		ExtendedIterator it = find( null, null, null, newComplete() );
+		ExtendedIterator<Triple> it = find( null, null, null, newComplete() );
 		int count = 0;
 		while (it.hasNext()) {
 			it.next(); count++;
@@ -407,7 +407,7 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
+	public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
 		
 //		Node stmtURI = t.getMatchSubject();	// note: can be null
 //		ResultSetReifIterator it = m_reif.findReifStmt(stmtURI, false, my_GID, true);
@@ -425,7 +425,7 @@ public class SpecializedGraphReifier_RDB
 	 */
 	public boolean contains(Triple t, CompletionFlag complete) {
 		// A very inefficient, but simple implementation
-		ExtendedIterator it = find( t, complete );
+		ExtendedIterator<Triple> it = find( t, complete );
 		try { return it.hasNext(); } finally { it.close(); }
 	}
 

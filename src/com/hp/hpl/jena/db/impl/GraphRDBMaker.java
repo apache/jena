@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.30 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: GraphRDBMaker.java,v 1.31 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -143,12 +143,12 @@ public class GraphRDBMaker extends BaseGraphMaker
     public void close()
         { /* should consider - do we close the connection or not? */ }
         
-    public ExtendedIterator listGraphs()
+    public ExtendedIterator<String> listGraphs()
         { return c.getAllModelNames() .filterDrop ( filterDEFAULT ); }
         
-    private Filter filterDEFAULT = new Filter()
+    private Filter<String>  filterDEFAULT = new Filter<String> ()
         { @Override
-        public boolean accept( Object x ) { return "DEFAULT".equals( x ); } };
+        public boolean accept( String x ) { return "DEFAULT".equals( x ); } };
     }
 
 /*

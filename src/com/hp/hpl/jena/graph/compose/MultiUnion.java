@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:26 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-01-26 15:24:28 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.31 2009-01-26 10:28:26 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.32 2009-01-26 15:24:28 andy_seaborne Exp $
  */
 public class MultiUnion extends Polyadic
 {
@@ -145,8 +145,8 @@ public class MultiUnion extends Polyadic
     @Override
     public boolean graphBaseContains( Triple t ) 
         {
-        for (Iterator i = m_subGraphs.iterator();  i.hasNext(); ) 
-            if (((Graph) i.next()).contains( t )) return true;
+        for (Iterator<Graph> i = m_subGraphs.iterator();  i.hasNext(); ) 
+            if (i.next().contains( t )) return true;
         return false;
         }
 
@@ -170,7 +170,7 @@ public class MultiUnion extends Polyadic
     @Override
     public ExtendedIterator graphBaseFind( final TripleMatch t ) 
         { // optimise the case where there's only one component graph.
-        ExtendedIterator found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
+        ExtendedIterator<Triple> found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
         return SimpleEventManager.notifyingRemove( MultiUnion.this, found );
         }
     
@@ -178,20 +178,20 @@ public class MultiUnion extends Polyadic
          Answer the result of <code>find( t )</code> on the single graph in
          this union.
     */
-    private ExtendedIterator singleGraphFind( final TripleMatch t )
+    private ExtendedIterator<Triple> singleGraphFind( final TripleMatch t )
         { return (m_subGraphs.get( 0 )).find(  t  ); }
 
 
     /**
      	Answer the concatenation of all the iterators from a-subGraph.find( t ).
     */
-    private ExtendedIterator multiGraphFind( final TripleMatch t )
+    private ExtendedIterator<Triple> multiGraphFind( final TripleMatch t )
         {
         Set seen = CollectionFactory.createHashedSet();
-        ExtendedIterator result = NullIterator.instance;
-        for (Iterator graphs = m_subGraphs.iterator(); graphs.hasNext(); ) 
+        ExtendedIterator<Triple> result = NullIterator.instance();
+        for (Iterator<Graph> graphs = m_subGraphs.iterator(); graphs.hasNext(); ) 
             {
-            ExtendedIterator newTriples = recording( rejecting( ((Graph) graphs.next()).find( t ), seen ), seen );
+            ExtendedIterator<Triple> newTriples = recording( rejecting( graphs.next().find( t ), seen ), seen );
             result = result.andThen( newTriples );
             }
         return result;

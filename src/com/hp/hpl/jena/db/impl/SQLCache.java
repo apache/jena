@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.21 $ on $Date: 2009-01-16 18:03:18 $
+* @version $Revision: 1.22 $ on $Date: 2009-01-26 15:24:27 $
 */
 
 public class SQLCache {
@@ -359,61 +359,61 @@ public class SQLCache {
         }
     }
 
-    /**
-     * Execute a named pre-prepared SQL query statement taking a set of arguments and return
-     * a set of results as an iterator (probably a subclass of ResultSetIterator. Returns null
-     * if they query is an update (as opposed to an empty iterator for a true query which happens
-     * to return no answers).
-     * <p>
-     * Not sure this is a good design. Reducing this to a general interface leads to lots of clunky
-     * wrapping and unwrapping of primitive types, coercions and lack of compile-time type checking.
-     * On the other hand letting the clients do this themselves with direct jdbc calls leaves us up
-     * to the mercy of the client to correctly use returnPreparedSQLStatement and on average seems
-     * to lead to more duplication of boiler plate code. Currently the client can chose either approach.
-     * <p>
-     * The calling arguments are passed in as an array.
-     */
-    public ResultSetIterator runSQLQuery(String opname, Object[] args) throws SQLException {
-        PreparedStatement ps = getPreparedSQLStatement(opname);
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                ps.setObject(i+1, args[i]);
-            }
-        }
-        return executeSQL(ps, opname, new ResultSetIterator());
-    }
-
-	/**
-     * Variant on {@link #runSQLQuery} which
-     * access the attribute variant correspond to the given attribute suffix.
-     */
-    public ResultSetIterator runSQLQuery(String opname,String attr, Object[] args) throws SQLException {
-        String aop = concatOpName(opname, attr);
-        PreparedStatement ps = getPreparedSQLStatement(aop);
-        
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                ps.setObject(i+1, args[i]);
-            }
-        }
-        return executeSQL(ps, aop, new ResultSetIterator());
-    }
-
-	/**
-     * Variant on {@link #runSQLQuery} which
-     * access the attribute variant correspond to the given attribute suffix.
-     */
-    public ResultSetIterator runSQLQuery(String opname,String attrA, String attrB, Object[] args) throws SQLException {
-        String aop = concatOpName(opname, attrA, attrB);
-        PreparedStatement ps = getPreparedSQLStatement(aop);
-        
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                ps.setObject(i+1, args[i]);
-            }
-        }
-        return executeSQL(ps, aop, new ResultSetIterator());
-    }
+//    /**
+//     * Execute a named pre-prepared SQL query statement taking a set of arguments and return
+//     * a set of results as an iterator (probably a subclass of ResultSetIterator. Returns null
+//     * if they query is an update (as opposed to an empty iterator for a true query which happens
+//     * to return no answers).
+//     * <p>
+//     * Not sure this is a good design. Reducing this to a general interface leads to lots of clunky
+//     * wrapping and unwrapping of primitive types, coercions and lack of compile-time type checking.
+//     * On the other hand letting the clients do this themselves with direct jdbc calls leaves us up
+//     * to the mercy of the client to correctly use returnPreparedSQLStatement and on average seems
+//     * to lead to more duplication of boiler plate code. Currently the client can chose either approach.
+//     * <p>
+//     * The calling arguments are passed in as an array.
+//     */
+//    public ResultSetIterator<Object> runSQLQuery(String opname, Object[] args) throws SQLException {
+//        PreparedStatement ps = getPreparedSQLStatement(opname);
+//        if (args != null) {
+//            for (int i = 0; i < args.length; i++) {
+//                ps.setObject(i+1, args[i]);
+//            }
+//        }
+//        return executeSQL(ps, opname, new ResultSetIterator<Object>());
+//    }
+//
+//	/**
+//     * Variant on {@link #runSQLQuery} which
+//     * access the attribute variant correspond to the given attribute suffix.
+//     */
+//    public ResultSetIterator<Object> runSQLQuery(String opname,String attr, Object[] args) throws SQLException {
+//        String aop = concatOpName(opname, attr);
+//        PreparedStatement ps = getPreparedSQLStatement(aop);
+//        
+//        if (args != null) {
+//            for (int i = 0; i < args.length; i++) {
+//                ps.setObject(i+1, args[i]);
+//            }
+//        }
+//        return executeSQL(ps, aop, new ResultSetIterator<Object>());
+//    }
+//
+//	/**
+//     * Variant on {@link #runSQLQuery} which
+//     * access the attribute variant correspond to the given attribute suffix.
+//     */
+//    public ResultSetIterator<Object> runSQLQuery(String opname,String attrA, String attrB, Object[] args) throws SQLException {
+//        String aop = concatOpName(opname, attrA, attrB);
+//        PreparedStatement ps = getPreparedSQLStatement(aop);
+//        
+//        if (args != null) {
+//            for (int i = 0; i < args.length; i++) {
+//                ps.setObject(i+1, args[i]);
+//            }
+//        }
+//        return executeSQL(ps, aop, new ResultSetIterator<Object>());
+//    }
 
 
     /**
@@ -488,7 +488,7 @@ public class SQLCache {
      * @param args the arguments to pass to the SQL operation as an array of Objects
      * @param iterator the iterator to use to return the results
      */
-    public ResultSetIterator runSQLQuery(String opname, Object[] args, ResultSetIterator iterator) throws SQLException {
+    public ResultSetIterator<?> runSQLQuery(String opname, Object[] args, ResultSetIterator<?> iterator) throws SQLException {
         PreparedStatement ps = getPreparedSQLStatement(opname);
         if (args != null) {
             for (int i = 0; i < args.length; i++) {
@@ -502,7 +502,7 @@ public class SQLCache {
      * Variant on {@link #runSQLQuery} which
      * access the attribute variant correspond to the given attribute suffix.
      */
-    public ResultSetIterator runSQLQuery(String opname, String attrA, Object[] args, ResultSetIterator iterator) throws SQLException {
+    public ResultSetIterator<?> runSQLQuery(String opname, String attrA, Object[] args, ResultSetIterator<?> iterator) throws SQLException {
         String aop = concatOpName(opname,attrA);
         PreparedStatement ps = getPreparedSQLStatement(aop);
         if (args != null) {
@@ -518,7 +518,7 @@ public class SQLCache {
      * Variant on {@link #runSQLQuery} which
      * access the attribute variant correspond to the given attribute suffix.
      */
-    public ResultSetIterator runSQLQuery(String opname, String attrA, String attrB, Object[] args, ResultSetIterator iterator) throws SQLException {
+    public ResultSetIterator<?> runSQLQuery(String opname, String attrA, String attrB, Object[] args, ResultSetIterator<?> iterator) throws SQLException {
         String aop = concatOpName(opname,attrA, attrB);
         PreparedStatement ps = getPreparedSQLStatement(aop);
         if (args != null) {
@@ -716,7 +716,7 @@ public class SQLCache {
      * just an update or return an iterator for the result set if the statement appears
      * to be a query
      */
-    protected ResultSetIterator executeSQL(PreparedStatement ps, String opname, ResultSetIterator iterator) throws SQLException {
+    protected <T> ResultSetIterator<T> executeSQL(PreparedStatement ps, String opname, ResultSetIterator<T> iterator) throws SQLException {
         if (ps.execute()) {
             ResultSet rs = ps.getResultSet();
             iterator.reset(rs, ps, this, opname);

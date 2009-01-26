@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.16 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: TestGraphRDB.java,v 1.17 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -57,7 +57,7 @@ public class TestGraphRDB extends MetaTestGraph
             }
 
         @Override
-        public ExtendedIterator graphBaseFind( TripleMatch t )
+        public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )
             { throw new JenaException( "find is Not Allowed" ); }
         
         @Override

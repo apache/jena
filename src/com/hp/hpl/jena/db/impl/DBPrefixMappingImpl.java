@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.19 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.20 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.19 $
+ 	@version $Revision: 1.20 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -46,7 +46,6 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 		// Populate the prefix map using data from the 
 		// persistent graph properties
         boolean commit = m_graphProperties.begin();
-        @SuppressWarnings("unchecked")
 		Iterator<DBPropPrefix> it = m_graphProperties.getAllPrefixes();
 		while( it.hasNext()) {
 			DBPropPrefix prefix = it.next();

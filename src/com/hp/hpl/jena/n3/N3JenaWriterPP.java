@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.27 2009-01-16 18:24:39 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.28 2009-01-26 15:24:28 andy_seaborne Exp $
  */
 
 
@@ -219,7 +219,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
     
     @Override
-    protected ClosableIterator preparePropertiesForSubject(Resource r)
+    protected ClosableIterator<Property> preparePropertiesForSubject(Resource r)
     {
         Set<Property> seen = new HashSet<Property>() ;
         boolean hasTypes = false ;
@@ -251,12 +251,12 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         }
         sIter.close() ;
         
-        ExtendedIterator eIter = null ;
+        ExtendedIterator<Property> eIter = null ;
         
         if ( hasTypes )
-            eIter = new SingletonIterator(RDF.type) ;
+            eIter = new SingletonIterator<Property>(RDF.type) ;
 
-        ExtendedIterator eIter2 = WrappedIterator.create(tmp1.values().iterator()) ;
+        ExtendedIterator<Property> eIter2 = WrappedIterator.create(tmp1.values().iterator()) ;
             
         eIter = (eIter == null) ? eIter2 : eIter.andThen(eIter2) ;
                     
@@ -497,7 +497,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		if ( allowDeep && ! isSimpleObject(rObj))
 		{
 			oneRefDone.add(rObj);
-	        ClosableIterator iter = preparePropertiesForSubject(rObj);
+	        ClosableIterator<Property> iter = preparePropertiesForSubject(rObj);
 	        if (! iter.hasNext() )
 	        {
 	            // No properties.

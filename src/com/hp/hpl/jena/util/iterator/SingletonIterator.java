@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: SingletonIterator.java,v 1.12 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: SingletonIterator.java,v 1.13 2009-01-26 15:24:18 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -13,12 +13,12 @@ package com.hp.hpl.jena.util.iterator;
  * A ClosableIterator that contains only one element
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2009-01-16 17:23:58 $
+ * @version $Revision: 1.13 $ on $Date: 2009-01-26 15:24:18 $
  */
-public class SingletonIterator extends NiceIterator implements ExtendedIterator {
+public class SingletonIterator<T> extends NiceIterator<T> implements ExtendedIterator<T> {
     
     /** The single value to be returned */
-    private Object item;
+    private T item;
 
     /** element delivered */
     private boolean delivered = false;
@@ -27,7 +27,7 @@ public class SingletonIterator extends NiceIterator implements ExtendedIterator 
      * Constructor
      * @param element the single value to be returned
      */
-    public SingletonIterator(Object element) {
+    public SingletonIterator(T element) {
         this.item = element;
     }
     
@@ -43,7 +43,7 @@ public class SingletonIterator extends NiceIterator implements ExtendedIterator 
      * Return the value
      */
     @Override
-    public Object next() {
+    public T next() {
         if (delivered) 
             return noElements( "no objects in this iterator" );
         else {

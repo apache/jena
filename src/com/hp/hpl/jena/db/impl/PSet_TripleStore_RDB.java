@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.64 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.65 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.64 $ on $Date: 2009-01-17 14:40:18 $
+* @version $Revision: 1.65 $ on $Date: 2009-01-26 15:24:27 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -770,7 +770,7 @@ public void deleteTripleAR(
 	 * @return boolean result to indicte if the tripple was contained
 	 */
 	public boolean statementTableContains(IDBID graphID, Triple t) {
-	   ExtendedIterator it = find( t,  graphID );
+	   ExtendedIterator<Triple> it = find( t,  graphID );
 	   boolean res = it.hasNext();
 	   it.close();
 	   return res;
@@ -779,7 +779,7 @@ public void deleteTripleAR(
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
-	public ExtendedIterator find(TripleMatch t, IDBID graphID) {
+	public ExtendedIterator<Triple> find(TripleMatch t, IDBID graphID) {
 		String astName = getTblName();
 		Node subj_node = t.getMatchSubject();
 		Node pred_node = t.getMatchPredicate();

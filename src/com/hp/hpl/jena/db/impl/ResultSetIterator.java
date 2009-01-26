@@ -32,11 +32,12 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.17 $ on $Date: 2009-01-17 14:40:18 $
+* @version $Revision: 1.18 $ on $Date: 2009-01-26 15:24:27 $
 */
 
-public class ResultSetIterator implements ExtendedIterator {
-
+public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
+    // T is the type of the  
+    
     /** The ResultSet being iterated over */
     protected ResultSet m_resultSet;
 
@@ -53,7 +54,7 @@ public class ResultSetIterator implements ExtendedIterator {
     protected String m_opname;
 
     /** The contents of the current row */
-    protected ArrayList<Object> m_row;
+    protected T m_row;
 
     /** The number of columns in this result set */
     protected int m_nCols;
@@ -143,19 +144,19 @@ public class ResultSetIterator implements ExtendedIterator {
         return !m_finished;
     }
     
-    public Object removeNext()
+    public T removeNext()
         { cantRemove(); return null; }
 
     /**
      * Return the current row
      */
-    public Object next() {
+    public T next() {
         if (!m_finished && !m_prefetched) moveForward();
         m_prefetched = false;
         if (m_finished) {
             throw new NoSuchElementException();
         }
-        return getRow();
+        return getRow() ;
     }
 
     /**
@@ -192,22 +193,23 @@ public class ResultSetIterator implements ExtendedIterator {
      * Extract the current row
      * Override in subclasses.
      */
-    protected void extractRow() throws Exception {
-        if (m_row == null) {
-            m_nCols = m_resultSet.getMetaData().getColumnCount();
-            m_row = new ArrayList<Object>(m_nCols);
-            for (int i = 0; i < m_nCols; i++) m_row.add(null);
-        }
-        for (int i = 0; i < m_nCols; i++) {
-            m_row.set(i, m_resultSet.getObject(i+1));
-        }
-    }
+    protected abstract void extractRow() throws Exception ; 
+//    {
+//        if (m_row == null) {
+//            m_nCols = m_resultSet.getMetaData().getColumnCount();
+//            m_row = new ArrayList<Object>(m_nCols);
+//            for (int i = 0; i < m_nCols; i++) m_row.add(null);
+//        }
+//        for (int i = 0; i < m_nCols; i++) {
+//            m_row.set(i, m_resultSet.getObject(i+1));
+//        }
+//    }
 
     /**
      * Return the current row,should have already been extracted.
      * Override in subclasses.
      */
-    protected Object getRow() {
+    protected T getRow() {
         return m_row;
     }
 
@@ -264,39 +266,45 @@ public class ResultSetIterator implements ExtendedIterator {
          then all the elements of the other iterator. Does not copy either iterator;
          they are consumed as the result iterator is consumed.
      */
-	public ExtendedIterator andThen(ClosableIterator other) {
+	public ExtendedIterator<T> andThen(ClosableIterator<? extends T> other) {
 		return NiceIterator.andThen(this, other);
 	}
 
-    public Set<?> toSet() {
+    public Set<T> toSet() {
         return NiceIterator.asSet( this ); 
         }
     
-    public List<?> toList() {
+    public List<T> toList() {
         return NiceIterator.asList( this ); 
         }
     
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#filterKeep(com.hp.hpl.jena.util.iterator.Filter)
 	 */
-	public ExtendedIterator filterKeep(Filter f) {
-		return new FilterIterator( f, this );
+	public ExtendedIterator<T> filterKeep(Filter<T> f) {
+		return new FilterIterator<T>( f, this );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#filterDrop(com.hp.hpl.jena.util.iterator.Filter)
 	 */
-	public ExtendedIterator filterDrop(final Filter f) {
-		Filter notF = new Filter() { @Override
-        public boolean accept( Object x ) { return !f.accept( x ); } };
-		return new FilterIterator( notF, this ); 
-	}
+	public ExtendedIterator<T> filterDrop(final Filter<T> f)
+    {
+        Filter<T> notF = new Filter<T>() {
+            @Override
+            public boolean accept(T x)
+            {
+                return !f.accept(x) ;
+            }
+        } ;
+        return new FilterIterator<T>(notF, this) ;
+    }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#mapWith(com.hp.hpl.jena.util.iterator.Map1)
 	 */
-	public ExtendedIterator mapWith(Map1 map1) {
-		return new Map1Iterator( map1, this ); 
+	public <X> ExtendedIterator<X> mapWith(Map1<T,X> map1) {
+		return new Map1Iterator<T,X>( map1, this ); 
 	}
 
 } // End class

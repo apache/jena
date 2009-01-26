@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * in the list.
  *
  * @author csayers
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  */
 public interface SpecializedGraph {
@@ -137,7 +137,7 @@ public interface SpecializedGraph {
      * could hold any matching triples.
 	 * @return ExtendedIterator which iterates over any matching triples
 	 */
-    public ExtendedIterator find(TripleMatch m, CompletionFlag complete);
+    public ExtendedIterator<Triple> find(TripleMatch m, CompletionFlag complete);
     
     /**
         Finds matching triples contained in the specialized graph
@@ -148,7 +148,7 @@ public interface SpecializedGraph {
         could hold any matching triples.
         @return ExtendedIterator which iterates over any matching triples
     */
-    public ExtendedIterator find( Node s, Node p, Node o, CompletionFlag complete );
+    public ExtendedIterator<Triple> find( Node s, Node p, Node o, CompletionFlag complete );
     
     /**
      * Clear the specialized graph

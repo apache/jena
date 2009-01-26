@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.16 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: TestCompareToMem.java,v 1.17 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -87,7 +87,6 @@ public class TestCompareToMem extends TestCase
 	private void compareModels() {
 
 	    {
-	        @SuppressWarnings("unchecked")
 	        Iterator<Statement> it = modelmem.listStatements();
 	        while( it.hasNext()) {
 	            Statement s = it.next();
@@ -100,7 +99,6 @@ public class TestCompareToMem extends TestCase
 	        }
 	    }
 	    {
-	        @SuppressWarnings("unchecked")
 	        Iterator<Statement> it = modelrdf.listStatements();
 	        while( it.hasNext()) {
 	            Statement s = it.next();
@@ -116,7 +114,6 @@ public class TestCompareToMem extends TestCase
     
     private void logModel(Model m, String name) {
     	logger.debug("Model");
-    	@SuppressWarnings("unchecked")
         Iterator<Statement> it = m.listStatements();
 		while( it.hasNext()) { 
 			Statement s = it.next();

@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -106,14 +106,14 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
-	public ExtendedIterator find(TripleMatch m) {
+	public ExtendedIterator<Triple> find(TripleMatch m) {
         checkUnclosed();
-		ExtendedIterator result = new NiceIterator();
+		ExtendedIterator<Triple> result = NullIterator.instance() ;
 		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = it.next();
-			ExtendedIterator partialResult = sg.find( m, complete);
+			ExtendedIterator<Triple> partialResult = sg.find( m, complete);
 			result = result.andThen(partialResult);
 			if( complete.isDone())
 				break;
@@ -194,7 +194,7 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
 	 */
-	public ExtendedIterator find(Node s, Node p, Node o) {
+	public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
 		return find( Triple.createMatch( s, p, o ) );
 	}
 

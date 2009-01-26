@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.48 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: NodeToTriplesMap.java,v 1.49 2009-01-26 15:24:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -72,7 +72,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     public Iterator iterator( Object o, HashCommon.NotifyEmpty container )
         {
         TripleBunch b = bunchMap.get( o );
-        return b == null ? NullIterator.instance : b.iterator();
+        return b == null ? NullIterator.instance() : b.iterator();
         }
     
     /** 
@@ -127,7 +127,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         {
         TripleBunch s = bunchMap.get( index.getIndexingValue() );
         return s == null
-            ? NullIterator.instance
+            ? NullIterator.instance()
             : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
                 .filterKeep( s.iterator() )
             ;

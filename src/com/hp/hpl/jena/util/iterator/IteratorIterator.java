@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: IteratorIterator.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+ * $Id: IteratorIterator.java,v 1.9 2009-01-26 15:24:18 andy_seaborne Exp $
  *
  */
 
@@ -37,18 +37,18 @@ import java.util.NoSuchElementException;
  * Iterator over the next level values.
  * Similar to list splicing in lisp.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2008-12-28 19:32:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2009-01-26 15:24:18 $'
  */
-public class IteratorIterator implements Iterator
+public class IteratorIterator<T> implements Iterator<T>
 {
-	private Iterator top;
-	private Iterator currentMember;
+	private Iterator<Iterator<T>> top;
+	private Iterator<T> currentMember;
 
 /** The first element of this Iterator is the first element of the
  * first non-empty element of <code>e</code>.
  * @param e An Iterator all of whose members are themselves Iterator's.
  */        
-	public IteratorIterator(Iterator e) {
+	public IteratorIterator(Iterator<Iterator<T>> e) {
 		top = e;
 		currentMember = null;
 	}
@@ -60,12 +60,12 @@ public class IteratorIterator implements Iterator
 		while ( currentMember == null || !currentMember.hasNext() ) {
 			if (!top.hasNext())
 				return false;
-			currentMember = (Iterator)top.next();
+			currentMember = top.next();
 		}
 		return true;
 	}
 
-	public Object next() {
+	public T next() {
 		hasNext();
 		if (currentMember == null)
 			throw new NoSuchElementException();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.26 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.27 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.26 $
+ 	@version $Revision: 1.27 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -92,8 +92,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         { add( g, false ); }
         
     public void add( Graph g, boolean withReifications ) {
-        @SuppressWarnings("unchecked")
-		Iterator<Triple> triplesToAdd = GraphUtil.findAll( g );
+        Iterator<Triple> triplesToAdd = GraphUtil.findAll( g );
 		try { addIterator( triplesToAdd ); } finally { NiceIterator.close(triplesToAdd); }
         if (withReifications) SimpleBulkUpdateHandler.addReifications( graph, g );
         manager.notifyAddGraph( graph, g );
@@ -153,7 +152,6 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         { delete( g, false ); }
         
     public void delete( Graph g, boolean withReifications ) {
-        @SuppressWarnings("unchecked")
         Iterator<Triple> triplesToDelete = GraphUtil.findAll( g );
 		try { deleteIterator( triplesToDelete ); } finally { NiceIterator.close(triplesToDelete) ; }
         if (withReifications) SimpleBulkUpdateHandler.deleteReifications( graph, g );

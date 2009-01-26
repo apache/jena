@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: ReificationCacheMap.java,v 1.4 2008-12-28 19:32:21 andy_seaborne Exp $
+ 	$Id: ReificationCacheMap.java,v 1.5 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -63,7 +63,7 @@ public class ReificationCacheMap {
 		ResultSetReifIterator it = this.reifier_RDB.m_reif.findReifStmt(stmtURI,false,this.reifier_RDB.my_GID, false);
 		while (it.hasNext()) {
 			cnt++;
-			Triple db = (Triple) it.next();				
+			Triple db = it.next();				
 			ReificationStatementMask n = new ReificationStatementMask();
 			hasSubj = !db.getSubject().equals(Node.NULL);
 			if ( hasSubj && checkSame )

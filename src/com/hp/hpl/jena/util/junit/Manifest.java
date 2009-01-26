@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.TestManifestX;
  * A test manifest for a single manifest file.
  * 
  * @author Andy Seaborne
- * @version $Id: Manifest.java,v 1.4 2008-12-28 19:32:39 andy_seaborne Exp $
+ * @version $Id: Manifest.java,v 1.5 2009-01-26 15:24:28 andy_seaborne Exp $
  */
 
 public class Manifest
@@ -37,7 +37,7 @@ public class Manifest
     Model manifest ;
     String manifestName ;
     String filename ;
-    List includedFiles = new ArrayList() ;
+    List<String> includedFiles = new ArrayList<String>() ;
     Resource manifestRes = null ;
      
     public Manifest(String fn)
@@ -52,7 +52,7 @@ public class Manifest
     
     public String getName() { return manifestName ; } 
     
-    public Iterator includedManifests() { return includedFiles.iterator() ; }
+    public Iterator<String> includedManifests() { return includedFiles.iterator() ; }
 
     private void parseManifest()
     {

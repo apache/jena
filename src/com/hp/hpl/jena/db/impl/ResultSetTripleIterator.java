@@ -24,9 +24,9 @@ import org.apache.commons.logging.LogFactory;
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.15 $ on $Date: 2009-01-17 14:40:18 $
+* @version $Revision: 1.16 $ on $Date: 2009-01-26 15:24:27 $
 */
-public class ResultSetTripleIterator extends ResultSetIterator {
+public class ResultSetTripleIterator extends ResultSetIterator<Triple> {
 
     /** The rdf model in which to instantiate any resources */
     protected IDBID m_graphID;
@@ -126,7 +126,7 @@ public class ResultSetTripleIterator extends ResultSetIterator {
 		 * Return the current row, which should have already been extracted.
 		 */
 		@Override
-        protected Object getRow() {
+        protected Triple getRow() {
 			return m_triple;
 		}
 		

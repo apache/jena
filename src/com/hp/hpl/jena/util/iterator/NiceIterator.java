@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.20 2009-01-26 08:37:09 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.21 2009-01-26 15:24:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -142,14 +142,12 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     public static void close( Iterator<?> it )
         { if (it instanceof ClosableIterator) ((ClosableIterator<?>) it).close(); }
    
-    static final private NiceIterator emptyInstance = new NiceIterator();
-    
     /**
      * An iterator over no elements.
      * @return A class singleton which doesn't iterate.
      */
-    static public ExtendedIterator emptyIterator() 
-        { return emptyInstance; }
+    static public <T> ExtendedIterator<T> emptyIterator() 
+        { return NullIterator.instance() ; }
 
     /**
         Answer a list of the elements in order, consuming this iterator.

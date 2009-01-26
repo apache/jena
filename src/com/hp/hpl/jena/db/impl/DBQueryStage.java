@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.22 2009-01-26 10:28:24 chris-dollin Exp $
+  $Id: DBQueryStage.java,v 1.23 2009-01-26 15:24:27 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -72,20 +72,19 @@ public class DBQueryStage extends Stage
     private void extendSourceBinding( Domain current, Pipe sink, PreparedStatement ps )
         {
         ResultSet rs = null;
-        ResultSetIterator it = null;
+        ResultSetStringIterator it = null;
         setArgs( current, ps );
         // System.out.println( ">> " + compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ) );
         try
             {
-            it = new ResultSetIterator();
+            it = new ResultSetStringIterator();
             ps.execute();
             rs = ps.getResultSet();
             it.reset( rs, ps );
             while (it.hasNext())
                 {
                 Domain useme = current.copy();
-                @SuppressWarnings("unchecked")
-                List<String> row = (List<String>) it.next();
+                List<String> row = it.next();
                 for (int i = 0; i < compiled.resList.length; i++)
                     {
                     int j = compiled.resList[i];
