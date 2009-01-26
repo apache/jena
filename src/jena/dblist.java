@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.13 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.14 2009-01-26 16:19:49 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd
@@ -63,11 +63,11 @@ public class dblist extends DBcmd
 //            properties(null) ;
 //        }
         
-        ClosableIterator iter = getConnection().getAllModelNames() ;
+        ClosableIterator<String> iter = getConnection().getAllModelNames() ;
         try {
             for ( ; iter.hasNext() ; )
             {
-                String name = (String)iter.next() ; 
+                String name = iter.next() ; 
                 System.out.println("Model: "+name) ;
                 properties(name) ;
             }
