@@ -20,13 +20,22 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;
 
-    public static <X> Iterator<X> create(Iterator<X> iter1, Iterator<X> iter2)
+    public static <X> Iterator<X> create(Iterator<? extends X> iter1, Iterator<? extends X> iter2)
     {
+        // The casts are safe because an iterator can only return X, and does not take an X an an assignment.  
         if ( iter1 == null )
-            return iter2 ;
+        {
+            @SuppressWarnings("unchecked")
+            Iterator<X> x = (Iterator<X>)iter2 ;
+            return x ;
+        }
         
         if ( iter2 == null )
-            return iter1 ;
+        {
+            @SuppressWarnings("unchecked")
+            Iterator<X> x = (Iterator<X>)iter1 ;
+            return x ;
+        }
         
         return new Iterator2<X>(iter1, iter2) ;
     }
