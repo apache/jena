@@ -10,21 +10,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.MapFilter;
-import com.hp.hpl.jena.util.iterator.MapFilterIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.LabelExistsException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 /** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
@@ -122,18 +116,7 @@ public class DataSourceImpl implements DataSource
     // How to share with DatasetImpl
     public Iterator<String> listNames()
     { 
-        MapFilter mapper = new MapFilter(){
-            public Object accept(Object x)
-            {
-                Node n = (Node)x ;
-                return n.getURI() ;  
-            }} ;
-        
-        ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
-        
-        @SuppressWarnings("unchecked")
-        Iterator<String> conv = new MapFilterIterator(mapper, eIter) ;
-        return conv ;
+        return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
 

@@ -102,7 +102,7 @@ public abstract class SamplingBase implements Sampling
 	{
 		long size = 0 ;
 		
-		ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+		ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
 		
 		while (iter.hasNext()) 
 		{

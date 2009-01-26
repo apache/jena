@@ -176,7 +176,7 @@ public class UpdateSerializer implements UpdateVisitor
         out.println("{") ;
         out.incIndent() ;
         
-        for ( @SuppressWarnings("unchecked") Iterator<Triple> iter = data.find(Node.ANY, Node.ANY, Node.ANY) ; 
+        for ( Iterator<Triple> iter = data.find(Node.ANY, Node.ANY, Node.ANY) ; 
             iter.hasNext(); )
         {
             Triple t = iter.next();

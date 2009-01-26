@@ -36,13 +36,13 @@ public class GraphContainerUtils
         if ( ! isContainer(graph, container, containerType) )
             return null ;
 
-        ExtendedIterator iter = graph.find(container, Node.ANY, Node.ANY) ;
+        ExtendedIterator<Triple> iter = graph.find(container, Node.ANY, Node.ANY) ;
 
         SortedMap<Integer, Node> triples = new TreeMap<Integer, Node>(order) ;
         try {
             for ( ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next() ;
+                Triple t = iter.next() ;
                 int index = getIndex(t) ;
                 if ( index == NOT_FOUND )
                     continue ;
@@ -103,11 +103,11 @@ public class GraphContainerUtils
             return 0 ;
         
         int count = 0 ;
-        ExtendedIterator iter = graph.find(container, Node.ANY, member) ;
+        ExtendedIterator<Triple> iter = graph.find(container, Node.ANY, member) ;
         try {
             for ( ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next() ;
+                Triple t = iter.next() ;
                 Node p = t.getPredicate() ;
                 String u = p.getURI() ;
                 

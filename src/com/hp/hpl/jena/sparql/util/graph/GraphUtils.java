@@ -207,10 +207,10 @@ public class GraphUtils
     public static Iterator<Node> allNodes(Graph graph)
     {
         Set<Node> x = new HashSet<Node>(1000) ;
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             x.add(t.getSubject()) ;
             x.add(t.getObject()) ;
         }

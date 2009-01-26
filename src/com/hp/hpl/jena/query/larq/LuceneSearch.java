@@ -212,7 +212,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         return qIter ;
     }
     
-    static class HitConverter implements Map1
+    static class HitConverter implements Map1<HitLARQ, Binding>
     {
         private Binding binding ;
         private Var match ;
@@ -225,9 +225,8 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             this.score = score ;
         }
         
-        public Object map1(Object thing)
+        public Binding map1(HitLARQ hit)
         {
-            HitLARQ hit = (HitLARQ)thing ;
             Binding b = new BindingMap(binding) ;
             b.add(match, hit.getNode()) ;
             if ( score != null )

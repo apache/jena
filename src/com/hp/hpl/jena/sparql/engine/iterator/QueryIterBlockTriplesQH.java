@@ -58,7 +58,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
 
     static class StagePattern extends QueryIter
     {
-        ClosableIterator graphIter ;
+        ClosableIterator<Domain> graphIter ;
         Binding binding ;
         //DatasetGraph data ;
         Var[] projectionVars ;
@@ -102,7 +102,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         @Override
         protected Binding moveToNextBinding()
         {
-          Domain d = (Domain)graphIter.next() ;
+          Domain d = graphIter.next() ;
           Binding b = graphResultsToBinding(binding, d, projectionVars) ;
           return b ;
         }
@@ -128,7 +128,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         {
             Var var = projectionVars[i] ;
             
-            Node n = (Node)d.get(i) ;
+            Node n = d.get(i) ;
             if ( n == null )
                 // There was no variable of this name.
                 continue ;

@@ -59,7 +59,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
 //    @SuppressWarnings("null")
 //    @Override
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         Node s = m.getMatchSubject() ;
         Var sVar = null ;

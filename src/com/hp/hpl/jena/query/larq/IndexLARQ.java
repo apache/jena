@@ -18,6 +18,7 @@ import org.apache.lucene.search.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
 import com.hp.hpl.jena.sparql.util.iterator.IteratorTruncate;
@@ -81,10 +82,9 @@ public class IndexLARQ
 
     public NodeIterator searchModelByIndex(final Model model, String queryString, final float scoreLimit)
     {
-        Map1 converter = new Map1(){
-            public Object map1(Object object)
+        Map1<HitLARQ, RDFNode> converter = new Map1<HitLARQ, RDFNode>(){
+            public RDFNode map1(HitLARQ x)
             {
-                HitLARQ x = (HitLARQ)object ; 
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
             }} ;
         
@@ -120,11 +120,10 @@ public class IndexLARQ
             
             Hits hits = searcher.search(query) ;
             
-            Map1 converter = new Map1(){
-                public Object map1(Object object)
+            Map1<Hit,HitLARQ> converter = new Map1<Hit,HitLARQ>(){
+                public HitLARQ map1(Hit object)
                 {
-                    Hit h = (Hit)object ;
-                    return new HitLARQ(h) ;
+                    return new HitLARQ(object) ;
                 }} ;
             @SuppressWarnings("unchecked")
             Iterator<HitLARQ> iter = new Map1Iterator(converter, hits.iterator()) ;

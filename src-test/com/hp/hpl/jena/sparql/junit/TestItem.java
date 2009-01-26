@@ -187,11 +187,11 @@ public class TestItem
             return null ;
             
         List<String> l = new ArrayList<String>() ;
-        ClosableIterator cIter =  _getAction().listProperties(VocabTestQuery.data) ;
+        ClosableIterator<Statement> cIter =  _getAction().listProperties(VocabTestQuery.data) ;
         for ( ; cIter.hasNext() ; )
         {
-            Object obj = cIter.next() ;
-            String df = ((Statement)obj).getResource().getURI() ;
+            Statement stmt = cIter.next() ;
+            String df = stmt.getResource().getURI() ;
             l.add(df) ;
         }
         cIter.close() ;
@@ -209,11 +209,11 @@ public class TestItem
             return null ;
             
         List<String> l = new ArrayList<String>() ;
-        ClosableIterator cIter =  _getAction().listProperties(VocabTestQuery.graphData) ;
+        ClosableIterator<Statement> cIter =  _getAction().listProperties(VocabTestQuery.graphData) ;
         for ( ; cIter.hasNext() ; )
         {
-            Object obj = cIter.next() ;
-            String df = ((Statement)obj).getResource().getURI() ;
+            Statement obj = cIter.next() ;
+            String df = obj.getResource().getURI() ;
             l.add(df) ;
         }
         cIter.close() ;

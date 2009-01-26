@@ -111,10 +111,10 @@ public class localname extends PFuncSimple
         List<Binding> bindings = new ArrayList<Binding>() ;   // Use a list if you want counting results. 
         Graph graph = execCxt.getActiveGraph() ;
         
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        ExtendedIterator<Triple>iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {
-            Triple t = (Triple)iter.next() ;
+            Triple t = iter.next() ;
             slot(bindings, input, t.getSubject(),   subjVar, nodeLocalname) ;
             slot(bindings, input, t.getPredicate(), subjVar, nodeLocalname) ;
             slot(bindings, input, t.getObject(),    subjVar, nodeLocalname) ;

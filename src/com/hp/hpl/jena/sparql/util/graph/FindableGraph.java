@@ -18,7 +18,6 @@ class FindableGraph implements Findable
 
     FindableGraph(Graph graph) { this.graph = graph ; }
 
-    @SuppressWarnings("unchecked")
     public Iterator<Triple> find(Node s, Node p, Node o)
     {
         if ( s == null ) s = Node.ANY ;

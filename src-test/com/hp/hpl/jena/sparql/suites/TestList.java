@@ -179,7 +179,7 @@ public class TestList extends TestCase
         Model m = ModelFactory.createDefaultModel() ;
         m.read(new StringReader(str), null, "TTL") ;
         Graph graph = m.getGraph() ;
-        Triple t = (Triple)graph.find(r, p, Node.ANY).next() ;
+        Triple t = graph.find(r, p, Node.ANY).next() ;
         return new GNode(graph, t.getObject()) ;
     }
     

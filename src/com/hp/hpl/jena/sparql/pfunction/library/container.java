@@ -134,10 +134,10 @@ public class container extends PFuncSimple
     
     static private void findContainers(Collection<Node> acc, Graph graph, Node typeNode)
     {
-        ExtendedIterator iter = graph.find(Node.ANY, RDF.type.asNode(), typeNode) ;
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, RDF.type.asNode(), typeNode) ;
         while(iter.hasNext())
         {
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             Node containerNode = t.getSubject() ;
             acc.add(containerNode) ;
         }
@@ -147,10 +147,10 @@ public class container extends PFuncSimple
     {
         Collection<Node> acc = new HashSet<Node>() ; 
         // Index off the object
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, member) ;
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, member) ;
         while(iter.hasNext())
         {
-            Triple t = (Triple)iter.next();
+            Triple t = iter.next();
             Node containerNode = t.getSubject() ;   // Candidate
             if ( GraphContainerUtils.isContainer(graph, containerNode, typeNode) )
                 acc.add(containerNode) ;

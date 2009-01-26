@@ -94,7 +94,6 @@ public class WriterGraph
             out.print(label) ;
         }
         
-        @SuppressWarnings("unchecked")
         Iterator<Triple> iter = g.find(Node.ANY, Node.ANY, Node.ANY) ;
         if ( ! iter.hasNext() )
         {

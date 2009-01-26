@@ -6,11 +6,17 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.MapFilter;
+import com.hp.hpl.jena.util.iterator.MapFilterIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 
 /** Node utilities. 
@@ -44,6 +50,20 @@ public class NodeUtils
         if ( ! isStringLiteral(literal) ) return null ;
         return literal.getLiteralLexicalForm() ; 
     }
+    
+    public static Iterator<String> nodesToURIs(Iterator<Node> iter)
+    { 
+        MapFilter<Node, String> mapper = new MapFilter<Node, String>(){
+            public String accept(Node x)
+            {
+                return x.getURI() ;  
+            }} ;
+        
+        ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
+        Iterator<String> conv = new MapFilterIterator<Node, String>(mapper, eIter) ;
+        return conv ;
+    }
+    
     
     /** Compare two Nodes, based on their RDF terms forms, not value */
     public static int compareRDFTerms(Node node1, Node node2)

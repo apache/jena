@@ -31,31 +31,28 @@ public class PathEval
 {
     static private Log log = LogFactory.getLog(PathEval.class) ; 
     
+    static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
+    {
+        Map1<Node, RDFNode> conv = new Map1<Node, RDFNode>(){
+            public RDFNode map1(Node obj)
+            {
+                return ModelUtils.convertGraphNodeToRDFNode(obj, model) ;
+            }} ;
+        
+        return new NodeIteratorImpl(new Map1Iterator<Node, RDFNode>(conv, iter), null) ;
+    }
+    
     // Possible API usages.
     static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
-        
-        Map1 conv = new Map1(){
-            public Object map1(Object obj)
-            {
-                return ModelUtils.convertGraphNodeToRDFNode((Node)obj, model) ;
-            }} ;
-        
-        return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
+        return convertGraphNodeToRDFNode(model, iter) ;
     }
     
     static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator<Node> iter = evalReverse(model.getGraph(), rdfNode.asNode(), path) ;
-        
-        Map1 conv = new Map1(){
-            public Object map1(Object obj)
-            {
-                return ModelUtils.convertGraphNodeToRDFNode((Node)obj, model) ;
-            }} ;
-        
-        return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
+        return convertGraphNodeToRDFNode(model, iter) ;
     }
     
     // LinkedHashSet for predictable order - remove later??
@@ -211,17 +208,17 @@ public class PathEval
                 output.add(iter.next()) ;
         }
 
-        private static Map1 selectObject = new Map1()
+        private static Map1<Triple, Node> selectObject = new Map1<Triple, Node>()
         {
-            public Object map1(Object triple)
-            { return ((Triple)triple).getObject() ; }
+            public Node map1(Triple triple)
+            { return triple.getObject() ; }
         } ;
 
-        private static Map1 selectSubject = new Map1()
+        private static Map1<Triple, Node> selectSubject = new Map1<Triple, Node>()
         {
-            public Object map1(Object triple)
+            public Node map1(Triple triple)
             {
-                return ((Triple)triple).getSubject() ;
+                return triple.getSubject() ;
             }
         } ;
         
@@ -232,12 +229,12 @@ public class PathEval
             Iterator<Node> iter2 = null ;
             if ( forwardMode )
             {
-                Iterator<Node> iter1 = graph.find(node, property, Node.ANY) ;
+                Iterator<Triple> iter1 = graph.find(node, property, Node.ANY) ;
                 iter2 = new Map1Iterator(selectObject, iter1) ;
             }
             else
             {
-                Iterator<Node> iter1 = graph.find(Node.ANY, property, node) ;
+                Iterator<Triple> iter1 = graph.find(Node.ANY, property, node) ;
                 iter2 = new Map1Iterator(selectSubject, iter1) ;
             }
             

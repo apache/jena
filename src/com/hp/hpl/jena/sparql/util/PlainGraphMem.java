@@ -37,11 +37,11 @@ public class PlainGraphMem extends SmallGraphMem
         if ( t.isConcrete() )
             return triples.contains( t ) ;
         
-        ClosableIterator it = find( t );
+        ClosableIterator<Triple> it = find( t );
         try {
             for ( ; it.hasNext() ; )
             {
-                Triple t2 = (Triple)it.next() ;
+                Triple t2 = it.next() ;
                 if ( tripleContained(t, t2) )
                     return true ;
             }
@@ -51,7 +51,7 @@ public class PlainGraphMem extends SmallGraphMem
     
     // @Override
     @Override
-    public ExtendedIterator graphBaseFind( TripleMatch m ) 
+    public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
     {
         return 
             SimpleEventManager.notifyingRemove( this, triples.iterator() ) 
@@ -92,7 +92,7 @@ public class PlainGraphMem extends SmallGraphMem
         return node ; 
     }
     
-    static class TripleMatchFilterEquality extends Filter
+    static class TripleMatchFilterEquality extends Filter<Triple>
     {
         final protected Triple tMatch;
     
@@ -101,9 +101,8 @@ public class PlainGraphMem extends SmallGraphMem
             { this.tMatch = tMatch; }
         
         @Override
-        public boolean accept(Object o)
+        public boolean accept(Triple t)
         {
-            Triple t = (Triple)o ;
             return PlainGraphMem.tripleContained(tMatch, t) ;
         }
         

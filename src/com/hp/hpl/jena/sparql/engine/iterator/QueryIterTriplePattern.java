@@ -46,7 +46,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         private Node p ;
         private Node o ;
         private Binding binding ;
-        private ClosableIterator graphIter ;
+        private ClosableIterator<Triple> graphIter ;
         //private Iterator graphIter ;
 
         // This one-slot lookahead is common - but is it worth extracting?
@@ -64,12 +64,11 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             Node o2 = tripleNode(o) ;
             Graph graph = cxt.getActiveGraph() ;
             
-            ExtendedIterator iter = graph.find(s2, p2, o2) ;
+            ExtendedIterator<Triple> iter = graph.find(s2, p2, o2) ;
             
             if ( false )
             {
                 // Materialize the results now. Debugging only.
-                @SuppressWarnings("unchecked")
                 List<Triple> x = iter.toList() ;
                 this.graphIter = WrappedIterator.create(x.iterator()) ;
                 iter.close();
@@ -181,7 +180,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 
             while(graphIter.hasNext() && slot == null )
             {
-                Triple t = (Triple)graphIter.next() ;
+                Triple t = graphIter.next() ;
                 slot = mapper(t) ;
             }
             return slot != null ;

@@ -28,10 +28,10 @@ public class TemplateGraph extends TemplateGroup
 
     public TemplateGraph(Graph graph)
     {
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         while(iter.hasNext())
         {
-            Triple triple = (Triple)iter.next();
+            Triple triple = iter.next();
             super.addTriple(triple) ;
         }
         iter.close() ;

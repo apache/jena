@@ -68,10 +68,10 @@ public class RandomSampling extends SamplingBase
 	 */
 	private void getTriples()
 	{
-		ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+		ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
 		
 		while (iter.hasNext())
-			triples.add((Triple)iter.next()) ;
+			triples.add(iter.next()) ;
 	}
 }
 

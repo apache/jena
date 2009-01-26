@@ -16,8 +16,8 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 public class GraphSink extends GraphBase
 {
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
-    { return NullIterator.instance ; }
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    { return NullIterator.instance() ; }
     
     @Override
     public void performAdd( Triple t ) {}
