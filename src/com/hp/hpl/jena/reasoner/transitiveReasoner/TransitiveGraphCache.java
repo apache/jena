@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.27 2009-01-26 10:28:25 chris-dollin Exp $
+ * $Id: TransitiveGraphCache.java,v 1.28 2009-01-26 15:24:35 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -938,12 +938,12 @@ public class TransitiveGraphCache implements Finder {
                 } else {
                     // list all backwards from o
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
-                    if (gn_o == null) return NullIterator.instance;
+                    if (gn_o == null) return NullIterator.instance();
                     return gn_o.listPredecessorTriples(closed, this);
                 }
             } else {
                 GraphNode gn_s = (GraphNode)nodeMap.get(s);
-                if (gn_s == null) return NullIterator.instance;
+                if (gn_s == null) return NullIterator.instance();
                 if (o.isVariable()) {
                     // list forward from s
                     return gn_s.listTriples(closed, this);
@@ -951,18 +951,18 @@ public class TransitiveGraphCache implements Finder {
                     // Singleton test
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
                     gn_s = gn_s.leadNode();
-                    if (gn_o == null) return NullIterator.instance;
+                    if (gn_o == null) return NullIterator.instance();
                     gn_o = gn_o.leadNode();
                     if ( closed ? gn_s.pathTo(gn_o) : gn_s.directPathTo(gn_o) ) {
                         return new SingletonIterator(new Triple(s, pred, o));
                     } else {
-                        return NullIterator.instance;
+                        return NullIterator.instance();
                     }
                 }
             }
         } else {
             // No matching triples in this cache
-            return NullIterator.instance;
+            return NullIterator.instance();
         }
     }
     

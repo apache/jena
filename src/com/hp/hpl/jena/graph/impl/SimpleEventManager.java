@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.19 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: SimpleEventManager.java,v 1.20 2009-01-26 15:24:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -129,7 +129,7 @@ public class SimpleEventManager implements GraphEventManager
      * Answer an iterator which wraps <code>i</code> to ensure that if a .remove()
      * is executed on it, the graph <code>g</code> will be notified.
     */
-    public static ExtendedIterator notifyingRemove( final Graph g, Iterator i )
+    public static ExtendedIterator<Triple> notifyingRemove( final Graph g, Iterator i )
         {
         return new TrackingTripleIterator( i )
             {            

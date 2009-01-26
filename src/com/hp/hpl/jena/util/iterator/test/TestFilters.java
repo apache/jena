@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFilters.java,v 1.10 2009-01-16 17:24:04 andy_seaborne Exp $
+ 	$Id: TestFilters.java,v 1.11 2009-01-26 15:24:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -39,7 +39,7 @@ public class TestFilters extends ModelTestBase
     
     public void testFilterFilterMethod()
         {
-        ExtendedIterator it = Filter.any.filterKeep( NullIterator.instance );
+        ExtendedIterator it = Filter.any.filterKeep( NullIterator.instance() );
         assertFalse( it.hasNext() );
         }
     

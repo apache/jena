@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNullIterator.java,v 1.6 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: TestNullIterator.java,v 1.7 2009-01-26 15:24:34 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util.iterator.test;
 
@@ -24,18 +24,18 @@ public class TestNullIterator extends ModelTestBase
         { return new TestSuite( TestNullIterator.class ); }
     
     public void testHasntNext()
-        { assertFalse( NullIterator.instance.hasNext() ); }
+        { assertFalse( NullIterator.instance().hasNext() ); }
     
     public void testNextFails()
         { try
-            { NullIterator.instance.next(); fail( "should throw NoSuchElementException" ); }
+            { NullIterator.instance().next(); fail( "should throw NoSuchElementException" ); }
         catch (NoSuchElementException e) { pass(); }
         }
     
     public void testAndThenReturnsArgument()
         {
         ExtendedIterator it = new NiceIterator();
-        assertSame( it, NullIterator.instance.andThen( it ) );
+        assertSame( it, NullIterator.instance().andThen( it ) );
         }
     }
 

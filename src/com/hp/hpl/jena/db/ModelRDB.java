@@ -33,7 +33,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 
 public class ModelRDB extends ModelCom implements Model {    
@@ -52,7 +52,7 @@ public class ModelRDB extends ModelCom implements Model {
      * 
      * @since Jena 2.0
      */
-    public ModelRDB( Personality p, GraphRDB graph) throws RDFRDBException {
+    public ModelRDB( Personality<RDFNode> p, GraphRDB graph) throws RDFRDBException {
     	super( graph, p);
     	m_graphRDB = graph;
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RandomOrderGraph.java,v 1.8 2009-01-16 17:24:03 andy_seaborne Exp $
+  $Id: RandomOrderGraph.java,v 1.9 2009-01-26 15:24:34 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.shared;
 
@@ -40,13 +40,13 @@ public class RandomOrderGraph extends WrappedGraph {
 	}
 	
 	@Override
-    public ExtendedIterator find( TripleMatch m )
-	{ return new RandomOrderIterator(bufsz,super.find( m )); 
+    public ExtendedIterator<Triple> find( TripleMatch m )
+	{ return new RandomOrderIterator<Triple>(bufsz,super.find( m )); 
 	}
 
 	@Override
-    public ExtendedIterator find( Node s, Node p, Node o )
-	{ return new RandomOrderIterator(bufsz,super.find( s, p, o )); 
+    public ExtendedIterator<Triple> find( Node s, Node p, Node o )
+	{ return new RandomOrderIterator<Triple>(bufsz,super.find( s, p, o )); 
 	}
 	
 

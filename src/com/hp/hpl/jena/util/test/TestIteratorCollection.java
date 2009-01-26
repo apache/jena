@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestIteratorCollection.java,v 1.7 2009-01-16 17:23:59 andy_seaborne Exp $
+  $Id: TestIteratorCollection.java,v 1.8 2009-01-26 15:24:32 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -27,7 +27,7 @@ public class TestIteratorCollection extends GraphTestBase
     
     public void testEmptyToEmptySet()
         {
-        assertEquals( CollectionFactory.createHashedSet(), IteratorCollection.iteratorToSet( NullIterator.instance ) );
+        assertEquals( CollectionFactory.createHashedSet(), IteratorCollection.iteratorToSet( NullIterator.instance() ) );
         }
     
     public void testSingletonToSingleSet()
@@ -63,7 +63,7 @@ public class TestIteratorCollection extends GraphTestBase
 
     public void testEmptyToEmptyList()
         {
-        assertEquals( new ArrayList(), IteratorCollection.iteratorToList( NullIterator.instance ) );
+        assertEquals( new ArrayList(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
     
     public void testSingletonToSingletonList()

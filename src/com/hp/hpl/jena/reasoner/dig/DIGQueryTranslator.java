@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
+ * Last modified on   $Date: 2009-01-26 15:24:31 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.21 2008-12-28 19:32:04 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.22 2009-01-26 15:24:31 andy_seaborne Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -137,7 +137,7 @@ public abstract class DIGQueryTranslator {
         Document query = translatePattern( pattern, da, premises );
         if (query == null) {
             LogFactory.getLog( getClass() ).warn( "Could not find pattern translator for nested DIG query " + pattern );
-            return NullIterator.instance;
+            return NullIterator.instance();
         }
         else {
             Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
@@ -470,7 +470,7 @@ public abstract class DIGQueryTranslator {
 
         // the resulting iterator is either of length 0 or 1
         return found ? (ExtendedIterator) new SingletonIterator( result )
-                     : NullIterator.instance;
+                     : NullIterator.instance();
     }
 
 

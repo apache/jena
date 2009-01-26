@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnionModelAssembler.java,v 1.9 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: UnionModelAssembler.java,v 1.10 2009-01-26 15:24:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -19,7 +19,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
         {
         @Override
         protected ExtendedIterator graphBaseFind( TripleMatch m )
-            { return NullIterator.instance; }
+            { return NullIterator.instance(); }
         };
     
     @Override

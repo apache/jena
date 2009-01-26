@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.17 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: WrappedGraph.java,v 1.18 2009-01-26 15:24:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -67,10 +67,10 @@ public class WrappedGraph implements GraphWithPerform
         { base.delete( t ); 
         getEventManager().notifyDeleteTriple( this, t ); }
 
-    public ExtendedIterator find( TripleMatch m )
+    public ExtendedIterator<Triple> find( TripleMatch m )
         { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
 
-    public ExtendedIterator find( Node s, Node p, Node o )
+    public ExtendedIterator<Triple> find( Node s, Node p, Node o )
         { return SimpleEventManager.notifyingRemove( this, base.find( s, p, o ) ); }
 
     public boolean isIsomorphicWith( Graph g )

@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.48 2009-01-16 17:23:57 andy_seaborne Exp $
+  $Id: AbstractTestQuery.java,v 1.49 2009-01-26 15:24:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -433,7 +433,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
             {
             @Override
             public ExtendedIterator graphBaseFind( TripleMatch tm )
-                { return NullIterator.instance; }
+                { return NullIterator.instance(); }
             @Override
             public QueryHandler queryHandler()
                 {

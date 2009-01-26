@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.16 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.17 2009-01-26 15:24:31 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -87,19 +87,19 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         { 
         Set s = (Set) inverseMap.get( t );
         return s == null
-            ? (ExtendedIterator) NullIterator.instance
+            ? (ExtendedIterator) NullIterator.instance()
             : WrappedIterator.create( s.iterator() );
         }
 
     protected ExtendedIterator allTriples( TripleMatch tm )
         {
-        if (forwardMap.isEmpty()) return NullIterator.instance;
+        if (forwardMap.isEmpty()) return NullIterator.instance();
         Triple pattern = tm.asTriple();
         Node tag = pattern.getSubject();
         if (tag.isConcrete())
             {
             Triple x = getTriple( tag );  
-            return x == null ? NullIterator.instance : explodeTriple( pattern, tag, x ); 
+            return x == null ? NullIterator.instance() : explodeTriple( pattern, tag, x ); 
             }
         else
             {

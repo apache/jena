@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.31 2009-01-16 17:24:00 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.32 2009-01-26 15:24:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -72,7 +72,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
        {
        // System.err.println( ">> BOINK" ); // if (true) throw new JenaException( "BOINK" );
        TripleBunch s = bunchMap.get( o );
-       return s == null ? NullIterator.instance : s.iterator( container );
+       return s == null ? NullIterator.instance() : s.iterator( container );
        }
     
     public class NotifyMe implements HashCommon.NotifyEmpty
@@ -116,7 +116,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
        TripleBunch s = bunchMap.get( indexValue );
 //       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
        return s == null
-           ? NullIterator.instance
+           ? NullIterator.instance()
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
                .filterKeep( s.iterator( new NotifyMe( indexValue ) ) )
            ;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.25 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.26 2009-01-26 15:24:31 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -45,14 +45,14 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     protected ExtendedIterator allTriples( TripleMatch tm )
         {
         if (forwardMap.isEmpty())
-            return NullIterator.instance;
+            return NullIterator.instance();
         Triple t = tm.asTriple();
         Node subject = t.getSubject();
         if (subject.isConcrete())
             {
             Fragments x = (Fragments) forwardMap.get( subject );  
             return x == null
-                ? NullIterator.instance
+                ? NullIterator.instance()
                 : explodeFragments( t, subject, x )
                 ; 
             }

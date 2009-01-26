@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
+ * Last modified on   $Date: 2009-01-26 15:24:35 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.38 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.39 2009-01-26 15:24:35 andy_seaborne Exp $
  */
 public class TestClassExpression
     extends OntTestBase
@@ -292,7 +292,7 @@ public class TestClassExpression
                     assertTrue( "Should fail to add to a complement", ex );
 
                     ex = false;
-                    try { A.addOperands( NullIterator.instance ); } catch (UnsupportedOperationException e) {ex = true;}
+                    try { A.addOperands( NullIterator.instance() ); } catch (UnsupportedOperationException e) {ex = true;}
                     assertTrue( "Should fail to add to a complement", ex );
 
                     ex = false;
