@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: ArrayIterator.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+ * $Id: ArrayIterator.java,v 1.9 2009-01-26 18:07:36 chris-dollin Exp $
  *
  */
 //ArrayIterator.java
@@ -35,16 +35,16 @@ import java.util.NoSuchElementException ;
 
 /** An Iterator for arrays.
  * @author Jeremy Carroll
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2008-12-28 19:32:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2009-01-26 18:07:36 $'
  */
-public class ArrayIterator implements Iterator {
+public class ArrayIterator<T> implements Iterator<T> {
 	private int i;
-	private Object a;
+	private T[] a;
 	/** Constructs an iterator over the members of an array.
          * All arrays are supported including primitive types.
          * @param array Must be an array.
  */
-	public ArrayIterator(Object array) {
+	public ArrayIterator(T[] array) {
 		i = 0;
 		a = array;
 		if (!a.getClass().isArray())
@@ -53,9 +53,9 @@ public class ArrayIterator implements Iterator {
 	public boolean hasNext() {
 		return i<Array.getLength(a);
 	}
-	public Object next() throws NoSuchElementException {
+	public T next() throws NoSuchElementException {
 		try {
-			return Array.get(a,i++);
+			return a[i++]; // Array.get(a,i++);
 		}
 		catch (IndexOutOfBoundsException e) {
 			throw new NoSuchElementException();
