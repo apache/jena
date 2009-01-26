@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:24 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.32 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.33 2009-01-26 10:28:24 chris-dollin Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -63,7 +63,7 @@ public class TestListSyntaxCategories
                         new String[] {"http://jena.hpl.hp.com/testing/ontology"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntologies();
             }
             @Override
@@ -75,7 +75,7 @@ public class TestListSyntaxCategories
                         new String[] {"http://jena.hpl.hp.com/testing/ontology"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntologies();
             }
             @Override
@@ -88,7 +88,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"p",NS+"karma"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntProperties();
             }
             @Override
@@ -101,7 +101,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"p"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntProperties();
             }
             @Override
@@ -114,7 +114,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"op", NS+"op1"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listObjectProperties();
             }
             @Override
@@ -127,7 +127,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"dp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listDatatypeProperties();
             }
             @Override
@@ -140,7 +140,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"fp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listFunctionalProperties();
             }
             @Override
@@ -154,7 +154,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"tp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listTransitiveProperties();
             }
             @Override
@@ -168,7 +168,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"sp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listSymmetricProperties();
             }
             @Override
@@ -182,7 +182,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"ifp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listInverseFunctionalProperties();
             }
             @Override
@@ -196,7 +196,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"p", NS+"rdf-p", NS+"dp", NS+"op", NS+"op1"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntProperties();
             }
             @Override
@@ -209,7 +209,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"op", NS+"op1"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listObjectProperties();
             }
             @Override
@@ -222,7 +222,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"dp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listDatatypeProperties();
             }
             @Override
@@ -235,7 +235,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"fp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listFunctionalProperties();
             }
             @Override
@@ -249,7 +249,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"tp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listTransitiveProperties();
             }
             @Override
@@ -263,7 +263,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"ifp"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listInverseFunctionalProperties();
             }
             @Override
@@ -279,7 +279,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a0", NS+"a1", NS+"a2", NS+"z0", NS+"z1"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
             @Override
@@ -291,7 +291,7 @@ public class TestListSyntaxCategories
                 new String[] {NS+"A0", NS+"A1"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 Model mVocab = ModelFactory.createDefaultModel();
                 Resource cA = mVocab.createResource( "http://jena.hpl.hp.com/testing/ontology#A");
                 return m.listIndividuals( cA );
@@ -304,7 +304,7 @@ public class TestListSyntaxCategories
         new DoListTest( "empty OWL list individuals",  null,  OntModelSpec.OWL_MEM,  0, new String[] {} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
             @Override
@@ -315,7 +315,7 @@ public class TestListSyntaxCategories
         new DoListTest( "empty OWL+rule list individuals",  null,  OntModelSpec.OWL_MEM_RULE_INF,  0, new String[] {} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
             @Override
@@ -327,7 +327,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a1", NS+"a2", NS+"a0"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
             @Override
@@ -338,7 +338,7 @@ public class TestListSyntaxCategories
         new DoListTest( "empty DAML+rule list individuals",  null,  OntModelSpec.DAML_MEM_RULE_INF,  0, new String[] {} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
             @Override
@@ -351,7 +351,7 @@ public class TestListSyntaxCategories
                         null )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listAllDifferent();
             }
             @Override
@@ -363,7 +363,7 @@ public class TestListSyntaxCategories
                         true /* exception expected */ )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listAllDifferent();
             }
             @Override
@@ -377,7 +377,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listClasses();
             }
             @Override
@@ -389,7 +389,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listNamedClasses();
             }
             @Override
@@ -401,7 +401,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A" } )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIntersectionClasses();
             }
             @Override
@@ -413,7 +413,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"B"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listUnionClasses();
             }
             @Override
@@ -425,7 +425,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"C"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listComplementClasses();
             }
             @Override
@@ -437,7 +437,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"D"} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listEnumeratedClasses();
             }
             @Override
@@ -449,7 +449,7 @@ public class TestListSyntaxCategories
                         null )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listRestrictions();
             }
             @Override
@@ -461,7 +461,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listClasses();
             }
             @Override
@@ -473,7 +473,7 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listNamedClasses();
             }
             @Override
@@ -485,9 +485,10 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A" } )
         {
             @Override
-            public Iterator doList( OntModel m ) {
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIntersectionClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -495,9 +496,11 @@ public class TestListSyntaxCategories
         new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         new String[] {NS+"B"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listUnionClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -505,9 +508,11 @@ public class TestListSyntaxCategories
         new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         new String[] {NS+"C"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listComplementClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -515,9 +520,11 @@ public class TestListSyntaxCategories
         new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         new String[] {NS+"D"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listEnumeratedClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -525,9 +532,11 @@ public class TestListSyntaxCategories
         new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listRestrictions();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof Restriction;
             }
@@ -537,9 +546,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL list annotation properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listAnnotationProperties();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof AnnotationProperty;
             }
@@ -551,9 +562,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list ontologies",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,
                         new String[] {"http://jena.hpl.hp.com/testing/ontology", "http://www.w3.org/2002/07/owl"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntologies();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof Ontology;
             }
@@ -562,9 +575,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  46,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listOntProperties();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntProperty &&
                        r instanceof Property;
@@ -573,9 +588,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list object properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,
                         new String[] {NS+"op", NS+"op1"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listObjectProperties();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntProperty &&
                        r instanceof Property;
@@ -584,9 +601,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list datatype properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         new String[] {NS+"dp"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listDatatypeProperties();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntProperty &&
                        r instanceof Property;
@@ -597,9 +616,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list individuals",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  8,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIndividuals();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof Individual;
             }
@@ -608,9 +629,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list all different",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listAllDifferent();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof AllDifferent;
             }
@@ -620,9 +643,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  14,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -631,9 +656,11 @@ public class TestListSyntaxCategories
                         new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z",
                                       OWL.Thing.getURI(), OWL.Nothing.getURI()} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listNamedClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -641,9 +668,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list intersection classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         new String[] {NS+"A" } )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listIntersectionClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -651,9 +680,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list union classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,
                         new String[] {NS+"B", OWL.Thing.getURI()} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listUnionClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -661,9 +692,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list complement classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  3,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listComplementClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -671,9 +704,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list enumerated classes",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         new String[] {NS+"D"} )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listEnumeratedClasses();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof OntClass;
             }
@@ -681,9 +716,11 @@ public class TestListSyntaxCategories
         new DoListTest( "OWL+import list restrictions",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )
         {
-            public Iterator doList( OntModel m ) {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
                 return m.listRestrictions();
             }
+            @Override
             public boolean test( Resource r ) {
                 return r instanceof Restriction;
             }
@@ -746,12 +783,14 @@ public class TestListSyntaxCategories
             m_exExpected = exExpected;
         }
 
+        @Override
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
         }
 
 
+        @Override
         public void runTest() {
             Log logger = LogFactory.getLog( getClass() );
             OntModel m = ModelFactory.createOntologyModel( m_spec, null );
@@ -762,7 +801,7 @@ public class TestListSyntaxCategories
             }
 
             boolean exOccurred = false;
-            Iterator i = null;
+            Iterator<? extends Resource> i = null;
             try {
                 i = doList( m );
             }
@@ -773,13 +812,13 @@ public class TestListSyntaxCategories
             assertEquals( "Ontology exception" + (m_exExpected ? " was " : " was not ") + "expected", m_exExpected, exOccurred );
 
             if (!exOccurred) {
-                List expected = expected( m );
-                List actual = new ArrayList();
+                List<Resource> expected = expected( m );
+                List<Resource> actual = new ArrayList<Resource>();
                 int extraneous = 0;
 
                 // now we walk the iterator
                 while (i.hasNext()) {
-                    Resource res = (Resource) i.next();
+                    Resource res = i.next();
                     assertTrue( "Should not fail node test on " + res, test( res ));
 
                     actual.add( res );
@@ -800,12 +839,12 @@ public class TestListSyntaxCategories
                 // debugging
                 if (m_count != actual.size()) {
                     logger.debug( getName() + " - expected " + m_count + " results, actual = " + actual.size() );
-                    for (Iterator j = actual.iterator(); j.hasNext(); ) {
+                    for (Iterator<Resource> j = actual.iterator(); j.hasNext(); ) {
                         logger.debug( getName() + " - saw actual: " + j.next() );
                     }
                 }
                 if (expected != null && !expected.isEmpty()) {
-                    for (Iterator j = expected.iterator(); j.hasNext(); ) {
+                    for (Iterator<Resource> j = expected.iterator(); j.hasNext(); ) {
                         logger.debug( getName() + " - expected but did not find: " + j.next() );
                     }
                 }
@@ -819,7 +858,7 @@ public class TestListSyntaxCategories
         }
 
         /* get the iterator */
-        public Iterator doList( OntModel m ) {
+        public Iterator<? extends Resource> doList( OntModel m ) {
             // should be overriden in sub-classes
             return null;
         }
@@ -829,9 +868,9 @@ public class TestListSyntaxCategories
             return true;
         }
 
-        protected List expected( OntModel m ) {
+        protected List<Resource> expected( OntModel m ) {
             if (m_expected != null) {
-                List expected = new ArrayList();
+                List<Resource> expected = new ArrayList<Resource>();
 
                 for (int i = 0;  i < m_expected.length; i++) {
                     expected.add( m.getResource( m_expected[i] ) );

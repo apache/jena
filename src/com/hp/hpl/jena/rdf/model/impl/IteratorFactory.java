@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: IteratorFactory.java,v 1.17 2009-01-19 14:33:56 chris-dollin Exp $
+  $Id: IteratorFactory.java,v 1.18 2009-01-26 10:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -63,7 +63,7 @@ public final class IteratorFactory {
     }
     
     static  Literal asLiteral(Node n,ModelCom m) {
-        return (Literal) m.getNodeAs( n, Literal.class );
+        return m.getNodeAs( n, Literal.class );
     }
     
     static  Resource asResource(Node n, Class cl,ModelCom m) {

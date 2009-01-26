@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.42 2009-01-08 14:56:41 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.43 2009-01-26 10:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -77,10 +77,10 @@ public class ModelTestBase extends GraphTestBase
         { return property( aModel, s ); }
     
     public static Property property( Model m, String s )
-        { return (Property) rdfNode( m, s ).as( Property.class ); }
+        { return rdfNode( m, s ).as( Property.class ); }
         
     public static Literal literal( Model m, String s )
-        { return (Literal) rdfNode( m, s ).as( Literal.class ); }
+        { return rdfNode( m, s ).as( Literal.class ); }
          
      /**
         Create an array of Statements parsed from a semi-separated string.

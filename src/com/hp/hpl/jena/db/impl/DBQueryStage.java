@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.21 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.22 2009-01-26 10:28:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -137,7 +137,7 @@ public class DBQueryStage extends Stage
             for (int i = 0; i < compiled.argCnt; i++)
                 {
                 int ix = (compiled.argIndex.get( i )).intValue();
-                Node arg = (Node) args.get( ix );
+                Node arg = args.get( ix );
                 if (arg == null) throw new JenaException( "Null query argument" );
                 String val = compiled.driver.nodeToRDBString( arg, false );
                 ps.setString( i + 1, val );

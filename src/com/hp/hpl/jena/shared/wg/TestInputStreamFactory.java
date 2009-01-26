@@ -14,8 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipFile;
 
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.*;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**
@@ -119,7 +118,7 @@ public class TestInputStreamFactory {
 	private Object open(IRI uri, boolean in) {
         
 		IRI relative = uri.isAbsolute() ? base.relativize(uri,
-                IRI.CHILD) : uri;
+                IRIRelativize.CHILD) : uri;
 		
 		if (relative.isAbsolute())
 			throw new IllegalArgumentException(

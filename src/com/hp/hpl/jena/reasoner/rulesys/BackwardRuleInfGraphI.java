@@ -5,14 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.14 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: BackwardRuleInfGraphI.java,v 1.15 2009-01-26 10:28:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -21,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-26 10:28:21 $
  */
 public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
             
@@ -38,12 +37,12 @@ public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
      * Match a pattern just against the stored data (raw data, schema,
      * axioms) but no backchaining derivation.
      */
-    public ExtendedIterator findDataMatches(TriplePattern pattern);
+    public ExtendedIterator<Triple> findDataMatches(TriplePattern pattern);
 
     /**
      * Log a dervivation record against the given triple.
      */
-    public void logDerivation(Triple t, Object derivation);
+    public void logDerivation(Triple t, Derivation derivation);
 
     /**
      * Retrieve or create a bNode representing an inferred property value.

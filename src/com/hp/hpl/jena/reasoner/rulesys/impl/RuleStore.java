@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleStore.java,v 1.20 2009-01-16 18:50:00 andy_seaborne Exp $
+ * $Id: RuleStore.java,v 1.21 2009-01-26 10:28:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,32 +26,32 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2009-01-16 18:50:00 $
+ * @version $Revision: 1.21 $ on $Date: 2009-01-26 10:28:22 $
  */
 public class RuleStore {
 
     /** The set of rules indexed by head predicate */
-    protected OneToManyMap goalMap = new OneToManyMap();
+    protected OneToManyMap<Node, Rule> goalMap = new OneToManyMap<Node, Rule>();
     
     /** The list of all rules in the store */
-    protected List allRules;
+    protected List<Rule> allRules;
     
     /** Index of the rules, used to block multiple entries */
-    protected Set ruleIndex = new HashSet();
+    protected Set<Rule> ruleIndex = new HashSet<Rule>();
     
     /**
      * Constructor. Create an empty rule store.
      */
     public RuleStore() {
-        allRules = new ArrayList();
+        allRules = new ArrayList<Rule>();
     }
     
     /**
      * Constructor. Stores and indexes a list of rules.
      */
-    public RuleStore(List rules) {
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            addRule( (Rule)i.next() );
+    public RuleStore(List<Rule> rules) {
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            addRule( i.next() );
         }
         allRules = rules;
     }
@@ -60,8 +60,8 @@ public class RuleStore {
      * Add all the rules and  from an existing rulestore into this one.
      */
     public void addAll(RuleStore store) {
-        for (Iterator i = store.getAllRules().iterator(); i.hasNext(); ) {
-            addRule( (Rule)i.next() );
+        for (Iterator<Rule> i = store.getAllRules().iterator(); i.hasNext(); ) {
+            addRule( i.next() );
         }
     }
     
@@ -137,8 +137,8 @@ public class RuleStore {
      * Return a list of rules that match the given goal pattern
      * @param goal the goal being matched
      */
-    public List rulesFor(TriplePattern goal) {
-        List rules = new ArrayList();
+    public List<Rule> rulesFor(TriplePattern goal) {
+        List<Rule> rules = new ArrayList<Rule>();
         if (goal.getPredicate().isVariable()) {
             checkAll(goalMap.values().iterator(), goal, rules);
         } else {
@@ -151,7 +151,7 @@ public class RuleStore {
     /**
      * Return an ordered list of all registered rules.
      */
-    public List getAllRules() {
+    public List<Rule> getAllRules() {
         return allRules;
     }
     
@@ -168,9 +168,9 @@ public class RuleStore {
      * Helper method to extract all matching clauses from an
      * iterator over rules
      */
-    private void checkAll(Iterator candidates, TriplePattern goal, List matchingRules) {
+    private void checkAll(Iterator<Rule> candidates, TriplePattern goal, List<Rule> matchingRules) {
         while (candidates.hasNext()) {
-            Rule r = (Rule)candidates.next();
+            Rule r = candidates.next();
             if ( ((TriplePattern)r.getHeadElement(0)).compatibleWith(goal) ) {
                 matchingRules.add(r);
             }

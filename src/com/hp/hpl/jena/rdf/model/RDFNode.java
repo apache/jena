@@ -86,7 +86,7 @@ public interface RDFNode extends FrontsNode
         If the RDFNode cannot be converted, an UnsupportedPolymorphism
         exception is thrown..
     */
-    public <T extends RDFNode> RDFNode as( Class<T> view );
+    public <T extends RDFNode> T as( Class<T> view );
     
     /**
         Answer true iff this RDFNode can be viewed as an instance of

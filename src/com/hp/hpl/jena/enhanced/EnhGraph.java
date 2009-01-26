@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhGraph.java,v 1.23 2009-01-19 12:06:59 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.24 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.cache.*;
 
 /**
@@ -27,7 +28,7 @@ import com.hp.hpl.jena.util.cache.*;
 */
 
 public class EnhGraph 
-    extends Polymorphic 
+//    extends Polymorphic 
 {
     // Instance variables
     /** The graph that this enhanced graph is wrapping */
@@ -40,10 +41,10 @@ public class EnhGraph
     protected Cache enhNodes = CacheManager.createCache( CacheManager.ENHNODECACHE, "EnhGraph-" + cnt++, 1000 );
     
     /** The unique personality that is bound to this polymorphic instace */
-    private Personality personality;
+    private Personality<RDFNode> personality;
 
-    @Override public boolean isValid()
-        { return true; }
+//    @Override public boolean isValid()
+//        { return true; }
     
     // Constructors
     /**
@@ -54,7 +55,7 @@ public class EnhGraph
      *      graph until later.
      * @param p The personality factory, that maps types to realisations
      */
-    public EnhGraph( Graph g, Personality p ) {
+    public EnhGraph( Graph g, Personality<RDFNode> p ) {
         super();
         graph = g;
         personality = p;
@@ -119,18 +120,20 @@ public class EnhGraph
      * @param interf A type denoting the enhanced facet desired
      * @return An enhanced node
      */
-    public EnhNode getNodeAs( Node n, Class interf ) {
+    public <X extends RDFNode> X getNodeAs( Node n, Class<X> interf ) 
+        {
          // We use a cache to avoid reconstructing the same Node too many times.
         EnhNode eh = (EnhNode) enhNodes.get( n );
-        if ( eh != null )
+        if (eh == null)
+            {           
+            // not in the cache, so build a new one
+            X constructed = personality.newInstance( interf, n, this );
+            enhNodes.put( n, constructed );        
+            return constructed;
+            }
+        else
             return eh.viewAs( interf );
-            
-        // not in the cache, so build a new one
-        eh = (EnhNode) ((GraphPersonality) personality).nodePersonality().newInstance( interf, n, this );
-        enhNodes.put( n, eh );        
-        return eh;
-    }
-    
+        }
     
     /**
      * Answer the cache controlle for this graph
@@ -148,30 +151,30 @@ public class EnhGraph
          enhNodes = cc;
     }
      
-     
-    /** 
-     * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
-     * t.  This is a stub method that has not yet been implemented.
-     @param t A type
-     @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
-     */
-    @Override protected Polymorphic convertTo(Class t) {
-        throw new PersonalityConfigException
-            ( "Alternative perspectives on graphs has not been implemented yet" );
-    }
-    
-    /**
-        we can't convert to anything. 
-    */
-    @Override protected boolean canSupport( Class t )
-        { return false; }
+//     
+//    /** 
+//     * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
+//     * t.  This is a stub method that has not yet been implemented.
+//     @param t A type
+//     @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
+//     */
+//    @Override protected Polymorphic convertTo(Class t) {
+//        throw new PersonalityConfigException
+//            ( "Alternative perspectives on graphs has not been implemented yet" );
+//    }
+//    
+//    /**
+//        we can't convert to anything. 
+//    */
+//    @Override protected boolean canSupport( Class t )
+//        { return false; }
         
     /**
      * Answer the personality object bound to this polymorphic instance
      * 
      * @return The personality object
      */
-    @Override protected Personality getPersonality() {
+    protected Personality<RDFNode> getPersonality() {
         return personality;
     }
     

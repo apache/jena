@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDyadic.java,v 1.14 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: TestDyadic.java,v 1.15 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Dyadic;
+import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.graph.test.*;
 
 
@@ -47,9 +47,9 @@ public class TestDyadic extends GraphTestBase
 		assertEquals( "mt1.hasNext()", false, mt1.hasNext() );
 		assertEquals( "mt2.hasNext()", false, mt2.hasNext() );
 		assertEquals( "andThen(mt1,mt2).hasNext()", false, mt1.andThen( mt2 ).hasNext() ); 		
-		assertEquals( "butNot(it1,it2).hasNext()", false, Dyadic.butNot( it1, it2 ).hasNext() );
-		assertEquals( "x y z @butNot z", true, Dyadic.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
-		assertEquals( "x y z @butNot a", true, Dyadic.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
+		assertEquals( "butNot(it1,it2).hasNext()", false, CompositionBase.butNot( it1, it2 ).hasNext() );
+		assertEquals( "x y z @butNot z", true, CompositionBase.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
+		assertEquals( "x y z @butNot a", true, CompositionBase.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
 		}
     
     public void testDyadicOperands()

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:26 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.30 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.31 2009-01-26 10:28:26 chris-dollin Exp $
  */
 public class MultiUnion extends Polyadic
 {
@@ -155,7 +155,7 @@ public class MultiUnion extends Polyadic
         { return optimiseOne() ? singleGraphQueryHandler() : super.queryHandler(); }
     
     private QueryHandler singleGraphQueryHandler()
-        { return ((Graph) m_subGraphs.get( 0 )).queryHandler(); }
+        { return (m_subGraphs.get( 0 )).queryHandler(); }
 
     /**
      * <p>
@@ -179,7 +179,7 @@ public class MultiUnion extends Polyadic
          this union.
     */
     private ExtendedIterator singleGraphFind( final TripleMatch t )
-        { return ((Graph) m_subGraphs.get( 0 )).find(  t  ); }
+        { return (m_subGraphs.get( 0 )).find(  t  ); }
 
 
     /**
@@ -224,7 +224,7 @@ public class MultiUnion extends Polyadic
             long result = 0;
             for (int i = 0; i < mu.m_subGraphs.size(); i += 1)
                 {
-                Graph g = (Graph) mu.m_subGraphs.get( i );
+                Graph g = mu.m_subGraphs.get( i );
                 GraphStatisticsHandler s = g.getStatisticsHandler();
                 long n = s.getStatistic( S, P, O );
                 if (n < 0) return n;

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.19 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.20 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class ComplementClassImpl
     extends OntClassImpl
@@ -184,7 +184,7 @@ public class ComplementClassImpl
      * @return The class that this class is a complement of.
      */
     public OntClass getOperand() {
-        return (OntClass) objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
+        return objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.22 2009-01-19 12:06:59 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.23 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (refactoring and commentage)
 */
-public class EnhNode extends Polymorphic implements FrontsNode
+public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
 {
     
     /** The graph node that this enhanced node is wrapping */
@@ -88,18 +88,18 @@ public class EnhNode extends Polymorphic implements FrontsNode
      * @return An enhanced nodet that corresponds to t; this may be <i>this</i>
      *         Java object, or a different object.
      */ 
-    public EnhNode viewAs( Class t ) {
-        return (EnhNode) asInternal( t ); 
+    public <X extends RDFNode> X viewAs( Class<X> t ) {
+        return asInternal( t ); 
     }
     
     /** allow subclasses to implement RDFNode & its subinterface */
-    public RDFNode as( Class t )
-        { return (RDFNode) viewAs( t ); }
+    public <T extends RDFNode> T as( Class<T> t )
+        { return asInternal( t ); }
       
     /**
         API-level method for polymorphic testing
     */
-    public boolean canAs( Class t )
+    public <X extends RDFNode> boolean canAs( Class<X> t )
         { return canSupport( t ); }
         
     /**
@@ -133,15 +133,15 @@ public class EnhNode extends Polymorphic implements FrontsNode
         object's sibling ring. If the node cannot be converted, throw an
         UnsupportedPolymorphismException.
     */
-    @Override protected Polymorphic convertTo( Class t ) 
+    @Override protected <X extends RDFNode> X convertTo( Class<X> t ) 
         {
         EnhGraph eg = getGraph();
         if (eg == null) throw new UnsupportedPolymorphismException( this, t );
         Implementation imp = getPersonality().getImplementation( t );
         if (imp == null) throw new UnsupportedPolymorphismException( this, t );
-        Polymorphic result = imp.wrap( asNode(), eg );          
+        EnhNode result = imp.wrap( asNode(), eg );          
         this.addView( result );
-        return result;
+        return t.cast( result );
         }
     
     /**
@@ -150,7 +150,7 @@ public class EnhNode extends Polymorphic implements FrontsNode
         as a <code>t</code> via the graph's personality's implementation.
         If this node has no graph, answer false.       
     */
-    @Override protected boolean canSupport( Class t )
+    @Override protected <X extends RDFNode> boolean canSupport( Class<X> t )
         {
         if (alreadyHasView( t )) return true;
         if (getGraph() == null) return false;
@@ -164,8 +164,8 @@ public class EnhNode extends Polymorphic implements FrontsNode
      * 
      * @return The personality object
      */
-    @Override protected Personality getPersonality() {
-        return ((GraphPersonality) getGraph().getPersonality()).nodePersonality();
+    @Override protected Personality<RDFNode> getPersonality() {
+        return getGraph().getPersonality();
     }
     
 }

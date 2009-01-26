@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.41 2009-01-16 18:24:39 andy_seaborne Exp $
+  $Id: PrefixMapping.java,v 1.42 2009-01-26 10:28:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -184,7 +184,7 @@ public interface PrefixMapping
     public static final PrefixMapping Standard = PrefixMapping.Factory.create()
         .setNsPrefix( "rdfs", RDFS.getURI() )
         .setNsPrefix( "rdf", RDF.getURI() )
-        .setNsPrefix( "dc", DC.getURI() )
+        .setNsPrefix( "dc", DC_11.getURI() )
         .setNsPrefix( "owl", OWL.getURI() )
         .setNsPrefix( "xsd", XSD.getURI() )
         .lock()

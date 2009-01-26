@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:04 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:25 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -48,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.27 2008-12-28 19:32:04 andy_seaborne Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.28 2009-01-26 10:28:25 chris-dollin Exp $
  */
 public class DIGAdapter
 {
@@ -559,7 +559,7 @@ public class DIGAdapter
         }
         else {
             // a new bNode introducing a class expression
-            translateClassDescription( elem, (OntClass) cls.as( OntClass.class ), sourceData );
+            translateClassDescription( elem, cls.as( OntClass.class ), sourceData );
         }
     }
 
@@ -815,7 +815,7 @@ public class DIGAdapter
      */
     protected void translateClassExpressions( Element tell, StmtIterator i, int classExprType, Model source ) {
         while (i.hasNext()) {
-            OntClass cls = (OntClass) i.nextStatement().getSubject().as( OntClass.class );
+            OntClass cls = i.nextStatement().getSubject().as( OntClass.class );
 
             Element equalc = addElement( tell, DIGProfile.EQUALC );
             addClassDescription( equalc, cls, source );
@@ -906,7 +906,7 @@ public class DIGAdapter
      * @param c The restriction concept resource
      */
     protected void translateRestrictionClass( Element expr, Resource c, Model source ) {
-        Restriction r = (Restriction) c.as( Restriction.class );
+        Restriction r = c.as( Restriction.class );
 
         if (r.isAllValuesFromRestriction()) {
             // all values from restriction translates to a DIG <all>R E</all> axiom
@@ -1061,24 +1061,24 @@ public class DIGAdapter
 
     /** Translate the various axioms pertaining to an individual */
     protected void translateIndividual( Element expr, Resource r ) {
-        Individual ind = (Individual) r.as( Individual.class );
+        Individual ind = r.as( Individual.class );
         translateInstanceTypes( expr, ind );
 
         for (StmtIterator i = ind.listProperties(); i.hasNext(); ) {
             Statement s = i.nextStatement();
-            OntProperty p = (OntProperty) s.getPredicate().as( OntProperty.class );
+            OntProperty p = s.getPredicate().as( OntProperty.class );
 
             if (p.equals( getOntLanguage().DIFFERENT_FROM())) {
-                translateDifferentIndividuals( expr, ind, (Individual) s.getResource().as( Individual.class ) );
+                translateDifferentIndividuals( expr, ind, s.getResource().as( Individual.class ) );
             }
             else if (p.equals( getOntLanguage().SAME_AS())) {
-                translateSameIndividuals( expr, ind, (Individual) s.getResource().as( Individual.class ) );
+                translateSameIndividuals( expr, ind, s.getResource().as( Individual.class ) );
             }
             else if (p.isObjectProperty() ||
                      p.isTransitiveProperty() ||
                      p.isSymmetricProperty() ||
                      p.isInverseFunctionalProperty()) {
-                translateInstanceRole( expr, ind, p, (Individual) s.getResource().as( Individual.class ) );
+                translateInstanceRole( expr, ind, p, s.getResource().as( Individual.class ) );
             }
             else if (p.isDatatypeProperty()) {
                 translateInstanceAttrib( expr, ind, p, s.getLiteral() );
@@ -1093,7 +1093,7 @@ public class DIGAdapter
             Resource type = (Resource) i.next();
             Element inst = addElement( expr, DIGProfile.INSTANCEOF );
             addNamedElement( inst, DIGProfile.INDIVIDUAL, getResourceID( ind ) );
-            addClassDescription( inst, (OntClass) type.as( OntClass.class ), m_sourceData );
+            addClassDescription( inst, type.as( OntClass.class ), m_sourceData );
         }
     }
 
@@ -1155,7 +1155,7 @@ public class DIGAdapter
         collectRoleProperties( roles );
 
         for (Iterator i = roles.iterator(); i.hasNext(); ) {
-            translateRole( expr, (ObjectProperty) ((Property) i.next()).as( ObjectProperty.class ), m_sourceData );
+            translateRole( expr, ((Property) i.next()).as( ObjectProperty.class ), m_sourceData );
         }
     }
 
@@ -1184,7 +1184,7 @@ public class DIGAdapter
     /** Translate all of the attribute (datatype properties) in the KB */
     protected void translateAttributes( Element expr ) {
         for (Iterator i = m_sourceData.listDatatypeProperties(); i.hasNext(); ) {
-            translateAttribute( expr, (DatatypeProperty) ((Property) i.next()).as( DatatypeProperty.class ), m_sourceData );
+            translateAttribute( expr, ((Property) i.next()).as( DatatypeProperty.class ), m_sourceData );
         }
     }
 
@@ -1274,7 +1274,7 @@ public class DIGAdapter
     protected void translateAllDifferentAxioms( Element expr ) {
         if (m_sourceData.getProfile().ALL_DIFFERENT() != null) {
             for (Iterator i = m_sourceData.listAllDifferent(); i.hasNext(); ) {
-                AllDifferent ad = (AllDifferent) ((Resource) i.next()).as( AllDifferent.class );
+                AllDifferent ad = ((Resource) i.next()).as( AllDifferent.class );
                 translateAllDifferent( expr, ad.getDistinctMembers() );
             }
         }
@@ -1286,10 +1286,10 @@ public class DIGAdapter
         List dm = diffMembers.asJavaList();
 
         for (int i = 0;  i < dm.size(); i++) {
-            Individual ind0 = (Individual) ((Resource) dm.get(i)).as( Individual.class );
+            Individual ind0 = ((Resource) dm.get(i)).as( Individual.class );
 
             for (int j = i+1; j < dm.size(); j++) {
-                Individual ind1 = (Individual) ((Resource) dm.get(j)).as( Individual.class );
+                Individual ind1 = ((Resource) dm.get(j)).as( Individual.class );
                 translateDifferentIndividuals( expr, ind0, ind1 );
             }
         }

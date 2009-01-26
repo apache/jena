@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AlreadyLinkedViewException.java,v 1.8 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: AlreadyLinkedViewException.java,v 1.9 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -19,7 +19,7 @@ public class AlreadyLinkedViewException extends JenaException
         The polymorphic <code>other</code> has already been linked into
         a sibling ring and hence cannot be linked into a different one.
     */
-    public AlreadyLinkedViewException( Polymorphic other )
+    public AlreadyLinkedViewException( Polymorphic<?> other )
         { super( other.toString() ); }
     }
 

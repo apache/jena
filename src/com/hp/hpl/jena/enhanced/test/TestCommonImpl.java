@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.10 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestCommonImpl.java,v 1.11 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -42,16 +43,28 @@ class TestCommonImpl extends EnhNode implements TestNode {
     // Convenience routines, that wrap the generic
     // routines from EnhNode.
     public TestSubject asSubject() {
-        return (TestSubject)asInternal(TestSubject.class);
+        return asInternal(TestSubject.class);
     }
     
     public TestObject asObject() {
-        return (TestObject)asInternal(TestObject.class);
+        return asInternal(TestObject.class);
     }
     
     public TestProperty asProperty() {
-        return (TestProperty)asInternal(TestProperty.class);
+        return asInternal(TestProperty.class);
     }
+
+    public RDFNode inModel( Model m )
+        {
+        
+        return null;
+        }
+
+    public Object visitWith( RDFVisitor rv )
+        {
+        
+        return null;
+        }
     
 }
 

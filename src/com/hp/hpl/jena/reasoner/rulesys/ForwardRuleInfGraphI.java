@@ -5,12 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.15 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.16 2009-01-26 10:28:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:21 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
@@ -62,7 +62,7 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
      * This may different from the normal find operation in the base of hybrid reasoners
      * where we are side-stepping the backward deduction step.
      */
-    public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object);
+    public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object);
 
     /**
      * Return true if derivation logging is enabled.
@@ -72,7 +72,7 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     /**
      * Log a dervivation record against the given triple.
      */
-    public void logDerivation(Triple t, Object derivation);
+    public void logDerivation(Triple t, Derivation derivation);
 
 }
 

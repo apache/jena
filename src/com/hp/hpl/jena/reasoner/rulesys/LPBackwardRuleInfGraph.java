@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.15 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.16 2009-01-26 10:28:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:21 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -37,7 +37,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     protected LPBRuleEngine engine;
     
     /** Table of derivation records, maps from triple to RuleDerivation */
-    protected OneToManyMap derivations;
+    protected OneToManyMap<Triple, Derivation> derivations;
     
     /** An optional graph of separate schema assertions that should also be processed */
     protected FGraph fschema;
@@ -158,7 +158,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * may not have completely satisfied the query.
      */
     @Override
-    public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+    public synchronized ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
         ExtendedIterator result = new UniqueExtendedIterator(engine.find(pattern));
@@ -274,7 +274,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Log a dervivation record against the given triple.
      */
-    public void logDerivation(Triple t, Object derivation) {
+    public void logDerivation(Triple t, Derivation derivation) {
         derivations.put(t, derivation);
     }
 

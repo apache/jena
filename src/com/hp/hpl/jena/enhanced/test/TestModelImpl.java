@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelImpl.java,v 1.9 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestModelImpl.java,v 1.10 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -16,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
 public class TestModelImpl extends EnhGraph implements TestModel {
     
     /** Creates a new instance of TestModelImpl */
-    public TestModelImpl(Graph g, Personality p) {
+    public TestModelImpl(Graph g, Personality<RDFNode> p) {
         super(g,p);
     }
     private Triple aTriple() {
@@ -32,15 +33,15 @@ public class TestModelImpl extends EnhGraph implements TestModel {
     }
         
     public TestObject anObject() {
-        return (TestObject)getNodeAs(aTriple().getObject(),TestObject.class);
+        return getNodeAs(aTriple().getObject(),TestObject.class);
     }
     
     public TestProperty aProperty() {
-        return (TestProperty)getNodeAs(aTriple().getPredicate(),TestProperty.class);
+        return getNodeAs(aTriple().getPredicate(),TestProperty.class);
     }
     
     public TestSubject aSubject() {
-        return (TestSubject)getNodeAs(aTriple().getSubject(),TestSubject.class);
+        return getNodeAs(aTriple().getSubject(),TestSubject.class);
     }
     
 }

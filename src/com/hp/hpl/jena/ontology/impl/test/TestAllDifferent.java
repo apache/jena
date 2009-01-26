@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestAllDifferent.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:24 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAllDifferent.java,v 1.13 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.14 2009-01-26 10:28:24 chris-dollin Exp $
  */
 public class TestAllDifferent
     extends OntTestBase 
@@ -75,8 +75,8 @@ public class TestAllDifferent
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     AllDifferent a = m.createAllDifferent();
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
-                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
                     
                     a.addDistinctMember( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );

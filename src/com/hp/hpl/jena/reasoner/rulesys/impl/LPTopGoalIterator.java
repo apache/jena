@@ -5,12 +5,13 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.15 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: LPTopGoalIterator.java,v 1.16 2009-01-26 10:28:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import java.util.NoSuchElementException;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
@@ -22,11 +23,11 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:22 $
  */
-public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
+public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
-    Object lookAhead;
+    Triple lookAhead;
 
     /** The parent backward chaining engine - nulled on close */
     LPInterpreter interpreter;
@@ -35,7 +36,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     BackwardRuleInfGraphI infgraph;
     
     /** The set of choice points that the top level interpter is waiting for */
-    protected Set choicePoints = new HashSet();
+    protected Set<ConsumerChoicePointFrame> choicePoints = new HashSet<ConsumerChoicePointFrame>();
 
     /** The choice point most recently notified as ready to run. */
     protected ConsumerChoicePointFrame nextToRun;
@@ -76,8 +77,10 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
             lookaheadValid = true;
             // LogFactory.getLog( getClass() ).debug( "interpreter = " + interpreter );
 
-            lookAhead = interpreter.next();
-            if (lookAhead == StateFlag.FAIL) {
+            // TODO nasty dynamic typing here.
+            Object next = interpreter.next();
+            lookAhead = next instanceof Triple ? (Triple) next : null;
+            if (next == StateFlag.FAIL) {
                 if (choicePoints.isEmpty()) {
                     // Nothing left to try
                     close();
@@ -132,8 +135,8 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     public boolean isReady() {
         if (checkReadyNeeded) {
             isReady = false;
-            for (Iterator i = choicePoints.iterator(); i.hasNext(); ) {
-                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
+            for (Iterator<ConsumerChoicePointFrame> i = choicePoints.iterator(); i.hasNext(); ) {
+                ConsumerChoicePointFrame ccp = i.next();
                 if ( ccp.isReady() ) {
                     if (nextToRun == null) {
                         nextToRun = ccp;
@@ -186,13 +189,13 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     /**
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public Triple next() {
         checkCME();
         if (!lookaheadValid) moveForward();
         if (lookAhead == null) {
             throw new NoSuchElementException("Overran end of LP result set");
         }
-        Object result = lookAhead;
+        Triple result = lookAhead;
         lookaheadValid = false;
         return result;
     }

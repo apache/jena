@@ -1,10 +1,12 @@
 /*
  (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: TestDatabaseModes.java,v 1.6 2008-12-28 19:32:37 andy_seaborne Exp $
+ $Id: TestDatabaseModes.java,v 1.7 2009-01-26 10:28:24 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler.acceptance;
+
+import junit.framework.Assert;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.test.AssemblerTestBase;
@@ -33,20 +35,20 @@ public class TestDatabaseModes extends AssemblerTestBase
         try
             {
             openWith( "triangle", true, false );
-            AllAccept.fail( "should trap existing model" );
+            Assert.fail( "should trap existing model" );
             }
         catch (AlreadyExistsException e)
             {
-            AllAccept.assertEquals( "triangle", e.getMessage() );
+            Assert.assertEquals( "triangle", e.getMessage() );
             }
         try
             {
             openWith( "hex", false, false );
-            AllAccept.fail( "should trap existing model" );
+            Assert.fail( "should trap existing model" );
             }
         catch (AlreadyExistsException e)
             {
-            AllAccept.assertEquals( "hex", e.getMessage() );
+            Assert.assertEquals( "hex", e.getMessage() );
             }
         }
 
@@ -55,20 +57,20 @@ public class TestDatabaseModes extends AssemblerTestBase
         try
             {
             openWith( "parabola", false, true );
-            AllAccept.fail( "should trap missing model" );
+            Assert.fail( "should trap missing model" );
             }
         catch (NotFoundException e)
             {
-            AllAccept.assertEquals( "parabola", e.getMessage() );
+            Assert.assertEquals( "parabola", e.getMessage() );
             }
         try
             {
             openWith( "curve", false, false );
-            AllAccept.fail( "should trap missing model" );
+            Assert.fail( "should trap missing model" );
             }
         catch (NotFoundException e)
             {
-            AllAccept.assertEquals( "curve", e.getMessage() );
+            Assert.assertEquals( "curve", e.getMessage() );
             }
         }
 

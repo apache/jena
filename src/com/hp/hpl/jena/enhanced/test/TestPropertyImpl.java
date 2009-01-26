@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPropertyImpl.java,v 1.13 2009-01-22 15:10:44 chris-dollin Exp $
+  $Id: TestPropertyImpl.java,v 1.14 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * @see TestObjectImpl
@@ -28,7 +29,7 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
         super( n, eg );
     }
     
-    @Override public boolean supports( Class t )
+    @Override public <X extends RDFNode> boolean supports( Class<X> t )
         { return t.isInstance( this ) && isProperty(); }
         
     public boolean isProperty() {
@@ -38,7 +39,7 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
     public TestObject anObject() {
         if (!isProperty())
             throw new IllegalStateException("Node is not the property of a triple.");
-        return (TestObject)enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
+        return enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
     }
     
 }

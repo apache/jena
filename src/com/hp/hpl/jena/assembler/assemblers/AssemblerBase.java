@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.14 2009-01-20 15:12:28 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.15 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.RDF;
 

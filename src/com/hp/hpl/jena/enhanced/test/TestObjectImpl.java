@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestObjectImpl.java,v 1.12 2009-01-22 15:10:44 chris-dollin Exp $
+  $Id: TestObjectImpl.java,v 1.13 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * See {@link TestObject} for more detailed documentation.
@@ -37,8 +38,8 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
         super( n, eg );
     }
     
-    @Override public boolean supports( Class t )
-        { return t.isInstance( this) && isObject(); }
+    @Override public <X extends RDFNode> boolean supports( Class<X> t )
+        { return t.isInstance( this ) && isObject(); }
         
     public boolean isObject() {
         return findObject() != null;
@@ -55,7 +56,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return (TestSubject)enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
+        return enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
     }
 }
 

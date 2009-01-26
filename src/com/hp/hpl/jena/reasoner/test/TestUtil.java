@@ -5,23 +5,22 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.20 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestUtil.java,v 1.21 2009-01-26 10:28:24 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2008-12-28 19:32:22 $
+ * @version $Revision: 1.21 $ on $Date: 2009-01-26 10:28:24 $
  */
 public class TestUtil {
     
@@ -73,7 +72,7 @@ public class TestUtil {
             if (!gotit) {
                 logger.debug( testCase.getName() + " found unexpected iterator value: " + n);
             }
-            TestCase.assertTrue( testCase.getName() + " found unexpected iterator value: " + n, gotit);
+            Assert.assertTrue( testCase.getName() + " found unexpected iterator value: " + n, gotit);
         }
         
         // check that no expected values were unfound
@@ -82,11 +81,11 @@ public class TestUtil {
 //                for (int j = 0; j < vals.length; j += 1) System.err.println( "#" + j + ": " + vals[j] );
                 logger.debug( testCase.getName() + " failed to find expected iterator value: " + vals[i]);
             }
-            TestCase.assertTrue(testCase.getName() + " failed to find expected iterator value: " + vals[i], found[i]);
+            Assert.assertTrue(testCase.getName() + " failed to find expected iterator value: " + vals[i], found[i]);
         }
         
         // check we got the right no. of anons
-        TestCase.assertEquals( testCase.getName() + " iterator test did not find the right number of anon. nodes", countAnon, anonFound );
+        Assert.assertEquals( testCase.getName() + " iterator test did not find the right number of anon. nodes", countAnon, anonFound );
     }
     
 
@@ -124,7 +123,7 @@ public class TestUtil {
             it.next();
             length++;
         }
-        TestCase.assertEquals(expectedLength, length);
+        Assert.assertEquals(expectedLength, length);
     }
     
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.26 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: Functor.java,v 1.27 2009-01-26 10:28:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.27 $ on $Date: 2009-01-26 10:28:21 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -41,11 +41,11 @@ public class Functor implements ClauseEntry {
     protected Builtin implementor;
     
     /** A static Filter instance that detects triples with Functor objects */
-    public static final Filter acceptFilter = new Filter() {
+    public static final Filter<Triple> acceptFilter = new Filter<Triple>() {
                 @Override
-                public boolean accept(Object t) {
-                    if (((Triple)t).getSubject().isLiteral()) return true;
-                    Node n = ((Triple)t).getObject();
+                public boolean accept( Triple t) {
+                    if (t.getSubject().isLiteral()) return true;
+                    Node n = t.getObject();
                     return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
                 }
             };
@@ -57,9 +57,9 @@ public class Functor implements ClauseEntry {
      * @param name the name of the functor
      * @param args a list of nodes defining the arguments
      */
-    public Functor(String name, List args) {
+    public Functor(String name, List<Node> args) {
         this.name = name;
-        this.args = (Node[]) args.toArray(new Node[]{});
+        this.args = args.toArray(new Node[]{});
     }
     
     /**
@@ -80,9 +80,9 @@ public class Functor implements ClauseEntry {
      * @param registry a table of builtins to consult to check for 
      * implementations of this functor when used as a rule clause
      */
-    public Functor(String name, List args, BuiltinRegistry registry) {
+    public Functor(String name, List<Node> args, BuiltinRegistry registry) {
         this.name = name;
-        this.args = (Node[]) args.toArray(new Node[]{});
+        this.args = args.toArray(new Node[]{});
         this.implementor = registry.getImplementation(name);
     }
     

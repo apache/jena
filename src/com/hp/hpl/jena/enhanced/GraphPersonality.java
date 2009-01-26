@@ -1,43 +1,20 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphPersonality.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
+  $Id: GraphPersonality.java,v 1.12 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
+
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
     Personalities for Graphs. Possibly premature. Or is that NodePersonality?
 	@author jjc + kers
 */
 
-public class GraphPersonality extends Personality {
-
-    private Personality nodePersonality; 
-    
-	public GraphPersonality() 
-		{ this( new NodePersonality() ); }
-	
-	public GraphPersonality( Personality p ) 
-		{ this.nodePersonality = p; }
-	
-	public GraphPersonality( GraphPersonality base, Personality forNodes )
-		{ this( forNodes ); add( base ); }
-    
-	public Personality nodePersonality() 
-		{ return nodePersonality; }
-    
-    @Override
-    public Personality add( Class interf, Implementation t ) {
-        nodePersonality.add( interf, t );
-        return this;
-    }
-    
-	@Override
-    public Personality copy()
-        { return new GraphPersonality( this, nodePersonality.copy() ); }
-    
-}
+public class GraphPersonality extends Personality<RDFNode> 
+    {}
 
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

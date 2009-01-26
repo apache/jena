@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.15 2009-01-19 12:06:59 chris-dollin Exp $
+  $Id: Polymorphic.java,v 1.16 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -14,42 +14,31 @@ package com.hp.hpl.jena.enhanced;
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (tidying up and comments)
  */
-public abstract class Polymorphic {
+public abstract class Polymorphic<T> {
     
     /** Each new polymorphic object is in a ring of views */
-    private Polymorphic ring;
+    private Polymorphic<T> ring;
     
     /**
         initially we're in the singleton ring.
      */
     Polymorphic() 
         { this.ring = this; }
-
-    // External contract methods
     
     /**
      * Answer the personality object bound to this polymorphic instance
      * @return The personality object
      */
-    protected abstract Personality getPersonality();
-        
-    /** 
-     * Answer true iff <i>this</i> is already acceptable to the given type t. 
-     * Delegates to t to test if this class is an acceptable implementation.
-     * @param t A type to test
-     * @return True iff this object is already an acceptable implementation of t
-     */
-    protected boolean already(Class t) 
-        { return t.isInstance( this ); }
+    protected abstract Personality<T> getPersonality();
 
     /**
         return _true_ iff this polymorphic object supports the specified interface.
         Synonymous with "does the argument class have this as an instance".
         Actually it shouldn't be. Review.
     */
-    public boolean supports( Class t )
+    public <X extends T> boolean supports( Class<X> t )
         {
-        Polymorphic supporter = findExistingView( t );
+        X supporter = findExistingView( t );
         return supporter != null || this.canSupport( t );
         }
         
@@ -59,9 +48,9 @@ public abstract class Polymorphic {
      * @param t A type
      * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
-    protected final Polymorphic asInternal( Class t )
+    protected final <X extends T> X asInternal( Class<X> t )
         {
-        Polymorphic other = findExistingView( t );
+        X other = findExistingView( t );
         return other == null ? this.convertTo( t ) : other;
         }
         
@@ -70,12 +59,12 @@ public abstract class Polymorphic {
         return it; otherwise return null. If _this_ is an instance, the
         search takes care to find it first.
     */
-    private Polymorphic findExistingView( Class t )
+    private <X extends T> X findExistingView( Class<X> t )
         {
-        Polymorphic r = this;
+        Polymorphic<T> r = this;
         for (;;)
             {
-            if (t.isInstance( r ) && r.isValid()) return r;
+            if (t.isInstance( r ) && r.isValid()) return t.cast( r );
             r = r.ring;
             if (r == this) return null;
             }
@@ -86,7 +75,7 @@ public abstract class Polymorphic {
         type <code>t</code> in its ring (so .as()ing it doesn't need to
         construct a new object).
     */
-    protected boolean alreadyHasView( Class t )
+    protected <X extends T> boolean alreadyHasView( Class<X> t )
         { return findExistingView( t ) != null; }
         
     /**
@@ -100,13 +89,13 @@ public abstract class Polymorphic {
         possible, into an instance of _t_. It will only be called if _this_
         doesn't already have (or be) a suitable ring-sibling.
     */    
-    protected abstract Polymorphic convertTo( Class t );
+    protected abstract <X extends T> X convertTo( Class<X> t );
     
     /**
         subclasses must provide a method for testing if _this_ can be
         converted to an instance of _t_. 
     */
-    protected abstract boolean canSupport( Class t );
+    protected abstract <X extends T> boolean canSupport( Class<X> t );
     
     /**
         subclasses must override equals. Actually they may not have
@@ -129,7 +118,7 @@ public abstract class Polymorphic {
         This method is public ONLY so that it can be tested.
         TODO find a better way to make it testable.
     */
-    public synchronized void addView( Polymorphic other )
+    public synchronized void addView( Polymorphic<T> other )
         {
         if (other.ring == other)
             {

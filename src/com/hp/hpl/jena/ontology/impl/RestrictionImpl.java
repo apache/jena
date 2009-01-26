@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.21 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.22 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -117,7 +117,7 @@ public class RestrictionImpl
      * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
      */ 
     public OntProperty getOnProperty() {
-        return (OntProperty) objectAs( getProfile().ON_PROPERTY(), "ON_PROPERTY", OntProperty.class );
+        return objectAs( getProfile().ON_PROPERTY(), "ON_PROPERTY", OntProperty.class );
     }
 
     /**
@@ -147,7 +147,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public AllValuesFromRestriction asAllValuesFromRestriction() {
-        return (AllValuesFromRestriction) as( AllValuesFromRestriction.class );
+        return as( AllValuesFromRestriction.class );
     }
          
     /** 
@@ -157,7 +157,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public SomeValuesFromRestriction asSomeValuesFromRestriction() {
-        return (SomeValuesFromRestriction) as( SomeValuesFromRestriction.class );
+        return as( SomeValuesFromRestriction.class );
     }
          
     /** 
@@ -167,7 +167,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public HasValueRestriction asHasValueRestriction() {
-        return (HasValueRestriction) as( HasValueRestriction.class );
+        return as( HasValueRestriction.class );
     }
          
     /** 
@@ -177,7 +177,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public CardinalityRestriction asCardinalityRestriction() {
-        return (CardinalityRestriction) as( CardinalityRestriction.class );
+        return as( CardinalityRestriction.class );
     }
 
     /** 
@@ -187,7 +187,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public MinCardinalityRestriction asMinCardinalityRestriction() {
-        return (MinCardinalityRestriction) as( MinCardinalityRestriction.class );
+        return as( MinCardinalityRestriction.class );
     }
 
     /** 
@@ -197,7 +197,7 @@ public class RestrictionImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public MaxCardinalityRestriction asMaxCardinalityRestriction() {
-        return (MaxCardinalityRestriction) as( MaxCardinalityRestriction.class );
+        return as( MaxCardinalityRestriction.class );
     }
 
 
@@ -281,7 +281,7 @@ public class RestrictionImpl
      */
     public AllValuesFromRestriction convertToAllValuesFromRestriction( Resource cls ) {
         setPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
-        return (AllValuesFromRestriction) as( AllValuesFromRestriction.class );
+        return as( AllValuesFromRestriction.class );
     }
          
     /** 
@@ -293,7 +293,7 @@ public class RestrictionImpl
      */
     public SomeValuesFromRestriction convertToSomeValuesFromRestriction( Resource cls ) {
         setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
-        return (SomeValuesFromRestriction) as( SomeValuesFromRestriction.class );
+        return as( SomeValuesFromRestriction.class );
     }
          
     /** 
@@ -305,7 +305,7 @@ public class RestrictionImpl
      */
     public HasValueRestriction convertToHasValueRestriction( RDFNode value ) {
         setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
-        return (HasValueRestriction) as( HasValueRestriction.class );
+        return as( HasValueRestriction.class );
     }
          
     /** 
@@ -316,7 +316,7 @@ public class RestrictionImpl
      */
     public CardinalityRestriction convertToCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
-        return (CardinalityRestriction) as( CardinalityRestriction.class );
+        return as( CardinalityRestriction.class );
     }
 
     /** 
@@ -327,7 +327,7 @@ public class RestrictionImpl
      */
     public MinCardinalityRestriction convertToMinCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
-        return (MinCardinalityRestriction) as( MinCardinalityRestriction.class );
+        return as( MinCardinalityRestriction.class );
     }
 
     /** 
@@ -338,7 +338,7 @@ public class RestrictionImpl
      */
     public MaxCardinalityRestriction convertToMaxCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
-        return (MaxCardinalityRestriction) as( MaxCardinalityRestriction.class );
+        return as( MaxCardinalityRestriction.class );
     }
 
 

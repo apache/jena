@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Personality.java,v 1.14 2009-01-22 15:10:44 chris-dollin Exp $
+  $Id: Personality.java,v 1.15 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -18,20 +18,20 @@ import com.hp.hpl.jena.util.CollectionFactory;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
 */
-public class Personality {
+public class Personality<T> {
 
     // Instance variables
     /** Records the bindings from type specifications to implementations.  */
-    private Map<Class, Implementation> types = CollectionFactory.createHashedMap();
+    private Map<Class<? extends T>, Implementation> types = CollectionFactory.createHashedMap();
     
     // Constructors
     
     /** base constructor, does nothing [except implicitly create _types_] */
-    protected Personality()
+    public Personality()
         {}
         
     /** initialise this personality with the bindings from _other_ */
-    public Personality( Personality other )
+    public Personality( Personality<T> other )
         {
         this();
         this.add( other );
@@ -43,7 +43,7 @@ public class Personality {
         @param interf The interface to add, expressed as a Type object.
         @param impl A way of implementing _interf_.
      */
-    public Personality add( Class interf, Implementation impl )
+    public <X extends T> Personality<T> add( Class<X> interf, Implementation impl )
         { 
         types.put( interf, impl ); 
         return this;
@@ -53,21 +53,21 @@ public class Personality {
         create a new Personality copying this one; the _types_ state is
         copied, not shared.
     */
-    public Personality copy() 
-        { return new Personality( this ); }
+    public Personality<T> copy() 
+        { return new Personality<T>( this ); }
     
     /** 
         get the implemementation for the specified type, returning null if there
         isn't one available. 
     */
-    Implementation getImplementation( Class t )
+    public <X extends T> Implementation getImplementation( Class<X> t )
         { return types.get( t ); }
     
     /**
     	extend this personality by adding in all the mappins from the argument _p_.
     	return _this_ (for call chaining).
     */
-    Personality add( Personality p ) {
+    public Personality<T> add( Personality<T> p ) {
         types.putAll( p.types );    
         return this;
     }
@@ -77,18 +77,17 @@ public class Personality {
         polymorphic _that_; use the implementation wrapper for _interf_ in
         _types_. 
     */
-    public Polymorphic newInstance(Class interf, Node n, Polymorphic that ) 
+    public <X extends T> X newInstance( Class<X> interf, Node n, EnhGraph that ) 
         {
         Implementation impl = types.get( interf );
         if (impl == null) throw new PersonalityConfigException( interf + " not in Personality." );
-        Polymorphic result = impl.wrap(  n, (EnhGraph) that  );
+        EnhNode result = impl.wrap(  n, that  );
         if (!interf.isInstance(result))
         	throw new PersonalityConfigException( interf + " misconfigured." );
-
-        return result;
+        return interf.cast( result );
         }
     
-    protected Map<Class, Implementation> getMap() {return types;}
+    protected Map<Class<? extends T>, Implementation> getMap() {return types;}
 }
 
 /*

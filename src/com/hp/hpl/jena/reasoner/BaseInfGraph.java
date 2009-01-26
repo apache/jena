@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.51 2009-01-16 17:23:59 andy_seaborne Exp $
+ * $Id: BaseInfGraph.java,v 1.52 2009-01-26 10:28:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.51 $ on $Date: 2009-01-16 17:23:59 $
+ * @version $Revision: 1.52 $ on $Date: 2009-01-26 10:28:23 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -326,7 +326,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @param param a small graph encoding an expression which the subject and/or
      * object nodes refer.
      */
-    public ExtendedIterator find(Node subject, Node property, Node object, Graph param) {
+    public ExtendedIterator<Triple> find(Node subject, Node property, Node object, Graph param) {
         return cloneWithPremises(param).find(subject, property, object);
     }
 
@@ -342,7 +342,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * <p>[Chris, after discussion with Dave]
      */
     @Override
-    public ExtendedIterator graphBaseFind(TripleMatch m) {
+    public ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
         return graphBaseFind(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
              // .filterKeep(new TripleMatchFilter(m.asTriple()))
              ;
@@ -354,7 +354,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * will have also consulted the raw data.
      */
     @Override
-    public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
+    public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
     }
 
@@ -369,7 +369,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    abstract public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
+    abstract public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation);
 
 
     /**
@@ -380,7 +380,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
-    public ExtendedIterator find(TriplePattern pattern) {
+    public ExtendedIterator<Triple> find(TriplePattern pattern) {
         checkOpen();
         return findWithContinuation(pattern, fdata);
     }
@@ -399,7 +399,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
-    public Iterator getDerivation(Triple triple) {
+    public Iterator<Derivation> getDerivation(Triple triple) {
         return null;
     }
 

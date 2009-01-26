@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.62 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.63 2009-01-26 10:28:24 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.62 $ on $Date: 2009-01-16 17:23:58 $
+ * @version $Revision: 1.63 $ on $Date: 2009-01-26 10:28:24 $
  */
 public class TestBugs extends TestCase {
 
@@ -160,10 +160,10 @@ public class TestBugs extends TestCase {
 
         String base = "http://localhost:8080/axis/daml/a.daml#";
         model.read( new ByteArrayInputStream( INPUT_SUBCLASS.getBytes() ), base );
-        OntResource res = (OntResource) model.getResource( base+"test").as(OntResource.class);
+        OntResource res = model.getResource( base+"test").as(OntResource.class);
 
-        OntClass cls1 = (OntClass) model.getResource(base+"cls1").as(OntClass.class);
-        OntClass cls2 = (OntClass) model.getResource(base+"cls2").as(OntClass.class);
+        OntClass cls1 = model.getResource(base+"cls1").as(OntClass.class);
+        OntClass cls2 = model.getResource(base+"cls2").as(OntClass.class);
 
         assertTrue( "cls2 should be a super-class of cls1", cls2.hasSuperClass( cls1 ) );
         assertTrue( "res should have rdf:type cls1", res.hasRDFType( cls1 ) );
@@ -209,8 +209,8 @@ public class TestBugs extends TestCase {
         String base = "urn:x-hp-jena:test#";
         model.read( new ByteArrayInputStream( INPUT_SUBPROPERTY.getBytes() ), base );
 
-        OntResource a0 = (OntResource) model.getResource( base+"a0").as(OntResource.class);
-        OntResource a1 = (OntResource) model.getResource( base+"a1").as(OntResource.class);
+        OntResource a0 = model.getResource( base+"a0").as(OntResource.class);
+        OntResource a1 = model.getResource( base+"a1").as(OntResource.class);
 
         ObjectProperty p = model.getObjectProperty( base+"p" );
         ObjectProperty q = model.getObjectProperty( base+"q" );
@@ -580,12 +580,12 @@ public class TestBugs extends TestCase {
 //        System.out.println( prompt );
         OntClass r = m.getOntClass( NS + "Reiseliv" );
 
-        List q = new ArrayList();
-        Set seen = new HashSet();
+        List<OntClass> q = new ArrayList<OntClass>();
+        Set<OntClass> seen = new HashSet<OntClass>();
         q.add( r );
 
         while (!q.isEmpty()) {
-            OntClass c = (OntClass) q.remove( 0 );
+            OntClass c = q.remove( 0 );
             seen.add( c );
 
             for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
@@ -610,8 +610,8 @@ public class TestBugs extends TestCase {
             }
         }
 
-        for (Iterator k = seen.iterator();  k.hasNext(); ) {
-            Resource res = (Resource) k.next();
+        for (Iterator<OntClass> k = seen.iterator();  k.hasNext(); ) {
+            Resource res = k.next();
             boolean isExpected = false;
             for (int j = 0;  !isExpected && j < expected.length; j++) {
                 isExpected = expected[j].equals( res );
@@ -660,7 +660,7 @@ public class TestBugs extends TestCase {
     public void testNonmonotonicCR() {
         String ruleSrc = "(eg:IndA eg:scoreA ?score), sum(?score 40 ?total), noValue(eg:IndA eg:flag_1 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_1 'true')." +
         "(eg:IndA eg:scoreA ?score), sum(?score 33 ?total), noValue(eg:IndA eg:flag_2 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_2 'true').";
-        List rules = Rule.parseRules(ruleSrc);
+        List<Rule> rules = Rule.parseRules(ruleSrc);
         Model data = ModelFactory.createDefaultModel();
         String NS = PrintUtil.egNS;
         Resource i = data.createResource(NS + "IndA");
@@ -710,7 +710,7 @@ public class TestBugs extends TestCase {
         Model facts = ModelFactory.createDefaultModel();
         String NS = PrintUtil.egNS;
         Property p = facts.createProperty(NS + "p");
-        List rules = Rule.parseRules("makeTemp(?x) -> (?x, eg:p, eg:z). " +
+        List<Rule> rules = Rule.parseRules("makeTemp(?x) -> (?x, eg:p, eg:z). " +
                 "makeTemp(?x) makeTemp(?y) -> (?x, eg:p, ?y) . " +
                 "(?x, eg:p, eg:z) -> (?a, eg:p, eg:b). " +
                 "-> [ (eg:a eg:p eg:y) <- ]."
@@ -732,7 +732,7 @@ public class TestBugs extends TestCase {
         Property mother = facts.createProperty(NS + "mother");
         Resource female = facts.createProperty(NS + "Female");
         mother.addProperty(RDFS.range, female);
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "-> tableAll(). \n" +
                 "[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] \n" +
                  "-> (eg:range rdfs:subPropertyOf rdfs:range). \n" +
@@ -750,7 +750,7 @@ public class TestBugs extends TestCase {
      * test remove operator in case with empty data.
      */
     public void testEmptyRemove() {
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "-> (eg:i eg:prop eg:foo) ." +
                 "(?X eg:prop ?V) -> (?X eg:prop2 ?V) ." +
                 "(?X eg:prop eg:foo) noValue(?X eg:guard 'done') -> remove(0) (?X eg:guard 'done') ." );
@@ -775,7 +775,7 @@ public class TestBugs extends TestCase {
         Property r = base.createProperty(NS, "r");
         base.add(i, p, a);
         base.add(i, q, a);
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "(eg:i eg:r eg:a) <- (eg:i eg:p eg:a). (eg:i eg:r eg:a) <- (eg:i eg:q eg:a).");
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         reasoner.setMode(GenericRuleReasoner.BACKWARD);
@@ -813,7 +813,7 @@ public class TestBugs extends TestCase {
     public void testGroundClosure2() {
         Flag myFlag = new Flag();
         BuiltinRegistry.theRegistry.register(myFlag);
-        List rules = Rule.rulesFromURL("file:testing/reasoners/bugs/groundClosure2.rules");
+        List<Rule> rules = Rule.rulesFromURL("file:testing/reasoners/bugs/groundClosure2.rules");
         GenericRuleReasoner reasoner = new GenericRuleReasoner( rules );
         InfModel inf = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         

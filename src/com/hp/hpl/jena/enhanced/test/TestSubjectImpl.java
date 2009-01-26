@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSubjectImpl.java,v 1.11 2009-01-16 17:23:49 andy_seaborne Exp $
+  $Id: TestSubjectImpl.java,v 1.12 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 /**
  * @see TestObjectImpl
  * @author  jjc
@@ -29,8 +30,7 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
         super( n, eg );
     }
     
-    @Override
-    public boolean supports( Class t)
+    @Override public <X extends RDFNode> boolean supports( Class<X> t )
         { return t.isInstance( this ) && isSubject(); }
         
     public boolean isSubject() {
@@ -40,7 +40,7 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return (TestProperty)enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
+        return enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
     }
 }
 

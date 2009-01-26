@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfGraph.java,v 1.15 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: InfGraph.java,v 1.16 2009-01-26 10:28:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -27,7 +27,7 @@ import java.util.Iterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-12-28 19:32:04 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:23 $
  */
 public interface InfGraph extends Graph {
 
@@ -117,7 +117,7 @@ public interface InfGraph extends Graph {
      * @param param a small graph encoding an expression which the subject and/or
      * object nodes refer.
      */
-    public ExtendedIterator find(Node subject, Node property, Node object, Graph param);
+    public ExtendedIterator<Triple> find(Node subject, Node property, Node object, Graph param);
     
     /**
      * Switch on/off drivation logging
@@ -131,7 +131,7 @@ public interface InfGraph extends Graph {
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
-    public Iterator getDerivation(Triple triple);
+    public Iterator<Derivation> getDerivation(Triple triple);
     
     /**
      * Returns a derivations graph. The rule reasoners typically create a 

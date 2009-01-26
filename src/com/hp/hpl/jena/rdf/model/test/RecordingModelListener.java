@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RecordingModelListener.java,v 1.8 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: RecordingModelListener.java,v 1.9 2009-01-26 10:28:23 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -11,6 +11,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelChangedListener;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -31,7 +32,7 @@ public class RecordingModelListener implements ModelChangedListener
         { record( "addList", statements ); }
         
     public void addedStatements( StmtIterator statements )
-        { record( "addIterator", ModelTestBase.iteratorToList( statements ) ); }
+        { record( "addIterator", GraphTestBase.iteratorToList( statements ) ); }
         
     public void addedStatements( Model m )
         { record( "addModel", m ); }
@@ -46,7 +47,7 @@ public class RecordingModelListener implements ModelChangedListener
         { record( "removeList", statements ); }
         
     public void removedStatements( StmtIterator statements )
-        { record( "removeIterator", ModelTestBase.iteratorToList( statements ) ); }
+        { record( "removeIterator", GraphTestBase.iteratorToList( statements ) ); }
         
     public void removedStatements( Model m )
         { record( "removeModel", m ); }
@@ -66,7 +67,7 @@ public class RecordingModelListener implements ModelChangedListener
     public void assertHas( Object [] things )
         {
         if (has( things ) == false)
-            ModelTestBase.fail( "expected " + Arrays.asList( things ) + " but got " + history );
+            Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );
         }    
     
     public boolean has( List things )

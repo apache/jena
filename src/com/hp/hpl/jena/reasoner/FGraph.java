@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FGraph.java,v 1.13 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: FGraph.java,v 1.14 2009-01-26 10:28:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:04 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-26 10:28:23 $
  */
 public class FGraph implements Finder {
 
@@ -37,8 +37,8 @@ public class FGraph implements Finder {
      * @return a ClosableIterator over all Triples in the data set
      *  that match the pattern
      */
-    public ExtendedIterator find(TriplePattern pattern) {
-        if (graph == null) return WrappedIterator.create(new NullIterator());
+    public ExtendedIterator<Triple> find(TriplePattern pattern) {
+        if (graph == null) return new NullIterator<Triple>();
         return graph.find(pattern.asTripleMatch());
     }
     
@@ -53,8 +53,8 @@ public class FGraph implements Finder {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
-        if (graph == null) return WrappedIterator.create(new NullIterator());
+    public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
+        if (graph == null) return new NullIterator<Triple>();
         if (continuation == null) {
             return graph.find(pattern.asTripleMatch());
         } else {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.20 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.21 2009-01-26 10:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -72,7 +72,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     public void testReificationCombinations()
         {
         Resource RR = model.createResource( aURI ), SS = model.createResource( anotherURI );
-        Property PP = (Property) RR.as( Property.class );
+        Property PP = RR.as( Property.class );
         Object [][] statements =
             {
                 { model.createStatement( RR, RDF.type, RDF.Statement ), new Integer(1) },
@@ -104,7 +104,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
             try
                 {
                 // System.err.println( "| hello. mask = " + mask );
-                ReifiedStatement rs = (ReifiedStatement) R.as( ReifiedStatement.class );
+                ReifiedStatement rs = R.as( ReifiedStatement.class );
                 // System.err.println( "+  we constructed " + rs );
                 assertTrue( "should not reify: not all components present [" + mask + "]: " + rs, (mask & 15) == 15 );
                 // System.err.println( "+  and we passed the assertion." );
@@ -154,7 +154,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         {
         final String uri = "spoo:handle";
         model.createReifiedStatement( uri, SPO );
-        ReifiedStatement rs2 = (ReifiedStatement) model.createResource( uri ).as( ReifiedStatement.class );
+        ReifiedStatement rs2 = model.createResource( uri ).as( ReifiedStatement.class );
         assertEquals( "recover statement", SPO, rs2.getStatement() );
         }
     

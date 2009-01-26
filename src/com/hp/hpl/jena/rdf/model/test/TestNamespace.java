@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNamespace.java,v 1.16 2009-01-22 15:43:53 chris-dollin Exp $
+  $Id: TestNamespace.java,v 1.17 2009-01-26 10:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -102,7 +102,7 @@ public class TestNamespace extends ModelTestBase
         
     public void testUseEasyPrefix()
         {
-        TestPrefixMapping.testUseEasyPrefix
+        AbstractTestPrefixMapping.testUseEasyPrefix
             ( "default model", ModelFactory.createDefaultModel() );
         }
 

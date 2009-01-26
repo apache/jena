@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.19 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.20 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -171,7 +171,7 @@ public class IndividualImpl
      * <code>OntModel</code>. See {@link OntModel#setStrictMode(boolean)}
      */
     public OntClass getOntClass( boolean direct ) {
-        return (OntClass) (getRDFType( direct ).as( OntClass.class ));
+        return (getRDFType( direct ).as( OntClass.class ));
     }
 
     /**

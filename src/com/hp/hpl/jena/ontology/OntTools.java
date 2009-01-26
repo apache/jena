@@ -89,7 +89,7 @@ public class OntTools
         }
 
         root = (Resource) root.inModel( m );
-        return getLCA( m, (OntClass) root.as( OntClass.class ), u, v );
+        return getLCA( m, root.as( OntClass.class ), u, v );
     }
 
     /**

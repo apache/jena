@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.69 $
+ * Revision           $Revision: 1.70 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.69 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.70 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1041,7 +1041,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to an annotation property
      */
     public AnnotationProperty asAnnotationProperty() {
-        return (AnnotationProperty) as( AnnotationProperty.class );
+        return as( AnnotationProperty.class );
     }
 
     /**
@@ -1050,7 +1050,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to a property
      */
     public OntProperty asProperty() {
-        return (OntProperty) as( OntProperty.class );
+        return as( OntProperty.class );
     }
 
     /**
@@ -1059,7 +1059,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to an object property
      */
     public ObjectProperty asObjectProperty() {
-        return (ObjectProperty) as( ObjectProperty.class );
+        return as( ObjectProperty.class );
     }
 
     /**
@@ -1068,7 +1068,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to a datatype property
      */
     public DatatypeProperty asDatatypeProperty() {
-        return (DatatypeProperty) as( DatatypeProperty.class );
+        return as( DatatypeProperty.class );
     }
 
     /**
@@ -1077,7 +1077,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to an individual
      */
     public Individual asIndividual() {
-        return (Individual) as( Individual.class );
+        return as( Individual.class );
     }
 
     /**
@@ -1086,7 +1086,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to a class
      */
     public OntClass asClass() {
-        return (OntClass) as( OntClass.class );
+        return as( OntClass.class );
     }
 
     /**
@@ -1095,7 +1095,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to an ontology description node
      */
     public Ontology asOntology() {
-        return (Ontology) as( Ontology.class );
+        return as( Ontology.class );
     }
 
     /**
@@ -1104,7 +1104,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to an all different declaration
      */
     public AllDifferent asAllDifferent() {
-        return (AllDifferent) as( AllDifferent.class );
+        return as( AllDifferent.class );
     }
 
     /**
@@ -1113,7 +1113,7 @@ public class OntResourceImpl
      * @exception ConversionException if the resource cannot be converted to a data range
      */
     public DataRange asDataRange() {
-        return (DataRange) as( DataRange.class );
+        return as( DataRange.class );
     }
 
 
@@ -1310,7 +1310,7 @@ public class OntResourceImpl
     }
 
     /** Answer the object of a statement with the given property, .as() the given class */
-    protected Object objectAs( Property p, String name, Class asClass ) {
+    protected <T extends RDFNode> T objectAs( Property p, String name, Class<T> asClass ) {
         checkProfile( p, name );
         try {
             return getRequiredProperty( p ).getObject().as( asClass );
@@ -1323,13 +1323,13 @@ public class OntResourceImpl
 
     /** Answer the object of a statement with the given property, .as() an OntResource */
     protected OntResource objectAsResource( Property p, String name ) {
-        return (OntResource) objectAs( p, name, OntResource.class );
+        return objectAs( p, name, OntResource.class );
     }
 
 
     /** Answer the object of a statement with the given property, .as() an OntProperty */
     protected OntProperty objectAsProperty( Property p, String name ) {
-        return (OntProperty) objectAs( p, name, OntProperty.class );
+        return objectAs( p, name, OntProperty.class );
     }
 
 
@@ -1341,7 +1341,7 @@ public class OntResourceImpl
 
 
     /** Answer an iterator for the given property, whose values are .as() some class */
-    protected ExtendedIterator listAs( Property p, String name, Class cls ) {
+    protected <T extends RDFNode> ExtendedIterator listAs( Property p, String name, Class<T> cls ) {
         checkProfile( p, name );
         return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper( cls ) );
     }
@@ -1378,7 +1378,7 @@ public class OntResourceImpl
                                              " but the current value is not a list: " + cur );
             }
 
-            RDFList values = (RDFList) cur.as( RDFList.class );
+            RDFList values = cur.as( RDFList.class );
 
             // now add our value to the list
             if (!values.contains( value )){
@@ -1398,7 +1398,7 @@ public class OntResourceImpl
     }
 
     /** Convert this resource to the facet denoted by cls, by adding rdf:type type if necessary */
-    protected RDFNode convertToType( Resource type, String name, Class cls ) {
+    protected <T extends RDFNode> T convertToType( Resource type, String name, Class<T> cls ) {
         checkProfile( type, name );
         if (canAs( cls )) {
             // don't need to update the model, we already can do the given facet
@@ -1422,7 +1422,7 @@ public class OntResourceImpl
      * @return An iterator of nodes that are in relation p to this resource (possibly inverted), which
      * have been mapped to the facet denoted by <code>cls</code>.
      */
-    protected ExtendedIterator listDirectPropertyValues( Property p, String name, Class cls, Property orderRel, boolean direct, boolean inverse ) {
+    protected <T extends RDFNode> ExtendedIterator listDirectPropertyValues( Property p, String name, Class<T> cls, Property orderRel, boolean direct, boolean inverse ) {
         Iterator i = null;
         checkProfile( p, name );
 

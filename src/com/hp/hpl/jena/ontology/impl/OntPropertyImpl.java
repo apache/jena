@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,8 +31,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
 
 
 
@@ -43,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.28 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.29 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -119,7 +117,7 @@ public class OntPropertyImpl
      * @see Property#getOrdinal()
      */
     public int getOrdinal() {
-        return ((Property) as( Property.class )).getOrdinal();
+        return (as( Property.class )).getOrdinal();
     }
 
 
@@ -212,7 +210,7 @@ public class OntPropertyImpl
             i.removeNext();
         }
 
-        ((OntProperty) prop.as( OntProperty.class )).addSuperProperty( this );
+        prop.as( OntProperty.class ).addSuperProperty( this );
     }
 
     /**
@@ -221,7 +219,7 @@ public class OntPropertyImpl
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void addSubProperty( Property prop ) {
-        ((OntProperty) prop.as( OntProperty.class )).addSuperProperty( this );
+        prop.as( OntProperty.class ).addSuperProperty( this );
     }
 
     /**
@@ -232,7 +230,7 @@ public class OntPropertyImpl
      */
     public OntProperty getSubProperty() {
         checkProfile( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF" );
-        return (OntProperty) getModel().listStatements( null, getProfile().SUB_PROPERTY_OF(), this )
+        return getModel().listStatements( null, getProfile().SUB_PROPERTY_OF(), this )
                              .nextStatement()
                              .getSubject()
                              .as( OntProperty.class );
@@ -269,7 +267,7 @@ public class OntPropertyImpl
      * @return True if the given property is a sub-property of this property.
      */
     public boolean hasSubProperty( Property prop, boolean direct ) {
-        return ((OntProperty) prop.as( OntProperty.class )).hasSuperProperty( this, direct );
+        return prop.as( OntProperty.class ).hasSuperProperty( this, direct );
     }
 
     /**
@@ -279,7 +277,7 @@ public class OntPropertyImpl
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void removeSubProperty( Property prop ) {
-        ((OntProperty) prop.as( OntProperty.class )).removeSuperProperty( this );
+        prop.as( OntProperty.class ).removeSuperProperty( this );
     }
 
     // domain
@@ -535,7 +533,7 @@ public class OntPropertyImpl
      * given the language profile and the current state of the underlying model.
      */
     public FunctionalProperty asFunctionalProperty() {
-        return (FunctionalProperty) as( FunctionalProperty.class );
+        return as( FunctionalProperty.class );
     }
 
     /**
@@ -546,7 +544,7 @@ public class OntPropertyImpl
      */
     @Override
     public DatatypeProperty asDatatypeProperty() {
-        return (DatatypeProperty) as( DatatypeProperty.class );
+        return as( DatatypeProperty.class );
     }
 
     /**
@@ -557,7 +555,7 @@ public class OntPropertyImpl
      */
     @Override
     public ObjectProperty asObjectProperty() {
-        return (ObjectProperty) as( ObjectProperty.class );
+        return as( ObjectProperty.class );
     }
 
     /**
@@ -567,7 +565,7 @@ public class OntPropertyImpl
      * given the language profile and the current state of the underlying model.
      */
     public TransitiveProperty asTransitiveProperty() {
-        return (TransitiveProperty) as( TransitiveProperty.class );
+        return as( TransitiveProperty.class );
     }
 
     /**
@@ -577,7 +575,7 @@ public class OntPropertyImpl
      * given the language profile and the current state of the underlying model.
      */
     public InverseFunctionalProperty asInverseFunctionalProperty() {
-        return (InverseFunctionalProperty) as( InverseFunctionalProperty.class );
+        return as( InverseFunctionalProperty.class );
     }
 
     /**
@@ -587,7 +585,7 @@ public class OntPropertyImpl
      * given the language profile and the current state of the underlying model.
      */
     public SymmetricProperty asSymmetricProperty() {
-        return (SymmetricProperty) as( SymmetricProperty.class );
+        return as( SymmetricProperty.class );
     }
 
     // conversion functions
@@ -597,7 +595,7 @@ public class OntPropertyImpl
      * @return This property, but converted to a FunctionalProperty facet
      */
     public FunctionalProperty convertToFunctionalProperty() {
-        return (FunctionalProperty) convertToType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY", FunctionalProperty.class );
+        return convertToType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY", FunctionalProperty.class );
     }
 
     /**
@@ -605,7 +603,7 @@ public class OntPropertyImpl
      * @return This property, but converted to a DatatypeProperty facet
      */
     public DatatypeProperty convertToDatatypeProperty() {
-        return (DatatypeProperty) convertToType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY", DatatypeProperty.class );
+        return convertToType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY", DatatypeProperty.class );
     }
 
     /**
@@ -613,7 +611,7 @@ public class OntPropertyImpl
      * @return This property, but converted to an ObjectProperty facet
      */
     public ObjectProperty convertToObjectProperty() {
-        return (ObjectProperty) convertToType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY", ObjectProperty.class );
+        return convertToType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY", ObjectProperty.class );
     }
 
     /**
@@ -621,7 +619,7 @@ public class OntPropertyImpl
      * @return This property, but converted to a TransitiveProperty facet
      */
     public TransitiveProperty convertToTransitiveProperty() {
-        return (TransitiveProperty) convertToType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY", TransitiveProperty.class );
+        return convertToType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY", TransitiveProperty.class );
     }
 
     /**
@@ -629,7 +627,7 @@ public class OntPropertyImpl
      * @return This property, but converted to an InverseFunctionalProperty facet
      */
     public InverseFunctionalProperty convertToInverseFunctionalProperty() {
-        return (InverseFunctionalProperty) convertToType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY", InverseFunctionalProperty.class );
+        return convertToType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY", InverseFunctionalProperty.class );
     }
 
     /**
@@ -637,7 +635,7 @@ public class OntPropertyImpl
      * @return This property, but converted to a SymmetricProperty facet
      */
     public SymmetricProperty convertToSymmetricProperty() {
-        return (SymmetricProperty) convertToType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY", SymmetricProperty.class );
+        return convertToType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY", SymmetricProperty.class );
     }
 
 
@@ -757,7 +755,7 @@ public class OntPropertyImpl
     public ExtendedIterator listDeclaringClasses( boolean direct ) {
         // first list the candidate classes, which will also help us
         // work out whether this is a "global" property or not
-        Set cands = new HashSet();
+        Set<OntClass> cands = new HashSet<OntClass>();
         for (Iterator i = listDomain(); i.hasNext(); ) {
             // the candidates include this class and it sub-classes
             List q = new ArrayList();

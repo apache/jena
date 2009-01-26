@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.25 2009-01-22 15:10:44 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.26 2009-01-26 10:28:22 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -41,13 +41,14 @@ import junit.framework.*;
  */
 public class TestPackage extends GraphTestBase  {
     
-	static final private  GraphPersonality split = new GraphPersonality();
+	static final private  Personality<RDFNode> split = new Personality<RDFNode>();
         
-	static final private GraphPersonality combo = new GraphPersonality();
+	static final private Personality<RDFNode> combo = new Personality<RDFNode>();
         
         
 	static final private GraphPersonality bitOfBoth = new GraphPersonality();
 	static final private GraphPersonality broken = new GraphPersonality();
+	
 	static {
             // Setting up the personalities, involves registering how
             // each interface is implemented by default.
@@ -93,7 +94,7 @@ public class TestPackage extends GraphTestBase  {
     /**
      * View n as intf. This is supported iff rslt.
      */
-    private static void miniAsSupports(String title, TestNode n, Class<?> intf, boolean rslt ) {
+    private static <X extends RDFNode> void miniAsSupports(String title, TestNode n, Class<X> intf, boolean rslt ) {
         assertTrue(title +":sanity",n instanceof Polymorphic);
         
         // It is always possible to view any node with any interface.
@@ -128,7 +129,7 @@ public class TestPackage extends GraphTestBase  {
      *  All modifications are done through the underlying graph.
      *  The methods tested are as and supports.
      */
-    private static void basic(String title, Personality p) {
+    private static void basic(String title, Personality<RDFNode> p) {
         Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
@@ -224,7 +225,7 @@ public class TestPackage extends GraphTestBase  {
 		}
 	}
 	
-    private  void follow(String title, Personality p) {
+    private  void follow(String title, Personality<RDFNode> p) {
         Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
@@ -279,7 +280,7 @@ public class TestPackage extends GraphTestBase  {
         });                
         assertTrue("Model cache test",nodes[0].asProperty().anObject()==nodes[2]);
     }
-    private  void cache(String title, Personality p) {
+    private  void cache(String title, Personality<RDFNode> p) {
         Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
@@ -363,8 +364,11 @@ public class TestPackage extends GraphTestBase  {
     	}
     }
     
-    static abstract class Example implements RDFNode 
+    static class Example extends EnhNode implements RDFNode 
         {
+        public Example( Node n, EnhGraph g )
+            { super( n, g ); }
+
         static final Implementation factory = new Implementation()
             {
             @Override
@@ -373,12 +377,19 @@ public class TestPackage extends GraphTestBase  {
             @Override
             public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
             };
+
+        public RDFNode inModel( Model m )
+            { return null; }
+
+        public Object visitWith( RDFVisitor rv )
+            { return null;
+            }
         }
     
     public void testSimple()
         {
         Graph g = Factory.createGraphMem();
-        Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
+        Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
         EnhGraph eg = new EnhGraph( g, ours ); 
         Node n = Node.createURI( "spoo:bar" );
         EnhNode eNode = new EnhNode( Node.createURI( "spoo:bar" ), eg );
@@ -402,14 +413,16 @@ public class TestPackage extends GraphTestBase  {
     public void testAlreadyLinkedViewException()
         {
          Graph g = Factory.createGraphMem();
-         Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
+         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
          EnhGraph eg = new EnhGraph( g, ours ); 
          Node n = NodeCreateUtils.create( "spoo:bar" );
-         EnhNode eNode = new EnhNode( n, eg );
+         EnhNode eNode = new Example( n, eg );
+         EnhNode multiplexed = new Example( n, eg );
+         multiplexed.as( Property.class );
          eNode.viewAs( Example.class );
          try
             { 
-            eNode.addView( eNode ); 
+            eNode.addView( multiplexed ); 
             fail( "should raise an AlreadyLinkedViewException " );
             }
         catch (AlreadyLinkedViewException e)
@@ -423,28 +436,28 @@ public class TestPackage extends GraphTestBase  {
     */
     public void testNullPointerTrap()
         {
-        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
+        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), new Personality<RDFNode>() ); 
         Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         try 
             { 
-            en.as( TestPackage.class ); 
+            en.as( Property.class ); 
             fail( "oops" ); 
             }
         catch (UnsupportedPolymorphismException e) 
             {
             assertEquals( en, e.getBadNode() );
             assertTrue( "exception should have cuplprit graph", eg == e.getBadGraph() );
-            assertTrue( "exception should have culprit class", TestPackage.class == e.getBadClass() );
+            assertSame( "exception should have culprit class", Property.class, e.getBadClass() );
             }
         }
     
     public void testNullPointerTrapInCanSupport()
         {
-        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
+        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), new Personality<RDFNode>() );
         Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
-        assertFalse( en.canAs( Integer.class ) );        
+        assertFalse( en.canAs( Property.class ) );        
         }
     
     public void testAsToOwnClassWithNoModel()

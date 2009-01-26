@@ -1,15 +1,18 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestObject.java,v 1.9 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestObject.java,v 1.10 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
+
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 /**
  * An interface for viewing object nodes in the graph.
  * @author  jjc
  */
-public interface TestObject extends TestNode {
+public interface TestObject extends RDFNode, TestNode {
     
     /**
      * Checks whether this node is right now the object of some

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.115 $
+ * Revision           $Revision: 1.116 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 08:37:09 $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.115 2009-01-26 08:37:09 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.116 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -730,7 +730,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             return UniqueExtendedIterator.create(
                         findByType( r )
 //                          .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
-                          .mapWith( new SubjectNodeAs( AnnotationProperty.class ) ) );
+                          .mapWith( new SubjectNodeAs<AnnotationProperty>( AnnotationProperty.class ) ) );
         }
     }
 
@@ -879,12 +879,12 @@ public class OntModelImpl extends ModelCom implements OntModel
         if (c == null) {
             Resource thing = getProfile().THING();
             if (thing != null && thing.getURI().equals( uri )) {
-                c = (OntClass) thing.inModel( this ).as( OntClass.class );
+                c = thing.inModel( this ).as( OntClass.class );
             }
 
             Resource nothing = getProfile().NOTHING();
             if (nothing != null && nothing.getURI().equals( uri )) {
-                c = (OntClass) nothing.inModel( this ).as( OntClass.class );
+                c = nothing.inModel( this ).as( OntClass.class );
             }
         }
 
@@ -1112,7 +1112,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public Ontology createOntology( String uri ) {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
-        return (Ontology) createOntResource( Ontology.class, getProfile().ONTOLOGY(), uri );
+        return createOntResource( Ontology.class, getProfile().ONTOLOGY(), uri );
     }
 
 
@@ -1126,7 +1126,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return A new anoymous Individual of the given class.
      */
     public Individual createIndividual( Resource cls ) {
-        return (Individual) createOntResource( Individual.class, cls, null );
+        return createOntResource( Individual.class, cls, null );
     }
 
 
@@ -1142,7 +1142,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An Individual resource.
      */
     public Individual createIndividual( String uri, Resource cls ) {
-        return (Individual) createOntResource( Individual.class, cls, uri );
+        return createOntResource( Individual.class, cls, uri );
     }
 
 
@@ -1160,7 +1160,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public OntProperty createOntProperty( String uri ) {
         Property p = createProperty( uri );
         p.addProperty( RDF.type, getProfile().PROPERTY() );
-        return (OntProperty) p.as( OntProperty.class );
+        return p.as( OntProperty.class );
     }
 
 
@@ -1195,7 +1195,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public ObjectProperty createObjectProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
-        ObjectProperty p = (ObjectProperty) createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
+        ObjectProperty p = createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
 
         if (functional) {
             checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
@@ -1228,7 +1228,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public TransitiveProperty createTransitiveProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
-        TransitiveProperty p = (TransitiveProperty) createOntResource( TransitiveProperty.class, getProfile().TRANSITIVE_PROPERTY(), uri );
+        TransitiveProperty p = createOntResource( TransitiveProperty.class, getProfile().TRANSITIVE_PROPERTY(), uri );
 
         if (functional) {
             checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
@@ -1259,7 +1259,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public SymmetricProperty createSymmetricProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
-        SymmetricProperty p = (SymmetricProperty) createOntResource( SymmetricProperty.class, getProfile().SYMMETRIC_PROPERTY(), uri );
+        SymmetricProperty p = createOntResource( SymmetricProperty.class, getProfile().SYMMETRIC_PROPERTY(), uri );
 
         if (functional) {
             checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
@@ -1290,7 +1290,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public InverseFunctionalProperty createInverseFunctionalProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
-        InverseFunctionalProperty p = (InverseFunctionalProperty) createOntResource( InverseFunctionalProperty.class, getProfile().INVERSE_FUNCTIONAL_PROPERTY(), uri );
+        InverseFunctionalProperty p = createOntResource( InverseFunctionalProperty.class, getProfile().INVERSE_FUNCTIONAL_PROPERTY(), uri );
 
         if (functional) {
             checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
@@ -1332,7 +1332,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public DatatypeProperty createDatatypeProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
-        DatatypeProperty p = (DatatypeProperty) createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
+        DatatypeProperty p = createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
 
         if (functional) {
             checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
@@ -1355,7 +1355,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public AnnotationProperty createAnnotationProperty( String uri ) {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
-        return (AnnotationProperty) createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
+        return createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
     }
 
 
@@ -1370,7 +1370,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public OntClass createClass() {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), null );
+        return createOntResource( OntClass.class, getProfile().CLASS(), null );
     }
 
 
@@ -1386,7 +1386,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public OntClass createClass( String uri ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        return createOntResource( OntClass.class, getProfile().CLASS(), uri );
     }
 
 
@@ -1398,13 +1398,13 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public ComplementClass createComplementClass( String uri, Resource cls ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
 
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         // if the class that this class is a complement of is not specified, use owl:nothing or daml:nothing
         c.addProperty( getProfile().COMPLEMENT_OF(), (cls == null) ? getProfile().NOTHING() : cls );
 
-        return (ComplementClass) c.as( ComplementClass.class );
+        return c.as( ComplementClass.class );
     }
 
 
@@ -1416,12 +1416,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public EnumeratedClass createEnumeratedClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
 
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         c.addProperty( getProfile().ONE_OF(), (members == null) ? createList() : members );
 
-        return (EnumeratedClass) c.as( EnumeratedClass.class );
+        return c.as( EnumeratedClass.class );
     }
 
 
@@ -1433,12 +1433,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public UnionClass createUnionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
 
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
         c.addProperty( getProfile().UNION_OF(), (members == null) ? createList() : members );
 
-        return (UnionClass) c.as( UnionClass.class );
+        return c.as( UnionClass.class );
     }
 
 
@@ -1450,12 +1450,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public IntersectionClass createIntersectionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
-        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
 
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         c.addProperty( getProfile().INTERSECTION_OF(), (members == null) ? createList() : members );
 
-        return (IntersectionClass) c.as( IntersectionClass.class );
+        return c.as( IntersectionClass.class );
     }
 
 
@@ -1471,7 +1471,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public Restriction createRestriction( Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
         if (p != null) {
             r.setOnProperty( p );
         }
@@ -1493,7 +1493,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public Restriction createRestriction( String uri, Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
         if (p != null) {
             r.setOnProperty( p );
         }
@@ -1514,7 +1514,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public HasValueRestriction createHasValueRestriction( String uri, Property prop, RDFNode value ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null || value == null) {
             throw new IllegalArgumentException( "Cannot create hasValueRestriction with a null property or value" );
@@ -1524,7 +1524,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().HAS_VALUE(), value );
 
-        return (HasValueRestriction) r.as( HasValueRestriction.class );
+        return r.as( HasValueRestriction.class );
     }
 
 
@@ -1540,7 +1540,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public SomeValuesFromRestriction createSomeValuesFromRestriction( String uri, Property prop, Resource cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null || cls == null) {
             throw new IllegalArgumentException( "Cannot create someValuesFromRestriction with a null property or class" );
@@ -1550,7 +1550,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().SOME_VALUES_FROM(), cls );
 
-        return (SomeValuesFromRestriction) r.as( SomeValuesFromRestriction.class );
+        return r.as( SomeValuesFromRestriction.class );
     }
 
 
@@ -1566,7 +1566,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public AllValuesFromRestriction createAllValuesFromRestriction( String uri, Property prop, Resource cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null || cls == null) {
             throw new IllegalArgumentException( "Cannot create allValuesFromRestriction with a null property or class" );
@@ -1576,7 +1576,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().ALL_VALUES_FROM(), cls );
 
-        return (AllValuesFromRestriction) r.as( AllValuesFromRestriction.class );
+        return r.as( AllValuesFromRestriction.class );
     }
 
 
@@ -1592,7 +1592,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public CardinalityRestriction createCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null) {
             throw new IllegalArgumentException( "Cannot create cardinalityRestriction with a null property" );
@@ -1602,7 +1602,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().CARDINALITY(), createTypedLiteral( cardinality ) );
 
-        return (CardinalityRestriction) r.as( CardinalityRestriction.class );
+        return r.as( CardinalityRestriction.class );
     }
 
 
@@ -1618,7 +1618,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public MinCardinalityRestriction createMinCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null) {
             throw new IllegalArgumentException( "Cannot create minCardinalityRestriction with a null property" );
@@ -1628,7 +1628,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().MIN_CARDINALITY(), createTypedLiteral( cardinality ) );
 
-        return (MinCardinalityRestriction) r.as( MinCardinalityRestriction.class );
+        return r.as( MinCardinalityRestriction.class );
     }
 
 
@@ -1644,7 +1644,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         if (prop == null) {
             throw new IllegalArgumentException( "Cannot create maxCardinalityRestriction with a null property" );
@@ -1654,7 +1654,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().MAX_CARDINALITY(), createTypedLiteral( cardinality ) );
 
-        return (MaxCardinalityRestriction) r.as( MaxCardinalityRestriction.class );
+        return r.as( MaxCardinalityRestriction.class );
     }
 
 
@@ -1683,13 +1683,13 @@ public class OntModelImpl extends ModelCom implements OntModel
             throw new IllegalArgumentException( "Cannot create MaxCardinalityQRestriction with a null class" );
         }
 
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().MAX_CARDINALITY_Q(), createTypedLiteral( cardinality ) );
         r.addProperty( getProfile().HAS_CLASS_Q(), cls );
 
-        return (MaxCardinalityQRestriction) r.as( MaxCardinalityQRestriction.class );
+        return r.as( MaxCardinalityQRestriction.class );
     }
 
 
@@ -1718,13 +1718,13 @@ public class OntModelImpl extends ModelCom implements OntModel
             throw new IllegalArgumentException( "Cannot create MinCardinalityQRestriction with a null class" );
         }
 
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().MIN_CARDINALITY_Q(), createTypedLiteral( cardinality ) );
         r.addProperty( getProfile().HAS_CLASS_Q(), cls );
 
-        return (MinCardinalityQRestriction) r.as( MinCardinalityQRestriction.class );
+        return r.as( MinCardinalityQRestriction.class );
     }
 
 
@@ -1753,13 +1753,13 @@ public class OntModelImpl extends ModelCom implements OntModel
             throw new IllegalArgumentException( "Cannot create CardinalityQRestriction with a null class" );
         }
 
-        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
 
         r.addProperty( getProfile().ON_PROPERTY(), prop );
         r.addProperty( getProfile().CARDINALITY_Q(), createTypedLiteral( cardinality ) );
         r.addProperty( getProfile().HAS_CLASS_Q(), cls );
 
-        return (CardinalityQRestriction) r.as( CardinalityQRestriction.class );
+        return r.as( CardinalityQRestriction.class );
     }
 
 
@@ -1773,7 +1773,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public DataRange createDataRange( RDFList literals ) {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
-        DataRange d = (DataRange) createOntResource( DataRange.class, getProfile().DATARANGE(), null );
+        DataRange d = createOntResource( DataRange.class, getProfile().DATARANGE(), null );
 
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         d.addProperty( getProfile().ONE_OF(), (literals == null) ? createList() : literals );
@@ -1809,7 +1809,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public AllDifferent createAllDifferent( RDFList differentMembers ) {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
-        AllDifferent ad = (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
+        AllDifferent ad = createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
 
         ad.setDistinctMembers( (differentMembers == null) ? createList() : differentMembers );
 
@@ -1840,8 +1840,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the ontology resource, or null for an anonymous resource.
      * @return An ontology resource, of the type specified by the <code>javaClass</code>
      */
-    public OntResource createOntResource( Class javaClass, Resource rdfType, String uri ) {
-        return (OntResource) getResourceWithType( uri, rdfType ).as( javaClass );
+    public <T extends OntResource> T createOntResource( Class<T> javaClass, Resource rdfType, String uri ) {
+        return getResourceWithType( uri, rdfType ).as( javaClass );
     }
 
     /**
@@ -1851,7 +1851,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An OntResource with the given URI
      */
     public OntResource createOntResource( String uri ) {
-        return (OntResource) getResource( uri ).as( OntResource.class );
+        return getResource( uri ).as( OntResource.class );
     }
 
 
@@ -1864,7 +1864,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public RDFList createList() {
         Resource list = getResource( getProfile().NIL().getURI() );
 
-        return (RDFList) list.as( RDFList.class );
+        return list.as( RDFList.class );
     }
 
 
@@ -2571,7 +2571,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return ExtendedIterator An iterator over the (assumed single) results of
      * executing the queries.
      */
-    public ExtendedIterator queryFor( BindingQueryPlan query, List altQueries, Class asKey ) {
+    public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey ) {
         GetBinding firstBinding  = new GetBinding( 0 );
 
         // get the results from the main query
@@ -2579,15 +2579,15 @@ public class OntModelImpl extends ModelCom implements OntModel
 
         // now add the alternate queries, if defined
         if (altQueries != null) {
-            for (Iterator i = altQueries.iterator();  i.hasNext();  ) {
-                ExtendedIterator<Node> altQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
+            for (Iterator<BindingQueryPlan> i = altQueries.iterator();  i.hasNext();  ) {
+                ExtendedIterator<Node> altQuery = i.next().executeBindings().mapWith( firstBinding );
                 mainQuery = mainQuery.andThen( altQuery );
             }
         }
 
         // map each answer value to the appropriate ehnanced node
-        return mainQuery.filterKeep( new SubjectNodeCanAs( asKey ) )
-                        .mapWith( new SubjectNodeAs( asKey ) );
+        return mainQuery.filterKeep( new NodeCanAs<T>( asKey ) )
+                        .mapWith( new NodeAs<T>( asKey ) );
     }
 
     // output operations - delegate to base model
@@ -2805,7 +2805,7 @@ public class OntModelImpl extends ModelCom implements OntModel
 
 
     /** Answer the resource with the given URI, if present, as the given facet */
-    protected <T> Resource findByURIAs( String uri, Class<T> asKey ) {
+    protected <T extends Resource> Resource findByURIAs( String uri, Class<T> asKey ) {
         if (uri == null) {
             throw new IllegalArgumentException( "Cannot get() ontology value with a null URI" );
         }
@@ -2815,7 +2815,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         if (getGraph().contains( n, Node.ANY, Node.ANY )) {
             // this resource is a subject in the graph
             try {
-                return (Resource) getNodeAs( n, asKey );
+                return getNodeAs( n, asKey );
             }
             catch (ConversionException ignore) {/**/}
         }
@@ -2876,8 +2876,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey The value to use to present the polymorphic results
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
-    protected <T> ExtendedIterator<T> findByTypeAs( Resource type, Iterator<Resource> types, Class<T> asKey ) {
-        return findByType( type, types ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
+    protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Iterator<Resource> types, Class<T> asKey ) {
+        return findByType( type, types ).mapWith( new SubjectNodeAs<T>( asKey ) );
     }
 
     /**
@@ -2892,7 +2892,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey The value to use to present the polymorphic results
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
-    protected <T> ExtendedIterator<T> findByTypeAs( Iterator<Resource> types, Class<T> asKey ) {
+    protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Iterator<Resource> types, Class<T> asKey ) {
         return findByTypeAs( types.next(), types, asKey );
     }
 
@@ -2909,8 +2909,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over subjects with the given type, presenting as
      * the given polymorphic class.
      */
-    protected <T> ExtendedIterator<T> findByTypeAs( Resource type, Class<T> asKey ) {
-        return findByType( type ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
+    protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Class<T> asKey ) {
+        return findByType( type ).mapWith( new SubjectNodeAs<T>( asKey ) );
     }
 
 
@@ -2961,8 +2961,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param asKey A facet type
      * @return ExtendedIterator over subjects of p, presented as the facet.
      */
-    protected <T> ExtendedIterator<T> findByDefiningPropertyAs( Property p, Class<T> asKey ) {
-        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<Triple, T>( asKey ) );
+    protected <T extends RDFNode> ExtendedIterator<T> findByDefiningPropertyAs( Property p, Class<T> asKey ) {
+        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<T>( asKey ) );
     }
 
 
@@ -2994,7 +2994,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public OntResource getOntResource( String uri ) {
         Resource r = getResource( uri );
         if (containsResource( r )) {
-            return (OntResource) r.as( OntResource.class );
+            return r.as( OntResource.class );
         }
         return null;
     }
@@ -3007,7 +3007,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * or anonID as the given resource
      */
     public OntResource getOntResource( Resource res ) {
-        return (OntResource) res.inModel( this ).as( OntResource.class );
+        return res.inModel( this ).as( OntResource.class );
     }
 
     /**
@@ -3080,30 +3080,52 @@ public class OntModelImpl extends ModelCom implements OntModel
     //==============================================================================
 
     /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
-    protected class SubjectNodeAs<From, To> implements Map1<From, To>
+    protected class SubjectNodeAs<To extends RDFNode> implements Map1<Triple, To>
     {
         protected Class<To> m_asKey;
 
         protected SubjectNodeAs( Class<To> asKey ) { m_asKey = asKey; }
 
-        public To map1( From x ) {
-//            Triple t = (Triple) x;
-            Node n = (x instanceof Triple)
-                         ? ((Triple) x).getSubject()
-                         : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);
-            return (To) getNodeAs( n, m_asKey );
+        public To map1( Triple x ) {
+            return getNodeAs( x.getSubject(), m_asKey );
         }
 
     }
+    
+    /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
+    protected class NodeAs<To extends RDFNode> implements Map1<Node, To>
+    {
+        protected Class<To> m_asKey;
+        protected NodeAs( Class<To> asKey ) { m_asKey = asKey; }
+
+        public To map1( Node x ) {
+            return getNodeAs( x, m_asKey );
+        }
+    }
+    
+    protected class NodeCanAs<T extends RDFNode> extends Filter<Node>
+    {
+        protected Class<T> m_asKey;
+        protected NodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
+
+        @Override
+        public boolean accept( Node x ) {
+                try { getNodeAs( x, m_asKey );  }
+                catch (Exception ignore) { return false; }
+        return true;
+    }
+
+        
+    }
 
     /** Filter that accepts nodes that can be mapped to the given facet */
-    protected class SubjectNodeCanAs<T> extends Filter<T>
+    protected class SubjectNodeCanAs<T extends RDFNode> extends Filter<T>
     {
         protected Class<T> m_asKey;
         protected SubjectNodeCanAs( Class<T> asKey ) { m_asKey = asKey; }
 
         @Override
-        public boolean accept( Object x ) {
+        public boolean accept( T x ) {
             Node n = (x instanceof Triple)
                     ? ((Triple) x).getSubject()
                     : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);

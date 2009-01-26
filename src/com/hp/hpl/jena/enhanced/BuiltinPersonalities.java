@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.36 2008-12-28 19:32:24 andy_seaborne Exp $
+  $Id: BuiltinPersonalities.java,v 1.37 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -22,13 +22,13 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 */
 public class BuiltinPersonalities {
 
-    static final private  GraphPersonality graph = new GraphPersonality();
+    static final private Personality<RDFNode> graph = new Personality<RDFNode>();
 
-    static final public GraphPersonality model = (GraphPersonality)graph.copy()
+    static final public Personality<RDFNode> model = graph.copy()
         .add( Resource.class, ResourceImpl.factory )
         .add( Property.class, PropertyImpl.factory )
         .add( Literal.class,LiteralImpl.factory )
-        .add( Container.class, ContainerImpl.factory )
+        .add( Container.class, ResourceImpl.factory )
         .add( Alt.class, AltImpl.factory )
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )
@@ -80,12 +80,11 @@ public class BuiltinPersonalities {
      * @param writer A printwriter to list the personalities mapping to
      */
     static public void listPersonalities( PrintWriter writer ) {
-        for (Iterator i = model.nodePersonality().getMap().entrySet().iterator();  i.hasNext(); ) {
-            Map.Entry e = (Map.Entry) i.next();
-
-            writer.println( "personality key " + ((Class) e.getKey()).getName() + " -> value " + e.getValue() );
-        }
-
+        for (Iterator<Map.Entry<Class<? extends RDFNode>, Implementation>> i = model.getMap().entrySet().iterator();  i.hasNext(); ) 
+            {
+            Map.Entry<Class<? extends RDFNode>, Implementation> e = i.next();
+            writer.println( "personality key " + e.getKey().getName() + " -> value " + e.getValue() );
+            }
         writer.flush();
     }
 }

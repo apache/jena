@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.73 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.74 2009-01-26 10:28:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.73 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.74 $ on $Date: 2009-01-26 10:28:21 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -55,10 +55,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected LPBRuleEngine bEngine;
     
     /** The original rule set as supplied */
-    protected List rawRules;
+    protected List<Rule> rawRules;
     
     /** The rule list after possible extension by preprocessing hooks */
-    protected List rules;
+    protected List<Rule> rules;
     
     /** Static switch from Basic to RETE implementation of the forward component */
     public static boolean useRETE = true;
@@ -73,16 +73,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected TransitiveEngine transitiveEngine;
     
     /** Optional list of preprocessing hooks  to be run in sequence during preparation time */
-    protected List preprocessorHooks;
+    protected List<RulePreprocessHook> preprocessorHooks;
     
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
     
     /** Table of temp nodes which should be hidden from output listings */
-    protected Set hiddenNodes;
+    protected Set<Node> hiddenNodes;
 
     /** Optional map of property node to datatype ranges */
-    protected HashMap dtRange = null;
+    protected HashMap<Node, List> dtRange = null;
     
     /** Flag to request datatype range validation be included in the validation step */
     protected boolean requestDatatypeRangeValidation = false;
@@ -108,11 +108,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param rules the rules to process
      * @param schema the (optional) schema graph to be included
      */
-    public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
+    public FBRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
         this( reasoner, rules, schema, ReificationStyle.Minimal );
     }
 
-    public FBRuleInfGraph( Reasoner reasoner, List rules, Graph schema, ReificationStyle style ) {
+    public FBRuleInfGraph( Reasoner reasoner, List<Rule> rules, Graph schema, ReificationStyle style ) {
         super( reasoner, rules, schema, style );
         this.rawRules = rules;
         constructorInit( schema ); 
@@ -125,7 +125,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param schema the (optional) schema graph to be included
      * @param data the data graph to be processed
      */
-    public FBRuleInfGraph( Reasoner reasoner, List rules, Graph schema, Graph data ) {
+    public FBRuleInfGraph( Reasoner reasoner, List<Rule> rules, Graph schema, Graph data ) {
         super(reasoner, rules, schema, data);
         this.rawRules = rules;  
         constructorInit(schema);    
@@ -139,7 +139,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         initLP(schema);  
         tempNodecache = new TempNodeCache(this);
         if (JenaParameters.enableFilteringOfHiddenInfNodes) {
-            hiddenNodes = new HashSet();
+            hiddenNodes = new HashSet<Node>();
             if (schema != null && schema instanceof FBRuleInfGraph) {
                 hiddenNodes.addAll(((FBRuleInfGraph)schema).hiddenNodes);
             }
@@ -152,7 +152,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param rules the rule set or null if there are not rules bound in yet.
      */
     @Override
-    protected void instantiateRuleEngine(List rules) {
+    protected void instantiateRuleEngine(List<Rule> rules) {
         if (rules != null) {
             if (useRETE) {
                 engine = new RETEEngine(this, rules);
@@ -274,9 +274,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /**
      * Adds a set of new Backward rules
      */
-    public void addBRules(List rules) {
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule rule = (Rule)i.next();
+    public void addBRules(List<Rule> rules) {
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule rule = i.next();
 //            logger.debug("Adding rule " + rule);
             bEngine.addRule(rule);
         }
@@ -287,7 +287,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return an ordered list of all registered backward rules. Includes those
      * generated by forward productions.
      */
-    public List getBRules() {
+    public List<Rule> getBRules() {
         return bEngine.getAllRules();
     }
     
@@ -295,7 +295,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return the originally supplied set of rules, may be a mix of forward
      * and backward rules.
      */
-    public List getRules() {
+    public List<Rule> getRules() {
         return rules;
     }
       
@@ -352,9 +352,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (rules == rawRules) {
             // Ensure the original is preserved in case we need to do a restart
             if (rawRules instanceof ArrayList) {
-                rules = (ArrayList) ((ArrayList)rawRules).clone();
+                rules = (ArrayList<Rule>) ((ArrayList<Rule>)rawRules).clone();
             } else {
-                rules = new ArrayList(rawRules);
+                rules = new ArrayList<Rule>(rawRules);
             }
             // Rebuild the forward engine to use the cloned rules
             instantiateRuleEngine(rules);
@@ -368,7 +368,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public void addPreprocessingHook(RulePreprocessHook hook) {
         if (preprocessorHooks == null) {
-            preprocessorHooks = new ArrayList();
+            preprocessorHooks = new ArrayList<RulePreprocessHook>();
         }
         preprocessorHooks.add(hook);
     }
@@ -424,8 +424,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     }
                 }
                 // Insert any axiomatic statements into the caches
-                for (Iterator i = rules.iterator(); i.hasNext(); ) {
-                    Rule r = (Rule)i.next();
+                for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+                    Rule r = i.next();
                     if (r.bodyLength() == 0) {
                         // An axiom
                         for (int j = 0; j < r.headLength(); j++) {
@@ -452,8 +452,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             // Call any optional preprocessing hook
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
                 Graph inserts = Factory.createGraphMem();
-                for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                    RulePreprocessHook hook = (RulePreprocessHook)i.next();
+                for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                    RulePreprocessHook hook = i.next();
                     hook.run(this, dataFind, inserts);
                 }
                 if (inserts.size() > 0) {
@@ -643,13 +643,13 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             boolean needReset = false;
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
                 if (preprocessorHooks.size() > 1) {
-                    for (Iterator i = preprocessorHooks.iterator(); i.hasNext();) {
-                        if (((RulePreprocessHook)i.next()).needsRerun(this, t)) {
+                    for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext();) {
+                        if (i.next().needsRerun(this, t)) {
                             needReset = true; break;
                         }
                     }
                 } else {
-                    needReset = ((RulePreprocessHook)preprocessorHooks.get(0)).needsRerun(this, t);
+                    needReset = preprocessorHooks.get(0).needsRerun(this, t);
                 }
             }
             if (needReset) {
@@ -812,9 +812,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param report
      */
     protected void performDatatypeRangeValidation(StandardValidityReport report) {
-        HashMap dtRange = getDTRange();
-        for (Iterator props = dtRange.keySet().iterator(); props.hasNext(); ) {
-            Node prop = (Node)props.next();
+        HashMap<Node, List> dtRange = getDTRange();
+        for (Iterator<Node> props = dtRange.keySet().iterator(); props.hasNext(); ) {
+            Node prop = props.next();
             for (Iterator i = find(null, prop, null); i.hasNext(); ) {
                 Triple triple = (Triple)i.next();
                 report.add(checkLiteral(prop, triple));
@@ -832,7 +832,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public ValidityReport.Report checkLiteral(Node prop, Triple triple) {
         Node value = triple.getObject();
-        List range = (List) getDTRange().get(prop);
+        List range = getDTRange().get(prop);
         if (range != null) {
             if (value.isBlank()) return null;
             if (!value.isLiteral()) {
@@ -856,9 +856,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return a map from property nodes to a list of RDFDatatype objects
      * which have been declared as the range of that property.
      */
-    protected HashMap getDTRange() {
+    protected HashMap<Node, List> getDTRange() {
         if (dtRange == null) {
-            dtRange = new HashMap();
+            dtRange = new HashMap<Node, List>();
             for (Iterator i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
                 Triple triple = (Triple)i.next();
                 Node prop = triple.getSubject();
@@ -866,9 +866,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 if (rangeValue.isURI()) {
                     RDFDatatype dt = TypeMapper.getInstance().getTypeByName(rangeValue.getURI());
                     if (dt != null) {
-                        List range = (ArrayList) dtRange.get(prop);
+                        List<RDFDatatype> range = (ArrayList<RDFDatatype>) dtRange.get(prop);
                         if (range == null) {
-                            range = new ArrayList();
+                            range = new ArrayList<RDFDatatype>();
                             dtRange.put(prop, range);
                         }
                         range.add(dt);
@@ -886,10 +886,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Scan the initial rule set and pick out all the backward-only rules with non-null bodies,
      * and transfer these rules to the backward engine. 
      */
-    private static List extractPureBackwardRules(List rules) {
-        List bRules = new ArrayList();
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+    private static List<Rule> extractPureBackwardRules(List<Rule> rules) {
+        List<Rule> bRules = new ArrayList<Rule>();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (r.isBackward() && r.bodyLength() > 0) {
                 bRules.add(r);
             }
@@ -931,7 +931,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void hideNode(Node n) {
         if (! JenaParameters.enableFilteringOfHiddenInfNodes) return;
         if (hiddenNodes == null) {
-            hiddenNodes = new HashSet();
+            hiddenNodes = new HashSet<Node>();
         }
         synchronized (hiddenNodes) {
             hiddenNodes.add(n);

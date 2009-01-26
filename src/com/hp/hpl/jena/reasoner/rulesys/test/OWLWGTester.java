@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.28 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: OWLWGTester.java,v 1.29 2009-01-26 10:28:24 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.query.*;
 
 import com.hp.hpl.jena.shared.*;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.29 $ on $Date: 2009-01-26 10:28:24 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -215,7 +215,7 @@ public class OWLWGTester {
         
         // Signal the results        
         if (testcase != null) {
-            TestCase.assertTrue("Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description, correct);
+            Assert.assertTrue("Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description, correct);
         }
         return correct;
     }

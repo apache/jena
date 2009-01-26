@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: EnvironmentFrameWithDerivation.java,v 1.11 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: EnvironmentFrameWithDerivation.java,v 1.12 2009-01-26 10:28:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * incremental derivation logging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-26 10:28:22 $
  */
 public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 
@@ -62,8 +62,8 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     /**
      * Return a safe copy of the list of matched subgoals in this subderivation.
      */
-    public List getMatchList() {
-        ArrayList matchList = new ArrayList();
+    public List<Triple> getMatchList() {
+        ArrayList<Triple> matchList = new ArrayList<Triple>();
         for (int i = 0; i < matches.length; i++) {
             matchList.add( LPInterpreter.deref(matches[i]));
         }

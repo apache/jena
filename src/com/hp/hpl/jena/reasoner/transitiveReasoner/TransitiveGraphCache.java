@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.26 2009-01-16 17:23:59 andy_seaborne Exp $
+ * $Id: TransitiveGraphCache.java,v 1.27 2009-01-26 10:28:25 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -508,11 +508,13 @@ public class TransitiveGraphCache implements Finder {
         }
         
         /** Iterator interface - test if more values available */
+        @Override
         public boolean hasNext() {
             return next != null;
         }
         
         /** Iterator interface - get next value */
+        @Override
         public Object next() {
             Object toReturn = next;
             walkOne();
@@ -620,11 +622,13 @@ public class TransitiveGraphCache implements Finder {
         }
         
         /** Iterator interface - test if more values available */
+        @Override
         public boolean hasNext() {
             return next != null;
         }
         
         /** Iterator interface - get next value */
+        @Override
         public Object next() {
             Object toReturn = next;
             walkOne();

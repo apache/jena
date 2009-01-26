@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Finder.java,v 1.11 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: Finder.java,v 1.12 2009-01-26 10:28:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -16,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * Should be implemented by reasoners, caches and related datastructures.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:04 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-26 10:28:23 $
  */
 public interface Finder {
 
@@ -26,7 +27,7 @@ public interface Finder {
      * @return a ClosableIterator over all Triples in the data set
      *  that match the pattern
      */
-    public ExtendedIterator find(TriplePattern pattern);
+    public ExtendedIterator<Triple> find(TriplePattern pattern);
     
     /**
      * Extended find interface used in situations where the implementator
@@ -39,7 +40,7 @@ public interface Finder {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
+    public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation);
 
     /**
      * Return true if the given pattern occurs somewhere in the find sequence.

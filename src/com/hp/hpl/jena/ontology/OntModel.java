@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 08:37:08 $
+ * Last modified on   $Date: 2009-01-26 10:28:22 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.59 2009-01-26 08:37:08 chris-dollin Exp $
+ * @version CVS $Id: OntModel.java,v 1.60 2009-01-26 10:28:22 chris-dollin Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1171,7 +1171,7 @@ public interface OntModel
      * @param uri The URI for the ontology resource, or null for an anonymous resource.
      * @return An ontology resource, of the type specified by the <code>javaClass</code>
      */
-    public OntResource createOntResource( Class javaClass, Resource rdfType, String uri );
+    public <T extends OntResource> T createOntResource( Class<T> javaClass, Resource rdfType, String uri );
 
     /**
      * <p>Answer a resource presenting the {@link OntResource} facet, which has the
@@ -1294,7 +1294,7 @@ public interface OntModel
     public ModelMaker getImportModelMaker();
 
     /**
-     * <p>
+     * <p>i.next()
      * Answer the sub-graphs of this model. A sub-graph is defined as a graph that
      * is used to contain the triples from an imported document.
      * </p>
@@ -1550,7 +1550,7 @@ public interface OntModel
      * @return ExtendedIterator An iterator over the (assumed single) results of
      * executing the queries.
      */
-    public ExtendedIterator queryFor( BindingQueryPlan query, List altQueries, Class asKey );
+    public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey );
 
 
     /**

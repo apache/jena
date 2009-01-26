@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.32 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: ReasonerTester.java,v 1.33 2009-01-26 10:28:24 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.shared.*;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2008-12-28 19:32:22 $
+ * @version $Revision: 1.33 $ on $Date: 2009-01-26 10:28:24 $
  */
 public class ReasonerTester {
 
@@ -298,7 +298,7 @@ public class ReasonerTester {
         */
         // ... end of debugging hack
         if (testcase != null) {
-            TestCase.assertTrue(description, correct);
+            Assert.assertTrue(description, correct);
         }
         return correct;
     }

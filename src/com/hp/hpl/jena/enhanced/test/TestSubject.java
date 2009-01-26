@@ -1,15 +1,18 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSubject.java,v 1.9 2008-12-28 19:32:01 andy_seaborne Exp $
+  $Id: TestSubject.java,v 1.10 2009-01-26 10:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
+
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 /**
  * @see TestObject
  * @author  jjc
  */
-public interface TestSubject  extends TestNode {
+public interface TestSubject  extends RDFNode, TestNode {
     
     boolean isSubject();
     TestProperty aProperty();

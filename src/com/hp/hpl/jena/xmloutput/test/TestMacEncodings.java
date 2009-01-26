@@ -74,23 +74,23 @@ public class TestMacEncodings  extends ModelTestBase
 
     public void testXMLWriterMacRoman() throws IOException {
         if (!InUse) return;
-        TestXMLFeatures.blockLogger();
+        XMLOutputTestBase.blockLogger();
     	Model m = createMemModel();
     	OutputStream fos = new ByteArrayOutputStream();
     	Writer w = new OutputStreamWriter(fos,"MacRoman");
     	m.write(w, "RDF/XML");
-    	assertTrue(TestXMLFeatures.unblockLogger());
+    	assertTrue(XMLOutputTestBase.unblockLogger());
     }	
 
 
     public void testXMLWriteMacArabic() throws IOException {
         if (!InUse) return;
-        TestXMLFeatures.blockLogger();
+        XMLOutputTestBase.blockLogger();
     	Model m = createMemModel();
     	OutputStream fos = new ByteArrayOutputStream();
     	Writer w = new OutputStreamWriter(fos,"MacRoman");
     	m.write(w, "RDF/XML");
-    	assertTrue(TestXMLFeatures.unblockLogger());
+    	assertTrue(XMLOutputTestBase.unblockLogger());
     }	
     
     

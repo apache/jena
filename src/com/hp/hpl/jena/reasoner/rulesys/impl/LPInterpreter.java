@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.18 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: LPInterpreter.java,v 1.19 2009-01-26 10:28:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.19 $ on $Date: 2009-01-26 10:28:22 $
  */
 public class LPInterpreter {
 
@@ -56,7 +56,7 @@ public class LPInterpreter {
     protected FrameObject cpFrame;
     
     /** The trail of variable bindings that have to be unwound on backtrack */
-    protected ArrayList trail = new ArrayList();
+    protected ArrayList<Node> trail = new ArrayList<Node>();
 
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
@@ -112,7 +112,7 @@ public class LPInterpreter {
             envFrame = new EnvironmentFrame(RuleClauseCode.returnCodeBlock);
         }
         envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
-        HashMap mappedVars = new HashMap();
+        HashMap<Node, Node> mappedVars = new HashMap<Node, Node>();
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject(), mappedVars);
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate(), mappedVars);
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject(), mappedVars);
@@ -807,12 +807,12 @@ public class LPInterpreter {
      * @param node the node to be standardized
      * @param mappedVars known mappings from input variables to local variables
      */
-    private Node standardize(Node node, Map mappedVars) {
+    private Node standardize(Node node, Map<Node, Node> mappedVars) {
         Node dnode = deref(node);
         if (node == Node.ANY || node == Node_RuleVariable.WILD) {
             return new Node_RuleVariable(null, 0);
         } else if (dnode.isVariable()) {
-            Node mnode = (Node) mappedVars.get(dnode);
+            Node mnode = mappedVars.get(dnode);
             if (mnode == null) {
                 mnode = new Node_RuleVariable(null, 0);
                 mappedVars.put(dnode, mnode); 

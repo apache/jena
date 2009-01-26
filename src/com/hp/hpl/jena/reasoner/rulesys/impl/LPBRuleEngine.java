@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.15 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: LPBRuleEngine.java,v 1.16 2009-01-26 10:28:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:22 $
  */
 public class LPBRuleEngine {
     
@@ -46,19 +46,19 @@ public class LPBRuleEngine {
     protected boolean recordDerivations;
         
     /** List of engine instances which are still processing queries */
-    protected List activeInterpreters = new ArrayList();
+    protected List<LPInterpreter> activeInterpreters = new ArrayList<LPInterpreter>();
     
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries. */
-    protected HashMap tabledGoals = new HashMap();
+    protected HashMap<TriplePattern, Generator> tabledGoals = new HashMap<TriplePattern, Generator>();
     
     /** Set of generators waiting to be run */
-    protected LinkedList agenda = new LinkedList();
+    protected LinkedList<LPAgendaEntry> agenda = new LinkedList<LPAgendaEntry>();
 //    protected List agenda = new ArrayList();
 //    protected Collection agenda = new HashSet();
     
     /** Optional profile of number of time each rule is entered, set to non-null to profile */
-    protected HashMap profile;
+    protected HashMap<String, Count> profile;
     
     /** The number of generator cycles to wait before running a completion check.
      *  If set to 0 then checks will be done in the generator each time. */
@@ -96,7 +96,7 @@ public class LPBRuleEngine {
      * @param goal the query to be processed
      * @return a closable iterator over the query results
      */
-    public synchronized ExtendedIterator find(TriplePattern goal) {
+    public synchronized ExtendedIterator<Triple> find(TriplePattern goal) {
         LPInterpreter interpreter = new LPInterpreter(this, goal);
         activeInterpreters.add(interpreter);
         return WrappedIterator.create( new LPTopGoalIterator(interpreter));
@@ -107,7 +107,7 @@ public class LPBRuleEngine {
      */
     public synchronized void reset() {
         checkSafeToUpdate();
-        tabledGoals = new HashMap();
+        tabledGoals = new HashMap<TriplePattern, Generator>();
         agenda.clear();
     }
     
@@ -137,7 +137,7 @@ public class LPBRuleEngine {
     /**
      * Return an ordered list of all registered rules.
      */
-    public synchronized List getAllRules() {
+    public synchronized List<Rule> getAllRules() {
         checkSafeToUpdate();
         return ruleStore.getAllRules();
     }
@@ -154,10 +154,10 @@ public class LPBRuleEngine {
      * Stop the current work. Forcibly stop all current query instances over this engine.
      */
     public synchronized void halt() {
-        ArrayList copy = new ArrayList(activeInterpreters);  
+        ArrayList<LPInterpreter> copy = new ArrayList<LPInterpreter>(activeInterpreters);  
         // Copy because closing the LPInterpreter will detach it from this engine which affects activeInterpreters
-        for (Iterator i = copy.iterator(); i.hasNext(); ) {
-            ((LPInterpreter)i.next()).close();
+        for (Iterator<LPInterpreter> i = copy.iterator(); i.hasNext(); ) {
+            i.next().close();
         }
     }
        
@@ -215,14 +215,14 @@ public class LPBRuleEngine {
      */
     public void checkSafeToUpdate() {
         if (!activeInterpreters.isEmpty()) {
-            ArrayList toClose = new ArrayList();
-            for (Iterator i = activeInterpreters.iterator(); i.hasNext(); ) {
-                LPInterpreter interpreter = (LPInterpreter)i.next();
+            ArrayList<LPInterpreterContext> toClose = new ArrayList<LPInterpreterContext>();
+            for (Iterator<LPInterpreter> i = activeInterpreters.iterator(); i.hasNext(); ) {
+                LPInterpreter interpreter = i.next();
                 if (interpreter.getContext() instanceof LPTopGoalIterator) {
                     toClose.add(interpreter.getContext());
                 }
             }
-            for (Iterator i = toClose.iterator(); i.hasNext(); ) {
+            for (Iterator<LPInterpreterContext> i = toClose.iterator(); i.hasNext(); ) {
                 ((LPTopGoalIterator)i.next()).close();
             }
         }
@@ -247,7 +247,7 @@ public class LPBRuleEngine {
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
     public synchronized Generator generatorFor(TriplePattern goal, List clauses) {
-        Generator generator = (Generator) tabledGoals.get(goal);
+        Generator generator = tabledGoals.get(goal);
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, clauses, false);
             activeInterpreters.add(interpreter);
@@ -264,7 +264,7 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      */
     public synchronized Generator generatorFor(TriplePattern goal) {
-        Generator generator = (Generator) tabledGoals.get(goal);
+        Generator generator = tabledGoals.get(goal);
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, false);
             activeInterpreters.add(interpreter);
@@ -288,9 +288,9 @@ public class LPBRuleEngine {
      */
     public synchronized void pump(LPInterpreterContext gen) {
 //        System.out.println("Pump agenda on engine " + this + ", size = " + agenda.size());
-        Collection batch = null;
+        Collection<LPInterpreterContext> batch = null;
         if (CYCLES_BETWEEN_COMPLETION_CHECK > 0) {
-            batch = new ArrayList(CYCLES_BETWEEN_COMPLETION_CHECK);
+            batch = new ArrayList<LPInterpreterContext>(CYCLES_BETWEEN_COMPLETION_CHECK);
         }
         int count = 0; 
         while(!gen.isReady()) {
@@ -302,7 +302,7 @@ public class LPBRuleEngine {
 //            LPAgendaEntry next = (LPAgendaEntry) ai.next();
 //            ai.remove();
             int chosen = agenda.size() - 1;
-            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
+            LPAgendaEntry next = agenda.get(chosen);
             agenda.remove(chosen);
 //            System.out.println("  pumping entry " + next);
             next.pump();
@@ -326,9 +326,9 @@ public class LPBRuleEngine {
      * Check all known interpeter contexts to see if any are complete.
      */
     public void checkForCompletions() {
-        ArrayList contexts = new ArrayList(activeInterpreters.size());
-        for (Iterator i = activeInterpreters.iterator(); i.hasNext(); ) {
-            LPInterpreter interpreter = (LPInterpreter)i.next();
+        ArrayList<LPInterpreterContext> contexts = new ArrayList<LPInterpreterContext>(activeInterpreters.size());
+        for (Iterator<LPInterpreter> i = activeInterpreters.iterator(); i.hasNext(); ) {
+            LPInterpreter interpreter = i.next();
             if (interpreter.getContext() instanceof Generator) {
                 contexts.add(interpreter.getContext());     
             }
@@ -345,7 +345,7 @@ public class LPBRuleEngine {
     public void incrementProfile(RuleClauseCode clause) {
         if (profile != null) {
             String index = clause.toString();
-            Count count = (Count)profile.get(index);
+            Count count = profile.get(index);
             if (count == null) {
                 profile.put(index, new Count(clause).inc());
             } else {
@@ -370,11 +370,11 @@ public class LPBRuleEngine {
         if (profile == null) {
             System.out.println("No profile collected");
         } else {
-            ArrayList counts = new ArrayList();
+            ArrayList<Count> counts = new ArrayList<Count>();
             counts.addAll(profile.values());
             Collections.sort(counts);
             System.out.println("LP engine rule profile");
-            for (Iterator i = counts.iterator(); i.hasNext(); ) {
+            for (Iterator<Count> i = counts.iterator(); i.hasNext(); ) {
                 System.out.println(i.next());
             }
         }

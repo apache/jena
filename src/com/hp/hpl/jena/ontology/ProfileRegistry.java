@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:22 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.14 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.15 2009-01-26 10:28:22 chris-dollin Exp $
  */
 public class ProfileRegistry {
     // Constants
@@ -54,7 +54,7 @@ public class ProfileRegistry {
     public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
     
     /** The URI that maps to the language profile for DAML+OIL */
-    public static final String DAML_LANG = DAML_OIL.NAMESPACE_DAML_2001_03_URI;
+    public static final String DAML_LANG = DAMLVocabulary.NAMESPACE_DAML_2001_03_URI;
     
     /** The URI that maps to the language profile for RDFS */
     public static final String RDFS_LANG = RDFS.getURI();

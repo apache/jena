@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.58 $
+ * Revision           $Revision: 1.59 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-26 10:28:21 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.58 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.59 2009-01-26 10:28:21 chris-dollin Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -164,7 +164,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     public OntClass getSuperClass() {
-        return (OntClass) objectAs( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class );
+        return objectAs( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class );
     }
 
     /**
@@ -280,7 +280,7 @@ public class OntClassImpl
             i.removeNext();
         }
 
-        ((OntClass) cls.as( OntClass.class )).addSuperClass( this );
+        cls.as( OntClass.class ).addSuperClass( this );
     }
 
     /**
@@ -289,7 +289,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     public void addSubClass( Resource cls ) {
-        ((OntClass) cls.as( OntClass.class )).addSuperClass( this );
+        cls.as( OntClass.class ).addSuperClass( this );
     }
 
     /**
@@ -305,7 +305,7 @@ public class OntClassImpl
         StmtIterator i = getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this );
         try {
             if (i.hasNext()) {
-                return (OntClass) i.nextStatement()
+                return i.nextStatement()
                                    .getSubject()
                                    .as( OntClass.class );
             }
@@ -417,7 +417,7 @@ public class OntClassImpl
             // could be outside an ontmodel if a constant
             cls = (Resource) cls.inModel( getModel() );
         }
-        return ((OntClass) cls.as( OntClass.class )).hasSuperClass( this, direct );
+        return cls.as( OntClass.class ).hasSuperClass( this, direct );
     }
 
     /**
@@ -427,7 +427,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
      */
     public void removeSubClass( Resource cls ) {
-        ((OntClass) cls.as( OntClass.class)).removeSuperClass( this );
+        (cls.as( OntClass.class)).removeSuperClass( this );
     }
 
 
@@ -459,7 +459,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     public OntClass getEquivalentClass() {
-        return (OntClass) objectAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class );
+        return objectAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class );
     }
 
     /**
@@ -521,7 +521,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     public OntClass getDisjointWith() {
-        return (OntClass) objectAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class );
+        return objectAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class );
     }
 
     /**
@@ -590,7 +590,7 @@ public class OntClassImpl
      */
     public ExtendedIterator listDeclaredProperties( boolean direct ) {
         // first collect the candidate properties
-        Set candSet = new HashSet();
+        Set<RDFNode> candSet = new HashSet<RDFNode>();
 
         // if the attached model does inference, it will potentially find more of these
         // than a non-inference model
@@ -599,7 +599,7 @@ public class OntClassImpl
         }
 
         // now we iterate over the candidates and check that they match all domain constraints
-        List cands = new ArrayList();
+        List<RDFNode> cands = new ArrayList<RDFNode>();
         cands.addAll( candSet );
         for (int j = cands.size() -1; j >= 0; j--) {
             Property cand = (Property) cands.get( j );
@@ -748,7 +748,7 @@ public class OntClassImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public EnumeratedClass asEnumeratedClass() {
-        return (EnumeratedClass) as( EnumeratedClass.class );
+        return as( EnumeratedClass.class );
     }
 
     /**
@@ -758,7 +758,7 @@ public class OntClassImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public UnionClass asUnionClass()  {
-        return (UnionClass) as( UnionClass.class );
+        return as( UnionClass.class );
     }
 
     /**
@@ -768,7 +768,7 @@ public class OntClassImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public IntersectionClass asIntersectionClass()  {
-        return (IntersectionClass) as( IntersectionClass.class );
+        return as( IntersectionClass.class );
     }
 
     /**
@@ -778,7 +778,7 @@ public class OntClassImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public ComplementClass asComplementClass() {
-        return (ComplementClass) as( ComplementClass.class );
+        return as( ComplementClass.class );
     }
 
     /**
@@ -788,7 +788,7 @@ public class OntClassImpl
      * given the lanuage profile and the current state of the underlying model.
      */
     public Restriction asRestriction() {
-        return (Restriction) as( Restriction.class );
+        return as( Restriction.class );
     }
 
 
@@ -851,7 +851,7 @@ public class OntClassImpl
      */
     public EnumeratedClass convertToEnumeratedClass( RDFList individuals ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", individuals );
-        return (EnumeratedClass) as( EnumeratedClass.class );
+        return as( EnumeratedClass.class );
     }
 
     /**
@@ -861,7 +861,7 @@ public class OntClassImpl
      */
     public IntersectionClass convertToIntersectionClass( RDFList classes ) {
         setPropertyValue( getProfile().INTERSECTION_OF(), "INTERSECTION_OF", classes );
-        return (IntersectionClass) as( IntersectionClass.class );
+        return as( IntersectionClass.class );
     }
 
     /**
@@ -871,7 +871,7 @@ public class OntClassImpl
      */
     public UnionClass convertToUnionClass( RDFList classes ) {
         setPropertyValue( getProfile().UNION_OF(), "UNION_OF", classes );
-        return (UnionClass) as( UnionClass.class );
+        return as( UnionClass.class );
     }
 
     /**
@@ -881,7 +881,7 @@ public class OntClassImpl
      */
     public ComplementClass convertToComplementClass( Resource cls ) {
         setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
-        return (ComplementClass) as( ComplementClass.class );
+        return as( ComplementClass.class );
     }
 
     /**
@@ -894,7 +894,7 @@ public class OntClassImpl
             setRDFType( getProfile().RESTRICTION() );
         }
         setPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
-        return (Restriction) as( Restriction.class );
+        return as( Restriction.class );
     }
 
 
@@ -1050,12 +1050,12 @@ public class OntClassImpl
         }
 
         // otherwise, we have to search upwards through the class hierarchy
-        Set seen = new HashSet();
-        List queue = new ArrayList();
+        Set<OntClass> seen = new HashSet<OntClass>();
+        List<OntClass> queue = new ArrayList<OntClass>();
         queue.add( this );
 
         while (!queue.isEmpty()) {
-            OntClass c = (OntClass) queue.remove( 0 );
+            OntClass c = queue.remove( 0 );
             if (!seen.contains( c )) {
                 seen.add( c );
 
@@ -1066,7 +1066,7 @@ public class OntClassImpl
                 else {
                     // queue the supers
                     for (Iterator i = c.listSuperClasses(); i.hasNext(); ) {
-                        queue.add( i.next() );
+                        queue.add( (OntClass) i.next() );
                     }
                 }
             }
