@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.18 2009-01-20 15:12:28 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.19 2009-01-26 17:41:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -85,7 +85,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         @Override public Assembler assemblerFor( Resource type )
             { return internal.assemblerFor( type ); }
         
-        public Set implementsTypes()
+        public Set<Resource> implementsTypes()
             { 
             return implementTypes.listStatements().mapWith( Statement.Util.getSubject ).toSet(); }
             }
@@ -94,16 +94,15 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         Map<Resource, Assembler> mappings = new HashMap<Resource, Assembler>();
 
-        @Override
-        public Object open( Assembler a, Resource root, Mode mode )
+        @Override public Object open( Assembler a, Resource root, Mode mode )
             {
-            Set types = AssemblerHelp.findSpecificTypes( root, JA.Object );
+            Set <Resource>types = AssemblerHelp.findSpecificTypes( root, JA.Object );
             if (types.size() == 0)
                 throw new NoSpecificTypeException( root );
             else if (types.size() > 1)
-                throw new AmbiguousSpecificTypeException( root, new ArrayList( types ) );
+                throw new AmbiguousSpecificTypeException( root, new ArrayList<Resource>( types ) );
             else
-                return openBySpecificType( a, root, mode, (Resource) types.iterator().next() );
+                return openBySpecificType( a, root, mode, types.iterator().next() );
             }
 
         private Object openBySpecificType( Assembler a, Resource root, Mode mode, Resource type )
