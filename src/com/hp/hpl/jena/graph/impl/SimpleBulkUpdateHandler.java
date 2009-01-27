@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.29 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.30 2009-01-27 10:52:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -40,21 +40,21 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         manager.notifyAddArray( graph, triples );
         }
         
-    public void add( List triples )
+    public void add( List<Triple> triples )
         { add( triples, true ); }
         
-    protected void add( List triples, boolean notify )
+    protected void add( List<Triple> triples, boolean notify )
         {
-        for (int i = 0; i < triples.size(); i += 1) graph.performAdd( (Triple) triples.get(i) ); 
+        for (int i = 0; i < triples.size(); i += 1) graph.performAdd( triples.get(i) ); 
         if (notify) manager.notifyAddList( graph, triples );
         }
 
-    public void add( Iterator it )
+    public void add( Iterator<Triple> it )
         { addIterator( it, true ); }
 
-    public void addIterator( Iterator it, boolean notify )
+    public void addIterator( Iterator<Triple> it, boolean notify )
         { 
-        List s = IteratorCollection.iteratorToList( it );
+        List<Triple> s = IteratorCollection.iteratorToList( it );
         add( s, false );
         if (notify) manager.notifyAddIterator( graph, s );
         }
@@ -72,10 +72,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     public static void addReifications( Graph ours, Graph g )
         {
         Reifier r = g.getReifier();
-        Iterator it = r.allNodes();
+        Iterator<Node> it = r.allNodes();
         while (it.hasNext())
             {
-            Node node = (Node) it.next();
+            Node node = it.next();
             ours.getReifier().reifyAs( node, r.getTriple( node ) );
             }
         }
@@ -83,10 +83,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     public static void deleteReifications( Graph ours, Graph g )
         {
         Reifier r = g.getReifier();
-        Iterator it = r.allNodes();
+        Iterator<Node> it = r.allNodes();
         while (it.hasNext())
             {
-            Node node = (Node) it.next();
+            Node node = it.next();
             ours.getReifier().remove( node, r.getTriple( node ) );
             }
         }
@@ -97,29 +97,29 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         manager.notifyDeleteArray( graph, triples );
         }
     
-    public void delete( List triples )
+    public void delete( List<Triple> triples )
         { delete( triples, true ); }
         
-    protected void delete( List triples, boolean notify )
+    protected void delete( List<Triple> triples, boolean notify )
         { 
-        for (int i = 0; i < triples.size(); i += 1) graph.performDelete( (Triple) triples.get(i) );
+        for (int i = 0; i < triples.size(); i += 1) graph.performDelete( triples.get(i) );
         if (notify) manager.notifyDeleteList( graph, triples );
         }
     
-    public void delete( Iterator it )
+    public void delete( Iterator<Triple> it )
         { deleteIterator( it, true ); }
         
-    public void deleteIterator( Iterator it, boolean notify )
+    public void deleteIterator( Iterator<Triple> it, boolean notify )
         {  
-        List L = IteratorCollection.iteratorToList( it );
+        List<Triple> L = IteratorCollection.iteratorToList( it );
         delete( L, false );
         if (notify) manager.notifyDeleteIterator( graph, L );
          }
          
-    private List triplesOf( Graph g )
+    private List<Triple> triplesOf( Graph g )
         {
-        ArrayList L = new ArrayList();
-        Iterator it = g.find( Triple.ANY );
+        ArrayList<Triple> L = new ArrayList<Triple>();
+        Iterator<Triple> it = g.find( Triple.ANY );
         while (it.hasNext()) L.add( it.next() );
         return L;
         }
@@ -150,14 +150,14 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     
     public static void removeAll( Graph g, Node s, Node p, Node o )
         {
-        ExtendedIterator it = g.find( s, p, o );
+        ExtendedIterator<Triple> it = g.find( s, p, o );
         try { while (it.hasNext()) { it.next(); it.remove(); } }
         finally { it.close(); }
         }
     
     public static void removeAll( Graph g )
         {
-        ExtendedIterator it = GraphUtil.findAll( g );
+        ExtendedIterator<Triple> it = GraphUtil.findAll( g );
         try { while (it.hasNext()) { it.next(); it.remove(); } }
         finally { it.close(); }
         }

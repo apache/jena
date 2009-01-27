@@ -1,12 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphAddList.java,v 1.8 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: GraphAddList.java,v 1.9 2009-01-27 10:52:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 
@@ -15,9 +15,10 @@ import com.hp.hpl.jena.graph.*;
     to things that want to add triples to Graphs. The triples are filtered.
 */
 
-public class GraphAddList extends ArrayList implements GraphAdd
+public class GraphAddList implements GraphAdd
     {
     protected Triple match;
+    protected final ArrayList<Triple> triples = new ArrayList<Triple>();
     
     /**
          Initialise a GraphAddList with a triple [pattern] that specifies what triples
@@ -28,7 +29,23 @@ public class GraphAddList extends ArrayList implements GraphAdd
     /**
          Add the triple <code>t</code> to this list if it is matched by the pattern.
     */
-    public void add( Triple t ) { if (match.matches( t )) super.add( t ); }
+    public void add( Triple t ) { if (match.matches( t )) triples.add( t ); }
+    
+    /**
+        The number of triples held.
+    */
+    public int size() { return triples.size(); }
+    
+    /**
+        Answer the last triple, and remove it.
+    */
+    public Triple removeLast() { return triples.remove( triples.size() - 1 ); }
+
+    /**
+        Answer an iterator over all the triples in this add-list.
+    */
+    public Iterator<Triple> iterator()
+        { return triples.iterator(); }
     }
 
 /*

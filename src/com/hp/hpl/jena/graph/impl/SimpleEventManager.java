@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.20 2009-01-26 15:24:31 andy_seaborne Exp $
+  $Id: SimpleEventManager.java,v 1.21 2009-01-27 10:52:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -31,12 +31,12 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public class SimpleEventManager implements GraphEventManager
     {
     protected Graph graph;
-    protected List  listeners;
+    protected List<GraphListener>  listeners;
     
     public SimpleEventManager( Graph graph ) 
         { 
         this.graph = graph;
-        this.listeners = new ArrayList(); 
+        this.listeners = new ArrayList<GraphListener>(); 
         }
     
     public GraphEventManager register( GraphListener listener ) 
@@ -57,79 +57,79 @@ public class SimpleEventManager implements GraphEventManager
     public void notifyAddTriple( Graph g, Triple t ) 
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyAddTriple( g, t ); 
+            listeners.get(i).notifyAddTriple( g, t ); 
         }
     
     public void notifyAddArray( Graph g, Triple [] ts )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyAddArray( g, ts ); 
+            listeners.get(i).notifyAddArray( g, ts ); 
         }
         
-    public void notifyAddList( Graph g, List L )
+    public void notifyAddList( Graph g, List<Triple> L )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyAddList( g, L);      
+            listeners.get(i).notifyAddList( g, L);      
         }
         
-    public void notifyAddIterator( Graph g, List it )
+    public void notifyAddIterator( Graph g, List<Triple> it )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyAddIterator( g, it.iterator() ); 
+            listeners.get(i).notifyAddIterator( g, it.iterator() ); 
         }
         
-    public void notifyAddIterator( Graph g, Iterator it )
+    public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { notifyAddIterator( g, IteratorCollection.iteratorToList( it ) ); }
         
     public void notifyAddGraph( Graph g, Graph added )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyAddGraph( g, added ); 
+            listeners.get(i).notifyAddGraph( g, added ); 
         }
         
     public void notifyDeleteTriple( Graph g, Triple t ) 
         { 
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyDeleteTriple( g, t ); 
+            listeners.get(i).notifyDeleteTriple( g, t ); 
         }
         
     public void notifyDeleteArray( Graph g, Triple [] ts )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyDeleteArray( g, ts ); 
+            listeners.get(i).notifyDeleteArray( g, ts ); 
         }
         
-    public void notifyDeleteList( Graph g, List L )
+    public void notifyDeleteList( Graph g, List<Triple> L )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyDeleteList( g, L );      
+            listeners.get(i).notifyDeleteList( g, L );      
         }
         
-    public void notifyDeleteIterator( Graph g, List L )
+    public void notifyDeleteIterator( Graph g, List<Triple> L )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyDeleteIterator( g, L.iterator() ); 
+            listeners.get(i).notifyDeleteIterator( g, L.iterator() ); 
         }
         
-    public void notifyDeleteIterator( Graph g, Iterator it )
+    public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { notifyDeleteIterator( g, IteratorCollection.iteratorToList( it ) ); }    
             
     public void notifyDeleteGraph( Graph g, Graph removed )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyDeleteGraph( g, removed ); 
+            listeners.get(i).notifyDeleteGraph( g, removed ); 
         }
     
     public void notifyEvent( Graph source, Object event )
         {
         for (int i = 0; i < listeners.size(); i += 1) 
-            ((GraphListener) listeners.get(i)).notifyEvent( source, event ); }
+            listeners.get(i).notifyEvent( source, event ); }
 
     /**
      * Answer an iterator which wraps <code>i</code> to ensure that if a .remove()
      * is executed on it, the graph <code>g</code> will be notified.
     */
-    public static ExtendedIterator<Triple> notifyingRemove( final Graph g, Iterator i )
+    public static ExtendedIterator<Triple> notifyingRemove( final Graph g, Iterator<Triple> i )
         {
         return new TrackingTripleIterator( i )
             {            

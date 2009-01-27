@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.21 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: SimpleGraphMaker.java,v 1.22 2009-01-27 10:52:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -38,7 +38,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         The mapping from the names of graphs to the Graphs themselves.
     */    
-    private Map graphs = new HashMap();
+    private Map<String, Graph> graphs = new HashMap<String, Graph>();
     
     public Graph create()
         { return Factory.createGraphMem(); }
@@ -99,7 +99,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     public void close()
         { /* nothing to do */ }
         
-    public ExtendedIterator listGraphs()
+    public ExtendedIterator<String> listGraphs()
         { return WrappedIterator.create( graphs.keySet().iterator() ); }
 	}
 

@@ -1,11 +1,10 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.17 2009-01-26 15:24:31 andy_seaborne Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.18 2009-01-27 10:52:53 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
-import java.util.HashSet;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
@@ -19,12 +18,12 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public class SimpleReifierTripleMap implements ReifierTripleMap 
     {
-    protected Map inverseMap = CollectionFactory.createHashedMap();
+    protected Map<Triple, Set<Node>> inverseMap = CollectionFactory.createHashedMap();
     
-    protected Map forwardMap = CollectionFactory.createHashedMap();    
+    protected Map<Node, Triple> forwardMap = CollectionFactory.createHashedMap();    
     
     public Triple getTriple( Node tag )
-        { return (Triple) forwardMap.get( tag ); }
+        { return forwardMap.get( tag ); }
 
     public void clear()
         {
@@ -59,16 +58,16 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     
     public void removeTriple( Triple t )
         {
-        ExtendedIterator it = tagIterator( t );
-        Set nodes = CollectionFactory.createHashedSet();
+        ExtendedIterator<Node> it = tagIterator( t );
+        Set<Node> nodes = CollectionFactory.createHashedSet();
         while (it.hasNext()) nodes.add( it.next() );
-        Iterator them = nodes.iterator();
-        while (them.hasNext()) removeTriple( (Node) them.next() );
+        Iterator<Node> them = nodes.iterator();
+        while (them.hasNext()) removeTriple( them.next() );
         }
     
     protected void inverseRemove( Triple value, Node key )
         {
-        Set s = (Set) inverseMap.get( value );
+        Set<Node> s = inverseMap.get( value );
         if (s != null)
             {
             s.remove( key );
@@ -78,20 +77,20 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     
     protected void inversePut( Triple value, Node key )
         {
-        Set s = (Set) inverseMap.get( value );
-        if (s == null) inverseMap.put( value, s = new HashSet() );
+        Set<Node> s = inverseMap.get( value );
+        if (s == null) inverseMap.put( value, s = new HashSet<Node>() );
         s.add( key );
         }            
 
-    public ExtendedIterator tagIterator( Triple t )
+    public ExtendedIterator<Node> tagIterator( Triple t )
         { 
-        Set s = (Set) inverseMap.get( t );
+        Set<Node> s = inverseMap.get( t );
         return s == null
-            ? (ExtendedIterator) NullIterator.instance()
+            ? NullIterator.<Node>instance()
             : WrappedIterator.create( s.iterator() );
         }
 
-    protected ExtendedIterator allTriples( TripleMatch tm )
+    protected ExtendedIterator<Triple> allTriples( TripleMatch tm )
         {
         if (forwardMap.isEmpty()) return NullIterator.instance();
         Triple pattern = tm.asTriple();
@@ -99,15 +98,14 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         if (tag.isConcrete())
             {
             Triple x = getTriple( tag );  
-            return x == null ? NullIterator.instance() : explodeTriple( pattern, tag, x ); 
+            return x == null ? NullIterator.<Triple>instance() : explodeTriple( pattern, tag, x ); 
             }
         else
             {
-            final Iterator it = forwardMap.entrySet().iterator();   
+            final Iterator<Map.Entry<Node, Triple>> it = forwardMap.entrySet().iterator();   
             return new FragmentTripleIterator( pattern, it )
                 {
-                @Override
-                public void fill( GraphAdd ga, Node n, Object fragmentsObject )
+                @Override public void fill( GraphAdd ga, Node n, Object fragmentsObject )
                     {
                     SimpleReifier.graphAddQuad( ga, n, (Triple) fragmentsObject );         
                     }
@@ -119,7 +117,7 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
          Answer an interator over all of the quadlets of <code>toExplode</code> with
          the reifying node <code>tag</code> that match <code>pattern</code>.
     */
-    public static ExtendedIterator explodeTriple( Triple pattern, Node tag, Triple toExplode )
+    public static ExtendedIterator<Triple> explodeTriple( Triple pattern, Node tag, Triple toExplode )
         {
         GraphAddList L = new GraphAddList( pattern );
         SimpleReifier.graphAddQuad( L, tag, toExplode ); 
@@ -134,11 +132,10 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     public Graph asGraph()
         {
         return new GraphBase()
-            { @Override
-            public ExtendedIterator graphBaseFind( TripleMatch tm ) { return allTriples( tm ); } };
+            { @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch tm ) { return allTriples( tm ); } };
         }
     
-    public ExtendedIterator find( TripleMatch m )
+    public ExtendedIterator<Triple> find( TripleMatch m )
         { return allTriples( m ); }
     
     public int size()
@@ -147,7 +144,7 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     /**
          Answer an iterator over all the fragment tags in this map.
     */
-    public ExtendedIterator tagIterator()
+    public ExtendedIterator<Node> tagIterator()
         { return WrappedIterator.create( forwardMap.keySet().iterator() ); }
     }
 

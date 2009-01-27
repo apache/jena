@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.14 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: FragmentTripleIterator.java,v 1.15 2009-01-27 10:52:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /**
      Iterator which delivers all the triples from a Fragment's map.
 */
-public abstract class FragmentTripleIterator extends NiceIterator
+public abstract class FragmentTripleIterator extends NiceIterator<Triple>
     {
     private final GraphAddList pending;
     private final Iterator it;
@@ -37,8 +37,7 @@ public abstract class FragmentTripleIterator extends NiceIterator
         list once we've refilled.
         @return true iff there are more triples to come
     */
-    @Override
-    public boolean hasNext() 
+    @Override public boolean hasNext() 
         { 
         refill();
         return pending.size() > 0; 
@@ -50,11 +49,10 @@ public abstract class FragmentTripleIterator extends NiceIterator
         @return the next triple
         @throws NoSuchElementException if there isn't one
     */
-    @Override
-    public Object next()
+    @Override public Triple next()
         {
         ensureHasNext();
-        return pending.remove( pending.size() - 1 );
+        return pending.removeLast();
         }
         
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.26 2009-01-26 15:24:31 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.27 2009-01-27 10:52:53 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -22,10 +22,10 @@ import com.hp.hpl.jena.vocabulary.RDF;
 */
 public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {
-    protected Map forwardMap = CollectionFactory.createHashedMap();
+    protected Map<Node, Fragments> forwardMap = CollectionFactory.createHashedMap();
     
     protected Fragments getFragments( Node tag )
-        { return (Fragments) forwardMap.get( tag ); }
+        { return forwardMap.get( tag ); }
     
     protected void removeFragments( Node key )
         { forwardMap.remove( key ); }
@@ -42,7 +42,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         return value;
         }                    
     
-    protected ExtendedIterator allTriples( TripleMatch tm )
+    protected ExtendedIterator<Triple> allTriples( TripleMatch tm )
         {
         if (forwardMap.isEmpty())
             return NullIterator.instance();
@@ -50,19 +50,18 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         Node subject = t.getSubject();
         if (subject.isConcrete())
             {
-            Fragments x = (Fragments) forwardMap.get( subject );  
+            Fragments x = forwardMap.get( subject );  
             return x == null
-                ? NullIterator.instance()
+                ? NullIterator.<Triple>instance()
                 : explodeFragments( t, subject, x )
                 ; 
             }
         else
             {
-            final Iterator it = forwardMap.entrySet().iterator();   
+            final Iterator<Map.Entry<Node, Fragments>> it = forwardMap.entrySet().iterator();   
             return new FragmentTripleIterator( t, it )
                 {
-                @Override
-                public void fill( GraphAdd ga, Node n, Object fragmentsObject )
+                @Override public void fill( GraphAdd ga, Node n, Object fragmentsObject )
                     { 
                     ((Fragments) fragmentsObject).includeInto( ga );    
                     }
@@ -76,25 +75,24 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
      * @param x
      * @return
      */
-    protected ExtendedIterator explodeFragments( Triple t, Node subject, Fragments x )
+    protected ExtendedIterator<Triple> explodeFragments( Triple t, Node subject, Fragments x )
         {
         GraphAddList L = new GraphAddList( t );
         x.includeInto( L );
         return WrappedIterator.create( L.iterator() );
         }
 
-    public ExtendedIterator find( TripleMatch m )
+    public ExtendedIterator<Triple> find( TripleMatch m )
         { return allTriples( m ); }
     
     public int size()
         { 
         int result = 0;
-        Iterator it = forwardMap.entrySet().iterator();   
+        Iterator<Map.Entry<Node, Fragments>> it = forwardMap.entrySet().iterator();   
         while (it.hasNext())
             {
-            Map.Entry e = (Map.Entry) it.next();
-            Fragments f = (Fragments) e.getValue();
-            result += f.size();
+            Map.Entry<Node, Fragments> e = it.next();
+            result += e.getValue().size();
             }
         return result; 
         }
@@ -106,7 +104,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     public ReifierFragmentHandler getFragmentHandler( Triple t )
         {
         Node p = t.getPredicate();
-        ReifierFragmentHandler x = (ReifierFragmentHandler) selectors.get( p );
+        ReifierFragmentHandler x = selectors.get( p );
         if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return null;
         return x;
         }
@@ -167,7 +165,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             choose a slot by number than any other way I could think of.
         */
         private final Set [] slots = 
-            {CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet()};
+             {CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet(), CollectionFactory.createHashedSet()};
         
         /**
             the Node the fragments are about. 
@@ -301,14 +299,14 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     protected final ReifierFragmentHandler OBJECTS = new SimpleReifierFragmentHandler( this, OBJECTS_index) { @Override
     public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
 
-    public final Map selectors = makeSelectors();
+    public final Map<Node, ReifierFragmentHandler> selectors = makeSelectors();
           
     /**
         make the selector mapping.
     */
-    protected Map makeSelectors()
+    protected Map<Node, ReifierFragmentHandler> makeSelectors()
         {
-        Map result = CollectionFactory.createHashedMap();
+        Map<Node, ReifierFragmentHandler> result = CollectionFactory.createHashedMap();
         result.put( RDF.Nodes.subject, SUBJECTS );
         result.put( RDF.Nodes.predicate, PREDICATES );
         result.put( RDF.Nodes.object, OBJECTS );

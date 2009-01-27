@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedBulkUpdateHandler.java,v 1.9 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: WrappedBulkUpdateHandler.java,v 1.10 2009-01-27 10:52:52 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -18,8 +18,7 @@ import com.hp.hpl.jena.util.IteratorCollection;
  	 
  	@author kers
 */
-public class WrappedBulkUpdateHandler 
-	implements BulkUpdateHandler
+public class WrappedBulkUpdateHandler implements BulkUpdateHandler
     {
     protected BulkUpdateHandler base;
     protected GraphEventManager manager;
@@ -38,15 +37,15 @@ public class WrappedBulkUpdateHandler
         manager.notifyAddArray( graph, triples );
         }
     
-    public void add( List triples )
+    public void add( List<Triple> triples )
         {
         base.add( triples );
         manager.notifyAddList( graph, triples );
         }
 
-    public void add( Iterator it )
+    public void add( Iterator<Triple> it )
         {
-        List s = IteratorCollection.iteratorToList( it );
+        List<Triple> s = IteratorCollection.iteratorToList( it );
         base.add( s );
         manager.notifyAddIterator( graph, s );
         }
@@ -69,15 +68,15 @@ public class WrappedBulkUpdateHandler
         manager.notifyDeleteArray( graph, triples );
         }
 
-    public void delete( List triples )
+    public void delete( List<Triple> triples )
         {
         base.delete( triples );
         manager.notifyDeleteList( graph, triples );
         }
 
-    public void delete( Iterator it )
+    public void delete( Iterator<Triple> it )
         {
-        List s = IteratorCollection.iteratorToList( it );
+        List<Triple> s = IteratorCollection.iteratorToList( it );
         base.delete( s );
         manager.notifyDeleteIterator( graph, s );
         }
