@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.32 2009-01-26 08:37:07 chris-dollin Exp $
+  $Id: Triple.java,v 1.33 2009-01-27 08:55:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -205,59 +205,53 @@ public class Triple implements TripleMatch
         {
         public abstract Node getField( Triple t );
         
-        public abstract Filter filterOn( Node n );
+        public abstract Filter<Triple> filterOn( Node n );
         
-        public final Filter filterOn( Triple t )
+        public final Filter<Triple> filterOn( Triple t )
             { return filterOn( getField( t ) ); }
+        
+        protected static final Filter<Triple> anyTriple = Filter.any();
         
         public static final Field fieldSubject = new Field() 
             { 
-            @Override
-            public Node getField( Triple t ) 
+            @Override public Node getField( Triple t ) 
                 { return t.subj; }
             
-            @Override
-            public Filter filterOn( final Node n )
+            @Override public Filter<Triple> filterOn( final Node n )
                 { 
                 return n.isConcrete() 
-                    ? new Filter() 
-                        { @Override
-                        public boolean accept( Object x ) { return n.equals( ((Triple) x).subj ); } }
-                    : Filter.any
+                    ? new Filter<Triple>() 
+                        { @Override public boolean accept( Triple x ) { return n.equals( x.subj ); } }
+                    : anyTriple
                     ;
                 }
             };
             
         public static final Field fieldObject = new Field() 
             { 
-            @Override
-            public Node getField( Triple t ) 
+            @Override public Node getField( Triple t ) 
                 { return t.obj; } 
             
-            @Override
-            public Filter filterOn( final Node n )
+            @Override public Filter<Triple> filterOn( final Node n )
                 { return n.isConcrete() 
-                    ? new Filter() 
-                        { @Override
-                        public boolean accept( Object x ) 
-                            { return n.sameValueAs( ((Triple) x).obj ); } }
-                    : Filter.any; 
+                    ? new Filter<Triple>() 
+                        { @Override public boolean accept( Triple x ) 
+                            { return n.sameValueAs( x.obj ); } }
+                    : anyTriple; 
                 }
             };
         
         public static final Field fieldPredicate = new Field() 
             { 
-            @Override
-            public Node getField( Triple t ) 
+            @Override public Node getField( Triple t ) 
                 { return t.pred; } 
             
-            @Override
-            public Filter filterOn( final Node n )
+            @Override public Filter<Triple> filterOn( final Node n )
                 { return n.isConcrete()
-                    ? new Filter() 
+                    ? new Filter<Triple>() 
                         { @Override
-                        public boolean accept( Object x ) { return n.equals( ((Triple) x).pred ); } }
-                    : Filter.any; 
+                        public boolean accept( Triple x ) { return n.equals( x.pred ); } }
+                    : anyTriple; 
                 }
             };
         }

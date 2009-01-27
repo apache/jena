@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFilters.java,v 1.11 2009-01-26 15:24:34 andy_seaborne Exp $
+ 	$Id: TestFilters.java,v 1.12 2009-01-27 08:55:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -23,54 +23,50 @@ public class TestFilters extends ModelTestBase
         { return new TestSuite( TestFilters.class ); }
     
     public void testFilterAnyExists()
-        { assertInstanceOf( Filter.class, Filter.any ); }
+        { assertInstanceOf( Filter.class, Filter.any() ); }
     
     public void testFilterAnyAcceptsThings()
         {
-        assertTrue( Filter.any.accept( "hello" ) );
-        assertTrue( Filter.any.accept( new Integer( 17 ) ) );
-        assertTrue( Filter.any.accept( node( "frodo" ) ) );
-        assertTrue( Filter.any.accept( node( "_cheshire" ) ) );
-        assertTrue( Filter.any.accept( node( "17" ) ) );
-        assertTrue( Filter.any.accept( triple( "s p o" ) ) );
-        assertTrue( Filter.any.accept( Filter.any ) );
-        assertTrue( Filter.any.accept( this ) );
+        assertTrue( Filter.any().accept( "hello" ) );
+        assertTrue( Filter.any().accept( new Integer( 17 ) ) );
+        assertTrue( Filter.any().accept( node( "frodo" ) ) );
+        assertTrue( Filter.any().accept( node( "_cheshire" ) ) );
+        assertTrue( Filter.any().accept( node( "17" ) ) );
+        assertTrue( Filter.any().accept( triple( "s p o" ) ) );
+        assertTrue( Filter.any().accept( Filter.any() ) );
+        assertTrue( Filter.any().accept( this ) );
         }
     
     public void testFilterFilterMethod()
         {
-        ExtendedIterator it = Filter.any.filterKeep( NullIterator.instance() );
-        assertFalse( it.hasNext() );
+        assertFalse( Filter.any().filterKeep( NullIterator.instance() ).hasNext() );
         }
     
     public void testFilteringThings()
         {
-        ExtendedIterator it = iteratorOfStrings( "gab geb bag big lava hall end" );
-        Filter f = new Filter() 
+        ExtendedIterator<String> it = iteratorOfStrings( "gab geb bag big lava hall end" );
+        Filter<String> f = new Filter<String>() 
             {
-            @Override
-            public boolean accept( Object o )
-                { return ((String) o).charAt( 1 ) == 'a'; }
+            @Override public boolean accept( String o )
+                { return o.charAt( 1 ) == 'a'; }
             };
         assertEquals( listOfStrings( "gab bag lava hall" ), iteratorToList( f.filterKeep( it ) ) );
         }
     
     public void testAnyFilterSimple()
         {
-        ExtendedIterator it = iteratorOfStrings( "" );
-        assertSame( it, Filter.any.filterKeep( it ) );
+        ExtendedIterator<String> it = iteratorOfStrings( "" );
+        assertSame( it, Filter.<String>any().filterKeep( it ) );
         }
 
-    protected Filter containsA = new Filter() 
-        { @Override
-        public boolean accept( Object o ) { return contains( o, 'a' ); } };
+    protected Filter<String> containsA = new Filter<String>() 
+        { @Override public boolean accept( String o ) { return contains( o, 'a' ); } };
     
     public void testFilterAnd()
         {
-        Filter containsB = new Filter() 
-            { @Override
-            public boolean accept( Object o ) { return contains( o, 'b' ); } };
-        Filter f12 = containsA.and( containsB );
+        Filter<String> containsB = new Filter<String>() 
+            { @Override public boolean accept( String o ) { return contains( o, 'b' ); } };
+        Filter<String> f12 = containsA.and( containsB );
         assertFalse( f12.accept( "a" ) );
         assertFalse( f12.accept( "b" ) );
         assertTrue( f12.accept( "ab" ) );
@@ -80,32 +76,31 @@ public class TestFilters extends ModelTestBase
     
     public void testFilterShortcircuit()
         {
-        Filter oops = new Filter() 
-            { @Override
-            public boolean accept( Object o ) { throw new JenaException( "oops" ); } };
-        Filter f12 = containsA.and( oops );
+        Filter<String> oops = new Filter<String>() 
+            { @Override public boolean accept( String o ) { throw new JenaException( "oops" ); } };
+        Filter<String> f12 = containsA.and( oops );
         assertFalse( f12.accept( "z" ) );
         try { f12.accept( "a" ); fail( "oops" ); }
         catch (JenaException e) { assertEquals( "oops", e.getMessage() ); }
         }
     
     public void testAnyAndTrivial()
-        { assertSame( containsA, Filter.any.and( containsA ) ); }
+        { assertSame( containsA, Filter.<String>any().and( containsA ) ); }
     
     public void testSomethingAndAny()
-        { assertSame( containsA, containsA.and( Filter.any ) ); }
+        { assertSame( containsA, containsA.and( Filter.<String>any() ) ); }
     
     public void testFilterDropIterator()
         {
-        Iterator i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator it = new FilterDropIterator( containsA, i );
+        Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
+        Iterator<String> it = new FilterDropIterator<String>( containsA, i );
         assertEquals( listOfStrings( "there's in some" ), iteratorToList( it ) );
         }
     
     public void testFilterKeepIterator()
         {
-        Iterator i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator it = new FilterKeepIterator( containsA, i );
+        Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
+        Iterator<String> it = new FilterKeepIterator<String>( containsA, i );
         assertEquals( listOfStrings( "an a animals" ), iteratorToList( it ) );
         }
     

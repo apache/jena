@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.32 2009-01-22 15:27:15 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.33 2009-01-27 08:55:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -55,7 +55,7 @@ public class JenaTestBase extends TestCase
         assert that the object <code>x</code> must be of the class 
         <code>expected</code>.
     */
-    public static void assertInstanceOf( Class expected, Object x )
+    public static void assertInstanceOf( Class<?> expected, Object x )
         {
         if (x == null)
             fail( "expected instance of " + expected + ", but had null" );
@@ -125,7 +125,7 @@ public class JenaTestBase extends TestCase
     /**
         Answer an iterator over the space-separated substrings of <code>s</code>.
     */
-    protected static ExtendedIterator iteratorOfStrings( String s )
+    protected static ExtendedIterator<String> iteratorOfStrings( String s )
         { return WrappedIterator.create( listOfStrings( s ).iterator() ); }
     
     /**
@@ -140,7 +140,7 @@ public class JenaTestBase extends TestCase
         of the type(s) in <code>args</code>, or <code>null</code> if there 
         isn't one.
     */
-    public static Constructor getConstructor( Class c, Class [] args )
+    public static Constructor<?> getConstructor( Class<?> c, Class<?> [] args )
         {
         try { return c.getConstructor( args ); }
         catch (NoSuchMethodException e) { return null; }
@@ -169,10 +169,10 @@ public class JenaTestBase extends TestCase
          <code>superClass</code>, if its superclass <i>is</i> <code>superClass</code>,
          or if one of its interfaces hasAsInterface that class.
     */
-    public static boolean hasAsParent( Class subClass, Class superClass )
+    public static boolean hasAsParent( Class<?> subClass, Class<?> superClass )
         {
         if (subClass == superClass || subClass.getSuperclass() == superClass) return true;
-        Class [] is = subClass.getInterfaces();
+        Class<?> [] is = subClass.getInterfaces();
         for (int i = 0; i < is.length; i += 1) if (hasAsParent( is[i], superClass )) return true;
         return false;
         }
@@ -181,7 +181,7 @@ public class JenaTestBase extends TestCase
          Fail unless <code>subClass</code> has <code>superClass</code> as a
          parent, either a superclass or an implemented (directly or not) interface.
     */
-    public static void assertHasParent( Class subClass, Class superClass )
+    public static void assertHasParent( Class<?> subClass, Class<?> superClass )
         {
         if (hasAsParent( subClass, superClass ) == false)
             fail( "" + subClass + " should have " + superClass + " as a parent" );

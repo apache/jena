@@ -148,19 +148,19 @@ public class OntTools
      * @return A path, consisting of a list of statements whose first subject is <code>start</code>,
      * and whose last object is <code>end</code>, or null if no such path exists.
      */
-    public static Path findShortestPath( Model m, Resource start, RDFNode end, Filter onPath ) {
-        List bfs = new LinkedList();
-        Set seen = new HashSet();
+    public static Path findShortestPath( Model m, Resource start, RDFNode end, Filter<Statement> onPath ) {
+        List<Path> bfs = new LinkedList<Path>();
+        Set<Resource> seen = new HashSet<Resource>();
 
         // initialise the paths
-        for (Iterator i = m.listStatements( start, null, (RDFNode) null ).filterKeep( onPath ); i.hasNext(); ) {
-            bfs.add( new Path().append( (Statement) i.next() ) );
+        for (Iterator<Statement> i = m.listStatements( start, null, (RDFNode) null ).filterKeep( onPath ); i.hasNext(); ) {
+            bfs.add( new Path().append( i.next() ) );
         }
 
         // search
         Path solution = null;
         while (solution == null && !bfs.isEmpty()) {
-            Path candidate = (Path) bfs.remove( 0 );
+            Path candidate = bfs.remove( 0 );
 
             if (candidate.hasTerminus( end )) {
                 solution = candidate;
@@ -171,8 +171,8 @@ public class OntTools
                     seen.add( terminus );
 
                     // breadth-first expansion
-                    for (Iterator i = terminus.listProperties().filterKeep( onPath ); i.hasNext(); ) {
-                        Statement link = (Statement) i.next();
+                    for (Iterator<Statement> i = terminus.listProperties().filterKeep( onPath ); i.hasNext(); ) {
+                        Statement link = i.next();
 
                         // no looping allowed, so we skip this link if it takes us to a node we've seen
                         if (!seen.contains( link.getObject() )) {
@@ -494,15 +494,15 @@ public class OntTools
      */
     public static class LCAIndex
     {
-        private Map m_setIndex = new HashMap();
-        private Map m_lcaIndex = new HashMap();
+        private Map<Resource, DisjointSet> m_setIndex = new HashMap<Resource, DisjointSet>();
+        private Map<Resource, Map> m_lcaIndex = new HashMap<Resource, Map>();
 
         public Resource getLCA( Resource u, Resource v ) {
-            Map map = (Map) m_lcaIndex.get( u );
+            Map map = m_lcaIndex.get( u );
             Resource lca = (map == null) ? null : (Resource) map.get( v );
 
             if (lca == null) {
-                map = (Map) m_lcaIndex.get( v );
+                map = m_lcaIndex.get( v );
                 lca = (map == null) ? null : (Resource) map.get( u );
             }
 
@@ -510,16 +510,16 @@ public class OntTools
         }
 
         public void setLCA( Resource u, Resource v, Resource lca ) {
-            Map uMap = (Map) m_lcaIndex.get( u );
+            Map<Resource, Resource> uMap = m_lcaIndex.get( u );
             if (uMap == null) {
-                uMap = new HashMap();
+                uMap = new HashMap<Resource, Resource>();
                 m_lcaIndex.put( u, uMap );
             }
             uMap.put( v, lca );
         }
 
         public DisjointSet getSet( Resource r ) {
-            DisjointSet s = (DisjointSet) m_setIndex.get( r );
+            DisjointSet s = m_setIndex.get( r );
             if (s == null) {
 //                log.debug( "Generating new set for " + r );
                 s = new DisjointSet( r );
@@ -585,16 +585,16 @@ public class OntTools
     public static class PredicatesFilter
         extends Filter
     {
-        public Collection m_preds;
+        public Collection<Property> m_preds;
 
         /** Accept statements with any predicate from <code>preds</code> */
-        public PredicatesFilter( Collection preds ) {
+        public PredicatesFilter( Collection<Property> preds ) {
             m_preds = preds;
         }
 
         /** Accept statements with any predicate from <code>preds</code> */
         public PredicatesFilter( Property[] preds ) {
-            m_preds = new HashSet();
+            m_preds = new HashSet<Property>();
             for (int i = 0; i < preds.length; i++) {
                 m_preds.add( preds[i] );
             }
@@ -602,7 +602,7 @@ public class OntTools
 
         /** Accept statements with predicate <code>pred</code> */
         public PredicatesFilter( Property pred ) {
-            m_preds = new HashSet();
+            m_preds = new HashSet<Property>();
             m_preds.add( pred );
         }
 

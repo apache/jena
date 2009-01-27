@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestTripleField.java,v 1.8 2009-01-16 20:53:22 andy_seaborne Exp $
+ 	$Id: TestTripleField.java,v 1.9 2009-01-27 08:55:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,7 +10,6 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
-import com.hp.hpl.jena.util.iterator.Filter;
 
 /**
     @author kers
@@ -71,9 +70,9 @@ public class TestTripleField extends GraphTestBase
     
     public void testWildcardFilterIsAny()
         {
-        assertSame( Filter.any, Field.fieldSubject.filterOn( triple( "?x R s" ) ) );
-        assertSame( Filter.any, Field.fieldObject.filterOn( triple( "x R ?s" ) ) );
-        assertSame( Filter.any, Field.fieldPredicate.filterOn( triple( "x ?R s" ) ) );
+        assertTrue( Field.fieldSubject.filterOn( triple( "?x R s" ) ).isAny() );
+        assertTrue( Field.fieldObject.filterOn( triple( "x R ?s" ) ).isAny() );
+        assertTrue( Field.fieldPredicate.filterOn( triple( "x ?R s" ) ).isAny() );
         }
     }
 
