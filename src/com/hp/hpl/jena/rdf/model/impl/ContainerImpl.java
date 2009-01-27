@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ContainerImpl.java,v 1.19 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: ContainerImpl.java,v 1.20 2009-01-27 07:57:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm, kers
- * @version  $Id: ContainerImpl.java,v 1.19 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version  $Id: ContainerImpl.java,v 1.20 2009-01-27 07:57:34 chris-dollin Exp $
 */
 
 public class ContainerImpl extends ResourceImpl
@@ -185,7 +185,7 @@ public class ContainerImpl extends ResourceImpl
    public NodeIterator listContainerMembers( NodeIteratorFactory f )
         {
         StmtIterator iter = listProperties(); 
-        Vector result = new Vector();
+        Vector<Statement> result = new Vector<Statement>();
         int maxOrdinal = 0;
         while (iter.hasNext()) {
             Statement stmt = iter.nextStatement();

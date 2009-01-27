@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ContNodeIteratorImpl.java,v 1.14 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: ContNodeIteratorImpl.java,v 1.15 2009-01-27 07:57:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,17 +14,17 @@ import java.util.*;
 /** An internal class not normally of interest to application developers.
  *  An iterator over the nodes in a container.
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2009-01-16 17:23:48 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2009-01-27 07:57:31 $'
  */
 public class ContNodeIteratorImpl 
-  extends WrappedIterator implements NodeIterator{
+  extends WrappedIterator<RDFNode> implements NodeIterator{
     
     protected Statement stmt = null;
     protected Container cont;
     protected int size;
     protected int index = 0;
     protected int numDeleted = 0;
-    protected Vector moved = new Vector();
+    protected List<Integer> moved = new ArrayList<Integer>();
     
     /** Creates new ContNodeIteratorImpl */
     public ContNodeIteratorImpl (Iterator  iterator, 
@@ -35,24 +35,22 @@ public class ContNodeIteratorImpl
         this.size     = cont.size();
     }
 
-    @Override
-    public Object next() throws NoSuchElementException {
+    @Override public RDFNode next() throws NoSuchElementException {
         stmt = (Statement) super.next();
         index += 1;
         return stmt.getObject();
     }
     
     public RDFNode nextNode() throws NoSuchElementException {
-        return (RDFNode) next();
+        return next();
     }
             
-    @Override
-    public void remove() throws NoSuchElementException {
+    @Override public void remove() throws NoSuchElementException {
         if (stmt == null) throw new NoSuchElementException();
         super.remove();
         
         if (index > (size-numDeleted)) {
-            ((ContainerI)cont).remove(((Integer) moved.elementAt(size-index))
+            ((ContainerI)cont).remove(moved.get(size-index)
                                                       .intValue(),
                                        stmt.getObject());
         } else {

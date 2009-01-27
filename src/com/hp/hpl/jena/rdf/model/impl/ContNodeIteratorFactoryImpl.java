@@ -38,13 +38,10 @@ import java.util.Iterator;
 /** An internal class, not normally of interest to application developers.
  *  A simple factory class which creates ContainerNodeIterator's.
  * @author bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2009-01-27 07:57:31 $'
  */
-public class ContNodeIteratorFactoryImpl
-  extends Object implements NodeIteratorFactory {
-
-    public NodeIterator createIterator(Iterator iter,Object o,Container cont)
-     {
-        return new ContNodeIteratorImpl(iter, o, cont);
+public class ContNodeIteratorFactoryImpl implements NodeIteratorFactory 
+    {
+    public NodeIterator createIterator( Iterator<Statement> iter,Object o,Container cont )
+        { return new ContNodeIteratorImpl(iter, o, cont); }
     }
-}

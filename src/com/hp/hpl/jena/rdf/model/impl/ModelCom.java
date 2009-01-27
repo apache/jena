@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.136 2009-01-26 10:28:23 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.137 2009-01-27 07:57:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -664,7 +664,7 @@ public class ModelCom
      * @param members An iterator, each value of which is expected to be an RDFNode.
      * @return An RDF-encoded list of the elements of the iterator
      */
-    public RDFList createList( Iterator<RDFNode> members ) 
+    public RDFList createList( Iterator<? extends RDFNode> members ) 
         {
         RDFList list = createList();
         while (members != null && members.hasNext()) list = list.with( members.next() );

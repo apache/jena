@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.74 2009-01-26 10:28:21 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.75 2009-01-27 07:57:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.74 $ on $Date: 2009-01-26 10:28:21 $
+ * @version $Revision: 1.75 $ on $Date: 2009-01-27 07:57:36 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -82,7 +82,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected Set<Node> hiddenNodes;
 
     /** Optional map of property node to datatype ranges */
-    protected HashMap<Node, List> dtRange = null;
+    protected HashMap<Node, List<RDFDatatype>> dtRange = null;
     
     /** Flag to request datatype range validation be included in the validation step */
     protected boolean requestDatatypeRangeValidation = false;
@@ -213,7 +213,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * where we are side-stepping the backward deduction step.
      */
     @Override
-    public ExtendedIterator findDataMatches(Node subject, Node predicate, Node object) {
+    public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
         return dataFind.find(new TriplePattern(subject, predicate, object));
     }
     
@@ -222,7 +222,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * This may different from the normal find operation in the base of hybrid reasoners
      * where we are side-stepping the backward deduction step.
      */
-    public ExtendedIterator findDataMatches(TriplePattern pattern) {
+    public ExtendedIterator<Triple> findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
     }
             
@@ -351,11 +351,12 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void addRuleDuringPrepare(Rule rule) {
         if (rules == rawRules) {
             // Ensure the original is preserved in case we need to do a restart
-            if (rawRules instanceof ArrayList) {
-                rules = (ArrayList<Rule>) ((ArrayList<Rule>)rawRules).clone();
-            } else {
-                rules = new ArrayList<Rule>(rawRules);
-            }
+            rules = new ArrayList<Rule>( rawRules );
+//            if (rawRules instanceof ArrayList) {
+//                rules = (ArrayList<Rule>) ((ArrayList<Rule>)rawRules).clone();
+//            } else {
+//                rules = new ArrayList<Rule>(rawRules);
+//            }
             // Rebuild the forward engine to use the cloned rules
             instantiateRuleEngine(rules);
         }
@@ -394,7 +395,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             if (fdata != null) data = fdata.getGraph();
             
             // initilize the deductions graph
-            if (fdeductions != null && fdeductions instanceof FGraph) {
+            if (fdeductions != null) {
                 Graph oldDeductions = (fdeductions).getGraph();
                 oldDeductions.getBulkUpdateHandler().removeAll();
             } else {
@@ -529,7 +530,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         engine.setDerivationLogging(recordDerivations);
         bEngine.setDerivationLogging(recordDerivations);
         if (recordDerivations) {
-            derivations = new OneToManyMap();
+            derivations = new OneToManyMap<Triple, Derivation>();
         } else {
             derivations = null;
         }
@@ -566,19 +567,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * may not have completely satisfied the query.
      */
     @Override
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+    public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
-        ExtendedIterator result = new UniqueExtendedIterator(bEngine.find(pattern));
+        ExtendedIterator<Triple> result = UniqueExtendedIterator.create(bEngine.find(pattern));
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }
         if (filterFunctors) {
 //            return result.filterDrop(Functor.acceptFilter);
-            return result.filterDrop( new Filter() {
-
-                @Override
-                public boolean accept( Object o )
+            return result.filterDrop( new Filter<Triple>() {
+                @Override public boolean accept( Triple o )
                     { return FBRuleInfGraph.this.accept( o ); }} );
         } else {
             return result;
@@ -589,10 +588,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Internal variant of find which omits the filters which block illegal RDF data.
      * @param pattern a TriplePattern to be matched against the data
      */
-    public ExtendedIterator findFull(TriplePattern pattern) {
+    public ExtendedIterator<Triple> findFull(TriplePattern pattern) {
         checkOpen();
         if (!isPrepared) prepare();
-        return new UniqueExtendedIterator(bEngine.find(pattern));
+        return UniqueExtendedIterator.create( bEngine.find(pattern) );
     }
    
     /** 
@@ -601,7 +600,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * will have also consulted the raw data.
      */
     @Override
-    public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
+    public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
     }
 
@@ -614,7 +613,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      *  that match the pattern
      */
     @Override
-    public ExtendedIterator find(TriplePattern pattern) {
+    public ExtendedIterator<Triple> find(TriplePattern pattern) {
         return findWithContinuation(pattern, null);
     }
 
@@ -753,8 +752,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         engine.add(validateOn); 
         // Look for all reports
         TriplePattern pattern = new TriplePattern(null, ReasonerVocabulary.RB_VALIDATION_REPORT.asNode(), null);
-        for (Iterator i = findFull(pattern); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = findFull(pattern); i.hasNext(); ) {
+            Triple t = i.next();
             Node rNode = t.getObject();
             boolean foundReport = false;
             if (rNode.isLiteral()) {
@@ -812,11 +811,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param report
      */
     protected void performDatatypeRangeValidation(StandardValidityReport report) {
-        HashMap<Node, List> dtRange = getDTRange();
+        HashMap<Node, List<RDFDatatype>> dtRange = getDTRange();
         for (Iterator<Node> props = dtRange.keySet().iterator(); props.hasNext(); ) {
             Node prop = props.next();
-            for (Iterator i = find(null, prop, null); i.hasNext(); ) {
-                Triple triple = (Triple)i.next();
+            for (Iterator<Triple> i = find(null, prop, null); i.hasNext(); ) {
+                Triple triple = i.next();
                 report.add(checkLiteral(prop, triple));
             }
         }
@@ -832,7 +831,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public ValidityReport.Report checkLiteral(Node prop, Triple triple) {
         Node value = triple.getObject();
-        List range = getDTRange().get(prop);
+        List<RDFDatatype> range = getDTRange().get(prop);
         if (range != null) {
             if (value.isBlank()) return null;
             if (!value.isLiteral()) {
@@ -840,8 +839,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     "Property " + prop + " has a typed range but was given a non literal value " + value);
             }
             LiteralLabel ll = value.getLiteral();   
-            for (Iterator i = range.iterator(); i.hasNext(); ) {
-                RDFDatatype dt = (RDFDatatype)i.next();
+            for (Iterator<RDFDatatype> i = range.iterator(); i.hasNext(); ) {
+                RDFDatatype dt = i.next();
                 if (!dt.isValidLiteral(ll)) {
                     return new ValidityReport.Report(true, "dtRange", 
                         "Property " + prop + " has a typed range " + dt +
@@ -856,17 +855,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return a map from property nodes to a list of RDFDatatype objects
      * which have been declared as the range of that property.
      */
-    protected HashMap<Node, List> getDTRange() {
+    protected HashMap<Node, List<RDFDatatype>> getDTRange() {
         if (dtRange == null) {
-            dtRange = new HashMap<Node, List>();
-            for (Iterator i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
-                Triple triple = (Triple)i.next();
+            dtRange = new HashMap<Node, List<RDFDatatype>>();
+            for (Iterator<Triple> i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
+                Triple triple = i.next();
                 Node prop = triple.getSubject();
                 Node rangeValue = triple.getObject();
                 if (rangeValue.isURI()) {
                     RDFDatatype dt = TypeMapper.getInstance().getTypeByName(rangeValue.getURI());
                     if (dt != null) {
-                        List<RDFDatatype> range = (ArrayList<RDFDatatype>) dtRange.get(prop);
+                        List<RDFDatatype> range = dtRange.get(prop);
                         if (range == null) {
                             range = new ArrayList<RDFDatatype>();
                             dtRange.put(prop, range);
@@ -911,8 +910,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         // If the rule set is the same we can reuse those as well
         if (preload.rules == rules) {
             // Load raw deductions
-            for (Iterator i = preload.getDeductionsGraph().find(null, null, null); i.hasNext(); ) {
-                d.add((Triple)i.next());
+            for (Iterator<Triple> i = preload.getDeductionsGraph().find(null, null, null); i.hasNext(); ) {
+                d.add( i.next() );
             }
             // Load backward rules
             addBRules(preload.getBRules());
@@ -996,18 +995,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public static class RuleStore {
         
         /** The raw rules */
-        protected List rawRules;
+        protected List<Rule> rawRules;
         
         /** The indexed store used by the forward chainer */
         protected Object fRuleStore;
         
         /** The separated backward rules */
-        protected List bRules;
+        protected List<Rule> bRules;
         
         /** 
          * Constructor.
          */
-        public RuleStore(List rawRules, Object fRuleStore, List bRules) {
+        public RuleStore(List<Rule> rawRules, Object fRuleStore, List<Rule> bRules) {
             this.rawRules = rawRules;
             this.fRuleStore = fRuleStore;
             this.bRules = bRules;

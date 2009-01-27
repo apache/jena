@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.16 2009-01-26 08:37:09 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.17 2009-01-27 07:57:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -41,13 +41,13 @@ public class WrappedIterator<T> extends NiceIterator<T>
         { return new WrappedIterator<T>( it, true ); }
       
     /** the base iterator that we wrap */  
-    protected final Iterator<T> base;
+    protected final Iterator<? extends T> base;
     
-    public Iterator<T> forTestingOnly_getBase()
+    public Iterator<? extends T> forTestingOnly_getBase()
         { return base; }
     
     /** constructor: remember the base iterator */
-    protected WrappedIterator( Iterator<T> base )
+    protected WrappedIterator( Iterator<? extends T> base )
         { this( base, false ); }
     
     /**
@@ -55,34 +55,30 @@ public class WrappedIterator<T> extends NiceIterator<T>
          @param base the base iterator that this tierator wraps
          @param removeDenied true if .remove() must throw an exception
     */
-    protected WrappedIterator( Iterator<T> base, boolean removeDenied )
+    protected WrappedIterator( Iterator<? extends T> base, boolean removeDenied )
         { this.base = base; 
         this.removeDenied = removeDenied; }
         
     /** hasNext: defer to the base iterator */
-    @Override
-    public boolean hasNext()
+    @Override public boolean hasNext()
         { return base.hasNext(); }
         
     /** next: defer to the base iterator */
-    @Override
-    public T next()
+    @Override public T next()
         { return base.next(); }
         
     /** 
          if .remove() is allowed, delegate to the base iterator's .remove; 
          otherwise, throw an UnsupportedOperationException. 
     */
-    @Override
-    public void remove()
+    @Override public void remove()
         {
         if (removeDenied) throw new UnsupportedOperationException();
         base.remove(); 
         }
         
     /** close: defer to the base, iff it is closable */
-    @Override
-    public void close()
+    @Override public void close()
         { close( base ); }
 
     /**

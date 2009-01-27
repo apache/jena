@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            19-Aug-2003
  * Filename           $RCSfile: DataRangeImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
+ * Last modified on   $Date: 2009-01-27 07:57:28 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DataRangeImpl.java,v 1.12 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: DataRangeImpl.java,v 1.13 2009-01-27 07:57:28 chris-dollin Exp $
  */
 public class DataRangeImpl 
     extends OntResourceImpl
@@ -130,9 +130,9 @@ public class DataRangeImpl
      * @param literals An iterator over literals
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public void addOneOf( Iterator literals ) {
+    public void addOneOf( Iterator<Literal> literals ) {
         while( literals.hasNext() ) {
-            addOneOf( (Literal) literals.next() );
+            addOneOf( literals.next() );
         }
     }
 
@@ -151,7 +151,7 @@ public class DataRangeImpl
      * @return An iterator over the literals that are the permissible values
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public ExtendedIterator listOneOf() {
+    public ExtendedIterator<Literal> listOneOf() {
         return getOneOf().iterator().mapWith( new AsMapper( Literal.class ) );
     }
 

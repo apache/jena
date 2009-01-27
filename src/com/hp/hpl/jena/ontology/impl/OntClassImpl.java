@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
+ * Last modified on   $Date: 2009-01-27 07:57:25 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.59 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.60 2009-01-27 07:57:25 chris-dollin Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -71,6 +71,7 @@ public class OntClassImpl
      * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -173,7 +174,7 @@ public class OntClassImpl
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSuperClasses() {
+    public ExtendedIterator<OntClass> listSuperClasses() {
         return listSuperClasses( false );
     }
 
@@ -190,10 +191,10 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSuperClasses( boolean direct ) {
+    public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
         return UniqueExtendedIterator.create(
                 listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
-                .filterDrop( new SingleEqualityFilter( this ) ) );
+                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ) );
     }
 
     /**
@@ -324,7 +325,7 @@ public class OntClassImpl
      * @return An iterator over the sub-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSubClasses() {
+    public ExtendedIterator<OntClass> listSubClasses() {
         return listSubClasses( false );
     }
 
@@ -372,10 +373,10 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSubClasses( boolean direct ) {
+    public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
         return UniqueExtendedIterator.create(
                 listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
-                .filterDrop( new SingleEqualityFilter( this ) ) );
+                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ) );
     }
 
 
@@ -468,7 +469,7 @@ public class OntClassImpl
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listEquivalentClasses() {
+    public ExtendedIterator<OntClass> listEquivalentClasses() {
         return UniqueExtendedIterator.create( listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class ) );
     }
 
@@ -530,7 +531,7 @@ public class OntClassImpl
      * @return An iterator over the classes disjoint with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listDisjointWith() {
+    public ExtendedIterator<OntClass> listDisjointWith() {
         return UniqueExtendedIterator.create( listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class ) );
     }
 
@@ -570,7 +571,7 @@ public class OntClassImpl
      * @return An iteration of the properties that are associated with this class
      * by their domain.
      */
-    public ExtendedIterator listDeclaredProperties() {
+    public ExtendedIterator<OntProperty> listDeclaredProperties() {
         return listDeclaredProperties( false );
     }
 
@@ -588,14 +589,14 @@ public class OntClassImpl
      * @return An iteration of the properties that are associated with this class
      * by their domain.
      */
-    public ExtendedIterator listDeclaredProperties( boolean direct ) {
+    public ExtendedIterator<OntProperty> listDeclaredProperties( boolean direct ) {
         // first collect the candidate properties
         Set<RDFNode> candSet = new HashSet<RDFNode>();
 
         // if the attached model does inference, it will potentially find more of these
         // than a non-inference model
-        for (Iterator i = listAllProperties(); i.hasNext(); ) {
-            candSet.add( ((Statement) i.next()).getSubject().as( Property.class ) );
+        for (Iterator<Statement> i = listAllProperties(); i.hasNext(); ) {
+            candSet.add( i.next().getSubject().as( Property.class ) );
         }
 
         // now we iterate over the candidates and check that they match all domain constraints
@@ -610,7 +611,7 @@ public class OntClassImpl
 
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
-                              .mapWith( new AsMapper( OntProperty.class ) );
+                              .mapWith( new AsMapper<OntProperty>( OntProperty.class ) );
     }
 
 
@@ -635,7 +636,7 @@ public class OntClassImpl
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public ExtendedIterator listInstances() {
+    public ExtendedIterator<Individual> listInstances() {
         return listInstances( false );
     }
 
@@ -649,16 +650,16 @@ public class OntClassImpl
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public ExtendedIterator listInstances( final boolean direct ) {
+    public ExtendedIterator<Individual> listInstances( final boolean direct ) {
         return UniqueExtendedIterator.create(
                 getModel()
                 .listStatements( null, RDF.type, this )
-                .mapWith( new SubjectAsMapper( Individual.class ) )
-                .filterKeep( new Filter() {
+                .mapWith( new SubjectAsMapper<Individual>( Individual.class ) )
+                .filterKeep( new Filter<Individual>() {
                     @Override
-                    public boolean accept( Object o ) {
+                    public boolean accept( Individual o ) {
                         // if direct, ignore the sub-class typed resources
-                        return ((Individual) o).hasRDFType( OntClassImpl.this, direct );
+                        return o.hasRDFType( OntClassImpl.this, direct );
                     }} )
         );
     }
@@ -718,11 +719,11 @@ public class OntClassImpl
             avoid i's initialisation but still run i.close, generating a mysterious
             NullPointerException. Signed, Mr Burnt Spines.
          */
-        ExtendedIterator i = listSuperClasses( true );
+        ExtendedIterator<OntClass> i = listSuperClasses( true );
         try {
 
             while (i.hasNext()) {
-                Resource sup = (Resource) i.next();
+                Resource sup = i.next();
                 if (!(sup.equals( getProfile().THING() ) ||
                       sup.equals( RDFS.Resource ) ||
                       sup.equals( this )))
@@ -911,7 +912,7 @@ public class OntClassImpl
         // we manually compute the maximal lower elements - this could be expensive in general
         //return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
 
-        ExtendedIterator i = listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "subClassOf", OntClass.class,
+        ExtendedIterator<OntClass> i = listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "subClassOf", OntClass.class,
                                                        getProfile().SUB_CLASS_OF(), true, false );
         try {
             while (i.hasNext()) {
@@ -986,11 +987,11 @@ public class OntClassImpl
      * <p>Answer an iterator over all of the properties in this model
      * @return An iterator over {@link OntProperty}
      */
-    protected ExtendedIterator listAllProperties() {
+    protected ExtendedIterator<Statement> listAllProperties() {
         OntModel mOnt = (OntModel) getModel();
         Profile prof = mOnt.getProfile();
 
-        ExtendedIterator pi = mOnt.listStatements( null, RDF.type, getProfile().PROPERTY() );
+        ExtendedIterator<Statement> pi = mOnt.listStatements( null, RDF.type, getProfile().PROPERTY() );
 
         // check reasoner capabilities - major performance improvement for inf models
         if (mOnt.getReasoner() != null) {
@@ -1065,8 +1066,8 @@ public class OntClassImpl
                 }
                 else {
                     // queue the supers
-                    for (Iterator i = c.listSuperClasses(); i.hasNext(); ) {
-                        queue.add( (OntClass) i.next() );
+                    for (Iterator<OntClass> i = c.listSuperClasses(); i.hasNext(); ) {
+                        queue.add( i.next() );
                     }
                 }
             }

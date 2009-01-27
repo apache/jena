@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
     [See end of file]
-    $Id: RuleReasoner.java,v 1.6 2008-12-28 19:32:09 andy_seaborne Exp $
+    $Id: RuleReasoner.java,v 1.7 2009-01-27 07:57:36 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,12 +22,12 @@ public interface RuleReasoner extends Reasoner
          Set the rules used by this reasoner. <code>rules</code> must be a list
          of Rule objects.
     */
-    void setRules( List rules );
+    void setRules( List<Rule> rules );
     
     /**
          Answer the rules used by this Reasoner.
     */
-    List getRules();
+    List<Rule> getRules();
     }
 
 

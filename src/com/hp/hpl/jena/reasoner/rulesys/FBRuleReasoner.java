@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.28 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.29 2009-01-27 07:57:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.29 $ on $Date: 2009-01-27 07:57:36 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -31,7 +31,7 @@ public class FBRuleReasoner implements RuleReasoner {
     protected ReasonerFactory factory;
 
     /** The rules to be used by this instance of the forward engine */
-    protected List rules = new ArrayList();
+    protected List<Rule> rules = new ArrayList<Rule>();
     
     /** A precomputed set of schema deductions */
     protected Graph schemaGraph;
@@ -60,7 +60,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public FBRuleReasoner(List rules) {
+    public FBRuleReasoner(List<Rule> rules) {
         if (rules == null) throw new NullPointerException( "null rules" );
         this.rules = rules;
     }
@@ -70,7 +70,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
     public FBRuleReasoner(ReasonerFactory factory) {
-        this( new ArrayList(), factory);
+        this( new ArrayList<Rule>(), factory);
     }
    
     /**
@@ -79,7 +79,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * @param configuration RDF node to configure the rule set and mode, can be null
      */
     public FBRuleReasoner(ReasonerFactory factory, Resource configuration) {
-        this( new ArrayList(), factory);
+        this( new ArrayList<Rule>(), factory);
         this.configuration = configuration;
         if (configuration != null) loadConfiguration( configuration );
     }
@@ -101,7 +101,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public FBRuleReasoner(List rules, ReasonerFactory factory) {
+    public FBRuleReasoner(List<Rule> rules, ReasonerFactory factory) {
         this(rules);
         this.factory = factory;
     }
@@ -110,7 +110,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    protected FBRuleReasoner(List rules, Graph schemaGraph, ReasonerFactory factory) {
+    protected FBRuleReasoner(List<Rule> rules, Graph schemaGraph, ReasonerFactory factory) {
         this(rules, factory);
         this.schemaGraph = schemaGraph;
     }
@@ -121,8 +121,8 @@ public class FBRuleReasoner implements RuleReasoner {
          There may well be a better way to arrange this.
          TODO review & revise
     */
-    public FBRuleReasoner addRules(List rules) {
-        List combined = new ArrayList( this.rules );
+    public FBRuleReasoner addRules(List<Rule> rules) {
+        List<Rule> combined = new ArrayList<Rule>( this.rules );
         combined.addAll( rules );
         setRules( combined );
         return this;
@@ -229,7 +229,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Set (or change) the rule set that this reasoner should execute.
      * @param rules a list of Rule objects
      */
-    public void setRules(List rules) {
+    public void setRules(List<Rule> rules) {
         this.rules = rules;
         preload = null;
         if (schemaGraph != null) {
@@ -244,7 +244,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Return the list of Rules used by this reasoner
      * @return a List of Rule objects
      */
-    public List getRules() {
+    public List<Rule> getRules() {
         return rules;
     } 
     
@@ -252,7 +252,7 @@ public class FBRuleReasoner implements RuleReasoner {
          Answer the list of rules loaded from the given filename. May throw a
          ReasonerException wrapping an IOException.
     */
-    public static List loadRules( String fileName ) {
+    public static List<Rule> loadRules( String fileName ) {
         try 
             { return Rule.parseRules(Util.loadRuleParserFromResourceFile( fileName ) ); }
         catch (WrappedIOException e) 

@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
+ * $Id: Filter.java,v 1.14 2009-01-27 07:57:36 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -27,8 +27,7 @@ public abstract class Filter<T>
     
     public Filter<T> and( final Filter<T> other )
         { return other == any ? this : new Filter<T>()
-            { @Override
-            public boolean accept( T x ) 
+            { @Override public boolean accept( T x ) 
                 { return Filter.this.accept( x ) && other.accept( x ); } 
             };
         }
@@ -38,14 +37,11 @@ public abstract class Filter<T>
     */
     public static final Filter any = new Filter()
         { 
-        @Override
-        public final boolean accept( Object o ) { return true; } 
+        @Override public final boolean accept( Object o ) { return true; } 
         
-        @Override
-        public Filter and( Filter other ) { return other; }
+        @Override public Filter and( Filter other ) { return other; }
         
-        @Override
-        public ExtendedIterator filterKeep( Iterator it )
+        @Override public ExtendedIterator filterKeep( Iterator it )
             { return WrappedIterator.create( it ); }
         };
         
@@ -77,6 +73,6 @@ public abstract class Filter<T>
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
+ * $Id: Filter.java,v 1.14 2009-01-27 07:57:36 chris-dollin Exp $
  *
  */

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.116 $
+ * Revision           $Revision: 1.117 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
+ * Last modified on   $Date: 2009-01-27 07:57:28 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.116 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.117 2009-01-27 07:57:28 chris-dollin Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -457,8 +457,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         }
         else {
             // we have inference, so we pick the nodes that are of type Thing
-            return UniqueExtendedIterator.create(
-                    findByTypeAs( getProfile().THING(), Individual.class ) );
+            return UniqueExtendedIterator.create( findByTypeAs( getProfile().THING(), Individual.class ) );
         }
     }
 

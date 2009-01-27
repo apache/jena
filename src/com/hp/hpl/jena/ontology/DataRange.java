@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            19-Aug-2003
  * Filename           $RCSfile: DataRange.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 07:57:35 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DataRange.java,v 1.10 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: DataRange.java,v 1.11 2009-01-27 07:57:35 chris-dollin Exp $
  */
 public interface DataRange 
     extends OntResource
@@ -74,7 +74,7 @@ public interface DataRange
      * @param literals An iterator over literals
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public void addOneOf( Iterator literals );
+    public void addOneOf( Iterator<Literal> literals );
 
     /**
      * <p>Answer a list of literals that defines the extension of this datarange.</p>
@@ -89,7 +89,7 @@ public interface DataRange
      * @return An iterator over the literals that are the permissible values
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
-    public ExtendedIterator listOneOf();
+    public ExtendedIterator<Literal> listOneOf();
 
     /**
      * <p>Answer true if the given literal is one of the enumerated literals that are the permissible values

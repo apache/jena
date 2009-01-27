@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.76 2009-01-22 15:27:15 chris-dollin Exp $
+  $Id: Model.java,v 1.77 2009-01-27 07:57:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.76 $Date: 2009/01/16 16:16:43 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.77 $Date: 2009/01/22 15:27:15 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -282,7 +282,7 @@ public interface Model
      * @param members An iterator, each value of which is expected to be an RDFNode
      * @return An RDF-encoded list of the elements of the iterator
      */
-    public RDFList createList( Iterator<RDFNode> members );
+    public RDFList createList( Iterator<? extends RDFNode> members );
 
 
     /**
@@ -1015,5 +1015,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.76 2009-01-22 15:27:15 chris-dollin Exp $
+ * $Id: Model.java,v 1.77 2009-01-27 07:57:35 chris-dollin Exp $
  */

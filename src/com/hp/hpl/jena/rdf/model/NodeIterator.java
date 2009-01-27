@@ -42,9 +42,10 @@ import java.util.NoSuchElementException;
  *    thatshould be called to free resources if the application does
  *    not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2008-12-28 19:31:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2009-01-27 07:57:35 $'
  */
-public interface NodeIterator extends ExtendedIterator {
+public interface NodeIterator extends ExtendedIterator<RDFNode>
+    {
     /** Determine if there any more values in the iteration.
      .
      * @return true if and only if there are more values available
@@ -56,7 +57,7 @@ public interface NodeIterator extends ExtendedIterator {
      .
      * @return The next RDFNode from the iteration.
      */
-    public Object next() throws  NoSuchElementException;
+    public RDFNode next() throws  NoSuchElementException;
     /** Return the next RDFNode of the iteration.
      * @throws NoSuchElementException if there are no more nodes to be returned.
      .

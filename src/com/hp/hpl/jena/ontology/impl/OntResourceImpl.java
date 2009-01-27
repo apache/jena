@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.70 $
+ * Revision           $Revision: 1.71 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
+ * Last modified on   $Date: 2009-01-27 07:57:26 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.70 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.71 2009-01-27 07:57:26 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -74,6 +74,7 @@ public class OntResourceImpl
      * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -203,7 +204,7 @@ public class OntResourceImpl
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSameAs() {
+    public ExtendedIterator<OntResource> listSameAs() {
         return listAs( getProfile().SAME_AS(), "SAME_AS", OntResource.class );
     }
 
@@ -262,7 +263,7 @@ public class OntResourceImpl
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listDifferentFrom() {
+    public ExtendedIterator<OntResource> listDifferentFrom() {
         return listAs( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", OntResource.class );
     }
 
@@ -320,7 +321,7 @@ public class OntResourceImpl
      * @return An iterator over the resources providing additional definition on this resource.
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSeeAlso() {
+    public ExtendedIterator<RDFNode> listSeeAlso() {
         checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
         return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
                .mapWith( new ObjectAsOntResourceMapper() );
@@ -382,7 +383,7 @@ public class OntResourceImpl
      * @return An iterator over the resources defining this resource.
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listIsDefinedBy() {
+    public ExtendedIterator<RDFNode> listIsDefinedBy() {
         checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
         return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
                .mapWith( new ObjectAsOntResourceMapper() );
@@ -452,7 +453,7 @@ public class OntResourceImpl
      * @return An iterator over the version info strings for this resource.
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listVersionInfo() {
+    public ExtendedIterator<String> listVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return WrappedIterator.create( listProperties( getProfile().VERSION_INFO() ) )
                .mapWith( new ObjectAsStringMapper() );
@@ -545,7 +546,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listLabels( String lang ) {
+    public ExtendedIterator<RDFNode> listLabels( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
                .filterKeep( new LangTagFilter( lang ) )
@@ -570,7 +571,7 @@ public class OntResourceImpl
     public boolean hasLabel( Literal label ) {
         boolean found = false;
 
-        ExtendedIterator i = listLabels( label.getLanguage() );
+        ExtendedIterator<RDFNode> i = listLabels( label.getLanguage() );
         while (!found && i.hasNext()) {
             found = label.equals( i.next() );
         }
@@ -666,7 +667,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listComments( String lang ) {
+    public ExtendedIterator<RDFNode> listComments( String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
                .filterKeep( new LangTagFilter( lang ) )
@@ -691,7 +692,7 @@ public class OntResourceImpl
     public boolean hasComment( Literal comment ) {
         boolean found = false;
 
-        ExtendedIterator i = listComments( comment.getLanguage() );
+        ExtendedIterator<RDFNode> i = listComments( comment.getLanguage() );
         while (!found && i.hasNext()) {
             found = comment.equals( i.next() );
         }
@@ -774,10 +775,10 @@ public class OntResourceImpl
      * more than one is defined.
      */
     public Resource getRDFType( boolean direct ) {
-        ExtendedIterator i = null;
+        ExtendedIterator<Resource> i = null;
         try {
             i = listRDFTypes( direct );
-            return i.hasNext() ? (Resource) i.next(): null;
+            return i.hasNext() ? i.next(): null;
         }
         finally {
             i.close();
@@ -794,9 +795,8 @@ public class OntResourceImpl
      * @return An iterator over the set of this resource's classes, each of which
      * will be a {@link Resource}.
      */
-    public ExtendedIterator listRDFTypes( boolean direct ) {
-        ExtendedIterator i = listDirectPropertyValues( RDF.type, "rdf:type", null, getProfile().SUB_CLASS_OF(), direct, false );
-
+    public ExtendedIterator<Resource> listRDFTypes( boolean direct ) {
+        ExtendedIterator<Resource> i = listDirectPropertyValues( RDF.type, "rdf:type", Resource.class, getProfile().SUB_CLASS_OF(), direct, false );
         // we only want each result once
         return UniqueExtendedIterator.create( i );
     }
@@ -853,7 +853,7 @@ public class OntResourceImpl
         }
         else {
             // need the direct version - not so efficient
-            ExtendedIterator i = null;
+            ExtendedIterator<Resource> i = null;
             try {
                 i = listRDFTypes( true );
                 while (i.hasNext()) {
@@ -890,7 +890,7 @@ public class OntResourceImpl
      */
     public int getCardinality( Property p ) {
         int n = 0;
-        for (Iterator i = UniqueExtendedIterator.create( listPropertyValues( p ) );  i.hasNext(); n++) {
+        for (Iterator<RDFNode> i = UniqueExtendedIterator.create( listPropertyValues( p ) );  i.hasNext(); n++) {
             i.next();
         }
 
@@ -975,9 +975,9 @@ public class OntResourceImpl
     * </p>
     */
     public void remove() {
-        Set stmts = new HashSet();
-        List lists = new ArrayList();
-        List skip = new ArrayList();
+        Set<Statement> stmts = new HashSet<Statement>();
+        List<Resource> lists = new ArrayList<Resource>();
+        List<Statement> skip = new ArrayList<Statement>();
         Property first = getProfile().FIRST();
 
         // collect statements mentioning this object
@@ -989,8 +989,8 @@ public class OntResourceImpl
         }
 
         // check for lists
-        for (Iterator i = stmts.iterator(); i.hasNext(); ) {
-            Statement s = (Statement) i.next();
+        for (Iterator<Statement> i = stmts.iterator(); i.hasNext(); ) {
+            Statement s = i.next();
             if (s.getPredicate().equals( first ) &&
                 s.getObject().equals( this )) {
                 // _this_ is referenced from inside a list
@@ -1009,8 +1009,8 @@ public class OntResourceImpl
         }
 
         // add in the contents of the lists to the statements to be removed
-        for (Iterator i = lists.iterator(); i.hasNext(); ) {
-            Resource r = (Resource) i.next();
+        for (Iterator<Resource> i = lists.iterator(); i.hasNext(); ) {
+            Resource r = i.next();
             stmts.addAll( ((RDFListImpl) r.as( RDFList.class )).collectStatements() );
         }
 
@@ -1018,8 +1018,8 @@ public class OntResourceImpl
         stmts.removeAll( skip );
 
         // and then remove the remainder
-        for (Iterator i = stmts.iterator();  i.hasNext(); ) {
-            ((Statement) i.next()).remove();
+        for (Iterator<Statement> i = stmts.iterator();  i.hasNext(); ) {
+            i.next().remove();
         }
     }
 
@@ -1244,8 +1244,9 @@ public class OntResourceImpl
 
     /** Answer true if the node has the given type in the graph */
     protected static boolean hasType( Node n, EnhGraph g, Resource type ) {
+        // TODO this method doesn't seem to be called anywhere.
         boolean hasType = false;
-        ClosableIterator i = g.asGraph().find( n, RDF.type.asNode(), type.asNode() );
+        ClosableIterator<Triple> i = g.asGraph().find( n, RDF.type.asNode(), type.asNode() );
         hasType = i.hasNext();
         i.close();
         return hasType;
@@ -1341,9 +1342,9 @@ public class OntResourceImpl
 
 
     /** Answer an iterator for the given property, whose values are .as() some class */
-    protected <T extends RDFNode> ExtendedIterator listAs( Property p, String name, Class<T> cls ) {
+    protected <T extends RDFNode> ExtendedIterator<T> listAs( Property p, String name, Class<T> cls ) {
         checkProfile( p, name );
-        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper( cls ) );
+        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper<T>( cls ) );
     }
 
 
@@ -1422,8 +1423,8 @@ public class OntResourceImpl
      * @return An iterator of nodes that are in relation p to this resource (possibly inverted), which
      * have been mapped to the facet denoted by <code>cls</code>.
      */
-    protected <T extends RDFNode> ExtendedIterator listDirectPropertyValues( Property p, String name, Class<T> cls, Property orderRel, boolean direct, boolean inverse ) {
-        Iterator i = null;
+    protected <T extends Resource> ExtendedIterator<T> listDirectPropertyValues( Property p, String name, Class<T> cls, Property orderRel, boolean direct, boolean inverse ) {
+        Iterator<T> i = null;
         checkProfile( p, name );
 
         Property sc = p;
@@ -1436,7 +1437,7 @@ public class OntResourceImpl
         // determine the subject and object pairs for the list statements calls
         Resource subject = inverse ? null : this;
         Resource object  = inverse ? this : null;
-        Map1 mapper      = inverse ? (Map1) new SubjectAsMapper( cls ) : (Map1) new ObjectAsMapper( cls );
+        Map1<Statement, T> mapper      = inverse ? (Map1) new SubjectAsMapper( cls ) : (Map1) new ObjectAsMapper( cls );
 
         // are we working on an inference graph?
         OntModel m = (OntModel) getGraph();
@@ -1471,9 +1472,9 @@ public class OntResourceImpl
      * @param mapper
      * @return
      */
-    private Iterator computeDirectValues( Property p, Property orderRel, boolean inverse, Resource subject, Resource object, Map1 mapper ) {
+    private <T extends Resource> Iterator<T> computeDirectValues( Property p, Property orderRel, boolean inverse, Resource subject, Resource object, Map1<Statement, T> mapper ) {
         // graph does not support direct directly
-        ExtendedIterator j = getModel().listStatements( subject, p, object )
+        ExtendedIterator<T> j = getModel().listStatements( subject, p, object )
                                        .mapWith( mapper );
 
         // collect a list of the candidates
@@ -1492,7 +1493,7 @@ public class OntResourceImpl
 
         // first partition the list by equivalence under orderRel
         List partition = ResourceUtils.partition( s, orderRel );
-        Map equivSets = new HashMap();
+        Map<Resource, List> equivSets = new HashMap<Resource, List>();
 
         // then reduce each part of the partition to a singleton, but remember the others
         s.clear();
@@ -1523,7 +1524,7 @@ public class OntResourceImpl
             Resource r = (Resource) i.next();
             s2.add( r );
             if (equivSets.containsKey( r )) {
-                s2.addAll( (List) equivSets.get( r ) );
+                s2.addAll( equivSets.get( r ) );
             }
         }
 
@@ -1553,115 +1554,111 @@ public class OntResourceImpl
     //==============================================================================
 
     /** Implementation of Map1 that performs as( Class ) for a given class */
-    protected static class AsMapper
-        implements Map1
+    protected static class AsMapper<T extends RDFNode> implements Map1<RDFNode, T>
     {
-        private Class m_as;
-        public AsMapper( Class as ) { m_as = as; }
-        public Object map1( Object x ) { return (x instanceof Resource) ? ((Resource) x).as( m_as ) : x; }
+        private Class<T> m_as;
+        public AsMapper( Class<T> as ) { m_as = as; }
+        public T map1( RDFNode x ) { return x.as( m_as ); }
     }
 
     /** Implementation of Map1 that performs as( Class ) for a given class, on the subject of a statement */
-    protected static class SubjectAsMapper
-        implements Map1
+    protected static class SubjectAsMapper<T extends RDFNode> implements Map1<Statement, T>
     {
-        private Class m_as;
-        public SubjectAsMapper( Class as ) { m_as = as; }
-        public Object map1( Object x ) {
-            if (x instanceof Statement) {
-                RDFNode subj = ((Statement) x).getSubject();
-                return (m_as == null) ? subj : subj.as( m_as );
-            }
-            else {
-                return x;
-            }
+        private Class<T> m_as;
+        public SubjectAsMapper( Class<T> as ) { m_as = as; }
+        public T map1( Statement x ) {
+            return x.getSubject().as( m_as );
+//            if (x instanceof Statement) {
+//                RDFNode subj = ((Statement) x).getSubject();
+//                return (m_as == null) ? subj : subj.as( m_as );
+//            }
+//            else {
+//                return x;
+//            }
         }
     }
 
     /** Implementation of Map1 that extracts the subject of a statement */
-    protected static class SubjectMapper
-        implements Map1
+    protected static class SubjectMapper implements Map1<Statement, Resource>
     {
-        public Object map1( Object x ) {
-            return (x instanceof Statement) ? ((Statement) x).getSubject() : x;
+        public Resource map1( Statement x ) {
+            return x.getSubject();
         }
     }
 
     /** Implementation of Map1 that performs as( Class ) for a given class, on the object of a statement */
-    protected static class ObjectAsMapper
-        implements Map1
+    protected static class ObjectAsMapper<T extends RDFNode> implements Map1<Statement, T>
     {
-        private Class m_as;
-        public ObjectAsMapper( Class as ) { m_as = as; }
-        public Object map1( Object x ) {
-            if (x instanceof Statement) {
-                RDFNode obj = ((Statement) x).getObject();
-                return (m_as == null) ? obj : obj.as( m_as );
-            }
-            else {
-                return x;
-            }
+        private Class<T> m_as;
+        public ObjectAsMapper( Class<T> as ) 
+            { m_as = as; }
+        public T map1( Statement x ) {
+            return x.getObject().as( m_as );
+//            if (x instanceof Statement) {
+//                RDFNode obj = ((Statement) x).getObject();
+//                return (m_as == null) ? obj : obj.as( m_as );
+//            }
+//            else {
+//                return x;
+//            }
         }
     }
 
     /** Implementation of Map1 that performs getString on the object of a statement */
-    protected class ObjectAsStringMapper
-        implements Map1
+    protected class ObjectAsStringMapper implements Map1<Statement, String>
     {
-        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getString() : x; }
+        public String map1( Statement x ) { return x.getString(); }
     }
 
     /** Implementation of Map1 that returns the object of a statement */
-    protected static class ObjectMapper
-        implements Map1
+    protected static class ObjectMapper implements Map1<Statement, RDFNode>
     {
-        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject() : x; }
+        public RDFNode map1( Statement x ) { return x.getObject(); }
     }
 
     /** Implementation of Map1 that returns the object of a statement as an ont resource */
-    protected static class ObjectAsOntResourceMapper
-        extends ObjectMapper
+    protected static class ObjectAsOntResourceMapper implements Map1<Statement, RDFNode>
     {
-        @Override
-        public Object map1( Object x ) {
-            if (x instanceof Statement) {
-                return asOntResource( ((Statement) x).getObject() );
-            }
-            else {
-                return x;
-            }
+        public RDFNode map1( Statement x ) {
+            return asOntResource( x.getObject() );
+//            if (x instanceof Statement) {
+//                return asOntResource( ((Statement) x).getObject() );
+//            }
+//            else {
+//                return x;
+//            }
         }
     }
 
-    /** Filter for matching language tags on literals */
-    protected class LangTagFilter
-        extends Filter
+    /** Filter for matching language tags on tghe objects of statements */
+    protected class LangTagFilter extends Filter<Statement>
     {
         protected String m_lang;
         public LangTagFilter( String lang ) { m_lang = lang; }
         @Override
-        public boolean accept( Object x ) {
-            if (x instanceof Literal) {
-                return langTagMatch( m_lang, ((Literal) x).getLanguage() );
-            }
-            else if (x instanceof Statement) {
-                // we assume for a statement that we're filtering on the object of the statement
-                return accept( ((Statement) x).getObject() );
-            }
-            else {
-                return false;
-            }
+        public boolean accept( Statement x ) {
+            RDFNode o = x.getObject();
+            return o.isLiteral() && langTagMatch( m_lang, ((Literal) o).getLanguage() );
+//            if (x instanceof Literal) {
+//                return langTagMatch( m_lang, ((Literal) x).getLanguage() );
+//            }
+//            else if (x instanceof Statement) {
+//                // we assume for a statement that we're filtering on the object of the statement
+//                return accept( ((Statement) x).getObject() );
+//            }
+//            else {
+//                return false;
+//            }
         }
     }
 
     /** Filter for accepting only the given value, based on .equals() */
-    protected class SingleEqualityFilter
-        extends Filter
+    protected class SingleEqualityFilter<T>
+        extends Filter<T>
     {
-        private Object m_obj;
-        public SingleEqualityFilter( Object x ) { m_obj = x; }
-        @Override
-        public boolean accept( Object x ) {return m_obj.equals( x );}
+        private T m_obj;
+        public SingleEqualityFilter( T x ) { m_obj = x; }
+        @Override public boolean accept( T x ) {return m_obj.equals( x );}
     }
 }
 

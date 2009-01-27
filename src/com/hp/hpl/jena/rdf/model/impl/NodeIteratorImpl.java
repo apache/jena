@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NodeIteratorImpl.java,v 1.11 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: NodeIteratorImpl.java,v 1.12 2009-01-27 07:57:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,17 +14,17 @@ import java.util.*;
 /** A NodeIterator implementation.
  *
  * @author  bwm + kers
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2008-12-28 19:31:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2009-01-27 07:57:34 $'
  */
-public class NodeIteratorImpl extends WrappedIterator implements NodeIterator {
+public class NodeIteratorImpl extends WrappedIterator<RDFNode> implements NodeIterator {
     
     /** Creates new NodeIteratorImpl */
-    public NodeIteratorImpl(Iterator iter, Object object) {
+    public NodeIteratorImpl( Iterator<? extends RDFNode> iter, Object object ) {
         super( iter );
     }
     
     public RDFNode nextNode() {
-        return (RDFNode) super.next();
+        return super.next();
     }
     
 }
