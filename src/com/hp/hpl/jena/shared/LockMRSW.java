@@ -4,12 +4,14 @@
  */
 
 package com.hp.hpl.jena.shared ;
-import com.hp.hpl.jena.shared.JenaException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock;
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
-import java.util.*;
-import org.apache.commons.logging.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Lock implemenetation using a Multiple Reader, Single Writer policy.
@@ -22,7 +24,7 @@ import org.apache.commons.logging.*;
  *  <ul>
  *   
  * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.7 2009-01-16 18:24:39 andy_seaborne Exp $
+ * @version     $Id: LockMRSW.java,v 1.8 2009-01-27 19:49:02 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 
@@ -34,11 +36,11 @@ public class LockMRSW implements Lock
     // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;
     
-    //ReentrantWriterPreferenceReadWriteLock lock = new ReentrantWriterPreferenceReadWriteLock();
-    WriterPreferenceReadWriteLock mrswLock = new WriterPreferenceReadWriteLock();
+    ReadWriteLock mrswLock = new ReentrantReadWriteLock() ;
+    // WriterPreferenceReadWriteLock mrswLock = new WriterPreferenceReadWriteLock();
     
-    SynchronizedInt activeReadLocks = new SynchronizedInt(0);
-    SynchronizedInt activeWriteLocks = new SynchronizedInt(0);
+    AtomicInteger activeReadLocks = new AtomicInteger(0);
+    AtomicInteger activeWriteLocks = new AtomicInteger(0);
     
     public LockMRSW() {
         if ( log.isDebugEnabled() )
@@ -81,7 +83,7 @@ public class LockMRSW implements Lock
             // Increment the readlock so a later leaveCriticialSection
             // keeps the counters aligned.
             state.readLocks++ ;
-            activeReadLocks.increment() ;
+            activeReadLocks.incrementAndGet() ;
             
             if ( log.isDebugEnabled() )
                 log.debug(Thread.currentThread().getName()+" << enterCS: promotion attempt: "+report(state)) ;
@@ -97,20 +99,17 @@ public class LockMRSW implements Lock
             if (readLockRequested)
             {
                 if (state.readLocks == 0)
-                    mrswLock.readLock().acquire();
+                    mrswLock.readLock().lock();
                 state.readLocks ++ ;
-                activeReadLocks.increment() ;
+                activeReadLocks.incrementAndGet() ;
             }
             else
             {
                 if (state.writeLocks == 0)
-                    mrswLock.writeLock().acquire();
+                    mrswLock.writeLock().lock();
                 state.writeLocks ++ ;
-                activeWriteLocks.increment() ;
+                activeWriteLocks.incrementAndGet() ;
             }
-        }
-        catch (InterruptedException intEx)
-        {
         }
         finally
         {
@@ -135,10 +134,10 @@ public class LockMRSW implements Lock
             if ( state.readLocks > 0)
             {
                 state.readLocks -- ;
-                activeReadLocks.decrement() ;
+                activeReadLocks.getAndDecrement() ;
                 
                 if ( state.readLocks == 0 )
-                    mrswLock.readLock().release() ;
+                    mrswLock.readLock().unlock() ;
                 
                 state.clean() ;
                 return ;
@@ -147,10 +146,10 @@ public class LockMRSW implements Lock
             if ( state.writeLocks > 0)
             {
                 state.writeLocks -- ;
-                activeWriteLocks.decrement() ;
+                activeWriteLocks.getAndDecrement() ;
                 
                 if ( state.writeLocks == 0 )
-                    mrswLock.writeLock().release() ;
+                    mrswLock.writeLock().unlock() ;
                 
                 state.clean() ;
                 return ;

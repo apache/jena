@@ -6,28 +6,19 @@
 
 package com.hp.hpl.jena.shared;
 
-import com.hp.hpl.jena.shared.JenaException;
-
-import EDU.oswego.cs.dl.util.concurrent.Mutex; 
-
 
 public class LockMutex implements Lock 
 {
-    Mutex mutex = new Mutex() ;
+    java.util.concurrent.locks.Lock mutex = new java.util.concurrent.locks.ReentrantLock() ;
     
     public void enterCriticalSection(boolean readLockRequested)
     {
-        try {
-            mutex.acquire() ;
-        } catch (InterruptedException intEx)
-        {
-            throw new JenaException("InterruptedException in LockMutex") ;
-        }
+        mutex.lock();
     }
 
     public void leaveCriticalSection()
     {
-        mutex.release() ;
+        mutex.unlock() ;
     }
 }
 

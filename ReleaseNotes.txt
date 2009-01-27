@@ -6,6 +6,10 @@ Release Notes
 
 ** Codebase converted to Java 5
 
+Jar changes:
+   o Removed antlr-2.7.5.jar (no longer used)
+   o Removed concurrent.jar (no longer used)
+
 Deprecation clearance.
    Methods, classes and statics marked deprecated in previous releases have been largely removed.
 
@@ -28,8 +32,8 @@ JenaModelSpec:
 
 N3:
    o N3 parser is now the Turtle parser.
-     The dialect of N3 that Jena supported (which is quite old) has some idioms that are not legal
-     Turtle although they are nowadays not correct N3 either.
+     The dialect of N3 that Jena supported (which is quite old) has some idioms that
+     are not legal Turtle although they are nowadays not correct N3 either.
    o Turtle writer now speeded up when many namespaces in use.
         
 ==== Jena 2.5.7
