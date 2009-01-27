@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
@@ -68,13 +69,15 @@ public class TupleLoaderOneHash extends TupleLoaderOne
                 "WHERE hash = "+hash
                 ) ;
         
-        ResultSetJDBC rsx = connection().execQuery(sqlStmtTest) ; 
-        ResultSet rs = rsx.get();
-        boolean b = rs.next();
-        rsx.close() ;
-        if ( b )
-            // Exists
-            return new SqlConstant(hash) ;
+        ResultSetJDBC rsx = null ; 
+        try {
+            rsx = connection().execQuery(sqlStmtTest) ;
+            ResultSet rs = rsx.get();
+            boolean b = rs.next();
+            if ( b )
+                // Exists
+                return new SqlConstant(hash) ;
+        } finally { RS.close(rsx) ; }
         
         String sqlStmt = strjoinNL(
                 "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",

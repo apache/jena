@@ -32,7 +32,12 @@ public class RS
             rs.close();
     }
     
-    
+
+    public static void close(Statement s )
+    {
+        try { if ( s != null ) s.close() ; } catch (SQLException ex) {}
+    }
+
 //    public static void close(ResultSet rs) 
 //    {
 //        try {

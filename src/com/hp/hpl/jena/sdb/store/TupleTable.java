@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
@@ -57,22 +58,27 @@ public class TupleTable
     
     private static TableDesc getDesc(Store store, String tableName)
     {
+        ResultSetJDBC tableData = null ;
         List<String> colVars = new ArrayList<String>() ;
-        try {
-            // Need to portable get the column names. 
-            ResultSetJDBC tableData = 
-                store.getConnection().execQuery("SELECT * FROM "+tableName) ;
+        try
+        {
+            // Need to portable get the column names.
+            tableData = store.getConnection().execQuery("SELECT * FROM " + tableName) ;
             java.sql.ResultSetMetaData meta = tableData.get().getMetaData() ;
             int N = meta.getColumnCount() ;
-            for ( int i = 1 ; i <= N ; i++ )
+            for (int i = 1; i <= N; i++)
             {
                 String colName = meta.getColumnName(i) ;
                 colVars.add(colName) ;
             }
-            tableData.close() ;
             return new TableDesc(tableName, colVars) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL(ex) ; }
+        {
+            throw new SDBExceptionSQL(ex) ;
+        } finally
+        {
+            RS.close(tableData) ;
+        }
     }
     
     //public void format

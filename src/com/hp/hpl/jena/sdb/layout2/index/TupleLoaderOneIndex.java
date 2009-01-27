@@ -60,36 +60,33 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
     
     private static int getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
     {
-        try {
-            long hash = NodeLayout2.hash(node) ;
-            String lex  = NodeLayout2.nodeToLex(node) ;
-            String hashStr = Long.toString(hash) ;
-            
-            String sqlStmt = strjoinNL(
-                "SELECT id FROM Nodes WHERE hash = "+hashStr
-                ) ;
-            ResultSetJDBC rsx = conn.execQuery(sqlStmt) ;
-            ResultSet rs = rsx.get();
-            try {
-                if ( ! rs.next() )
-                {
-                    if ( ! create )
-                        throw new SDBException("No such node in table: "+node) ;
-                    insertNode(conn, lex, node) ;
-                    // And get it again to find the auto-allocate ID.
-                    return getIndex(conn, node, false) ;
-                }
+        long hash = NodeLayout2.hash(node) ;
+        String lex  = NodeLayout2.nodeToLex(node) ;
+        String hashStr = Long.toString(hash) ;
+        String sqlStmt = "SELECT id FROM Nodes WHERE hash = "+hashStr ;
         
-                int id = rs.getInt("id") ;
-                if ( rs.next() )
-                    log.warn("More than one hit for : "+sqlStmt+" (ignored)") ;
-                return id ;    
-            } finally { RS.close(rsx) ; }
+        ResultSetJDBC rsx = null ;
+        try {
+            rsx = conn.execQuery(sqlStmt) ;
+            ResultSet rs = rsx.get();
+            if ( ! rs.next() )
+            {
+                if ( ! create )
+                    throw new SDBException("No such node in table: "+node) ;
+                insertNode(conn, lex, node) ;
+                // And get it again to find the auto-allocate ID.
+                return getIndex(conn, node, false) ;
+            }
+
+            int id = rs.getInt("id") ;
+            if ( rs.next() )
+                log.warn("More than one hit for : "+sqlStmt+" (ignored)") ;
+            return id ;    
         } catch (SQLException ex)
         {
             log.warn("SQLException: "+ex.getMessage()) ;
             throw ex ;
-        }
+        } finally { RS.close(rsx) ; }
     }
     
     private static void insertNode(SDBConnection conn, String lex,  Node node) throws SQLException

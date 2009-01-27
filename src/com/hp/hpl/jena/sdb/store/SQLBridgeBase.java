@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.ColAlias;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -153,19 +154,23 @@ public abstract class SQLBridgeBase implements SQLBridge
         @Override
         protected void closeIterator()
         {
-            if ( jdbcResultSet == null )
-                return ;
-            jdbcResultSet.close();
+            RS.close(jdbcResultSet) ;
             jdbcResultSet = null ;
         }
 
         @Override
         protected boolean hasNextBinding()
         {
-            if ( ! ready )
+            if (!ready)
             {
-                try { hasNext = jdbcResultSet.get().next() ; }
-                catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+                try
+                {
+                    hasNext = jdbcResultSet.get().next() ;
+                } catch (SQLException ex)
+                {
+                    closeIterator() ;
+                    throw new SDBExceptionSQL(ex) ;
+                }
                 ready = true ;
             }
             return hasNext ;

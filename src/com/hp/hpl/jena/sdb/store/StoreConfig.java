@@ -277,7 +277,11 @@ class TaggedString extends SDBConnectionHolder
             //throw new SDBExceptionSQL("getString", ex) ;
             return null ;
         }
-        finally { connection().setLogSQLExceptions(b) ; RS.close(rs) ; }
+        finally
+        {
+            connection().setLogSQLExceptions(b) ;
+            RS.close(rs) ;
+        }
     }
     
     // Escape non-7bit bytes. e.g. \ u stuff.

@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
@@ -35,8 +37,15 @@ public class StoreBaseIndex extends StoreBase
               new TableNodesIndex()) ;
     }
 
-	public long getSize(Node node) {
-		String lex = NodeLayout2.nodeToLex(node);
+	public long getSize(Node node)
+	{
+	    return getSize(getConnection(), getQuadTableDesc(), node) ;
+	}
+	
+	public static long getSize(SDBConnection connection, TableDescQuads tableDescQuads, Node node)
+	{ 
+        
+        String lex = NodeLayout2.nodeToLex(node);
         int typeId = NodeLayout2.nodeToType(node);
 
         String lang = "";
@@ -50,22 +59,32 @@ public class StoreBaseIndex extends StoreBase
                 datatype = "";
         }
 
-        long hash = NodeLayout2.hash(lex, lang, datatype, typeId);
-        try {
-        	ResultSet res = getConnection().exec("SELECT id FROM Nodes WHERE hash = " + hash).get();
-        	int id = -1;
-        	if (res.next()) id = res.getInt(1);
-        	else {res.close(); return 0;} // no graph, size == 0
-        	res.close();
-        	res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + id).get();
-        	res.next();
-        	long result = res.getLong(1);
-        	res.close();
-        	return result;
-        } catch (SQLException e) {
-        	throw new SDBExceptionSQL("Failed to get graph size", e);
+        ResultSetJDBC rsx = null ;
+        long hash = NodeLayout2.hash(lex, lang, datatype, typeId) ;
+        try
+        {
+            rsx = connection.exec("SELECT id FROM Nodes WHERE hash = " + hash) ;
+            ResultSet res = rsx.get() ;
+            int id = -1 ;
+            if (res.next()) 
+                id = res.getInt(1) ;
+            else
+                // no graph, size == 0
+                return 0 ;
+            rsx.close();
+            rsx = connection.exec("SELECT COUNT(*) FROM " + tableDescQuads.getTableName() + " WHERE g = " + id) ;
+            res = rsx.get() ;
+            res.next() ;
+            long result = res.getLong(1) ;
+            return result ;
+        } catch (SQLException e)
+        {
+            throw new SDBExceptionSQL("Failed to get graph size", e) ;
+        } finally
+        {
+            RS.close(rsx) ;
         }
-	}
+ 	}
 }
 
 /*

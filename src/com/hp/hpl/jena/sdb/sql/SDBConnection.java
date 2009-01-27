@@ -165,13 +165,13 @@ public class SDBConnection
             writeLog("exec", sqlString) ;
         
         Connection conn = getSqlConnection() ;
-        
+        Statement s = null ;
         try {
-            Statement s = conn.createStatement() ;
+            s = conn.createStatement() ;
             boolean r = s.execute(sqlString) ;
             if ( r )
                 return new ResultSetJDBC(s, s.getResultSet()) ; 
-            s.close() ;
+            RS.close(s) ;
             return null ;
         }
 //        catch (SQLSyntaxErrorException ex)  // Java 6
@@ -181,6 +181,7 @@ public class SDBConnection
 //        }
         catch (SQLException ex)
         {
+            RS.close(s) ;
             exception("exec", ex, sqlString) ;
             throw ex ;
         }
@@ -193,18 +194,18 @@ public class SDBConnection
             writeLog("execSilent", sqlString) ;
         
         Connection conn = getSqlConnection() ;
-        
+        Statement s = null ;
         try {
-            Statement s = conn.createStatement() ;
+            s = conn.createStatement() ;
             boolean r = s.execute(sqlString) ;
             if ( r )
-                return new ResultSetJDBC(s, s.getResultSet()) ; 
-            s.close() ;
-            return null ;
-        } catch (SQLException ex)
-        {  return null ; }
+                return new ResultSetJDBC(s, s.getResultSet()) ;
+        } catch (SQLException ex) {}
+        // Close if did not return a ResultSetJDBC
+        RS.close(s) ;
+        return null ; 
     }
-    
+
     /** Prepare a statement **/
     public PreparedStatement prepareStatement(String sqlString) throws SQLException {
     	if ( loggingSQLStatements() )

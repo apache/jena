@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
@@ -34,7 +36,13 @@ public class StoreBaseHash extends StoreBase
               new TableNodesHash()) ;
     }
 
-    public long getSize(Node node) {
+    public long getSize(Node node)
+    {
+        return getSize(getConnection(), getQuadTableDesc(), node) ;
+    }
+        
+    public static long getSize(SDBConnection connection, TableDescQuads tableDescQuads, Node node)
+    {    
 		String lex = NodeLayout2.nodeToLex(node);
         int typeId = NodeLayout2.nodeToType(node);
 
@@ -48,16 +56,22 @@ public class StoreBaseHash extends StoreBase
             if (datatype == null)
                 datatype = "";
         }
-
-        long hash = NodeLayout2.hash(lex, lang, datatype, typeId);
-        try {
-        	ResultSet res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + hash).get() ;
-        	res.next();
-        	long result = res.getLong(1);
-        	res.close();
-        	return result;
-        } catch (SQLException e) {
-        	throw new SDBExceptionSQL("Failed to get graph size", e);
+        
+        ResultSetJDBC rsx = null ;
+        long hash = NodeLayout2.hash(lex, lang, datatype, typeId) ;
+        try
+        {
+            rsx = connection.exec("SELECT COUNT(*) FROM " + tableDescQuads.getTableName() + " WHERE g = " + hash) ;
+            ResultSet res = rsx.get() ;
+            res.next() ;
+            long result = res.getLong(1) ;
+            return result ;
+        } catch (SQLException e)
+        {
+            throw new SDBExceptionSQL("Failed to get graph size", e) ;
+        } finally
+        {
+            RS.close(rsx) ;
         }
 	}
 }

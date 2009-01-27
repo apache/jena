@@ -21,6 +21,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
@@ -43,9 +44,10 @@ public abstract class TestStoreUpdateBase {
 	}
 	
 	protected int size(String name) {
+	    ResultSetJDBC result = null ;
 		try {
 			int size = -1;
-			ResultSetJDBC result = store.getConnection().execQuery("SELECT COUNT(*) FROM " + name);
+			result = store.getConnection().execQuery("SELECT COUNT(*) FROM " + name);
 			if (result.get().next())
 				size = result.get().getInt(1);
 			result.close();
@@ -53,12 +55,12 @@ public abstract class TestStoreUpdateBase {
 			result = store.getConnection().execQuery("SELECT * FROM " + name);
 			while (result.get().next())
 				System.err.println("Row: " + result.get().getObject(1));
-			result.close();
-			
 			return size;
 		} catch (SQLException e) {
 			throw new RuntimeException("Can't get size of table '" + name + "'", e);
 		}
+		finally { RS.close(result) ; }
+ 
 	}
 	
 	protected Node node(String str) {

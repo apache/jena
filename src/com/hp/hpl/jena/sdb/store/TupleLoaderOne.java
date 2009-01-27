@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -76,11 +77,11 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         String selectTemplate = "SELECT count(*) FROM %s WHERE %s\n" ;
         String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
         
+        ResultSetJDBC rs = null ; 
         try {
-            ResultSetJDBC rs = connection().execQuery(sqlStmt) ;
+            rs = connection().execQuery(sqlStmt) ;
             rs.get().next() ;
             int count = rs.get().getInt(1) ;
-            rs.close();
     
             if ( count > 0 )
             {
@@ -93,6 +94,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
+        finally { RS.close(rs) ; }
     }
 
     protected void loadRow(String[] vals)

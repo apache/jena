@@ -85,8 +85,9 @@ public class sdbsql extends CmdArgsDB
         
         getModTime().startTimer() ;
         long queryTime = 0 ;
+        ResultSetJDBC rs = null ;
         try {
-            ResultSetJDBC rs = getModStore().getConnection().exec(sqlStmt) ;
+            rs = getModStore().getConnection().exec(sqlStmt) ;
             queryTime = getModTime().readTimer() ;
             
             if ( rs == null )
@@ -103,6 +104,8 @@ public class sdbsql extends CmdArgsDB
             System.err.println("SQL Exception: "+ex.getMessage()) ;
             throw new TerminationException(9) ;
         }
+        finally { RS.close(rs) ; }
+        
         long time = getModTime().endTimer() ;
         long fmtTime = time-queryTime ;
         if ( getModTime().timingEnabled() )
