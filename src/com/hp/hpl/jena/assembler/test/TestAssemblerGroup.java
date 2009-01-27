@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.14 2009-01-16 17:23:49 andy_seaborne Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.15 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -20,8 +20,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
     public TestAssemblerGroup( String name )
         { super( name );  }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { return AssemblerGroup.class; }
     
     public void testEmptyAssemblerGroup()

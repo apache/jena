@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestUnionModelAssembler.java,v 1.9 2009-01-20 15:12:08 chris-dollin Exp $
+ 	$Id: TestUnionModelAssembler.java,v 1.10 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -79,8 +79,8 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         Model m = (Model) a.open( mock, root );
         assertInstanceOf( MultiUnion.class, m.getGraph() );
         MultiUnion mu = (MultiUnion) m.getGraph();
-        List L = mu.getSubGraphs();
-        assertEquals( expected, new HashSet( L ) );
+        List<Graph> L = mu.getSubGraphs();
+        assertEquals( expected, new HashSet<Graph>( L ) );
         checkImmutable( m );
         }
     

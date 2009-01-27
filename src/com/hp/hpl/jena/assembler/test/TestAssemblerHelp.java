@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.17 2009-01-20 15:12:07 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.18 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -20,8 +20,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
     public TestAssemblerHelp( String name )
         { super( name ); }
 
-    @Override
-    protected Class getAssemblerClass()
+    @Override protected Class<? extends Assembler> getAssemblerClass()
         { throw new BrokenException( "TestAssemblers does not need this method" ); }
     
     public void testClosureFootprint()
@@ -64,36 +63,36 @@ public class TestAssemblerHelp extends AssemblerTestBase
         {
         Resource root = resourceInModel( model );
         Resource baseType = resource( baseString );
-        Set expected = resourceSet( expectedString );
-        Set answer = AssemblerHelp.findSpecificTypes( root, baseType );
+        Set<Resource> expected = resourceSet( expectedString );
+        Set<Resource> answer = AssemblerHelp.findSpecificTypes( root, baseType );
         assertEquals( expected, answer );
         }
 
     public void testFindRootByExplicitType()
         {
         Model model = model( "x rdf:type ja:Object; y rdf:type Irrelevant" );
-        Set roots = AssemblerHelp.findAssemblerRoots( model );
+        Set<Resource> roots = AssemblerHelp.findAssemblerRoots( model );
         assertEquals( resourceSet( "x" ), roots );
         }        
     
     public void testFindRootByImplicitType()
         {
         Model model = model( "x ja:reificationMode ja:Standard" );
-        Set roots = AssemblerHelp.findAssemblerRoots( model );
+        Set<Resource> roots = AssemblerHelp.findAssemblerRoots( model );
         assertEquals( resourceSet( "x" ), roots );
         }
     
     public void testFindMultipleRoots()
         {
         Model model = model( "x rdf:type ja:Object; y ja:reificationMode ja:Minimal" );
-        Set roots = AssemblerHelp.findAssemblerRoots( model );
+        Set<Resource> roots = AssemblerHelp.findAssemblerRoots( model );
         assertEquals( resourceSet( "y x" ), roots );
         }
     
     public void testFindRootsWithSpecifiedType()
         {
         Model model = model( "x rdf:type ja:Model; y rdf:type ja:Object" );
-        Set roots = AssemblerHelp.findAssemblerRoots( model, JA.Model );
+        Set<Resource> roots = AssemblerHelp.findAssemblerRoots( model, JA.Model );
         assertEquals( resourceSet( "x" ), roots );
         }
     
@@ -129,16 +128,16 @@ public class TestAssemblerHelp extends AssemblerTestBase
         catch (AmbiguousSpecificTypeException e)
             {
             assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet( e.getTypes() ) );
+            assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet<Resource>( e.getTypes() ) );
             }
         }
 
     private Set<Resource> resources( Resource root, String items )
         {
-        List L = listOfStrings( items );
+        List<String> L = listOfStrings( items );
         Set<Resource> result = new HashSet<Resource>();
         for (int i = 0; i < L.size(); i += 1)
-            result.add( resource( root.getModel(), (String) L.get(i) ) );
+            result.add( resource( root.getModel(), L.get(i) ) );
         return result;
         }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRuleSet.java,v 1.8 2009-01-20 15:12:07 chris-dollin Exp $
+ 	$Id: TestRuleSet.java,v 1.9 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -23,12 +23,12 @@ public class TestRuleSet extends AssemblerTestBase
     public void testEmpty()
         {
         assertEquals( Collections.EMPTY_LIST, RuleSet.empty.getRules() );
-        assertEquals( RuleSet.empty, RuleSet.create( Collections.EMPTY_LIST ) );
+        assertEquals( RuleSet.empty, RuleSet.create( Collections.<Rule>emptyList() ) );
         }
     
     public void testEmptyRuleSet()
         { 
-        RuleSet s = RuleSet.create( Collections.EMPTY_LIST );
+        RuleSet s = RuleSet.create( Collections.<Rule>emptyList() );
         assertEquals( Collections.EMPTY_LIST, s.getRules() );
         assertNotSame( Collections.EMPTY_LIST, s.getRules() );
         }

@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.43 2009-01-26 10:28:23 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.44 2009-01-27 10:01:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -61,7 +62,7 @@ public class ModelTestBase extends GraphTestBase
      public static RDFNode rdfNode( Model m, String s )
         { return m.asRDFNode( NodeCreateUtils.create( m, s ) ); }
 
-     public static RDFNode rdfNode( Model m, String s, Class c )
+     public static <T extends RDFNode> T rdfNode( Model m, String s, Class<T> c )
          { return rdfNode( m, s ).as(  c  );  }
      
      protected static Resource resource()
@@ -91,10 +92,10 @@ public class ModelTestBase extends GraphTestBase
      */
      public static Statement [] statements( Model m, String facts )
         {
-        ArrayList sl = new ArrayList();
+        ArrayList<Statement> sl = new ArrayList<Statement>();
         StringTokenizer st = new StringTokenizer( facts, ";" );
         while (st.hasMoreTokens()) sl.add( statement( m, st.nextToken() ) );  
-        return (Statement []) sl.toArray( new Statement[sl.size()] );
+        return sl.toArray( new Statement[sl.size()] );
         }
         
     /**
@@ -106,10 +107,10 @@ public class ModelTestBase extends GraphTestBase
     */
     public static Resource [] resources( Model m, String items )
         {
-        ArrayList rl = new ArrayList();
+        ArrayList<Resource> rl = new ArrayList<Resource>();
         StringTokenizer st = new StringTokenizer( items );
         while (st.hasMoreTokens()) rl.add( resource( m, st.nextToken() ) );  
-        return (Resource []) rl.toArray( new Resource[rl.size()] );
+        return rl.toArray( new Resource[rl.size()] );
         }    
     
     /**
@@ -117,9 +118,9 @@ public class ModelTestBase extends GraphTestBase
         <code>items</code> string. Each resource specification is interpreted
         as per <code>resource</code>.
     */
-    public static Set resourceSet( String items )
+    public static Set<Resource> resourceSet( String items )
         {
-        Set result = new HashSet();
+        Set<Resource> result = new HashSet<Resource>();
         StringTokenizer st = new StringTokenizer( items );
         while (st.hasMoreTokens()) result.add( resource( st.nextToken() ) );  
         return result;
@@ -190,7 +191,7 @@ public class ModelTestBase extends GraphTestBase
         {
         if (wanted.isIsomorphicWith( got ) == false)
             {
-            Map map = CollectionFactory.createHashedMap();
+            Map<Node, Object> map = CollectionFactory.createHashedMap();
             fail( title + ": expected " + nice( wanted.getGraph(), map ) + "\n but had " + nice( got.getGraph(), map ) );
             }
         }        

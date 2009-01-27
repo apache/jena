@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileManagerAssembler.java,v 1.9 2009-01-20 15:12:07 chris-dollin Exp $
+ 	$Id: TestFileManagerAssembler.java,v 1.10 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -60,8 +60,8 @@ public class TestFileManagerAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "f rdf:type ja:FileManager" );
         Assembler a = new FileManagerAssembler();
         FileManager f = (FileManager) a.open( null, root );
-        List wanted = IteratorCollection.iteratorToList( standardLocators() );
-        List obtained = IteratorCollection.iteratorToList( f.locators() );
+        List<Locator> wanted = IteratorCollection.iteratorToList( standardLocators() );
+        List<Locator> obtained = IteratorCollection.iteratorToList( f.locators() );
         assertEquals( wanted.size(), obtained.size() );
         assertEquals( wanted, obtained );
         }

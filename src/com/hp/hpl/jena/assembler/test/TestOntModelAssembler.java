@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelAssembler.java,v 1.11 2009-01-20 15:12:07 chris-dollin Exp $
+ 	$Id: TestOntModelAssembler.java,v 1.12 2009-01-27 10:01:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -111,9 +111,9 @@ public class TestOntModelAssembler extends AssemblerTestBase
         Object m = a.open( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:subModel y" ) );
         assertInstanceOf( OntModel.class, m );
         OntModel om = (OntModel) m;
-        List subModels = om.listSubModels().toList();
+        List<OntModel> subModels = om.listSubModels().toList();
         assertEquals( 1, subModels.size() );
-        assertSame( baseModel.getGraph(), ((OntModel) subModels.get( 0 )).getBaseModel().getGraph() );
+        assertSame( baseModel.getGraph(), subModels.get( 0 ).getBaseModel().getGraph() );
         }
     
     public void testDefaultDocumentManager()
