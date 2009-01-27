@@ -218,12 +218,14 @@ public class TestOntTools
     }
 
     /** Shortest path tests */
+    
+    static final Filter<Statement> ANY = Filter.any();
 
     public void testShortestPath0() {
         Property p = m_model.createProperty( NS + "p" );
         m_a.addProperty( p, m_b );
 
-        testPath( OntTools.findShortestPath( m_model, m_a, m_b, Filter.any ),
+        testPath( OntTools.findShortestPath( m_model, m_a, m_b, ANY ),
                   new Property[] {p} );
     }
 
@@ -232,7 +234,7 @@ public class TestOntTools
         m_a.addProperty( p, m_b );
         m_b.addProperty( p, m_c );
 
-        testPath( OntTools.findShortestPath( m_model, m_a, m_c, Filter.any ),
+        testPath( OntTools.findShortestPath( m_model, m_a, m_c, ANY ),
                   new Property[] {p,p} );
     }
 
@@ -247,9 +249,9 @@ public class TestOntTools
         m_d.addProperty( p, m_e );
         m_e.addProperty( p, m_f );
 
-        testPath( OntTools.findShortestPath( m_model, m_a, m_c, Filter.any ),
+        testPath( OntTools.findShortestPath( m_model, m_a, m_c, ANY ),
                 new Property[] {p,p} );
-        testPath( OntTools.findShortestPath( m_model, m_a, m_f, Filter.any ),
+        testPath( OntTools.findShortestPath( m_model, m_a, m_f, ANY ),
                 new Property[] {p,p,p} );
     }
 
@@ -293,7 +295,7 @@ public class TestOntTools
         Property p = m_model.createProperty( NS + "p" );
         m_a.addProperty( p, m_a );
 
-        testPath( OntTools.findShortestPath( m_model, m_a, m_a, Filter.any ),
+        testPath( OntTools.findShortestPath( m_model, m_a, m_a, ANY ),
                   new Property[] {p} );
     }
 
