@@ -164,12 +164,11 @@ public class GraphList
         
         Set<Node> acc = new HashSet<Node>() ;
         // A list head is a node with a rdf:rest from it, not but rdf:rest to it.
-        @SuppressWarnings("unchecked")
-        Iterator iter = graph.find(Node.ANY, CDR, Node.ANY) ;
+        Iterator<Triple> iter = graph.find(Node.ANY, CDR, Node.ANY) ;
         try {
             for ( ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next();
+                Triple t = iter.next();
                 Node node = t.getSubject() ;
                 if ( ! graph.contains(Node.ANY, CDR, node) )
                     acc.add(node) ;
@@ -182,7 +181,7 @@ public class GraphList
         try {
             for ( ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next();
+                Triple t = iter.next();
                 if ( ! t.getPredicate().equals(CDR) )
                 {
                     acc.add(NIL) ;

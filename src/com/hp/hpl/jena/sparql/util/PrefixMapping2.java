@@ -66,8 +66,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map) */
-    @SuppressWarnings("unchecked")
-    public PrefixMapping setNsPrefixes(Map map)
+    public PrefixMapping setNsPrefixes(Map<String, String> map)
     {
         pmapLocal.setNsPrefixes(map) ;
         return this;

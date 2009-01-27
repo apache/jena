@@ -191,7 +191,6 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         return true ;
     }
     
-    @SuppressWarnings("unchecked")
     public QueryIterator varSubject(Binding binding, 
                                     Var match, Var score,
                                     String searchString, long limit, float scoreLimit,
@@ -204,7 +203,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         HitConverter converter = new HitConverter(binding, match, score) ;
         
-        Iterator<Binding> iter2 = new Map1Iterator(converter, iter) ;
+        Iterator<Binding> iter2 = new Map1Iterator<HitLARQ, Binding>(converter, iter) ;
         QueryIterator qIter = new QueryIterPlainWrapper(iter2, execCxt) ;
 
         if ( limit >= 0 )

@@ -222,7 +222,6 @@ public class PathEval
             }
         } ;
         
-        @SuppressWarnings("unchecked")
         private final Iterator<Node> doOne(Node property)
         {
             // The only point to actually touch the graph 
@@ -230,12 +229,12 @@ public class PathEval
             if ( forwardMode )
             {
                 Iterator<Triple> iter1 = graph.find(node, property, Node.ANY) ;
-                iter2 = new Map1Iterator(selectObject, iter1) ;
+                iter2 = new Map1Iterator<Triple, Node>(selectObject, iter1) ;
             }
             else
             {
                 Iterator<Triple> iter1 = graph.find(Node.ANY, property, node) ;
-                iter2 = new Map1Iterator(selectSubject, iter1) ;
+                iter2 = new Map1Iterator<Triple, Node>(selectSubject, iter1) ;
             }
             
             return iter2 ;

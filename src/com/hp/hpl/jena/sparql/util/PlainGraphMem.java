@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager;
 import com.hp.hpl.jena.mem.SmallGraphMem;
@@ -49,12 +51,13 @@ public class PlainGraphMem extends SmallGraphMem
         return false ;
     }
     
-    // @Override
     @Override
     public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
     {
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> iter = triples.iterator() ;
         return 
-            SimpleEventManager.notifyingRemove( this, triples.iterator() ) 
+            SimpleEventManager.notifyingRemove( this, iter ) 
             .filterKeep ( new TripleMatchFilterEquality( m.asTriple() ) );
     }
     

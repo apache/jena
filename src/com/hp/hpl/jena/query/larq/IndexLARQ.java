@@ -88,10 +88,9 @@ public class IndexLARQ
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
             }} ;
         
-        @SuppressWarnings("unchecked")
-        Iterator<Hit> iter = new Map1Iterator(converter, search(queryString)) ;
+        Iterator<RDFNode> iter = new Map1Iterator<HitLARQ, RDFNode>(converter, search(queryString)) ;
         if ( scoreLimit > 0 )
-            iter = new IteratorTruncate<Hit>(new ScoreTest(scoreLimit), iter) ;
+            iter = new IteratorTruncate<RDFNode>(new ScoreTest(scoreLimit), iter) ;
         
         NodeIterator nIter = new NodeIteratorImpl(iter, null) ; 
         return nIter ;
@@ -126,7 +125,8 @@ public class IndexLARQ
                     return new HitLARQ(object) ;
                 }} ;
             @SuppressWarnings("unchecked")
-            Iterator<HitLARQ> iter = new Map1Iterator(converter, hits.iterator()) ;
+            Iterator<Hit> iterHits = hits.iterator() ;
+            Iterator<HitLARQ> iter = new Map1Iterator<Hit, HitLARQ>(converter, iterHits) ;
             return iter ;
             
         } catch (Exception e)

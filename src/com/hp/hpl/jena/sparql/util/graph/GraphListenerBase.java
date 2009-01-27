@@ -33,17 +33,15 @@ public abstract class GraphListenerBase implements GraphListener
 //            addEvent(t) ;
     }
 
-    @SuppressWarnings("unchecked")
-    public void notifyAddList(Graph g, List triples) 
+    public void notifyAddList(Graph g, List<Triple> triples) 
     { 
         notifyAddIterator(g, triples.iterator()) ;
     }
 
-    @SuppressWarnings("unchecked")
-    public void notifyAddIterator(Graph g, Iterator it)
+    public void notifyAddIterator(Graph g, Iterator<Triple> it)
     {
         for ( ; it.hasNext() ; )
-            addEvent((Triple)it.next()) ;
+            addEvent(it.next()) ;
     }
 
     public void notifyAddGraph(Graph g, Graph added)
@@ -52,8 +50,7 @@ public abstract class GraphListenerBase implements GraphListener
     public void notifyDeleteTriple(Graph g, Triple t)
     { deleteEvent(t) ; }
 
-    @SuppressWarnings("unchecked")
-    public void notifyDeleteList(Graph g, List triples)
+    public void notifyDeleteList(Graph g, List<Triple> triples)
     {
         notifyDeleteIterator(g, triples.iterator()) ;
     }
@@ -66,11 +63,10 @@ public abstract class GraphListenerBase implements GraphListener
 //            deleteEvent(t) ;
     }
 
-    @SuppressWarnings("unchecked")
-    public void notifyDeleteIterator(Graph g, Iterator it)
+    public void notifyDeleteIterator(Graph g, Iterator<Triple> it)
     {
         for ( ; it.hasNext() ; )
-            deleteEvent((Triple)it.next()) ;
+            deleteEvent(it.next()) ;
     }
 
     public void notifyDeleteGraph(Graph g, Graph removed)
