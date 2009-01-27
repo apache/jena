@@ -20,18 +20,32 @@ public final class IteratorArray<T> implements Iterator<T>
     public static <T> IteratorArray<T> create(T[] array, int start, int finish)
     { return new IteratorArray<T>(array, start, finish) ; }
     
-    int idx ;
-    int finishIdx ;
-    T[] array ;
+    private int idx ;
+    private int finishIdx ;
+    private T[] array ;
     
     private IteratorArray(T[] array, int start, int finish) 
     {
+        if ( start < 0 )
+            throw new IllegalArgumentException("Start: "+start) ;
+
+        if ( start > finish )
+            throw new IllegalArgumentException("Start >= finish: "+start+" >= "+finish) ;
+
+// Instead: truncate to array length          
+//        if ( finish > array.length )
+//            throw new IllegalArgumentException("Finish outside array") ;
+//        
+// Instead: immediate end iterator                
+//        if ( start >= array.length )
+//            throw new IllegalArgumentException("Start outside array") ;
+
         this.array = array ;
         idx = start ;
         finishIdx = finish ;
         if ( idx < 0 )
             idx = 0 ;
-        if ( finishIdx >= array.length ) 
+        if ( finishIdx > array.length ) 
             finishIdx = array.length ;
     }
 
