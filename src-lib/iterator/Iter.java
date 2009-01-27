@@ -243,18 +243,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return Iterator2.create(iterator(iter1), iterator(iter2));
     }
 
-    // Coudl try for <? extends T> on each arg.
-    public static <T> Iterator<T> append(Iterator<T> iter1, Iterator<T> iter2)
+    // Could try for <? extends T> on each arg.
+    public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
     { return Iterator2.create(iter1, iter2); }
 
     private static <T> Iterator<T> iterator(Iterable<T> iter) { return (iter==null) ? null : iter.iterator() ; }
     
-//    public static <T>
-//    Iter<T> append(Iterator<? extends T> iterator, Iterator<? extends T> iter)
-//    {
-//        return new Iter<T>(new Iterator2<T>(iterator, iter)) ;
-//    }
-//
     public static <T> Iterator<T> distinct(Iterable<T> iter)
     {
         return distinct(iter.iterator()) ;
@@ -430,7 +424,6 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
     public Iter<T> append(Iterator<T> iter)
     {
-        // Cosider having a "concat" slot in Iter
         return new Iter<T>(Iterator2.create(iterator, iter)) ;
     }
 
