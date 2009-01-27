@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -71,8 +73,11 @@ public class QueryEngineSDB extends QueryEngineBase
         // Op op = Algebra.optimize(originalOp, context) ;
         // SDB uses the quad engine which does not support property functions.
         Op op = originalOp ;
-        // Quad it now so it can be passed to Compile.compil
+        // Quad it now so it can be passed to Compile.compile
         op = Algebra.toQuadForm(op) ;
+        // Do property functions.
+        op = Transformer.transform(new TransformPropertyFunction(context), op) ;
+        // Compile to SQL / extract parts to execute as SQL.
         op = SDBCompile.compile(store, op, initialBinding, context, request) ;
         setOp(op) ;
     }
