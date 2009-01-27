@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.18 2009-01-26 10:28:21 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.19 2009-01-27 09:40:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -215,8 +215,8 @@ public class ModelExpansion
     private static void addIntersections( Model result, Model schema, Statement s )
         {
         Resource type = s.getSubject();
-        List types = asJavaList( AssemblerHelp.getResource( s ) );
-        Set<Resource> candidates = subjectSet( result, ANY, RDF.type, (Resource) types.get(0) );
+        List<RDFNode> types = asJavaList( AssemblerHelp.getResource( s ) );
+        Set<Resource> candidates = subjectSet( result, ANY, RDF.type, types.get(0) );
         for (int i = 1; i < types.size(); i += 1)
             removeElementsWithoutType( candidates, (Resource) types.get(i) );
         addTypeToAll( type, candidates );
@@ -256,7 +256,7 @@ public class ModelExpansion
         return result.listStatements( S, P, O ) .mapWith( Statement.Util.getSubject ).toSet();
         }
 
-    private static List asJavaList( Resource resource )
+    private static List<RDFNode> asJavaList( Resource resource )
         {
         return (resource.as( RDFList.class )).asJavaList();
         }

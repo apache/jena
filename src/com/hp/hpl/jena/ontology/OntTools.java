@@ -199,16 +199,16 @@ public class OntTools
      * @return A list of classes whose members are the named root classes of the
      * class hierarchy in <code>m</code>
      */
-    public static List namedHierarchyRoots( OntModel m ) {
-        List nhr = new ArrayList();         // named roots
-        List ahr = new ArrayList();         // anon roots
+    public static List<OntClass> namedHierarchyRoots( OntModel m ) {
+        List<OntClass> nhr = new ArrayList<OntClass>();         // named roots
+        List<OntClass> ahr = new ArrayList<OntClass>();         // anon roots
 
         // do the initial partition of the root classes
         partitionByNamed( m.listHierarchyRootClasses(), nhr, ahr );
 
         // now push the fringe down until we have only named classes
         while (!ahr.isEmpty()) {
-            OntClass c = (OntClass) ahr.remove( 0 );
+            OntClass c = ahr.remove( 0 );
             partitionByNamed( c.listSubClasses( true ), nhr, ahr );
         }
 
@@ -243,8 +243,8 @@ public class OntTools
         clsSet.setAncestor( clsSet );
 
         // for each child of cls
-        for (Iterator i = cls.listSubClasses( true ); i.hasNext(); ) {
-            OntClass child = (OntClass) i.next();
+        for (Iterator<OntClass> i = cls.listSubClasses( true ); i.hasNext(); ) {
+            OntClass child = i.next();
 
             if (child.equals( cls ) || child.equals( cls.getProfile().NOTHING() )) {
                 // we ignore the reflexive case and bottom
@@ -306,9 +306,9 @@ public class OntTools
      * @param named A list of named classes
      * @param anon A list of anonymous classes
      */
-    protected static void partitionByNamed( Iterator i, List named, List anon ) {
+    protected static void partitionByNamed( Iterator<? extends OntClass> i, List<OntClass> named, List<OntClass> anon ) {
         while (i.hasNext()) {
-            OntClass c = (OntClass) i.next();
+            OntClass c = i.next();
             boolean ignore = false;
 
             // duplicate check: we ignore this class if we've already got it
@@ -319,8 +319,8 @@ public class OntTools
             // subsumption check: c must have only anon classes or Thing
             // as super-classes to still qualify as a root class
             Resource thing = c.getProfile().THING();
-            for (Iterator j = c.listSuperClasses(); !ignore && j.hasNext(); ) {
-                OntClass sup = (OntClass) j.next();
+            for (Iterator<OntClass> j = c.listSuperClasses(); !ignore && j.hasNext(); ) {
+                OntClass sup = j.next();
                 if (!((thing != null && sup.equals( thing )) ||
                       sup.isAnon() ||
                       sup.equals( c )))
@@ -495,10 +495,10 @@ public class OntTools
     public static class LCAIndex
     {
         private Map<Resource, DisjointSet> m_setIndex = new HashMap<Resource, DisjointSet>();
-        private Map<Resource, Map> m_lcaIndex = new HashMap<Resource, Map>();
+        private Map<Resource, Map<Resource, Resource>> m_lcaIndex = new HashMap<Resource, Map<Resource, Resource>>();
 
         public Resource getLCA( Resource u, Resource v ) {
-            Map map = m_lcaIndex.get( u );
+            Map<Resource, Resource> map = m_lcaIndex.get( u );
             Resource lca = (map == null) ? null : (Resource) map.get( v );
 
             if (lca == null) {
@@ -539,8 +539,7 @@ public class OntTools
      * and  <code>S<sub>i</sub></code>, where <code>i &gt; 0</code>, it is true that:
      * <code><pre>S<sub>i-1</sub>.getObject().equals( S<sub>i</sub>.getSubject() )</pre></code>
      */
-    public static class Path
-        extends ArrayList
+    public static class Path extends ArrayList<Statement>
     {
         public Path() {
             super();
@@ -551,7 +550,7 @@ public class OntTools
         }
 
         public Statement getStatement( int i ) {
-            return (Statement) get( i );
+            return get( i );
         }
 
         /** Answer a new Path whose elements are this Path with <code>s</code> added at the end */
@@ -568,7 +567,7 @@ public class OntTools
 
         /** Answer the RDF node at the end of the path, if defined, or null */
         public RDFNode getTerminal() {
-            return size() > 0 ? ((Statement) get( size() - 1 )).getObject() : null;
+            return size() > 0 ? get( size() - 1 ).getObject() : null;
         }
 
         /** Answer the resource at the end of the path, if defined, or null */
@@ -582,8 +581,7 @@ public class OntTools
      * A filter which accepts statements whose predicate matches one of a collection
      * of predicates held by the filter object.
      */
-    public static class PredicatesFilter
-        extends Filter
+    public static class PredicatesFilter extends Filter<Statement>
     {
         public Collection<Property> m_preds;
 
@@ -606,9 +604,8 @@ public class OntTools
             m_preds.add( pred );
         }
 
-        @Override
-        public boolean accept( Object s ) {
-            return m_preds.contains( ((Statement) s).getPredicate() );
+        @Override public boolean accept( Statement s ) {
+            return m_preds.contains( s.getPredicate() );
         }
     }
 }

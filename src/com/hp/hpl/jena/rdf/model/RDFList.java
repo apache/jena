@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 09:40:05 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.15 2009-01-16 17:23:52 andy_seaborne Exp $)
+ * @version Release ($Id: RDFList.java,v 1.16 2009-01-27 09:40:05 chris-dollin Exp $)
  */
 public interface RDFList
     extends Resource
@@ -281,7 +281,7 @@ public interface RDFList
      * @return A new RDFList that contains all of this elements of this list,
      * followed by all of the elements of the given iterator.
      */
-    public RDFList append( Iterator nodes );
+    public RDFList append( Iterator<? extends RDFNode> nodes );
         
         
     /**
@@ -312,7 +312,7 @@ public interface RDFList
      * @exception EmptyListUpdateException if this list is the nil list
      * @see #concatenate(RDFList) for details on avoiding the empty list update exception.
      */
-    public void concatenate( Iterator nodes );
+    public void concatenate( Iterator<? extends RDFNode> nodes );
         
     
     /**
@@ -428,7 +428,7 @@ public interface RDFList
      * 
      * @return A closable iterator over the elements of the list.
      */
-    public ExtendedIterator iterator();
+    public ExtendedIterator<RDFNode> iterator();
     
     
     /**
@@ -438,7 +438,7 @@ public interface RDFList
      * 
      * @return The contents of this list as a Java List.
      */
-    public List asJavaList();
+    public List<RDFNode> asJavaList();
     
     
     /**
