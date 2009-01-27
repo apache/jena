@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:50 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 09:29:57 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.17 2009-01-16 17:23:50 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.18 2009-01-27 09:29:57 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -860,8 +860,8 @@ public class TestList
             };
             
             for (int i = 0;  i < testSpec.length;  i++) {
-                RDFList l0 = nilList.append( Arrays.asList( (Object[]) testSpec[i][0] ).iterator() );
-                RDFList l1 = nilList.append( Arrays.asList( (Object[]) testSpec[i][1] ).iterator() );
+                RDFList l0 = nilList.append( Arrays.asList( (Resource[]) testSpec[i][0] ).iterator() );
+                RDFList l1 = nilList.append( Arrays.asList( (Resource[]) testSpec[i][1] ).iterator() );
                 boolean expected = ((Boolean) testSpec[i][2]).booleanValue();
                 
                 assertEquals( "sameListAs testSpec[" + i + "] incorrect", expected, l0.sameListAs( l1 ) );
