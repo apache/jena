@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.34 2009-01-16 17:23:48 andy_seaborne Exp $
+	$Id: StatementImpl.java,v 1.35 2009-01-27 14:32:45 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.34 $ $Date: 2009-01-16 17:23:48 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.35 $ $Date: 2009-01-27 14:32:45 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -111,27 +111,21 @@ public class StatementImpl  extends StatementBase implements Statement {
             throw new JenaException(e);
         }
     }
-    
-   /** I suspect that this is now not pulling its weight. */
-   private EnhNode get( Class interf ) {
-        return (EnhNode) object.as( interf );
-    }
         
     public Bag getBag()  {
-        return (Bag) get(Bag.class);
+        return object.as( Bag.class );
     }
     
     public Alt getAlt()  {
-        return (Alt)get(Alt.class);
+        return object.as( Alt.class );
     }
     
     public Seq getSeq()  {
-        return (Seq)get(Seq.class);
+        return object.as( Seq.class );
     }    
     
     /** it turns out to be handy to return the new StatementImpl as the result */ 
-    @Override
-    protected StatementImpl replace(RDFNode n)  {
+    @Override protected StatementImpl replace( RDFNode n )  {
     	StatementImpl s = new StatementImpl( subject, predicate, n, model );
     	model.remove( this ).add( s );
         return s;
@@ -140,8 +134,7 @@ public class StatementImpl  extends StatementBase implements Statement {
     /**
         .equals() defers to .sameAs so we only get the complexity of one cast.
     */
-    @Override
-    public boolean equals(Object o)
+    @Override public boolean equals(Object o)
         { return o instanceof Statement && sameAs( (Statement) o ); }
         
     /**
@@ -155,8 +148,7 @@ public class StatementImpl  extends StatementBase implements Statement {
             && object.equals( o.getObject() );
         }
     
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
     	return asTriple().hashCode();
     }
     

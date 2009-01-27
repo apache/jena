@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.39 2009-01-19 15:38:46 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.40 2009-01-27 14:32:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -38,7 +38,7 @@ public class GraphTestBase extends JenaTestBase
         a shorthand for <code>IteratorCollection.iteratorToSet(it)</code>,
         which see.
     */
-    public static Set iteratorToSet( Iterator it )
+    public static <T> Set<T> iteratorToSet( Iterator<? extends T> it )
         { return IteratorCollection.iteratorToSet( it ); }
     
     /**
@@ -46,7 +46,7 @@ public class GraphTestBase extends JenaTestBase
         in order; a shorthand for <code>IteratorCollection.iteratorToList(it)</code>,
         which see.
     */
-    public static List iteratorToList( Iterator it )
+    public static <T> List<T> iteratorToList( Iterator<? extends T> it )
         { return IteratorCollection.iteratorToList( it ); }
                 
     /**
@@ -192,8 +192,8 @@ public class GraphTestBase extends JenaTestBase
     public static String nice( Graph g, Map<Node, Object> bnodes )
         {
         StringBuffer b = new StringBuffer( g.size() * 100 );
-        ExtendedIterator it = GraphUtil.findAll( g );
-        while (it.hasNext()) niceTriple( b, bnodes, (Triple) it.next() );
+        ExtendedIterator<Triple> it = GraphUtil.findAll( g );
+        while (it.hasNext()) niceTriple( b, bnodes, it.next() );
         return b.toString();
         }
     
@@ -311,17 +311,17 @@ public class GraphTestBase extends JenaTestBase
     /**
         Assert that <code>g</code> contains every triple in <code>triples</code>.
     */
-    public void testContains( Graph g, List triples )
+    public void testContains( Graph g, List<Triple> triples )
         {
         for (int i = 0; i < triples.size(); i += 1)
-             assertTrue( g.contains( (Triple) triples.get(i) ) );
+             assertTrue( g.contains( triples.get(i) ) );
         }
 
     /**
         Assert that <code>g</code> contains every triple in <code>it</code>.
     */
-    public void testContains( Graph g, Iterator it )
-        { while (it.hasNext()) assertTrue( g.contains( (Triple) it.next() ) ); }
+    public void testContains( Graph g, Iterator<Triple> it )
+        { while (it.hasNext()) assertTrue( g.contains( it.next() ) ); }
 
     /**
         Assert that <code>g</code> contains every triple in <code>other</code>.
@@ -340,18 +340,18 @@ public class GraphTestBase extends JenaTestBase
         Assert that <code>g</code> contains none of the triples in 
         <code>triples</code>.
     */
-    public void testOmits( Graph g, List triples )
+    public void testOmits( Graph g, List<Triple> triples )
         {
         for (int i = 0; i < triples.size(); i += 1)
-             assertFalse( "", g.contains( (Triple) triples.get(i) ) );
+             assertFalse( "", g.contains( triples.get(i) ) );
         }
     
     /**
         Assert that <code>g</code> contains none of the triples in 
         <code>it</code>.
     */
-    public void testOmits( Graph g, Iterator it )
-        { while (it.hasNext()) assertFalse( "", g.contains( (Triple) it.next() ) ); }
+    public void testOmits( Graph g, Iterator<Triple> it )
+        { while (it.hasNext()) assertFalse( "", g.contains( it.next() ) ); }
     
     /**
         Assert that <code>g</code> contains none of the triples in 
@@ -375,13 +375,13 @@ public class GraphTestBase extends JenaTestBase
         @return an instance of graphClass with the given style
         @throws RuntimeException or JenaException if construction fails
      */
-    public static Graph getGraph( Object wrap, Class graphClass, ReificationStyle style ) 
+    public static Graph getGraph( Object wrap, Class<? extends Graph> graphClass, ReificationStyle style ) 
         {
         try
             {
-            Constructor cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
+            Constructor<?> cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
             if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
-            Constructor cons2 = getConstructor( graphClass, new Class [] {wrap.getClass(), ReificationStyle.class} );
+            Constructor<?> cons2 = getConstructor( graphClass, new Class [] {wrap.getClass(), ReificationStyle.class} );
             if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { wrap, style } );
             throw new JenaException( "no suitable graph constructor found for " + graphClass );
             }
@@ -395,8 +395,8 @@ public class GraphTestBase extends JenaTestBase
         {
         return new GraphBase( ReificationStyle.Minimal )
             {
-            @Override
-            public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.find( m ); }
+            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
+                { return r.find( m ); }
             };
         }
 

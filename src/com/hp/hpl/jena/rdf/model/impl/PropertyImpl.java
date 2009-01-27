@@ -43,12 +43,13 @@ import org.apache.commons.logging.LogFactory;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2009-01-16 17:23:48 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2009-01-27 14:32:45 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property
     {
 
+    @SuppressWarnings("hiding")
     final static public Implementation factory = new Implementation() 
         {
         @Override

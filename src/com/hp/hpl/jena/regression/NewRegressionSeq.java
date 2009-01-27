@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeq.java,v 1.8 2009-01-22 15:27:15 chris-dollin Exp $
+ 	$Id: NewRegressionSeq.java,v 1.9 2009-01-27 14:32:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -100,7 +100,7 @@ public class NewRegressionSeq extends NewRegressionBase
         Seq seq = m.createSeq();
         for (int i = 0; i < num; i += 1) seq.add( i );
         assertEquals( num, seq.size() );
-        List L = iteratorToList( seq.iterator() );
+        List<RDFNode> L = iteratorToList( seq.iterator() );
         assertEquals( num, L.size() );
         for (int i = 0; i < num; i +=1 ) 
             assertEquals( i, ((Literal) L.get(i)).getInt() );

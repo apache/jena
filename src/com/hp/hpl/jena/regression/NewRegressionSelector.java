@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSelector.java,v 1.9 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionSelector.java,v 1.10 2009-01-27 14:32:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -83,37 +83,37 @@ public class NewRegressionSelector extends ModelTestBase
             }
         
         StmtIterator it1 = m.listStatements( new SimpleSelector( null, null, (RDFNode) null) );
-        List L1 = iteratorToList( it1 );
+        List<Statement> L1 = iteratorToList( it1 );
         assertEquals( num * num * 8, L1.size() );
 
         StmtIterator it2 = m.listStatements( new SimpleSelector( subject[0], null, (RDFNode) null) );
-        List L2 = iteratorToList( it2 );
+        List<Statement> L2 = iteratorToList( it2 );
         for (int i = 0; i < L2.size(); i += 1) 
-            assertEquals( subject[0], ((Statement) L2.get(i)).getSubject() );
+            assertEquals( subject[0], L2.get(i).getSubject() );
         assertEquals( num * 8, L2.size() );
         
         StmtIterator it3 = m.listStatements( new SimpleSelector( null, predicate[1], (RDFNode) null) );
-        List L3 = iteratorToList( it3 );
+        List<Statement> L3 = iteratorToList( it3 );
         for (int i = 0; i < L3.size(); i += 1) 
-            assertEquals( predicate[1], ((Statement) L3.get(i)).getPredicate() );
+            assertEquals( predicate[1], L3.get(i).getPredicate() );
         assertEquals( num * 8, L3.size() );
         
         StmtIterator it4 = m.listStatements( new SimpleSelector( null, null, tvResObjs[1] ) );
-        List L4 = iteratorToList( it4 );
+        List<Statement> L4 = iteratorToList( it4 );
         for (int i = 0; i < L4.size(); i += 1) 
-            assertEquals( tvResObjs[1], ((Statement) L4.get(i)).getObject() );
+            assertEquals( tvResObjs[1], L4.get(i).getObject() );
         assertEquals( 2, L4.size() );
         
         StmtIterator it5 = m.listStatements( new SimpleSelector( null, null, m.createTypedLiteral( false ) ) );
-        List L5 = iteratorToList( it5 );
+        List<Statement> L5 = iteratorToList( it5 );
         for (int i = 0; i < L5.size(); i += 1) 
-            assertEquals( false, ((Statement) L5.get(i)).getBoolean() );
+            assertEquals( false, L5.get(i).getBoolean() );
         assertEquals( 2, L5.size() );
 
         StmtIterator it6 = m.listStatements( new SimpleSelector( null, null, tvStrings[1], langs[1] ) );
-        List L6 = iteratorToList( it6 );
+        List<Statement> L6 = iteratorToList( it6 );
         for (int i = 0; i < L6.size(); i += 1) 
-            assertEquals( langs[1], ((Statement) L6.get(i)).getLanguage() );
+            assertEquals( langs[1], L6.get(i).getLanguage() );
         assertEquals( 2, L6.size() );
         }
     }

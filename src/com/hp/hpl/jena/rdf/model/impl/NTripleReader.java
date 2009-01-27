@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.18 2008-12-28 19:31:52 andy_seaborne Exp $
+ * $Id: NTripleReader.java,v 1.19 2009-01-27 14:32:45 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -44,13 +44,13 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2008-12-28 19:31:52 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2009-01-27 14:32:45 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Log log = LogFactory.getLog(NTripleReader.class);
 
     private Model model = null;
-    private Hashtable anons = new Hashtable();
+    private Hashtable<String, Resource> anons = new Hashtable<String, Resource>();
 
     private IStream in = null;
     private boolean inErr = false;
@@ -422,7 +422,7 @@ public class NTripleReader extends Object implements RDFReader {
 
     protected Resource lookupResource(String name)  {
         Resource r;
-        r = (Resource) anons.get(name);
+        r = anons.get(name);
         if (r == null) {
             r = model.createResource();
             anons.put(name, r);

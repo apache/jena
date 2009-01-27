@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionObjects.java,v 1.9 2009-01-22 15:27:15 chris-dollin Exp $
+ 	$Id: NewRegressionObjects.java,v 1.10 2009-01-27 14:32:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -50,7 +50,7 @@ public class NewRegressionObjects extends ModelTestBase
     public void testListSubjects()
         {
         Set<Statement> statements = fill( m );
-        List L = iteratorToList( m.listSubjects() );
+        List<Resource> L = iteratorToList( m.listSubjects() );
         assertEquals( numberSubjects, L.size() );
         Set<Resource> wanted = subjectSet( numberSubjects );
         assertEquals( wanted, iteratorToSet( L.iterator() ) );
@@ -59,28 +59,28 @@ public class NewRegressionObjects extends ModelTestBase
     public void testListNamespaces()
         {
         Set<Statement> statements = fill( m );
-        List L = iteratorToList( m.listNameSpaces() );
+        List<String> L = iteratorToList( m.listNameSpaces() );
         assertEquals( numberPredicates, L.size() );
-        Set wanted = predicateSet( numberPredicates );
-        assertEquals( wanted, new HashSet( L ) );
+        Set<String> wanted = predicateSet( numberPredicates );
+        assertEquals( wanted, new HashSet<String>( L ) );
         }
     
     public void testListStatements()
         {
         Set<Statement> statements = fill( m );
-        List L = iteratorToList( m.listStatements() );
+        List<Statement> L = iteratorToList( m.listStatements() );
         assertEquals( statements.size(), L.size() );
-        assertEquals( statements, new HashSet( L ) );
+        assertEquals( statements, new HashSet<Statement>( L ) );
         }
     
     public void testListObjectsOfPropertyByProperty()
         {
         Set<Statement> statements = fill( m );
-        List L = iteratorToList
+        List<RDFNode> L = iteratorToList
             ( m.listObjectsOfProperty( property( predicatePrefix + "0/p" ) ) );
         assertEquals( numberSubjects, L.size() );
         Set<Literal> wanted = literalsFor( 0 );
-        assertEquals( wanted, new HashSet( L ) );
+        assertEquals( wanted, new HashSet<RDFNode>( L ) );
         }
     
     public void testListObjectsOfPropertyBySubject()
@@ -88,10 +88,10 @@ public class NewRegressionObjects extends ModelTestBase
         int size = 10;
         Resource s = m.createResource();
         for (int i = 0; i < size; i += 1) m.addLiteral( s, RDF.value, i );
-        List L = iteratorToList( m.listObjectsOfProperty( s, RDF.value ) );
+        List<RDFNode> L = iteratorToList( m.listObjectsOfProperty( s, RDF.value ) );
         assertEquals( size, L.size() );
         Set<Literal> wanted = literalsUpto( size );
-        assertEquals( wanted, new HashSet( L ) );
+        assertEquals( wanted, new HashSet<RDFNode>( L ) );
         }
     
     public void testListObjects()
@@ -108,9 +108,9 @@ public class NewRegressionObjects extends ModelTestBase
         return result;
         }
     
-    protected Set predicateSet( int limit )
+    protected Set<String> predicateSet( int limit )
         {
-        Set result = new HashSet();
+        Set<String> result = new HashSet<String>();
         for (int i = 0; i < limit; i += 1) result.add( predicatePrefix + i + "/" );
         return result;
         }

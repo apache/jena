@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.14 2009-01-22 15:27:15 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.15 2009-01-27 14:32:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -136,11 +136,11 @@ public class NewRegressionListSubjects extends ModelTestBase
         // assertEquiv( new HashSet( Arrays.asList( objects ) ), m.listObjectsOfProperty( predicates[1] ) );
         }
 
-    protected void assertEquiv( Set<Resource> set, Iterator iterator )
+    protected void assertEquiv( Set<? extends Resource> set, Iterator<? extends Resource> iterator )
         {
-        List L = iteratorToList( iterator );
+        List<? extends Resource> L = iteratorToList( iterator );
         assertEquals( set.size(), L.size() );
-        assertEquals( set, new HashSet( L ) );
+        assertEquals( set, new HashSet<Resource>( L ) );
         }
 
     public void testGetRequiredProperty()

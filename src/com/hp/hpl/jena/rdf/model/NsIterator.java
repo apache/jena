@@ -41,13 +41,13 @@ import com.hp.hpl.jena.util.iterator.*;
  *    a <CODE>close()</CODE> method that should be called to free
  *    resources if the application does not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2008-12-28 19:31:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2009-01-27 14:32:45 $'
  */
-public interface NsIterator extends ExtendedIterator {
-    
+public interface NsIterator extends ExtendedIterator<String> 
+    {
     /** Return the next namespace name of the iteration.
      * @throws NoSuchElementException if there are no more to be returned.
      * @return The next name space URI from the iteration.
      */
     public String nextNs();
-}
+    }

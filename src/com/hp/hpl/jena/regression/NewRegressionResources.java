@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.15 2009-01-22 15:27:15 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.16 2009-01-27 14:32:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -184,7 +184,7 @@ public class NewRegressionResources extends NewRegressionBase
         assertEquals( setOf( r ), iteratorToSet( r.listProperties( RDF.value ).mapWith( Statement.Util.getSubject ) ) );
     //
         assertEquals( 0, iteratorToSet( r.listProperties( p ) ).size() );
-        assertEquals( new HashSet(), iteratorToSet( r.listProperties( p ).mapWith( Statement.Util.getSubject ) ) );
+        assertEquals( new HashSet<Resource>(), iteratorToSet( r.listProperties( p ).mapWith( Statement.Util.getSubject ) ) );
     //
         assertEquals( 13 + numProps, iteratorToSet( r.listProperties() ).size() );
         assertEquals( setOf( r ), iteratorToSet( r.listProperties().mapWith( Statement.Util.getSubject ) ) );
