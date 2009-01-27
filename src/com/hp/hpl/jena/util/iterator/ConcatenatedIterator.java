@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 14:05:56 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-01-27 20:03:19 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,7 +31,7 @@ import java.util.*;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.15 2009-01-27 14:05:56 chris-dollin Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.16 2009-01-27 20:03:19 andy_seaborne Exp $
  */
 public class ConcatenatedIterator<T> implements Iterator<T>
 {
@@ -95,7 +95,8 @@ public class ConcatenatedIterator<T> implements Iterator<T>
 
         // are there any more values from the encapsulted iterations?
         if (next0 || next1) {
-            T next = (next0) ? m_iter0.next() : m_iter1.next();
+            // Casts necessary : without, it does not compile with 1.6.0 update 11 (it does in Eclipse)
+            T next = (next0) ? (T)m_iter0.next() : (T)m_iter1.next();
 
             // is this the default value?
             if (hasDefaultValue()  &&  m_defaultValue.equals( next )) {
