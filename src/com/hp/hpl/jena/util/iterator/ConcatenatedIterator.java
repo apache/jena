@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 14:05:56 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,30 +31,18 @@ import java.util.*;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.14 2008-12-28 19:32:08 andy_seaborne Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.15 2009-01-27 14:05:56 chris-dollin Exp $
  */
-public class ConcatenatedIterator
-    implements Iterator
+public class ConcatenatedIterator<T> implements Iterator<T>
 {
-    // Constants
-    //////////////////////////////////
-
-
-    // Static variables
-    //////////////////////////////////
-
-
-    // Instance variables
-    //////////////////////////////////
-
     /** The first iterator */
-    private Iterator m_iter0 = null;
+    private Iterator<? extends T> m_iter0 = null;
 
     /** The second iterator */
-    private Iterator m_iter1 = null;
+    private Iterator<? extends T> m_iter1 = null;
 
     /** The default value for the iterator, or null if no default */
-    protected Object m_defaultValue = null;
+    protected T m_defaultValue = null;
 
     /** A flag to show that the default value has been returned */
     protected boolean m_defaultValueSeen = false;
@@ -74,7 +62,7 @@ public class ConcatenatedIterator
      * @param iter1 The second iterator. Elements of this iterator will appear
      *              second in the elements read from the concatenation.
      */
-    public ConcatenatedIterator( Iterator iter0, Iterator iter1 ) {
+    public ConcatenatedIterator( Iterator<? extends T> iter0, Iterator<? extends T> iter1 ) {
         m_iter0 = iter0;
         m_iter1 = iter1;
     }
@@ -101,13 +89,13 @@ public class ConcatenatedIterator
      *         underlying iteration, projected to the range of the projection function.
      * @exception NoSuchElementException - iteration has no more elements.
      */
-    public Object next() {
+    public T next() {
         boolean next0 = m_iter0.hasNext();
         boolean next1 = m_iter1.hasNext();
 
         // are there any more values from the encapsulted iterations?
         if (next0 || next1) {
-            Object next = (next0) ? m_iter0.next() : m_iter1.next();
+            T next = (next0) ? m_iter0.next() : m_iter1.next();
 
             // is this the default value?
             if (hasDefaultValue()  &&  m_defaultValue.equals( next )) {
@@ -155,7 +143,7 @@ public class ConcatenatedIterator
      *                     there to be no default value.  The default default
      *                     value is null.
      */
-    public void setDefaultValue( Object defaultValue ) {
+    public <X extends T> void setDefaultValue( X defaultValue ) {
         m_defaultValue = defaultValue;
     }
 
@@ -168,18 +156,6 @@ public class ConcatenatedIterator
     public boolean hasDefaultValue() {
         return m_defaultValue != null;
     }
-
-
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
-
 }
 
 

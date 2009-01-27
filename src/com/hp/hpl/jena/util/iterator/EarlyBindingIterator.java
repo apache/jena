@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EarlyBindingIterator.java,v 1.8 2008-12-28 19:32:08 andy_seaborne Exp $
+  $Id: EarlyBindingIterator.java,v 1.9 2009-01-27 14:05:56 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.iterator;
 import java.util.*;
@@ -12,16 +12,17 @@ import java.util.*;
  * @author jjc
  *
  */
-public class EarlyBindingIterator extends WrappedIterator {
-	static private Iterator early(Iterator it) {
-		Vector v = new Vector();
-		while (it.hasNext())
-			v.add(it.next());
+public class EarlyBindingIterator<T> extends WrappedIterator<T> {
+
+static private <X> Iterator<X> early(Iterator<X> it) {
+		List<X> v = new ArrayList<X>();
+		while (it.hasNext()) v.add(it.next());
 		close(it);
 		return v.iterator();
 	}
-	public EarlyBindingIterator(Iterator it) {
-		super(early(it));
+
+    public EarlyBindingIterator(Iterator<? extends T> it) {
+		super( early(it) );
 	}
 
 }

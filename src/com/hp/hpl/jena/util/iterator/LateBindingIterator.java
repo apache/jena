@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: LateBindingIterator.java,v 1.7 2008-12-28 19:32:08 andy_seaborne Exp $
+ * $Id: LateBindingIterator.java,v 1.8 2009-01-27 14:05:56 chris-dollin Exp $
  *
  *
  * LateBindingIterator.java
@@ -43,11 +43,11 @@ import java.util.Iterator ;
  * code, while delaying the evaluation of what actually
  * is going to be iterated over.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2008-12-28 19:32:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2009-01-27 14:05:56 $'
  */
-abstract public class LateBindingIterator implements Iterator {
+abstract public class LateBindingIterator<T> implements Iterator<T> {
 
-    private Iterator it;
+    private Iterator<? extends T> it;
     
     /** An Iterator that is created lazily. 
      * The sequence to be defined is defined by 
@@ -63,7 +63,7 @@ abstract public class LateBindingIterator implements Iterator {
         return it.hasNext();
     }
     
-    public Object next() {
+    public T next() {
         lazy();
         return it.next();
     }
@@ -85,6 +85,6 @@ abstract public class LateBindingIterator implements Iterator {
  * through to the returned Iterator.
  * @return The parent iterator defining the sequence.
  */    
-    public abstract Iterator create();
+    public abstract Iterator<? extends T> create();
     
 }

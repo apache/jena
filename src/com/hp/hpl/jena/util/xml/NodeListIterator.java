@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: NodeListIterator.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:28 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 14:06:29 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -26,7 +26,7 @@ package com.hp.hpl.jena.util.xml;
 ///////////////
 import java.util.*;
 
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 
 /**
@@ -35,18 +35,10 @@ import org.w3c.dom.NodeList;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: NodeListIterator.java,v 1.7 2008-12-28 19:32:28 andy_seaborne Exp $
+ * @version CVS $Id: NodeListIterator.java,v 1.8 2009-01-27 14:06:29 chris-dollin Exp $
  */
-public class NodeListIterator 
-    implements Iterator
+public class NodeListIterator implements Iterator<Node>
 {
-
-    // Constants
-    //////////////////////////////////
-
-    // Static variables
-    //////////////////////////////////
-
     // Instance variables
     //////////////////////////////////
 
@@ -85,18 +77,9 @@ public class NodeListIterator
     /**
      * Answer the next object from the list
      */
-    public Object next() {
+    public Node next() {
         return m_nodeList.item( m_index++ );
     }
-    
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
 }
 
 
