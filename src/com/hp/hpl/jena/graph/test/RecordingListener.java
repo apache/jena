@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.17 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: RecordingListener.java,v 1.18 2009-01-27 15:08:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -17,7 +17,7 @@ import java.util.*;
 */    
 public class RecordingListener implements GraphListener
     {
-    public List history = new ArrayList();
+    public List<Object> history = new ArrayList<Object>();
     
     public void notifyAddTriple( Graph g, Triple t )
         { record( "add", g, t ); }
@@ -25,10 +25,10 @@ public class RecordingListener implements GraphListener
     public void notifyAddArray( Graph g, Triple [] triples )
         { record( "add[]", g, triples ); }
         
-    public void notifyAddList( Graph g, List triples )
+    public void notifyAddList( Graph g, List<Triple> triples )
         { record( "addList", g, triples ); }
         
-    public void notifyAddIterator( Graph g, Iterator it )
+    public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { record( "addIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
     public void notifyAddGraph( Graph g, Graph added )
@@ -40,10 +40,10 @@ public class RecordingListener implements GraphListener
     public void notifyDeleteArray( Graph g, Triple [] triples )
         { record( "delete[]", g, triples ); }
         
-    public void notifyDeleteList( Graph g, List triples )
+    public void notifyDeleteList( Graph g, List<Triple> triples )
         { record( "deleteList", g, triples ); }
         
-    public void notifyDeleteIterator( Graph g, Iterator it )
+    public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { record( "deleteIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
     public void notifyDeleteGraph( Graph g, Graph removed )
@@ -61,19 +61,19 @@ public class RecordingListener implements GraphListener
     public void clear()
         { history.clear(); }
 
-    public boolean has( List things )
+    public boolean has( List<Object> things )
         { return history.equals( things ); } 
     
-    public boolean hasStart( List L )
+    public boolean hasStart( List<Object> L )
         { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
     
-    public boolean hasEnd( List L )
+    public boolean hasEnd( List<Object> L )
         { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
     
     public boolean has( Object [] things )
         { return has( Arrays.asList( things ) ); } 
         
-    public void assertHas( List things )
+    public void assertHas( List<Object> things )
         { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }  
     
     public void assertHas( Object [] things )
@@ -81,13 +81,13 @@ public class RecordingListener implements GraphListener
     
     public void assertHasStart( Object [] start )
         { 
-        List L = Arrays.asList( start );
+        List<Object> L = Arrays.asList( start );
         if (hasStart( L ) == false) Assert.fail( "expected " + L + " at the beginning of " + history );
         }
     
     public void assertHasEnd( Object [] end )
         {
-        List L = Arrays.asList( end );
+        List<Object> L = Arrays.asList( end );
         if (hasEnd( L ) == false) Assert.fail( "expected " + L + " at the end of " + history );        
         }
     }

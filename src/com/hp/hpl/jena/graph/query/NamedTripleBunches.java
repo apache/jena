@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NamedTripleBunches.java,v 1.9 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: NamedTripleBunches.java,v 1.10 2009-01-27 15:08:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.query.SimpleQueryEngine.Cons;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 import java.util.*;
@@ -19,7 +20,7 @@ import java.util.*;
 */
 public class NamedTripleBunches
     {
-    private Map triples = CollectionFactory.createHashedMap();
+    private Map<String, Cons> triples = CollectionFactory.createHashedMap();
 
     /**
         A more-or-less internal object for referring to the "default" graph in a query.
@@ -44,7 +45,7 @@ public class NamedTripleBunches
         Answer an iterator over the entry set of the associated map: this will be
         cleaned up as we refactor.
      */    
-    public Iterator entrySetIterator()
+    public Iterator<Map.Entry<String, Cons>> entrySetIterator()
         { return triples.entrySet().iterator(); }
     }
 

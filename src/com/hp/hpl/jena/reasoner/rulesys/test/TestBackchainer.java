@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.39 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestBackchainer.java,v 1.40 2009-01-27 15:08:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.39 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.40 $ on $Date: 2009-01-27 15:08:10 $
  */
 public class TestBackchainer extends TestCase {
     
@@ -92,7 +92,7 @@ public class TestBackchainer extends TestCase {
     /**
      * Override in subclasses to test other reasoners.
      */
-    public Reasoner createReasoner(List rules) {
+    public Reasoner createReasoner(List<Rule> rules) {
         LPBackwardRuleReasoner reasoner = new LPBackwardRuleReasoner(rules);
         reasoner.tablePredicate(sP);
         reasoner.tablePredicate(sC);
@@ -107,7 +107,7 @@ public class TestBackchainer extends TestCase {
      * Test parser modes to support backarrow notation are working
      */
     public void testParse() {
-        List rules = Rule.parseRules(testRules1);
+        List<Rule> rules = Rule.parseRules(testRules1);
         assertEquals("BRule parsing", 
                         "[ (?x ?q ?y) <- (?p rdfs:subPropertyOf ?q) (?x ?p ?y) ]", 
                         rules.get(0).toString());
@@ -231,7 +231,7 @@ public class TestBackchainer extends TestCase {
         schema.add(new Triple(c, p, c));
         
         // Case of schema and data but no rule axioms
-        Reasoner reasoner =  createReasoner(new ArrayList());
+        Reasoner reasoner =  createReasoner(new ArrayList<Rule>());
         InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
@@ -242,7 +242,7 @@ public class TestBackchainer extends TestCase {
                 new Triple(c, p, c)});
                 
         // Case of data and rule axioms but no schema
-        List rules = Rule.parseRules("-> (d p d).");
+        List<Rule> rules = Rule.parseRules("-> (d p d).");
         reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
@@ -270,7 +270,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND rule 
      */
     public void testBaseRules1() {    
-        List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
+        List<Rule> rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
@@ -289,7 +289,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple OR rule 
      */
     public void testBaseRules2() {    
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "[r1: (?a r ?b) <- (?a p ?b)]" +
                 "[r2: (?a r ?b) <- (?a q ?b)]" +
                 "[r3: (?a r ?b) <- (?a s ?c), (?c s ?b)]"
@@ -314,7 +314,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple OR rule with chaining 
      */
     public void testBaseRules2b() {    
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "[r1: (?a r ?b) <- (?a p ?b)]" +
                 "[r2: (?a r ?b) <- (?a q ?b)]" +
                 "[r3: (?a r ?b) <- (?a t ?c), (?c t ?b)]" +
@@ -340,7 +340,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND rule check with tabling.
      */
     public void testBaseRules3() {    
-        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
+        List<Rule> rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q) );
@@ -365,7 +365,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND rule check with tabling.
      */
     public void testBaseRules3b() {    
-        List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
+        List<Rule> rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q) );
@@ -397,7 +397,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(b, r, c));
         data.add(new Triple(b, r, b));
         data.add(new Triple(b, r, d));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                         "[r1: (?x p ?y) <- (?x r ?y)]" +
                         "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
                         );        
@@ -421,7 +421,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(q, c, r));
         data.add(new Triple(p, d, q));
         data.add(new Triple(q, d, r));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (?x a ?y) <- (?x c ?y)]" +
             "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
             "[r3: (?x b ?y) <- (?x d ?y)]" +
@@ -444,7 +444,7 @@ public class TestBackchainer extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (?x r f(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
             "[r2: (?x s ?y) <- (?x r f(?y, ?z))]"
         );
@@ -465,7 +465,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
         data.add(new Triple(a, t, d));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (?x r f(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
             "[r2: (?x s ?y) <- (?x r f(?y, ?z))]" +
             "[r3: (?x r g(?y,?z)) <- (?x p ?y), (?x t ?z)]" +
@@ -488,7 +488,7 @@ public class TestBackchainer extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, s, b));
         data.add(new Triple(a, t, c));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (a q f(?x,?y)) <- (a s ?x), (a t ?y)]" +
             "[r2: (a p ?x) <- (a q ?x)]" +
             "[r3: (a r ?y) <- (a p f(?x, ?y))]"
@@ -507,7 +507,7 @@ public class TestBackchainer extends TestCase {
      */
     public void testBuiltin1() {
         Graph data = Factory.createGraphMem();
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[a1: -> (a p 2) ]" +
             "[a2: -> (a q 3) ]" +
             "[r1: (?x r ?s) <- (?x p ?y), (?x q ?z), sum(?y, ?z, ?s)]"
@@ -528,7 +528,7 @@ public class TestBackchainer extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (?x r ?y ) <- bound(?x), (?x p ?y) ]" +
             "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]"
         );
@@ -551,7 +551,7 @@ public class TestBackchainer extends TestCase {
      */
     public void testBuiltin3() {
         Graph data = Factory.createGraphMem();
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (a p b ) <- unbound(?x) ]"
         );
         Reasoner reasoner =  createReasoner(rules);
@@ -569,7 +569,7 @@ public class TestBackchainer extends TestCase {
     public void testGroundHead() {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (a p b ) <- (a r b) ]"
         );
         Reasoner reasoner =  createReasoner(rules);
@@ -589,7 +589,7 @@ public class TestBackchainer extends TestCase {
 //        Graph data = new GraphMem();
 //        data.add(new Triple(a, p, b));
 //        data.add(new Triple(b, r, c));
-//        List rules = Rule.parseRules(
+//        List<Rule> rules = Rule.parseRules(
 //            "[r1: (?x s ?z), (?z s ?x) <- (?x p ?y) (?y r ?z) ]"
 //        );
 //        Reasoner reasoner =  createReasoner(rules);
@@ -606,7 +606,7 @@ public class TestBackchainer extends TestCase {
      * Test rebind operation
      */
     public void testRebind() {
-        List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
+        List<Rule> rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
@@ -641,7 +641,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(C1, ty, RDFS.Class.asNode()));
         data.add(new Triple(C2, ty, RDFS.Class.asNode()));
         data.add(new Triple(C3, ty, RDFS.Class.asNode()));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
                         );        
@@ -669,7 +669,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(C1, sC, C2));
         data.add(new Triple(C2, sC, C3));
         data.add(new Triple(a, ty, C1));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
 //        "[-> (rdf:type rdfs:range rdfs:Class)]" +
@@ -697,7 +697,7 @@ public class TestBackchainer extends TestCase {
     public void testHeadUnify() {    
         Graph data = Factory.createGraphMem();
         data.add(new Triple(c, q, d));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
             "[r2: (?y p f(a ?y)) <- (c q ?y)]"
                           );        
@@ -760,7 +760,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(r, sC, C1));
         data.add(new Triple(C1, OWL.onProperty.asNode(), p));
         data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
     "[rdfs9:  (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
     "[restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C owl:equivalentClass all(?P, ?D))]" +
     "[rs2: (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D) -> (?X rdf:type all(?P,?C))]" +
@@ -788,7 +788,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
         data.add(new Triple(C1, OWL.onProperty.asNode(), p));
         data.add(new Triple(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         // these ones are required for the inference.
         "[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" + 
         "[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X) -> (?C owl:equivalentClass max(?P, ?X))]" +
@@ -831,7 +831,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
         data.add(new Triple(C1, OWL.onProperty.asNode(), p));
         data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "[-> (rdfs:subClassOf rdfs:range rdfs:Class)]" +
 //        "[-> (owl:Class rdfs:subClassOf rdfs:Class)]" +
         "[rdfs3:  bound(?c)   (?p rdfs:range ?c) (?x ?p ?y) -> (?y rdf:type ?c)]" + 
@@ -859,7 +859,7 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(C2, sC, C3));
         data.add(new Triple(a, ty, C1));
         data.add(new Triple(ty, RDFS.range.asNode(), RDFS.Class.asNode()));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
 //        "[-> (rdf:type rdfs:range rdfs:Class)]" +
@@ -869,8 +869,8 @@ public class TestBackchainer extends TestCase {
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         // Get just one result
-        ExtendedIterator it = infgraph.find(a, ty, null);
-        Triple result = (Triple)it.next();
+        ExtendedIterator<Triple> it = infgraph.find(a, ty, null);
+        Triple result = it.next();
         assertEquals(result.getSubject(), a);
         assertEquals(result.getPredicate(), ty);
         it.close();
@@ -893,7 +893,7 @@ public class TestBackchainer extends TestCase {
         Node r = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
         Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
         data.add(new Triple(a, p, b));
-        List rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
+        List<Rule> rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 

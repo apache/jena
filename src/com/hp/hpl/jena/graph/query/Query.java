@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.44 2009-01-16 12:24:32 chris-dollin Exp $
+  $Id: Query.java,v 1.45 2009-01-27 15:08:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -107,7 +107,7 @@ public class Query
     */
     private NamedTripleBunches triples = new NamedTripleBunches();
     
-    private List triplePattern = new ArrayList();
+    private List<Triple> triplePattern = new ArrayList<Triple>();
     
     /**
         Answer a list of the triples that have been added to this query.
@@ -115,8 +115,8 @@ public class Query
         
      	@return List
     */
-    public List getPattern()
-        { return new ArrayList( triplePattern ); }
+    public List<Triple> getPattern()
+        { return new ArrayList<Triple>( triplePattern ); }
     
     private ExpressionSet constraint = new ExpressionSet();
     
@@ -139,26 +139,26 @@ public class Query
     */
     private void addMatches( Graph p )
         {
-        ClosableIterator it = GraphUtil.findAll( p );
-        while (it.hasNext()) addMatch( (Triple) it.next() );
+        ClosableIterator<Triple> it = GraphUtil.findAll( p );
+        while (it.hasNext()) addMatch( it.next() );
         }
 
-    public ExtendedIterator executeBindings( Graph g, Node [] results )
+    public ExtendedIterator<Domain> executeBindings( Graph g, Node [] results )
         { return executeBindings( args().put( NamedTripleBunches.anon, g ), results ); }
                 
-    public ExtendedIterator executeBindings( Graph g, List stages, Node [] results )
+    public ExtendedIterator<Domain> executeBindings( Graph g, List<Stage> stages, Node [] results )
         { return executeBindings( stages, args().put( NamedTripleBunches.anon, g ), results ); }
     
-    public ExtendedIterator executeBindings( NamedGraphMap args, Node [] nodes )
-        { return executeBindings( new ArrayList(), args, nodes ); }
+    public ExtendedIterator<Domain> executeBindings( NamedGraphMap args, Node [] nodes )
+        { return executeBindings( new ArrayList<Stage>(), args, nodes ); }
         
     /**
         the standard "default" implementation of executeBindings.
     */
-    public ExtendedIterator executeBindings( List outStages, NamedGraphMap args, Node [] nodes )
+    public ExtendedIterator<Domain> executeBindings( List<Stage> outStages, NamedGraphMap args, Node [] nodes )
         {
         SimpleQueryEngine e = new SimpleQueryEngine( triplePattern, sortMethod, constraint );
-        ExtendedIterator result = e.executeBindings( outStages, args, nodes );
+        ExtendedIterator<Domain> result = e.executeBindings( outStages, args, nodes );
         lastQueryEngine = e;
         return result;
         }

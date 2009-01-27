@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.13 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: SimpleQueryEngine.java,v 1.14 2009-01-27 15:08:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -33,26 +33,26 @@ public class SimpleQueryEngine
         this.triples = triples; 
         this.sortMethod = ts; }
         
-    public SimpleQueryEngine( List pattern, TripleSorter sorter, ExpressionSet constraints )
+    public SimpleQueryEngine( List<Triple> pattern, TripleSorter sorter, ExpressionSet constraints )
         { this.constraint = constraints; 
         this.triples = asNamedTripleBunches( pattern ); 
         this.sortMethod = sorter; }
 
-    private static NamedTripleBunches asNamedTripleBunches( List pattern )
+    private static NamedTripleBunches asNamedTripleBunches( List<Triple> pattern )
         {
         NamedTripleBunches result = new NamedTripleBunches();
-        for (Iterator elements = pattern.iterator(); elements.hasNext();)
-            result.add( NamedTripleBunches.anon, (Triple) elements.next() );
+        for (Iterator<Triple> elements = pattern.iterator(); elements.hasNext();)
+            result.add( NamedTripleBunches.anon, elements.next() );
         return result;
         }
 
     int getVariableCount()
         { return variableCount; }
         
-    public ExtendedIterator executeBindings( List outStages, NamedGraphMap args, Node [] nodes )
+    public ExtendedIterator<Domain> executeBindings( List<Stage> outStages, NamedGraphMap args, Node [] nodes )
         {
         Mapping map = new Mapping( nodes );
-        ArrayList stages = new ArrayList();        
+        ArrayList<Stage> stages = new ArrayList<Stage>();        
         addStages( stages, args, map );
         if (constraint.isComplex()) stages.add( new ConstraintStage( map, constraint ) );
         outStages.addAll( stages );
@@ -60,24 +60,21 @@ public class SimpleQueryEngine
         return filter( connectStages( stages, variableCount ) );
         }
                                   
-    private ExtendedIterator filter( final Stage allStages )
+    private ExtendedIterator<Domain> filter( final Stage allStages )
         {
         // final Pipe complete = allStages.deliver( new BufferPipe() );
-        return new NiceIterator()
+        return new NiceIterator<Domain>()
             {
             private Pipe complete;
             
             private void ensurePipe()
                 { if (complete == null) complete = allStages.deliver( new BufferPipe() ); }
             
-            @Override
-            public void close() { allStages.close(); clearPipe(); }
+            @Override public void close() { allStages.close(); clearPipe(); }
             
-            @Override
-            public Object next() { ensurePipe(); return complete.get(); }
+            @Override public Domain next() { ensurePipe(); return complete.get(); }
             
-            @Override
-            public boolean hasNext() { ensurePipe(); return complete.hasNext(); }
+            @Override public boolean hasNext() { ensurePipe(); return complete.hasNext(); }
             
             private void clearPipe()
                 { 
@@ -98,14 +95,14 @@ public class SimpleQueryEngine
         static int size( Cons L ) { int n = 0; while (L != null) { n += 1; L = L.tail; } return n; }
         }
                 
-    private void addStages( ArrayList stages, NamedGraphMap arguments, Mapping map )
+    private void addStages( ArrayList<Stage> stages, NamedGraphMap arguments, Mapping map )
         {
-        Iterator it2 = triples.entrySetIterator();
+        Iterator<Map.Entry<String, Cons>> it2 = triples.entrySetIterator();
         while (it2.hasNext())
             {
-            Map.Entry e = (Map.Entry) it2.next();
-            String name = (String) e.getKey();
-            Cons nodeTriples = (Cons) e.getValue();
+            Map.Entry<String, Cons> e = it2.next();
+            String name = e.getKey();
+            Cons nodeTriples = e.getValue();
             Graph g = arguments.get( name );
             int nBlocks = Cons.size( nodeTriples ), i = nBlocks;
             Triple [] nodes = new Triple[nBlocks];
@@ -123,11 +120,11 @@ public class SimpleQueryEngine
     private Triple [] sortTriples( Triple [] ts )
         { return sortMethod.sort( ts ); }
                 
-    private Stage connectStages( ArrayList stages, int count )
+    private Stage connectStages( ArrayList<Stage> stages, int count )
         {
         Stage current = Stage.initial( count );
         for (int i = 0; i < stages.size(); i += 1)
-            current = ((Stage) stages.get( i )).connectFrom( current );
+            current = stages.get( i ).connectFrom( current );
         return current;
         }                                          
     }
