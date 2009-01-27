@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Relation.java,v 1.12 2009-01-24 19:14:33 andy_seaborne Exp $
+ * $Id: Relation.java,v 1.13 2009-01-27 15:32:56 andy_seaborne Exp $
  *
  */
 
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  *
  * Complete with transitive closure algorithm.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2009-01-24 19:14:33 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2009-01-27 15:32:56 $'
  */
 class Relation<T> {
     final private Map<T, Set<T>> rows;
@@ -207,27 +207,30 @@ class Relation<T> {
      * the second through <code>getValue()</code>.
      *@see java.util.Map.Entry
      */
-    public Iterator<Map.Entry<T, T>> iterator() {
-        return new IteratorIterator(new Map1Iterator(new Map1() {
+    public Iterator<PairEntry<T, T>> iterator()
+    {
+        return new IteratorIterator<PairEntry<T, T>>(new Map1Iterator<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>>(new Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>>() {
             // Convert a Map.Entry into an iterator over Map.Entry
-            public Object map1(Object o) {
-                Map.Entry pair = (Map.Entry) o;
-                final Object a = pair.getKey();
-                Set bs = (Set) pair.getValue();
-                return new Map1Iterator(
+            public Iterator<PairEntry<T, T>> map1(Map.Entry<T, Set<T>> pair)
+            {
+                final T a = pair.getKey() ;
+                Set<T> bs = pair.getValue() ;
+                return new Map1Iterator<T, PairEntry<T, T>>(
                 // Converts a b into a Map.Entry pair.
-                new Map1() {
-                    public Object map1(Object b) {
-                        return new PairEntry<Object, Object>(a, b);
-                    }
-                }, bs.iterator());
+                                                            new Map1<T, PairEntry<T, T>>() {
+                                                                public PairEntry<T, T> map1(T b)
+                                                                {
+                                                                    return new PairEntry<T, T>(a, b) ;
+                                                                }
+                                                            }, bs.iterator()) ;
             }
-        }, rows.entrySet().iterator()));
+            //Map<T, Set<T>>
+        }, rows.entrySet().iterator())) ;
     }
     
     synchronized public Relation<T> copy() {
         Relation<T> rslt = new Relation<T>();
-        Iterator<Map.Entry<T, T>> it = iterator();
+        Iterator<PairEntry<T, T>> it = iterator();
         while ( it.hasNext() ) {
             Map.Entry<T, T> e = it.next();
             rslt.set(e.getKey(),e.getValue());
