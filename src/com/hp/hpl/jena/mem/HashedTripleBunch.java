@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.20 2008-12-28 19:32:32 andy_seaborne Exp $
+ 	$Id: HashedTripleBunch.java,v 1.21 2009-01-27 15:32:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -17,7 +17,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     public HashedTripleBunch( TripleBunch b )
         {
         super( nextSize( (int) (b.size() / loadFactor) ) );
-        for (Iterator it = b.iterator(); it.hasNext();) add( (Triple) it.next() );        
+        for (Iterator<Triple> it = b.iterator(); it.hasNext();) add( it.next() );        
         changes = 0;
         }
 
@@ -79,10 +79,10 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         changes += 1;
         }
     
-    public ExtendedIterator iterator()
+    public ExtendedIterator<Triple> iterator()
         { return iterator( NotifyEmpty.ignore ); }
     
-    public ExtendedIterator iterator( final NotifyEmpty container )
+    public ExtendedIterator<Triple> iterator( final NotifyEmpty container )
         { return keyIterator( container ); }
     
     public void app( Domain d, StageElement next, MatchOrBind s )

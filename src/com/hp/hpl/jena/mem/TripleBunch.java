@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TripleBunch.java,v 1.10 2008-12-28 19:32:28 andy_seaborne Exp $
+    $Id: TripleBunch.java,v 1.11 2009-01-27 15:32:17 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -55,14 +55,14 @@ public interface TripleBunch
         Answer an iterator over all the triples in this bunch. It is unwise to
         .remove from this iterator. (It may become illegal.)
     */
-    public abstract ExtendedIterator iterator();
+    public abstract ExtendedIterator<Triple> iterator();
     
     /**
         Answer an iterator over all the triples in this bunch. If use of .remove on
         this iterator empties the bunch, the <code>emptied</code> method of
         <code>container</code> is invoked.
     */
-    public abstract ExtendedIterator iterator( HashCommon.NotifyEmpty container );
+    public abstract ExtendedIterator<Triple> iterator( HashCommon.NotifyEmpty container );
     
     /**
          For every triple t in this bunch that matches <code>s<code>, invoke

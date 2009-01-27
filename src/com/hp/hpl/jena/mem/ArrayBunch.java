@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.16 2009-01-16 17:23:50 andy_seaborne Exp $
+    $Id: ArrayBunch.java,v 1.17 2009-01-27 15:32:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -87,40 +87,37 @@ public class ArrayBunch implements TripleBunch
             }
         }
     
-    public ExtendedIterator iterator()
+    public ExtendedIterator<Triple> iterator()
         {
         return iterator( new HashCommon.NotifyEmpty() { public void emptied() {} } );
         }
     
-    public ExtendedIterator iterator( final HashCommon.NotifyEmpty container )
+    public ExtendedIterator<Triple> iterator( final HashCommon.NotifyEmpty container )
         {
 //        System.err.println( ">> ArrayBunch::iterator: intial state" );
 //        for (int j = 0; j < size; j += 1) System.err.println( "==    " + elements[j] );
 //        System.err.println( ">> (done)" );
-        return new NiceIterator()
+        return new NiceIterator<Triple>()
             {
             protected final int initialChanges = changes;
             
             protected int i = size;
             protected final Triple [] e = elements;
             
-            @Override
-            public boolean hasNext()
+            @Override public boolean hasNext()
                 { 
                 if (changes > initialChanges) throw new ConcurrentModificationException();
                 return i > 0; 
                 }
         
-            @Override
-            public Object next()
+            @Override public Triple next()
                 {
                 if (changes > initialChanges) throw new ConcurrentModificationException();
                 if (i == 0) noElements( "no elements left in ArrayBunch iteration" );
                 return e[--i]; 
                 }
             
-            @Override
-            public void remove()
+            @Override public void remove()
                 {
                 if (changes > initialChanges) throw new ConcurrentModificationException();
 //                System.err.println( ">> ArrayBunch.iterator::remove" );

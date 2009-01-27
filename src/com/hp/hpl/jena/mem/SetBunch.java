@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: SetBunch.java,v 1.9 2008-12-28 19:32:28 andy_seaborne Exp $
+    $Id: SetBunch.java,v 1.10 2009-01-27 15:32:17 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -17,11 +17,11 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 public class SetBunch implements TripleBunch
     {
-    protected Set elements = new HashSet(20);
+    protected Set<Triple> elements = new HashSet<Triple>(20);
     
     public SetBunch( TripleBunch b )
         { 
-        for (Iterator it = b.iterator(); it.hasNext();) 
+        for (Iterator<Triple> it = b.iterator(); it.hasNext();) 
             elements.add( it.next() );
         }
 
@@ -39,9 +39,9 @@ public class SetBunch implements TripleBunch
     
     protected boolean slowContains( Triple t )
         { 
-        Iterator it = elements.iterator();
+        Iterator<Triple> it = elements.iterator();
         while (it.hasNext())
-            if (t.matches( (Triple) it.next() )) return true;
+            if (t.matches( it.next() )) return true;
         return false;
         }
 
@@ -54,19 +54,19 @@ public class SetBunch implements TripleBunch
     public void remove( Triple t )
         { elements.remove( t ); }
     
-    public ExtendedIterator iterator( HashCommon.NotifyEmpty container )
+    public ExtendedIterator<Triple> iterator( HashCommon.NotifyEmpty container )
         {
         return iterator();
         }
     
-    public ExtendedIterator iterator()
+    public ExtendedIterator<Triple> iterator()
         { return WrappedIterator.create( elements.iterator() ); }        
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
-        Iterator it = iterator();
+        Iterator<Triple> it = iterator();
         while (it.hasNext())
-            if (s.matches( (Triple) it.next() )) next.run( d );
+            if (s.matches( it.next() )) next.run( d );
         }
     }
 

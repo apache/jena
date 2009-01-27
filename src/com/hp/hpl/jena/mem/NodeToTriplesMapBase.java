@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.21 2009-01-26 15:24:28 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.22 2009-01-27 15:32:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -50,7 +50,7 @@ public abstract class NodeToTriplesMapBase
     */
     public abstract boolean remove( Triple t );
 
-    public abstract Iterator iterator( Object o, HashCommon.NotifyEmpty container );
+    public abstract Iterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container );
 
     /**
          Answer true iff this NTM contains the concrete triple <code>t</code>.
@@ -95,19 +95,18 @@ public abstract class NodeToTriplesMapBase
     /**
         Answer an iterator over all the triples in this NTM.
     */
-    public ExtendedIterator iterateAll()
+    public ExtendedIterator<Triple> iterateAll()
         {
         final Iterator nodes = domain();
         // System.err.println( "*>> NTM:iterateAll: nodes = " + IteratorCollection.iteratorToList( domain() ) );
-        return new NiceIterator() 
+        return new NiceIterator<Triple>() 
             {
-            private Iterator current = NullIterator.instance();
+            private Iterator<Triple> current = NullIterator.instance();
             private NotifyMe emptier = new NotifyMe();
             
             // private Object cn = "(none)";
 
-            @Override
-            public Object next()
+            @Override public Triple next()
                 {
                 if (hasNext() == false) noElements( "NodeToTriples iterator" );
                 return current.next();
@@ -122,8 +121,7 @@ public abstract class NodeToTriplesMapBase
                     }
                 }
             
-            @Override
-            public boolean hasNext()
+            @Override public boolean hasNext()
                 {
                 while (true)
                     {
