@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 13:28:52 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.18 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestProperty.java,v 1.19 2009-01-27 13:28:52 chris-dollin Exp $
  */
 public class TestProperty
     extends OntTestBase
@@ -132,8 +132,8 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createOntProperty( NS + "p" );
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
 
                     p.addDomain( a );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.DOMAIN() ) );
@@ -158,8 +158,8 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
                     OntProperty p = m.createOntProperty( NS + "p" );
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
 
                     p.addRange( a );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.RANGE() ) );
@@ -238,8 +238,8 @@ public class TestProperty
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
-                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
-                    OntProperty q = (OntProperty) m.getProperty( NS, "q" ).as( OntProperty.class );
+                    OntProperty p = m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty q = m.getProperty( NS, "q" ).as( OntProperty.class );
 
                     iteratorTest( p.listSuperProperties(), new Object[] {q} );
                     iteratorTest( q.listSubProperties(), new Object[] {p} );
@@ -252,8 +252,8 @@ public class TestProperty
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
-                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
-                    OntClass A = (OntClass) m.getResource( NS + "ClassA").as( OntClass.class);
+                    OntProperty p = m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntClass A = m.getResource( NS + "ClassA").as( OntClass.class);
 
                     assertTrue( "p should have domain A", p.hasDomain( A ) );
                 }
@@ -265,8 +265,8 @@ public class TestProperty
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
-                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
-                    OntClass B = (OntClass) m.getResource( NS + "ClassB").as( OntClass.class);
+                    OntProperty p = m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntClass B = m.getResource( NS + "ClassB").as( OntClass.class);
 
                     assertTrue( "p should have domain B", p.hasRange( B ) );
                 }
@@ -278,8 +278,8 @@ public class TestProperty
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
-                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
-                    OntProperty r = (OntProperty) m.getProperty( NS, "r" ).as( OntProperty.class );
+                    OntProperty p = m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty r = m.getProperty( NS, "r" ).as( OntProperty.class );
 
                     assertTrue( "p should have equiv prop r", p.hasEquivalentProperty( r ) );
                 }
@@ -291,8 +291,8 @@ public class TestProperty
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
-                    OntProperty p = (OntProperty) m.getProperty( NS, "p" ).as( OntProperty.class );
-                    OntProperty s = (OntProperty) m.getProperty( NS, "s" ).as( OntProperty.class );
+                    OntProperty p = m.getProperty( NS, "p" ).as( OntProperty.class );
+                    OntProperty s = m.getProperty( NS, "s" ).as( OntProperty.class );
 
                     assertTrue( "p should have inv prop s", p.isInverseOf( s ) );
                 }
@@ -409,7 +409,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
@@ -433,7 +433,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
@@ -457,7 +457,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
@@ -481,7 +481,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
@@ -505,7 +505,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );
@@ -529,7 +529,7 @@ public class TestProperty
                 public void ontTest( OntModel m ) throws Exception {
                     Property pSimple = m.createProperty( NS, "p" );
                     pSimple.addProperty( RDF.type, RDF.Property );
-                    OntProperty p = (OntProperty) pSimple.as( OntProperty.class );
+                    OntProperty p = pSimple.as( OntProperty.class );
 
                     assertTrue( "isFunctionalProperty not correct",         !p.isFunctionalProperty() );
                     assertTrue( "isDatatypeProperty not correct",           !p.isDatatypeProperty() );

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-27 13:28:50 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,10 +42,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.21 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestResource.java,v 1.22 2009-01-27 13:28:50 chris-dollin Exp $
  */
-public class TestResource
-    extends OntTestBase
+public class TestResource extends OntTestBase
 {
     // Constants
     //////////////////////////////////
@@ -82,9 +81,9 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
-                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
 
                     a.addSameAs( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SAME_AS() ) );
@@ -111,9 +110,9 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
-                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
 
                     a.addDifferentFrom( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DIFFERENT_FROM() ) );
@@ -140,9 +139,9 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
-                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
 
                     a.addSeeAlso( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SEE_ALSO() ) );
@@ -169,9 +168,9 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
-                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
 
                     a.addIsDefinedBy( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.IS_DEFINED_BY() ) );
@@ -198,7 +197,7 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addVersionInfo( "some info" );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.VERSION_INFO() ) );
@@ -225,7 +224,7 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addLabel( "some info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.LABEL() ) );
@@ -251,7 +250,7 @@ public class TestResource
             new OntTestCase( "OntResource.label.lang", true, true, true, true ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addLabel( "good", "EN" );
                     assertEquals( "wrong label", "good", a.getLabel( null ) );
@@ -287,7 +286,7 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addComment( "some info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.COMMENT() ) );
@@ -313,7 +312,7 @@ public class TestResource
             new OntTestCase( "OntResource.comment.lang", true, true, true, true ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
 
                     a.addComment( "good", "EN" );
                     assertEquals( "wrong comment", "good", a.getComment( null ) );
@@ -352,7 +351,7 @@ public class TestResource
                     OntClass B = m.createClass( NS + "B" );
                     A.addSubClass( B );
 
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+                    OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
                     assertEquals( "Cardinality of rdf:type is wrong", 0, a.getCardinality( RDF.type ) );
 
                     a.addRDFType( B );
@@ -409,7 +408,7 @@ public class TestResource
                 public void ontTest( OntModel m ) throws Exception {
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().CLASS() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
                     assertTrue( "should be class", or.isClass() );
@@ -432,7 +431,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().ANNOTATION_PROPERTY() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertTrue( "should be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -456,7 +455,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().OBJECT_PROPERTY() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -480,7 +479,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().DATATYPE_PROPERTY() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -504,7 +503,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().ALL_DIFFERENT() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertTrue( "should be all different", or.isAllDifferent() );
@@ -525,7 +524,7 @@ public class TestResource
                 public void ontTest( OntModel m ) throws Exception {
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().PROPERTY() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -548,7 +547,7 @@ public class TestResource
                     Resource s = m.createResource();
                     s.addProperty( RDF.type, m.getProfile().CLASS() );
                     r.addProperty( RDF.type, s );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -572,7 +571,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().DATARANGE() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -596,7 +595,7 @@ public class TestResource
                     }
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().ONTOLOGY() );
-                    OntResource or = (OntResource) r.as( OntResource.class );
+                    OntResource or = r.as( OntResource.class );
 
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
@@ -616,7 +615,7 @@ public class TestResource
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     // class is defined (differently) in every profile
-                    OntResource or = (OntResource) m.getProfile().CLASS().inModel(m).as( OntResource.class );
+                    OntResource or = m.getProfile().CLASS().inModel(m).as( OntResource.class );
                     assertTrue( "should be a lang term", or.isOntLanguageTerm() );
 
                     or = m.createOntResource( "http://foo/bar" );
