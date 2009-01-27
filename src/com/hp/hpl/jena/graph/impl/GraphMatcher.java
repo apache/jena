@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2009-01-16 17:23:52 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2009-01-27 12:17:41 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -49,11 +49,11 @@ public class GraphMatcher extends java.lang.Object {
     }  
     
     static public int hashCode(Graph g) {
-    	ClosableIterator ci = GraphUtil.findAll( g );
+    	ClosableIterator<Triple> ci = GraphUtil.findAll( g );
     	int hash = 0;
     	GraphMatcher gm = new GraphMatcher(g);
     	while ( ci.hasNext() ) {
-    		Triple t = (Triple)ci.next();
+    		Triple t = ci.next();
     		hash += gm.new AnonStatement(t).myHashCode(null);
     	}
     	return hash;
@@ -111,7 +111,7 @@ public class GraphMatcher extends java.lang.Object {
     // A Map from Integer => Bucket
     // Most of the time the table is a mess,
     // this is reflected in state=BAD
-    private Map table;
+    private Map<Integer, Bucket> table;
     
     // This variable is mainly for sanity checking and
     // documentation. It has one logical impact in
@@ -129,8 +129,8 @@ public class GraphMatcher extends java.lang.Object {
     // As the algorithm proceeds we move resources
     // from one to the other.
     // At completion unBoundAnonResources is empty.
-    private Set unboundAnonResources = CollectionFactory.createHashedSet();
-    private Set boundAnonResources = CollectionFactory.createHashedSet();
+    private Set<AnonResource> unboundAnonResources = CollectionFactory.createHashedSet();
+    private Set<AnonResource> boundAnonResources = CollectionFactory.createHashedSet();
     
     
     
@@ -160,9 +160,9 @@ public class GraphMatcher extends java.lang.Object {
                 impossible();
             Node rslt[][] = new Node[boundAnonResources.size()][];
             int ix = 0;
-            Iterator it = boundAnonResources.iterator();
+            Iterator<AnonResource> it = boundAnonResources.iterator();
             while ( it.hasNext() ) {
-                AnonResource r = (AnonResource)it.next();
+                AnonResource r = it.next();
                 rslt[ix++] = new Node[]{r.r,r.bound.r};
             }
             return rslt;
@@ -174,7 +174,7 @@ public class GraphMatcher extends java.lang.Object {
     // bind returns true if we have a binding,
     // false if not, in either case table is screwed.
     private boolean bind()   {
-        Set locallyBound = obligBindings();
+        Set<AnonResource> locallyBound = obligBindings();
         if (locallyBound==null)  // Contradiction reached - fail.
             return false;
         check(HASH_OK);
@@ -184,11 +184,11 @@ public class GraphMatcher extends java.lang.Object {
         Bucket otherBkt = other.matchBucket(bkt);
         if ( otherBkt != null ) {
             AnonResource v = bkt.aMember();
-            Iterator candidates = otherBkt.members();
+            Iterator<AnonResource> candidates = otherBkt.members();
             // System.out.println("Guessing");
             while ( candidates.hasNext() ) {
                 check(HASH_OK|HASH_BAD);
-                AnonResource otherV = (AnonResource)candidates.next();
+                AnonResource otherV = candidates.next();
                 trace(true,"Guess: ");
                 if (!bkt.bind(v,otherBkt,otherV))
                     continue;
@@ -208,10 +208,10 @@ public class GraphMatcher extends java.lang.Object {
      * The set of obligatorily bound resources is returned.
      *
      */
-    private Set obligBindings() {
+    private Set<AnonResource> obligBindings() {
         int hashLevel = 0;
         boolean newBinding;
-        Set rslt = CollectionFactory.createHashedSet();
+        Set<AnonResource> rslt = CollectionFactory.createHashedSet();
         check(HASH_OK|HASH_BAD);
         do {
             if ( rehash(hashLevel) != other.rehash(hashLevel) ){
@@ -220,10 +220,10 @@ public class GraphMatcher extends java.lang.Object {
             }
             refinableHash = false;
             newBinding = false;
-            Iterator singles = scanBuckets();
+            Iterator<Bucket> singles = scanBuckets();
             while ( singles.hasNext() ) {
                 newBinding = true;
-                Bucket bkt = (Bucket)singles.next();
+                Bucket bkt = singles.next();
                 Bucket otherBkt = other.matchBucket(bkt);
                 if ( otherBkt == null ) {
                     unbindAll(rslt);
@@ -245,23 +245,22 @@ public class GraphMatcher extends java.lang.Object {
     }
     // Communication between obligBindings and scanBuckets
     private boolean refinableHash;
-    private Iterator scanBuckets() {
+    private Iterator<Bucket> scanBuckets() {
         // Looks through buckets,
         // if has single member then return in iterator.
         // Otherwise if some member of the bucket has friends
         // we can refine the hash, and we set refinableHash.
         check(HASH_OK);
-        return new FilterIterator(
-        new Filter() {
-            @Override
-            public boolean accept(Object o) {
-                Bucket b = (Bucket)o;
+        return new FilterIterator<Bucket>(
+        new Filter<Bucket>() {
+            @Override public boolean accept(Bucket o) {
+                Bucket b = o;
                 if (b.size()==1)
                     return true;
                 if (!refinableHash) {
-                    Iterator it = b.members();
+                    Iterator<AnonResource> it = b.members();
                     while ( it.hasNext() )
-                        if (!((AnonResource)it.next())
+                        if (!it.next()
                         .friends.isEmpty()) {
                             refinableHash = true;
                             break;
@@ -272,19 +271,19 @@ public class GraphMatcher extends java.lang.Object {
         },table.values().iterator());
         
     }
-    private void unbindAll(Set s)  {
-        Iterator rs = s.iterator();
+    private void unbindAll(Set<AnonResource> s)  {
+        Iterator<AnonResource> rs = s.iterator();
         while (rs.hasNext())
-            ((AnonResource)rs.next()).unbind();
+            rs.next().unbind();
         in(HASH_BAD);
     }
     private int prepare(Graph otherm)  {
-        ClosableIterator ss = GraphUtil.findAll( m );
+        ClosableIterator<Triple> ss = GraphUtil.findAll( m );
         myHashLevel = 0;
         int hash = 0;
         try {
             while ( ss.hasNext() ) {
-                Triple s = (Triple)ss.next();
+                Triple s = ss.next();
                 AnonStatement ass = new AnonStatement(s);
                 if ( ass.pattern == NOVARS ) {
                     if ( !otherm.contains( s ) ) return -1;
@@ -307,11 +306,11 @@ public class GraphMatcher extends java.lang.Object {
     }
     private Bucket smallestBucket() {
         check(HASH_OK);
-        Iterator bit = table.values().iterator();
+        Iterator<Bucket> bit = table.values().iterator();
         Bucket smallB = null;
         int smallest = Integer.MAX_VALUE;
         while ( bit.hasNext() ) {
-            Bucket b = (Bucket)bit.next();
+            Bucket b = bit.next();
             int sz = b.size();
             if ( sz < smallest ) {
                 smallB = b;
@@ -323,7 +322,7 @@ public class GraphMatcher extends java.lang.Object {
     private Bucket matchBucket(Bucket key) {
         check(HASH_OK);
         Integer hash = new Integer(key.aMember().myHash);
-        Bucket rslt = (Bucket)table.get(hash);
+        Bucket rslt = table.get(hash);
         if ( rslt != null ) {
             if ( key.size() != rslt.size() )
                 return null;
@@ -360,11 +359,11 @@ public class GraphMatcher extends java.lang.Object {
         
         // Now compute all hashes and stick things in the
         // right buckets.
-        Iterator anons = unboundAnonResources.iterator();
+        Iterator<AnonResource> anons = unboundAnonResources.iterator();
         while ( anons.hasNext() ) {
-            AnonResource a = (AnonResource)anons.next();
+            AnonResource a = anons.next();
             Integer hash = new Integer( a.myHashCode() );
-            Bucket bkt = (Bucket)table.get(hash);
+            Bucket bkt = table.get(hash);
             if ( bkt == null ) {
                 bkt = new Bucket();
                 table.put(hash,bkt);
@@ -374,12 +373,12 @@ public class GraphMatcher extends java.lang.Object {
         
         // Produce a checksum for the table.
         int rslt = 0;
-        Iterator tit = table.entrySet().iterator();
+        Iterator<Map.Entry<Integer, Bucket>> tit = table.entrySet().iterator();
         
         while ( tit.hasNext() ) {
-            Map.Entry pair = (Map.Entry)tit.next();
-            int hash = ((Integer)pair.getKey()).intValue();
-            Bucket bkt = (Bucket)pair.getValue();
+            Map.Entry<Integer, Bucket> pair = tit.next();
+            int hash = pair.getKey().intValue();
+            Bucket bkt = pair.getValue();
             int sz = bkt.size();
             rslt += sz*0x10001 ^ hash;
         }
@@ -577,9 +576,9 @@ public class GraphMatcher extends java.lang.Object {
     }
     
     // Record the occurence of variable r in bag.
-    static void count(Map bag, SomeResource r,int pos) {
+    static void count(Map<SomeResource, int[]> bag, SomeResource r,int pos) {
         if ( r instanceof AnonResource ) {
-            int v[] = (int[])bag.get(r);
+            int v[] = bag.get(r);
             if (v==null) {
                 v=new int[]{-1,-1,-1};
                 bag.put(r,v);
@@ -599,7 +598,7 @@ public class GraphMatcher extends java.lang.Object {
         SomeResource obj;
         int pattern;
         AnonStatement(Triple s) {
-            Map bag = CollectionFactory.createHashedMap();
+            Map<SomeResource, int[]> bag = CollectionFactory.createHashedMap();
             pattern = NOVARS;
             subj = convert(s.getSubject());
             pred = convert(s.getPredicate());
@@ -612,9 +611,9 @@ public class GraphMatcher extends java.lang.Object {
             add(subj);
             add(pred);
             add(obj);
-            Iterator it = bag.values().iterator();
+            Iterator<int[]> it = bag.values().iterator();
             while ( it.hasNext() ) {
-                int v[] = (int[])it.next();
+                int v[] = it.next();
                 int last = 2;
                 int p;
                 while ( v[last]== -1)
@@ -688,7 +687,7 @@ public class GraphMatcher extends java.lang.Object {
     // we are iterating over it's members while the rest of the
     // algorithm is proceeding.
     private class Bucket {
-        Set anonRes = CollectionFactory.createHashedSet();
+        Set<AnonResource> anonRes = CollectionFactory.createHashedSet();
         int hash[] = new int[MAX_HASH_DEPTH];
         boolean bind(Bucket singleton) {
             return bind(aMember(),singleton,singleton.aMember());
@@ -706,9 +705,9 @@ public class GraphMatcher extends java.lang.Object {
             anonRes.add(r);
         }
         AnonResource aMember() {
-            return (AnonResource)anonRes.iterator().next();
+            return anonRes.iterator().next();
         }
-        Iterator members() {
+        Iterator<AnonResource> members() {
             return anonRes.iterator();
         }
         int size() {
@@ -718,10 +717,10 @@ public class GraphMatcher extends java.lang.Object {
     private class AnonResource  implements SomeResource {
         AnonResource bound;
         Node r;
-        Set occursIn = CollectionFactory.createHashedSet(); // The AnonStatements containing me.
+        Set<AnonStatement> occursIn = CollectionFactory.createHashedSet(); // The AnonStatements containing me.
         int hash[] = new int[MAX_HASH_DEPTH];
         int boundHash;
-        Set friends = CollectionFactory.createHashedSet(); // Other vars in AnonStatements containing me.
+        Set<AnonResource> friends = CollectionFactory.createHashedSet(); // Other vars in AnonStatements containing me.
         int myHash;
         
         @Override
@@ -753,9 +752,9 @@ public class GraphMatcher extends java.lang.Object {
             if ( bound!=null )
                 impossible();
             myHash = 0;
-            Iterator ss = occursIn.iterator();
+            Iterator<AnonStatement> ss = occursIn.iterator();
             while (ss.hasNext()) {
-                AnonStatement ass = (AnonStatement)ss.next();
+                AnonStatement ass = ss.next();
                 myHash += ass.myHashCode(this);
             }
             hash[myHashLevel] = myHash;
@@ -808,25 +807,25 @@ public class GraphMatcher extends java.lang.Object {
             if ( occursIn.size() != pair.occursIn.size() )
                 return false;
             
-            Set ourStatements = wrapStatements();
-            Set otherStatements = pair.wrapStatements();
+            Set<StatementWrapper> ourStatements = wrapStatements();
+            Set<StatementWrapper> otherStatements = pair.wrapStatements();
             
             return ourStatements.removeAll(otherStatements)
             && ourStatements.isEmpty();
             
         }
-        private Set wrapStatements() {
+        private Set<StatementWrapper> wrapStatements() {
             if ( state == HASH_BAD ) {
                 // We are already in(HASH_BAD).
                 // We need to use AnonResource.myHashCodeFromStatement().
                 // That is OK as long as myHashLevel is 0
                 myHashLevel = 0;
             }
-            Set statements = CollectionFactory.createHashedSet();
+            Set<StatementWrapper> statements = CollectionFactory.createHashedSet();
             // Add all our statements to the set.
-            Iterator it = occursIn.iterator();
+            Iterator<AnonStatement> it = occursIn.iterator();
             while ( it.hasNext() )
-                statements.add(wrapStatement((AnonStatement)it.next()));
+                statements.add(wrapStatement(it.next()));
             return statements;
         }
         public boolean mightBeEqual(SomeResource r) {
@@ -844,33 +843,35 @@ public class GraphMatcher extends java.lang.Object {
         }
         // inner inner class -- ouch!
         private class StatementWrapper {
-            int hash;
+            int wrapHash;
             AnonStatement statement;
-            @Override
-            public boolean equals(Object o) {
+            @Override public boolean equals(Object o) {
                 if (o == null || (!(o instanceof StatementWrapper)))
                     return false;
                 StatementWrapper w = (StatementWrapper)o;
-                return hash == w.hash &&
+                return wrapHash == w.wrapHash &&
                 statement.contextualEquals(AnonResource.this,w.statement,w.asAnonR());
             }
-            @Override
-            public int hashCode() {
-                return hash;
+            @Override public int hashCode() {
+                return wrapHash;
             }
+            
             StatementWrapper( AnonStatement s ) {
-                hash = s.myHashCode(AnonResource.this);
+                wrapHash = s.myHashCode(AnonResource.this);
                 statement = s;
             }
+            
             AnonResource asAnonR() {
                 return AnonResource.this;
             }
         }
     }
-    private Map anonLookup = CollectionFactory.createHashedMap();
+    
+    private Map<Node, SomeResource> anonLookup = CollectionFactory.createHashedMap();
+    
     private SomeResource convert(Node n) {
         if ( n.isBlank() ) {
-            SomeResource anon = (SomeResource)anonLookup.get(n);
+            SomeResource anon = anonLookup.get(n);
             if ( anon == null ) {
                 anon = new AnonResource( n );
                 anonLookup.put(n,anon);
@@ -950,5 +951,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.20 2009-01-16 17:23:52 andy_seaborne Exp $
+ * $Id: GraphMatcher.java,v 1.21 2009-01-27 12:17:41 chris-dollin Exp $
  */
