@@ -25,13 +25,13 @@ _:x rdf:type sdb:StoreList ;
       [ rdfs:label "MySQL/Simple" ;
         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
 
-      [ rdfs:label "OracleXE/Simple" ;
-        sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
-
-      [ rdfs:label "MS-SQL-e/Simple" ;
-        sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
-
-      [ rdfs:label "DB2/Simple" ;
-        sdb:description <StoreDescSimple/db2-layout1.ttl> ]
+##       [ rdfs:label "OracleXE/Simple" ;
+##         sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Simple" ;
+##         sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
+## 
+##       [ rdfs:label "DB2/Simple" ;
+##         sdb:description <StoreDescSimple/db2-layout1.ttl> ]
 
     ) .
