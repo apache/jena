@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingVector.java,v 1.28 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: BindingVector.java,v 1.29 2009-01-28 17:45:49 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.29 $ on $Date: 2009-01-28 17:45:49 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -81,9 +81,9 @@ public class BindingVector implements BindingEnvironment {
             Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
-            ArrayList boundargs = new ArrayList(args.length);
+            List<Node> boundargs = new ArrayList<Node>(args.length);
             for (int i = 0; i < args.length; i++) {
-                Object binding = getBinding(args[i]);
+                Node binding = getBinding(args[i]);
                 if (binding == null) {
                     // Not sufficently bound to instantiate functor yet
                     return null;

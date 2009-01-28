@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BBRuleContext.java,v 1.14 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: BBRuleContext.java,v 1.15 2009-01-28 17:45:49 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * interpret variable bindings to access the static triple data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-28 17:45:49 $
  */
 public class BBRuleContext implements RuleContext {
     
@@ -46,7 +46,7 @@ public class BBRuleContext implements RuleContext {
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
      */
     public boolean contains(Node s, Node p, Node o) {
-        ClosableIterator i = find(s, p, o);
+        ClosableIterator<Triple> i = find(s, p, o);
         boolean result = i.hasNext();
         i.close();
         return result;
@@ -62,7 +62,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
      */
-    public ClosableIterator find(Node s, Node p, Node o) {
+    public ClosableIterator<Triple> find(Node s, Node p, Node o) {
         return graph.findDataMatches(new TriplePattern(s, p, o));
 //        return searchpath.find(new TriplePattern(s, p, o));
     }

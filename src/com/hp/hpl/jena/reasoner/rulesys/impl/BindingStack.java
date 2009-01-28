@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingStack.java,v 1.13 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: BindingStack.java,v 1.14 2009-01-28 17:45:49 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-28 17:45:49 $
  */
 public class BindingStack implements BindingEnvironment {
     
@@ -35,7 +35,7 @@ public class BindingStack implements BindingEnvironment {
     protected Node[] environment;
     
     /** A stack of prior binding sets */
-    protected ArrayList trail = new ArrayList();
+    protected ArrayList<Node[]> trail = new ArrayList<Node[]>();
     
     /** Index of the current binding set */
     protected int index = 0;
@@ -70,7 +70,7 @@ public class BindingStack implements BindingEnvironment {
     public void unwind() throws IndexOutOfBoundsException {
         if (index > 0) {
             // just point to previous stack entry
-            environment = (Node[]) trail.get(--index);
+            environment = trail.get(--index);
             trail.set(index, null);     // free the old space for GC
         } else {
             throw new IndexOutOfBoundsException("Underflow of BindingEnvironment");
@@ -120,9 +120,9 @@ public class BindingStack implements BindingEnvironment {
             Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
-            ArrayList boundargs = new ArrayList(args.length);
+            List<Node> boundargs = new ArrayList<Node>(args.length);
             for (int i = 0; i < args.length; i++) {
-                Object binding = getBinding(args[i]);
+                Node binding = getBinding(args[i]);
                 if (binding == null) {
                     // Not sufficent bound to instantiate functor yet
                     return null;

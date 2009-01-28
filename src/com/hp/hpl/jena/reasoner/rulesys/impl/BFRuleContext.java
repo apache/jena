@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.19 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: BFRuleContext.java,v 1.20 2009-01-28 17:45:49 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.20 $ on $Date: 2009-01-28 17:45:49 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -38,13 +38,13 @@ public class BFRuleContext implements RuleContext {
     protected ForwardRuleInfGraphI graph;
     
     /** A stack of triples which have been added to the graph but haven't yet been processed. */
-    protected List stack;
+    protected List<Triple> stack;
     
     /** A temporary list of Triples which will be added to the stack and triples at the end of a rule scan */
-    protected List pending;
+    protected List<Triple> pending;
 
     /** A temporary list of Triples which will be removed from the graph at the end of a rule scan */
-    protected List deletesPending = new ArrayList();
+    protected List<Triple> deletesPending = new ArrayList<Triple>();
 
     /** A searchable index into the pending triples */
     protected Graph pendingCache;
@@ -58,8 +58,8 @@ public class BFRuleContext implements RuleContext {
     public BFRuleContext(ForwardRuleInfGraphI graph) {
         this.graph = graph;
         env = new BindingStack();
-        stack = new ArrayList();
-        pending = new ArrayList();
+        stack = new ArrayList<Triple>();
+        pending = new ArrayList<Triple>();
         pendingCache = Factory.createGraphMem();
     }
     
@@ -142,8 +142,8 @@ public class BFRuleContext implements RuleContext {
      * to the processing stack.
      */
     public void flushPending() {
-        for (Iterator i = pending.iterator(); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = pending.iterator(); i.hasNext(); ) {
+            Triple t = i.next();
             stack.add(t);
             graph.addDeduction(t);
             i.remove();
@@ -151,8 +151,8 @@ public class BFRuleContext implements RuleContext {
         }
         pending.clear();
         // Flush out pending removes as well
-        for (Iterator i = deletesPending.iterator(); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = deletesPending.iterator(); i.hasNext(); ) {
+            Triple t = i.next();
             graph.delete(t);
         }
         deletesPending.clear();
@@ -173,7 +173,7 @@ public class BFRuleContext implements RuleContext {
      */
     public boolean contains(Node s, Node p, Node o) {
         // Can't use stackCache.contains because that does not do semantic equality
-        ClosableIterator it = find(s, p, o);
+        ClosableIterator<Triple> it = find(s, p, o);
         boolean result = it.hasNext();
         it.close();
         return result;
@@ -184,7 +184,7 @@ public class BFRuleContext implements RuleContext {
      * visible to the underlying graph but need to be checked for.
      * However, currently this calls the graph find directly.
      */
-    public ClosableIterator find(Node s, Node p, Node o) {
+    public ClosableIterator<Triple> find(Node s, Node p, Node o) {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
         return graph.findDataMatches(s, p, o);
     }
@@ -196,7 +196,7 @@ public class BFRuleContext implements RuleContext {
      */
     public Triple getNextTriple() {
         if (stack.size() > 0) {
-            Triple t = (Triple)stack.remove(stack.size() - 1);
+            Triple t = stack.remove(stack.size() - 1);
             return t;
         } else {
             return null;
