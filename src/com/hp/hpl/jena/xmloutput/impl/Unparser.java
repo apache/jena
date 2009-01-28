@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.48 2009-01-24 19:14:33 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.49 2009-01-28 08:39:39 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -303,9 +303,9 @@ class Unparser {
      * All subjects get listed, for top level use only.
      */
     private void wObjStar() {
-        Iterator rs = listSubjects();
+        Iterator<Resource> rs = listSubjects();
         while (rs.hasNext()) {
-            Resource r = (Resource) rs.next();
+            Resource r = rs.next();
             increaseObjectCount(r);
             // This forces us to not be anonymous unless
             // we are never an object. See isGenuineAnon().
@@ -589,11 +589,11 @@ class Unparser {
 
     // propAttr* possibly with left over statements.
     private void wPropAttrSome(Resource r) {
-        ClosableIterator ss = listProperties(r);
+        ClosableIterator<Statement> ss = listProperties(r);
         try {
             Set<Property> seen = new HashSet<Property>();
             while (ss.hasNext()) {
-                Statement s = (Statement) ss.next();
+                Statement s = ss.next();
                 if (canBeAttribute(s, seen)) {
                     done(s);
                     wPropAttr(s.getPredicate(), s.getObject());
@@ -698,12 +698,12 @@ class Unparser {
     private boolean wTypedNodeOrDescription(WType wt, Resource ty, Resource r) {
         // preparation - look for the li's.
         Vector<Statement> found = new Vector<Statement>();
-        ClosableIterator ss = listProperties(r);
+        ClosableIterator<Statement> ss = listProperties(r);
         try {
             int greatest = 0;
             if (!prettyWriter.sListExpand)
                 while (ss.hasNext()) {
-                    Statement s = (Statement) ss.next();
+                    Statement s = ss.next();
                     int ix = s.getPredicate().getOrdinal();
                     if (ix != 0) {
                         if (ix > greatest) {
@@ -717,7 +717,7 @@ class Unparser {
             ss.close();
         }
         int last = found.indexOf(null);
-        List li = last == -1 ? found : found.subList(0, last);
+        List<Statement> li = last == -1 ? found : found.subList(0, last);
 
         return wTypedNodeOrDescriptionCompact(wt, ty, r, li)
                 || wTypedNodeOrDescriptionLong(wt, ty, r, li);
@@ -728,7 +728,7 @@ class Unparser {
      * '/>'
      */
     private boolean wTypedNodeOrDescriptionCompact(WType wt, Resource ty,
-            Resource r, List li) {
+            Resource r, List<Statement> li) {
         // Conditions
         if ((!li.isEmpty()) || !allPropsAreAttr(r))
             return false;
@@ -775,10 +775,10 @@ class Unparser {
      * '>' propertyElt* '</' typeName '>'
      */
     private boolean wTypedNodeOrDescriptionLong(WType wt, Resource ty,
-            Resource r, List li) {
-        Iterator it = li.iterator();
+            Resource r, List<Statement> li) {
+        Iterator<Statement> it = li.iterator();
         while (it.hasNext()) {
-            done((Statement) it.next());
+            done(it.next());
         }
 
         tab();
@@ -799,10 +799,10 @@ class Unparser {
     }
 
     private void wPropertyEltStar(Resource r) {
-        ClosableIterator ss = this.listProperties(r);
+        ClosableIterator<Statement> ss = this.listProperties(r);
         try {
             while (ss.hasNext()) {
-                Statement s = (Statement) ss.next();
+                Statement s = ss.next();
                 wPropertyElt(wtype, s.getPredicate(), s, s.getObject());
             }
         } finally {
@@ -810,9 +810,9 @@ class Unparser {
         }
     }
 
-    private void wLiEltStar(Iterator ss) {
+    private void wLiEltStar(Iterator<Statement> ss) {
         while (ss.hasNext()) {
-            Statement s = (Statement) ss.next();
+            Statement s = ss.next();
             wPropertyElt(wdesc, LI, s, s.getObject());
         }
     }
@@ -1243,7 +1243,7 @@ class Unparser {
     }
 
     private boolean hasProperties(Resource r) {
-        ExtendedIterator ss = listProperties(r);
+        ExtendedIterator<Statement> ss = listProperties(r);
         if (avoidExplicitReification && // ( r instanceof Statement ) &&
                 (!r.isAnon()) && isLocalReference(r)
                 && res2statement.containsKey(r)) {
@@ -1265,9 +1265,9 @@ class Unparser {
         }
     }
 
-    private ExtendedIterator listProperties(Resource r) {
-        return new MapFilterIterator(new MapFilter() {
-            public Object accept(Object o) {
+    private ExtendedIterator<Statement> listProperties(Resource r) {
+        return new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+            public Statement accept( Statement o ) {
                 return doneSet.contains(o) ? null : o;
             }
         }, r.listProperties());
@@ -1321,11 +1321,11 @@ class Unparser {
     }
 
     private boolean allPropsAreAttr(Resource r) {
-        ClosableIterator ss = listProperties(r);
+        ClosableIterator<Statement> ss = listProperties(r);
         Set<Property> seen = new HashSet<Property>();
         try {
             while (ss.hasNext()) {
-                Statement s = (Statement) ss.next();
+                Statement s = ss.next();
                 if (!canBeAttribute(s, seen))
                     return false;
             }
@@ -1583,7 +1583,7 @@ class Unparser {
      * java.util.Iterator-s. We hence use a wrapper around a ResIterator to
      * allow us to manage the closing issue.
      */
-    private Iterator listSubjects() {
+    private Iterator<Resource> listSubjects() {
         // The current file - mainly intended for good DAML.
         Iterator currentFile =
         // new ArrayIterator(
@@ -1699,7 +1699,7 @@ class Unparser {
         openResIterators = new HashSet<ResIterator>();
     }
 
-    private Iterator modelListSubjects() {
+    private ResIterator modelListSubjects() {
         ResIterator resIt = model.listSubjects();
         openResIterators.add(resIt);
         return resIt;
