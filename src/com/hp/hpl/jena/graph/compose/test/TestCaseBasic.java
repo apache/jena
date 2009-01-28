@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCaseBasic.java,v 1.14 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: TestCaseBasic.java,v 1.15 2009-01-28 14:16:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -16,24 +16,23 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 */
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic 
 	{
-    private Class graphClass;
+    private Class<? extends Graph> graphClass;
 
-    public TestCaseBasic(String name, Class graphClass) 
+    public TestCaseBasic(String name, Class<? extends Graph> graphClass) 
     	{
         super(name);
         this.graphClass = graphClass;
     	}
     
-    private Graph newGraph( Constructor cons ) throws Exception
+    private Graph newGraph( Constructor< ? extends Graph> cons ) throws Exception
     	{
-    	return (Graph) cons.newInstance
+    	return cons.newInstance
             ( new Object [] { Factory.createGraphMem(), Factory.createGraphMem() } ); 
     	}
     	
-    @Override
-    public void setUp() throws Exception
+    @Override public void setUp() throws Exception
     	{
-		Constructor constructor = graphClass.getConstructor
+		Constructor< ? extends Graph> constructor = graphClass.getConstructor
             (new Class [] { Graph.class, Graph.class } );
     	m1 = ModelFactory.createModelForGraph( newGraph( constructor ) );
     	m2 = ModelFactory.createModelForGraph( newGraph( constructor ) );

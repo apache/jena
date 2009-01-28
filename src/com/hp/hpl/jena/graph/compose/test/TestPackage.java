@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.14 2008-12-28 19:32:06 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.15 2009-01-28 14:16:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.graph.compose.test;
 	@author kers
 */
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.mem.test.TestSuiteRegression;
 
@@ -18,7 +19,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2008-12-28 19:32:06 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2009-01-28 14:16:46 $
  */
 public class TestPackage extends TestCase {
     
@@ -40,7 +41,7 @@ public class TestPackage extends TestCase {
         return  result;
     }
 
-    public static TestSuite suite(TestSuite suite,Class c) {
+    public static TestSuite suite(TestSuite suite, Class<? extends Graph> c) {
 
     	for (int i=0;i<TestSuiteRegression.testNames.length;i++)
            suite.addTest(new TestCaseBasic(TestSuiteRegression.testNames[i],c));

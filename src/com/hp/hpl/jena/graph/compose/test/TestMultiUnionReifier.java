@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestMultiUnionReifier.java,v 1.2 2008-12-28 19:32:06 andy_seaborne Exp $
+ 	$Id: TestMultiUnionReifier.java,v 1.3 2009-01-28 14:16:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -26,7 +26,7 @@ public class TestMultiUnionReifier extends ModelTestBase
     public void testX()
         {
         MultiUnion mu = multi( "a P b; !b Q c; ~c R d", "" );
-        for (ExtendedIterator it = GraphUtil.findAll( mu ); it.hasNext();)
+        for (ExtendedIterator<Triple> it = GraphUtil.findAll( mu ); it.hasNext();)
             {
             System.err.println( "]]  " + it.next() );
             }
