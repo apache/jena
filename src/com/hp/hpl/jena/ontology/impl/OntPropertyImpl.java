@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
+ * Last modified on   $Date: 2009-01-28 14:37:09 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.29 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.30 2009-01-28 14:37:09 chris-dollin Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -58,6 +58,7 @@ public class OntPropertyImpl
      * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -158,7 +159,7 @@ public class OntPropertyImpl
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSuperProperties() {
+    public ExtendedIterator<OntProperty> listSuperProperties() {
         return listSuperProperties( false );
     }
 
@@ -171,7 +172,7 @@ public class OntPropertyImpl
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSuperProperties( boolean direct ) {
+    public ExtendedIterator<OntProperty> listSuperProperties( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, false );
     }
 
@@ -242,7 +243,7 @@ public class OntPropertyImpl
      * @return An iterator over the sub-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSubProperties() {
+    public ExtendedIterator<OntProperty> listSubProperties() {
         return listSubProperties( false );
     }
 
@@ -255,7 +256,7 @@ public class OntPropertyImpl
      * @return An iterator over the sub-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSubProperties( boolean direct ) {
+    public ExtendedIterator<OntProperty> listSubProperties( boolean direct ) {
         return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, true );
     }
 
@@ -317,7 +318,7 @@ public class OntPropertyImpl
      * @return An iterator over the classes that form the domain of this property.
      * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listDomain() {
+    public ExtendedIterator<OntClass> listDomain() {
         return listAs( getProfile().DOMAIN(), "DOMAIN", OntClass.class );
     }
 
@@ -378,7 +379,7 @@ public class OntPropertyImpl
      * @return An iterator over the classes that form the range of this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listRange() {
+    public ExtendedIterator<OntClass> listRange() {
         return listAs( getProfile().RANGE(), "RANGE", OntClass.class );
     }
 
@@ -441,7 +442,7 @@ public class OntPropertyImpl
      * @return An iterator over the properties equivalent to this property.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listEquivalentProperties() {
+    public ExtendedIterator<OntProperty> listEquivalentProperties() {
         return listAs( getProfile().EQUIVALENT_PROPERTY(), "EQUIVALENT_PROPERTY", OntProperty.class );
     }
 
@@ -502,7 +503,7 @@ public class OntPropertyImpl
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listInverseOf() {
+    public ExtendedIterator<OntProperty> listInverseOf() {
         return listAs( getProfile().INVERSE_OF(), "INVERSE_OF", OntProperty.class );
     }
 
@@ -698,8 +699,8 @@ public class OntPropertyImpl
      * @return The property that is the inverse of this property, or null.
      */
     public OntProperty getInverse() {
-        ExtendedIterator i = listInverse();
-        OntProperty p = i.hasNext() ? ((OntProperty) i.next()) : null;
+        ExtendedIterator<OntProperty> i = listInverse();
+        OntProperty p = i.hasNext() ? i.next() : null;
         i.close();
 
         return p;
@@ -709,8 +710,8 @@ public class OntPropertyImpl
      * <p>Answer an iterator over the properties that are defined to be inverses of this property.</p>
      * @return An iterator over the properties that declare themselves the <code>inverseOf</code> this property.
      */
-    public ExtendedIterator listInverse() {
-        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper( OntProperty.class ) );
+    public ExtendedIterator<OntProperty> listInverse() {
+        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper<OntProperty>( OntProperty.class ) );
     }
 
     /**
@@ -718,7 +719,7 @@ public class OntPropertyImpl
      * @return True if property has an inverse.
      */
     public boolean hasInverse() {
-        ExtendedIterator i = listInverse();
+        ExtendedIterator<OntProperty> i = listInverse();
         boolean hasInv = i.hasNext();
         i.close();
 
@@ -736,7 +737,7 @@ public class OntPropertyImpl
      * @return An iterator of the classes having this property as one
      * of their declared properties
      */
-    public ExtendedIterator listDeclaringClasses() {
+    public ExtendedIterator<OntClass> listDeclaringClasses() {
         return listDeclaringClasses( false );
     }
 
@@ -752,22 +753,22 @@ public class OntPropertyImpl
      * @return An iterator of the classes having this property as one
      * of their declared properties
      */
-    public ExtendedIterator listDeclaringClasses( boolean direct ) {
+    public ExtendedIterator<OntClass> listDeclaringClasses( boolean direct ) {
         // first list the candidate classes, which will also help us
         // work out whether this is a "global" property or not
         Set<OntClass> cands = new HashSet<OntClass>();
-        for (Iterator i = listDomain(); i.hasNext(); ) {
+        for (Iterator<OntClass> i = listDomain(); i.hasNext(); ) {
             // the candidates include this class and it sub-classes
-            List q = new ArrayList();
+            List<OntClass> q = new ArrayList<OntClass>();
             q.add( i.next() );
 
             while (!q.isEmpty()) {
-                OntClass c = (OntClass) q.remove( 0 );
+                OntClass c = q.remove( 0 );
 
                 if (!c.isOntLanguageTerm() && !cands.contains( c )) {
                     // a new value that is not just a term from OWL or RDFS
                     cands.add( c );
-                    for (Iterator j = c.listSubClasses(); j.hasNext(); ) {
+                    for (Iterator<OntClass> j = c.listSubClasses(); j.hasNext(); ) {
                         q.add( j.next() );
                     }
                 }
@@ -816,9 +817,9 @@ public class OntPropertyImpl
      * @return An iterator whose values are the restrictions from the local
      * model that reference this property.
      */
-    public ExtendedIterator listReferringRestrictions() {
+    public ExtendedIterator<Restriction> listReferringRestrictions() {
         return getModel().listStatements( null, getProfile().ON_PROPERTY(), this )
-                         .mapWith( new SubjectAsMapper( Restriction.class ) );
+                         .mapWith( new SubjectAsMapper<Restriction>( Restriction.class ) );
     }
 
 
@@ -849,8 +850,7 @@ public class OntPropertyImpl
      * <p>Filter that accepts classes which have the given property as one of
      * their declared properties.</p>
      */
-    private class FilterDeclaringClass
-        extends Filter
+    private class FilterDeclaringClass extends Filter<OntClass>
     {
         private boolean m_direct;
         private Property m_prop;
@@ -860,9 +860,8 @@ public class OntPropertyImpl
             m_direct = direct;
         }
 
-        @Override
-        public boolean accept( Object o ) {
-            return ((OntClass) o).hasDeclaredProperty( m_prop, m_direct );
+        @Override public boolean accept( OntClass o ) {
+            return o.hasDeclaredProperty( m_prop, m_direct );
         }
 
     }

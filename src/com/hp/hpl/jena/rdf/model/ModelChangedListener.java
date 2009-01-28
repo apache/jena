@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.16 2008-12-28 19:31:54 andy_seaborne Exp $
+  $Id: ModelChangedListener.java,v 1.17 2009-01-28 14:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -42,7 +42,7 @@ public interface ModelChangedListener
         NOTE. This list need not be == to the list added using Model::add(List).
         @param statements the list of statements that has been removed.
     */
-    void addedStatements( List statements );
+    void addedStatements( List<Statement> statements );
     
     /**
         Method to call when a statement iterator has supplied elements to be added
@@ -79,7 +79,7 @@ public interface ModelChangedListener
         Model::remov(List).
         @param statements the list of statements that have been removed.
     */
-    void removedStatements( List statements );
+    void removedStatements( List<Statement> statements );
     
     /**
         Method to call when a statement iterator has been used to remove 

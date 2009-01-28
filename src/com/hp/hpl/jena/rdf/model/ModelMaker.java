@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.19 2008-12-28 19:31:54 andy_seaborne Exp $
+  $Id: ModelMaker.java,v 1.20 2009-01-28 14:37:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -96,7 +96,7 @@ public interface ModelMaker extends ModelSource
         order is expected from the list.
         @return an extended iterator over the names of models known to this Maker.
     */
-    public ExtendedIterator listModels();
+    public ExtendedIterator<String> listModels();
     }
 
 

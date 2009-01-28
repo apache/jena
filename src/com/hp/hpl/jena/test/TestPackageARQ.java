@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
 /** This class provides an indiret way to get the ARQ test suite.
  *   This is done to remove a Jena compile-time dependency on ARQ. 
  * @author Andy Seaborne
- * @version $Id: TestPackageARQ.java,v 1.6 2009-01-13 09:27:29 andy_seaborne Exp $
+ * @version $Id: TestPackageARQ.java,v 1.7 2009-01-28 14:37:09 chris-dollin Exp $
  */ 
 
 public class TestPackageARQ extends TestSuite
@@ -26,7 +26,7 @@ public class TestPackageARQ extends TestSuite
     private static TestSuite suiteByReflection(String className)
     {
         // Reflection to invoke <class>.suite() and return a TestSuite.
-        Class cmd = null ;
+        Class<?> cmd = null ;
         try { cmd = Class.forName(className) ; }
         catch (ClassNotFoundException ex)
         {

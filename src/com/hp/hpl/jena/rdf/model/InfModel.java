@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModel.java,v 1.15 2009-01-08 14:56:42 andy_seaborne Exp $
+ * $Id: InfModel.java,v 1.16 2009-01-28 14:37:08 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.reasoner.*;
 import java.util.Iterator;
 
 /**
@@ -35,7 +34,7 @@ import java.util.Iterator;
  * and Derivations are not yet stable.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2009-01-08 14:56:42 $
+ * @version $Revision: 1.16 $ on $Date: 2009-01-28 14:37:08 $
  */
 public interface InfModel extends Model {
 
@@ -122,7 +121,7 @@ public interface InfModel extends Model {
      * available for this triple.
      * @see com.hp.hpl.jena.reasoner.Derivation Derviation
      */
-    public Iterator getDerivation(Statement statement);    
+    public Iterator<Derivation> getDerivation(Statement statement);    
     
     /**
      * Returns a derivations model. The rule reasoners typically create a 
