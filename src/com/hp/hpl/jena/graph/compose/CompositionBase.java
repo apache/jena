@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 15:24:28 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-28 12:27:16 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,10 +41,9 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.18 2009-01-26 15:24:28 andy_seaborne Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.19 2009-01-28 12:27:16 chris-dollin Exp $
  */
-public abstract class CompositionBase
-    extends GraphBase
+public abstract class CompositionBase extends GraphBase
 {
     /**
      * <p>
@@ -55,12 +54,11 @@ public abstract class CompositionBase
      * @param i A closable iterator
      * @return A Filter that will accept any object not a member of i.
      */
-    public static Filter reject( final ClosableIterator i )
+    public static <T> Filter<T> reject( final ClosableIterator<? extends T> i )
         {
-        final Set suppress = IteratorCollection.iteratorToSet( i );
-        return new Filter()
-            { @Override
-            public boolean accept( Object o ) { return !suppress.contains( o ); } };
+        final Set< ? extends T> suppress = IteratorCollection.iteratorToSet( i );
+        return new Filter<T>()
+            { @Override public boolean accept( T o ) { return !suppress.contains( o ); } };
         }
         
     /**
@@ -73,9 +71,9 @@ public abstract class CompositionBase
      * @param b A closable iterator 
      * @return The iteration of elements in a but not in b.
      */
-    public static ClosableIterator butNot( final ClosableIterator a, final ClosableIterator b )
+    public static <T> ClosableIterator<T> butNot( final ClosableIterator<T> a, final ClosableIterator<? extends T> b )
         {
-        return new FilterIterator( reject( b ), a );
+        return new FilterIterator<T>( reject( b ), a );
         }
         
     /**
@@ -88,7 +86,7 @@ public abstract class CompositionBase
      * @param seen A set that will record each element of i in turn
      * @return An iterator that records the elements of i.
      */
-    public static <T> ExtendedIterator<T> recording( final ClosableIterator<T> i, final Set seen )
+    public static <T> ExtendedIterator<T> recording( final ClosableIterator<T> i, final Set<T> seen )
         {
         return new NiceIterator<T>()
             {
@@ -122,11 +120,11 @@ public abstract class CompositionBase
      * @param seen A set of objects
      * @return An iterator over the elements of i that are not in the set <code>seen</code>.
      */
-    public static ExtendedIterator rejecting( final ExtendedIterator i, final Set seen )
+    public static ExtendedIterator<Triple> rejecting( final ExtendedIterator<Triple> i, final Set<Triple> seen )
         {
-        Filter seenFilter = new Filter()
+        Filter<Triple> seenFilter = new Filter<Triple>()
             { @Override
-            public boolean accept( Object x ) { return seen.contains( x ); } };
+            public boolean accept( Triple x ) { return seen.contains( x ); } };
         return i.filterDrop( seenFilter );
         }
         
@@ -134,11 +132,10 @@ public abstract class CompositionBase
          Answer an iterator over the elements of <code>i</code> that are not in
          the graph <code>seen</code>.
     */
-    public static ExtendedIterator rejecting( final ExtendedIterator i, final Graph seen )
+    public static ExtendedIterator<Triple> rejecting( final ExtendedIterator<Triple> i, final Graph seen )
         {
-        Filter seenFilter = new Filter()
-            { @Override
-            public boolean accept( Object x ) { return seen.contains( (Triple) x ); } };
+        Filter<Triple> seenFilter = new Filter<Triple>()
+            { @Override public boolean accept( Triple x ) { return seen.contains( x ); } };
         return i.filterDrop( seenFilter );
         }
   
@@ -151,12 +148,11 @@ public abstract class CompositionBase
      * @param i A closable iterator 
      * @return A Filter that will accept any object in iterator i.
      */
-    public static Filter ifIn( final ClosableIterator i )
+    public static <T> Filter<T> ifIn( final ClosableIterator<T> i )
         {
-        final Set allow = IteratorCollection.iteratorToSet( i );
-        return new Filter()
-            { @Override
-            public boolean accept( Object x ) { return allow.contains( x ); } };
+        final Set<T> allow = IteratorCollection.iteratorToSet( i );
+        return new Filter<T>()
+            { @Override public boolean accept( T x ) { return allow.contains( x ); } };
         }
         
     /**
@@ -168,11 +164,10 @@ public abstract class CompositionBase
      * @param g A graph 
      * @return A Filter that will accept any triple that is an edge in g.
      */
-    public static Filter ifIn( final Graph g )
+    public static Filter<Triple> ifIn( final Graph g )
         {
-        return new Filter()
-            { @Override
-            public boolean accept( Object x ) { return g.contains( (Triple) x ); } };
+        return new Filter<Triple>()
+            { @Override public boolean accept( Triple x ) { return g.contains( x ); } };
         }
         
 

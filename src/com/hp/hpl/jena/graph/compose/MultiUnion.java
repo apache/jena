@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 15:24:28 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-01-28 12:27:17 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.32 2009-01-26 15:24:28 andy_seaborne Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.33 2009-01-28 12:27:17 chris-dollin Exp $
  */
 public class MultiUnion extends Polyadic
 {
@@ -77,7 +77,7 @@ public class MultiUnion extends Polyadic
      * @param graphs An iterator of the sub-graphs of this union. If graphs is
      *               a closable iterator, it will be automatically closed.
      */
-    public MultiUnion( Iterator graphs ) {
+    public MultiUnion( Iterator<Graph> graphs ) {
         super( graphs );
     }
 
@@ -96,13 +96,11 @@ public class MultiUnion extends Polyadic
     /**
         Unions share the reifiers of their base graphs. THIS WILL CHANGE.
     */
-    @Override
-    public Reifier getReifier()
+    @Override  public Reifier getReifier()
         { Graph base = getBaseGraph();
         return base == null ? super.getReifier() : base.getReifier(); }
 
-    @Override
-    protected GraphStatisticsHandler createStatisticsHandler()
+    @Override  protected GraphStatisticsHandler createStatisticsHandler()
         { return new MultiUnionStatisticsHandler( this ); }
     
     /**
@@ -114,8 +112,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple to add to the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
-    @Override
-    public void performAdd( Triple t ) {
+    @Override  public void performAdd( Triple t ) {
         getRequiredBaseGraph().add( t );
     }
 
@@ -128,8 +125,7 @@ public class MultiUnion extends Polyadic
      * @param t A triple to from the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
-    @Override
-    public void performDelete( Triple t ) {
+    @Override  public void performDelete( Triple t ) {
         getRequiredBaseGraph().delete( t );
     }
 
@@ -142,16 +138,14 @@ public class MultiUnion extends Polyadic
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
-    @Override
-    public boolean graphBaseContains( Triple t ) 
+    @Override  public boolean graphBaseContains( Triple t ) 
         {
         for (Iterator<Graph> i = m_subGraphs.iterator();  i.hasNext(); ) 
             if (i.next().contains( t )) return true;
         return false;
         }
 
-    @Override
-    public QueryHandler queryHandler()
+    @Override public QueryHandler queryHandler()
         { return optimiseOne() ? singleGraphQueryHandler() : super.queryHandler(); }
     
     private QueryHandler singleGraphQueryHandler()
@@ -167,8 +161,7 @@ public class MultiUnion extends Polyadic
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
-    @Override
-    public ExtendedIterator graphBaseFind( final TripleMatch t ) 
+    @Override public ExtendedIterator<Triple> graphBaseFind( final TripleMatch t ) 
         { // optimise the case where there's only one component graph.
         ExtendedIterator<Triple> found = optimiseOne() ? singleGraphFind( t ) : multiGraphFind( t ); 
         return SimpleEventManager.notifyingRemove( MultiUnion.this, found );
@@ -187,7 +180,7 @@ public class MultiUnion extends Polyadic
     */
     private ExtendedIterator<Triple> multiGraphFind( final TripleMatch t )
         {
-        Set seen = CollectionFactory.createHashedSet();
+        Set<Triple> seen = CollectionFactory.createHashedSet();
         ExtendedIterator<Triple> result = NullIterator.instance();
         for (Iterator<Graph> graphs = m_subGraphs.iterator(); graphs.hasNext(); ) 
             {
@@ -205,8 +198,7 @@ public class MultiUnion extends Polyadic
      *
      * @param graph A sub-graph to add to this union
      */
-    @Override
-    public void addGraph( Graph graph ) {
+    @Override public void addGraph( Graph graph ) {
         if (!m_subGraphs.contains( graph )) {
             m_subGraphs.add( graph );
         }

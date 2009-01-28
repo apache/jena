@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.15 2009-01-16 17:23:53 andy_seaborne Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.16 2009-01-28 12:27:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -22,12 +22,10 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     public PolyadicPrefixMappingImpl( Polyadic p )
         { poly = p; }
     
-    @Override
-    protected boolean equals( PrefixMappingImpl other )
+    @Override protected boolean equals( PrefixMappingImpl other )
         { return equalsByMap( other ); }
     
-    @Override
-    protected boolean sameAs( PrefixMappingImpl other )
+    @Override protected boolean sameAs( PrefixMappingImpl other )
         { return equalsByMap( other ); }
            
     private PrefixMapping getBaseMapping()
@@ -36,16 +34,14 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return base == null ? pending : base.getPrefixMapping(); 
         }
     
-    @Override
-    public PrefixMapping setNsPrefix( String prefix, String uri ) 
+    @Override public PrefixMapping setNsPrefix( String prefix, String uri ) 
         {
         checkUnlocked();
         getBaseMapping().setNsPrefix( prefix, uri );
         return this;
         }
     
-    @Override
-    public PrefixMapping removeNsPrefix( String prefix )
+    @Override public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
         getBaseMapping().removeNsPrefix( prefix );
@@ -58,8 +54,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         
         @param other the PrefixMapping whose bindings we are to add to this.
     */
-    @Override
-    public PrefixMapping setNsPrefixes( PrefixMapping other )
+    @Override public PrefixMapping setNsPrefixes( PrefixMapping other )
         { return setNsPrefixes( other.getNsPrefixMap() ); }
         
     /**
@@ -70,53 +65,49 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         
          @param other the Map whose bindings we are to add to this.
     */
-    @Override
-    public PrefixMapping setNsPrefixes( Map other )
+    @Override public PrefixMapping setNsPrefixes( Map<String, String> other )
         {
         checkUnlocked();
         getBaseMapping().setNsPrefixes( other );
         return this;
         }
          
-    @Override
-    public String getNsPrefixURI( String prefix ) 
+    @Override public String getNsPrefixURI( String prefix ) 
         {
         PrefixMapping bm = getBaseMapping();
         String s = bm.getNsPrefixURI( prefix );
         if (s == null && prefix.length() > 0)
             {
-            List graphs = poly.getSubGraphs();
+            List<Graph> graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().getNsPrefixURI( prefix );
+                String ss = graphs.get(i).getPrefixMapping().getNsPrefixURI( prefix );
                 if (ss != null) return ss;
                 }
             }
         return s;
         }
         
-    @Override
-    public Map getNsPrefixMap()
+    @Override public Map<String, String> getNsPrefixMap()
         { 
-        Map result = CollectionFactory.createHashedMap();
-        List graphs = poly.getSubGraphs();
+        Map<String, String> result = CollectionFactory.createHashedMap();
+        List<Graph> graphs = poly.getSubGraphs();
         for (int i = graphs.size(); i > 0;)
-            result.putAll( ((Graph) graphs.get( --i )).getPrefixMapping().getNsPrefixMap() );
+            result.putAll( graphs.get( --i ).getPrefixMapping().getNsPrefixMap() );
         result.remove( "" );
         result.putAll( getBaseMapping().getNsPrefixMap() );
         return result; 
         }
         
-    @Override
-    public String getNsURIPrefix( String uri )
+    @Override public String getNsURIPrefix( String uri )
         {
         String s = getBaseMapping().getNsURIPrefix( uri );
         if (s == null)
             {
-            List graphs = poly.getSubGraphs();
+            List<Graph> graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().getNsURIPrefix( uri );
+                String ss = graphs.get(i).getPrefixMapping().getNsURIPrefix( uri );
                 if (ss != null && ss.length() > 0) return ss;
                 }
             }
@@ -128,16 +119,15 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
         someone takes it into their heads to define eg "http" or "ftp" we have problems.
     */
-    @Override
-    public String expandPrefix( String prefixed )
+    @Override public String expandPrefix( String prefixed )
         {
         String s = getBaseMapping().expandPrefix( prefixed );
         if (s.equals( prefixed ))
             {
-            List graphs = poly.getSubGraphs();
+            List<Graph> graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().expandPrefix( prefixed );
+                String ss = graphs.get(i).getPrefixMapping().expandPrefix( prefixed );
                 if (!ss.equals( prefixed )) return ss;
                 }
             }
@@ -147,8 +137,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     /**
         Answer a readable (we hope) representation of this prefix mapping.
     */
-    @Override
-    public String toString()
+    @Override  public String toString()
         { return "<polyadic prefix map>"; }
         
     /**
@@ -158,32 +147,30 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         efficient algorithm available, preprocessing the prefix strings into some
         kind of search table, but for the moment we don't need it.
     */
-    @Override
-    public String shortForm( String uri )
+    @Override public String shortForm( String uri )
         {
         String s = getBaseMapping().shortForm( uri );
         if (s.equals( uri ))
             {
-            List graphs = poly.getSubGraphs();
+            List<Graph> graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().shortForm( uri );
+                String ss = graphs.get(i).getPrefixMapping().shortForm( uri );
                 if (!ss.equals( uri )) return ss;
                 }
             }
         return s;
         }
     
-    @Override
-    public String qnameFor( String uri )
+    @Override public String qnameFor( String uri )
         {
         String result = getBaseMapping().qnameFor( uri );
         if (result == null)
             {
-            List graphs = poly.getSubGraphs();
+            List<Graph> graphs = poly.getSubGraphs();
             for (int i = 0; i < graphs.size(); i += 1)
                 {
-                String ss = ((Graph) graphs.get(i)).getPrefixMapping().qnameFor( uri );
+                String ss = graphs.get(i).getPrefixMapping().qnameFor( uri );
                 if (ss != null) return ss;
                 }
             }
