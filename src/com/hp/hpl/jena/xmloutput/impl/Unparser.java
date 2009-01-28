@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.49 2009-01-28 08:39:39 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.50 2009-01-28 09:02:57 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -129,9 +129,9 @@ class Unparser {
         try {
             res2statement = new HashMap<Resource, Statement>();
             statement2res = new HashMap<Statement, Resource>();
-            ClosableIterator reified = new MapFilterIterator(new MapFilter() {
-                public Object accept(Object o) {
-                    Resource r = (Resource) o;
+            ClosableIterator<Resource> reified = new MapFilterIterator<Resource, Resource>(new MapFilter<Resource, Resource>() {
+                public Resource accept(Resource o) {
+                    Resource r = o;
                     return (r.hasProperty(RDF.subject)
                             && r.hasProperty(RDF.object) && r
                             .hasProperty(RDF.predicate)) ? r : null;
@@ -139,7 +139,7 @@ class Unparser {
                 }
             }, model.listResourcesWithProperty(RDF.type, RDF.Statement));
             while (reified.hasNext()) {
-                Resource r = (Resource) reified.next();
+                Resource r = reified.next();
                 try {
                     /**
                      * This block of code assumes that really we are dealing
@@ -1247,9 +1247,9 @@ class Unparser {
         if (avoidExplicitReification && // ( r instanceof Statement ) &&
                 (!r.isAnon()) && isLocalReference(r)
                 && res2statement.containsKey(r)) {
-            ss = new MapFilterIterator(new MapFilter() {
-                public Object accept(Object o) {
-                    Statement s = (Statement) o;
+            ss = new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+                public Statement accept(Statement o) {
+                    Statement s = o;
                     Property p = s.getPredicate();
                     return ((!p.getNameSpace().equals(rdfns)) || !((RDF.type
                             .equals(p) && s.getObject().equals(RDF.Statement))
@@ -1508,18 +1508,17 @@ class Unparser {
      * This class is an iterator over the set infinite, but we wait until it is
      * used before instantiating the underlying iterator.
      */
-    private Iterator allInfiniteLeft() {
-        return new LateBindingIterator() {
-            @Override
-            public Iterator<RDFNode> create() {
+    private Iterator<RDFNode> allInfiniteLeft() {
+        return new LateBindingIterator<RDFNode>() {
+            @Override public Iterator<RDFNode> create() {
                 return infinite.iterator();
             }
         };
     }
 
-    private Iterator pleasingTypeIterator() {
+    private Iterator<Resource> pleasingTypeIterator() {
         if (pleasingTypes == null)
-            return new NullIterator();
+            return NullIterator.instance();
         Map<Resource, Set> buckets = new HashMap<Resource, Set>();
         Set bucketArray[] = new Set[pleasingTypes.length];
         // Set up buckets and bucketArray. Each is a collection
@@ -1585,38 +1584,36 @@ class Unparser {
      */
     private Iterator<Resource> listSubjects() {
         // The current file - mainly intended for good DAML.
-        Iterator currentFile =
-        // new ArrayIterator(
-        // new Resource[] { model.createResource(this.localName)});
-        new SingletonIterator(model.createResource(this.localName));
+        Iterator<Resource> currentFile = new SingletonIterator<Resource>( model.createResource( this.localName ) );
         // The pleasing types
-        Iterator pleasing = pleasingTypeIterator();
+        Iterator<Resource> pleasing = pleasingTypeIterator();
 
-        Iterator fakeStopPleasing = new NullIterator() {
-            @Override
-            public boolean hasNext() {
+        Iterator<Resource> fakeStopPleasing = new NullIterator<Resource>() 
+            {
+            @Override public boolean hasNext() 
+                {
                 pleasingTypeSet = new HashSet<Resource>();
                 return false;
-            }
-        };
+                }
+            };
 
         // Subjects that are not objects of anything.
-        Iterator nonObjects = new FilterIterator(new Filter() {
-            @Override
-            public boolean accept(Object o) {
-                return (!objectTable.containsKey(o))
-                        && (!wantReification((Resource) o));
-            }
-        }, modelListSubjects());
+//        Iterator<Resource> nonObjects = new FilterIterator<Resource>(new Filter<Resource>() {
+//            @Override public boolean accept( Resource o ) {
+//                return (!objectTable.containsKey(o))
+//                        && (!wantReification(o));
+//            }
+//        }, modelListSubjects());
+        Iterator<Resource> nonObjects = modelListSubjects().filterKeep( new Filter<Resource>() {@Override public boolean accept( Resource o ) { return (!objectTable.containsKey(o))  && (!wantReification(o) ); } } );
+        
         // At these stage we evaluate a dependency graph of the remaining
         // resources.
         // This is stuck in the master iterator so that it's hasNext is called
         // at an appropriate time (after the earlier stages, before the later
         // stages).
         // We use this to trigger the dependency graph evalaution.
-        Iterator fakeLazyEvaluator = new NullIterator() {
-            @Override
-            public boolean hasNext() {
+        Iterator<Resource> fakeLazyEvaluator = new NullIterator<Resource>() {
+            @Override public boolean hasNext() {
                 // Evalaute dependency graph.
                 findInfiniteCycles();
                 return false;
@@ -1624,7 +1621,7 @@ class Unparser {
         };
         // non-anonymous resources that are the object of more than one
         // triple that are in infinite cycles.
-        Iterator firstChoiceCyclic = new FilterIterator(new Filter() {
+        Iterator<Resource> firstChoiceCyclic = new FilterIterator(new Filter() {
             @Override
             public boolean accept(Object o) {
                 Resource r = (Resource) o;
