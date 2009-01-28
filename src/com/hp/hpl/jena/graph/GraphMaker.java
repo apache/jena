@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMaker.java,v 1.21 2009-01-13 14:05:58 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.22 2009-01-28 12:01:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -114,7 +114,7 @@ public interface GraphMaker
         order is expected from the list.
      	@return an extended iterator over the names of graphs known to this Maker.
      */
-    ExtendedIterator listGraphs();
+    ExtendedIterator<String> listGraphs();
 }
 
 /*

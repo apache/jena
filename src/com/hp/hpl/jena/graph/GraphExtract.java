@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.11 2009-01-16 20:53:22 andy_seaborne Exp $
+      $Id: GraphExtract.java,v 1.12 2009-01-28 12:01:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -67,10 +67,10 @@ public class GraphExtract
         public void extractInto( Node root  )
             {
             active.add( root );
-            Iterator it = extractFrom.find( root, Node.ANY, Node.ANY );
+            Iterator<Triple> it = extractFrom.find( root, Node.ANY, Node.ANY );
             while (it.hasNext())
                 {
-                Triple t = (Triple) it.next();
+                Triple t = it.next();
                 Node subRoot = t.getObject();
                 toUpdate.add( t );
                 if (! (active.contains( subRoot ) || b.stopAt( t ))) extractInto( subRoot );

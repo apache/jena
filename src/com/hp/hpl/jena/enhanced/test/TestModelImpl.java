@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelImpl.java,v 1.10 2009-01-26 10:28:22 chris-dollin Exp $
+  $Id: TestModelImpl.java,v 1.11 2009-01-28 12:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -20,17 +20,17 @@ public class TestModelImpl extends EnhGraph implements TestModel {
     public TestModelImpl(Graph g, Personality<RDFNode> p) {
         super(g,p);
     }
-    private Triple aTriple() {
-        ClosableIterator it = null;
-        try {
-        it = graph.find(null,null,null);
-            return it.hasNext()?(Triple)it.next():null;
+    private Triple aTriple() 
+        {
+        ClosableIterator<Triple> it = null;
+        try 
+            {
+            it = graph.find( null, null, null );
+            return it.hasNext() ? it.next() : null;
+            }
+        finally 
+            { if (it != null) it.close(); }
         }
-        finally {
-            if (it!=null) 
-                it.close();
-        }
-    }
         
     public TestObject anObject() {
         return getNodeAs(aTriple().getObject(),TestObject.class);

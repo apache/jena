@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.11 2009-01-26 10:28:22 chris-dollin Exp $
+  $Id: TestCommonImpl.java,v 1.12 2009-01-28 12:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -35,8 +35,8 @@ class TestCommonImpl extends EnhNode implements TestNode {
         
     Triple findNode( Node s, Node p, Node o )
         {
-        ClosableIterator it = enhGraph.asGraph().find( s, p, o );
-        try { return it.hasNext() ? (Triple) it.next() : null; }
+        ClosableIterator<Triple> it = enhGraph.asGraph().find( s, p, o );
+        try { return it.hasNext() ? it.next() : null; }
         finally { it.close(); }
         }
         
