@@ -56,7 +56,7 @@ public class RunSDB
         
         //TestStores2Connections1.main(argv) ;
         
-        runQuery("Q.rq") ; System.exit(0) ;
+        runPrint("Q.rq") ; System.exit(0) ;
 
         {
             // SPARQL/Update

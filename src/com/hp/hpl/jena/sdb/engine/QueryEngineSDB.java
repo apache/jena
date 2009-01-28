@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.SDBCompile;
@@ -66,19 +67,24 @@ public class QueryEngineSDB extends QueryEngineBase
     
     private void init(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
+        if ( context == null )
+            context = ARQ.getContext() ;
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
         this.originalOp = getOp() ;
         // Enable transformations
         // Op op = Algebra.optimize(originalOp, context) ;
-        // SDB uses the quad engine which does not support property functions.
         Op op = originalOp ;
-        // Quad it now so it can be passed to Compile.compile
-        op = Algebra.toQuadForm(op) ;
+        
         // Do property functions.
         op = Transformer.transform(new TransformPropertyFunction(context), op) ;
+        
+        // Quad it now so it can be passed to Compile.compile
+        op = Algebra.toQuadForm(op) ;
+        
         // Compile to SQL / extract parts to execute as SQL.
         op = SDBCompile.compile(store, op, initialBinding, context, request) ;
+        
         setOp(op) ;
     }
     
