@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.15 2009-01-16 17:23:54 andy_seaborne Exp $
+    $Id: QueryNode.java,v 1.16 2009-01-29 10:07:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -118,7 +118,7 @@ public abstract class QueryNode
         earlier in the same triple.
     */
     public static QueryNode classify
-        ( QueryNodeFactory f, Mapping map, Set recent, Node n )
+        ( QueryNodeFactory f, Mapping map, Set<Node> recent, Node n )
         {
         if (n.equals( Node.ANY ))
             return f.createAny();

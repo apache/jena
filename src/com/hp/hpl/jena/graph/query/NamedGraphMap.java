@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NamedGraphMap.java,v 1.9 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: NamedGraphMap.java,v 1.10 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -18,7 +18,7 @@ public class NamedGraphMap
     {
     NamedGraphMap() {}      
     
-    private Map map = CollectionFactory.createHashedMap();    
+    private Map<String, Graph> map = CollectionFactory.createHashedMap();    
     
     /**
         Add a named graph to the map and return this map.
@@ -36,7 +36,7 @@ public class NamedGraphMap
     	@return the named graph, or null
     */
     public Graph get( String name ) 
-        { return (Graph) map.get( name ); } 
+        { return map.get( name ); } 
     }
 
 /*

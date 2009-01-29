@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTreeGenerator.java,v 1.12 2008-12-28 19:31:59 andy_seaborne Exp $
+  $Id: RegexpTreeGenerator.java,v 1.13 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -61,7 +61,7 @@ public interface RegexpTreeGenerator
          exactly one element, it is strongly recommended that that element be
          returned. If the list is empty, it is recommended that Nothing be returned.
     */
-    public abstract RegexpTree getSequence( List operands );
+    public abstract RegexpTree getSequence( List<? extends RegexpTree> operands );
 
     /**
          Answer a RegexpTree for matching one of a set of alternative operand
@@ -69,7 +69,7 @@ public interface RegexpTreeGenerator
          list has exactly one element, it is recommended that that element be 
          returned.
     */
-    public abstract RegexpTree getAlternatives( List operands );
+    public abstract RegexpTree getAlternatives( List <? extends RegexpTree> operands );
 
     /**
          Answer an empty RegexpTree (corresponding to nothing in a parsed

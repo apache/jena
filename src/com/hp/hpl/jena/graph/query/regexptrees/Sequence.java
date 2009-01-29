@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Sequence.java,v 1.9 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: Sequence.java,v 1.10 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -20,14 +20,14 @@ public class Sequence extends MultiOperandTree
     protected Sequence( RegexpTree [] operands )
         { super( operands ); }
     
-    public static RegexpTree create( List operands )
+    public static RegexpTree create( List<? extends RegexpTree> operands )
         {
         if (operands.size() == 0)
             return NON;
         else if (operands.size() == 1) 
-            return (RegexpTree) operands.get(0);
+            return operands.get(0);
         else
-            return new Sequence( (RegexpTree []) operands.toArray( new RegexpTree [operands.size()] ));
+            return new Sequence( operands.toArray( new RegexpTree [operands.size()] ));
         }
     
     @Override

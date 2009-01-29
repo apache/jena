@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.17 2008-12-28 19:31:59 andy_seaborne Exp $
+  $Id: PerlPatternParser.java,v 1.18 2009-01-29 10:07:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -354,7 +354,7 @@ public class PerlPatternParser
     */
     public RegexpTree parseSeq()
         {
-        List operands = new ArrayList();
+        List<RegexpTree> operands = new ArrayList<RegexpTree>();
         while (true)
             {
             RegexpTree next = parseElement();
@@ -370,7 +370,7 @@ public class PerlPatternParser
     */
     public RegexpTree parseAlts()
         {
-        List operands = new ArrayList();
+        List<RegexpTree> operands = new ArrayList<RegexpTree>();
         while (true)
             {
             operands.add( parseSeq() );

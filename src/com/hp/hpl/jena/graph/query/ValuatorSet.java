@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ValuatorSet.java,v 1.12 2008-12-28 19:32:11 andy_seaborne Exp $
+  $Id: ValuatorSet.java,v 1.13 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 */
 public class ValuatorSet 
     {
-    private Set valuators = CollectionFactory.createHashedSet();
+    private Set<Valuator> valuators = CollectionFactory.createHashedSet();
     
     public ValuatorSet() 
         {}
@@ -44,9 +44,9 @@ public class ValuatorSet
     */
     public boolean evalBool( IndexValues vv )
         { 
-        Iterator it = valuators.iterator();
+        Iterator<Valuator> it = valuators.iterator();
         while (it.hasNext()) 
-            if (((Valuator) it.next()).evalBool( vv ) == false) return false;
+            if (it.next().evalBool( vv ) == false) return false;
         return true;
         }
                     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.20 2009-01-16 17:23:54 andy_seaborne Exp $
+  $Id: Mapping.java,v 1.21 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -19,7 +19,7 @@ import java.util.*;
 
 public class Mapping implements VariableIndexes
 	{
-	private Map map;
+	private Map<Node, Integer> map;
 	
 	private int index = 0;
     private int preIndex = 0;
@@ -65,7 +65,7 @@ public class Mapping implements VariableIndexes
 	*/
 	public int lookUp( Node v )
 		{ 
-		Integer i = (Integer) map.get( v );
+		Integer i = map.get( v );
 		if (i == null || i.intValue() < 0) return -1;
 		return i.intValue();
 		}
@@ -79,7 +79,7 @@ public class Mapping implements VariableIndexes
     */
 	public int newIndex( Node v )
 		{
-        Integer already = (Integer) map.get( v );
+        Integer already = map.get( v );
         int result = already == null ? index++ : -already.intValue() - 1;
         map.put( v, new Integer( result ) );
         return result;
@@ -98,7 +98,7 @@ public class Mapping implements VariableIndexes
         @return true iff this mapping has seen a binding occurance of v
     */
 	public boolean hasBound( Node v )
-		{ return map.containsKey( v )  && ((Integer) map.get( v )).intValue() > -1; }
+		{ return map.containsKey( v )  && map.get( v ).intValue() > -1; }
         
     /**
         @return a string representing this mapping

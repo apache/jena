@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.13 2008-12-28 19:32:13 andy_seaborne Exp $
+  $Id: SimpleTripleSorter.java,v 1.14 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -32,8 +32,8 @@ public class SimpleTripleSorter implements TripleSorter
     {
     private Triple [] result;
     private int putIndex;
-    private Set bound;
-    private List remaining;
+    private Set<Node> bound;
+    private List<Triple> remaining;
         
     /**
         A public SimpleTripleSorter needs no arguments (we imagine more sophisticated
@@ -59,9 +59,9 @@ public class SimpleTripleSorter implements TripleSorter
     protected SimpleTripleSorter( Triple [] triples )
         {
         this(); 
-        this.bound = new HashSet();
+        this.bound = new HashSet<Node>();
         this.result = new Triple[triples.length]; 
-        this.remaining = new ArrayList( Arrays.asList( triples ) );       
+        this.remaining = new ArrayList<Triple>( Arrays.asList( triples ) );       
         }
 
     /**
@@ -96,13 +96,13 @@ public class SimpleTripleSorter implements TripleSorter
         @param candidates the list of triples to select from
         @return the light of lightest triples [by <code>weight</code>], preserving order
     */
-    protected List findLightest( List candidates )
+    protected List<Triple> findLightest( List<Triple> candidates )
         {
-        List lightest = new ArrayList();
+        List<Triple> lightest = new ArrayList<Triple>();
         int minWeight = 100;
         for (int i = 0; i < candidates.size(); i +=1)
             {
-            Triple t = (Triple) candidates.get(i);
+            Triple t = candidates.get(i);
             int w = weight( t );
             if (w < minWeight) 
                 { 
@@ -119,13 +119,13 @@ public class SimpleTripleSorter implements TripleSorter
     /**
         Answer the first most-binding triple in the list of candidates.
     */
-    protected Triple findMostBinding( List candidates )
+    protected Triple findMostBinding( List<Triple> candidates )
         {
         int maxBinding = -1;
         Triple mostBinding = null;
         for (int i = 0; i < candidates.size(); i += 1)
             {
-            Triple t = (Triple) candidates.get(i);
+            Triple t = candidates.get(i);
             int count = bindingCount( t );
             if (count > maxBinding) { mostBinding = t; maxBinding = count; }    
             }  
@@ -144,7 +144,7 @@ public class SimpleTripleSorter implements TripleSorter
         int count = 0;
         for (int i = 0; i < remaining.size(); i += 1)
             {
-            Triple other = (Triple) remaining.get(i);    
+            Triple other = remaining.get(i);    
             if (other != t) count += bindingCount( t, other );
             }
         return count;    

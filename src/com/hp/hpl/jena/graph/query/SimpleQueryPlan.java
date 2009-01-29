@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleQueryPlan.java,v 1.14 2009-01-16 12:24:32 chris-dollin Exp $
+  $Id: SimpleQueryPlan.java,v 1.15 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -30,11 +30,11 @@ public class SimpleQueryPlan implements BindingQueryPlan
         this.variables = variables;
         }
         
-    public ExtendedIterator executeBindings()
+    public ExtendedIterator<Domain> executeBindings()
         // { return query.executeBindings( graph, variables ); }
         {
         return new SimpleQueryEngine( query.getPattern(), query.getSorter(), query.getConstraints() )
-            .executeBindings( new ArrayList(), query.args().put( NamedTripleBunches.anon, graph ), variables );   
+            .executeBindings( new ArrayList<Stage>(), query.args().put( NamedTripleBunches.anon, graph ), variables );   
         }
     }
     

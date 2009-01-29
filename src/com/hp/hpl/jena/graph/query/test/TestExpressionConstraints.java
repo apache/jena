@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.26 2009-01-27 15:07:27 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.27 2009-01-29 10:07:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -182,7 +182,7 @@ public class TestExpressionConstraints extends QueryTestBase
             { public Valuator prepare(VariableIndexes vi) 
                 { return null; }
             };
-        assertFalse( Util.containsAllVariablesOf( CollectionFactory.createHashedSet(), eOpaque ) );
+        assertFalse( Util.containsAllVariablesOf( new HashSet<String>(), eOpaque ) );
         }
     }
 
