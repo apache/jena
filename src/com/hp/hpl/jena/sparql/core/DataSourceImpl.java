@@ -72,7 +72,10 @@ public class DataSourceImpl implements DataSource
     public Model getNamedModel(String uri)
     { 
         Node n = Node.createURI(uri) ;
-        return graph2model(dsg.getGraph(n)) ;
+        Graph g = dsg.getGraph(n) ;
+        if ( g == null )
+            return null ;
+        return graph2model(g) ;
     }
 
     public void addNamedModel(String uri, Model model) throws LabelExistsException
@@ -88,8 +91,6 @@ public class DataSourceImpl implements DataSource
         removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
     }
-
-
 
     public void replaceNamedModel(String uri, Model model)
     {
