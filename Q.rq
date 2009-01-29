@@ -1,6 +1,8 @@
-PREFIX a: <http://www.w3.org/2000/10/annotation-ns#>
-CONSTRUCT { ?s ?p ?o }
-WHERE { 
-  { ?s a:annotates <subjectURI> } .
-    OPTIONAL {?s ?p ?o }
-  }
+PREFIX : <http://example/>
+
+SELECT *
+{
+    ?s :p ?v .
+    ?s <http://jena.hpl.hp.com/ARQ/property#textMatch>  "foo" .
+    ?s :q ?v .
+}

@@ -10,7 +10,9 @@ public class Dev
 {
 	// MySQL cusors: jdbc:mysql://127.0.0.1/rdswip?useCursorFetch=true&defaultFetchSize=8192&profileSQL=false&enableQueryTimeouts=false&netTimeoutForStreamingResults=0 
 
-	// Oracle: Project to NCHAR?
+    // src-test not in distro.  Does it matter?
+    
+	// Oracle: Project to NCHAR? See suppied patch.
 
     // Slot compilation / index form. 
     // Slightly better would be keep constant lookups separate from the SqlNode expression until the
