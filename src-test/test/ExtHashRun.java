@@ -113,8 +113,8 @@ public abstract class ExtHashRun
         /* Performance test : print the keys if there was a problem */ 
         public static void perfTest(int maxValue, int numKeys)
         {
-            if ( numKeys >= 3000 )
-                System.err.printf("Warning: too many keys\n") ;
+//            if ( numKeys >= 3000 )
+//                System.err.printf("Warning: a lot of keys\n") ;
                 
             int[] keys1 = rand(numKeys, 0, maxValue) ;
             int[] keys2 = permute(keys1, numKeys) ;

@@ -5,22 +5,11 @@
 
   <property name="sftp.root" value="repo-dev/com/hp/hpl/jena/" override="false"/>
 
+  <!-- Resolvers used for getting out dependencies -->
+  <include file="${ivy.settings.dir}/ivy-resolvers.xml" />
+
+  <!-- Publishing resolvers -->
   <resolvers>
-
-    <chain name="resolver-chain" returnFirst="true">
-      <!-- Jena development repository : not sync'ed with maven central -->
-      <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/>
-      <!-- Jena publish repository, sync to maven central
-           only needed if the sync has not happened
-      -->
-      <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true"/>
-
-      <ibiblio name="ibiblio" m2compatible="true" />
-    </chain>
-    
-
-    <!-- Publish -->
-    <!-- ibiblio and a file:/// URL? -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="dev-resolver" >
        <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>

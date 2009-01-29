@@ -72,36 +72,12 @@ public abstract class RunnerExecute
         printStream.println("   --bptree:safe") ;
     }
     
-//    //Why does this not use maker?
-//    static class RandomGen implements ExecGenerator
-//    {
-//        int maxNumKeys ;
-//        int maxValue ;
-//        int order ;
-//
-//        RandomGen(int order, int maxValue, int maxNumKeys)
-//        {
-//            if ( maxValue <= maxNumKeys )
-//                throw new IllegalArgumentException("BTree: Max value less than number of keys") ;
-//            this.order = order ;
-//            this.maxValue = maxValue ; 
-//            this.maxNumKeys = maxNumKeys ;
-//        }
-//
-//        @Override
-//        public void executeOneTest()
-//        {
-//            int numKeys = random.nextInt(maxNumKeys)+1 ;
-//            perfTest(order, maxValue, numKeys) ;
-//        }
-//    }
-
     /* Performance test : print the keys if there was a problem */ 
     
     public static void perfTest(int order, int maxValue, int numKeys)
     {
-        if ( numKeys >= 3000 )
-            System.err.printf("Warning: too many keys\n") ;
+//        if ( numKeys >= 3000 )
+//            System.err.printf("Warning: too many keys\n") ;
             
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
