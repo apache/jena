@@ -19,6 +19,7 @@ public class ModRemote implements ArgModuleGeneral
     private String serviceURL ;
     private boolean usePost ;
     
+    public ModRemote() {}
     
     public void checkCommandLine(CmdArgModule cmdLine)
     {}

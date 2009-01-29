@@ -25,7 +25,7 @@ public class remote extends CmdARQ
     protected ModQueryIn    modQuery =      new ModQueryIn() ;
     protected ModRemote     modRemote =     new ModRemote() ;
     protected ModDatasetGeneral modDesc =   new ModDatasetGeneral() ;
-    protected ModResultsOut modResults =  new ModResultsOut() ;
+    protected ModResultsOut modResults =    new ModResultsOut() ;
 
     public static void main (String [] argv)
     {
