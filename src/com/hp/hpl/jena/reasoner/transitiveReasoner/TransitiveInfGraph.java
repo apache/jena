@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.27 2009-01-16 17:23:59 andy_seaborne Exp $
+ * $Id: TransitiveInfGraph.java,v 1.28 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2009-01-16 17:23:59 $
+ * @version $Revision: 1.28 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -100,19 +100,17 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    @Override
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+    @Override public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
-        return new UniqueExtendedIterator(cascade.find(pattern));
+        return UniqueExtendedIterator.create( cascade.find(pattern) );
     }
    
     /** 
      * Returns an iterator over Triples.
      */
-    @Override
-    public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
+    @Override public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
     }
 
@@ -122,8 +120,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
-    @Override
-    public ExtendedIterator find(TriplePattern pattern) {
+    @Override public ExtendedIterator<Triple> find(TriplePattern pattern) {
         return findWithContinuation(pattern, fdata);
     }
         

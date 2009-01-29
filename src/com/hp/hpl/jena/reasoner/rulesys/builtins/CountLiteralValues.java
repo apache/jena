@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: CountLiteralValues.java,v 1.10 2009-01-16 17:23:51 andy_seaborne Exp $
+ * $Id: CountLiteralValues.java,v 1.11 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * distinct values for P on resource X. This is expensive.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2009-01-16 17:23:51 $
+ * @version $Revision: 1.11 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class CountLiteralValues extends BaseBuiltin {
 
@@ -50,16 +50,16 @@ public class CountLiteralValues extends BaseBuiltin {
      */
     @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        ArrayList values = new ArrayList();
+        List<Node> values = new ArrayList<Node>();
         Node a0 = getArg(0, args, context);
         Node a1 = getArg(1, args, context);
-        for (Iterator ni = context.find(a0, a1, null); ni.hasNext(); ) {
-            Node v = ((Triple)ni.next()).getObject();
+        for (Iterator<Triple> ni = context.find(a0, a1, null); ni.hasNext(); ) {
+            Node v = ni.next().getObject();
             if (v.isLiteral()) {
                 // Can't just use contains because distinct objects may
                 // be semantically equal
                 boolean gotit = false;
-                for (Iterator i = values.iterator(); i.hasNext(); ) {
+                for (Iterator<Node> i = values.iterator(); i.hasNext(); ) {
                     if (v.sameValueAs(i.next())) {
                         gotit = true;
                         break;

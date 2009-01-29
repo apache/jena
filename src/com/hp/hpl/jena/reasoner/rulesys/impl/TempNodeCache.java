@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TempNodeCache.java,v 1.13 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: TempNodeCache.java,v 1.14 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.14 $ on $Date: 2009-01-29 09:37:02 $
  */
 
 // Implementation note: We need to map from a pair of values (instance and prop).
@@ -33,10 +33,10 @@ import com.hp.hpl.jena.util.OneToManyMap;
 public class TempNodeCache {
 
     /** Map from instance+property to value */
-    protected OneToManyMap ipMap = new OneToManyMap();
+    protected OneToManyMap<NodePair, Node> ipMap = new OneToManyMap<NodePair, Node>();
     
     /** Map from temp to RDF class, if any */
-    protected Map classMap = new HashMap(); 
+    protected Map<Node, Node> classMap = new HashMap<Node, Node>(); 
     
     /**
      * Cosntructor.
@@ -56,8 +56,8 @@ public class TempNodeCache {
     public synchronized Node getTemp(Node instance, Node prop, Node pclass) {
         NodePair ip = new NodePair(instance, prop);
         Node result = null;
-        for (Iterator i = ipMap.getAll(ip); i.hasNext(); ) {
-            Node t = (Node)i.next();
+        for (Iterator<Node> i = ipMap.getAll(ip); i.hasNext(); ) {
+            Node t = i.next();
             if (pclass != null) {
                 Object tClass = classMap.get(t);
                 if (tClass != null && tClass.equals(pclass)) {

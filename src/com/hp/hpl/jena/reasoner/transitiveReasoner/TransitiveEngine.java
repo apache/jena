@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.14 2009-01-13 13:22:49 der Exp $
+ * $Id: TransitiveEngine.java,v 1.15 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2009-01-13 13:22:49 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class TransitiveEngine {
     
@@ -38,10 +38,10 @@ public class TransitiveEngine {
     protected boolean isPrepared = false;
     
     /** The set of predicates which are aliases for subClassOf */
-    protected static HashSet subClassAliases;
+    protected static HashSet<Node> subClassAliases;
     
     /** The set of predicates which are aliases for subPropertyOf */
-    protected static HashSet subPropertyAliases;
+    protected static HashSet<Node> subPropertyAliases;
     
     /** Classification flag: not relevant to this engine */
     private static final int NOT_RELEVANT = 1;
@@ -156,22 +156,22 @@ public class TransitiveEngine {
      */
     private void prepare() {
         if (isPrepared) return;
-        subClassAliases = new HashSet();
+        subClassAliases = new HashSet<Node>();
         subClassAliases.add(subClassOf);
         subClassAliases.add(directSubClassOf);
         
-        subPropertyAliases = new HashSet();
+        subPropertyAliases = new HashSet<Node>();
         subPropertyAliases.add(subPropertyOf);
         subPropertyAliases.add(directSubPropertyOf);
         
-        Iterator subProps = subPropertyCache.find(new TriplePattern(null, subPropertyOf, subPropertyOf));
+        Iterator<Triple> subProps = subPropertyCache.find(new TriplePattern(null, subPropertyOf, subPropertyOf));
         while (subProps.hasNext()) {
-            Triple spT = (Triple) subProps.next();
+            Triple spT = subProps.next();
             Node spAlias = spT.getSubject();
             subPropertyAliases.add(spAlias);
-            Iterator subClasses = subPropertyCache.find(new TriplePattern(null, spAlias, subClassOf));
+            Iterator<Triple> subClasses = subPropertyCache.find(new TriplePattern(null, spAlias, subClassOf));
             while (subClasses.hasNext()) {
-                subClassAliases.add(((Triple)subClasses.next()).getObject());
+                subClassAliases.add(subClasses.next().getObject());
             }
         }
         isPrepared = true;
@@ -308,11 +308,11 @@ public class TransitiveEngine {
         
         // Check for any properties which are subProperties of subClassOf
         boolean foundAny = false;
-        ExtendedIterator subClasses 
+        ExtendedIterator<Triple> subClasses 
             = spCache.find(new TriplePattern(null, TransitiveReasoner.subPropertyOf, TransitiveReasoner.subClassOf));
         while (subClasses.hasNext()) {
             foundAny = true;
-            Triple t = (Triple)subClasses.next();
+            Triple t = subClasses.next();
             Node subClass = t.getSubject();
             if (!subClass.equals(TransitiveReasoner.subClassOf)) {
                 scCache.cacheAll(graph, subClass);
@@ -335,15 +335,15 @@ public class TransitiveEngine {
      */
     private static boolean checkOccuranceUtility(Node prop, Graph graph, TransitiveGraphCache spCache) {
         boolean foundOne = false;
-        ExtendedIterator uses  = graph.find( null, prop, null );
+        ExtendedIterator<Triple> uses  = graph.find( null, prop, null );
         foundOne = uses.hasNext();
         uses.close();
         if (foundOne) return foundOne;
         
-        ExtendedIterator propVariants 
+        ExtendedIterator<Triple> propVariants 
            = spCache.find(new TriplePattern(null, TransitiveReasoner.subPropertyOf, prop));
         while (propVariants.hasNext() && !foundOne) {
-            Triple t = (Triple)propVariants.next();
+            Triple t = propVariants.next();
             Node propVariant = t.getSubject();
             uses = graph.find( null, propVariant, null );
             foundOne = uses.hasNext();
@@ -373,13 +373,13 @@ public class TransitiveEngine {
         // declarations - hence the double iteration
         boolean foundAny = false;
         boolean foundMore = false;
-        HashSet cached = new HashSet();
+        HashSet<Node> cached = new HashSet<Node>();
         do {
-            ExtendedIterator subProps 
+            ExtendedIterator<Triple> subProps 
                 = spCache.find(new TriplePattern(null, TransitiveReasoner.subPropertyOf, TransitiveReasoner.subPropertyOf));
             while (subProps.hasNext()) {
                 foundMore = false;
-                Triple t = (Triple)subProps.next();
+                Triple t = subProps.next();
                 Node subProp = t.getSubject();
                 if (!subProp.equals(TransitiveReasoner.subPropertyOf) && !cached.contains(subProp)) {
                     foundAny = true;

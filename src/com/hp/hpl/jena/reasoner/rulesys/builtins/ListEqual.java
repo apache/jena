@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListEqual.java,v 1.11 2009-01-16 17:23:51 andy_seaborne Exp $
+ * $Id: ListEqual.java,v 1.12 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * Test if the two argument lists contain the same semantic elements.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2009-01-16 17:23:51 $
+ * @version $Revision: 1.12 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class ListEqual extends BaseBuiltin {
 
@@ -60,14 +60,14 @@ public class ListEqual extends BaseBuiltin {
      * Test two RDF lists for semantic equality. Expensive.
      */
     protected static boolean listEqual(Node list1, Node list2, RuleContext context ) {
-        List elts1 = Util.convertList(list1, context);
-        List elts2 = Util.convertList(list2, context);
+        List<Node> elts1 = Util.convertList(list1, context);
+        List<Node> elts2 = Util.convertList(list2, context);
         if (elts1.size() != elts2.size()) return false;
-        for (Iterator i = elts1.iterator(); i.hasNext(); ) {
-            Node elt = (Node)i.next();
+        for (Iterator<Node> i = elts1.iterator(); i.hasNext(); ) {
+            Node elt = i.next();
             boolean matched = false;
-            for (Iterator j = elts2.iterator(); j.hasNext(); ) {
-                Node elt2 = (Node)j.next();
+            for (Iterator<Node> j = elts2.iterator(); j.hasNext(); ) {
+                Node elt2 = j.next();
                 if (elt.sameValueAs(elt2)) {
                     // Found match, consume it
                     j.remove();

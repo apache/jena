@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.28 2009-01-26 15:24:35 andy_seaborne Exp $
+ * $Id: TransitiveGraphCache.java,v 1.29 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -57,7 +57,7 @@ public class TransitiveGraphCache implements Finder {
 	protected boolean cacheTriples = false;
 	
     /** Map from RDF Node to the corresponding Graph node. */
-    protected HashMap nodeMap = new HashMap();
+    protected HashMap<Node, GraphNode> nodeMap = new HashMap<Node, GraphNode>();
     
     /** The RDF predicate representing the direct relation */
     protected Node directPredicate;
@@ -66,11 +66,11 @@ public class TransitiveGraphCache implements Finder {
     protected Node closedPredicate;
 	
     /** A list of pending deletes which break the cycle-free normal form */
-    protected Set deletesPending;
+    protected Set<Triple> deletesPending;
     
 	/** The original triples, needed for processing delete operations
 	 * because some information is lost in the SCC process */ 
-	protected Set originalTriples = new HashSet();
+	protected Set<Triple> originalTriples = new HashSet<Triple>();
 	
     /**
      * Inner class used to represent vistors than can be applied to each
@@ -79,7 +79,7 @@ public class TransitiveGraphCache implements Finder {
     static interface Visitor {
         // The visitor must not delete and pred entries to avoid CME
         // If this is needed return a non-null result which is a list of pred nodes to kill
-    	List visit(GraphNode node, GraphNode processing, Object arg1, Object arg2);
+    	List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object arg2);
     }
     
 	/**
@@ -91,16 +91,16 @@ public class TransitiveGraphCache implements Finder {
         protected Node rdfNode;
         
 		/** The list of direct successor nodes to this node */
-		protected Set succ = new HashSet();
+		protected Set<GraphNode> succ = new HashSet<GraphNode>();
 		
 		/** The list of direct predecessors nodes */
-		protected Set pred = new HashSet();
+		protected Set<GraphNode> pred = new HashSet<GraphNode>();
 		
 		/** The set of all transitive successor nodes to this node */
-		protected Set succClosed = new HashSet();
+		protected Set<GraphNode> succClosed = new HashSet<GraphNode>();
 		
 		/** An optional cache of the triples that represent succClosed */
-		protected List succClosedTriples;
+		protected List<Triple> succClosedTriples;
 		
 		/** Null for simple nodes. For the lead node in a SCC will be a list
 		 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
@@ -145,29 +145,29 @@ public class TransitiveGraphCache implements Finder {
 		 * Visit each predecessor of this node applying the given visitor.
 		 */
 		public void visitPredecessors(Visitor visitor, Object arg1, Object arg2) {
-            List kill = visitor.visit(this, null, arg1, arg2);
+            List<GraphNode> kill = visitor.visit(this, null, arg1, arg2);
             if (kill != null)  pred.removeAll(kill);
-			doVisitPredecessors(visitor, arg1, arg2, new HashSet());
+			doVisitPredecessors(visitor, arg1, arg2, new HashSet<GraphNode>());
 		}
 		
 		/**
 		 * Visit each predecessor of this node applying the given visitor.
          * Breadth first.
 		 */
-		private void doVisitPredecessors(Visitor visitor, Object arg1, Object arg2, Set seen) {
+		private void doVisitPredecessors(Visitor visitor, Object arg1, Object arg2, Set<GraphNode> seen) {
 			if (seen.add(this)) {
-                Collection allKill = null;
-                for (Iterator i = pred.iterator(); i.hasNext(); ) {
-                    GraphNode pred = (GraphNode)i.next();
-                    List kill = visitor.visit(pred, this, arg1, arg2);
+                Collection<GraphNode> allKill = null;
+                for (Iterator<GraphNode> i = pred.iterator(); i.hasNext(); ) {
+                    GraphNode pred = i.next();
+                    List<GraphNode> kill = visitor.visit(pred, this, arg1, arg2);
                     if (kill != null) {
-                        if (allKill == null) allKill = new ArrayList();
+                        if (allKill == null) allKill = new ArrayList<GraphNode>();
                         allKill.addAll(kill);
                     }
                 }
                 if (allKill != null) pred.removeAll(allKill);
-                for (Iterator i = pred.iterator(); i.hasNext(); ) {
-                    GraphNode pred = (GraphNode)i.next();
+                for (Iterator<GraphNode> i = pred.iterator(); i.hasNext(); ) {
+                    GraphNode pred = i.next();
                     pred.doVisitPredecessors(visitor, arg1, arg2, seen);
                 }
 			}
@@ -177,7 +177,7 @@ public class TransitiveGraphCache implements Finder {
 		 * Return an iterator over all the indirect successors of this node.
          * This does NOT include aliases of successors and is used for graph maintenance.
 		 */
-		public Iterator iteratorOverSuccessors() {
+		public Iterator<GraphNode> iteratorOverSuccessors() {
 			return succClosed.iterator();
 		}
 		
@@ -224,22 +224,22 @@ public class TransitiveGraphCache implements Finder {
 		 * node to the target node.
 		 */
 		public void propagateAdd(GraphNode target) {
-            Set sc = new HashSet(target.succClosed);
+            Set<GraphNode> sc = new HashSet<GraphNode>(target.succClosed);
             sc.add(target); 
 			visitPredecessors(new Visitor() {
-				public List visit(GraphNode node, GraphNode processing, Object arg1, Object target) {
+				public List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object target) {
 					Set sc = (Set)arg1;
 					// Add closure
 					node.succClosed.addAll(sc);
 					// Scan for redundant links
-                    List kill = null;
-					for (Iterator i = node.succ.iterator(); i.hasNext();) {
-						GraphNode s = (GraphNode)i.next();
+                    List<GraphNode> kill = null;
+					for (Iterator<GraphNode> i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = i.next();
 						if (sc.contains(s)) {
 							i.remove();
                             if (s == processing) {
                                 // Can't remove immediately w/o beaking the visitor loop
-                                if (kill == null) kill = new ArrayList();
+                                if (kill == null) kill = new ArrayList<GraphNode>();
                                 kill.add(node);
                             } else {
                                 s.pred.remove(node);
@@ -256,24 +256,24 @@ public class TransitiveGraphCache implements Finder {
 		 * node as lead.
 		 */
 		public void propagateSCC() {
-			Set visited = new HashSet();
+			Set<GraphNode> visited = new HashSet<GraphNode>();
 			visited.add(this);
 			// Scan predecessors not including ourselves
 			doVisitPredecessors(new Visitor() {
-				public List visit(GraphNode node, GraphNode processing, Object arg1, Object arg2) {
+				public List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object arg2) {
 					Set sc = (Set)arg1;
 					// Add closure
 					node.succClosed.addAll(sc);
 					// Scan for redundant links
-                    List kill = null;
-					for (Iterator i = node.succ.iterator(); i.hasNext();) {
-						GraphNode s = (GraphNode)i.next();
+                    List<GraphNode> kill = null;
+					for (Iterator<GraphNode> i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = i.next();
 						if (sc.contains(s)) {
 							i.remove();
 //                            s.pred.remove(node);
                             if (s == processing) {
                                 // Can't remove immediately w/o beaking the visitor loop
-                                if (kill == null) kill = new ArrayList();
+                                if (kill == null) kill = new ArrayList<GraphNode>();
                                 kill.add(node);
                             } else {
                                 s.pred.remove(node);
@@ -291,12 +291,12 @@ public class TransitiveGraphCache implements Finder {
          * This eager rewrite is based on the assumption that there are few cycles
          * so it is better to rewrite once and keep the graph easy to traverse.
          */
-        public void makeLeadNodeFor(Set members) {
+        public void makeLeadNodeFor(Set<GraphNode> members) {
             // Accumulate all successors
-            Set newSucc = new HashSet();
-            Set newSuccClosed = new HashSet();
-            for (Iterator i = members.iterator(); i.hasNext(); ) {
-                GraphNode n = (GraphNode)i.next();
+            Set<GraphNode> newSucc = new HashSet<GraphNode>();
+            Set<GraphNode> newSuccClosed = new HashSet<GraphNode>();
+            for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
+                GraphNode n = i.next();
                 newSucc.addAll(n.succ);
                 newSuccClosed.addAll(n.succClosed);
             }
@@ -306,17 +306,17 @@ public class TransitiveGraphCache implements Finder {
             succClosed = newSuccClosed;
             
             // Rewrite all direct successors to have us as predecessor
-            for (Iterator i = succ.iterator(); i.hasNext();) {
-                GraphNode n = (GraphNode)i.next();
+            for (Iterator<GraphNode> i = succ.iterator(); i.hasNext();) {
+                GraphNode n = i.next();
                 n.pred.removeAll(members);
                 n.pred.add(this);
             }
             
             // Find all predecessor nodes and relink link them to point to us
             Set done = new HashSet();
-            Set newAliases = new HashSet();
-            for (Iterator i = members.iterator(); i.hasNext(); ) {
-            	GraphNode m = (GraphNode)i.next();
+            Set<GraphNode> newAliases = new HashSet<GraphNode>();
+            for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
+            	GraphNode m = i.next();
             	if (m.aliases instanceof Set) {
             		newAliases.addAll((Set)m.aliases);
             	} else {
@@ -324,8 +324,8 @@ public class TransitiveGraphCache implements Finder {
             	}
             }
             this.aliases = newAliases;
-            for (Iterator i = members.iterator(); i.hasNext(); ) {
-                GraphNode n = (GraphNode)i.next();
+            for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
+                GraphNode n = i.next();
                 if (n != this) {
                     pred.addAll(n.pred);
                     n.relocateAllRefTo(this, done);
@@ -342,8 +342,8 @@ public class TransitiveGraphCache implements Finder {
          */
         private void relocateAllRefTo(GraphNode lead, Set done) {
             visitPredecessors(new Visitor(){
-                public List visit(GraphNode node, GraphNode processing, Object done, Object leadIn) {
-                    if (((Set)done).add(node)) {
+                public List<GraphNode> visit(GraphNode node, GraphNode processing, Object done, Object leadIn) {
+                    if (((Set<GraphNode>)done).add(node)) {
                         GraphNode lead = (GraphNode)leadIn;
                         Set members = (Set)lead.aliases;
                         int before = node.succ.size();
@@ -366,7 +366,7 @@ public class TransitiveGraphCache implements Finder {
          * if set to false it returns triples in the transitive reduction
          * @param cache the enclosing TransitiveGraphCache
          */
-        public ExtendedIterator listTriples(boolean closed, TransitiveGraphCache tgc) {
+        public ExtendedIterator<Triple> listTriples(boolean closed, TransitiveGraphCache tgc) {
             if (tgc.cacheTriples) {
                 // TODO implement - for now default to non-cached
                 return WrappedIterator.create(leadNode().triplesForSuccessors(rdfNode, closed, tgc).iterator());
@@ -378,9 +378,9 @@ public class TransitiveGraphCache implements Finder {
         /**
          * Create a list of triples for a given set of successors to this node.
          */
-        private List triplesForSuccessors(Node base, boolean closed, TransitiveGraphCache tgc) {
+        private List<Triple> triplesForSuccessors(Node base, boolean closed, TransitiveGraphCache tgc) {
             Set successors = closed ? succClosed : succ;
-            ArrayList result = new ArrayList(successors.size() + 10);
+            ArrayList<Triple> result = new ArrayList<Triple>(successors.size() + 10);
             result.add(new Triple(base, tgc.closedPredicate, base));    // implicit reflexive case 
             for (Iterator i = successors.iterator(); i.hasNext(); ) {
                 GraphNode s = (GraphNode)i.next();
@@ -403,7 +403,7 @@ public class TransitiveGraphCache implements Finder {
          * Return an iterator over all of the triples representing incoming links to this node.
          * Currently no caching enabled.
          */
-        public ExtendedIterator listPredecessorTriples(boolean closed, TransitiveGraphCache tgc) {
+        public ExtendedIterator<Triple> listPredecessorTriples(boolean closed, TransitiveGraphCache tgc) {
             return new GraphWalker(leadNode(), rdfNode, closed, tgc.closedPredicate);
         }
         
@@ -424,7 +424,7 @@ public class TransitiveGraphCache implements Finder {
         		if (aliases instanceof GraphNode) {
         			result = result + " leader=" + aliases + ", ";
         		} else {
-        			result = result + " SCC=" + dumpSet((Set)aliases) +", ";
+        			result = result + " SCC=" + dumpSet((Set<GraphNode>)aliases) +", ";
         		}
         	}
         	return result + " succ=" + dumpSet(succ) + ", succClose=" + dumpSet(succClosed) + ", pred=" + dumpSet(pred);
@@ -433,11 +433,11 @@ public class TransitiveGraphCache implements Finder {
         /**
          * Dump a set to a string for debug.
          */
-        private String dumpSet(Set s) {
+        private String dumpSet(Set<GraphNode> s) {
         	StringBuffer sb = new StringBuffer();
         	sb.append("{");
         	boolean started = false;
-        	for (Iterator i = s.iterator(); i.hasNext(); ) {
+        	for (Iterator<GraphNode> i = s.iterator(); i.hasNext(); ) {
         		if (started) {
         			sb.append(", ");
         		} else {
@@ -455,7 +455,7 @@ public class TransitiveGraphCache implements Finder {
      * Inner class used to walk backward links of the graph.
      * <p> The triples are dynamically allocated which is costly. 
      */
-    private static class GraphWalker extends NiceIterator implements ExtendedIterator {
+    private static class GraphWalker extends NiceIterator<Triple> implements ExtendedIterator<Triple> {
         
         /** Indicate if this is a shallow or deep walk */
         boolean isDeep;
@@ -470,22 +470,22 @@ public class TransitiveGraphCache implements Finder {
         Node predicate; 
         
         /** Iterator over the predecessors to the current node bein walked */
-        Iterator iterator = null;
+        Iterator<GraphNode> iterator = null;
         
         /** Iterator over the aliases of the current predecessor being output */
         Iterator aliasIterator = null;
         
         /** stack of graph nodes being walked */
-        ArrayList nodeStack = new ArrayList();
+        ArrayList<GraphNode> nodeStack = new ArrayList<GraphNode>();
         
         /** stack of iterators for the higher nodes in the walk */
-        ArrayList iteratorStack = new ArrayList();
+        ArrayList<Iterator<GraphNode>> iteratorStack = new ArrayList<Iterator<GraphNode>>();
         
         /** The next value to be returned */
         Triple next;
         
         /** The set of junction nodes already visited */
-        HashSet visited = new HashSet();
+        HashSet<GraphNode> visited = new HashSet<GraphNode>();
         
         /** 
          * Constructor. Creates an iterator which will walk
@@ -508,15 +508,13 @@ public class TransitiveGraphCache implements Finder {
         }
         
         /** Iterator interface - test if more values available */
-        @Override
-        public boolean hasNext() {
+        @Override public boolean hasNext() {
             return next != null;
         }
         
         /** Iterator interface - get next value */
-        @Override
-        public Object next() {
-            Object toReturn = next;
+        @Override public Triple next() {
+            Triple toReturn = next;
             walkOne();
             return toReturn;
         }
@@ -535,7 +533,7 @@ public class TransitiveGraphCache implements Finder {
                 }
             }
             if (iterator.hasNext()) {
-                GraphNode nextNode = (GraphNode)iterator.next();
+                GraphNode nextNode = iterator.next();
                 if (visited.add(nextNode)) {
                     // Set up for depth-first visit next
                     if (isDeep)
@@ -575,8 +573,8 @@ public class TransitiveGraphCache implements Finder {
          */
         protected void popStack() {
             int i = nodeStack.size()-1;
-            iterator = (Iterator) iteratorStack.remove(i);
-            node = (GraphNode) nodeStack.remove(i);
+            iterator = iteratorStack.remove(i);
+            node = nodeStack.remove(i);
         }
         
     } // End of GraphWalker inner class    
@@ -584,13 +582,13 @@ public class TransitiveGraphCache implements Finder {
     /**
      * Inner class used to do a complete walk over the graph
      */
-    private static class FullGraphWalker extends NiceIterator implements ExtendedIterator {
+    private static class FullGraphWalker extends NiceIterator<Triple> implements ExtendedIterator<Triple> {
 
         /** Flag whether we are walking over the closed or direct relations */
         boolean closed;
         
         /** Iterator over the start nodes in the node map */
-        Iterator baseNodeIt;
+        Iterator<GraphNode> baseNodeIt;
         
         /** The current node being visited */
         GraphNode node;
@@ -614,7 +612,7 @@ public class TransitiveGraphCache implements Finder {
         Triple next;
         
         /** Construct a walker for the full closed or direct graph */
-        FullGraphWalker(boolean closed, Node predicate, HashMap nodes) {
+        FullGraphWalker(boolean closed, Node predicate, HashMap<Node, GraphNode> nodes) {
             this.predicate = predicate;
             this.closed = closed;
             baseNodeIt = nodes.values().iterator();
@@ -622,15 +620,13 @@ public class TransitiveGraphCache implements Finder {
         }
         
         /** Iterator interface - test if more values available */
-        @Override
-        public boolean hasNext() {
+        @Override public boolean hasNext() {
             return next != null;
         }
         
         /** Iterator interface - get next value */
-        @Override
-        public Object next() {
-            Object toReturn = next;
+        @Override public Triple next() {
+            Triple toReturn = next;
             walkOne();
             return toReturn;
         }
@@ -664,7 +660,7 @@ public class TransitiveGraphCache implements Finder {
             }
             
             if (baseNodeIt.hasNext()) {
-                node = (GraphNode)baseNodeIt.next();
+                node = baseNodeIt.next();
                 nodeN = node.rdfNode;
                 GraphNode lead = node.leadNode();
                 succIt = (closed ? lead.succClosed : lead.succ).iterator();
@@ -728,16 +724,16 @@ public class TransitiveGraphCache implements Finder {
     	}
 
     	boolean needJoin = endN.pathTo(startN);
-        Set members = null;
+        Set<GraphNode> members = null;
         if (needJoin) {
         	// Reduce graph to DAG by factoring out SCCs
 //	        startN.assertLinkTo(endN);
             // First find all the members of the new component
-            members = new HashSet();
+            members = new HashSet<GraphNode>();
             members.add(endN);
             startN.visitPredecessors(new Visitor() {
-                public List visit(GraphNode node, GraphNode processing, Object members, Object endN) {
-                    if (((GraphNode)endN).pathTo(node)) ((Set)members).add(node);
+                public List<GraphNode> visit(GraphNode node, GraphNode processing, Object members, Object endN) {
+                    if (((GraphNode)endN).pathTo(node)) ((Set<GraphNode>)members).add(node);
                     return null;
                 } }, members, endN);
             // Then create the SCC
@@ -774,7 +770,7 @@ public class TransitiveGraphCache implements Finder {
     	// This is a remove of a direct link possibly within an SCC
     	// Delay as long as possible and do deletes in a batch
     	if (deletesPending == null) {
-    		deletesPending = new HashSet();
+    		deletesPending = new HashSet<Triple>();
     	}
     	deletesPending.add(t);
     }
@@ -784,20 +780,20 @@ public class TransitiveGraphCache implements Finder {
      */
     private void processDeletes() {
     	// The kernel is the set of start nodes of deleted links
-    	Set kernel = new HashSet();
-    	for (Iterator i = deletesPending.iterator(); i.hasNext(); ) {
-    		Triple t = (Triple)i.next();
-    		GraphNode start = (GraphNode)nodeMap.get(t.getSubject());
+    	Set<GraphNode> kernel = new HashSet<GraphNode>();
+    	for (Iterator<Triple> i = deletesPending.iterator(); i.hasNext(); ) {
+    		Triple t = i.next();
+    		GraphNode start = nodeMap.get(t.getSubject());
     		kernel.add(start);
     	}
     	
     	// The predecessor set of kernel
-    	Set pKernel = new HashSet();
+    	Set<GraphNode> pKernel = new HashSet<GraphNode>();
     	pKernel.addAll(kernel);
-    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
-    		GraphNode n = (GraphNode)i.next();
-    		for (Iterator j = kernel.iterator(); j.hasNext();) {
-    			GraphNode target = (GraphNode)j.next();
+    	for (Iterator<GraphNode> i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = i.next();
+    		for (Iterator<GraphNode> j = kernel.iterator(); j.hasNext();) {
+    			GraphNode target = j.next();
     			if (n.pathTo(target)) {
     				pKernel.add(n); break;
     			}
@@ -805,10 +801,10 @@ public class TransitiveGraphCache implements Finder {
     	}
     	
     	// Cut the pKernel away from the finge of nodes that it connects to
-    	for (Iterator i = pKernel.iterator(); i.hasNext(); ) {
-    		GraphNode n = (GraphNode)i.next();
-    		for (Iterator j = n.succ.iterator(); j.hasNext(); ) {
-    			GraphNode fringe = (GraphNode)j.next();
+    	for (Iterator<GraphNode> i = pKernel.iterator(); i.hasNext(); ) {
+    		GraphNode n = i.next();
+    		for (Iterator<GraphNode> j = n.succ.iterator(); j.hasNext(); ) {
+    			GraphNode fringe = j.next();
     			if (! pKernel.contains(fringe)) {
     				fringe.pred.remove(n);
     			}
@@ -823,9 +819,9 @@ public class TransitiveGraphCache implements Finder {
     	deletesPending.clear();
     	
     	// Reinsert the remaining links
-    	for (Iterator i = originalTriples.iterator(); i.hasNext(); ) {
-    		Triple t = (Triple)i.next();
-    		GraphNode n = (GraphNode)nodeMap.get(t.getSubject());
+    	for (Iterator<Triple> i = originalTriples.iterator(); i.hasNext(); ) {
+    		Triple t = i.next();
+    		GraphNode n = nodeMap.get(t.getSubject());
     		if (pKernel.contains(n)) {
     			addRelation(t);
     		}
@@ -843,7 +839,7 @@ public class TransitiveGraphCache implements Finder {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+    public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         Node p = pattern.getPredicate();
         
         if (p.isVariable()) {
@@ -863,7 +859,7 @@ public class TransitiveGraphCache implements Finder {
      * Return true if the given pattern occurs somewhere in the find sequence.
      */
     public boolean contains(TriplePattern pattern) {
-        ClosableIterator it = find(pattern);
+        ClosableIterator<Triple> it = find(pattern);
         boolean result = it.hasNext();
         it.close();
         return result;
@@ -871,7 +867,7 @@ public class TransitiveGraphCache implements Finder {
     /**
      * Return an iterator over all registered subject nodes
      */
-    public ExtendedIterator listAllSubjects() {
+    public ExtendedIterator<Node> listAllSubjects() {
         return WrappedIterator.create(nodeMap.keySet().iterator());
     }
    
@@ -907,7 +903,7 @@ public class TransitiveGraphCache implements Finder {
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
-    public ExtendedIterator find(TriplePattern pattern) {
+    public ExtendedIterator<Triple> find(TriplePattern pattern) {
     	if (deletesPending != null && deletesPending.size() > 0) {
     		processDeletes();
     	}
@@ -937,24 +933,24 @@ public class TransitiveGraphCache implements Finder {
                     return new FullGraphWalker(closed, closedPredicate, nodeMap);
                 } else {
                     // list all backwards from o
-                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
+                    GraphNode gn_o = nodeMap.get(o);
                     if (gn_o == null) return NullIterator.instance();
                     return gn_o.listPredecessorTriples(closed, this);
                 }
             } else {
-                GraphNode gn_s = (GraphNode)nodeMap.get(s);
+                GraphNode gn_s = nodeMap.get(s);
                 if (gn_s == null) return NullIterator.instance();
                 if (o.isVariable()) {
                     // list forward from s
                     return gn_s.listTriples(closed, this);
                 } else {
                     // Singleton test
-                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
+                    GraphNode gn_o = nodeMap.get(o);
                     gn_s = gn_s.leadNode();
                     if (gn_o == null) return NullIterator.instance();
                     gn_o = gn_o.leadNode();
                     if ( closed ? gn_s.pathTo(gn_o) : gn_s.directPathTo(gn_o) ) {
-                        return new SingletonIterator(new Triple(s, pred, o));
+                        return new SingletonIterator<Triple>(new Triple(s, pred, o));
                     } else {
                         return NullIterator.instance();
                     }
@@ -973,9 +969,9 @@ public class TransitiveGraphCache implements Finder {
      */
     public TransitiveGraphCache deepCopy() {
         TransitiveGraphCache copy = new TransitiveGraphCache(directPredicate, closedPredicate);
-        Iterator i = find(new TriplePattern(null, directPredicate, null));
+        Iterator<Triple> i = find(new TriplePattern(null, directPredicate, null));
         while (i.hasNext()) {
-            Triple t = (Triple)i.next();
+            Triple t = i.next();
             copy.addRelation(t.getSubject(), t.getObject());
         }
         return copy;
@@ -996,8 +992,8 @@ public class TransitiveGraphCache implements Finder {
     public void setCaching(boolean enable) {
     	if (! enable && cacheTriples) {
     		// Switching off so clear the existing cache
-    		for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
-    			((GraphNode)i.next()).clearTripleCache();
+    		for (Iterator<GraphNode> i = nodeMap.values().iterator(); i.hasNext(); ) {
+    			i.next().clearTripleCache();
     		}
     	}
     	cacheTriples = enable;
@@ -1008,8 +1004,8 @@ public class TransitiveGraphCache implements Finder {
      */
     public String dump() {
     	StringBuffer sb = new StringBuffer();
-    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
-    		GraphNode n = (GraphNode)i.next();
+    	for (Iterator<GraphNode> i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = i.next();
     		sb.append(n.dump());
     		sb.append("\n");
     	}
@@ -1025,7 +1021,7 @@ public class TransitiveGraphCache implements Finder {
      * to the given RDF node. 
      */
     private GraphNode getLead(Node n) {
-    	GraphNode gn = (GraphNode)nodeMap.get(n);
+    	GraphNode gn = nodeMap.get(n);
         if (gn == null) {
             gn = new GraphNode(n);
             nodeMap.put(n, gn);

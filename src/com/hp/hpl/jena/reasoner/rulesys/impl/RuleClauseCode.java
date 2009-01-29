@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: RuleClauseCode.java,v 1.15 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class RuleClauseCode {
     
@@ -342,7 +342,7 @@ public class RuleClauseCode {
         byte[] code;
         
         /** The temporary arg list during construction */
-        ArrayList args;
+        ArrayList<Object> args;
         
         /** The code pointer during construction */
         int p;
@@ -351,19 +351,19 @@ public class RuleClauseCode {
         private List[] termVarTable;
         
         /** Map from variables to the list of term positions in which it occurs */
-        private Map varOccurrence = new HashMap();
+        private Map<Node_RuleVariable, List<TermIndex>> varOccurrence = new HashMap<Node_RuleVariable, List<TermIndex>>();
         
         /** List of all permanent variables */
-        private List permanentVars = new ArrayList();
+        private List<Node_RuleVariable> permanentVars = new ArrayList<Node_RuleVariable>();
         
         /** List of all temporary variables */
-        private List tempVars = new ArrayList();
+        private List<Node_RuleVariable> tempVars = new ArrayList<Node_RuleVariable>();
         
         /** The total number of var occurrences */
         int totalOccurrences = 0;
         
         /** the set of variables processed so far during the compile phase */
-        Set seen = new HashSet();
+        Set<Node_RuleVariable> seen = new HashSet<Node_RuleVariable>();
          
         /** The rule being parsed */
         Rule rule;
@@ -377,7 +377,7 @@ public class RuleClauseCode {
             this.rule = rule;
             // Create a scratch area for assembling the code, use a worst-case size estimate
             code = new byte[10 + totalOccurrences + rule.bodyLength()*10];
-            args = new ArrayList();
+            args = new ArrayList<Object>();
         }
         
         /**
@@ -453,10 +453,10 @@ public class RuleClauseCode {
                     return;
                 }
                 if (isTemp(var)) {
-                    List occurrences = (List)varOccurrence.get(var);
+                    List<TermIndex>occurrences = varOccurrence.get(var);
                     if (occurrences.size() == 2 &&
-                        ((TermIndex)occurrences.get(0)).index <= 2 && 
-                        ((TermIndex)occurrences.get(0)).index ==((TermIndex)occurrences.get(1)).index) {
+                        occurrences.get(0).index <= 2 && 
+                        occurrences.get(0).index ==occurrences.get(1).index) {
                             // No movement code required, var in right place  
                     } else {
                         code[p++] = seen.add(var) ? GET_TEMP : UNIFY_TEMP;
@@ -540,9 +540,9 @@ public class RuleClauseCode {
                     return;
                 }
                 if (isTemp(var)) {
-                    List occurrences = (List)varOccurrence.get(var);
+                    List<TermIndex> occurrences = varOccurrence.get(var);
                     if (occurrences.size() == 2 && 
-                        ((TermIndex)occurrences.get(0)).index ==((TermIndex)occurrences.get(1)).index) {
+                        occurrences.get(0).index ==occurrences.get(1).index) {
                             // No movement code required, var in right place  
                     } else {
                         code[p++] = PUT_TEMP;
@@ -640,9 +640,9 @@ public class RuleClauseCode {
                     Node n = (Node)varEnts.get(j);
                     if (n.isVariable()) {
                         Node_RuleVariable var = (Node_RuleVariable)n; 
-                        List occurrences = (List)varOccurrence.get(var);
+                        List<TermIndex> occurrences = varOccurrence.get(var);
                         if (occurrences == null) {
-                            occurrences = new ArrayList();
+                            occurrences = new ArrayList<TermIndex>();
                             varOccurrence.put(var, occurrences);
                         }
                         occurrences.add(new TermIndex(var, i, j));
@@ -652,14 +652,14 @@ public class RuleClauseCode {
             
             // Classify vars as permanent unless they are just dummies (only used once at all)
             // or only used head+first body goal (but not if used in a builtin)
-            for (Iterator enti = varOccurrence.values().iterator(); enti.hasNext(); ) {
-                List occurrences = (List)enti.next();
+            for (Iterator<List<TermIndex>> enti = varOccurrence.values().iterator(); enti.hasNext(); ) {
+                List<TermIndex> occurrences = enti.next();
                 Node_RuleVariable var = null;
                 boolean inFirst = false;
                 boolean inLaterBody = false;
                 boolean inBuiltin = false;
-                for (Iterator oi = occurrences.iterator(); oi.hasNext(); ) {
-                    TermIndex occurence = (TermIndex)oi.next();
+                for (Iterator<TermIndex> oi = occurrences.iterator(); oi.hasNext(); ) {
+                    TermIndex occurence = oi.next();
                     var = occurence.var;
                     int termNumber = occurence.termNumber;
                     if (termNumber == 0) {
@@ -721,14 +721,14 @@ public class RuleClauseCode {
         
         /** Return true if the given rule variable is a dummy */
         boolean isDummy(Node_RuleVariable var) {
-            List occurances = (List)varOccurrence.get(var);
+            List<TermIndex> occurances = varOccurrence.get(var);
             if (occurances == null || occurances.size() <= 1) return true;
             return false;
         }
                 
         /** Return an list of variables or nodes in a ClauseEntry, in flattened order */
-        private List termVars(ClauseEntry term) {
-            List result = new ArrayList();
+        private List<Node> termVars(ClauseEntry term) {
+            List<Node> result = new ArrayList<Node>();
             if (term instanceof TriplePattern) {
                 TriplePattern goal = (TriplePattern)term;
                 result.add(goal.getSubject());

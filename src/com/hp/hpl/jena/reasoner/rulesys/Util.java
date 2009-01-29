@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.32 2009-01-13 13:22:48 der Exp $
+ * $Id: Util.java,v 1.33 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2009-01-13 13:22:48 $
+ * @version $Revision: 1.33 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class Util {
 
@@ -134,10 +134,10 @@ public class Util {
     /**
      * Internall implementation of all the getPropValue variants.
      */
-    private static Node doGetPropValue(ClosableIterator it) {
+    private static Node doGetPropValue(ClosableIterator<Triple> it) {
         Node result = null;
         if (it.hasNext()) {
-            result = ((Triple)it.next()).getObject();
+            result = it.next().getObject();
         }
         it.close();
         return result;
@@ -148,14 +148,14 @@ public class Util {
      * @param root the root node of the list
      * @param context the graph containing the list assertions
      */
-    public static List convertList(Node root, RuleContext context) {
-        return convertList(root, context, new LinkedList());
+    public static List<Node> convertList(Node root, RuleContext context) {
+        return convertList(root, context, new LinkedList<Node>());
     }
     
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
      */
-    private static List convertList(Node node, RuleContext context, List sofar) {
+    private static List<Node> convertList( Node node, RuleContext context, List<Node> sofar ) {
         if (node == null || node.equals(RDF.nil.asNode())) return sofar;
         Node next = getPropValue(node, RDF.first.asNode(), context);
         if (next != null) {

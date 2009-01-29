@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AssertDisjointPairs.java,v 1.14 2009-01-16 17:23:51 andy_seaborne Exp $
+ * $Id: AssertDisjointPairs.java,v 1.15 2009-01-29 09:37:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * Assert the n^2 differtFrom pairs from a distinctMembers list
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:23:51 $
+ * @version $Revision: 1.15 $ on $Date: 2009-01-29 09:37:02 $
  */
 public class AssertDisjointPairs extends BaseBuiltin {
 
@@ -50,11 +50,11 @@ public class AssertDisjointPairs extends BaseBuiltin {
     @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        List l = Util.convertList(args[0], context);
-        for (Iterator i = l.iterator(); i.hasNext(); ) {
-            Node x = (Node)i.next();
-            for (Iterator j = l.iterator(); j.hasNext(); ) {
-                Node y = (Node)j.next();
+        List<Node> l = Util.convertList(args[0], context);
+        for (Iterator<Node> i = l.iterator(); i.hasNext(); ) {
+            Node x = i.next();
+            for (Iterator<Node> j = l.iterator(); j.hasNext(); ) {
+                Node y = j.next();
                 if (!x.sameValueAs(y)) {
                     context.add( new Triple(x, OWL.differentFrom.asNode(), y) );
                 }

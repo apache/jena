@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-29 08:54:45 $
+ * Last modified on   $Date: 2009-01-29 09:37:03 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.19 2009-01-29 08:54:45 chris-dollin Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.20 2009-01-29 09:37:03 chris-dollin Exp $
  */
 public class ResourceUtils {
 
@@ -58,7 +58,7 @@ public class ResourceUtils {
      * @return The collection that contains only those <code>resources</code> are not
      * greater than another resource under the partial order.
      */
-    public static List maximalLowerElements( Collection resources, Property rel, boolean inverse ) {
+    public static List< ? extends Resource> maximalLowerElements( Collection<? extends Resource> resources, Property rel, boolean inverse ) {
         return maximalLowerElements( resources.iterator(), rel, inverse );
     }
     
@@ -79,17 +79,17 @@ public class ResourceUtils {
      * @return The list that contains only those <code>resources</code> are not
      * greater than another resource under the partial order.
      */
-    public static List maximalLowerElements( Iterator resources, Property rel, boolean inverse ) {
-        List in = new ArrayList();
-        List out = new ArrayList();
-        List drop = new ArrayList();
+    public static List<? extends Resource> maximalLowerElements( Iterator<? extends Resource> resources, Property rel, boolean inverse ) {
+        List<Resource> in = new ArrayList<Resource>();
+        List<Resource> out = new ArrayList<Resource>();
+        List<Resource> drop = new ArrayList<Resource>();
         
         while (resources.hasNext()) {
             in.add( resources.next() );
         }
         
         while (! in.isEmpty()) {
-            Resource r = (Resource) in.remove( 0 ); 
+            Resource r = in.remove( 0 ); 
             boolean rCovered = testResourceCovered( in, rel, inverse, r ) ||
                                testResourceCovered( out, rel, inverse, r ) ||
                                testResourceCovered( drop, rel, inverse, r );
@@ -101,10 +101,10 @@ public class ResourceUtils {
         return out;
     }
 
-    private static boolean testResourceCovered( List l, Property rel, boolean inverse, Resource r ) {
+    private static boolean testResourceCovered( List< ? extends Resource> l, Property rel, boolean inverse, Resource r ) {
         boolean rCovered = false;
-        for (Iterator i = l.iterator();  !rCovered && i.hasNext(); ) {
-            Resource next = (Resource) i.next(); 
+        for (Iterator< ? extends Resource> i = l.iterator();  !rCovered && i.hasNext(); ) {
+            Resource next = i.next(); 
             rCovered = inverse ? r.hasProperty( rel, next ) : next.hasProperty( rel, r );
         }
         return rCovered;
@@ -125,11 +125,11 @@ public class ResourceUtils {
      * @param ref A reference resource
      * @return A list of the resources removed from the parameter list l
      */
-    public static List<Resource> removeEquiv( List l, Property p, Resource ref ) {
+    public static List<Resource> removeEquiv( List<? extends Resource> l, Property p, Resource ref ) {
         List<Resource> equiv = new ArrayList<Resource>();
         
-        for (Iterator i = l.iterator(); i.hasNext(); ) {
-            Resource r = (Resource) i.next();
+        for (Iterator<? extends Resource> i = l.iterator(); i.hasNext(); ) {
+            Resource r = i.next();
             
             if (r.hasProperty( p, ref ) && ref.hasProperty( p, r )) {
                 // resource r is equivalent to the reference resource
@@ -153,16 +153,16 @@ public class ResourceUtils {
      * @return A list of lists which are the partitions of <code>l</code> 
      * under <code>p</code>
      */
-    public static List<List<Resource>> partition( List l, Property p ) {
+    public static List<List<Resource>> partition( List<? extends Resource> l, Property p ) {
         // first copy the input so we can mess with it
-        List source = new ArrayList();
+        List<Resource> source = new ArrayList<Resource>();
         source.addAll( l );
         List<List<Resource>> parts = new ArrayList<List<Resource>>();
         
         while (!source.isEmpty()) {
             // each step through the loop we pick a random element, and
             // create a list of that element and all its equivalent values
-            Resource seed = (Resource) source.remove( 0 );
+            Resource seed = source.remove( 0 );
             List<Resource> part = removeEquiv( source, p, seed );
             part.add( seed );
             
@@ -194,20 +194,20 @@ public class ResourceUtils {
      */
     public static Resource renameResource( Resource old, String uri ) {
         Model m = old.getModel();
-        List stmts = new ArrayList();
+        List<Statement> stmts = new ArrayList<Statement>();
         
         // list the statements that mention old as a subject
-        for (Iterator i = old.listProperties();  i.hasNext(); stmts.add( i.next() ) );
+        for (Iterator<Statement> i = old.listProperties();  i.hasNext(); stmts.add( i.next() ) ) {}
         
         // list the statements that mention old an an object
-        for (Iterator i = m.listStatements( null, null, old );  i.hasNext();  stmts.add( i.next() ) );
+        for (Iterator<Statement> i = m.listStatements( null, null, old );  i.hasNext();  stmts.add( i.next() ) ) {}
         
         // create a new resource to replace old
         Resource res = (uri == null) ? m.createResource() : m.createResource( uri );
         
         // now move the statements to refer to res instead of old
-        for (Iterator i = stmts.iterator(); i.hasNext(); ) {
-            Statement s = (Statement) i.next();
+        for (Iterator<Statement> i = stmts.iterator(); i.hasNext(); ) {
+            Statement s = i.next();
             
             s.remove();
             
