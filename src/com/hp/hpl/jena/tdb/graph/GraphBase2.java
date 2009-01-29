@@ -330,6 +330,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Answer a reifier appropriate to this graph. Subclasses override if
            they need non-SimpleReifiers.
      */
+    
     protected Reifier constructReifier()
     { return  new Reifier2(this) ; }
 

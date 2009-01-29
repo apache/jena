@@ -21,7 +21,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public abstract class CmdTDB extends CmdARQ
 {
-    // CmdTDB acts on a single graph
     private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected String graphName = null ;
     
@@ -53,7 +52,21 @@ public abstract class CmdTDB extends CmdARQ
     protected Model getModel()
     {
         if ( graphName != null )
+        {
+            // Workaround for bug in ARQ 2.6.0 and earlier.
+            // Remove at jump to ARQ 2.7.0
+//            if ( ! tdbDatasetAssembler.getDataset().containsNamedModel(graphName) )
+//            {
+//                getDataset()
+//                
+//                TDBFactory.createGraph(graphName)
+//            }
+            
+            
             return tdbDatasetAssembler.getDataset().getNamedModel(graphName) ;
+            
+        }
+            
         else
             return tdbDatasetAssembler.getDataset().getDefaultModel() ;
     }

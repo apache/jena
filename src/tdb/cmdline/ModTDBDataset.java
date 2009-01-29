@@ -58,36 +58,6 @@ public class ModTDBDataset extends ModDataset
         modAssembler.processArgs(cmdLine) ;
     }        
 
-//    private Model model = null ;
-//    private Graph graph = null ;
-//    
-//    public Model getModel()
-//    {
-//        if ( model == null )
-//            model = ModelFactory.createModelForGraph(getGraph()) ;
-//        return model ;
-//    }
-//    
-//    public Graph getGraph()
-//    {
-//        if ( graph == null )
-//            graph = createGraph() ;
-//        return graph ;
-//    }
-//    
-//    public Graph createGraph()
-//    {
-//        if ( useMemory )
-//            return TDBFactory.createGraph() ;
-//        return getDataset().getDefaultModel().getGraph() ; 
-//        
-////        if ( modAssembler.getAssemblerFile() != null )
-////            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
-////        if ( modAssembler.getLocation() != null )
-////            return TDBFactory.createGraph(modAssembler.getLocation()) ;
-////        throw new CmdException("Don't know how to make the TDB graph") ;
-//    }
-//    
     @Override
     public Dataset createDataset()
     {

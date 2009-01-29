@@ -249,6 +249,16 @@ public class SystemTDB
         return fileMode ;
     }
 
+    public static void setFileMode(FileMode newFileMode)
+    {
+        if ( fileMode != null )
+        {
+            log.warn("System file mode already determined - setting it has no effect") ;
+            return ;
+        }
+        fileMode = newFileMode ;
+    }
+    
     private static FileMode determineFileMode()
     {
         // Called very, very early, before --set might be seen.

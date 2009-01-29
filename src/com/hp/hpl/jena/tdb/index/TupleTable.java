@@ -79,15 +79,17 @@ public class TupleTable implements Sync, Closeable
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
             if ( indexes[i] == null ) continue ;
-            if ( ! indexes[i].delete(t) )
-            {
-                if ( i == 0 )
-                {
-                    duplicate(t) ;
-                    return false ;
-                }
-                throw new TDBException("Secondary index duplicate: "+t) ;
-            }
+            // Use return boolean
+            indexes[i].delete(t) ;
+//            if ( ! indexes[i].delete(t) )
+//            {
+//                if ( i == 0 )
+//                {
+//                    duplicate(t) ;
+//                    return false ;
+//                }
+//                throw new TDBException("Secondary index duplicate: "+t) ;
+//            }
         }
         return true ;
 

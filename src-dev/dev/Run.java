@@ -15,23 +15,16 @@ import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -40,7 +33,13 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
 
@@ -59,83 +58,17 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        
-        {
-            FileOps.clearDirectory("DB") ;
-            Dataset ds = TDBFactory.createDataset("DB") ;
-            Model model = ds.getDefaultModel() ;
-            FileManager.get().readModel(model, "D.ttl") ;
-            model.close() ;
-            ds.close() ;
-            
-            tdb.tdbdump.main("--loc=DB", "--format=RDF/XML-ABBREV") ;
-//            ds = TDBFactory.createDataset("DB") ;
-//            model = ds.getDefaultModel() ;
-//            
-//            // This flushes thing into the cache.
-//            
-//            // Has only a GPU index - is the scan failing?
-//            // SCAN FAILING
-//            //   And why is this not tested?
-//            //   For prefix mapping?
-//            //   For tuple tables?
-//            // Check SDB
-//            
-//            
-//            Map<String, String> m = model.getNsPrefixMap() ;
-//            for ( Entry<String, String> e : m.entrySet() )
-//            {
-//                System.out.printf("'%s' -> '%s'\n", e.getKey(), e.getValue()) ;
-//            }
-//            
-//            // and without the flush, this fails.
-//            String prefix = model.getNsURIPrefix("http://example/") ;
-//            System.out.println("<< "+prefix) ;
-//            if ( prefix == null )
-//                System.out.println("NULL") ;
-            System.out.println("<< END") ;
-            System.exit(0) ;
-        }
-        
-        
-        
+        // 1 - CmdTDB
+        // 2 - ModTDBDataset.createDataset
+        FileOps.clearDirectory("DB") ;
+        tdb.tdbloader.main("--loc=DB", "--graph=http://example/g", "D.ttl") ;
+        System.exit(0) ;
+
         Model m = TDBFactory.createModel() ;
         FileManager.get().readModel(m, "D.ttl") ;
         m.removeAll() ;
         System.out.println("<< END") ;
         System.exit(0) ;
-        
-        
-        tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ; System.exit(0) ;
-
-//        prefixes() ; System.exit(0) ;
-//        tdb.tdbquery.main(new String[]{"--tdb=tdb.ttl", "--set=tdb:unionDefaultGraph=true", "--query=Q.arq"}) ; System.exit(0) ;
-//        //tdb.tdbdump.main("--tdb=tdb.ttl") ; System.exit(0) ;
-//        
-//        namedGraphs() ;        
-        
-        Model model = TDBFactory.createModel() ;
-        TDB.sync(model) ;
-        model = ModelFactory.createDefaultModel() ;
-        TDB.sync(model) ;
-        
-        Dataset ds = TDBFactory.createDataset() ;
-        TDB.sync(ds) ;
-        model = ds.getNamedModel("http://example/ng") ; 
-        TDB.sync(model) ;
-        System.out.println("&&&&") ;
-        System.exit(0) ;
-        reification() ;
-        
-        
-        tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ; System.exit(0) ;
-        
-        tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
-        
-        
-        tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
-        System.exit(0) ;
-        rewrite() ; System.exit(0) ;
     }
     
     private static void prefixes()
