@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MonitorModel.java,v 1.5 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: MonitorModel.java,v 1.6 2009-01-29 08:54:45 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util;
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.util;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 
 /**
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.rdf.model.impl.ModelCom;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 
 public class MonitorModel extends ModelCom {
@@ -44,18 +44,18 @@ public class MonitorModel extends ModelCom {
      * @param additions a place in which the set of newly added statements should be noted, can be null
      * @param deletions a place in which the set of newly deleted statements should be noted, can be null
      */
-    public void snapshot(List additions, List deletions) {
-        List additionsTemp = (additions != null) ? new ArrayList() : null;
-        List deletionsTemp = (deletions != null) ? new ArrayList() : null;
+    public void snapshot(List<Statement> additions, List<Statement> deletions) {
+        List<Triple> additionsTemp = (additions != null) ? new ArrayList<Triple>() : null;
+        List<Triple> deletionsTemp = (deletions != null) ? new ArrayList<Triple>() : null;
         ((MonitorGraph)getGraph()).snapshot(additionsTemp, deletionsTemp);
         if (additions != null) {
-            for (Iterator i = additionsTemp.iterator(); i.hasNext(); ) {
-                additions.add( this.asStatement((Triple)i.next()));
+            for (Iterator<Triple> i = additionsTemp.iterator(); i.hasNext(); ) {
+                additions.add( this.asStatement(i.next()));
             }
         }
         if (deletions != null) {
-            for (Iterator i = deletionsTemp.iterator(); i.hasNext(); ) {
-                deletions.add( this.asStatement((Triple)i.next()));
+            for (Iterator<Triple> i = deletionsTemp.iterator(); i.hasNext(); ) {
+                deletions.add( this.asStatement(i.next()));
             }
         }
     }

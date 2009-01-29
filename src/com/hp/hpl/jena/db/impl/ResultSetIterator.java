@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.18 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.19 $ on $Date: 2009-01-29 08:54:45 $
 */
 
 public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
@@ -266,7 +266,7 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
          then all the elements of the other iterator. Does not copy either iterator;
          they are consumed as the result iterator is consumed.
      */
-	public ExtendedIterator<T> andThen(ClosableIterator<? extends T> other) {
+	public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ) {
 		return NiceIterator.andThen(this, other);
 	}
 

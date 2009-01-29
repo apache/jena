@@ -26,8 +26,8 @@ public class RandCache implements Cache, CacheControl {
                                                // so we can identify caches
     String name;                               // e.g. when logging
 
-    HashMap map;
-    Collection collection;
+    HashMap<Object, Object> map;
+    Collection<Object> collection;
 
     protected static Log logger = LogFactory.getLog(RandCache.class);
     
@@ -39,7 +39,7 @@ public class RandCache implements Cache, CacheControl {
     RandCache(String name, int size) {
         this.size = size;
         try {
-            map = new HashMap(size * 100 / 75);  // based on .75 loadfactor
+            map = new HashMap<Object, Object>(size * 100 / 75);  // based on .75 loadfactor
         } catch (IllegalArgumentException e) {
             if ("Illegal load factor: NaN".equals(e.getMessage())) {
                 // This strange construction needs explanation.
@@ -51,7 +51,7 @@ public class RandCache implements Cache, CacheControl {
                 // which is completely mysterious but at least enables the unit tests to pass.
                 //   - der 4/5/04
                 logger.warn("Detected a NaN anomaly believed to be due to use of JDK 1.4.1");
-                map = new HashMap(size*100/75, 0.75f);
+                map = new HashMap<Object, Object>(size*100/75, 0.75f);
             } else {
                 throw e;
             }
@@ -99,7 +99,7 @@ public class RandCache implements Cache, CacheControl {
     }
 
     protected void makeSpace() {
-        Iterator iter = collection.iterator();
+        Iterator<Object> iter = collection.iterator();
 
         // we are going to remove every 3rd member of the cache
         int size = map.size();
@@ -174,5 +174,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.12 2008-12-28 19:32:36 andy_seaborne Exp $
+ * $Id: RandCache.java,v 1.13 2009-01-29 08:54:44 chris-dollin Exp $
  */

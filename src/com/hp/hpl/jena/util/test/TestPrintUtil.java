@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2006, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPrintUtil.java,v 1.4 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestPrintUtil.java,v 1.5 2009-01-29 08:54:45 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util.test;
@@ -46,7 +46,7 @@ public class TestPrintUtil extends TestCase
          PrintUtil.removePrefix("p");
          assertEquals(uri, PrintUtil.print(r));
          
-         Map map = new HashMap();
+         Map<String, String> map = new HashMap<String, String>();
          map.put("p", NS);
          PrintUtil.registerPrefixMap(map);
          assertEquals(shortform, PrintUtil.print(r));

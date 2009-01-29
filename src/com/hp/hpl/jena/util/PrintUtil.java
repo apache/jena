@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.24 2009-01-22 15:43:53 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.25 2009-01-29 08:54:45 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2009-01-22 15:43:53 $
+ * @version $Revision: 1.25 $ on $Date: 2009-01-29 08:54:45 $
  */
 public class PrintUtil {
     
@@ -81,9 +81,9 @@ public class PrintUtil {
     /**
      * Remove a set of prefix mappings from the table of known short forms
      */
-    public static void removePrefixMap(Map map) {
-        for(Iterator i = map.keySet().iterator(); i.hasNext(); ) {
-            prefixMapping.removeNsPrefix( (String) i.next() );
+    public static void removePrefixMap(Map<String, String> map) {
+        for(Iterator<String> i = map.keySet().iterator(); i.hasNext(); ) {
+            prefixMapping.removeNsPrefix( i.next() );
         }
     }
     
@@ -182,7 +182,7 @@ public class PrintUtil {
     /**
      * Print all the Triple values from a find iterator.
      */
-    public static void printOut(Iterator it) {
+    public static void printOut( Iterator<?> it ) {
         while (it.hasNext()) {
             System.out.println("   " + print(it.next()));
         }

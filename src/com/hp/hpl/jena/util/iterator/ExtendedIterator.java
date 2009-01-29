@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedIterator.java,v 1.11 2009-01-26 08:37:09 chris-dollin Exp $
+  $Id: ExtendedIterator.java,v 1.12 2009-01-29 08:54:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -35,7 +35,7 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
          then all the elements of the other iterator. Does not copy either iterator;
          they are consumed as the result iterator is consumed.
      */
-     public ExtendedIterator<T> andThen( ClosableIterator<? extends T> other );
+     public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other );
 
      /**
          return a new iterator containing only the elements of _this_ which
