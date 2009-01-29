@@ -12,7 +12,7 @@ public class Dev
 
     // src-test not in distro.  Does it matter?
     
-	// Oracle: Project to NCHAR? See suppied patch.
+	// Oracle: Project to NCHAR? See supplied patch.
 
     // Slot compilation / index form. 
     // Slightly better would be keep constant lookups separate from the SqlNode expression until the
