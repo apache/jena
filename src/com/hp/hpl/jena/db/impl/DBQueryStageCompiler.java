@@ -151,7 +151,6 @@ public final class DBQueryStageCompiler
 	*/
 	private static void compileConstraints ( DBQueryStageCompiler compiler, DBQuery query, ExpressionSet constraints ) 
 	{
-	    @SuppressWarnings("unchecked")
 	    Iterator<Expression> it = constraints.iterator();
 	    while (it.hasNext()) 
 	    {
