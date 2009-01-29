@@ -80,7 +80,7 @@ public class NodeTupleTable implements Sync, Closeable
         return iter ;
     }
     
-    /** Find by node - returnan iterator of NodeIds. Can return "null" for not found as well as NullIterator" */
+    /** Find by node - return an iterator of NodeIds. Can return "null" for not found as well as NullIterator" */
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node...nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;

@@ -11,12 +11,17 @@ import iterator.Iter;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.Tuple;
+
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
+
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.GraphTDBBase;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements BulkUpdateHandler
 {
@@ -68,29 +73,65 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
 //    public void delete(Graph g, boolean withReifications)
 //    {}
 //
+    
+    // Testcases needed
     @Override
     public void remove(Node s, Node p, Node o)
     {
-        // Reliable but slow
-        @SuppressWarnings("unchecked")
-        Iterator<Triple> iter = graph.find(s, p, o) ;
-        List<Triple> x = Iter.toList(iter) ;
-        delete(x, false) ;
+        removeWorker(s,p,o) ;
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
     }
 
     @Override
     public void removeAll()
     {
-        // Reliable but slow
-        // Materialize the triples - then delete them.
+//         removeWorker(null, null, null) ;
+//         notifyRemoveAll(); 
+        // Leave while other investigations in progress.
         @SuppressWarnings("unchecked")
         Iterator<Triple> iter = graph.find(null, null, null) ;
         List<Triple> x = Iter.toList(iter) ;
         delete(x, false) ;      // No notification on the list delete
         notifyRemoveAll();    
     }
-
+    
+    private static final int sliceSize = 1000 ;
+    
+    private void removeWorker(Node s, Node p, Node o)
+    {
+        // Delete in batches.
+        // That way, there is no active iterator when a delete 
+        // from the indexes happens.
+        
+        NodeTupleTable t = graphTDB.getNodeTupleTable() ;
+        int tupleLength = t.getTupleTable().getTupleLen() ;
+        if ( tupleLength == 4 )
+            System.err.println("Quad") ;
+        
+        while (true)
+        {
+            // Convert/cache s,p,o?
+            // The Node Cache will catch these so don't worry. 
+            Iterator<Tuple<NodeId>> iter = t.findAsNodeIds(s, p, o) ;
+            if ( iter == null )
+                return ;
+            
+            //XXX Tuple - may be a quad. 
+            @SuppressWarnings("unchecked")
+            Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
+            
+            int len = 0 ;
+            for ( ; len < sliceSize ; len++ )
+            {
+                if ( !iter.hasNext() ) break ;
+                array[len] = iter.next() ;
+            }
+            for ( int i = 0 ; i < len ; i++ )
+                t.getTupleTable().delete(array[i]) ;
+            if ( len < sliceSize )
+                break ;
+        }
+    }
 }
 
 /*
