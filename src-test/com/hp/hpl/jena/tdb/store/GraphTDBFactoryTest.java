@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class GraphTDBFactoryTest
 {
-    /** Create a graph backed with storage at a location using and BTree indexes (testing) */
+    /** Create a graph backed with storage at a location using and BTree (not B+Tree) indexes (testing) */
     public static GraphTriplesTDB createBTree(Location location)
     { 
         IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTest) ;
@@ -26,7 +26,7 @@ public class GraphTDBFactoryTest
         return FactoryGraphTDB.createGraph(builder, location) ;
     }
 
-    /** Create a graph backed with storage at a location using and BTree indexes (testing) */
+    /** Create a graph backed with storage at a location using and B+Tree indexes (testing) */
     public static GraphTriplesTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTest) ;
@@ -34,7 +34,7 @@ public class GraphTDBFactoryTest
         return FactoryGraphTDB.createGraph(builder, location) ;
     }
 
-    /** Create a graph backed with storage and BTree indexes in-memory (testing) */
+    /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
     public static GraphTriplesTDB createBTreeMem()
     { 
         IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;

@@ -16,7 +16,7 @@ final
 public class BPlusTreeParams
 {
     // Global settings
-    public static boolean CheckingTree = false ;           // Check on exit of B+Tree modifiying operations
+    public static boolean CheckingTree = false ;            // Check on exit of B+Tree modifiying operations
     public static boolean CheckingNode = false ;            // Check within BtreeNode
 
     public static void checkAll()
