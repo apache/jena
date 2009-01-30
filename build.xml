@@ -2,7 +2,6 @@
 
   <!-- ========================================== -->
   <!-- ==== Configuration  -->
-
   <property name="Name"                   value="TDB"/>
   <property name="name"                   value="tdb"/>
 

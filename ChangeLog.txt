@@ -7,6 +7,11 @@ ChangeLog for TDB
 
 ==== 0.7.2
 
+Bug fixes:
+
+- The comand line tools did not work with a location and a named graph.
+
+- removeAll(s,p,o) added.  Improve Model.removeAll()
 
 ==== 0.7.1
 

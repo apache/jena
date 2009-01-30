@@ -17,7 +17,6 @@ import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModDataset;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -32,7 +31,6 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.util.FileManager;
 
 public class ModTDBDataset extends ModDataset
@@ -84,11 +82,9 @@ public class ModTDBDataset extends ModDataset
         if ( modAssembler.getLocation() == null )
             throw new CmdException("No assembler file nor location provided") ;
         
-        // No assembler - use location (a single graph).
-        Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
-        // Check of type.
-        GraphTDB graph = (GraphTDB)model.getGraph() ;
-        return DatasetFactory.create(model) ;
+        // No assembler - use location to find a database.
+        Dataset ds = TDBFactory.createDataset(modAssembler.getLocation()) ;
+        return ds ;
     }
     
     public Location getLocation()
