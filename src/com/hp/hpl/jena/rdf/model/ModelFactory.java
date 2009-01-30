@@ -1,19 +1,17 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.57 2009-01-28 14:37:08 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.58 2009-01-30 14:50:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.AssemblerHelp;
+import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.GraphRDBMaker;
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.FileGraphMaker;
 import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
@@ -21,8 +19,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.shared.*;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.
