@@ -105,6 +105,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
     
+    public final Node getGraphNode()                    { return null ; }
     
     @Override
     protected PrefixMapping createPrefixMapping()

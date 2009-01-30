@@ -20,6 +20,11 @@ public interface GraphTDB extends Graph, Sync, Reorderable
 {
     public NodeTupleTable getNodeTupleTable() ;
     public Tuple<Node> asTuple(Triple triple) ;
+    /**
+     * Return the graph node for this graph if it's in a quad table, else return
+     * null for a triple table based (e.g. the default graph of a dataset)
+     */ 
+    public Node getGraphNode() ;
     public Location getLocation() ; 
     
 }

@@ -6,19 +6,14 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import iterator.Iter;
-
 import java.util.Iterator;
-import java.util.List;
 
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
-
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.GraphTDBBase;
 import com.hp.hpl.jena.tdb.store.NodeId;
@@ -85,14 +80,8 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
     @Override
     public void removeAll()
     {
-//         removeWorker(null, null, null) ;
-//         notifyRemoveAll(); 
-        // Leave while other investigations in progress.
-        @SuppressWarnings("unchecked")
-        Iterator<Triple> iter = graph.find(null, null, null) ;
-        List<Triple> x = Iter.toList(iter) ;
-        delete(x, false) ;      // No notification on the list delete
-        notifyRemoveAll();    
+         removeWorker(null, null, null) ;
+         notifyRemoveAll(); 
     }
     
     private static final int sliceSize = 1000 ;
@@ -104,30 +93,41 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
         // from the indexes happens.
         
         NodeTupleTable t = graphTDB.getNodeTupleTable() ;
-        int tupleLength = t.getTupleTable().getTupleLen() ;
-        if ( tupleLength == 4 )
-            System.err.println("Quad") ;
+        Node gn = graphTDB.getGraphNode() ;
+        
+        @SuppressWarnings("unchecked")
+        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
         
         while (true)
         {
             // Convert/cache s,p,o?
-            // The Node Cache will catch these so don't worry. 
-            Iterator<Tuple<NodeId>> iter = t.findAsNodeIds(s, p, o) ;
+            // The Node Cache will catch these so don't worry unduely. 
+            Iterator<Tuple<NodeId>> iter = null ;
+            if ( gn == null )
+                iter = t.findAsNodeIds(s, p, o) ;
+            else
+                iter = t.findAsNodeIds(gn, s, p, o) ;
+            
             if ( iter == null )
+                // Finished?
                 return ;
             
-            //XXX Tuple - may be a quad. 
-            @SuppressWarnings("unchecked")
-            Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
+            //Arrays.fill(array, null) ;
             
+            // Get the first sliceSize
             int len = 0 ;
             for ( ; len < sliceSize ; len++ )
             {
                 if ( !iter.hasNext() ) break ;
                 array[len] = iter.next() ;
             }
+            // Delete them.
             for ( int i = 0 ; i < len ; i++ )
+            {
                 t.getTupleTable().delete(array[i]) ;
+                array[i] = null ;
+            }
+            // Finished?
             if ( len < sliceSize )
                 break ;
         }
