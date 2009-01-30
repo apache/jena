@@ -12,7 +12,7 @@ public class Dev
     // FILTER (between(x,y)) => range on index.
 
     // removeAll (improved)
-    //    More test cases needed
+    //    ** More test cases needed
     // listSubjects etc
     
     // Documentation
