@@ -51,7 +51,7 @@ public abstract class OpExt extends OpBase
             out.ensureStartOfLine() ;
     }
     
-    /** Return the sub tag - must match teh builder */ 
+    /** Return the sub tag - must match the builder */ 
     public abstract String getSubTag() ;
 
     /** Output the arguments in legal SSE format. Multiple items, whitespace separated */ 
