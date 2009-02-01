@@ -9,11 +9,12 @@ package com.hp.hpl.jena.tdb.graph;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
-public class QueryHandlerTDB extends SimpleQueryHandler //implements QueryHandler
+public class QueryHandlerTDB extends SimpleQueryHandler implements QueryHandler
 {
 
     public QueryHandlerTDB(GraphTDB graph)

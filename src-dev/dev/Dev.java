@@ -11,11 +11,12 @@ public class Dev
     // Test cases:
     //   More for removeAll(), removeAll(s,p,o)
     //   Ordered insert, ordered removeal.
+    //   B+Tree records block chaining.
     
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
 
-    // listSubjects etc
+    // listSubjects via QueryHandlerTDB
     
     // Documentation
     //  Concurrency policy
