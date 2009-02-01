@@ -144,7 +144,7 @@ public class SystemTDB
     
     public static boolean NullOut = false ;
 
-    public static boolean Checking = false ;
+    public static boolean Checking = false ;       // This isn't used enough!
 
     // BDB related.
     public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;

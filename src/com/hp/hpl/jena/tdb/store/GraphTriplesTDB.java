@@ -101,6 +101,12 @@ public class GraphTriplesTDB extends GraphTDBBase
     {
         return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
+    
+    @Override
+    protected Iterator<Tuple<NodeId>> countThis()
+    {
+        return tripleTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
+    }
 
     @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }

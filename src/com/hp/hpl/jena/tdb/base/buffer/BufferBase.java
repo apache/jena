@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NetworkOrder;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.fill;
@@ -13,7 +15,6 @@ import static java.util.Arrays.fill;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordException;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.* ;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  
@@ -111,7 +112,7 @@ abstract class BufferBase
     final public void clear(int idx)    { clear(idx, 1) ; }
     
     /** Is the record at idx set clear or not?
-        This is done without regrad to buffer size.
+        This is done without regard to buffer size.
         Requires NullOut to be accurate.
         Testing.
      */
@@ -122,7 +123,11 @@ abstract class BufferBase
         int y = (idx+1)*slotLen ;
         for ( int i = x ; i < y ; i++ )
             if ( bb.get(i) != FillByte )
+            {
+//                byte b = bb.get(i) ;
+//                lib.ByteBufferLib.print(bb) ;
                 return false ;
+            }
         return true ;
     }
 

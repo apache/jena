@@ -106,7 +106,25 @@ public class GraphNamedTDB extends GraphTDBBase
         return new MapperIteratorQuads(graphNode, iter) ;
     }
 
+    @Override
+    protected Iterator<Tuple<NodeId>> countThis()
+    {
+        NodeId gn = getGraphNodeId() ;
+        Tuple<NodeId> t = Tuple.create(gn, null, null, null) ;
+        
+        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
+        return iter ;
+    }
+    
     public final Node getGraphNode()                              { return graphNode ; }
+    
+    private NodeId graphNodeId = null ;
+    public final NodeId getGraphNodeId()
+    {
+        if ( graphNodeId == null )
+            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        return graphNodeId ;
+    }
 
     @Override
     public Tuple<Node> asTuple(Triple triple)

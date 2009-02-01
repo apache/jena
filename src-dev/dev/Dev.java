@@ -8,11 +8,13 @@ package dev;
 
 public class Dev
 {
+    // Test cases:
+    //   More for removeAll(), removeAll(s,p,o)
+    //   Ordered insert, ordered removeal.
+    
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
 
-    // removeAll (improved)
-    //    ** More test cases needed
     // listSubjects etc
     
     // Documentation

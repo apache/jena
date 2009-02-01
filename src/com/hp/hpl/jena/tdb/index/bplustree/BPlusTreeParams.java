@@ -10,14 +10,16 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.*;
 import org.slf4j.Logger;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Configuration for a B+Tree */ 
 final
 public class BPlusTreeParams
 {
     // Global settings
-    public static boolean CheckingTree = false ;            // Check on exit of B+Tree modifiying operations
-    public static boolean CheckingNode = false ;            // Check within BtreeNode
+    // 
+    public static boolean CheckingTree = SystemTDB.Checking ;   // Check on exit of B+Tree modifiying operations
+    public static boolean CheckingNode = false ;                // Check within BtreeNode
 
     public static void checkAll()
     { 
@@ -27,6 +29,12 @@ public class BPlusTreeParams
     
     public static boolean DumpTree = false ;                 // Dump the tree during top level logging 
     public static boolean Logging = false ;                  // Turn on/off logging the hard way
+    
+    public static void infoAll()
+    { 
+        DumpTree = true ;
+        Logging = true ;
+    }
 
     /* The gap is extra space in a node - some books have node size as 2*N 
      * (often for the classic insertion algorithm where it's easier to implement

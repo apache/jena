@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import iterator.Iter;
+
 import java.util.Iterator;
+
+import lib.Tuple;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.Capabilities;
@@ -53,6 +57,14 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected Reifier constructReifier()
     {
         return new Reifier2(this) ;
+    }
+    
+    protected abstract Iterator<Tuple<NodeId>> countThis() ;
+    @Override
+    protected final int graphBaseSize()
+    {
+        Iterator<Tuple<NodeId>> iter = countThis() ;
+        return (int)Iter.count(iter) ;
     }
     
     // Convert from Iterator<Triple> to ExtendedIterator

@@ -36,13 +36,26 @@ public class ByteBufferLib
 
     public static void print(PrintStream out, ByteBuffer byteBuffer)
     {
-        int maxSlots = 8 ;
         out.printf("ByteBuffer[pos=%d lim=%d cap=%d]",byteBuffer.position(), byteBuffer.limit(), byteBuffer.capacity()) ;
+        
+        // Print bytes.
         int i = 0 ;
-        for ( ; i < maxSlots && 4*i < byteBuffer.limit() ; i++ )
-            out.printf(" 0x%04X", byteBuffer.getInt(4*i)) ;
-        if ( i < maxSlots )
+        int maxBytes = 3*24 ;
+        for ( ; i < maxBytes && i < byteBuffer.limit() ; i++ )
+        {
+            if ( i%24 == 0 )
+                out.println() ;
+            out.printf(" 0x%02X", byteBuffer.get(i)) ;
+        }
+        if ( i < maxBytes )
             out.print(" ...") ;
+        // Print as 4-byte ints
+//        int maxSlots = 8 ;
+//        int i = 0 ;
+//        for ( ; i < maxSlots && 4*i < byteBuffer.limit() ; i++ )
+//            out.printf(" 0x%04X", byteBuffer.getInt(4*i)) ;
+//        if ( i < maxSlots )
+//            out.print(" ...") ;
         out.println();
     }
 

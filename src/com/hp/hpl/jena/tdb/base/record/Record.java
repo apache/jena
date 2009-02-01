@@ -33,7 +33,7 @@ public class Record //implements Comparable<Record>
         this.value = value ;
         if ( SystemTDB.Checking )
         {
-            if ( value.length == 0 )
+            if ( value != null && value.length == 0 )
                 throw new RecordException("Zero length value") ;
         }
     }
