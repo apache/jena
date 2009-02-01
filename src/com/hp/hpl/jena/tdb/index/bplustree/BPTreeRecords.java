@@ -135,7 +135,7 @@ public final class BPTreeRecords extends BPTreePage
         return r ;
     }
 
-    /** Split: place old high half in 'other'. Return the new (upper) BPTreePage.
+    /** Split: place old high half in 'other'. Return the new (upper) BPTreeRecords(BPTreePage).
      * Split is the high end of the low page.
      */
     @Override final
@@ -212,9 +212,14 @@ public final class BPTreeRecords extends BPTreePage
         // Copy right to top of left.
         // The other way round needs a shift as well.
         right.rBuff.copyToTop(left.rBuff) ;
-//        right.rBuff.copy(0, left.rBuff, left.rBuff.size(), right.rBuff.size()) ;
+        // Same as: right.rBuff.copy(0, left.rBuff, left.rBuff.size(), right.rBuff.size()) ;
         right.rBuff.clear() ;
-        left.bpTree.getRecordsMgr().release(left.getId()) ;
+        
+        //???? right is released by the caller.  left is still in use.
+        //left.bpTree.getRecordsMgr().release(left.getId()) ;
+        
+        // Bug fix.  Fix up link chain.
+        left.rBuffPage.setLink(right.rBuffPage.getLink()) ;
         return left ;
     }
     
@@ -318,7 +323,7 @@ public final class BPTreeRecords extends BPTreePage
     
     @Override
     public String toString()
-    { return String.format("BPTreePage[id=%d]: %s",getId(), rBuff.toString()); }
+    { return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString()); }
     
     @Override
     public final void checkNode()

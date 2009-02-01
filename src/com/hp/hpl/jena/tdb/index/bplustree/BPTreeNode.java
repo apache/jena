@@ -786,6 +786,7 @@ public final class BPTreeNode extends BPTreePage
         // /==\ + key + /==\ ==> /====\ 
         Record splitKey = records.get(dividingSlot) ; 
         BPTreePage page = left.merge(right, splitKey) ;
+        // Must release right (not done in merge 
         
         if ( page == left )
         {
@@ -844,6 +845,7 @@ public final class BPTreeNode extends BPTreePage
     {
         // Merge blocks - does not adjust the parent.
         // Copy right to top of left.
+        // Caller releases 'right' (needed for testing code).
 
         left.records.add(splitKey) ;
         
