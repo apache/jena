@@ -3,7 +3,7 @@ PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example/>
 PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
 
-SELECT *
+SELECT ?a ?b (?a+?b as ?c)
 {
     (:p) list:member ?p .
     (1 2) list:member ?s .
