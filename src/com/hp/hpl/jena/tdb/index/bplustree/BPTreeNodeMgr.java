@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_BRANCH;
 import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_LEAF;
-import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
+//import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
 import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
 
 import java.nio.ByteBuffer;
@@ -76,7 +76,7 @@ final public class BPTreeNodeMgr
     { 
         int id = blockMgr.allocateId() ;
         ByteBuffer bb = blockMgr.allocateBuffer(id) ;
-        BPTreeNode n = converter.createFromByteBuffer(bb, BTREE_BRANCH) ;
+        BPTreeNode n = converter.createFromByteBuffer(bb, BPTREE_BRANCH) ;
         n.setId(id) ;
         n.isLeaf = false ;
         n.parent = parent ;
@@ -206,16 +206,16 @@ final public class BPTreeNodeMgr
      *    4-X:        Records: b+tree.MaxRec*record length
      *    X- :        Pointers: b+tree.MaxPtr*ptr length 
      */
-    private static BPTreeNode overlay(BPlusTree bTree, ByteBuffer byteBuffer, boolean asLeaf, int count)
+    private static BPTreeNode overlay(BPlusTree bpTree, ByteBuffer byteBuffer, boolean asLeaf, int count)
     {
 //        if ( byteBuffer.order() != Const.NetworkOrder )
 //            throw new BTreeException("ByteBuffer in wrong order") ;
 
         // Fix up the id later.
-        BPTreeNode n = new BPTreeNode(bTree, -1, byteBuffer) ;
+        BPTreeNode n = new BPTreeNode(bpTree, -1, byteBuffer) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBPTreeNode(n, bTree, byteBuffer, asLeaf, count) ; 
+        formatBPTreeNode(n, bpTree, byteBuffer, asLeaf, count) ; 
         return n ;
     }
         
