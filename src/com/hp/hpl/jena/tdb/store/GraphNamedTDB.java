@@ -38,6 +38,8 @@ public class GraphNamedTDB extends GraphTDBBase
     private final DatasetGraphTDB dataset ;
     private final QuadTable quadTable ; 
     private final Node graphNode ;
+    private NodeId graphNodeId = null ;
+
     private final ReorderTransformation transform ;
 
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
@@ -116,9 +118,11 @@ public class GraphNamedTDB extends GraphTDBBase
         return iter ;
     }
     
-    public final Node getGraphNode()                              { return graphNode ; }
+    /** Graph node */
+    public final Node getGraphNode()
+    { return graphNode ; }
     
-    private NodeId graphNodeId = null ;
+    /** Graph node as NodeId */
     public final NodeId getGraphNodeId()
     {
         if ( graphNodeId == null )

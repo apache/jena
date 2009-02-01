@@ -10,24 +10,16 @@ import iterator.Iter;
 
 import java.util.Iterator;
 
-import lib.Tuple;
-
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Reifier;
-import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB;
-import com.hp.hpl.jena.tdb.graph.GraphBase2;
-import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB;
-import com.hp.hpl.jena.tdb.graph.Reifier2;
-import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.QueryHandler;
+
+import com.hp.hpl.jena.sparql.core.Quad;
+
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.graph.*;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 /** General operations for TDB graphs (free-satnding graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
@@ -59,11 +51,13 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         return new Reifier2(this) ;
     }
     
-    protected abstract Iterator<Tuple<NodeId>> countThis() ;
+    /** Iterator over something that, when counted, is the graph size. */
+    protected abstract Iterator<?> countThis() ;
+
     @Override
     protected final int graphBaseSize()
     {
-        Iterator<Tuple<NodeId>> iter = countThis() ;
+        Iterator<?> iter = countThis() ;
         return (int)Iter.count(iter) ;
     }
     
