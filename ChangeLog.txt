@@ -13,6 +13,8 @@ Bug fixes:
 
 - removeAll(s,p,o) added.  Improve Model.removeAll()
 
+- Bug fixes to B+tree indexing on deletion. 
+
 ==== 0.7.1
 
 Bug fixes:
