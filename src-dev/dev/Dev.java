@@ -12,7 +12,8 @@ public class Dev
     // Test cases:
     //   More for removeAll(), removeAll(s,p,o) [DONE - current tests are sufficient] 
     //   B+Tree records block chaining [DONE - current tests are sufficient]
-    //   With and without block caching on memory block managers.
+    //   With and without block caching on memory block managers [DONE]
+    //   Snapshot done.
     // =====
     
     // Quad pattern execution/optimization with GRAPH ?g { .... }
