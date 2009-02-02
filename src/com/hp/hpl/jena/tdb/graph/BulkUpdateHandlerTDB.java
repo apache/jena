@@ -73,10 +73,15 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
     @Override
     public void remove(Node s, Node p, Node o)
     {
+        s = fix(s) ;
+        p = fix(p) ;
+        o = fix(o) ;
         removeWorker(s,p,o) ;
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
     }
 
+    private static Node fix(Node n) { return (n!=null)? n : Node.ANY ; }
+    
     @Override
     public void removeAll()
     {

@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.*;
 
 import com.hp.hpl.jena.graph.Graph;
 
@@ -57,6 +54,11 @@ public class TestPGraph extends AbstractTestGraph2
     {
         return graph ;
     }
+    
+    @Override @Test public void remove_01() {}
+    @Override @Test public void remove_02() {}
+    @Override @Test public void remove_03() {}
+    @Override @Test public void removeAll_01() {}
 }
 
 /*

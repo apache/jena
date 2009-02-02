@@ -172,17 +172,52 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(t1)) ;
     }
 
+    @Test public void remove_01()
+    {
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        g.add(t1) ;
+        g.getBulkUpdateHandler().remove(null, null, null) ;
+        assertEquals(0, g.size()) ;
+    }
+    
+    @Test public void remove_02()
+    {
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        g.add(t1) ;
+        g.getBulkUpdateHandler().remove(s2, null, null) ;
+        assertEquals(1, g.size()) ;
+        assertTrue(g.contains(t1)) ;
+    }
+
+    @Test public void remove_03()
+    {
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        g.add(t1) ;
+        g.getBulkUpdateHandler().remove(s1, null, null) ;
+        assertEquals(0, g.size()) ;
+    }
+
+    @Test public void removeAll_01()
+    {
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        Triple t2 = triple(s1, p1, o2) ;
+        Triple t3 = triple(s2, p1, o1) ;
+        Triple t4 = triple(s2, p1, o2) ;
+        g.add(t1) ;
+        g.add(t2) ;
+        g.add(t3) ;
+        g.add(t4) ;
+        g.getBulkUpdateHandler().removeAll() ;
+        assertEquals(0, g.size()) ;
+    }
+       
     
     // Tests : triples and values.
     
-    
-    
-    // XXX More graph tests
-    
-    //    @Test public void graph_01()
-//    {
-//        Graph g = emptyGraph() ;
-//    }
 }
 
 /*

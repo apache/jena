@@ -3,7 +3,7 @@
 
   <settings defaultResolver="resolver-chain"/>
 
-  <property name="sftp.root" value="repo-dev/com/hp/hpl/jena/" override="false"/>
+  <property name="sftp.root" value="repo-dev/com/hp/hpl/jena" override="false"/>
 
   <!-- Resolvers used for getting out dependencies -->
   <include file="${ivy.settings.dir}/ivy-resolvers.xml" />
