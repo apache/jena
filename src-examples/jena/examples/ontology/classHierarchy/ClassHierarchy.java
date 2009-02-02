@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: ClassHierarchy.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:24:01 $
+ * Last modified on   $Date: 2009-02-02 20:38:12 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.2 2009-01-16 17:24:01 andy_seaborne Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.3 2009-02-02 20:38:12 andy_seaborne Exp $
  */
 public class ClassHierarchy {
     // Constants
@@ -115,7 +115,7 @@ public class ClassHierarchy {
         indent( out, depth );
 
         if (c.isRestriction()) {
-            renderRestriction( out, (Restriction) c.as( Restriction.class ) );
+            renderRestriction( out, c.as( Restriction.class ) );
         }
         else {
             if (!c.isAnon()) {

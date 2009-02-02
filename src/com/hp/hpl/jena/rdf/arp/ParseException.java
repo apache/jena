@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.19 2009-01-16 17:23:49 andy_seaborne Exp $
+ *  * $Id: ParseException.java,v 1.20 2009-02-02 20:38:12 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -179,7 +179,7 @@ public class ParseException extends SAXParseException implements
      * @return The field name from {@link ARPErrorNumbers} with this error number, or null
      */
     static public String errorCodeName(int errNo) {
-        Class c = ARPErrorNumbers.class;
+        Class<?> c = ARPErrorNumbers.class;
         java.lang.reflect.Field flds[] = c.getDeclaredFields();
         for (int i = 0; i < flds.length; i++) {
             try {
@@ -201,7 +201,7 @@ public class ParseException extends SAXParseException implements
      * @return The integer value or -1, if none.
      */
     static public int errorCode(String upper) {
-        Class c = ARPErrorNumbers.class;
+        Class<?> c = ARPErrorNumbers.class;
         try {
             java.lang.reflect.Field fld = c.getField(upper);
             return fld.getInt(null);

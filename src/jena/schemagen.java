@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:20 $
+ * Last modified on   $Date: 2009-02-02 20:38:12 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.57 2008-12-28 19:32:20 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.58 2009-02-02 20:38:12 andy_seaborne Exp $
  */
 public class schemagen {
     // Constants
@@ -955,7 +955,7 @@ public class schemagen {
 
         // count all of the namespaces used in the model
         for (StmtIterator i = m_source.listStatements(); i.hasNext(); ) {
-            Statement s = (Statement) i.next();
+            Statement s = i.next();
             countNamespace( s.getSubject(), nsCount );
             countNamespace( s.getPredicate(), nsCount );
             if (s.getObject().isResource()) {
@@ -1164,7 +1164,7 @@ public class schemagen {
         String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_INDIVIDUAL_TEMPLATE;
 
         for (Iterator i = selectIndividuals(); i.hasNext(); ) {
-            Individual ind = (Individual) ((Resource) i.next()).as( Individual.class );
+            Individual ind = ((Resource) i.next()).as( Individual.class );
 
             // do we have a local class resource
             Resource cls = ind.getOntClass();

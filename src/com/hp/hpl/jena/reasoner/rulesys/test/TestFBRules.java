@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.53 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.54 2009-02-02 20:38:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.53 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.54 $ on $Date: 2009-02-02 20:38:12 $
  */
 public class TestFBRules extends TestCase {
     
@@ -737,7 +737,7 @@ public class TestFBRules extends TestCase {
         infgraph.prepare();
         Graph result = infgraph.getDeductionsGraph();
         assertEquals(1, result.size());
-        Triple tr = (Triple)result.find(null, null, null).next();
+        Triple tr = result.find(null, null, null).next();
         Node nowN = tr.getObject();
         assertTrue(nowN.isLiteral());
         Object nowO = nowN.getLiteralValue();

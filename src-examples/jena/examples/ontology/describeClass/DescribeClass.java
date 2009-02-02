@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Jul-2003
  * Filename           $RCSfile: DescribeClass.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 17:49:06 $
+ * Last modified on   $Date: 2009-02-02 20:38:12 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.1 2005-10-06 17:49:06 andy_seaborne Exp $
+ * @version CVS $Id: DescribeClass.java,v 1.2 2009-02-02 20:38:12 andy_seaborne Exp $
  */
 public class DescribeClass {
     // Constants
@@ -171,7 +171,7 @@ public class DescribeClass {
 
     protected void renderValue( PrintStream out, RDFNode value ) {
         if (value.canAs( OntClass.class )) {
-            renderClassDescription( out, (OntClass) value.as( OntClass.class ) );
+            renderClassDescription( out, value.as( OntClass.class ) );
         }
         else if (value instanceof Resource) {
             Resource r = (Resource) value;

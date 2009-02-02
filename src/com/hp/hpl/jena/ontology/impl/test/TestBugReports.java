@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.98 $
+ * Revision           $Revision: 1.99 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
+ * Last modified on   $Date: 2009-02-02 20:38:13 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -208,7 +208,7 @@ public class TestBugReports
         Resource owlClassRes = m.getResource(OWL.Class.getURI());
 
         // now can we see this as an OntClass?
-        OntClass c = (OntClass) owlClassRes.as(OntClass.class);
+        OntClass c = owlClassRes.as(OntClass.class);
         assertNotNull("OntClass c should not be null", c);
 
         //(OntClass) (ontModel.getProfile().CLASS()).as(OntClass.class);
@@ -225,7 +225,7 @@ public class TestBugReports
         OntModel ontModel = ModelFactory.createOntologyModel(spec, null); // ProfileRegistry.OWL_LANG);
         ontModel.createAllDifferent();
         assertTrue(ontModel.listAllDifferent().hasNext());
-        AllDifferent allDifferent = (AllDifferent) ontModel.listAllDifferent().next();
+        AllDifferent allDifferent = ontModel.listAllDifferent().next();
         //allDifferent.setDistinct(ontModel.createList());
         assertFalse(allDifferent.listDistinctMembers().hasNext());
     }
@@ -347,7 +347,7 @@ public class TestBugReports
 
         OntModel oldOntModel = ModelFactory.createOntologyModel(spec, null);
         oldOntModel.read(BASE + "Import-normalizerBug.owl", FileUtils.langXMLAbbrev);
-        Graph oldSubGraph = (Graph) oldOntModel.getSubGraphs().iterator().next();
+        Graph oldSubGraph = oldOntModel.getSubGraphs().iterator().next();
         final int oldTripleCount = getTripleCount(oldSubGraph);
         OntClass ontClass = oldOntModel.getOntClass(BASE + "normalizerBug.owl#SuperClass");
         oldSubGraph.add(new Triple(ontClass.asNode(), RDF.type.asNode(), OWL.DeprecatedClass.asNode()));
@@ -362,7 +362,7 @@ public class TestBugReports
 
         OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
         newOntModel.read(BASE + "Import-normalizerBug.owl", FileUtils.langXMLAbbrev);
-        Graph newSubGraph = (Graph) newOntModel.getSubGraphs().iterator().next();
+        Graph newSubGraph = newOntModel.getSubGraphs().iterator().next();
         assertFalse(newOntModel == oldOntModel);  // OK!
         assertFalse(newSubGraph == oldSubGraph);  // FAILS!
         final int newTripleCount = getTripleCount(newSubGraph);
@@ -1091,11 +1091,11 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
 
         Resource r = (Resource) OWL.Thing.inModel( m );
-        OntClass thingClass = (OntClass) r.as( OntClass.class );
+        OntClass thingClass = r.as( OntClass.class );
         assertNotNull( thingClass );
 
         r = (Resource) OWL.Nothing.inModel( m );
-        OntClass nothingClass = (OntClass) r.as( OntClass.class );
+        OntClass nothingClass = r.as( OntClass.class );
         assertNotNull( nothingClass );
 
         OntClass c = m.getOntClass( OWL.Thing.getURI() );

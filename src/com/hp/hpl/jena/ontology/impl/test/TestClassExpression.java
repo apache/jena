@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 15:24:35 $
+ * Last modified on   $Date: 2009-02-02 20:38:13 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.39 2009-01-26 15:24:35 andy_seaborne Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.40 2009-02-02 20:38:13 andy_seaborne Exp $
  */
 public class TestClassExpression
     extends OntTestBase
@@ -186,8 +186,8 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) throws Exception {
 					Profile prof = m.getProfile();
 					EnumeratedClass A = m.createEnumeratedClass( NS + "A", null );
-					OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-					OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+					OntResource a = m.getResource( NS + "a" ).as( OntResource.class );
+					OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
 
 					A.addOneOf( a );
 					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 09:29:57 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-02-02 20:38:12 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.18 2009-01-27 09:29:57 chris-dollin Exp $
+ * @version CVS $Id: TestList.java,v 1.19 2009-02-02 20:38:12 andy_seaborne Exp $
  */
 public class TestList
     extends TestCase
@@ -167,7 +167,7 @@ public class TestList
         
             Resource listHead = root.getRequiredProperty( m.getProperty( NS + "p" ) ).getResource();
         
-            RDFList l = (RDFList) listHead.as( RDFList.class );
+            RDFList l = listHead.as( RDFList.class );
             assertNotNull( "as(RDFList) should not return null for root", l );
         
             return l;
@@ -337,7 +337,7 @@ public class TestList
             m.add( list1, RDF.first, "george" );
             m.add( list1, RDF.rest, nil );
             
-            RDFList l2 = (RDFList) list1.as( RDFList.class );
+            RDFList l2 = list1.as( RDFList.class );
             assertNotNull( "as(RDFList) should not return null for root", l2 );
             checkValid( "settail2", l2, true );
             
@@ -368,7 +368,7 @@ public class TestList
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list = (RDFList) nil.as( RDFList.class );
+            RDFList list = nil.as( RDFList.class );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "e" ),
@@ -411,7 +411,7 @@ public class TestList
             Property p = m.createProperty( NS, "p");
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list = (RDFList) nil.as( RDFList.class );
+            RDFList list = nil.as( RDFList.class );
             
             Resource[] toAdd = new Resource[] {
                                     m.createResource( NS + "a" ),
@@ -557,7 +557,7 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list = (RDFList) nil.as( RDFList.class );
+            RDFList list = nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "a" );
             
@@ -583,7 +583,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list = (RDFList) nil.as( RDFList.class );
+            RDFList list = nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -622,7 +622,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list = (RDFList) nil.as( RDFList.class );
+            RDFList list = nil.as( RDFList.class );
             
             Resource r = m.createResource( NS + "foo" );
             
@@ -747,8 +747,8 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
             
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList list0 = (RDFList) nil.as( RDFList.class );
-            RDFList list1 = (RDFList) nil.as( RDFList.class );
+            RDFList list0 = nil.as( RDFList.class );
+            RDFList list1 = nil.as( RDFList.class );
             
             Resource r0 = m.createResource( NS + "x" );
             Resource r1 = m.createResource( NS + "y" );
@@ -773,7 +773,7 @@ public class TestList
             assertEquals( "Model should be empty after deleting two lists", 0, m.size() );
             
             // selective remove
-            RDFList list2 = ((RDFList) nil.as( RDFList.class ))
+            RDFList list2 = (nil.as( RDFList.class ))
                             .cons( r2 )
                             .cons( r1 )
                             .cons( r0 );
@@ -809,7 +809,7 @@ public class TestList
             Model m = ModelFactory.createDefaultModel();
            
             Resource nil = m.getResource( RDF.nil.getURI() );
-            RDFList nilList = (RDFList) nil.as( RDFList.class );
+            RDFList nilList = nil.as( RDFList.class );
             
             // create a list of foos
             Resource[] r0 = new Resource[] {
@@ -895,7 +895,7 @@ public class TestList
             assertEquals( "User list length ", 2, ul.size() );
             assertEquals( "head of user list ", a, ul.getHead() );
             
-            RDFList l = (RDFList) ul.as( RDFList.class );
+            RDFList l = ul.as( RDFList.class );
             assertNotNull( "RDFList facet of user-defined list subclass", l );
         }
     }
@@ -928,7 +928,7 @@ public class TestList
             Resource b = m.createResource( NS + "b" );
             
             Resource empty = m.createResource( UserDefListImpl.NIL.getURI() );
-            UserDefList ul = (UserDefList) empty.as( UserDefList.class );
+            UserDefList ul = empty.as( UserDefList.class );
             assertNotNull( "UserList facet of empty list", ul );
             
             UserDefList ul0 = (UserDefList) ul.cons( b );
