@@ -129,7 +129,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         else
             blockMgr.put(id, block) ;
 
-        //cache.remove(id) ;
+        // ????
         readCache.putObject(id, block) ;
     }
     
@@ -138,7 +138,8 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         log("Free  : %d", id) ;
         readCache.removeObject(id) ;
-        writeCache.removeObject(id) ;
+        if ( writeCache != null )
+            writeCache.removeObject(id) ;
         blockMgr.freeBlock(id) ;
     }
     

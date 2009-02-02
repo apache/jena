@@ -613,13 +613,15 @@ public final class BPTreeNode extends BPTreePage
         
         int x = findSlot(rec) ;
 
-        // If x is >= 0, will need to adjust this 
+        // If x is >= 0, may need to adjust this 
         int y = convert(x) ;
         BPTreePage page = get(y) ;
         
+        boolean thisPutNeeded = false ;
         if ( page.isMinSize() )     // Can't be root - we decended in the get(). 
         {
             page = rebalance(page, y) ;   // Flushes nodes
+            thisPutNeeded = true ;
             // May have moved/removed at x.  Find again. YUK.
             x = findSlot(rec) ;
             if ( CheckingNode )
@@ -631,10 +633,17 @@ public final class BPTreeNode extends BPTreePage
         
         // Go to bottom
         // Need to return the new key.
+        // Pass down index ****
         Record r2 =  page.internalDelete(rec) ;
         if ( x >= 0 )
+        {
             // YUK
             records.set(x, keyRecord(page.maxRecord())) ;
+            // Who else has put() this?
+            thisPutNeeded = true ;
+        }
+        if ( thisPutNeeded )
+            this.put();
         return r2 ;
     }
 
@@ -717,6 +726,7 @@ public final class BPTreeNode extends BPTreePage
                 log.debug("rebalance/shiftRight") ;
             
             // Move elements around.
+            // Has not done "this.put()" yet.
             shiftRight(left, n, idx-1) ;
             
             if ( logging() )
@@ -784,55 +794,63 @@ public final class BPTreeNode extends BPTreePage
         }
         
         // /==\ + key + /==\ ==> /====\ 
-        Record splitKey = records.get(dividingSlot) ; 
+        Record splitKey = records.get(dividingSlot) ;
         BPTreePage page = left.merge(right, splitKey) ;
-        // Must release right (not done in merge 
+        // Must release right (not done in merge)
+        if ( logging() )
+            log.debug("-- merge: "+page) ;
+
+        left.put();
+        right.release() ;
         
-        if ( page == left )
-        {
-            // Depending on whether there is a gap or not.
-            if ( CheckingNode && ! left.isFull() )
-                error("Inconsistent node size: %d", left.getCount()) ; 
+        if ( page == right )
+            error("Returned page is not the left") ;
             
-            // Remove from parent (which is "this")
-            shuffleDown(dividingSlot) ;
-            // Which pointer goes?
             
-            left.put();
-            right.release() ;
-            this.put();
-            internalCheckNodeDeep() ;
-            if ( logging() )
-            {
-                log.debug("<< merge: "+this) ;
-                log.debug("<< left:  "+left) ;
-            }
-            return left ;
-        }
-        else if ( page == right )
+        // Depending on whether there is a gap or not.
+        if ( CheckingNode && ! left.isFull() )
+            error("Inconsistent node size: %d", left.getCount()) ; 
+
+
+        // Remove from parent (which is "this")
+        shuffleDown(dividingSlot) ;
+        // Which pointer goes?
+
+
+        this.put();
+        internalCheckNodeDeep() ;
+        if ( logging() )
         {
-            // Never happnes?
-            // Depending on whether there is a gap or not.
-            if ( CheckingNode && ! right.isFull() )
-                error("Inconsistent node size: %d", right.getCount()) ; 
-            // Remove from parent (which is "this")
-            shuffleDown(dividingSlot) ;
-            right.put() ;
-            left.release() ;
-            this.put() ;
-            internalCheckNodeDeep() ;
-            if ( logging() )
-            {
-                log.debug("<< merge: "+this) ;
-                log.debug("<< right:  "+right) ;
-            }
-            return right ;
+            log.debug("<< merge: "+this) ;
+            log.debug("<< left:  "+left) ;
         }
-        else
-        {
-            error("merge: returned page is neither left nor right") ;
-            return null ; 
-        }
+        return left ;
+        
+//         }
+//        else if ( page == right )
+//        {
+//            // Never happnes?
+//            // Depending on whether there is a gap or not.
+//            if ( CheckingNode && ! right.isFull() )
+//                error("Inconsistent node size: %d", right.getCount()) ; 
+//            // Remove from parent (which is "this")
+//            shuffleDown(dividingSlot) ;
+//            right.put() ;
+//            left.release() ;
+//            this.put() ;
+//            internalCheckNodeDeep() ;
+//            if ( logging() )
+//            {
+//                log.debug("<< merge: "+this) ;
+//                log.debug("<< right:  "+right) ;
+//            }
+//            return right ;
+//        }
+//        else
+//        {
+//            error("merge: returned page is neither left nor right") ;
+//            return null ; 
+//        }
     }
 
     @Override
@@ -877,7 +895,7 @@ public final class BPTreeNode extends BPTreePage
         
         left.put() ;
         right.put() ;
-        this.put();
+        // Do later -- this.put();
         if ( logging() )
         {
             log.debug("<< shiftRight: this:  "+this) ;
@@ -901,7 +919,7 @@ public final class BPTreeNode extends BPTreePage
         
         left.put() ;
         right.put() ;
-        this.put();
+        // Do this later - this.put();
         if ( logging() )
         {
             log.debug("<< shiftLeft: this:  "+this) ;

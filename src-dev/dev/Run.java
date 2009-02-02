@@ -305,12 +305,13 @@ public class Run
              {
                  //List<Record> x =  intToRecord(keys2) ;
                  int count = 0 ;
-                 int debug = 0x00A0 ;
+                 int debug = -1 ; // 0x00FA ;
                  
                  for ( int v : keys2 )
                  {
-                     System.out.println() ;
-                     System.out.println() ;
+                     if ( v == debug )
+                        System.out.println() ;
+                         
                      Record r = intToRecord(v) ;
                      System.out.printf("==== Delete: %d (0x%04X)\n",v,v) ;
                      

@@ -18,7 +18,8 @@ public class BlockMgrFactory
     public static BlockMgr createMem(String indexName, int blockSize)
     {
         BlockMgr blockMgr = new BlockMgrMem(blockSize) ;
-        //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
+        // Small cache - testing.
+        blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         return blockMgr ;
     }
     
@@ -34,8 +35,6 @@ public class BlockMgrFactory
         }
         throw new TDBException("Unknown file mode: "+SystemTDB.fileMode()) ;
     }        
-    
- 
 
     /** Create a NIO Block Manager */
     public static BlockMgr createMMapFile(String filename, int blockSize)
