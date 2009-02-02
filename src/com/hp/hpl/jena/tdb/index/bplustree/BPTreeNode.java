@@ -1236,6 +1236,24 @@ public final class BPTreeNode extends BPTreePage
         {
             if ( ptrs.get(i) < 0 ) 
                 error("Node: %d: Invalid child pointer @%d :: %s", id, i , this) ;
+
+            if ( isLeaf )
+            {
+                int ptr = ptrs.get(i) ;
+                BPTreeRecords records = bpTree.getRecordsMgr().get(ptr) ;
+                int id = records.getId() ;
+                if ( id != ptrs.get(i) )
+                    error("Records: Block @%d has a different id: %d :: %s", id, i, this) ;
+                int link = records.getLink() ;
+                // Don't check if +1 does not exist.
+                if ( i != count )
+                {
+                    int id2 = bpTree.getRecordsMgr().get(ptrs.get(i)).getLink() ;
+                    if ( link != id2 )
+                        error("Records: Link not to next block @%d/@%d has a different id: %d :: %s", id, id2, i, records) ;
+                }
+            }
+            
         }
             
         // Check empty is empty
@@ -1291,9 +1309,12 @@ public final class BPTreeNode extends BPTreePage
             // Look deeper.
             if ( ! ( n instanceof BPTreeNode ) )
             {
+                // Records.
                 n.checkNodeDeep() ;
                 continue ;
             }
+            
+            // Valid pointer?
             if ( isLeaf )
             {
                 if ( ! bpTree.getRecordsMgr().getBlockMgr().valid(ptrs.get(i)) )
@@ -1305,6 +1326,7 @@ public final class BPTreeNode extends BPTreePage
                     error("Node: %d: Dangling ptr in block @%d :: %s", id, i, this) ;
             }
 
+            // Calc new min/max.
             if ( i == 0 ) 
                 max1 = records.get(0) ;
             else if ( i == count )

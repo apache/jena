@@ -10,6 +10,8 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
 import static java.lang.String.format;
 
+import iterator.Iter;
+
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -316,10 +318,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
 
     public long size()
     {
-        return -1 ;
+        Iterator<Record> iter = iterator() ;
+        return Iter.count(iter) ;
     }
     
-    public long sizeByCounting()
+    long sizeByCounting()
     {
         return root.size() ;
     }

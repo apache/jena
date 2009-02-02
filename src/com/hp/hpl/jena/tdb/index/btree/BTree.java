@@ -10,6 +10,8 @@ import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingBTree;
 import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode;
 import static java.lang.String.format;
 
+import iterator.Iter;
+
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -253,7 +255,10 @@ public class BTree implements Iterable<Record>, RangeIndex
     
     @Override
     public long size()
-    { return -1 ; }
+    { 
+        Iterator<Record> iter = iterator() ;
+        return Iter.count(iter) ;
+    }
 
     public long sessionTripleCount()
     {

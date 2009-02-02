@@ -312,10 +312,10 @@ public class ExtHash implements Index
 
     @Override
     public long size()
-    { return -1 ; }
+    { return count() ; }
 
     //@Override
-    /** Explciitly count the items in the hash table */
+    /** Explicitly count the items in the hash table */
     public long count()
     {
         Set<Integer> seen = new HashSet<Integer>() ;

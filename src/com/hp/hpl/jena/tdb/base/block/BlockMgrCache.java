@@ -132,6 +132,14 @@ public class BlockMgrCache extends BlockMgrWrapper
         readCache.putObject(id, block) ;
     }
     
+    @Override
+    public void freeBlock(int id)
+    {
+        readCache.removeObject(id) ;
+        writeCache.removeObject(id) ;
+        blockMgr.freeBlock(id) ;
+    }
+    
 //    @Override
 //    public void finishUpdate()
 //    { 

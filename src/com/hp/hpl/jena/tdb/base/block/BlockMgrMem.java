@@ -145,10 +145,18 @@ public class BlockMgrMem extends BlockMgrBase
         check(id) ;
         if ( log.isDebugEnabled() ) 
             log.debug(format("release(%d)", id)) ;
+        if (isFree(id) )
+            throw new BlockException("Already free: "+id) ;
+        
         blocks.set(id, FreeBlock) ;
         freeBlocks.addLast(id) ;
     }
 
+    private boolean isFree(int id)
+    {
+        return blocks.get(id) == FreeBlock ; 
+    }
+    
     @Override
     public void sync(boolean force)
     { }

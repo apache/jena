@@ -215,10 +215,11 @@ public final class BPTreeRecords extends BPTreePage
         // Same as: right.rBuff.copy(0, left.rBuff, left.rBuff.size(), right.rBuff.size()) ;
         right.rBuff.clear() ;
         
-        //???? right is released by the caller.  left is still in use.
+        //The right page is released by the caller.  left is still in use.
+        // So the test code can poke around in the right block after merge. 
         //left.bpTree.getRecordsMgr().release(left.getId()) ;
         
-        // Bug fix.  Fix up link chain.
+        // Fix up the link chain.
         left.rBuffPage.setLink(right.rBuffPage.getLink()) ;
         return left ;
     }
@@ -229,53 +230,6 @@ public final class BPTreeRecords extends BPTreePage
         catch (ClassCastException ex) { error("Wrong type: "+page) ; return null ; }
     }
     
-//    @Override
-//    public BPTreePage rebalance(BPTreePage page, boolean pageIsRight)
-//    {
-//        BPTreeRecords other = null ; 
-//        try { other = (BPTreeRecords)page  ; }
-//        catch (ClassCastException ex) { error("Wrong type: "+page) ; }
-//        
-//        // Merge
-//        if ( other.isMinSize() )
-//        {
-//            if ( pageIsRight )
-//            {
-//                // Copy other to top of this.
-//                other.rBuff.copy(0, rBuff, rBuff.size(), other.rBuff.size()) ;
-//                other.rBuff.clear() ;
-//                this.bpTree.getRecordsMgr().release(this.getId()) ;
-//                return other ;
-//            }
-//            else
-//            {
-//                // Copy this to top of other.
-//                rBuff.copy(0, other.rBuff, other.rBuff.size(), rBuff.size()) ;
-//                rBuff.clear() ;
-//                other.bpTree.getRecordsMgr().release(this.getId()) ;
-//                return this ;
-//            }
-//        }
-//        
-//        // Shift
-//        if ( pageIsRight )
-//        {
-//            // Shift lowest right (other) to left (this)
-//            Record r = other.rBuff.getLow() ;
-//            other.rBuff.shiftDown(0) ;
-//            this.rBuff.add(r) ;
-//        }
-//        else
-//        {
-//            // Shift highest left (other) to right(this)
-//            Record r = other.rBuff.getHigh() ;
-//            other.rBuff.removeTop() ;
-//            this.rBuff.add(r) ;
-//        }
-//        
-//        return null ;
-//    }
-
     @Override final
     Record minRecord()
     {

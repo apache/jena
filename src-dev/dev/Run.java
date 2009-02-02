@@ -6,13 +6,16 @@
 
 package dev;
 
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
+import static test.Gen.strings;
 
 import java.io.IOException;
 import java.util.Map;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
+import org.apache.log4j.Level;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
@@ -28,7 +31,14 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.IndexTestLib;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
@@ -39,6 +49,7 @@ import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
@@ -58,6 +69,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        runIndexTest()  ;
         // 1 - CmdTDB
         // 2 - ModTDBDataset.createDataset
         FileOps.clearDirectory("DB") ;
@@ -261,6 +273,69 @@ public class Run
         System.out.println("----") ;
     }
 
+     private static void runIndexTest() 
+     {
+         SystemTDB.NullOut = true ;
+         
+         Index index = BPlusTree.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;
+         BPlusTree bpt = (BPlusTree)index ; 
+         int[] keys1 = {681, 309, 141, 325, 588, 147, 616, 460, 21, 26, 339, 160, 278, 183, 887, 388, 250, 761, 139, 894} ;
+         int[] keys2 = {183, 278, 894, 160, 250, 588, 325, 887, 139, 681, 26, 147, 388, 616, 21, 141, 460, 339, 309, 761}; 
+
+         try {
+             IndexTestLib.testInsert(index, keys1);
+             if ( true )
+             {
+                 // Checking tests.
+                 IndexTestLib.testIndexContents(index, keys2);
+                 // Test iteration - quite expensive.
+                 if ( index instanceof RangeIndex )
+                     IndexTestLib.testIteration((RangeIndex)index, keys1, 10) ;
+             }
+             
+//             BPlusTreeParams.checkAll() ;
+//             BPlusTreeParams.infoAll() ;
+             org.apache.log4j.LogManager.getLogger("com.hp.hpl.jena.tdb.index").setLevel(Level.ALL) ;
+             if ( false )
+                 IndexTestLib.testDelete(index, keys2) ;
+             else
+             {
+                 //List<Record> x =  intToRecord(keys2) ;
+                 int count = 0 ;
+                 int debug = 0x00A0 ;
+                 
+                 for ( int v : keys2 )
+                 {
+                     System.out.println() ;
+                     System.out.println() ;
+                     Record r = intToRecord(v) ;
+                     System.out.printf("==== Delete: %d (0x%04X)\n",v,v) ;
+                     
+                     if ( v == debug )
+                     {
+                         bpt.dump(); 
+                         BPlusTreeParams.checkAll() ;
+                         BPlusTreeParams.infoAll() ;
+                     }
+                     
+                     boolean b = index.delete(r) ;
+                     if ( b )
+                         count ++ ;
+                     if ( v == debug ) bpt.dump(); 
+                 }
+             }
+             index.close() ;
+         } catch (RuntimeException ex)
+         {
+             System.err.printf("Index : %s\n", index.getClass().getName()) ;
+             System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
+             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
+             throw ex ;
+         }
+         System.out.println("Success") ;
+         System.exit(0) ;
+     }
+    
     public static void rewrite()
     {
         ReorderTransformation reorder = null ;
