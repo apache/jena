@@ -25,7 +25,8 @@ public class BlockMgrCache extends BlockMgrWrapper
     // Delayed dirty writes.
     Cache<Integer, ByteBuffer> writeCache = null ;
     
-    private boolean logging = log.isDebugEnabled() ;        // Avoid the string assembly overhea.
+    public static boolean globalLogging = false ;           // Also enable the logging level. 
+    private boolean logging = false ;                       // Also enable the logging level. 
     private String indexName ; 
     // ---- stats
     long cacheHits = 0 ;
@@ -36,7 +37,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         super(blockMgr) ;
         this.indexName = String.format("%-12s", indexName) ;
-        //logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
+        //logging = log.isInfoEnabled() && indexName.startsWith("LOG") ;
         
         readCache = CacheFactory.createCache(readSlots) ;
         
@@ -92,12 +93,12 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( bb != null )
         {
             cacheHits++ ;
-            //log("Hit   : %d", id) ;
+            log("Hit(r) : %d", id) ;
             return bb ;
         }
         if ( writeCache != null )
         {
-            // Maybe in the dirty blocks still.
+            // Might still be in the dirty blocks.
             bb = writeCache.getObject(id) ;
             if ( bb != null )
             {
@@ -135,6 +136,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     @Override
     public void freeBlock(int id)
     {
+        log("Free  : %d", id) ;
         readCache.removeObject(id) ;
         writeCache.removeObject(id) ;
         blockMgr.freeBlock(id) ;
@@ -166,7 +168,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     
     private void log(String fmt, Object... args)
     { 
-        if ( ! logging ) return ;
+        if ( ! logging && ! globalLogging ) return ;
         String msg = String.format(fmt, args) ;
         if ( indexName != null )
              msg = indexName+" : "+msg ;

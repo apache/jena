@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -277,11 +278,12 @@ public class Run
      {
          SystemTDB.NullOut = true ;
          
-         Index index = BPlusTree.makeMem(2, 2, RecordLib.TestRecordLength, 0) ;
+         Index index = BPlusTree.makeMem("",2, 2, RecordLib.TestRecordLength, 0) ;
          BPlusTree bpt = (BPlusTree)index ; 
          int[] keys1 = {681, 309, 141, 325, 588, 147, 616, 460, 21, 26, 339, 160, 278, 183, 887, 388, 250, 761, 139, 894} ;
          int[] keys2 = {183, 278, 894, 160, 250, 588, 325, 887, 139, 681, 26, 147, 388, 616, 21, 141, 460, 339, 309, 761}; 
-
+         BPlusTreeParams.checkAll() ;
+         
          try {
              IndexTestLib.testInsert(index, keys1);
              if ( true )
@@ -296,6 +298,7 @@ public class Run
 //             BPlusTreeParams.checkAll() ;
 //             BPlusTreeParams.infoAll() ;
              org.apache.log4j.LogManager.getLogger("com.hp.hpl.jena.tdb.index").setLevel(Level.ALL) ;
+             //org.apache.log4j.LogManager.getLogger("com.hp.hpl.jena.tdb.base.block").setLevel(Level.ALL) ;
              if ( false )
                  IndexTestLib.testDelete(index, keys2) ;
              else
@@ -313,9 +316,9 @@ public class Run
                      
                      if ( v == debug )
                      {
-                         bpt.dump(); 
-                         BPlusTreeParams.checkAll() ;
+                         //bpt.dump(); 
                          BPlusTreeParams.infoAll() ;
+                         BlockMgrCache.globalLogging = true ;
                      }
                      
                      boolean b = index.delete(r) ;

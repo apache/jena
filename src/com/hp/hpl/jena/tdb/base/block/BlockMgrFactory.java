@@ -18,7 +18,7 @@ public class BlockMgrFactory
     public static BlockMgr createMem(String indexName, int blockSize)
     {
         BlockMgr blockMgr = new BlockMgrMem(blockSize) ;
-        //blockMgr = new BlockMgrCache(indexName, 100, 100, blockMgr) ;
+        //blockMgr = new BlockMgrCache(indexName, 3, 3, blockMgr) ;
         return blockMgr ;
     }
     

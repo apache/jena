@@ -600,7 +600,7 @@ public final class BPTreeNode extends BPTreePage
     // ============ DELETE
 
     /* Delete
-     * Descend, making sure that the node is not minimum size at ead descend.
+     * Descend, making sure that the node is not minimum size at each descend.
      * If it is, rebalenace.
      */
     
@@ -609,7 +609,7 @@ public final class BPTreeNode extends BPTreePage
     {
         internalCheckNode() ;
         if ( logging() )
-            log.debug(format("_delete(%s) : %s", rec, this)) ;
+            log.debug(format("internalDelete(%s) : %s", rec, this)) ;
         
         int x = findSlot(rec) ;
 

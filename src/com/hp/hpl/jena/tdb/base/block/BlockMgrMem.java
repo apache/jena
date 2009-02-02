@@ -38,6 +38,7 @@ public class BlockMgrMem extends BlockMgrBase
     public static boolean SafeMode = true ;
     private final boolean safeModeThisMgr ;                            
     
+    // Create via the BlockMgrFactory.
     BlockMgrMem(int blockSize)
     {
         this(blockSize, SafeMode) ;
@@ -125,7 +126,7 @@ public class BlockMgrMem extends BlockMgrBase
             return false ;
 
         ByteBuffer bb = blocks.get(id) ; 
-        return bb != FreeBlock && bb != null ;
+        return (bb != FreeBlock) && (bb != null) ;
     }
 
     @Override
@@ -186,7 +187,10 @@ public class BlockMgrMem extends BlockMgrBase
         if ( !Checking ) return ;
         if ( id < 0 || id >= blocks.size() )
             throw new BlockException("BlockMgrMem: Bounds exception: "+id) ;
+        if ( isFree(id) )
+            throw new BlockException("BlockMgrMem: Block is the free block: "+id) ;
     }
+
     private void check(int id, ByteBuffer bb)
     {
         if ( !Checking ) return ;

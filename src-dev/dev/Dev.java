@@ -8,10 +8,12 @@ package dev;
 
 public class Dev
 {
+    // ===== 0.7.2:
     // Test cases:
-    //   More for removeAll(), removeAll(s,p,o)
-    //   Ordered insert, ordered removeal.
-    //   B+Tree records block chaining.
+    //   More for removeAll(), removeAll(s,p,o) [DONE - current tests are sufficient] 
+    //   B+Tree records block chaining [DONE - current tests are sufficient]
+    //   With and without block caching on memory block managers.
+    // =====
     
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     // FILTER (between(x,y)) => range on index.
