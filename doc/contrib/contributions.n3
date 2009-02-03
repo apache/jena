@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.16 2008-12-02 10:36:48 chris-dollin Exp $
+# $Id: contributions.n3,v 1.17 2009-02-03 10:21:17 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -126,5 +126,13 @@
     ; ct:link "http://code.google.com/p/geospatialweb/"
     ; ct:linkTitle "GeoSpatialWeb"
     ; ct:licence "GNU GPL License"
+    .
+[]
+    dc:creator "UTD"
+    ; dc:name "Infinite Graph"
+    ; dc:description "An infinite graph implementation for RDF graphs"
+    ; ct:link "http://ig.semanticsupport.org/"
+    ; ct:linkTitle "Infinite Graph for Jena"
+    ; ct:licence "BSD LICENCE"
     .
 
