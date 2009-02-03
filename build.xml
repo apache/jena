@@ -11,7 +11,7 @@
   <property name="version-major"   	value="0"/>
   <property name="version-minor"        value="7"/>
   <property name="version-revision"     value="2"/>
-  <property name="version-status"       value="-SNAPSHOT"/>
+  <property name="version-status"       value=""/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
