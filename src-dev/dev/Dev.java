@@ -8,22 +8,16 @@ package dev;
 
 public class Dev
 {
-    // ===== 0.7.2:
-    // Test cases:
-    //   More for removeAll(), removeAll(s,p,o) [DONE - current tests are sufficient] 
-    //   B+Tree records block chaining [DONE - current tests are sufficient]
-    //   With and without block caching on memory block managers [DONE]
-    //   Snapshot done.
-    // =====
-    
     // Quad pattern execution/optimization with GRAPH ?g { .... }
+    
     // FILTER (between(x,y)) => range on index.
 
-    // listSubjects via QueryHandlerTDB
+    // ---- Graph
+    // listSubjects via QueryHandlerTDB (make a range query)
     
     // Documentation
     //  Concurrency policy
-    // Ideal, B+Tree should be able to have different orders in leaves and branches.
+    // Ideally, B+Tree should be able to have different orders in leaves and branches.
     
     // Consistency - do not manage in block managers except where MRSW no safe.
     // ==> Reopenable
@@ -98,11 +92,6 @@ public class Dev
     
     // ------------------------------------------
     
-    // ---- Graph
-    // QueryHandler to access subjectsFor etc. 
-    // removeAll implementation: depends on iterator.remove
-    // but can do faster as a specific operation.
-
     // ---- Experimental
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same?
