@@ -10,10 +10,6 @@ public class Dev
 {
     // SPARQL/Update - Sort out GraphStores/Datasets
     
-    // Upgrade 
-    // + Var - several list loops of string or var - check each usage.
-    // + Registries taking Class<?> can be tidied up
-    
     // (Jena) Cached IRI checking (minor)
     
     // Initial bindings ==> Initial table.
