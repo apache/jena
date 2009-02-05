@@ -49,7 +49,7 @@ public class ResultSetStream implements ResultSet
 
     public void remove() throws java.lang.UnsupportedOperationException
     {
-        throw new java.lang.UnsupportedOperationException(this.getClass().getName()+".remove") ;
+        throw new UnsupportedOperationException(this.getClass().getName()+".remove") ;
     }
 
     /**

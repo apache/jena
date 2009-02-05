@@ -27,19 +27,15 @@ public interface ResultSet extends Iterator<QuerySolution>
 {
     // Could have a ResultSetBase that does all the Node=>Resource (= ResultBinding)  
     /**
-     * Is there another possibility?
+     * Is there another result?
      */
     public boolean hasNext() ;
 
-    /** Moves onto the next result possibility.
-     *  The returned object should be of class QuerySolution
-     */
+    /** Moves onto the next result. */
     
     public QuerySolution next() ;
 
-    /** Moves onto the next result possibility.
-     */
-    
+    /** Moves onto the next result (legacy - use .next()). */
     public QuerySolution nextSolution() ;
 
     /** Move to the next binding (low level) */
@@ -48,11 +44,12 @@ public interface ResultSet extends Iterator<QuerySolution>
     /** Return the "row" number for the current iterator item */
     public int getRowNumber() ;
     
-    /** Get the variable names for the projection
+    /** Get the variable names for the projection. Not all query
+     *  solution from a result have every variable defined. 
      */
     public List<String> getResultVars() ;
 
-    /* Get the model that resources are created against - may be null */
+    /** Get the model that resources are created against - may be null */
     public Model getResourceModel() ;
 }
 
