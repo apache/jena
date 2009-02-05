@@ -16,6 +16,7 @@ import com.hp.hpl.jena.n3.JenaURIException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
@@ -37,6 +38,8 @@ public class ParserBase
     protected final String SWAP_NS      = "http://www.w3.org/2000/10/swap/" ;
     protected final String SWAP_LOG_NS  = "http://www.w3.org/2000/10/swap/log#" ;
     protected final Node nLogImplies    = Node.createURI(SWAP_LOG_NS+"implies") ;
+    
+    protected final Node nOwlSameAs     = OWL.sameAs.asNode() ;
     
     protected boolean strictTurtle = true ;
     protected boolean skolomizedBNodes = true ; 

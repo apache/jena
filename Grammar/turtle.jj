@@ -1,12 +1,9 @@
-// (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+// (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // Turtle & N3 for Jena 
 
 // N3 compatible:
-// Projection to Turtle is done by filtering non-Trutle forms.
-// A consequence is that where Turtle and N3 are incompatible (e.g.
-// whitespace processing) if follows N3.
-//
 // All legal Turtle documents are acceped by this grammar.
+// Some N3 features, which are stil RDF, are provided.
 
 options
 {
@@ -14,10 +11,6 @@ options
   // => get both raw and escaped unicode
 
    JAVA_UNICODE_ESCAPE   = true ;
-    // We use a UTF-8 encoded stream anyway so the setting of
-    // this is not important.
-    // and it does not make any difference to the code generated!
-    // One a warning is issued if true.
    UNICODE_INPUT         = false ;
 
   STATIC                = false ;
@@ -27,7 +20,7 @@ options
 
 PARSER_BEGIN(TurtleParser)
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
@@ -56,8 +49,7 @@ void Statement() : {}
 
 void Directive() : { Token t ; String iri ; }
 {
-    // Need a token for @prefix?
-    // Looks like a LANTAG
+    // Note that @prefix looks like a LANTAG
     <PREFIX> t = <PNAME_NS> iri = IRI_REF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(t.beginLine, t.beginColumn, s, iri) ; }
@@ -74,13 +66,9 @@ TOKEN:
  | < CARROT:   "^" >
  | < FPATH:    "->" >
  | < RPATH:    "<-" >
-
 }
 
-// N3
-
 // ---- TRIPLES
-// <<<<< SPARQL extract
 
 void TriplesSameSubject() : { Node s ; } 
 {
@@ -97,7 +85,6 @@ void PropertyList(Node s) : { }
 {
   ( PropertyListNotEmpty(s) ) ?
 }
-// >>>>> SPARQL extract
 
 // Non-recursive for Turtle long PropertyList tests
 void PropertyListNotEmpty(Node s) : { Node p ; }
@@ -121,13 +108,16 @@ void Object(Node s, Node p): { Node o ; }
     emitTriple(token.beginLine, token.beginColumn, t) ; }  
 }
 
-// <<<<< SPARQL extract
 Node Verb() : { Node p ; String iri ;}
 {
-//  ( p = VarOrIRIref() | 
-  
    ( iri = IRIref() { p = createNode(iri) ; }
    | <KW_A> { p = nRDFtype ; }
+   | <EQ>
+      { p = nOwlSameAs ;
+        if ( strictTurtle )
+          throwParseException("= (owl:sameAs) not legal in Turtle",
+                          token.beginLine, token.beginColumn ) ;
+     }
    | <ARROW> 
       { p = nLogImplies ;
         if ( strictTurtle )
@@ -208,14 +198,11 @@ Node VarOrTerm() : {Node n = null ; }
 Node Formula() : {Token t ; }
 {
     t = <LBRACE> { startFormula(t.beginLine, t.beginColumn) ; }
-    // Need to sort this out and merge with Statement above
     TriplesSameSubject()
     ( <DOT> (TriplesSameSubject())? )*
     t = <RBRACE> { endFormula(t.beginLine, t.beginColumn) ; }
       { return null ; }
 }
-
-// >>>>> SPARQL extract
 
 Node Var() : { Token t ;}
 {
@@ -248,8 +235,6 @@ Node NumericLiteral() : { Token t ; }
 | t = <DOUBLE> { return createLiteralDouble(t.image) ; }
 }
 
-// >>>>> SPARQL extract
-// Langtag oddity.
 Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
@@ -265,18 +250,22 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
 
 String Langtag() : { Token t ; }
 {
-  // Enumerate the directives here
-  ( t = <LANGTAG> | t = <PREFIX> )
+  // Enumerate the directives here because they look like language tags.
+  ( t = <LANGTAG> | t = AnyDirective() )
   { String lang = stripChars(t.image, 1) ; return lang ; }
 }
-// >>>>> SPARQL extract
+
+Token AnyDirective() : { Token t ; }
+{
+    ( t = <PREFIX> | t = <BASE> ) { return t ; }
+}
+
 Node BooleanLiteral() : {}
 {
    <TRUE> { return XSD_TRUE ; }
   |
    <FALSE> { return XSD_FALSE ; }
 }
-// <<<<< SPARQL extract
 
 String String() : { Token t ;  String lex ; }
 {
@@ -336,9 +325,8 @@ SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
 
 // -------------------------------------------------
-// Keyworks : directives before LANGTAG
+// Keywords : directives before LANGTAG
 
-// Before any HEX rule!
 TOKEN : 
 { 
   <KW_A:  "a" > 
@@ -373,7 +361,7 @@ TOKEN [IGNORE_CASE] :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 // "u" done by javacc input stream.  
-// "U" escapes not supported yet for Java 1.4
+// "U" escapes not supported yet for Java strings
 | <ECHAR: "\\" ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
 
 | < STRING_LITERAL1: 
@@ -436,12 +424,6 @@ TOKEN :
 TOKEN :
 {
   < EQ:      "=" >
-//| < NE:      "!=" >
-//| < GT:      ">" >
-//| < LT:      "<" >
-//| < LE:      "<=" >    // Maybe: | "=>" >
-//| < GE:      ">=" >    // Maybe: | "=<" >
-
 | <ARROW:    "=>">
 
 | < DOLLAR:  "$">
@@ -502,7 +484,7 @@ TOKEN:
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
