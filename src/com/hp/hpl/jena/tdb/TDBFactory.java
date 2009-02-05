@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.tdb;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-import lib.NotImplemented;
+import com.hp.hpl.jena.graph.Graph;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
@@ -21,8 +20,6 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-//import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
@@ -40,26 +37,6 @@ public class TDBFactory
     }
 
     static ImplFactory factory = null ;
-
-    // PGraph (old) implementation factory
-    public final static ImplFactory pgraphFactory = new ImplFactory()
-    {
-        @Override
-        public Graph createGraph()
-        { return PGraphFactory.createMem() ; }
-    
-        @Override
-        public Graph createGraph(Location loc)
-        { return PGraphFactory.create(loc) ; }
-
-        @Override
-        public DatasetGraph createDatasetGraph(Location location)
-        { throw new NotImplemented("Dataset/PGraph") ; }
-
-        @Override
-        public DatasetGraph createDatasetGraph()
-        { throw new NotImplemented("Dataset/PGraph") ; }
-    };
 
     // Standard implementation factory
     public final static ImplFactory stdFactory = new ImplFactory()

@@ -21,7 +21,6 @@ import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
-import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.store.TS_Store;
@@ -46,8 +45,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     
     , TS_Index.class
     
-    , TS_Store.class     // New
-    , TS_PGraph.class    // Old 
+    , TS_Store.class     // The main storage implementation.
     
     , TS_Solver.class
     , TS_Sys.class

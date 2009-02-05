@@ -18,6 +18,8 @@ import lib.Log;
 import lib.MapUtils;
 import lib.Tuple;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -31,12 +33,8 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
-import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class StatsCollector
 {
@@ -98,24 +96,6 @@ public class StatsCollector
         return format(predicates, count) ;
     }
     
-    /** Gather statistics - faster for TDB */
-    public static Item gatherTDB(PGraph graph)
-    {
-        long count = 0 ;
-        Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
-        
-        TripleIndex index = graph.getTripleTable().getIndexSPO() ;
-        Iterator<Tuple<NodeId>> iter = index.all() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Tuple<NodeId> tuple = iter.next(); 
-            count++ ;
-            MapUtils.increment(predicateIds, tuple.get(1)) ;
-        }
-        
-        return statsOutput(graph.getTripleTable().getNodeTable(), predicateIds, count) ;
-    }
-        
     /** Gather statistics - faster for TDB */
     public static Item gatherTDB(GraphTDB graph)
     {
