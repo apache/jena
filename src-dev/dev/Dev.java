@@ -10,14 +10,26 @@ public class Dev
 {
     // Quad pattern execution/optimization with GRAPH ?g { .... }
     
-    // FILTER (between(x,y)) => range on index.
+    // ---- Quads:
+    //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
 
+    //   Quad loader; dataset merge.
+    //   Quad pattern execution/optimization with GRAPH ?g { .... }
+    //   Generalised the pattern stuff.
+    //   Dataset management??
+    //   Tidy OpExecutorTDB.execute(quads)
+    
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)
     
-    // Documentation
+    // ---- Documentation
     //  Concurrency policy
+    
+    // ---- Indexing and block managers
     // Ideally, B+Tree should be able to have different orders in leaves and branches.
+
+    // Generic TupleIndex<T extends Something> for NodeId or Node
+    //   e.g. Need mapper from T to TupleIndexRecord to abstract. 
     
     // Consistency - do not manage in block managers except where MRSW no safe.
     // ==> Reopenable
@@ -26,39 +38,22 @@ public class Dev
     // ==> Metablocks.
     //   ==> Moveable roots.
     
-    // Tidy up this file :-)
-    
     // ---- Interactions with ARQ
     // + Other indexes
     // + SPARQL/Update
     //   Dataset is cloned on a Joseki/SPARQL/update operation
     //   Need ARQ change + TDB to provide a GraphStore.
     
-    // ---- Generic TupleIndex<T extends Something> for NodeId or Node
-    // e.g. Need mapper from T to TupleIndexRecord to abstract. 
-    
     // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
     
-    // Even more directly manipulate the indexes (close once used, non-caching linear scan of SPO). 
-    // Build: resolve jars and compile against them. 
-    
-    // Quads:
-    //   Filter placement : (filter (quads...))
-    //   Quad loader.
-    //   Generalised the pattern stuff.
-    //   Dataset management
-    //   Tidy OpExecutorTDB.execute(quads)
-
-    // OpRange - OpIndex(?) - generative stream of possibilities.
+    // ---- Misc
+    // OpIndex(?) - generative stream of possibilities.
     // { ?s :p ?x . ?s :q ?w } specials?  "OpAllProperties"
+    // Inlines => Inline56, Inline64
 
-    // Nodec.enc(Node, BB, idx) ; Nodec.dec(BB,idx)->Node [Written - not active]
-    //   ObjectFile: need to get BB.
-    // Logical/physical id experiment
-    
     // ---- Tuple reader tests
     // [incremental]
-    // Checking, N-ary and non-RDF.
+    // Checking, N-ary and non-RDF. BRT.
     // Prefix mapping?  Migrate to a dump format.
     // Byte version.
     
@@ -69,18 +64,10 @@ public class Dev
     // TupleTable.size - at least an isEmpty 
     //   Not just an empty block manager.
 
-    // Cheap parsing of Node table.
-    // [incremental]
-    
     // ---- Materialized views
     // Key->Action paradigm
     //   Simple pattern keys (property, 2P). 
     
-    // ---- Range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
-    //      Given NodeId structure, should be doable for ints and dates.
-    
-    // ---- Loader - traverse of SPO via a direct block mgr?
-    //   For quads
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
     // ---- 32 bit mode.
@@ -89,14 +76,5 @@ public class Dev
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
     //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
-    
-    // ------------------------------------------
-    
-    // ---- Experimental
-    // Version of NodeTable that does Logical => Physical id translation
-    //    And a PageMgr wrapper for same?
 
-    // Inlines => Inline56, Inline64
-
-    // Update BDB form
 }
