@@ -29,7 +29,7 @@ function grammar
     echo "---- Create text form"
     jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 
- # Fix unnecessary imports
+  # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${NAME}TokenManager ..."
 
     F="$DIR/${CLASS}ParserTokenManager.java"

@@ -68,6 +68,8 @@ public interface QueryExecution
 	/** Stop in mid execution.
 	 *  No guarantee that the concrete implementation actual
      *  will stop or that it will do so immediately.
+     *  No operations on the query execution or any associated
+     *  result set are permitted after this call.
 	 */
 
 	public void abort();
@@ -77,6 +79,8 @@ public interface QueryExecution
      *  resources such as working memory and to stop the query execution.
      *  Some storage subsystems require explicit ends of operations and this
      *  operation will cause those to be called where necessary.
+     *  No operations on the query execution or any associated
+     *  result set are permitted after this call.
      */
 	public void close();
     
