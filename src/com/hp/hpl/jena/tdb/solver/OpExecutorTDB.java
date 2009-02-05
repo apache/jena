@@ -112,7 +112,7 @@ public class OpExecutorTDB extends OpExecutor
 
         if ( isDefaultGraph )
         {
-            // Storage defauklt graph 
+            // Storage default graph 
             // Either outside GRAPH (no implicit union) or using the "name" of the default graph
             return optimizeExecute(ds.getDefaultGraph(), input, bgp, null, execCxt) ;
         }
@@ -206,9 +206,9 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! input.hasNext() )
             return input ;
         
-        // Must pass this into next stage. 
+        // Must pass this iterator into the next stage. 
         QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-        input = null ; // Now invalid.
+        input = null ; // and not this one which is now invalid.
         BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
 
         // -- Reorder
