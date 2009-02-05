@@ -21,7 +21,10 @@ public class QueryIteratorCloseable extends QueryIteratorWrapper
     
     @Override
     public void close()
-    { closeable.close() ; }
+    { 
+        super.close() ;
+        closeable.close() ;
+    }
 }
 
 /*
