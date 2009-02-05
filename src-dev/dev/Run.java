@@ -70,6 +70,24 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+       Dataset dataset = TDBFactory.createDataset("DB") ;
+       String qs = "SELECT * {?s ?p ?o}" ;
+       System.out.println(qs) ; 
+
+       Query q = QueryFactory.create(qs) ;
+       QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
+       ResultSet rs = qexec.execSelect() ;
+       for ( ; rs.hasNext() ; )
+       {
+           System.out.println(rs.next()) ;
+           break ;
+       }
+       
+       //ResultSetFormatter.out(rs) ;
+       qexec.close() ;
+       System.exit(0) ;
+        
+        
         runIndexTest()  ;
         // 1 - CmdTDB
         // 2 - ModTDBDataset.createDataset
@@ -375,6 +393,7 @@ public class Run
         
         System.exit(0) ;
     }
+    
     private static void query(String str, Dataset dataset)
     {
         query(str, dataset, null) ;

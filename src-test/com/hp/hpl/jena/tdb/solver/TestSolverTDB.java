@@ -146,6 +146,7 @@ public class TestSolverTDB extends TestBase
         return SSE.parseTable(str).toResultSet() ; 
     }
     
+    
     @SuppressWarnings("unchecked")
     private static ResultSet exec(String pattern, Graph graph)
     {
@@ -153,7 +154,7 @@ public class TestSolverTDB extends TestBase
         List<Var> vars =  new ArrayList<Var>() ;
         vars.addAll(OpVars.allVars(op)) ;
         QueryIterator qIter = Algebra.exec(op, graph) ;
-        return ResultSetFactory.create(qIter, vars) ;
+        return ResultSetFactory.create(qIter, Var.varNames(vars)) ;
     }
     
     private static List<Binding> toList(QueryIterator qIter)
