@@ -19,6 +19,8 @@ public class Dev
     //   Dataset management??
     //   Tidy OpExecutorTDB.execute(quads)
     
+    // ---- NodeTupleReader ; stable blank nodes. 
+    
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)
     
