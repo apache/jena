@@ -115,10 +115,10 @@ public final class PeekReader extends Reader
         for ( int i = 0 ; i < len ; i++ )
         {
             int ch = oneChar() ;
-            if ( eof() )
-                // Must have moved at least one character
-                // due to eof() check at the start.
-                return i ;  
+            if ( ch == EOF )
+            {
+                return (i==0)? EOF : i ;
+            }
             cbuf[i+off] = (char)ch ;
         }
         return len ;
