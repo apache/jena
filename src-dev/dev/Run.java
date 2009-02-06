@@ -28,9 +28,11 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
+import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
@@ -70,6 +72,20 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        {
+            SystemTDB.setFileMode(FileMode.mapped) ;
+            FileOps.clearDirectory("DB") ;
+            Dataset ds = TDBFactory.createDataset("DB") ;
+            Model m = ds.getDefaultModel() ;
+            m.add(m.createResource(), m.createProperty("http://example/p"), m.createResource())  ;
+            System.out.println("Size = "+m.size()) ;
+            TDB.sync(ds) ;
+            ds.close() ;
+            FileOps.clearDirectory("DB") ;
+            System.exit(0) ;
+        }
+        
+        
        Dataset dataset = TDBFactory.createDataset("DB") ;
        String qs = "SELECT * {?s ?p ?o}" ;
        System.out.println(qs) ; 
@@ -393,7 +409,6 @@ public class Run
         
         System.exit(0) ;
     }
-    
     private static void query(String str, Dataset dataset)
     {
         query(str, dataset, null) ;
