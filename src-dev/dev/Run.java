@@ -32,7 +32,6 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
-import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
@@ -72,49 +71,44 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        Model m = ModelFactory.createDefaultModel() ;
+        m.add(m.createResource("http://example/x"), m.createProperty("http://example/p"), m.createResource("http://example/x z")) ;
+        Dataset ds = TDBFactory.createDataset("DB") ;
+        Model m2 = ds.getDefaultModel() ;
+        m2.add(m) ;
+        TDB.sync(m2) ;
+        ds.close();
+        ds = TDBFactory.createDataset("DB") ;
+        m2.write(System.out, "RDF/XML-ABBREV") ;
+        System.out.println("Done") ; 
+        System.exit(0) ;
+            
+        
+        Dataset dataset = TDBFactory.createDataset("DB") ;
+        String qs = "SELECT * {?s ?p ?o}" ;
+        System.out.println(qs) ; 
+        System.exit(0) ;
+        
+        
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
+        ResultSet rs = qexec.execSelect() ;
+        for ( ; rs.hasNext() ; )
         {
-            SystemTDB.setFileMode(FileMode.mapped) ;
-            FileOps.clearDirectory("DB") ;
-            Dataset ds = TDBFactory.createDataset("DB") ;
-            Model m = ds.getDefaultModel() ;
-            m.add(m.createResource(), m.createProperty("http://example/p"), m.createResource())  ;
-            System.out.println("Size = "+m.size()) ;
-            TDB.sync(ds) ;
-            ds.close() ;
-            FileOps.clearDirectory("DB") ;
-            System.exit(0) ;
+            System.out.println(rs.next()) ;
+            break ;
         }
-        
-        
-       Dataset dataset = TDBFactory.createDataset("DB") ;
-       String qs = "SELECT * {?s ?p ?o}" ;
-       System.out.println(qs) ; 
 
-       Query q = QueryFactory.create(qs) ;
-       QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
-       ResultSet rs = qexec.execSelect() ;
-       for ( ; rs.hasNext() ; )
-       {
-           System.out.println(rs.next()) ;
-           break ;
-       }
-       
-       //ResultSetFormatter.out(rs) ;
-       qexec.close() ;
-       System.exit(0) ;
-        
-        
+        //ResultSetFormatter.out(rs) ;
+        qexec.close() ;
+        System.exit(0) ;
+
+
         runIndexTest()  ;
         // 1 - CmdTDB
         // 2 - ModTDBDataset.createDataset
         FileOps.clearDirectory("DB") ;
         tdb.tdbloader.main("--loc=DB", "--graph=http://example/g", "D.ttl") ;
-        System.exit(0) ;
-
-        Model m = TDBFactory.createModel() ;
-        FileManager.get().readModel(m, "D.ttl") ;
-        m.removeAll() ;
-        System.out.println("<< END") ;
         System.exit(0) ;
     }
     
