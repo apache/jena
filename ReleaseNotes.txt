@@ -6,6 +6,8 @@ Release Notes
 
 ** Codebase converted to Java 5
 
+   o Exceptions AlreadyExistsException, DoesNotExistException and RulesetNotFoundException no longer inherit via RDFRDBException 
+
 Jar changes:
    o Removed antlr-2.7.5.jar (no longer used)
    o Removed concurrent.jar (no longer used)

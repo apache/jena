@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AlreadyExistsException.java,v 1.9 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: AlreadyExistsException.java,v 1.10 2009-02-06 11:50:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
-import com.hp.hpl.jena.db.RDFRDBException;
 
 /**
     Exception to throw when an attempt is made to create a named
@@ -15,7 +14,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
     
  	@author kers
 */
-public class AlreadyExistsException extends RDFRDBException
+public class AlreadyExistsException extends JenaException
     {
     public AlreadyExistsException( String name )
         { super( name ); }
