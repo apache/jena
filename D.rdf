@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+  <!ENTITY ex 'http://example.com/ns#'>
+  <!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+
+<rdf:RDF
+    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+    xmlns:owl='http://www.w3.org/2002/07/owl#'
+    xmlns:ex='&ex;'
+    xmlns='&ex;'
+    xml:base='http://example.com/ns'>
+<!--
+  <rdf:Description rdf:about="http://serv1.example.com/some random text">
+    <ex:p>hello</ex:p>
+  </rdf:Description>
+-->
+  <rdf:Description rdf:ID="foo">
+    <ex:p>hello</ex:p>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="#bar">
+    <ex:p rdf:resource="http://serv1.example.com/some random text"/>
+  </rdf:Description>
+
+</rdf:RDF>
