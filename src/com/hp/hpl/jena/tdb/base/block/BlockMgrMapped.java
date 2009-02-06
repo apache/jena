@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,8 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     public ByteBuffer get(int id)
     {
+        check(id) ;
+        checkIfClosed() ;
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("get(%d)", id)) ;
         return getSilent(id) ;
@@ -87,6 +90,13 @@ public class BlockMgrMapped extends BlockMgrFile
     public ByteBuffer getSilent(int id)
     {
         check(id) ;
+        checkIfClosed() ;
+        return getByteBuffer(id) ;
+    }
+
+    
+    private ByteBuffer getByteBuffer(int id)
+    {
         int seg = segment(id) ;                 // Segment.
         int segOff = byteOffset(id) ;           // Byte offset in segment
 
@@ -194,6 +204,7 @@ public class BlockMgrMapped extends BlockMgrFile
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
+        checkIfClosed() ;
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("put(%d)", id)) ;
         // Assumed MRSW - no need to sync as we are the only W
@@ -206,6 +217,7 @@ public class BlockMgrMapped extends BlockMgrFile
     public void freeBlock(int id)
     { 
         check(id) ;
+        checkIfClosed() ;
         int seg = id/blocksPerSegment ; 
         segmentDirty[seg] = false ;
         if ( getLog().isDebugEnabled() ) 
@@ -215,18 +227,29 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     public void sync(boolean force)
     {
+        checkIfClosed() ;
         if ( force )
             force() ;
     }
 
+    @Override
+    public void _close()
+    {
+        force() ;
+        // There is no unmap operation for MappedByteBuffers.
+        // Sun Bug id bug_id=4724038
+        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038
+       Arrays.fill(segments, null) ;
+       Arrays.fill(segmentDirty, false) ;
+       segmentDirtyCount = 0 ;
+    }
+    
     @Override
     protected void force()
     {
         flushDirtySegments() ;
         super.force() ;
     }
-    
-    
     
 //    @Override
 //    public void finishUpdate()

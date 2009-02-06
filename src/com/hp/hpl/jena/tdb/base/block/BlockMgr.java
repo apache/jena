@@ -26,6 +26,8 @@ public interface BlockMgr extends Sync, Closeable
     /** Block size */
     public int blockSize() ;
 
+    
+    
     // Renaming?
     // get->allocate
     // pin and unpin 
@@ -47,6 +49,9 @@ public interface BlockMgr extends Sync, Closeable
     
     /** Close the block manager */
     public void close() ;
+    
+    /** Is this block manager stil usable?  Close block managers can not perform any operations except this one. */  
+    public boolean isClosed() ; 
     
     /** Sync the block manager */
     public void sync(boolean force) ;

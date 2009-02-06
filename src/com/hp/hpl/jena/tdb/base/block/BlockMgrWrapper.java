@@ -102,6 +102,12 @@ public class BlockMgrWrapper implements BlockMgr
     {
         return blockMgr.valid(id) ;
     }
+
+    @Override
+    public boolean isClosed()
+    {
+        return blockMgr.isClosed() ;
+    }
 }
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP

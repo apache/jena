@@ -162,6 +162,8 @@ public class BlockMgrMem extends BlockMgrBase
     public void sync(boolean force)
     { }
     
+    @Override public boolean isClosed() { return blocks == null ; }  
+    
     @Override
     public void close()
     { 

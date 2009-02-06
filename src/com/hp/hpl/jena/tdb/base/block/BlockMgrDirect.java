@@ -37,15 +37,24 @@ public class BlockMgrDirect extends BlockMgrFile
     @Override
     public ByteBuffer get(int id)
     {
+        check(id) ;
+        checkIfClosed() ;
+        
         if ( log.isDebugEnabled() ) 
             log.debug(format("get(%d)", id)) ;
-        return getSilent(id) ;
+        return getByteBuffer(id) ;
     }
 
     @Override
     public ByteBuffer getSilent(int id)
     {
         check(id) ;
+        checkIfClosed() ;
+        return getByteBuffer(id) ;
+    }
+    
+    private ByteBuffer getByteBuffer(int id)
+    {
         try {
             ByteBuffer dst = allocateBuffer(id) ;
             int len = channel.read(dst, filePosition(id)) ;
@@ -62,6 +71,7 @@ public class BlockMgrDirect extends BlockMgrFile
         if ( log.isDebugEnabled() ) 
             log.debug(format("put(%d)", id)) ;
         check(id, block) ;
+        checkIfClosed() ;
         block.position(0) ;
         block.limit(block.capacity()) ;
         try {
@@ -83,6 +93,7 @@ public class BlockMgrDirect extends BlockMgrFile
     public void freeBlock(int id)
     { 
         check(id) ;
+        checkIfClosed() ;
         if ( log.isDebugEnabled() ) 
             log.debug(format("release(%d)", id)) ;
     }
@@ -115,6 +126,10 @@ public class BlockMgrDirect extends BlockMgrFile
         if ( force )
             force() ;
     }
+
+    @Override
+    protected void _close()
+    {}
 }
 
 /*

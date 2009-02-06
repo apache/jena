@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Abstract class for block managers over a file */
@@ -62,7 +63,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
 
             channel = out.getChannel() ;
             if ( channel.size() == 0 )
-            {}
+                isEmpty = true ;
         } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
     }
 
@@ -73,6 +74,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
     @Override final synchronized
     public int allocateId()
     {
+        checkIfClosed() ;
         //return numFileBlocks.getAndIncrement() ;
         
         int id = (int)numFileBlocks ;
@@ -122,13 +124,21 @@ public abstract class BlockMgrFile extends BlockMgrBase
         { throw new BlockException("Channel.force failed", ex) ; }
     }
     
-    @Override
-    final 
+    @Override public final boolean isClosed() { return channel == null ; }  
+    
+    protected final void checkIfClosed() 
+    { 
+        if ( isClosed() ) 
+            ALog.fatal(this, "Block manager has been closed") ;
+    }
+    
+    protected abstract void _close() ; 
+    @Override  final 
     public void close()
     {
+        _close() ;
         if ( out != null )
         {
-            
             try {
                 force() ;
                 channel.close();
