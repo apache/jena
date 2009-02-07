@@ -70,7 +70,7 @@ public final class PeekReader extends Reader
     }
     
     /** Testing */
-    static PeekReader make(String x)                { return new PeekReader(new StringReader(x)) ; }
+    public static PeekReader make(String x)                { return new PeekReader(new StringReader(x)) ; }
     static PeekReader make(String x, int buffSize) { return new PeekReader(new StringReader(x), buffSize) ; }
     
     private PeekReader(Reader in, int buffSize)
