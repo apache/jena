@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:24:02 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-02-09 17:23:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.11 2009-01-16 17:24:02 andy_seaborne Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.12 2009-02-09 17:23:28 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -447,6 +447,18 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+
+    public void testIncludeSource2() throws Exception {
+        // had a report of the following not compiling ....
+        String SOURCE = PREFIX + "@prefix skos: <http://www.w3.org/2004/02/skos/core#>.\n" +
+                       " <http://purl.org/dc/elements/1.1/relation> skos:note \"\"\"A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document \"DCMI Metadata Terms\" (http://dublincore.org/documents/dcmi-terms/) for an explanation.\"\"\".";
+
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
+                new String[] {},
+                new String[] {} );
+
+    }
 
     // Internal implementation methods
     //////////////////////////////////

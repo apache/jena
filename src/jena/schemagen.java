@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.58 $
+ * Revision           $Revision: 1.59 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-02 20:38:12 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-02-09 17:23:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.58 2009-02-02 20:38:12 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.59 2009-02-09 17:23:44 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -849,7 +849,9 @@ public class schemagen {
                     tok = tok.substring( 0, tok.length() - 1 );
                 }
                 write( 2, first ? "   " : " + " );
-                writeln( 2, protectQuotes( tok ) );
+                write( 0, "\"" );
+                write( 0, protectQuotes( tok ) );
+                writeln( 2, "\\n\"" );
                 first = false;
             }
 
@@ -867,7 +869,52 @@ public class schemagen {
 
     /** Protect any double quotes in the given string so that it's a legal Java String */
     private String protectQuotes( String s ) {
-        return "\"" + s.replaceAll( "\"", "\\\\\"" ) + "\\n\"";
+        int nDquote = 0;
+        for (int i = 0; i < s.length(); i++ ) {
+            if (s.charAt( i ) == '"' ) {
+                nDquote++;
+            }
+        }
+
+        if (nDquote == 2) {
+            // need to protect the begin and end quote chars
+            return s.replaceAll( "\"", "\\\\\"" );
+        }
+        else if (nDquote > 2) {
+            // embedded quote chars in the string
+            // N3 convention is to use triple-quote blocks
+            int qStart = s.indexOf( '"' );
+            int qEnd = s.lastIndexOf( '"' );
+
+            StringBuffer s0 = new StringBuffer( s.length() );
+
+            for (int i = 0; i < s.length(); i++ ) {
+                char c = s.charAt( i );
+
+                if (c == '"' ) {
+                    // protect embedded " characters, treating the outer pair differently
+                    // than any inner quotes
+                    if (i == qStart || i == qEnd) {
+                        s0.append( "\\\"\\\"\\\"" );
+                    }
+                    else {
+                        s0.append( "\\\"" );
+                    }
+                }
+                else if (c == '\\' ) {
+                    // protect embedded \ characters
+                    s0.append( "\\\\" );
+                }
+                else {
+                    s0.append( c );
+                }
+            }
+
+            return s0.toString();
+        }
+        else {
+            return s;
+        }
     }
 
     /** Write the string and resource that represent the namespace */
