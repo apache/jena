@@ -119,7 +119,7 @@ NON-TERMINALS
 	Directive	:=	<PREFIX> <PNAME_NS> IRI_REF
 		|	<BASE> IRI_REF
 // ---- TRIPLES
-	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
+	TriplesSameSubject	:=	Term PropertyListNotEmpty
 		|	TriplesNode PropertyList
 	PropertyList	:=	( PropertyListNotEmpty )?
 // Non-recursive for Turtle long PropertyList tests
@@ -140,9 +140,14 @@ NON-TERMINALS
 // Code not as SPARQL/ARQ because of output ordering.
 	Collection	:=	<LPAREN> ( GraphNode )+ <RPAREN>
 // -------- Nodes in a graph pattern or template
-	GraphNode	:=	VarOrTerm
+	GraphNode	:=	Term
 		|	TriplesNode
-	VarOrTerm	:=	( Var | GraphTerm | Formula )
+// Node VarOrTerm() : {Node n = null ; }
+// {
+//   ( n = Var() | n = GraphTerm() | n = Formula() )
+//   { return n ; }
+// }
+	Term	:=	( GraphTerm | Formula )
 	Formula	:=	<LBRACE> TriplesSameSubject ( <DOT> ( TriplesSameSubject )? )* <RBRACE>
 	Var	:=	<VAR>
 	GraphTerm	:=	IRIref
