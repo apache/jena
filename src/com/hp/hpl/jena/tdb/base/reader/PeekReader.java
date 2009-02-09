@@ -79,7 +79,7 @@ public final class PeekReader extends Reader
         this.in = in;
         oneChar() ;    // Advance always so that the peek character is valid.
         if ( currChar == UNSET )
-            currChar = EOF ;
+            setCurrChar(EOF) ;
     }
 
     public int getLineNum()         { return lineNum; }
@@ -90,6 +90,11 @@ public final class PeekReader extends Reader
     
     public int readChar()           { return oneChar() ; }
     
+    private void setCurrChar(int ch)
+    {
+        currChar = ch ;
+    }
+
     // Reader operations
     @Override
     public void close() throws IOException
@@ -124,6 +129,8 @@ public final class PeekReader extends Reader
         return len ;
     }
 
+    // Only fill() and oneChar() must touch chars[].
+    
     // Ensure the buffer is not empty, or boolean eof is set
     private void fill()
     {
@@ -133,7 +140,7 @@ public final class PeekReader extends Reader
                 int x = in.read(chars) ;
                 idx = 0 ;
                 if ( x <= 0 )
-                    currChar = EOF ;
+                    setCurrChar(EOF) ;
                 buffLen = x ;
             }
             catch(IOException ex)
@@ -153,7 +160,7 @@ public final class PeekReader extends Reader
         if ( !eof() )
         {
             // Advance the lookhead character
-            currChar = chars[idx] ;
+            setCurrChar(chars[idx]) ;
             idx++ ;
     
             if (ch == '\n')
