@@ -39,6 +39,14 @@ UpdateAction.<i>execute</i>(load, graphStore) ;</pre>
          // Execute!
  UpdateAction.execute(req, graphStore) ;</pre>
 
+<p>
+The class <tt>UpdateAction</tt> is a set of convenience operations
+for calling <tt>UpdateFactory</tt>
+to create update requests by reading files or parsing strings, and also for creating
+<tt>UpdateProcessor</tt>'s to perform the operations, thnen finally invoking
+the <tt>UpdateProcessor</tt>.  An application can create these object itself (using 
+<tt>UpdateFactory</tt>) if it requires more a complex processing model.</p>
+
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
 </html>
