@@ -167,6 +167,7 @@ public final class PeekReader extends Reader
         return ch ;
     }
 
+    // ????
     public final boolean eof()   { return currChar == EOF ; }
 }
 
