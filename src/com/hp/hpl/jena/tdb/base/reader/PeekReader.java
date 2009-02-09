@@ -44,8 +44,9 @@ public final class PeekReader extends Reader
     private int currChar = UNSET ;
 
     private Reader in;
-    private int colNum = 0;
-    private int lineNum = 1;
+    private long posn = 0 ;
+    private long colNum = 0;
+    private long lineNum = 1;
     
     public static PeekReader make(Reader r)
     {
@@ -82,9 +83,11 @@ public final class PeekReader extends Reader
             setCurrChar(EOF) ;
     }
 
-    public int getLineNum()         { return lineNum; }
+    public long getLineNum()        { return lineNum; }
 
-    public int getColNum()          { return colNum; }
+    public long getColNum()         { return colNum; }
+
+    public long getPosition()       { return posn; }
 
     public int peekChar()           { return currChar ; }
     
@@ -162,7 +165,8 @@ public final class PeekReader extends Reader
             // Advance the lookhead character
             setCurrChar(chars[idx]) ;
             idx++ ;
-    
+            posn++ ;
+            
             if (ch == '\n')
             {
                 lineNum++;

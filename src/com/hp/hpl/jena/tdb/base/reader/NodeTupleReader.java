@@ -728,7 +728,7 @@ public final class NodeTupleReader
     
     private void warning(String s) { warning(s, in.getLineNum(), in.getColNum()) ; }
     
-    private void warning(String s, int line, int charpos) {
+    private void warning(String s, long line, long charpos) {
         errorHandler.warning(
             new SyntaxError(
                 syntaxErrorMessage(
@@ -739,13 +739,13 @@ public final class NodeTupleReader
 
     private void syntaxError(String s) { syntaxError(s, in.getLineNum(), in.getColNum()) ; }
     
-    private void syntaxError(String s, int line, int charpos) {
+    private void syntaxError(String s, long line, long charpos) {
         errCount ++ ;
         errorHandler.error(syntaxException(s, line, charpos)) ;
         inErr = true;
     }
     
-    private SyntaxError syntaxException(String s, int lineNum, int charpos)
+    private SyntaxError syntaxException(String s, long lineNum, long charpos)
     {
         return new SyntaxError(
                 syntaxErrorMessage(
@@ -866,7 +866,7 @@ public final class NodeTupleReader
     }
 
     private String syntaxErrorMessage(String sort, String msg, 
-                                      int linepos, int charpos)
+                                      long linepos, long charpos)
     {
         StringBuilder x = new StringBuilder() ; 
         x.append(msgBase) ;
@@ -877,11 +877,11 @@ public final class NodeTupleReader
         }
         else
             x.append("Line ") ;
-        x.append(Integer.toString(linepos)) ;
+        x.append(Long.toString(linepos)) ;
         if ( charpos >= 0 )
         {
             x.append(" position ") ;
-            x.append(Integer.toString(charpos)) ;
+            x.append(Long.toString(charpos)) ;
         }
         x.append(": ") ;
         x.append(msg) ;
