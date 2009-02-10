@@ -43,6 +43,52 @@ public class TestIterator extends BaseTest
         }
         assertFalse(iter.hasNext()) ;
     }
+    
+    private static PeekIterator<String> create(String...a)
+    { 
+        return new PeekIterator<String>(IteratorArray.create(a)) ;
+    }
+    
+    @Test public void peek_1()
+    {
+        PeekIterator<String> peek = create("a", "b", "c") ;
+        assertEquals("a", peek.peek()) ;
+        test(Iter.iter(peek), "a", "b", "c") ;
+    }
+    
+    @Test public void peek_2()
+    {
+        PeekIterator<String> peek = create() ;
+        assertFalse(peek.hasNext()) ;
+    }
+
+    @Test public void peek_3()
+    {
+        PeekIterator<String> peek = create("a") ;
+        assertEquals("a", peek.peek()) ;
+    }
+
+    @Test public void peek_4()
+    {
+        PeekIterator<String> peek = create("a") ;
+        assertEquals("a", peek.peek()) ;
+        assertEquals("a", peek.peek()) ;
+        assertEquals("a", peek.next()) ;
+        assertFalse(peek.hasNext()) ;
+    }
+
+    @Test public void peek_5()
+    {
+        PeekIterator<String> peek = create("a", "b") ;
+        assertEquals("a", peek.peek()) ;
+        assertEquals("a", peek.peek()) ;
+        assertEquals("a", peek.next()) ;
+        assertTrue(peek.hasNext()) ;
+        assertEquals("b", peek.peek()) ;
+        assertEquals("b", peek.peek()) ;
+        assertEquals("b", peek.next()) ;
+        assertFalse(peek.hasNext()) ;
+    }
 }
 
 /*

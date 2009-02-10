@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestAlg.class,
+    TestIter.class,
     TestIterator.class,
     TestIteratorArray.class
 } )

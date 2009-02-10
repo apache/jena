@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.Assert.* ;
 import org.junit.Test;
 
-public class TestAlg
+public class TestIter
 {
     List<String> data0 = new ArrayList<String>() ;
     List<String> data1 = new ArrayList<String>() ;

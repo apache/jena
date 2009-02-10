@@ -14,8 +14,9 @@ public class PeekIterator<T> implements Iterator<T>
 {
 
     private final Iterator<T> iter ;
-    private boolean finished = false ; 
-    private T slot ;            // Slot always full - maybe null as a valid element.
+    private boolean finished = false ;
+    // Slot always full when iterator active.  Null is a a valid element.
+    private T slot ;            
 
     public PeekIterator(Iterator<T> iter)
     {
@@ -29,7 +30,10 @@ public class PeekIterator<T> implements Iterator<T>
         if ( iter.hasNext() )
             slot = iter.next();
         else
+        {
             finished = true ;
+            slot = null ;
+        }
     }
 
     @Override
