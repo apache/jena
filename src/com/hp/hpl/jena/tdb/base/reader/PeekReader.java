@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 
 import lib.Log;
@@ -28,25 +29,32 @@ public final class PeekReader extends Reader
 {
     // Does buffering here instead of using a BufferedReader help?
     // YES.  A lot (Java6).
-    // Possibly because BufferedReader internally are synchronized, possibly
-    // because this is so stripped down the JIT does a better job. 
     
-    static final int CB_SIZE = 16*1024 ;
+    // Possibly because BufferedReader internally are synchronized, possibly
+    // because this is so stripped down the JIT does a better job.
+    // **** read(char[]) is a loop of single char operations.
+    
+    private static final int CB_SIZE       = 16 * 1024 ;
+    private static final int PUSHBACK_SIZE = 10 ; 
     static final byte CHAR0 = (char)0 ;
     static final int  EOF = -1 ;
     static final int  UNSET = -2 ;
     
     private final char[] chars ;
     
-    private int buffLen = 0 ;
-    private int idx = 0 ;
+    // Could push back into the main buffer but it's clearer to keep them separate. 
+    private final char[] pushbackChars ;
+    private int idxPushback ;
+    
+    private int buffLen ;
+    private int idx ;
 
     private int currChar = UNSET ;
 
     private Reader in;
-    private long posn = 0 ;
-    private long colNum = 0;
-    private long lineNum = 1;
+    private long posn ;
+    private long colNum ;
+    private long lineNum ;
     
     public static PeekReader make(Reader r)
     {
@@ -67,37 +75,45 @@ public final class PeekReader extends Reader
     
     private PeekReader(Reader in)
     {
-        this(in, CB_SIZE) ;
+        this(in, CB_SIZE, PUSHBACK_SIZE) ;
     }
     
     /** Testing */
-    public static PeekReader make(String x)                { return new PeekReader(new StringReader(x)) ; }
-    static PeekReader make(String x, int buffSize) { return new PeekReader(new StringReader(x), buffSize) ; }
+    public static PeekReader make(String x)         { return make(x, CB_SIZE) ; }
+    static PeekReader make(String x, int buffSize)  { return new PeekReader(new StringReader(x), buffSize, PUSHBACK_SIZE) ; }
     
-    private PeekReader(Reader in, int buffSize)
+    private PeekReader(Reader in, int buffSize, int pushBackSize)
     {
         this.chars = new char[buffSize];
+        this.buffLen = 0 ;
+        this.idx = 0 ; 
+        
+        this.pushbackChars = new char[pushBackSize] ; 
+        this.idxPushback = -1 ;
+        
         this.in = in;
+        this.colNum = 0;
+        this.lineNum = 1;
+        this.posn = 0 ;
+        
         oneChar() ;    // Advance always so that the peek character is valid.
         if ( currChar == UNSET )
             setCurrChar(EOF) ;
     }
 
-    public long getLineNum()        { return lineNum; }
+    public long getLineNum()            { return lineNum; }
 
-    public long getColNum()         { return colNum; }
+    public long getColNum()             { return colNum; }
 
-    public long getPosition()       { return posn; }
+    public long getPosition()           { return posn; }
 
-    public int peekChar()           { return currChar ; }
+    public int peekChar()               { return currChar ; }
     
-    public int readChar()           { return oneChar() ; }
+    public int readChar()               { return oneChar() ; }
     
-    private void setCurrChar(int ch)
-    {
-        currChar = ch ;
-    }
-
+    /** push back a character : does not alter underlying position, line or column counts*/  
+    public void pushbackChar(int ch)    { unreadChar(ch) ; }
+    
     // Reader operations
     @Override
     public void close() throws IOException
@@ -124,62 +140,113 @@ public final class PeekReader extends Reader
         {
             int ch = oneChar() ;
             if ( ch == EOF )
-            {
                 return (i==0)? EOF : i ;
-            }
             cbuf[i+off] = (char)ch ;
         }
         return len ;
     }
 
-    // Only fill() and oneChar() must touch chars[].
+    public final boolean eof()   { return currChar == EOF ; }
+
+    // ----------------
+    // The methods below are the only ones to manipulate the character buffers.
+    // Other methods may read the state of variables.
+    
+    private void unreadChar(int ch)
+    {
+        // The push back buffer is in the order where [0] is the oldest.
+        // Does not alter the line number, column number or position count. 
+        
+        if ( idxPushback >= pushbackChars.length )
+            throw new JenaException("Pushback buffer overflow") ;
+        if ( ch == EOF || ch == UNSET )
+            throw new JenaException("Illegal character to push back: "+ch) ;
+        
+        idxPushback++ ;
+        pushbackChars[idxPushback] = (char)ch ;
+        setCurrChar(ch) ;
+    }
     
     // Ensure the buffer is not empty, or boolean eof is set
-    private void fill()
+    private void fillAndAdvance()
     {
         if ( idx >= buffLen )
         {
             try {
                 int x = in.read(chars) ;
                 idx = 0 ;
-                if ( x <= 0 )
-                    setCurrChar(EOF) ;
-                buffLen = x ;
+                buffLen = x ;   // Maybe -1
             }
             catch(IOException ex)
             {
                 ex.printStackTrace(System.err) ;
             }
         }
+        
+        // Advance one character.
+        if ( buffLen >= 0 )
+        {
+            // Advance the lookahead character
+            setCurrChar(chars[idx]) ;
+            idx++ ;
+            posn++ ;
+        }  
+        else
+            // Buffer empty, end of stream.
+            setCurrChar(EOF) ;
     }
 
+    // Invariants.
+    // currChar is either chars[idx-1] or pushbackChars[idxPushback]
     private int oneChar()
     {
         int ch = currChar ;
         if ( ch == EOF )
             return EOF ;
-
-        fill() ;
-        if ( !eof() )
+        
+        if ( idxPushback >= 0 )
         {
-            // Advance the lookhead character
-            setCurrChar(chars[idx]) ;
-            idx++ ;
-            posn++ ;
-            
-            if (ch == '\n')
-            {
-                lineNum++;
-                colNum = 1;
-            } 
-            else
-                colNum++;
+            replayPushback() ;
+            return ch ;
         }
+
+        fillAndAdvance() ;
+        
+        if (ch == '\n')
+        {
+            lineNum++;
+            colNum = 0;
+        } 
+        else
+            colNum++;
         return ch ;
     }
 
-    // ????
-    public final boolean eof()   { return currChar == EOF ; }
+    private void replayPushback()
+    {
+        idxPushback-- ;
+        if ( idxPushback >=0 )
+        {
+            char ch2 = pushbackChars[idxPushback] ;
+            setCurrChar(ch2) ;
+            return ;
+        }
+        
+        // Push back buffer empty.
+        // Next char is from chars[] which must have yielded a
+        // characater and idx >= 1 or the stream was zero chars (idx <= 0)
+        int nextCurrChar = EOF ;
+        
+        if ( idx-1 >= 0 )
+            // Had been a read.
+            nextCurrChar = chars[idx-1] ;
+        setCurrChar(nextCurrChar) ;
+    }
+
+    private void setCurrChar(int ch)
+    {
+        currChar = ch ;
+    }
 }
 
 
