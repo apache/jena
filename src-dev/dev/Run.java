@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
@@ -106,6 +107,12 @@ public class Run
 
     public static void main(String[] argv) throws Exception
     {
+        Op op = SSE.parseOp("(project (?s) (bgp (?s ?p ?o)))") ;
+        Query q = OpAsQuery.asQuery(op) ;
+        System.out.println(q) ;
+        System.exit(0) ;
+        
+        
         execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
         {
         String x1 = "SELECT  (count(?x) AS ?countX) {}" ;

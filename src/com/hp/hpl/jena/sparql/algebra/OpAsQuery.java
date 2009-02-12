@@ -34,7 +34,7 @@ public class OpAsQuery
     public static Query asQuery(Op op)
     {
         Query query = QueryFactory.make() ;
-        query.setQueryResultStar(true) ;
+        query.setQueryResultStar(true) ;    // SELECT *
         
         Converter v = new Converter(query) ;
         //OpWalker.walk(op, v) ;
@@ -44,17 +44,16 @@ public class OpAsQuery
         query.setQuerySelectType() ;
         
         query.setResultVars() ; 
-        // Always name the variables, no "SELECT *"
-        //query.setQueryResultStar(false) ;
         return query ; 
     }
     
-    static class Converter implements OpVisitor
+    public static class Converter implements OpVisitor
     {
-        Query query ;
-        Element element = null ;
-        ElementGroup currentGroup = null ;
-        Stack<ElementGroup> stack = new Stack<ElementGroup>() ;
+        private Query query ;
+        private Element element = null ;
+        private ElementGroup currentGroup = null ;
+        private Stack<ElementGroup> stack = new Stack<ElementGroup>() ;
+        
         public Converter(Query query)
         {
             this.query = query ;
