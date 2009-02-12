@@ -9,7 +9,7 @@ package iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException;
 
-/*8 Peeliterator - is one slot ahead from the wrapped iterator */ 
+/** PeeKIterator - is one slot ahead from the wrapped iterator */ 
 public class PeekIterator<T> implements Iterator<T>
 {
 
