@@ -20,6 +20,9 @@ public class NodeConst
     public static final Node nodeMinusOne   = Node.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
     
     public static final Node nodeRDFType    = RDF.type.asNode() ;
+    public static final Node nodeFirst      = RDF.first.asNode() ;
+    public static final Node nodeRest       = RDF.rest.asNode() ;
+    public static final Node nodeNil        = RDF.nil.asNode() ;
 }
 
 /*
