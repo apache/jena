@@ -16,7 +16,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
+
 import lib.ColumnMap;
+import lib.Tuple;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
@@ -30,8 +33,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
+import com.hp.hpl.jena.tdb.base.reader.SinkCounting;
 import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
-import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader.CountingSink;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -140,7 +143,7 @@ public class tdbperf extends CmdSub
         protected void exec()
         {
             //TDB.init();
-            CountingSink sink = new CountingSink()  ;
+            SinkCounting<Tuple<Node>> sink = new SinkCounting<Tuple<Node>>()  ;
             Timer timer = new Timer() ;
             timer.startTimer() ;
 

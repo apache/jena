@@ -1,26 +1,21 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package event;
+package com.hp.hpl.jena.tdb.base.reader;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
 
-public class EventType extends Symbol
+public final class NullSink<T> implements Sink<T>
 {
+    public static <X> NullSink<X> create() { return new NullSink<X>() ; }
     
-    
-    public EventType(Class<?> cls, String label) { this(cls.getName()+"."+label) ; }
-    public EventType(String label) { super(label) ; }
-    
-    @Override 
-    public String toString() { return "event:"+getSymbol() ; }
+    @Override public void send(T thing)  {}
+    @Override public void close() {}
 }
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

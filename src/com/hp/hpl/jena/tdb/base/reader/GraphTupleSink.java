@@ -1,26 +1,35 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package event;
+package com.hp.hpl.jena.tdb.base.reader;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
+import lib.Tuple;
 
-public class EventType extends Symbol
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+final class GraphTupleSink extends SinkGraph<Tuple<Node>> implements Sink<Tuple<Node>>
 {
+    GraphTupleSink(Graph g)
+    { 
+        super(g) ;
+    }
     
-    
-    public EventType(Class<?> cls, String label) { this(cls.getName()+"."+label) ; }
-    public EventType(String label) { super(label) ; }
-    
-    @Override 
-    public String toString() { return "event:"+getSymbol() ; }
+    @Override
+    public void send(Tuple<Node> tuple)
+    {
+        if ( tuple.size() != 3 ) 
+            throw new lib.InternalError("Tuple not of length 3 for a triple") ;
+        Triple t = new Triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
+        graph.add(t) ;
+    }
 }
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

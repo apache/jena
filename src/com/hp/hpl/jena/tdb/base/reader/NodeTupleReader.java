@@ -45,9 +45,7 @@ import lib.Tuple;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
@@ -55,11 +53,9 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.SyntaxError;
-import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import event.Event;
-import event.EventListener;
 import event.EventManager;
 import event.EventType;
 
@@ -76,25 +72,25 @@ public final class NodeTupleReader
     
     // ---- Sink
     
-    static final EventType startRead = new EventType("StartRead") ;
-    static final EventType finishRead = new EventType("FinishRead") ;
+    static final EventType startRead = new EventType("NodeTupleReader.StartRead") ;
+    static final EventType finishRead = new EventType("NodeTupleReader.FinishRead") ;
     
     // ---- API
     
     /** Create a tuple sink for a graph */
-    public static TupleSink graphSink(final Graph graph)
+    public static Sink<Tuple<Node>> graphSink(final Graph graph)
     {
-        TupleSink sink = new GraphTupleSink(graph) ;
+        Sink<Tuple<Node>> sink = new GraphTupleSink(graph) ;
         return sink ;
     }
 
-    public static void read(TupleSink sink, InputStream input, String base)
+    public static void read(Sink<Tuple<Node>> sink, InputStream input, String base)
     {
         PeekReader r = PeekReader.makeUTF8(input) ;
         _read(sink, r, base) ;
     }
 
-    public static void read(TupleSink sink, String string, String base)
+    public static void read(Sink<Tuple<Node>> sink, String string, String base)
     {
         PeekReader r = PeekReader.make(new StringReader(string)) ;
         _read(sink, r, base) ;
@@ -102,33 +98,33 @@ public final class NodeTupleReader
 
     public static void read(Graph graph, InputStream input, String base)
     {
-        TupleSink sink = graphSink(graph) ;
+        Sink<Tuple<Node>> sink = graphSink(graph) ;
         read(sink, input, base) ;
     }
 
     public static void read(Graph graph, String string, String base)
     {
-        TupleSink sink = graphSink(graph) ;
+        Sink<Tuple<Node>> sink = graphSink(graph) ;
         read(sink, string, base) ;
     }
 
     /** Not encouraged */
     public static void read(Graph graph, Reader reader, String base)
     {
-        TupleSink sink = graphSink(graph) ;
+        Sink<Tuple<Node>> sink = graphSink(graph) ;
         PeekReader r = PeekReader.make(reader) ;
         _read(sink, r, base) ;
     }
 
     /** Not encouraged */
-    public static void read(TupleSink sink, Reader reader, String base)
+    public static void read(Sink<Tuple<Node>> sink, Reader reader, String base)
     {
         PeekReader r = PeekReader.make(reader) ;
         read(sink, r, base) ;
     }
     
     /** Not encouraged */
-    public static void read(TupleSink sink, PeekReader peekReader, String base)
+    public static void read(Sink<Tuple<Node>> sink, PeekReader peekReader, String base)
     {
         _read(sink, peekReader, base) ;
     }
@@ -136,7 +132,7 @@ public final class NodeTupleReader
     
     // ---- Entry point to implementation
     
-    private static void _read(TupleSink sink, PeekReader peekReader, String base)
+    private static void _read(Sink<Tuple<Node>> sink, PeekReader peekReader, String base)
     {
         NodeTupleReader x = new NodeTupleReader(sink, peekReader, base) ;
         invoke(x) ;
@@ -161,10 +157,10 @@ public final class NodeTupleReader
         // Split the sink by a pipe
         final BlockingQueue<Tuple<Node>> queue = new ArrayBlockingQueue<Tuple<Node>>(10000) ;
         
-        TupleSink pipeSink = new TupleSink() {
+        Sink<Tuple<Node>> pipeSink = new Sink<Tuple<Node>>() {
     
             @Override
-            public void tuple(Tuple<Node> tuple)
+            public void send(Tuple<Node> tuple)
             { 
                 try
                 {
@@ -177,10 +173,10 @@ public final class NodeTupleReader
             }
             @Override
             public void close()
-            { tuple(endMarker) ; }
+            { send(endMarker) ; }
         } ;
         
-        final TupleSink output = x.sink ;
+        final Sink<Tuple<Node>> output = x.sink ;
         x.sink = pipeSink ;
         
         // -- Parser thread.
@@ -202,7 +198,7 @@ public final class NodeTupleReader
                 Tuple<Node> t = queue.take() ;
                 if ( t == endMarker )
                     break ;
-                output.tuple(t) ;
+                output.send(t) ;
             }
         } catch (InterruptedException ex)
         {
@@ -211,67 +207,8 @@ public final class NodeTupleReader
         }
     }
 
-    public interface TupleSink extends Closeable 
-    { void tuple(Tuple<Node> tuple) ; }
-    
-    static final class GraphTupleSink implements TupleSink
-    {
-        private final Graph graph ;
-        EventListener el1 ;
-        EventListener el2 ;
-        
-        GraphTupleSink(Graph g)
-        { 
-            this.graph = g ;
-            el1 = new EventListener(){
-                @Override
-                public void event(Object dest, Event event)
-                {
-                    graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
-                }} ;
-
-            el2 = new EventListener(){
-                @Override
-                public void event(Object dest, Event event)
-                {
-                    graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
-                }} ;
-
-            EventManager.register(this, startRead, el1) ;
-            EventManager.register(this, finishRead, el2) ;
-            
-        }
-        @Override
-        public void tuple(Tuple<Node> tuple)
-        {
-            if ( tuple.size() != 3 ) 
-                throw new lib.InternalError("Tuple not of length 3 for a triple") ;
-            Triple t = new Triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
-            graph.add(t) ;
-        }
-        @Override
-        public void close()
-        {
-            EventManager.unregister(this, startRead, el1) ;
-            EventManager.unregister(this, startRead, el2) ;
-        }
-    }
-
-    public final static class NullSink implements TupleSink
-    {
-        @Override public void tuple(Tuple<Node> tuple)  {}
-        @Override public void close() {}
-    }
-
-    public final static class CountingSink implements TupleSink
-    {
-        public long count = 0 ; 
-        @Override public void tuple(Tuple<Node> tuple)  { count++ ; }
-        @Override public void close() {}
-    }
-
     // ---- Object state
-    private TupleSink sink ;
+    private Sink<Tuple<Node>> sink ;
     private Hashtable<String, Node> anons = new Hashtable<String, Node>();
     private PeekReader in = null;
     private boolean inErr = false;
@@ -327,10 +264,10 @@ public final class NodeTupleReader
     // Testing
     NodeTupleReader(String string)
   {
-        this(new NullSink(), PeekReader.make(string), null) ;
+        this(new NullSink<Tuple<Node>>(), PeekReader.make(string), null) ;
   }
     
-    private NodeTupleReader(TupleSink sink, PeekReader reader, String base)
+    private NodeTupleReader(Sink<Tuple<Node>> sink, PeekReader reader, String base)
     {
         this.sink = sink ;
         this.msgBase = ( base == null ? "" : (base + ": ") );
@@ -475,7 +412,7 @@ public final class NodeTupleReader
         lastTuple = t ;
         // Note : this can throw a JenaException for further checking of the triple. 
         if ( sink != null )
-            sink.tuple(t) ;
+            sink.send(t) ;
     }
 
     Node readNode()

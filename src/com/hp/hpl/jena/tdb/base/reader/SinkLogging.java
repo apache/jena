@@ -1,26 +1,33 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package event;
+package com.hp.hpl.jena.tdb.base.reader;
 
-import com.hp.hpl.jena.sparql.util.Symbol;
+import org.slf4j.Logger;
 
-public class EventType extends Symbol
+public class SinkLogging<T> implements Sink<T>
 {
     
+    private Logger log ;
+
+    public SinkLogging(Logger log) { this.log = log ; }
     
-    public EventType(Class<?> cls, String label) { this(cls.getName()+"."+label) ; }
-    public EventType(String label) { super(label) ; }
-    
-    @Override 
-    public String toString() { return "event:"+getSymbol() ; }
+    @Override
+    public void send(T item)
+    {
+        log.info("Sink: "+item) ;
+    }
+
+    @Override
+    public void close()
+    {}
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
