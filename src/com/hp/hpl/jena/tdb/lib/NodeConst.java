@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.lib;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class NodeConst
@@ -19,10 +20,12 @@ public class NodeConst
     public static final Node nodeTwo        = Node.createLiteral("2", null,  XSDDatatype.XSDinteger) ;
     public static final Node nodeMinusOne   = Node.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
     
-    public static final Node nodeRDFType    = RDF.type.asNode() ;
-    public static final Node nodeFirst      = RDF.first.asNode() ;
-    public static final Node nodeRest       = RDF.rest.asNode() ;
-    public static final Node nodeNil        = RDF.nil.asNode() ;
+    public static final Node nodeRDFType    = RDF.Nodes.type ;
+    public static final Node nodeFirst      = RDF.Nodes.first ;
+    public static final Node nodeRest       = RDF.Nodes.rest ;
+    public static final Node nodeNil        = RDF.Nodes.nil ;
+    
+    public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
 }
 
 /*
