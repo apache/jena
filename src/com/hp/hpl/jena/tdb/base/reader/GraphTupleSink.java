@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-final class GraphTupleSink extends SinkGraph<Tuple<Node>> implements Sink<Tuple<Node>>
+final class GraphTupleSink extends SinkToGraph<Tuple<Node>> implements Sink<Tuple<Node>>
 {
     GraphTupleSink(Graph g)
     { 

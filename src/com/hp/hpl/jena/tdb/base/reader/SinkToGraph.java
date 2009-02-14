@@ -13,13 +13,13 @@ import event.Event;
 import event.EventListener;
 import event.EventManager;
 
-public abstract class SinkGraph<T> implements Sink<T>
+public abstract class SinkToGraph<T> implements Sink<T>
 {
     protected final Graph graph ;
     private EventListener el1 ;
     private EventListener el2 ;
 
-    SinkGraph(Graph g)
+    protected SinkToGraph(Graph g)
     { 
         this.graph = g ;
         // Convert between the new global event system (EventManager)
