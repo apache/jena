@@ -372,7 +372,8 @@
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
           description="Resolve and fetch dependences with Ivy">
-    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
+    <!-- sync causes artefacts and versions no longer need to be deleted -->
+    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
     
     <!--
