@@ -42,8 +42,7 @@ public final class PeekReader extends Reader
     
     private final char[] chars ;
     
-    // Could push back into the main buffer but it's clearer to keep them separate. 
-    private final char[] pushbackChars ;
+    private char[] pushbackChars ;
     private int idxPushback ;
     
     private int buffLen ;
@@ -158,7 +157,13 @@ public final class PeekReader extends Reader
         // Does not alter the line number, column number or position count. 
         
         if ( idxPushback >= pushbackChars.length )
-            throw new JenaException("Pushback buffer overflow") ;
+        {
+            // Enlarge pushback buffer.
+            char[] pushbackChars2 = new char[pushbackChars.length*2] ;
+            System.arraycopy(pushbackChars2, 0, pushbackChars2, 0, pushbackChars.length) ;
+            pushbackChars = pushbackChars2 ;
+            //throw new JenaException("Pushback buffer overflow") ;
+        }
         if ( ch == EOF || ch == UNSET )
             throw new JenaException("Illegal character to push back: "+ch) ;
         
