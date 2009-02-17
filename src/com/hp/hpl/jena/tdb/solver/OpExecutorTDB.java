@@ -133,7 +133,7 @@ public class OpExecutorTDB extends OpExecutor
         {
             // Storage default graph 
             // Either outside GRAPH (no implicit union) or using the "name" of the default graph
-            return optimizeExecute(ds.getDefaultGraph(), input, bgp, null, execCxt) ;
+            return optimizeExecute(ds.getDefaultGraph(), input, bgp, exprs, execCxt) ;
         }
         
         // ---- Union (RDF Merge) of named graphs
