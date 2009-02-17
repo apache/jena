@@ -39,7 +39,6 @@ public class StoreDesc
 
     /** MySQL specific */
     public MySQLEngineType engineType   = null ;
-
     
     public static StoreDesc read(String filename)
     {
