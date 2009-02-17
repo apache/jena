@@ -8,18 +8,16 @@ package dev;
 
 public class Dev
 {
-    // Quad pattern execution/optimization with GRAPH ?g { .... }
+    // Next:
+    // Quad pattern execution/optimization with filters
     
     // ---- Quads:
     //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
 
     //   Quad loader; dataset merge.
-    //   Quad pattern execution/optimization with GRAPH ?g { .... }
-    //   Generalised the pattern stuff.
+    //   Generalised the pattern stuff in teh optimizer?
     //   Dataset management??
     //   Tidy OpExecutorTDB.execute(quads)
-    
-    // ---- NodeTupleReader ; stable blank nodes. 
     
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)
@@ -33,7 +31,7 @@ public class Dev
     // Generic TupleIndex<T extends Something> for NodeId or Node
     //   e.g. Need mapper from T to TupleIndexRecord to abstract. 
     
-    // Consistency - do not manage in block managers except where MRSW no safe.
+    // Consistency - do not manage in block managers except where MRSW not safe.
     // ==> Reopenable
     // ==> .release(id)
     // ==> Accurate size (?? meaningful beyond isEmpty/notEmpty?)

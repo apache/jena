@@ -177,7 +177,7 @@ public class OpExecutorTDB extends OpExecutor
         QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
         if ( doingUnion )
         {
-            //XXX QueryIterProjectHide
+            //??? QueryIterProjectHide
             List<Var> vars = new ArrayList<Var>() ;
             OpVars.vars(bgp, vars) ;
             qIter = new QueryIterProject(qIter, vars, execCxt) ;
@@ -218,6 +218,7 @@ public class OpExecutorTDB extends OpExecutor
     @Override
     protected QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
+        // XXX Not active - quad transform was applied so no OpBGPs.
         if ( ! isForTDB )
             return super.execute(opFilter, input) ;
         
@@ -278,7 +279,7 @@ public class OpExecutorTDB extends OpExecutor
         // -- Explain
         if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
         {
-            String x = op.toString();	// XXX Flat form.
+            String x = op.toString();
             x = StrUtils.chop(x) ;
             while ( x.endsWith("\n") || x.endsWith("\r") )
                 x = StrUtils.chop(x) ;
