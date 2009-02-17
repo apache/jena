@@ -19,14 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
@@ -53,41 +52,50 @@ public class SolverLib
             return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
         }} ;
 
-        /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
-    @SuppressWarnings("unchecked")
+    /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        List<Triple> triples = pattern.getList() ;
-        Iterator<Binding> iter = input ;
-        
-        NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
-        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
-        
-        for ( Triple triple : triples )
-        {
-            Tuple<Node> t = graph.asTuple(triple) ; 
-            chain = solve(graph.getNodeTupleTable(), chain, t, execCxt) ;
-        }
-        
-        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
-        return new QueryIterTDB(iterBinding, input, execCxt) ;
+        return execute(graph.getNodeTupleTable(), null, pattern, input, execCxt) ;
     }
     
-    // Abstract: NodeTupleTable, Tuple generator, input, execCxt 
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
-    @SuppressWarnings("unchecked")
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
+        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, execCxt) ;
+    }
+    
+    // The worker.  Callers choose the NodeTupleTable.  graphNode maybe null.
+    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        @SuppressWarnings("unchecked")
         List<Triple> triples = pattern.getList() ;
-        NodeTupleTable nodeTuples = ds.getQuadTable().getNodeTupleTable() ;
+        
+        @SuppressWarnings("unchecked")
         Iterator<Binding> iter = input ;
-        NodeTable nodeTable = nodeTuples.getNodeTable() ;
+        
+        int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
+        if ( graphNode == null )
+        {
+            if ( 3 != tupleLen )
+                throw new TDBException("SolverLib: Null graph node but tuples are of length "+tupleLen) ;
+        } else {
+            if ( 4 != tupleLen )
+                throw new TDBException("SolverLib: Graph node specified but tuples are of length "+tupleLen) ;
+        }
+        
+        NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
         {
-            Tuple<Node> tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(nodeTuples, chain, tuple, execCxt) ;
+            Tuple<Node> tuple = null ;
+            if ( graphNode == null )
+                // 3-tuples
+                tuple = Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            else
+                // 4-tuples.
+                tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            chain = solve(nodeTupleTable, chain, tuple, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
