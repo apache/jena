@@ -21,6 +21,11 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpQuadPattern extends Op0
 {
+    public static boolean isQuadPattern(Op op)
+    {
+        return (op instanceof OpQuadPattern ) ;
+    }
+    
     Node graphNode ;
     BasicPattern triples ;
     List<Quad> quads = null ;
