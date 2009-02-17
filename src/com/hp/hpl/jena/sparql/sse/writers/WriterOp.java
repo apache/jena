@@ -118,13 +118,11 @@ public class WriterOp
             start(op, NL) ;
             printOp(op.getLeft()) ;
 
-            //out.println() ; 
             out.ensureStartOfLine() ;
 
             printOp(op.getRight()) ;
 
             out.ensureStartOfLine() ;
-            //out.println() ; 
 
             if ( exprs != null )
                 WriterExpr.output(out, exprs, sContext) ;

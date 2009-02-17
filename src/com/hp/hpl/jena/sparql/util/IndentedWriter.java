@@ -5,10 +5,11 @@
  */
 
 package com.hp.hpl.jena.sparql.util;
-import java.io.* ; 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.util.FileUtils;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
@@ -37,34 +38,20 @@ public class IndentedWriter
     protected int row = 1 ;
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
+    protected boolean flatMode = false ;
     
     public IndentedWriter() { this(System.out, false) ; }
     
-    // Temp: Adaption from old world to new -
-    protected IndentedWriter(IndentedWriter other)
-    { 
-        out = other.out ;
-        lineNumbers = other.lineNumbers ;
-        if ( other.column != column || other.row != row )
-            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
-        
-    }
-    
-    public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
+    public IndentedWriter(OutputStream outStream)
+    { this(outStream, false) ; }
     
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
-    {
-        this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
-    }
-    
-    /*public*/ IndentedWriter(Writer writer) { this(new PrintWriter(writer), false) ; }
-    
-    /*public*/ IndentedWriter(Writer writer, boolean withLineNumbers)
-    { this(new PrintWriter(writer), withLineNumbers) ; }
+    { this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ; }
 
-    /*public*/ IndentedWriter(PrintWriter printWriter) { this(printWriter, false) ; }
+    public IndentedWriter(StringWriter sw, boolean withLineNumbers)
+    { this(new PrintWriter(sw), withLineNumbers) ; }
     
-    /*public*/ IndentedWriter(PrintWriter printWriter, boolean withLineNumbers)
+    private IndentedWriter(PrintWriter printWriter, boolean withLineNumbers)
     {
         out = printWriter ;
         lineNumbers = withLineNumbers ;
@@ -133,7 +120,8 @@ public class IndentedWriter
     public void newline()
     {
         lineStart() ; 
-        out.println() ;
+        if ( ! flatMode )
+            out.println() ;
         startingNewLine = true ;
         row++ ;
         column = 0 ;
@@ -203,29 +191,44 @@ public class IndentedWriter
     public int getCurrentOffset() { return getCol() - getIndent() ; }
     
     
-    public boolean hasLineNumbers()
-    {
-        return lineNumbers ;
-    }
+    public boolean hasLineNumbers() { return lineNumbers ; }
+    public void setLineNumbers(boolean lineNumbers) { this.lineNumbers = lineNumbers ; }
 
-    public void setLineNumbers(boolean lineNumbers)
-    {
-        this.lineNumbers = lineNumbers ;
-    }
+    /** Flat mode - print without NL, for a more compact representation - depends on caller */  
+    public boolean inFlatMode() { return flatMode ; }
+    public void setFlatMode(boolean flatMode) { this.flatMode = flatMode ; }
 
-    public void incIndent(int x) { currentIndent += x ; }
-    public void incIndent()      { incIndent(unitIndent) ; }
-    public void decIndent(int x) { currentIndent -= x ; }
-    public void decIndent() { decIndent(unitIndent) ; }
     
+    public void incIndent()      { incIndent(unitIndent) ; }
+    public void incIndent(int x)
+    {
+        if (!flatMode) 
+            currentIndent += x ;
+    }
+
+    public void decIndent() { decIndent(unitIndent) ; }
+    public void decIndent(int x) 
+    {
+        if (!flatMode) currentIndent -= x ;
+    }
+
     public void setUnitIndent(int x) { unitIndent = x ; }
     public int  getUnitIndent() { return unitIndent ; }
     public void setAbsoluteIndent(int x) { currentIndent = x ; }
     
     public boolean atLineStart() { return startingNewLine ; }
     
-    private void lineStart()
+    protected void lineStart()
     {
+        if ( flatMode )
+        {
+            if ( startingNewLine && row > 0 )
+                // Space between each line.
+                out.print(' ') ;
+            startingNewLine = false ;
+            return ;
+        }
+        
         // Need to do its just before we append anything, not after a NL,
         // so that a final blank does not cause a line number  
         if ( startingNewLine )
