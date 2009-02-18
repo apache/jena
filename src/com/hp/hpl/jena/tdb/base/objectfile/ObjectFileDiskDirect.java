@@ -25,8 +25,6 @@ import com.hp.hpl.jena.tdb.store.NodeId;
  * @version $Id$
  */
 
-// Backup version whiel trying delayed writes 
-
 public class ObjectFileDiskDirect extends FileBase implements ObjectFile 
 {
     /* No synchronization - assumes that the caller has some appropriate lock
@@ -52,9 +50,6 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
     // List<Pair<NodeId, String>>
     
     //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
-    
-    
-    
     
     @Override
     public NodeId write(String str)

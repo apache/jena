@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.recordfile;
 
 public class RecordFile
 {
-    public RecordFile() {}
+    private RecordFile() {}
 }
 
 /*

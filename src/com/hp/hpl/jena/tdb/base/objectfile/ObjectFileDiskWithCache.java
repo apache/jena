@@ -29,6 +29,8 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class ObjectFileDiskWithCache extends FileBase implements ObjectFile 
 {
+    // Not used - this is not faster.  It is more complicated. 
+    
     /* No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations need to be thread safe.  
      */

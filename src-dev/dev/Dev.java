@@ -8,8 +8,12 @@ package dev;
 
 public class Dev
 {
-    // Next:
-    // Quad pattern execution/optimization with filters
+    // ==== Next
+    // Quad pattern execution/optimization with filters (done for default graph).
+    // File metafiles.
+    //    Reopenable files.
+    //    Alterntaive lenbth hash codes.
+    //    Node file stats
     
     // ---- Quads:
     //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
