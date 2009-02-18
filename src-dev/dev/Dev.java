@@ -15,6 +15,7 @@ public class Dev
     // Src for testing in download?
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
     //   which can be simplified to a sequence.
+    //  Generate a sequence always? 
     
     
     // ----
