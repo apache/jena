@@ -164,7 +164,7 @@ public class TransformFilterPlacement extends TransformCopy
         
         if ( op instanceof OpSequence )
         {
-            // Is last in OpSequnce an BGP?
+            // Is last in OpSequence an BGP?
             OpSequence opSeq = (OpSequence)op ;
             List<Op> x = opSeq.getElements() ;
             if ( x.size() > 0 )

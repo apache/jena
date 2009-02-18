@@ -9,12 +9,13 @@ package dev;
 public class Dev
 {
     // SPARQL/Update - Sort out GraphStores/Datasets
-    
     // (Jena) Cached IRI checking (minor)
     
     // Initial bindings ==> Initial table.
-
-    // Src for testsing in download?
+    // Src for testing in download?
+    // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
+    //   which can be simplified to a sequence.
+    
     
     // ----
     
