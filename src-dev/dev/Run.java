@@ -32,6 +32,7 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
+import com.hp.hpl.jena.tdb.base.file.FileGroup;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
@@ -71,6 +72,19 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        
+        FileGroup fGrp = new FileGroup(".", "DATA") ;
+        fGrp.setProperty("item1", "snork") ;
+        fGrp.flush() ;
+        
+        fGrp = new FileGroup(".", "DATA") ;
+        System.out.println(fGrp.getProperty("item1")) ;
+        System.out.println("----") ;
+        System.exit(0) ;
+        
+        
+        
+        
         Model m = ModelFactory.createDefaultModel() ;
         m.add(m.createResource("http://example/x"), m.createProperty("http://example/p"), m.createResource("http://example/x z")) ;
         Dataset ds = TDBFactory.createDataset("DB") ;

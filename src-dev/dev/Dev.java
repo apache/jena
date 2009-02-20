@@ -15,6 +15,10 @@ public class Dev
     //    Alterntaive lenbth hash codes.
     //    Node file stats
     
+    // ==== Tools
+    // ** Command line optimizer "explain (bgp ....)"
+    // ** LARQ builder for literals
+    
     // ---- Quads:
     //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
 

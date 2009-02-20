@@ -14,6 +14,8 @@ public class Names
     public static final String primaryIndexQuads = "GSPO" ; 
     public static final String[] quadIndexes = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
 
+    /** Properties information for a FileGroup*/ 
+    public static final String metaData         = "meta" ;
     
     /** B+Trees - nodes file and records file */
     public static final String bptExt1          = "idn" ;

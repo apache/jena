@@ -303,14 +303,12 @@ public class OpExecutorTDB extends OpExecutor
     {
         if ( ! input.hasNext() )
             return input ;
-        
+
+        // -- Input
         // Must pass this iterator into the next stage. 
         QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
         input = null ; // and not this one which is now invalid.
         
-        BasicPattern patternOriginal = pattern ;
-        BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
-
         // -- Reorder
         pattern = reorder(pattern, peek, transform) ;
         
