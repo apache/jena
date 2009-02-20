@@ -6,53 +6,129 @@
 
 package tdb;
 
+import java.util.List;
+
+import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 
-public class tdbdump extends CmdTDB
+public class tdbdump extends CmdSub
 {
     ModFormat modFormat =  new ModFormat() ;
     
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbdump(argv).mainRun() ;
+        new tdbdump(argv).exec() ;
     }
 
-    protected tdbdump(String[] argv)
+//    protected tdbdump(String[] argv)
+//    {
+//        super(argv) ;
+//        super.addModule(modFormat) ;
+//    }
+//
+//    @Override
+//    protected String getSummary()
+//    {
+//        return Utils.className(this)+" --desc=DIR [--format=FORMAT]" ;
+//    }
+//
+//    @Override
+//    protected String getCommandName()
+//    {
+//        return "tdbdump" ;
+//    }
+//
+//    @Override
+//    protected void exec()
+//    {
+//        Model model = getModel() ;
+//        String format = modFormat.getFormat("N3-TRIPLES") ;
+//        model.write(System.out, format) ;
+//    }
+
+        static final String CMD_DATA =     "data" ; 
+        static final String CMD_INDEX =     "index" ; 
+        
+        protected tdbdump(String...argv)
+        {
+            super(argv) ;
+            super.addSubCommand(CMD_INDEX, new Exec()
+            { @Override public void exec(String[] argv) { new SubIndex(argv).mainRun() ; } }) ;
+            super.addSubCommand(CMD_DATA, new Exec()
+            { @Override public void exec(String[] argv) { new SubData(argv).mainRun() ; } }) ;
+        }
+        
+
+    class SubData extends CmdTDB
     {
-        super(argv) ;
-        super.addModule(modFormat) ;
-    }
+        protected SubData(String... argv)
+        {
+            super(argv) ;
+        }
 
-    @Override
-    protected String getSummary()
+        @Override
+        protected String getSummary()
+        {
+            return null ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            Model model = getModel() ;
+            String format = modFormat.getFormat("N3-TRIPLES") ;
+            model.write(System.out, format) ;
+        }
+    }
+    
+    static class SubIndex extends CmdTDB
     {
-        return Utils.className(this)+" --desc=DIR [--format=FORMAT]" ;
-    }
+        protected SubIndex(String[] argv)
+        {
+            super(argv) ;
+        }
 
-    @Override
-    protected String getCommandName()
-    {
-        return "tdbdump" ;
-    }
+        @Override
+        protected String getSummary()
+        {
+            return "tdbdump index INDEX" ;
+        }
 
-    @Override
-    protected void exec()
-    {
-        Model model = getModel() ;
-        String format = modFormat.getFormat("N3-TRIPLES") ;
-        model.write(System.out, format) ;
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void exec()
+        {
+            for ( String fn: (List<String>)super.getPositional() )
+            {
+                execOne(fn) ;
+            }
+        }
+        
+        private void execOne(String fn)
+        {
+            // XXX Fix location stuff.
+            Location location = new Location("DB") ;
+            RangeIndex rIndex = IndexBuilder.createRangeIndex(location, "SPO", FactoryGraphTDB.indexRecordTripleFactory) ;
+            for ( Record r : rIndex )
+            {
+                System.out.println(r.toString()) ;
+            }
+        }
     }
-
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

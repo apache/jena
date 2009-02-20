@@ -16,6 +16,7 @@ import java.util.Map;
 import lib.FileOps;
 import lib.cache.CacheNG;
 import org.apache.log4j.Level;
+import tdb.tdbdump;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
@@ -72,6 +73,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        
+        tdbdump.main("index","DB/SPO") ; System.exit(0) ;
         
         FileGroup fGrp = new FileGroup(".", "DATA") ;
         fGrp.setProperty("item1", "snork") ;

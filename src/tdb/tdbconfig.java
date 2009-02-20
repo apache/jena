@@ -175,7 +175,7 @@ public class tdbconfig extends CmdSub
         @Override
         protected String getSummary()
         {
-            return "tdbconfig stats" ;
+            return "tdbconfig nodes" ;
         }
 
         @SuppressWarnings("unchecked")
