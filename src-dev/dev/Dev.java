@@ -21,11 +21,15 @@ public class Dev
     
     // ---- Quads:
     //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
+    //   Generalise quads to be quads, not (node, bgp).
 
     //   Quad loader; dataset merge.
     //   Generalised the pattern stuff in teh optimizer?
     //   Dataset management??
     //   Tidy OpExecutorTDB.execute(quads)
+    
+    // ---- Optimizer
+    //   Relationship of filter placement and OpExecutor and StageGenerators.
     
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)
