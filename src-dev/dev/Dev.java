@@ -12,7 +12,9 @@ public class Dev
     // Quad pattern execution/optimization with filters (done for default graph).
     // File metafiles.
     //    Reopenable files.
-    //    Alterntaive lenbth hash codes.
+    //      Alterntaive length hash codes.
+    //      Record lengths
+    //      
     //    Node file stats
     
     // ==== Tools
