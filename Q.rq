@@ -1,7 +1,12 @@
-PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX :        <http://example/>
-SELECT *
-{
-    GRAPH [] { ?s ?p ?o }
-}
+PREFIX test: <http://exmpale/> 
+
+SELECT DISTINCT  ?x ?y
+        WHERE
+          {
+    {
+                ?x test:knows ?y . # not selective
+                ?x test:name "John Doe" . # Very Selective
+                ?y test:name "Jane Doe" . # Very selective
+    }
+            FILTER ( ?x != ?y )
+          }

@@ -17,6 +17,8 @@ public class Dev
     //   which can be simplified to a sequence.
     //  Generate a sequence always? 
     
+    // === Integrate optimization from TDB
+    // Interaction of filter placement  
     
     // ----
     
