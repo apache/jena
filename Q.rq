@@ -1,12 +1,9 @@
-PREFIX test: <http://exmpale/> 
+PREFIX vcard:      <http://www.w3.org/2001/vcard-rdf/3.0#>
+PREFIX elements:         <http://purl.org/dc/elements/1.1/>
 
-SELECT DISTINCT  ?x ?y
-        WHERE
-          {
-    {
-                ?x test:knows ?y . # not selective
-                ?x test:name "John Doe" . # Very Selective
-                ?y test:name "Jane Doe" . # Very selective
-    }
-            FILTER ( ?x != ?y )
-          }
+SELECT ?title
+             WHERE  {
+              ?uri vcard:FN "John Smith-7" .
+              ?bookURI elements:creator ?uri . 
+              ?bookURI elements:title ?title . 
+             }
