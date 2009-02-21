@@ -7,22 +7,26 @@
 package com.hp.hpl.jena.tdb.base.file ;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** A collection of files (often in the same directory, same basename, various extensions) */
+import com.hp.hpl.jena.tdb.sys.Names;
+
+/** Naming, access and metadata management to a collection of related files
+ *  (same directory, same basename within directory, various extensions).
+ */
 public class FileGroup
 {
     private static Logger log = LoggerFactory.getLogger(FileGroup.class) ;
     
     private Location location ;
     private String basename ;
+    // For now, Java properties file.
 //    // The properties of a FileGroup are an RDF model written in Turtle.
 //    private Model properties ;
     private Properties properties ;
@@ -30,13 +34,20 @@ public class FileGroup
 
     public FileGroup(String directory, String basename)
     {
-        if ( ! new File(directory).isDirectory() )
-            throw new TDBException("Not a directory: "+directory) ;
-        
-        this.location = new Location(directory) ;
+        this(new Location(directory), basename) ;
+    }
+    
+    public FileGroup(Location directory, String basename)
+    {
+        this.location = directory ;
         this.basename = basename ;
         this.metaFilename = location.absolute(basename, Names.metaData) ;
         this.properties = new Properties() ;
+        loadProperties() ;
+    }
+    
+    private void loadProperties()
+    {
         InputStream in = null ;
         try { 
             in = new FileInputStream(metaFilename) ;
@@ -49,7 +60,7 @@ public class FileGroup
             log.error("Failed to load properties: "+metaFilename, ex) ;
         }
     }
-    
+
     public String getProperty(String key)
     {
         return properties.getProperty(key, null) ;
@@ -60,6 +71,16 @@ public class FileGroup
         properties.setProperty(key, value) ;
     }
     
+    public RandomAccessFile openReadOnly(String ext)
+    {
+        return open(ext, "r") ;
+    }
+    
+    public RandomAccessFile open(String ext)
+    {
+        return open(ext, "rw") ;
+    }
+        
     public void flush()
     {
         try {
@@ -73,6 +94,29 @@ public class FileGroup
             log.error("Failed to store properties: "+metaFilename, ex) ;
         }
     }
+    
+    public String filename(String ext)
+    {
+        return location.getPath(basename, ext) ;
+    }
+    
+    public RandomAccessFile open(String ext, String mode)
+    {
+        // "rwd" - Syncs only the file contents
+        // "rws" - Syncs the file contents and metadata
+        // "rw" -
+        try {
+            RandomAccessFile out = new RandomAccessFile(filename(ext), mode) ;
+            return out ;
+        } catch (IOException ex) { throw new FileException("Failed to open file", ex) ; } 
+    }
+    
+    public FileChannel openChannel(String ext)
+    {
+        RandomAccessFile out = open(ext, "rw") ;
+        return out.getChannel() ;
+    }
+    
 }
 
 /*

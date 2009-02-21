@@ -6,57 +6,36 @@
 
 package dev;
 
-import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
-import static test.Gen.strings;
 
 import java.io.IOException;
-import java.util.Map;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
-import org.apache.log4j.Level;
 import tdb.tdbdump;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.TDB;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileGroup;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordLib;
-import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.IndexTestLib;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.FileManager;
-
-import dev.opt.TransformIndexJoin;
+import com.hp.hpl.jena.tdb.store.*;
 
 public class Run
 {
@@ -73,7 +52,10 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        
+        Location loc = Location.dirname("DB/SPO") ;
+        //new File("DB/SPO").get
+        System.out.println("Loc = "+loc) ;
+        System.exit(0) ;
         tdbdump.main("index","DB/SPO") ; System.exit(0) ;
         
         FileGroup fGrp = new FileGroup(".", "DATA") ;
@@ -84,120 +66,6 @@ public class Run
         System.out.println(fGrp.getProperty("item1")) ;
         System.out.println("----") ;
         System.exit(0) ;
-        
-        
-        
-        
-        Model m = ModelFactory.createDefaultModel() ;
-        m.add(m.createResource("http://example/x"), m.createProperty("http://example/p"), m.createResource("http://example/x z")) ;
-        Dataset ds = TDBFactory.createDataset("DB") ;
-        Model m2 = ds.getDefaultModel() ;
-        m2.add(m) ;
-        TDB.sync(m2) ;
-        ds.close();
-        ds = TDBFactory.createDataset("DB") ;
-        m2.write(System.out, "RDF/XML-ABBREV") ;
-        System.out.println("Done") ; 
-        System.exit(0) ;
-            
-        
-        Dataset dataset = TDBFactory.createDataset("DB") ;
-        String qs = "SELECT * {?s ?p ?o}" ;
-        System.out.println(qs) ; 
-        System.exit(0) ;
-        
-        
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
-        ResultSet rs = qexec.execSelect() ;
-        for ( ; rs.hasNext() ; )
-        {
-            System.out.println(rs.next()) ;
-            break ;
-        }
-
-        //ResultSetFormatter.out(rs) ;
-        qexec.close() ;
-        System.exit(0) ;
-
-
-        runIndexTest()  ;
-        // 1 - CmdTDB
-        // 2 - ModTDBDataset.createDataset
-        FileOps.clearDirectory("DB") ;
-        tdb.tdbloader.main("--loc=DB", "--graph=http://example/g", "D.ttl") ;
-        System.exit(0) ;
-    }
-    
-    private static void prefixes()
-    {
-        prefixes1() ;
-        prefixes2() ;
-        System.exit(0) ;
-        
-    }
-    
-    private static void prefixes1()
-    {
-        
-        Location location = new Location("DB2") ;
-        FileOps.clearDirectory("DB2") ;
-        String graphName = "http://graph/" ;
-        Dataset ds = TDBFactory.createDataset(location) ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
-        PrefixMapping pmap = dsg.getPrefixes().getPrefixMapping(graphName) ;
-        
-//        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
-//        PrefixMapping pmap = dsp.getPrefixMapping(graphName) ;
-        
-        pmap.setNsPrefix("x", "http://example/") ;
-        
-        String x = pmap.expandPrefix("x:foo") ;
-        System.out.println("x:foo ==> "+x) ;
-        pmap.setNsPrefix("x", "http://example/ns#") ;
-        pmap.setNsPrefix("y", "http://example/y#") ;
-        String x2 = pmap.expandPrefix("x:foo") ;
-        System.out.println("x:foo ==> "+x2) ;
-        System.out.println("** >>") ;
-        printPrefixMapping(pmap) ;
-        System.out.println("<<End>>") ;
-//        dsp.close() ;
-    }
-
-    private static void prefixes2()
-    {
-        Location location = new Location("DB2") ;
-
-        DatasetPrefixes dsp = new DatasetPrefixes(location) ;
-        String graphName = "http://graph/" ;
-        PrefixMapping pmap1 = dsp.getPrefixMapping(graphName) ;
-        PrefixMapping pmap2 = dsp.getPrefixMapping() ;
-        
-        System.out.println("1: "+pmap1.expandPrefix("x:foo")) ;
-        System.out.println("2: "+pmap2.expandPrefix("x:foo")) ;
-        
-        String x2 = pmap1.expandPrefix("x:foo") ;
-        
-        pmap2.setNsPrefix("ns", "http://ns/#") ;
-        System.out.println("1: ns:bar ==> "+pmap1.expandPrefix("ns:bar")) ;
-        System.out.println("2: ns:bar ==> "+pmap2.expandPrefix("ns:bar")) ;
-        
-        System.out.println("1 >>") ;
-        printPrefixMapping(pmap1) ;
-
-        System.out.println("2 >>") ;
-        printPrefixMapping(pmap2) ;
-        
-        System.out.println("<<End>>") ;
-        dsp.close() ;
-    }
-    
-    private static void printPrefixMapping(PrefixMapping pmap)
-    {
-        @SuppressWarnings("unchecked")
-        Map<String, String> x = pmap.getNsPrefixMap() ;
-        for ( String k : x.keySet() )
-            System.out.println(k+" : "+x.get(k)) ;
     }
     
     private static void reification()
@@ -260,131 +128,6 @@ public class Run
         return g ;
     }
 
-    private static void namedGraphs()
-    {
-        FileOps.clearDirectory("DS") ;
-        Dataset ds = TDBFactory.assembleDataset("tdb-ds.ttl") ;
-        //Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
-        
-        //SSE.write(ds) ;
-        
-        if ( true )
-        {
-            Model mNamed1 = ds.getNamedModel("http://example/d1/") ;
-            Model mNamed2 = ds.getNamedModel("http://example/d2/") ;
-            Model dftModel = ds.getDefaultModel() ;
-
-            FileManager.get().readModel(dftModel, "D.ttl") ;
-            FileManager.get().readModel(mNamed1, "D1.ttl") ;
-            FileManager.get().readModel(mNamed2, "D2.ttl") ;
-        }
-        Node n[] =     { null, Node.createURI("http://example/d2/") , Quad.defaultGraphIRI, Quad.defaultGraphNode, Quad.unionGraph } ;
-        String str[] = { "?g", "d2", "defaultGraphIRI", "defaultGraphNode", "unionGraph" } ;
-        
-//        Node n[] = { Quad.unionGraph } ;
-//        String str[] = { "unionGraph" } ;
-        
-//        System.out.println("**** default graph") ;
-//        query("SELECT * { ?s ?p ?o }", ds) ;
-//        
-//        for ( int i = 0 ; i < n.length ; i++ )
-//        {
-//            Node g = n[i] ;
-//            String label = str[i] ;
-//            System.out.println("**** "+label) ;
-//            QuerySolutionMap qs = new QuerySolutionMap() ;
-//            if ( g != null )
-//                qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
-//            query("SELECT * { GRAPH ?g { ?s <http://example/d1/lang> ?o } }", ds, qs) ;
-//        }
-//        
-//        SSE.write(ds) ;
-//
-//        System.out.println("**** Named graph") ;
-//        Model modelNamed = ds.getNamedModel("http://example/d1/") ;
-//        query("SELECT * { ?s <http://example/d1/lang> ?o }", modelNamed) ;
-        
-        query("SELECT * { ?s ?p ?o GRAPH ?g { ?s1 ?p1 ?o} }", ds) ;
-        
-        System.exit(0) ;
-    }
-    
-     private static void indexification()
-    {
-        Op op = SSE.readOp("Q.sse") ;
-        System.out.println(op) ;
-        System.out.println("----") ;
-        op = Transformer.transform(new TransformIndexJoin(), op) ;
-        System.out.println(op) ;
-        System.out.println("----") ;
-    }
-
-     private static void runIndexTest() 
-     {
-         SystemTDB.NullOut = true ;
-         
-         Index index = BPlusTree.makeMem("",2, 2, RecordLib.TestRecordLength, 0) ;
-         BPlusTree bpt = (BPlusTree)index ; 
-         int[] keys1 = {681, 309, 141, 325, 588, 147, 616, 460, 21, 26, 339, 160, 278, 183, 887, 388, 250, 761, 139, 894} ;
-         int[] keys2 = {183, 278, 894, 160, 250, 588, 325, 887, 139, 681, 26, 147, 388, 616, 21, 141, 460, 339, 309, 761}; 
-         BPlusTreeParams.checkAll() ;
-         
-         try {
-             IndexTestLib.testInsert(index, keys1);
-             if ( true )
-             {
-                 // Checking tests.
-                 IndexTestLib.testIndexContents(index, keys2);
-                 // Test iteration - quite expensive.
-                 if ( index instanceof RangeIndex )
-                     IndexTestLib.testIteration((RangeIndex)index, keys1, 10) ;
-             }
-             
-//             BPlusTreeParams.checkAll() ;
-//             BPlusTreeParams.infoAll() ;
-             org.apache.log4j.LogManager.getLogger("com.hp.hpl.jena.tdb.index").setLevel(Level.ALL) ;
-             //org.apache.log4j.LogManager.getLogger("com.hp.hpl.jena.tdb.base.block").setLevel(Level.ALL) ;
-             if ( false )
-                 IndexTestLib.testDelete(index, keys2) ;
-             else
-             {
-                 //List<Record> x =  intToRecord(keys2) ;
-                 int count = 0 ;
-                 int debug = -1 ; // 0x00FA ;
-                 
-                 for ( int v : keys2 )
-                 {
-                     if ( v == debug )
-                        System.out.println() ;
-                         
-                     Record r = intToRecord(v) ;
-                     System.out.printf("==== Delete: %d (0x%04X)\n",v,v) ;
-                     
-                     if ( v == debug )
-                     {
-                         //bpt.dump(); 
-                         BPlusTreeParams.infoAll() ;
-                         BlockMgrCache.globalLogging = true ;
-                     }
-                     
-                     boolean b = index.delete(r) ;
-                     if ( b )
-                         count ++ ;
-                     if ( v == debug ) bpt.dump(); 
-                 }
-             }
-             index.close() ;
-         } catch (RuntimeException ex)
-         {
-             System.err.printf("Index : %s\n", index.getClass().getName()) ;
-             System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
-             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
-             throw ex ;
-         }
-         System.out.println("Success") ;
-         System.exit(0) ;
-     }
-    
     public static void rewrite()
     {
         ReorderTransformation reorder = null ;

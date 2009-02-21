@@ -11,12 +11,22 @@ import java.io.File;
 /** Wrapper for a file system directory; can create filenames in that directory.
  *  Enforces some simple consistency policies
  *  on naming to reduce errors.   
- *   
- *   */ 
-
+ */   
+ 
 public class Location
 {
     static String pathSeparator = File.separator ;  // Or just "/"
+    
+    public static Location dirname(String filename)
+    {
+        
+        filename = filename.replace('\'', '/') ;
+        int i = filename.lastIndexOf('/') ;
+        if ( i == filename.length()-1 )
+            return new Location(filename) ;
+        String dirname = filename.substring(0, i) ; // Exclude final /
+        return new Location(dirname) ;
+    }
     
     public static Location ensureDirectory(String dirname)
     {
