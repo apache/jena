@@ -20,9 +20,9 @@ import com.hp.hpl.jena.tdb.sys.Names;
 /** Naming, access and metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
  */
-public class FileGroup
+public class FileSet
 {
-    private static Logger log = LoggerFactory.getLogger(FileGroup.class) ;
+    private static Logger log = LoggerFactory.getLogger(FileSet.class) ;
     
     private Location location ;
     private String basename ;
@@ -32,12 +32,12 @@ public class FileGroup
     private Properties properties ;
     private String metaFilename ;
 
-    public FileGroup(String directory, String basename)
+    public FileSet(String directory, String basename)
     {
         this(new Location(directory), basename) ;
     }
     
-    public FileGroup(Location directory, String basename)
+    public FileSet(Location directory, String basename)
     {
         this.location = directory ;
         this.basename = basename ;
@@ -81,6 +81,14 @@ public class FileGroup
         return open(ext, "rw") ;
     }
         
+    public boolean existsMetaData()
+    {
+        File f = new File(metaFilename) ;
+        if ( f.isDirectory() )
+            log.warn("Metadata file clashes with a directory") ;
+        return f.exists() && f.isFile() ;
+    }
+    
     public void flush()
     {
         try {

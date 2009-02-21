@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.btree.BTree;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
 {
@@ -37,7 +38,7 @@ public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
     {
         int order = BTreeParams.calcOrder(blockSize, recordFactory) ;
         BTreeParams params = new BTreeParams(order, recordFactory) ;
-        BTree bTree = new BTree(params, createBlockMgr(location.getPath(name, "idx"), blockSize)) ; 
+        BTree bTree = new BTree(params, createBlockMgr(location.getPath(name, Names.btExt), blockSize)) ; 
         return bTree ;
     }
     

@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
 {
@@ -38,10 +39,13 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
-        String fnNodes = location.getPath(name, "idn") ;
+        // FileSet
+        // Force properties.
+        
+        String fnNodes = location.getPath(name, Names.bptExt1) ;
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
         
-        String fnRecords = location.getPath(name, "dat") ;
+        String fnRecords = location.getPath(name, Names.bptExt2) ;
         BlockMgr blkMgrRecords = createBlockMgr(fnRecords, blockSize) ;
 
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
-import com.hp.hpl.jena.tdb.base.file.FileGroup;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -58,11 +58,11 @@ public class Run
         System.exit(0) ;
         tdbdump.main("index","DB/SPO") ; System.exit(0) ;
         
-        FileGroup fGrp = new FileGroup(".", "DATA") ;
+        FileSet fGrp = new FileSet(".", "DATA") ;
         fGrp.setProperty("item1", "snork") ;
         fGrp.flush() ;
         
-        fGrp = new FileGroup(".", "DATA") ;
+        fGrp = new FileSet(".", "DATA") ;
         System.out.println(fGrp.getProperty("item1")) ;
         System.out.println("----") ;
         System.exit(0) ;
