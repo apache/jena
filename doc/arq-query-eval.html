@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Extending ARQ Query Execution</title>
@@ -115,8 +115,10 @@ WHERE  { ?x foaf:name  ?name ;
         tables, then the operators called to calculate it's results. It does not scale and
         does not perform any optimizations. It is intended to be clear and simple, not efficient.
     </p>
-    <h2>
-        The main query engine</h2>
+    <h2>The Main Query Engine</h2>
+    
+    <p>Datasets and QueryEngines and OpExecutor</p>
+    
     <h2>
         Graphs and StageGenerator</h2>
     <p>
@@ -124,80 +126,89 @@ WHERE  { ?x foaf:name  ?name ;
         filter+BGP, the OpExecutor. The latter is not in ARQ 2.3 - you have to do it by
         registering your own QueryEngineFactory).
     </p>
+    <p>
+        StageBuilder. A collection of static methods.</p>
+    
     <pre class="box">
-Example from TDB.init() 
+    public interface StageGenerator
+    {
+        public QueryIterator execute(BasicPattern pattern, 
+                                     QueryIterator input,
+                                     ExecutionContext execCxt) ;
+    }
+</pre>
+    
+    <h3>Setting the Stage Generator</h3>
+    <p>&nbsp;</p>
+    <pre>
+    StageBuilder.setGenerator(Context context, StageGenerator builder)
+    </pre>
+    <p>The global context can be obtained by a call to <code>ARQ.getContext()</code></p>
 
-
+    <p>StageGenerator chains</p>
+    
+    <p>Example from <code>TDB.init()</code></p>
+    
+    <pre class="box">
   // Get standard one. 
   StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
   // Create a new one 
   StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
   // Register it
   ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+   </pre>
 
-
-
-<code>StageGeneratorDirectTDB</code> looks for TDB-backed graphs.  It will be called for all graphs so
+<p><code>StageGeneratorDirectTDB</code> looks for TDB-backed graphs.  It will be called for all graphs so
 it check for a TDB backed one and if it is not a TDBGraph it passes the request up the
 chain to orig.  So we end up with a list of StageGenerators as all the subsystems register.
 The base one (in ARQ) can match a BGP given just graph.find which would be solving the pattern
-one at a time.  Even then, some optimization via reordering is attempted.
+one at a time.  Even then, some optimization via reordering is attempted.</p>
 
-This is a slight lie :-)  TDB actually will also link in a new generic StageGenerator that
-uses the TDB optimizer framework.  TDBs optimizer framework ended up being not TDB-specific
-so it will migrate into ARQ and become the standard one.  The key additional feature is
-merging of the graph level stats handlers and the statistics/rule based optimizer into
-one framework.  Even the simplest non-trival optimizer (the "fixed" one) will do the
-right thing on your query).
 
-> 
-> So I was wondering: is there any way to turn off this behavior without
-> reimplementing the ARQ query engine?  In an ideal world, the filter
-> could be mapped down to constraints on the graph-level query, and the
-> graph-level query handler could shuffle the whole thing around as
-> appropriate.
+<h3>OpExecutor</h3>
 
-To do that, I recommend upgrading to ARQ 2.6.0 and doing it the way TDB does.  It catches the whole unit:
+  <p>StageGenerator only catch basic graph patterns. If an extension wishes to take
+  responsibility for more of the evaluation then it needs to work with <code>OpExecutor</code>.
+  </p>
+  <p>An <code>OpExecutor</code> enables any algebra operation (including custom extensions
+  to the algebra) to be intercepted. An extension can inherit from the standard one used by ARQ
+  so an extension only needs to implement operations that require special control and it can
+  leave execution of other operations to the normal process of the main query engine.
+   </p>
 
-       (filter (!= ?x ?y)
-         (BGP
-           (triple ?x test:knows ?y)
-           (triple ?x test:name "John Doe")
-           (triple ?y test:name "Jane Doe")
-        ))
-
-And you can do as much or as little as you want at this point as you can always
-drop back to the standard mechanisms if it's a form you don't yet handle directly.
-
-If you just have a single graph, ignore the fact that TDB also wires in it's own
-QueryEgineFactory (that catches execution over a datasets, default graph and named
-graphs in quad form).  What is importat is the 
-
+<pre>
 
    // Wire in the new OpExecutor.  This is normal way to execute.
    ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
+</pre>
 
+<p>
 which places TDB's evaluation algorithm into a chain of OpExecutors (think of these as a
 generalization of StageGenerators which only catching at the BGP level but that is so
 important for adapters to things-that-look-like-RDF-but-aren't that the special mechanisms
-exist.  In fact, it's also historical that StageGenerators came before OpExecutors
+exist.
+</p>
 
-	Andy
-</pre>
-    <h2>
-        Datasets and QueryEngines and OpExecutor</h2>
+<h2> Mixed Graph Implementation Datasets</h2>
     <p>
         Datasets mixed, datasets back by a single storage layer (quads)
     </p>
-    <h2>
-        Custom Query Engines</h2>
+    <h2>Custom Query Engines</h2>
     <p>
         Needed to catch query over a dataset when the whole dataset is implemented in some
         storage subsystem and the query execution requires quad-leval access.
     </p>
+    <p>A custom query engine is needed access the quad form of a query and to control the high-level optimizer.
+    It can still leave execution to a custom <code>OpExecutor</code>.</p>
+    
     <p>
-        This is the most general way of extending ARQ and it allows ful control over the
-        query execution but still allows the storage-specific implementation to pass work
+        This is the most general way of extending ARQ and it allows full control over the
+        query execution. It can be used to completely replace query execution, so that
+        the parsing, algebra generation and result presentation are used from ARQ but the extension
+        provides its own query evalution entirely.
+        
+        
+         but still allows the storage-specific implementation to pass work
         off to the general query execution engine and other standard mechanisms if the storage-specific
         implementation wishes to only optimizer certain key freatures (this is, in fact,
         the normal case).
