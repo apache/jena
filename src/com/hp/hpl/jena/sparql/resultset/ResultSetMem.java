@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
 {
-    // TODO Convert to use a ResultSetProcessor
+    // ??? Convert to use a ResultSetProcessor
     // The result set in memory
     // .hasPrevious() and .previous()
     protected List<Binding> rows = new ArrayList<Binding>();

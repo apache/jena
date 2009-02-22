@@ -49,7 +49,6 @@ public class Syntax extends Symbol
 	protected Syntax(String s) { super(s) ; }
 	protected Syntax(Syntax s) { super(s) ; }
     
-	// TODO Make table driven
     public static Syntax make(String uri)
     {
         if ( uri == null )
@@ -73,7 +72,6 @@ public class Syntax extends Symbol
         return guessQueryFileSyntax(url, Syntax.syntaxSPARQL) ;
     }
     
-    // TODO Make table driven
     public static Syntax guessQueryFileSyntax(String url, Syntax defaultSyntax)
     {
         if ( url.endsWith(".arq") )

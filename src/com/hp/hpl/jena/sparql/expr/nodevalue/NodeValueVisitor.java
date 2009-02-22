@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-// TODO : Use this in NodeValue.
-
 public interface NodeValueVisitor
 {
     public void visit(NodeValueBoolean nv) ;

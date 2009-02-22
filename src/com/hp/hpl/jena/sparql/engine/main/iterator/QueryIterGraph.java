@@ -67,7 +67,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
 
     protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar)
     {
-        // TODO This should done as part of subsitution.
+        // TODO This should done as part of substitution.
         Node n2 = resolve(b, graphVar) ;
         
         if ( n2 != null && ! n2.isURI() )
