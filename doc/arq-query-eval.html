@@ -166,6 +166,7 @@ one at a time.  Even then, some optimization via reordering is attempted.</p>
 
 
 <h3>OpExecutor</h3>
+  <p>@@Setting the OpExecutorFactory: QC.setFactory.   QC is a point of indirection that chooses the execution process at each stage in a query.</p>
 
   <p>StageGenerator only catch basic graph patterns. If an extension wishes to take
   responsibility for more of the evaluation then it needs to work with <code>OpExecutor</code>.
