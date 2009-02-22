@@ -39,8 +39,8 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
-        // FileSet
-        // Force properties.
+        // XXX FileSet
+        // Force properties on empty if idn exists.
         
         String fnNodes = location.getPath(name, Names.bptExt1) ;
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;

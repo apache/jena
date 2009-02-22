@@ -100,7 +100,6 @@ public class DatasetPrefixes implements Closeable, Sync
     {
         Node g = Node.createURI(graphName) ; 
         Node u = Node.createURI(uriStr) ; 
-        // XXX Failing ?????
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
         if ( ! iter.hasNext() )
             return null ;

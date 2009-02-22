@@ -151,7 +151,6 @@ public class TDB
         VocabTDB.init();
         QueryEngineTDB.register() ;
         
-        // XXX Really need to sort this out!
         TDB.getContext().set(ARQ.filterPlacement, false) ;
         
         wireIntoExecution() ;
