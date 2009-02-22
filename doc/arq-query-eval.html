@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Extending ARQ Query Execution</title>
+    <link href="Styles/doc.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <h1>
+        Extending ARQ Query Execution</h1>
+    <p>
+        @@This page replaces <a href="bgp-stages.html">bgp-stages.html</a></p>
+    <p>
+        This page describes several mechanism that can be used to extend the ARQ quesy engine
+        to adapt to access different implementations of RDF graphs and RDF datasets. These
+        mechanisms are used by <a href="http://jena.sf.net.SDB">SDB</a> and <a href="http://jena.sf.net/TDB">
+            TDB</a>.</p>
+    <p>
+        ARQ can be <a href="extension.html">extended in various ways</a>. <a href="extension.html#valueFunctions">
+            Custom filter functions</a> and <a href="extension.html#propertyFunctions">property
+                functions</a> provide ways to add application specific code. The <a href="lucene-arq.html">
+                    free text search</a> capabilities, using Apache Lucene, are provided via a
+        property function.</p>
+    <h2>
+        Overview of ARQ Query Processing</h2>
+    <p>
+        The sequence of actions performed by ARQ to perform a query are parsing, execution building, algebra
+        generation, high-level optimization, low level optimization and finally 
+        evaluation.</p>
+    <h3>
+                Parsing</h3>
+    <p>
+        Turns a query string into a Query object. The class Query is abstract synatx tree (AST) for the query and provides methods to create a query, primarily for the parser. The Query object also provides method sto serializae the query as a string. Because this is the AST, the string produced is very close to the original query with teh same syntactic elements but no comments and formatted with a whitespace for readability. It is not usually the best way to build a query programmatically and the AST is not normally an extension point. 
+        </p>
+    
+    <p>
+        The Query object can be used many times. It is not modified once created, and in
+        particular it is not modified by query execution.
+    </p>
+    <h3>
+        Algebra generation</h3>
+    <p>
+        ARQ generates the <a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlQuery">
+        SPARQL algebra</a> expression for the query. After this a number of 
+        transaformations can be applied (for example, identification of property 
+        functions) but the first step is the application of the algorithm in the SPARQL 
+        specification for translating a SPARQL query string, as held in a <code>Query</code> 
+        object into a SPARQL algebra expression. This includes the procerss of removing 
+        joins with the identity pattern (the empty graph pattern).</p>
+    <p>
+        For example,the query:</p>
+    <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+SELECT ?name ?mbox ?nick
+WHERE  { ?x foaf:name  ?name ;
+            foaf:mbox  ?mbox .
+         OPTIONAL { ?x  foaf:nick  ?nick }
+       }</pre>
+    <p>becomes</p>
+    <pre class="box">
+(prefix ((foaf: &lt;http://xmlns.com/foaf/0.1/&gt;))
+  (project (?name ?mbox ?nick)
+    (leftjoin
+      (bgp
+        (triple ?x foaf:name ?name)
+        (triple ?x foaf:mbox ?mbox)
+      )
+      (bgp (triple ?x foaf:nick ?nick)
+      )
+    )))</pre>
+    <p>using the <a href="http://jena.hpl.hp.com/wiki/SSE">SSE syntax</a> to write out 
+        the internal datastructure for the algebra.</p>
+    <p>The <a href="http://www.sparql.org/validator.html">online validator at sparql.org</a> 
+        can be used to see the algebra expression for a SPARQL query.</p>
+    <h3>
+        High-Level Optimization</h3>
+    <p>
+        There is a collection of transformations that can be applied to the algebra such 
+        as replacing equality filters with a more efficient graph pattern and an 
+        assignment. When extending ARQ, a query processor for a custom storage lay can 
+        choose which optimizations are appropriate and can also provide its own algebra 
+        transformations.</p>
+    <h3>
+        Low-Level Optimization</h3>
+    <p>
+        Low level optimziations include choosing the order in which to evaluate basic 
+        graph patterns. These are the responsibility of the custom storage layer.</p>
+    <h3>
+        Evaluation</h3>
+    <p>
+        The step of evaluating a query is the process of executing the algebnra 
+        expression, as modified by any transformations applied to yield a stream of 
+        pattern solutions.</p>
+    <p>
+        Low-level optimziation is usually carried out as part of evaluation.</p>
+    <h3>
+        QueryExecutionFactory and QueryEngines</h3>
+    <p>
+        The steps from algebra generation to query evaluation are carried out when a 
+        query is executed via the <code>QueryExecution.execSelect</code> or other exec 
+        operation. It is possible to carry out storage-specific operations when the 
+        query execution is created.</p>
+    <p>
+        The QueryExecutionFactory provides many convenience operations. If a Model is 
+        provided for the data, it is incorporated into an RDF dataset that has that 
+        model for the default graph.</p>
+    <p>
+        ARQ provides three query engine factories; the main query engine factory, one 
+        for a reference query engine and one to remotely execute a query. SDB and TDB 
+        provide their ownb query engine factories. Thsi page dicusses extending the 
+        mainquery engine.</p>
+    <p>
+        The "ref" query engine is a simple top-down evaluation of the expression. It's purpose
+        is to be simple so it can be easily verified and checked then its results used to
+        check more complictaed processing in the main engine and other implementations.
+        All arguments to each operator are fully evaluated, to produce intermediate, in-memory
+        tables, then the operators called to calculate it's results. It does not scale and
+        does not perform any optimizations. It is intended to be clear and simple, not efficient.
+    </p>
+    <h2>
+        The main query engine</h2>
+    <h2>
+        Graphs and StageGenerator</h2>
+    <p>
+        The correct points to hook into ARQ are (for just BGPs) "StageGenerator" and for
+        filter+BGP, the OpExecutor. The latter is not in ARQ 2.3 - you have to do it by
+        registering your own QueryEngineFactory).
+    </p>
+    <pre class="box">
+Example from TDB.init() 
+
+
+  // Get standard one. 
+  StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+  // Create a new one 
+  StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
+  // Register it
+  ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+
+
+
+<code>StageGeneratorDirectTDB</code> looks for TDB-backed graphs.  It will be called for all graphs so
+it check for a TDB backed one and if it is not a TDBGraph it passes the request up the
+chain to orig.  So we end up with a list of StageGenerators as all the subsystems register.
+The base one (in ARQ) can match a BGP given just graph.find which would be solving the pattern
+one at a time.  Even then, some optimization via reordering is attempted.
+
+This is a slight lie :-)  TDB actually will also link in a new generic StageGenerator that
+uses the TDB optimizer framework.  TDBs optimizer framework ended up being not TDB-specific
+so it will migrate into ARQ and become the standard one.  The key additional feature is
+merging of the graph level stats handlers and the statistics/rule based optimizer into
+one framework.  Even the simplest non-trival optimizer (the "fixed" one) will do the
+right thing on your query).
+
+> 
+> So I was wondering: is there any way to turn off this behavior without
+> reimplementing the ARQ query engine?  In an ideal world, the filter
+> could be mapped down to constraints on the graph-level query, and the
+> graph-level query handler could shuffle the whole thing around as
+> appropriate.
+
+To do that, I recommend upgrading to ARQ 2.6.0 and doing it the way TDB does.  It catches the whole unit:
+
+       (filter (!= ?x ?y)
+         (BGP
+           (triple ?x test:knows ?y)
+           (triple ?x test:name "John Doe")
+           (triple ?y test:name "Jane Doe")
+        ))
+
+And you can do as much or as little as you want at this point as you can always
+drop back to the standard mechanisms if it's a form you don't yet handle directly.
+
+If you just have a single graph, ignore the fact that TDB also wires in it's own
+QueryEgineFactory (that catches execution over a datasets, default graph and named
+graphs in quad form).  What is importat is the 
+
+
+   // Wire in the new OpExecutor.  This is normal way to execute.
+   ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
+
+which places TDB's evaluation algorithm into a chain of OpExecutors (think of these as a
+generalization of StageGenerators which only catching at the BGP level but that is so
+important for adapters to things-that-look-like-RDF-but-aren't that the special mechanisms
+exist.  In fact, it's also historical that StageGenerators came before OpExecutors
+
+	Andy
+</pre>
+    <h2>
+        Datasets and QueryEngines and OpExecutor</h2>
+    <p>
+        Datasets mixed, datasets back by a single storage layer (quads)
+    </p>
+    <h2>
+        Custom Query Engines</h2>
+    <p>
+        Needed to catch query over a dataset when the whole dataset is implemented in some
+        storage subsystem and the query execution requires quad-leval access.
+    </p>
+    <p>
+        This is the most general way of extending ARQ and it allows ful control over the
+        query execution but still allows the storage-specific implementation to pass work
+        off to the general query execution engine and other standard mechanisms if the storage-specific
+        implementation wishes to only optimizer certain key freatures (this is, in fact,
+        the normal case).
+    </p>
+</body>
+</html>
