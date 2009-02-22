@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
-import tdb.tdbdump;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -52,18 +51,29 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+//        Location loc = Location.dirname("DB/SPO") ;
+//        //new File("DB/SPO").get
+//        System.out.println("Loc = "+loc) ;
+//        System.exit(0) ;
+//        tdb.tdbdump.main("index","DB/SPO") ; System.exit(0) ;
+
         Location loc = Location.dirname("DB/SPO") ;
-        //new File("DB/SPO").get
-        System.out.println("Loc = "+loc) ;
+        FileSet fileSet = new FileSet(new Location("DB"), "SPO") ;
+        System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
+        System.out.println("Exists? "+fileSet.exists("idn")) ;
+        
+        fileSet.setProperty("item1", "snork") ;
+        fileSet.flush() ;
+        System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
+        System.out.println("----") ;
         System.exit(0) ;
-        tdbdump.main("index","DB/SPO") ; System.exit(0) ;
+
         
-        FileSet fGrp = new FileSet(".", "DATA") ;
-        fGrp.setProperty("item1", "snork") ;
-        fGrp.flush() ;
+        fileSet.setProperty("item1", "snork") ;
+        fileSet.flush() ;
         
-        fGrp = new FileSet(".", "DATA") ;
-        System.out.println(fGrp.getProperty("item1")) ;
+        fileSet = new FileSet(".", "DATA") ;
+        System.out.println(fileSet.getProperty("item1")) ;
         System.out.println("----") ;
         System.exit(0) ;
     }

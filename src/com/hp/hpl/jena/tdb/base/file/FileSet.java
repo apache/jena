@@ -89,6 +89,15 @@ public class FileSet
         return f.exists() && f.isFile() ;
     }
     
+    public boolean exists(String ext)
+    {
+        String fn = filename(ext) ;
+        File f = new File(fn) ;
+        if ( f.isDirectory() )
+            log.warn("File clashes with a directory") ;
+        return f.exists() && f.isFile() ;
+    }
+    
     public void flush()
     {
         try {
