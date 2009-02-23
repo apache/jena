@@ -31,6 +31,7 @@
         <li><a href="#mainQueryEngine">The Main Query Engine</a></li>
         <li><a href="#stageGenerator">Graph matching and a custom StageGenerator</a></li>
         <li><a href="#OpExecutor">OpExecutor</a></li>
+        <li><a href="#quads">Quads</a></li>
         <li><a href="#mixedDatasets">Mixed Graph Implementation Datasets</a></li>
         <li><a href="#CustomQueryEngines">Custom Query Engines</a></li>
     </ul>
@@ -167,8 +168,6 @@ WHERE  { ?x foaf:name  ?name ;
     <p>
         &nbsp;See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code> 
         (examples are to be found in the ARQ download).</p>
-    <h3>QueryIterator</h3>
-    <p class="todo">@@QueryIterator</p>
 
         
     <h2 id="mainQueryEngine">The Main Query Engine</h2>
@@ -228,7 +227,8 @@ WHERE  { ?x foaf:name  ?name ;
     return StageBuilder.execute(pattern, input, execCxt) ;
 }</pre>
     <p>The
-        StageBuilder looks for the stage generator using:</p>
+        <code>StageBuilder</code> looks for the stage generator by accessing the 
+    context for the execution:</p>
 <pre class="box">        (StageGenerator)context.get(ARQ.stageGenerator) ;</pre>
     <p>where the context is the global context and any query execution specific 
     additions.</p>
@@ -287,54 +287,103 @@ WHERE  { ?x foaf:name  ?name ;
 
     <h2 id="OpExecutor">OpExecutor</h2>
 
-  <p>StageGenerator only catch basic graph patterns. If an extension wishes to take
+  <p>A <code>StageGenerator</code> provides matching for a basic graph pattern. If an extension wishes to take
   responsibility for more of the evaluation then it needs to work with <code>OpExecutor</code>.
-  </p>
-  <p>@@Setting the OpExecutorFactory: QC.setFactory.   QC is a point of indirection that chooses the execution process at each stage in a query.</p>
+  This includes evaluation of filtered basic graph patterns.</p>
+    <p>An example query using a filter:</p>
+    <pre class="box">PREFIX  dc:   &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX  books: &lt;http://example.org/book/&gt;
 
-    <p>An <code>OpExecutor</code> enables any algebra operation (including custom extensions
-  to the algebra) to be intercepted. An extension can inherit from the standard one used by ARQ
-  so an extension only needs to implement operations that require special control and it can
-  leave execution of other operations to the normal process of the main query engine.
-   </p>
+SELECT  *
+WHERE
+  { ?book  dc:title  ?title .
+    FILTER regex(?title, &quot;Paddington&quot;)
+  }</pre>
+    <p>&nbsp;results in the algebra expression for the pattern:</p>
+    <pre class="box">    (filter (regex ?title &quot;Paddington&quot;)
+        (bgp (triple ?book dc:title ?title)
+        ))</pre>
+    <p>showing that the filter is being applied to the results of a basic graph 
+    pattern matching.</p>
+    <p>This is not the way to provide custom filter operations.&nbsp; See the 
+    documentation for <a href="extension.html#valueFunctions">
+    application-provided filter functions</a>. </p>
+    <p>Each step of evaluation in the main query engine is performed by a 
+    <code>OpExecutor</code> and a new one is created at from a factory at each step.&nbsp; 
+    The factory is registered in the execution's context. The implementation of 
+    a specialized <code>OpExecutor</code> can inherit from the standard one and 
+    override only those algebra operators it wishes to deal with, including inspecting the execution and choosing to passing up to the superclass based 
+    on the details of the operation.&nbsp; From the query above, only regex 
+    filters might be specially handled.</p>
+    <p>Registering an <code>OpExecutorFactory</code>:</p>
+    <pre class="box">OpExecutorFactory customExecutorFactory = new MyOpExecutorFactory(...) ;
+QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
+    <p>QC is a point of indirection that chooses the execution process at each 
+    stage in a query so if the custom execution wishes to evaluate an algebra 
+    operation within another operation, is can call <code>QC.execute</code>. Be 
+    careful not to loop endlessly of the operation is itself handled by the 
+    custom evaluator. This can be done by swapping in a different OpExecutorFactory.</p>
+    <pre class="box">   // Execute an operation with a different OpExecution Factory
 
-<pre>
+   // New context.
+   ExecutionContext ec2 = new ExecutionContext(execCxt) ;
+   ec2.setExecutor(plainFactory) ;
 
-   // Wire in the new OpExecutor.  This is normal way to execute.
-   ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
-</pre>
+   QueryIterator qIter = QC.execute(op, input, ec2) ;</pre>
+    <pre class="box">   private static OpExecutorFactory plainFactory = new OpExecutorPlainFactory() ;
+   private static class OpExecutorPlainFactory implements OpExecutorFactory
+   {
+       @Override
+       public OpExecutor create(ExecutionContext execCxt)
+       {
+           return new OpExecutor(execCxt) ;		// The default OpExecutor of ARQ.
+       }
+  }</pre>
 
-<p>
-which places TDB's evaluation algorithm into a chain of OpExecutors (think of these as a
-generalization of StageGenerators which only catching at the BGP level but that is so
-important for adapters to things-that-look-like-RDF-but-aren't that the special mechanisms
-exist.
-</p>
-
-<h2 id="mixedDatasets"> Mixed Graph Implementation Datasets</h2>
-    <p>
-        @@Datasets mixed, datasets back by a single storage layer (quads)
-    </p>
-    <h2 id="CustomQueryEngines">Custom Query Engines</h2>
-    <p>The most general level of extension is the custom query engine. </p>
-    <p>
-        Needed to catch query over a dataset when the whole dataset is implemented in some
-        storage subsystem and the query execution requires quad-leval access.
-    </p>
-    <p>A custom query engine is needed access the quad form of a query and to control the high-level optimizer.
-    It can still leave execution to a custom <code>OpExecutor</code>.</p>
+    <h2 id="quads">Quads</h2>
+    <p>If a custom extension provides named graphs, then it may be useful to 
+    execute the quad form of the query. This is done by writing a custom query 
+    engine and overriding <code>QueryEngineMain.modifyOp</code>: </p>
+    <font SIZE="1">
+    <pre class="box">  @Override
+  protected Op modifyOp(Op op)
+  { 
+     op = Substitute.substitute(op, initialInput) ;	// Cope with initial bindings.
+     op = super.modifyOp(op) ;			// Use standard optimizations.
+     op = Algebra.toQuadForm(op) ;			// Turn into quad form.
+     return op ;
+  }</pre>
+    <p>The extension may need to provide its own dataset implementation so that 
+    it can detect when queries are directed to its named graph storage.
+    <a href="http://jena.sf.net/SDB">SDB</a> and
+    <a href="http://jena.sf.net/TDB">TDB</a> are examples of this.</p>
+    </font>
     
-    <p>
-        This is the most general way of extending ARQ and it allows full control over the
-        query execution. It can be used to completely replace query execution, so that
-        the parsing, algebra generation and result presentation are used from ARQ but the extension
-        provides its own query evalution entirely.
-        
-        
-         but still allows the storage-specific implementation to pass work
-        off to the general query execution engine and other standard mechanisms if the storage-specific
-        implementation wishes to only optimizer certain key freatures (this is, in fact,
-        the normal case).
-    </p>
+    <h2 id="mixedDatasets"> Mixed Graph Implementation Datasets</h2>
+    <p>The dataset implementation used in normal operation does not work on 
+    quads but instead can provide a dataset with a collection of graphs each 
+    from different implementation sub-systems. In-memory graphs can be mixed 
+    with database backed graphs as well as custom storage systems. Query 
+    execution proceeds per-graph so that an custom <code>OpExecutor</code> will 
+    need to test the graph to work with to make sure it is of the right class. 
+    The pattern in the <code>StageGenerator</code> extension point is an example 
+    of design pattern in that situation.</p>
+
+    
+    <h2 id="CustomQueryEngines">Custom Query Engines</h2>
+    <p>A small, skeleton custom query engine is needed to intercept query 
+    execution just before it starts for any specific initialization, choice of 
+    the high-level optimizations to apply or transform to quad form.</p>
+    <p>See the example in <code><font size="2">src</font><font size="2">-examples/arq.examples.engine.MyQueryEngine</font></code>.</p>
+    <p>While it 
+    is possible to replace the entire process of query evaluation, this is a 
+    substantial endeavour. <code>QueryExecutionBase</code> provides the 
+    machinery for result presentation (SELECT, CONSTRUCT, DESCRIBE, ASK), 
+    leaving the work of pattern evaluation to the custom query engine. <code>
+    QueryExecutionFactory</code> assumes that <code>QueryExecutionBase</code> 
+    will be used.</p>
+    
+  <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a>
+    
 </body>
 </html>

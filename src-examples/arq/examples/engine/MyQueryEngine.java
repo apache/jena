@@ -45,14 +45,23 @@ public class MyQueryEngine extends QueryEngineMain
     }
 
     @Override
-    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding initial, Context context)
     {
-        // To extend: rewrite op with a Transform
-        
+        // Extension point: access possible to all the parameters for execution.
+        // Be careful to deal with initial bindings.
         Transform transform = new MyTransform() ;
         op = Transformer.transform(transform, op) ;
-        
-        return super.eval(op, dsg, binding, context) ;
+        return super.eval(op, dsg, initial, context) ;
+    }
+    
+    @Override
+    protected Op modifyOp(Op op)
+    {
+        // Extension point: possible place to alter the algebra expression.
+        // Alternative to eval(). 
+        op = super.modifyOp(op) ;
+        // op = Algebra.toQuadForm(op) ;
+        return op ;
     }
     
     // ---- Registration of the factory for this query engine class. 
