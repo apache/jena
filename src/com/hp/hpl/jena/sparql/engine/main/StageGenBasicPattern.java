@@ -28,6 +28,8 @@ public class StageGenBasicPattern implements StageGenerator
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
     
+    public StageGenBasicPattern() {}
+    
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,
                                  ExecutionContext execCxt)
