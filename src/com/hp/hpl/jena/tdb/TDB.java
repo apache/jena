@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
@@ -174,11 +175,12 @@ public class TDB
             orig = new StageGeneratorGeneric() ;
         
         // Wire in the TDB stage generator which will make TDB work whether
-        // or not the TDB executor is used.
+        // or not the TDB executor is used. This means that datasets of mixed graph
+        // types inside a general purpose dataset work.
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
-        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+        StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
 
-        // Wire in the new OpExecutor.  This is normal way to execute.
+        // Wire in the new OpExecutor.  This is normal way to execute with a dataset.
         ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
     }
     
