@@ -32,23 +32,22 @@ public class QueryEngineTDB extends QueryEngineMain
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-
     
-    Binding input ;
+    private Binding initialInput ;
 
     // ---- Object
     private QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
-    { super(op, dataset, input, context) ; this.input = input ; }
+    { super(op, dataset, input, context) ; this.initialInput = input ; }
 
     
     private QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
-    { super(query, dataset, input, context) ; this.input = input ; }
+    { super(query, dataset, input, context) ; this.initialInput = input ; }
     
     // Choose the algebra-level optimizations to invoke. 
     @Override
     protected Op modifyOp(Op op)
     { 
-        op = Substitute.substitute(op, input) ;
+        op = Substitute.substitute(op, initialInput) ;
         op = super.modifyOp(op) ;
         op = Algebra.toQuadForm(op) ;
         return op ;

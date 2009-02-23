@@ -59,7 +59,7 @@ public class OpExecutorTDB extends OpExecutor
 {
     private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB.class) ;
     
-    public final static OpExecutorFactory altFactory = new OpExecutorFactory()
+    public final static OpExecutorFactory OpExecFactoryTDB = new OpExecutorFactory()
     {
         @Override
         public OpExecutor create(ExecutionContext execCxt)

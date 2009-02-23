@@ -11,25 +11,21 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.lib.Sync;
@@ -181,7 +177,7 @@ public class TDB
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
 
         // Wire in the new OpExecutor.  This is normal way to execute with a dataset.
-        ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
+        QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
     
     // ---- Static constandts read by modVersion 
