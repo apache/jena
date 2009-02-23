@@ -1,12 +1,11 @@
 <!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Extending ARQ Query Execution</title>
+    <title>ARQ - Extending Query Execution</title>
     <link href="Styles/doc.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <h1>
-        Extending ARQ Query Execution</h1>
+    <h1>ARQ - Extending Query Execution</h1>
     <p>
         This page describes several mechanisms that can be used to extend the ARQ query engine. 
         Through these mechanisms, ARQ can be used to query different graph and a dataset 
@@ -350,7 +349,6 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     <p>If a custom extension provides named graphs, then it may be useful to 
     execute the quad form of the query. This is done by writing a custom query 
     engine and overriding <code>QueryEngineMain.modifyOp</code>: </p>
-    <font SIZE="1">
     <pre class="box">  @Override
   protected Op modifyOp(Op op)
   { 
@@ -363,7 +361,6 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     it can detect when queries are directed to its named graph storage.
     <a href="http://jena.sf.net/SDB">SDB</a> and
     <a href="http://jena.sf.net/TDB">TDB</a> are examples of this.</p>
-    </font>
     
     <h2 id="mixedDatasets"> Mixed Graph Implementation Datasets</h2>
     <p>The dataset implementation used in normal operation does not work on 
@@ -380,7 +377,7 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     <p>A small, skeleton custom query engine is needed to intercept query 
     execution just before it starts for any specific initialization, choice of 
     the high-level optimizations to apply or transform to quad form.</p>
-    <p>See the example in <code><font size="2">src</font><font size="2">-examples/arq.examples.engine.MyQueryEngine</font></code>.</p>
+    <p>See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code>.</p>
     <p>While it 
     is possible to replace the entire process of query evaluation, this is a 
     substantial endeavour. <code>QueryExecutionBase</code> provides the 
@@ -389,7 +386,7 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     QueryExecutionFactory</code> assumes that <code>QueryExecutionBase</code> 
     will be used.</p>
     
-  <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a>
+  <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
     
 </body>
 </html>
