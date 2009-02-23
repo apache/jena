@@ -21,9 +21,6 @@ public class PathCompiler
     
     VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
     
-    // Make 
-    
-    
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
     public PathBlock reduce(PathBlock pathBlock)
@@ -56,7 +53,6 @@ public class PathCompiler
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
         // V-i-s-i-t-o-r!
-        
         
         if ( path instanceof P_Link )
         {

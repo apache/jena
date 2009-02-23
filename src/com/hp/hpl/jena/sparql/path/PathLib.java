@@ -52,7 +52,7 @@ public class PathLib
     public static QueryIterator execTriplePath(Binding binding, TriplePath triplePath, ExecutionContext execCxt)
     {
         if ( triplePath.isTriple() )
-            // Coudl fake with P_Link, of BGP execution.
+            // Could fake with P_Link, of BGP execution.
             throw new ARQInternalErrorException("Attempt to execute a TriplePath which is a plain Triple") ;
         
         return execTriplePath(binding, 
