@@ -117,7 +117,6 @@ public class TDBFactory
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(String dir)
     { return createDataset(new Location(dir)) ; }
-    
 
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)

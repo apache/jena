@@ -200,7 +200,6 @@ public class FactoryGraphTDB
     }
 
     // ----
-    
 
     /** Testing */
     static QuadTable createQuadTableMem()

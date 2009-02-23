@@ -19,7 +19,6 @@ public class Location
     
     public static Location dirname(String filename)
     {
-        
         filename = filename.replace('\'', '/') ;
         int i = filename.lastIndexOf('/') ;
         if ( i == filename.length()-1 )
