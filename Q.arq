@@ -1,12 +1,18 @@
-PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX :        <http://example/>
-PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  :       <http://example.org/>
 
-SELECT ?a ?b (?a+?b as ?c)
+construct {
+:Result rdf:type rdfs:Class .
+_:v rdf:type :Result .
+_:v :hasTotal ?c .
+}
+WHERE
 {
-    (:p) list:member ?p .
-    (1 2) list:member ?s .
-    ?s ?p ?o 
-    
+ {select (sum(?d) as ?c)
+where {
+?ms rdf:type :marksheet .
+?ms :hasMark ?m .
+?m :hasData ?d .
+}}
 }

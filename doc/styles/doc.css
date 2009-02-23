@@ -34,8 +34,8 @@ table {
   border-collapse: collapse;
   border-width: 1px;
   border: 1;
-  cellspacing: 0 ;
-  cellpadding: 0 ;
+  border-spacing: 0px; 
+  padding: 0px ;
 }
 
 td {
@@ -45,7 +45,7 @@ td {
   border-color : #808080 ;
   empty-cells: show;
   padding: 5 ;
-  spacing: 0 ;
+  border-spacing: 0 ;
   vertical-align:top;
 }
 
@@ -92,7 +92,7 @@ h3 {
     }
 
 h4, h5 {
-    font-weight: italic;
+    font-style: italic;
     margin-bottom:0.25ex;
     padding-left: 2ex;
 }

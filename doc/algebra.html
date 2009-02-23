@@ -18,16 +18,19 @@
   <li>String to Query (parsing)</li>
   <li>Translation from Query to a SPARQL algebra expression</li>
   <li>Optimization of the algebra expression</li>
-  <li>Query plan determination</li>
+  <li>Query plan determination and low-level optimization</li>
   <li>Evaluation of the query plan</li>
 </ul>
-<p>and each step is externally accessible. This page describes how to access and use 
+<p>This page describes how to access and use 
 expressions in the SPARQL algebra within ARQ. The definition of the SPARQL algebra is to be found in the SPARQL 
 specification in
-<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlDefinition">section 12</a>.</p>
+<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlDefinition">section 12</a>.
+    <a href="arq-query-eval.html">ARQ can be extended</a> to modify the evaluation 
+    of the algebra form to access difefrent graph storage implementations.</p>
 <p>The classes for the datastructures for the algebra resize in the package
 <code>com.hp.hpl.jena.sparql.algebra</code> in the <code>op</code> subpackage.&nbsp; 
-All the classes are names &quot;<code>Op...</code>&quot;; the interface that all offer is 
+All the classes are names &quot;<code>Op...</code>&quot;; the interface that 
+they all offer is 
 &quot;<code>Op</code>&quot;.</p>
 <h2>Viewing the algebra expression for a Query</h2>
 <p>The command line tool <a href="cmds.html#arq.qparse">arq.qparse</a> will 
@@ -76,7 +79,7 @@ calls to the writer operation from the
 package.</p>
 <h2>Creating an algebra expression programmatically</h2>
 <p>See the example in src-examples/ arq.examples.AlgebraExec.</p>
-<p>To produce the complete javadoc for ARQ, downlaod an ARQ distribution and run 
+<p>To produce the complete javadoc for ARQ, download an ARQ distribution and run 
 the ant task 'javadoc-all'.</p>
 <h2>Evaluating a algebra expression</h2>
 <p>See the example in src-examples/ arq.examples.AlgebraExec.</p><font SIZE="1">
@@ -100,11 +103,4 @@ access this functionality by creating their own <code>QueryEngine</code> (see ar
 and it's factory. A query engine is a one-time use object for each query 
 execution.</p>
 </font>
-<h2>ARQ extensions</h2><p>Quads are handled by a slightly different query 
-translation process that tracks the relevant graph for the quad and generates 
-quad patterns, instead of triple patterns. The main query engine supports quad 
-evaluation; there is a separate reference query engine for quad as well (<code>QueryEngineQuad</code>).</p><font SIZE="1"><pre class="box">Algebra.compileQuad(Query query)</pre></font><p>&nbsp;</p>
-
-
-
-<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p></body></html>
+    <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p></body></html>
