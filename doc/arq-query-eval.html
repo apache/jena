@@ -209,13 +209,19 @@ WHERE  { ?x foaf:name  ?name ;
     
     <h2 id="stageGenerator">Graph matching and a custom StageGenerator</h2>
     <p>
-        The correct points to hook into ARQ for just BGPs is to provide a custom
+        The correct point to hook into ARQ for just extending basic graph 
+        pattern matching (BGPs) is to provide a custom
         <code>StageGenerator</code>.&nbsp; (To hook into filtered basic graph 
         patterns, the extension will need to provide it's own <code>OpExecutor</code> 
         factory).
-    </p>
+        The advantage of the <code>StageGenerator</code> mechanism, as compared 
+        to the more general <code>OpExecutor</code> described below, is that it 
+        more self-contained and requires less detail about the internal 
+        evaluation of the other SPARQL algebra operators.&nbsp; This extension 
+        point corresponds to section 12.6 &quot;<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlBGPExtend">Extending 
+        SPARQL Basic Graph Matching</a>&quot;.</p>
     <p>
-        This is the default code to match a BGP in <code>
+        Below is the default code to match a BGP in <code>
         OpExecutor.execute(OpBGP, QueryIterator)</code>. The input is a stream 
         of results from earlier stages. The execution must return a query 
         iterator that is all the possible ways to match the basic graph pattern 
