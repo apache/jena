@@ -10,7 +10,7 @@ public class Dev
 {
     // ==== Next
     // Quad pattern execution/optimization with filters (done for default graph).
-    // File metafiles.
+    // File metafiles. FileSets
     //    Reopenable files.
     //      Alterntaive length hash codes.
     //      Record lengths
