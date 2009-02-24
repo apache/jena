@@ -26,13 +26,14 @@
         to work with the source code for ARQ for specific details and for finding code to
         reuse.</p>
     <ul>
-        <li><a href="#Overview">Overview of ARQ Query Processing</a></li>
-        <li><a href="#mainQueryEngine">The Main Query Engine</a></li>
-        <li><a href="#stageGenerator">Graph matching and a custom StageGenerator</a></li>
-        <li><a href="#OpExecutor">OpExecutor</a></li>
-        <li><a href="#quads">Quads</a></li>
-        <li><a href="#mixedDatasets">Mixed Graph Implementation Datasets</a></li>
-        <li><a href="#CustomQueryEngines">Custom Query Engines</a></li>
+      <li><a href="#Overview">Overview of ARQ Query Processing</a></li>
+      <li><a href="#mainQueryEngine">The Main Query Engine</a></li>
+      <li><a href="#stageGenerator">Graph matching and a custom StageGenerator</a></li>
+      <li><a href="#OpExecutor">OpExecutor</a></li>
+      <li><a href="#quads">Quads</a></li>
+      <li><a href="#mixedDatasets">Mixed Graph Implementation Datasets</a></li>
+      <li><a href="#CustomQueryEngines">Custom Query Engines</a></li>
+      <li><a href="#AlgebraExtensions">Extend the algebra</a></li>
     </ul>
     
     <h2 id="Overview">Overview of ARQ Query Processing</h2>
@@ -374,10 +375,15 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
 
     
     <h2 id="CustomQueryEngines">Custom Query Engines</h2>
-    <p>A small, skeleton custom query engine is needed to intercept query 
-    execution just before it starts for any specific initialization, choice of 
-    the high-level optimizations to apply or transform to quad form.</p>
-    <p>See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code>.</p>
+    <p>A custom query engine enables an extension to choose which datasets it 
+    wishes to handle. It also allows the extension to intercept query execution 
+    during the setup of the execution so it can modify the algebra expression, 
+    introduce it's own algebra extensions, choose which high-level optimizations 
+    to apply and also transform to the expression into quad form. Execution can 
+    proceed with the normal algorithm or a custom <code>OpExecutor</code> or a 
+    custom Stage Generator or a combination of all three extension mechanism.</p>
+    <p>Only a small, skeleton custom query engine is needed to intercept the 
+    initial setup. See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code>.</p>
     <p>While it 
     is possible to replace the entire process of query evaluation, this is a 
     substantial endeavour. <code>QueryExecutionBase</code> provides the 
@@ -385,6 +391,14 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     leaving the work of pattern evaluation to the custom query engine. <code>
     QueryExecutionFactory</code> assumes that <code>QueryExecutionBase</code> 
     will be used.</p>
+    <h2 id="AlgebraExtensions">Algebra Extensions</h2>
+    <p>New operators can be added to the algebra using the <code>OpExt</code> 
+    class as the super-class of the new operator. They can be inserted into the 
+    expression to be evaluated using a custom query engine to intercept 
+    evaluation initialization.&nbsp; When evaluation of a query requires the 
+    evaluation of a sub-class of <code>OpExt</code>, the <code>eval</code> 
+    method is called. SDB uses this to introduce an operator that is implemented 
+    in SQL.</p>
     
   <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
     
