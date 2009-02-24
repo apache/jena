@@ -92,30 +92,61 @@ WHERE  { ?x foaf:name  ?name ;
         <a href="http://sparql.org/">sparql.org</a> 
         can be used to see the algebra expression for a SPARQL query.</p>
     <h3>
-        High-Level Optimization</h3>
+        High-Level Optimization and Transformations</h3>
     <p>
         There is a collection of transformations that can be applied to the algebra such 
         as replacing equality filters with a more efficient graph pattern and an 
         assignment. When extending ARQ, a query processor for a custom storage lay can 
         choose which optimizations are appropriate and can also provide its own algebra 
         transformations.</p>
-    <p class="todo">
-        @@Transformations</p>
-    <h3>
-        Low-Level Optimization</h3>
     <p>
-        Low level optimizations include choosing the order in which to evaluate basic 
-        graph patterns. These are the responsibility of the custom storage layer.</p>
+        A transform is code that converts an algebra operation into other 
+		algebra operations. It is applied using the <code>Transformer</code> 
+		class:</p>
+	<pre class="box">Op op = ... ;
+Transform someTransform = ... ;
+op = Transformer.transform(someTransform, op) ;</pre>
+	<p>The <code>Transformer</code> class applies the transform to each 
+	operation in the algebra expression tree. <code>Transform</code> itself is 
+	an interface, with one method call for each operation type, returning a 
+	replacement for the operation it is called on.</p>
+	<font SIZE="1">
+	<p>There are two helper classes that implementation of transformations can 
+	use by sub-classing: <code>TransformBase,</code> which provides the identify 
+	operation (returns the node supplied) for each transform operation and <code>TransformCopy,</code> 
+	which checks to see if changes have been made and automates the copy for 
+	branch nodes, ones that take other operations as arguments; this includes 
+	filters which have a single algebra expression as a sub-operation.</p>
+	<p>Transformations proceed from the bottom of the expression tree to the 
+	top. Algebra expressions are best treated as immutable and copy made to make 
+	changes so <code>TransformCopy</code> is the usual class to extend because 
+	if anychanges are made lower down the tree, a copy back to the root is 
+	necessary.</p>
+	<p>Operations can be printed out in
+	<a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a> syntax.&nbsp; The Java
+	<code>toString</code> method is overridden to provide pretty printing and 
+	the static methods in <code>WriterOp</code> provide output to various output 
+	objects like <code>java.io.OutputStream</code>.</p>
+	</font>
     <h3>
-        Evaluation</h3>
+        Low-Level Optimization and Evaluation</h3>
     <p>
         The step of evaluating a query is the process of executing the algebra 
         expression, as modified by any transformations applied to yield a stream of 
-        pattern solutions.</p>
-    <p>
+        pattern solutions.
+        Low level optimizations include choosing the order in which to evaluate basic 
+        graph patterns. These are the responsibility of the custom storage layer.
         Low-level optimization is usually carried out as part of evaluation.</p>
-    <p class="todo">
-        @@Iterators</p>
+    <p>
+        Internally, ARQ uses iterators extensively. Where possible, evaluation 
+		of an operation is achieved by feeding the stream of results from the 
+		previous stage into the evaluation. A common pattern is to take each 
+		intermediate result one at a time (use <code>QueryIterRepeatApply</code> 
+		to be called for each binding) , substituting the variables of pattern 
+		with those in the incoming binding, and evaluating to a query iterator 
+		of all results for this incoming row; the result can be the empty 
+		iterator. It is also common to not have to touch the incoming stream at 
+		all but merely to pass it to sub-operations.</p>
     <h3>
         QueryExecutionFactory and QueryEngineFactory</h3>
     <p>
@@ -125,7 +156,7 @@ WHERE  { ?x foaf:name  ?name ;
         operation. It is possible to carry out storage-specific operations when the 
         query execution is created.</p>
     <p>
-        The QueryExecutionFactory provides many convenience operations. If a Model is 
+        The <code>QueryExecutionFactory</code> provides many convenience operations. If a Model is 
         provided for the data, it is incorporated into an RDF dataset that has that 
         model for the default graph.</p>
     <p>
@@ -166,7 +197,7 @@ WHERE  { ?x foaf:name  ?name ;
         operation of the plan interface is to get the <code>QueryIterator</code> 
         for the query.</p>
     <p>
-        &nbsp;See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code> 
+        See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code> 
         (examples are to be found in the ARQ download).</p>
 
         
@@ -291,7 +322,8 @@ WHERE  { ?x foaf:name  ?name ;
   StageBuilder.setGenerator(<code>ARQ.getContext()</code>, myStageGenerator) ;
    </pre>
 
-    <h2 id="OpExecutor">OpExecutor</h2>
+    <p id="OpExecutor">Example: <code>src-examples/arq.examples.bgpmatching</code>.</p>
+	<h2>OpExecutor</h2>
 
   <p>A <code>StageGenerator</code> provides matching for a basic graph pattern. If an extension wishes to take
   responsibility for more of the evaluation then it needs to work with <code>OpExecutor</code>.
