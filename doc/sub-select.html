@@ -7,12 +7,12 @@
 -->
 
 <head>
-<title>ARQ</title>
+<title>ARQ - Sub Queries</title>
 <link rel="stylesheet" type="text/css" href="styles/doc.css" />
 </head>
 <body>
 
-<h1>ARQ - Sub Queries - SELECT</h1>
+<h1>ARQ - Sub Queries</h1>
 <p>ARQ includes support for nested SELECTs.</p>
 
 <p>This involves is syntactic extension and is available if the query is parsed 
@@ -29,7 +29,6 @@ SELECT ?x
   { SELECT ?x ( count(?order) as ?q ) { ?x :order ?order } GROUP BY ?x }
   FILTER ( ?q &gt; 5 )
 }</pre>
-<p>&nbsp;</p>
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
 </html>
