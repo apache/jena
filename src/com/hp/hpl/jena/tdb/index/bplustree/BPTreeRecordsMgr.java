@@ -14,6 +14,9 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 /** Bridge for making, getting and putting BPTreeRecords over a RecordBufferPageMgr */
 final public class BPTreeRecordsMgr
 {
+    // Only "public" for external very low level tools in development to access this class.
+    // Assume package access.
+
     private BPlusTree bpTree ;
     private RecordBufferPageMgr rBuffPageMgr ;
     

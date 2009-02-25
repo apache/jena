@@ -31,6 +31,8 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+// Only "public" for external very low level tools in development to access this class.
+// Assume package access.
 public final class BPTreeNode extends BPTreePage
 {
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;

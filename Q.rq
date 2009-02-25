@@ -1,9 +1,4 @@
 PREFIX : <http://example/>
 SELECT *
-{
-    GRAPH ?g {
-     ?s <http://example/and> ?o .
-     ?x :p ?y .
-     FILTER regex(str(?g), "^http://")
-    }
+{ ?s ?p ?o 
 }

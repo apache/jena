@@ -21,8 +21,11 @@ import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.index.btree.BTreeException;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
-final public class BPTreeNodeMgr
+public final class BPTreeNodeMgr
 {
+ // Only "public" for external very low level tools in development to access this class.
+ // Assume package access.
+
     private BPlusTree bpTree ;
     private BlockMgr blockMgr ;
     private Block2BTreeNode converter ;

@@ -1,13 +1,4 @@
 PREFIX : <http://example/>
-SELECT *
-{
-# urn:x-arq:DefaultGraph
-# urn:x-arq:UnionGraph
-
-  { ?s ?p ?o . LET (?g := "Union") } 
- UNION 
-   { GRAPH <urn:x-arq:DefaultGraph> { ?s ?p ?o LET (?g := "Explicit") } }
-
-
-
+SELECT (count(*) AS ?c)
+{ ?s ?p ?o 
 }

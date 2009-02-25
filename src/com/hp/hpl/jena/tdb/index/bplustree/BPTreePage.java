@@ -13,6 +13,9 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
 abstract public class BPTreePage implements Page
 {
+    // Only "public" for external very low level tools in development to access this class.
+    // Assume package access.
+
     // Does not use PageBase because BPTreeRecords does not need it.
     protected final BPlusTree bpTree ;
     protected final BPlusTreeParams params ;
