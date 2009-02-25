@@ -8,15 +8,13 @@
     <h1>
         ARQ - Extending Query Execution</h1>
     <p>
-        This page describes several mechanisms that can be used to extend the ARQ query
-        engine. Through these mechanisms, ARQ can be used to query different graph and a
-        dataset implementation and also to provide different query evaluation and optimization
+        This page describes the mechanisms that can be used to extend and modify 
+		query execution within ARQ. Through these mechanisms, ARQ can be used to query different graph implementations and to provide different query evaluation and optimization
         strategies for particular circumstances.&nbsp; These mechanisms are used by <a href="http://jena.sf.net.SDB">
             SDB</a> and <a href="http://jena.sf.net/TDB">TDB</a>.</p>
     <p>
-        These mechanisms are not the way to add specific custom operations that do not need
-        change how a query is evaluated. ARQ can be <a href="extension.html">extended in various
-            ways</a>. <a href="extension.html#valueFunctions">Custom filter functions</a>
+        ARQ can be <a href="extension.html">extended in various
+            ways</a> to incorporate custom code into a query. <a href="extension.html#valueFunctions">Custom filter functions</a>
         and <a href="extension.html#propertyFunctions">property functions</a> provide ways
         to add application specific code. The <a href="lucene-arq.html">free text search</a>
         capabilities, using Apache Lucene, are provided via a property function. Custom
@@ -24,7 +22,8 @@
     <p>
         Applications writers who extend ARQ at the query execution level should be prepared
         to work with the source code for ARQ for specific details and for finding code to
-        reuse.</p>
+        reuse. Some example can be found in the <code>src-examples</code> 
+		directory in the ARQ download.</p>
     <ul>
         <li><a href="#Overview">Overview of ARQ Query Processing</a></li>
         <li><a href="#mainQueryEngine">The Main Query Engine</a></li>
@@ -39,24 +38,29 @@
         Overview of ARQ Query Processing</h2>
     <p>
         The sequence of actions performed by ARQ to perform a query are parsing, algebra
-        generation, execution building, high-level optimization, low level optimization
-        and finally evaluation. It is not usual to modify the parsing and algebra generation
-        steps. Extensions are provided transforming the algebra form. See also the documentation
+        generation, execution building, high-level optimization, low-level optimization
+        and finally evaluation. It is not usual to modify the parsing step nor 
+		the conversion from the parse tree to the algebra form, which is a fixed 
+		algorithm defined by the SPARQL standard. Extensions can modify the algebra form 
+		by transforming it from one algebra expression to another, including 
+		introducing new operators. See also the documentation
         on <a href="algebra.html">working with the SPARQL algebra in ARQ</a> including building
         algebra expressions programmatically, rather than obtaining them from a query string.</p>
     <h3>
         Parsing</h3>
     <p>
-        Turns a query string into a Query object. The class Query is abstract syntax tree
-        (AST) for the query and provides methods to create a query, primarily for the parser.
-        The Query object also provides methods to serialize the query to a string. Because
+        The parsing step turns a query string into a <code>Query</code> object. The class 
+		<code>Query</code> reprensets the abstract syntax tree
+        (AST) for the query and provides methods to create the AST, primarily for 
+		use by the parser.
+        The query object also provides methods to serialize the query to a string. Because
         this is the AST, the string produced is very close to the original query with the
-        same syntactic elements but no comments and formatted with a whitespace for readability.
+        same syntactic elements, but without comments, and formatted with a whitespace for readability.
         It is not usually the best way to build a query programmatically and the AST is
         not normally an extension point.
     </p>
     <p>
-        The Query object can be used many times. It is not modified once created, and in
+        The query object can be used many times. It is not modified once created, and in
         particular it is not modified by query execution.
     </p>
     <h3>
@@ -100,9 +104,9 @@ WHERE  { ?x foaf:name  ?name ;
     <h3>
         High-Level Optimization and Transformations</h3>
     <p>
-        There is a collection of transformations that can be applied to the algebra such
+        There is a collection of transformations that can be applied to the algebra, such
         as replacing equality filters with a more efficient graph pattern and an assignment.
-        When extending ARQ, a query processor for a custom storage lay can choose which
+        When extending ARQ, a query processor for a custom storage layout can choose which
         optimizations are appropriate and can also provide its own algebra transformations.</p>
     <p>
         A transform is code that converts an algebra operation into other algebra operations.
@@ -113,21 +117,22 @@ op = Transformer.transform(someTransform, op) ;</pre>
     <p>
         The <code>Transformer</code> class applies the transform to each operation in the
         algebra expression tree. <code>Transform</code> itself is an interface, with one
-        method call for each operation type, returning a replacement for the operation it
+        method signature for each operation type, returning a replacement for the operator 
+		instance it
         is called on.</p>
     <p>
-        There are two helper classes that implementation of transformations can use by sub-classing:
-        <code>TransformBase,</code> which provides the identify operation (returns the node
-        supplied) for each transform operation and <code>TransformCopy,</code> which checks
-        to see if changes have been made and automates the copy for branch nodes, ones that
-        take other operations as arguments; this includes filters which have a single algebra
-        expression as a sub-operation.</p>
-    <p>
-        Transformations proceed from the bottom of the expression tree to the top. Algebra
-        expressions are best treated as immutable and copy made to make changes so <code>TransformCopy</code>
-        is the usual class to extend because if anychanges are made lower down the tree,
-        a copy back to the root is necessary.</p>
-    <p>
+        One such transformation is to turn a SPARQL algebra expression involving
+        named graphs and triples into one using quads. This transformation is 
+		performed by a call to <code>Alegebra.toQuadForm</code>.</p>
+	<p>
+        Transformations proceed from the bottom of the expression tree to the 
+		top. Algebra expressions are best treated as immutable so a change made 
+		in one part of the tree should result in a copy of the tree above it.&nbsp; 
+		This is automated by the&nbsp; <code>TransformCopy</code> class which is 
+		the commonly used base class for writing transforms. The other helper 
+		base class is <code>TransformBase,</code> which provides the identify 
+		operation (returns the node supplied) for each transform operation.</p>
+	<p>
         Operations can be printed out in <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
         syntax.&nbsp; The Java <code>toString</code> method is overridden to provide pretty
         printing and the static methods in <code>WriterOp</code> provide output to various
@@ -136,30 +141,31 @@ op = Transformer.transform(someTransform, op) ;</pre>
         Low-Level Optimization and Evaluation</h3>
     <p>
         The step of evaluating a query is the process of executing the algebra expression,
-        as modified by any transformations applied to yield a stream of pattern solutions.
-        Low level optimizations include choosing the order in which to evaluate basic graph
+        as modified by any transformations applied, to yield a stream of pattern solutions.
+        Low-level optimizations include choosing the order in which to evaluate basic graph
         patterns. These are the responsibility of the custom storage layer. Low-level optimization
-        is usually carried out as part of evaluation.</p>
+        can be carried out dynamically as part of evaluation.</p>
     <p>
         Internally, ARQ uses iterators extensively. Where possible, evaluation of an operation
         is achieved by feeding the stream of results from the previous stage into the evaluation.
         A common pattern is to take each intermediate result one at a time (use <code>QueryIterRepeatApply</code>
         to be called for each binding) , substituting the variables of pattern with those
         in the incoming binding, and evaluating to a query iterator of all results for this
-        incoming row; the result can be the empty iterator. It is also common to not have
+        incoming row. The result can be the empty iterator (one that always 
+		returns false for <code>hasNext</code>). It is also common to not have
         to touch the incoming stream at all but merely to pass it to sub-operations.</p>
     <h3>
-        QueryExecutionFactory and QueryEngineFactory</h3>
+        Query Engines and Query Engine Factories</h3>
     <p>
         The steps from algebra generation to query evaluation are carried out when a query
         is executed via the <code>QueryExecution.execSelect</code> or other <code>QueryExecution</code>
         exec operation. It is possible to carry out storage-specific operations when the
-        query execution is created.</p>
-    <p>
-        The <code>QueryExecutionFactory</code> provides many convenience operations. If
-        a Model is provided for the data, it is incorporated into an RDF dataset that has
-        that model for the default graph.</p>
-    <p>
+        query execution is created. A query engine works in conjunction with a <code>
+		QueryExecution</code> created by the <code>QueryExecutionFactory</code> 
+		to provide the evaluation of a query pattern. <code>QueryExecutionBase</code> 
+		provides all the machinery for the different result types and does not 
+		need to be modified by extensions to query execution.</p>
+	<p>
         ARQ provides three query engine factories; the main query engine factory, one for
         a reference query engine and one to remotely execute a query. SDB and TDB provide
         their own query engine factories which they register during sub-system initialization.
@@ -168,8 +174,9 @@ op = Transformer.transform(someTransform, op) ;</pre>
         The reference query engine is a direct top-down evaluation of the expression. It's
         purpose is to be simple so it can be easily verified and checked then its results
         used to check more complicated processing in the main engine and other implementations.
-        All arguments to each operator are fully evaluated, to produce intermediate, in-memory
-        tables, then the operators called to calculate it's results. It does not scale and
+        All arguments to each operator are fully evaluated to produce intermediate in-memory
+        tables then a simple implementation of the operator is called to calculate 
+		the results. It does not scale and
         does not perform any optimizations. It is intended to be clear and simple; it is
         not designed to be efficient.
     </p>
@@ -195,8 +202,7 @@ op = Transformer.transform(someTransform, op) ;</pre>
         to return a <code>Plan</code> object for the execution. The main operation of the
         plan interface is to get the <code>QueryIterator</code> for the query.</p>
     <p>
-        See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code> (examples
-        are to be found in the ARQ download).</p>
+        See the example in <code>src-examples/arq.examples.engine.MyQueryEngine</code>.</p>
     <h2 id="mainQueryEngine">
         The Main Query Engine</h2>
     <p>
@@ -204,26 +210,21 @@ op = Transformer.transform(someTransform, op) ;</pre>
         pattern matching implementations including one that uses the <code>Graph.find</code>
         operation so it can work with any implementation of the Jena Graph SPI. The main
         query engine works with general purpose datasets but not quad stores directly; it
-        evaluates patterns on each graph in turn.</p>
-    <p>
-        The main query engine includes the optimization for the standard Jena implementation
+        evaluates patterns on each graph in turn.
+        The main query engine includes optimizations for the standard Jena implementation
         of in-memory graphs.</p>
     <p>
-        ARQ does provide a algebra transform to turn a SPARQL algebra expression involving
-        named graphs and triples into one using quads. See <code>Alegebra.toQuadForm</code>.</p>
-    <p>
-        High-level optimization is performed by a sequence of transformation. This set of
+        High-level optimization is performed by a sequence of transformations. This set of
         optimizations is evolving. A custom implementation of a query engine can reuse some
         or all of these transformations (see <code>Algebra.optimize</code> which is the
         set of transforms used by the main query engine).</p>
     <p>
         The main query engine is a streaming engine. It evaluates expressions as the client
         consumes each query solution.
-    </p>
-    <p>
         After preparing the execution by creating the initial conditions (a partial solution
         of one row and no bound variables or any initial bindings of variables), the main
-        query engine calls QC.execute which is the algorithm to execute a query. Any extension
+        query engine calls 
+        <code>QC.execute</code> which is the algorithm to execute a query. Any extension
         that wished to reuse some of the main query engine by providing it's own <code>OpExecutor</code>
         must call this method to evaluate a sub-operation.</p>
     <p>
@@ -233,7 +234,7 @@ op = Transformer.transform(someTransform, op) ;</pre>
     <p>
         There are two points of extension for the main query engine:</p>
     <ul>
-        <li>Stage Generators, for evaluating basic graph patterns and reusing the rest of the
+        <li>Stage generators, for evaluating basic graph patterns and reusing the rest of the
             engine.</li>
         <li><code>OpExecutor</code> to execute any algebra operator specially.</li>
     </ul>
@@ -252,8 +253,8 @@ op = Transformer.transform(someTransform, op) ;</pre>
         operators.&nbsp; This extension point corresponds to section 12.6 &quot;<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlBGPExtend">Extending
             SPARQL Basic Graph Matching</a>&quot;.</p>
     <p>
-        Below is the default code to match a BGP in <code>OpExecutor.execute(OpBGP, QueryIterator)</code>.
-        The input is a stream of results from earlier stages. The execution must return
+        Below is the default code to match a BGP from <code>OpExecutor.execute(OpBGP, QueryIterator)</code>.
+        It merely calls fixed code in the <code>StageBuilder</code> class.The input is a stream of results from earlier stages. The execution must return
         a query iterator that is all the possible ways to match the basic graph pattern
         for each of the inputs in turn. Order of results does not matter.&nbsp;
     </p>
@@ -265,9 +266,9 @@ op = Transformer.transform(someTransform, op) ;</pre>
     <p>
         The <code>StageBuilder</code> looks for the stage generator by accessing the context
         for the execution:</p>
-    <pre class="box">        (StageGenerator)context.get(ARQ.stageGenerator) ;</pre>
-    <p>
-        where the context is the global context and any query execution specific additions.</p>
+    <pre class="box">StageGenerator stageGenerator = (StageGenerator)context.get(ARQ.stageGenerator) ;</pre>
+	<p>where the context is the global context and any query execution specific 
+	additions together with various execution control elements.</p>
     <p>
         A <code>StageGenerator</code> is an implementation of:</p>
     <pre class="box">
@@ -350,16 +351,16 @@ WHERE
         showing that the filter is being applied to the results of a basic graph pattern
         matching.</p>
     <p>
-        This is not the way to provide custom filter operations.&nbsp; See the documentation
+        Note: this is not the way to provide custom filter operations.&nbsp; See the documentation
         for <a href="extension.html#valueFunctions">application-provided filter functions</a>.
     </p>
     <p>
         Each step of evaluation in the main query engine is performed by a <code>OpExecutor</code>
-        and a new one is created at from a factory at each step.&nbsp; The factory is registered
-        in the execution's context. The implementation of a specialized <code>OpExecutor</code>
+        and a new one is created from a factory at each step.&nbsp; The factory is registered
+        in the execution context. The implementation of a specialized <code>OpExecutor</code>
         can inherit from the standard one and override only those algebra operators it wishes
         to deal with, including inspecting the execution and choosing to passing up to the
-        superclass based on the details of the operation.&nbsp; From the query above, only
+        super-class based on the details of the operation.&nbsp; From the query above, only
         regex filters might be specially handled.</p>
     <p>
         Registering an <code>OpExecutorFactory</code>:</p>
@@ -368,9 +369,9 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     <p>
         QC is a point of indirection that chooses the execution process at each stage in
         a query so if the custom execution wishes to evaluate an algebra operation within
-        another operation, is can call <code>QC.execute</code>. Be careful not to loop endlessly
-        of the operation is itself handled by the custom evaluator. This can be done by
-        swapping in a different OpExecutorFactory.</p>
+        another operation, it shoudl call <code>QC.execute</code>. Be careful not to loop endlessly
+        if the operation is itself handled by the custom evaluator. This can be done by
+        swapping in a different <code>OpExecutorFactory</code>.</p>
     <pre class="box">   // Execute an operation with a different OpExecution Factory
 
    // New context.
@@ -378,15 +379,16 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
    ec2.setExecutor(plainFactory) ;
 
    QueryIterator qIter = QC.execute(op, input, ec2) ;</pre>
-    <pre class="box">   private static OpExecutorFactory plainFactory = new OpExecutorPlainFactory() ;
-   private static class OpExecutorPlainFactory implements OpExecutorFactory
-   {
-       @Override
-       public OpExecutor create(ExecutionContext execCxt)
-       {
-           return new OpExecutor(execCxt) ;		// The default OpExecutor of ARQ.
-       }
-  }</pre>
+    <pre class="box">   private static OpExecutorFactory plainFactory = 
+      new OpExecutorFactory()
+      {
+         @Override
+         public OpExecutor create(ExecutionContext execCxt)
+         {
+             // The default OpExecutor of ARQ.
+             return new OpExecutor(execCxt) ;
+         }
+      } ;</pre>
     <h2 id="quads">
         Quads</h2>
     <p>
@@ -397,9 +399,12 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     <pre class="box">  @Override
   protected Op modifyOp(Op op)
   { 
-     op = Substitute.substitute(op, initialInput) ;	// Cope with initial bindings.
-     op = super.modifyOp(op) ;			// Use standard optimizations.
-     op = Algebra.toQuadForm(op) ;			// Turn into quad form.
+     // Cope with initial bindings.
+     op = Substitute.substitute(op, initialInput) ;
+     // Use standard optimizations.
+     op = super.modifyOp(op) ;			
+     // Turn into quad form.
+     op = Algebra.toQuadForm(op) ;
      return op ;
   }</pre>
     <p>
@@ -432,7 +437,8 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
     <p>
         While it is possible to replace the entire process of query evaluation, this is
         a substantial endeavour. <code>QueryExecutionBase</code> provides the machinery
-        for result presentation (SELECT, CONSTRUCT, DESCRIBE, ASK), leaving the work of
+        for result presentation (<code>SELECT</code>, <code>CONSTRUCT</code>, 
+		<code>DESCRIBE</code>, <code>ASK</code>), leaving the work of
         pattern evaluation to the custom query engine. <code>QueryExecutionFactory</code>
         assumes that <code>QueryExecutionBase</code> will be used.</p>
     <h2 id="AlgebraExtensions">
