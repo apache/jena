@@ -32,11 +32,13 @@ public class FileSet
     private Properties properties ;
     private String metaFilename ;
 
+    /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(String directory, String basename)
     {
         this(new Location(directory), basename) ;
     }
     
+    /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(Location directory, String basename)
     {
         this.location = directory ;
@@ -66,9 +68,20 @@ public class FileSet
         return properties.getProperty(key, null) ;
     }
     
+    public int getPropertyAsInteger(String key)
+    {
+        return Integer.parseInt(properties.getProperty(key, null)) ;
+    }
+    
+
     public void setProperty(String key, String value)
     {
         properties.setProperty(key, value) ;
+    }
+    
+    public void setProperty(String key, int value)
+    {
+        setProperty(key, Integer.toString(value)) ;
     }
     
     public RandomAccessFile openReadOnly(String ext)
@@ -104,7 +117,7 @@ public class FileSet
             FileOutputStream fos = new FileOutputStream(metaFilename) ;
             Writer w = FileUtils.asUTF8(fos) ;
             w = new BufferedWriter(w) ;
-            properties.store(w, "File group: "+basename) ;
+            properties.store(w, "File set: "+basename) ;
         } 
         catch (IOException ex)
         {

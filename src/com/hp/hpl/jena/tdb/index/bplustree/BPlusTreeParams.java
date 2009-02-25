@@ -9,6 +9,9 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.*;
 import org.slf4j.Logger;
 
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -21,6 +24,12 @@ public class BPlusTreeParams
     public static boolean CheckingTree = SystemTDB.Checking ;   // Check on exit of B+Tree modifiying operations
     public static boolean CheckingNode = false ;                // Check within BtreeNode
 
+    // Metadata
+    private static final String NS = BPlusTreeParams.class.getName() ;
+    private static final String ParamOrder          = NS+".order" ;
+    private static final String ParamKeyLength      = NS+".keyLength" ;
+    private static final String ParamValueLength    = NS+".valueLength" ;
+    
     public static void checkAll()
     { 
         CheckingTree = true ;
@@ -46,6 +55,7 @@ public class BPlusTreeParams
     public static final int NoParent        = -99 ;
 
     // Per instance settings
+    
     /** Order of the BTree */
     final int order ;
     
@@ -101,7 +111,27 @@ public class BPlusTreeParams
                              ) ;
     }
 
+    public static BPlusTreeParams readMeta(FileSet fileset)
+    {
+        try {
+            int pOrder = fileset.getPropertyAsInteger(ParamOrder) ;
+            int pKeyLen = fileset.getPropertyAsInteger(ParamKeyLength) ;
+            int pRecLen = fileset.getPropertyAsInteger(ParamValueLength) ;
+            return new BPlusTreeParams(pOrder, pKeyLen, pRecLen) ;
+        } catch (NumberFormatException ex)
+        {
+            ALog.fatal(BPlusTreeParams.class, "Badly formed metadata for B+Tree") ;
+            throw new TDBException("Failed to read metadata") ;
+        }
+    }
     
+    public void addToMetaData(FileSet fileset)
+    {
+        fileset.setProperty(ParamOrder, order) ;
+        fileset.setProperty(ParamKeyLength, recordFactory.keyLength()) ;
+        fileset.setProperty(ParamValueLength, recordFactory.valueLength()) ;
+    }
+
     public BPlusTreeParams(int order, int keyLen, int valLen)
     { 
         this(order, new RecordFactory(keyLen, valLen)) ;

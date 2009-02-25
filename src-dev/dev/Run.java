@@ -51,6 +51,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
+        
 //        Location loc = Location.dirname("DB/SPO") ;
 //        //new File("DB/SPO").get
 //        System.out.println("Loc = "+loc) ;
