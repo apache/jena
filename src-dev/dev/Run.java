@@ -49,8 +49,20 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
+    public static void t(String fn) 
+    {
+        System.out.println(fn+" => "+FileOps.parse(fn)) ;
+    }
+    
     public static void main(String ... args) throws IOException
     {
+        t("") ;
+        t("/a/b/c") ;
+        t("/aa/bb/cc.ext") ;
+        t("cc.ext") ;
+        t("/cc.ext") ;
+        
+        System.exit(0) ;
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
         
 //        Location loc = Location.dirname("DB/SPO") ;

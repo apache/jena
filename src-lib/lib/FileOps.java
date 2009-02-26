@@ -69,6 +69,43 @@ public class FileOps
             System.exit(1) ;
         }
     }
+
+    public static Tuple<String> parse(String filename)
+    {
+        String path = null ;
+        String basename = filename ;
+        String ext = null ;
+        
+        // split on '/'?
+        
+        int j = filename.lastIndexOf('/') ;
+        if ( j >= 0 )
+        {
+            path = filename.substring(0, j) ;
+            basename = filename.substring(j+1) ;
+        }
+        
+        int i = basename.lastIndexOf('.') ;
+        
+        if ( i > -1 )
+        {
+            ext = basename.substring(i+1) ;
+            basename = basename.substring(0, i) ;
+        }
+        
+        return Tuple.create(path, basename, ext) ;
+    }
+    
+    
+    
+    public static String getExt(String filename)
+    {
+        int i = filename.lastIndexOf('.') ;
+        int j = filename.lastIndexOf('/') ;
+        if ( i > j )
+            return filename.substring(i+1) ;
+        return null ;
+    }
 }
 
 /*

@@ -22,7 +22,15 @@ public class NodeTableIndex extends NodeTableBase
         super() ;
         Index nodeToId = indexBuilder.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, nodeTableIdxName) ;
             
-        // Data file.
+//        // Data file.
+//        // FileSet.
+//        Tuple<String> path = FileOps.parse(tableName) ; 
+//
+//        String ext = path.get(0) ;
+//        String basename = path.get(1) ;
+//        String dir = path.get(2) ;
+//        
+//        FileSet fs = new FileSet(loc, tableName) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(tableName));
         //init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
