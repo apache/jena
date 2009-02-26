@@ -97,16 +97,14 @@ public class FileOps
         return Tuple.create(path, basename, ext) ;
     }
     
-    
-    
-    public static String getExt(String filename)
-    {
-        int i = filename.lastIndexOf('.') ;
-        int j = filename.lastIndexOf('/') ;
-        if ( i > j )
-            return filename.substring(i+1) ;
-        return null ;
-    }
+//    public static String getExt(String filename)
+//    {
+//        int i = filename.lastIndexOf('.') ;
+//        int j = filename.lastIndexOf('/') ;
+//        if ( i > j )
+//            return filename.substring(i+1) ;
+//        return null ;
+//    }
 }
 
 /*

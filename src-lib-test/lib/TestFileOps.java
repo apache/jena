@@ -1,34 +1,66 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import test.BaseTest;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class
-    , TestBitsLong.class
-    , TestBitsInt.class
-    , TestBytes.class
-    , TestListUtils.class
-    , TestSetUtils.class
-    , TestCacheNG.class
-    , TestColumnMap.class
-    , TestFileOps.class
-} )
-
-public class TS_Lib
+public class TestFileOps extends BaseTest
 {
+    /*
+     * t("") ;
+        t("/a/b/c") ;
+        t("/aa/bb/cc.ext") ;
+        t("cc.ext") ;
+        t("/cc.ext") ;
+        t("/") ;
+        t("xyz") ;
+        t("xyz/") ;
+     */
+
+    static void test(String fn, String path, String basename, String ext)
+    {
+        Tuple<String> t = FileOps.split(fn) ;
+        assertEquals(path, t.get(0)) ;
+        assertEquals(basename, t.get(1)) ;
+        assertEquals(ext, t.get(2)) ;
+    }
+    
+    @Test public void split01() 
+    { test("/aa/bb/cc.ext", "/aa/bb", "cc", "ext") ; }
+
+    @Test public void split02() 
+    { test("/a/b/c", "/a/b", "c", null) ; }
+    
+    @Test public void split03() 
+    { test("cc.ext", null, "cc", "ext") ; }
+    
+    @Test public void split04() 
+    { test("/cc.ext", "", "cc", "ext") ; }
+    
+    @Test public void split05() 
+    { test("/", "", "", null) ; }
+    
+    @Test public void split06() 
+    { test("", null, "", null) ; }
+    
+    @Test public void split07() 
+    { test("xyz", null, "xyz", null) ; }
+    
+    @Test public void split08() 
+    { test("/xyz", "", "xyz", null) ; }
+    
+    @Test public void split09() 
+    { test("xyz/", "xyz", "", null) ; }
 
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
