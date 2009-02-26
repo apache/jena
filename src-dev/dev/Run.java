@@ -51,7 +51,7 @@ public class Run
  
     public static void t(String fn) 
     {
-        System.out.println(fn+" => "+FileOps.parse(fn)) ;
+        System.out.println(fn+" => "+FileOps.split(fn)) ;
     }
     
     public static void main(String ... args) throws IOException
@@ -61,6 +61,9 @@ public class Run
         t("/aa/bb/cc.ext") ;
         t("cc.ext") ;
         t("/cc.ext") ;
+        t("/") ;
+        t("xyz") ;
+        t("xyz/") ;
         
         System.exit(0) ;
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 

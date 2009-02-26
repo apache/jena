@@ -70,7 +70,8 @@ public class FileOps
         }
     }
 
-    public static Tuple<String> parse(String filename)
+    /** Split a file name into path, basename and extension.  Nulls returned if don't make sense. */
+    public static Tuple<String> split(String filename)
     {
         String path = null ;
         String basename = filename ;
