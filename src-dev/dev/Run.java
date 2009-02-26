@@ -56,16 +56,6 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
-        t("") ;
-        t("/a/b/c") ;
-        t("/aa/bb/cc.ext") ;
-        t("cc.ext") ;
-        t("/cc.ext") ;
-        t("/") ;
-        t("xyz") ;
-        t("xyz/") ;
-        
-        System.exit(0) ;
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
         
 //        Location loc = Location.dirname("DB/SPO") ;
