@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
+/** Names of things in TDB */
 public class Names
 {
     public static final String primaryIndexTriples = "SPO" ; 
@@ -15,7 +16,7 @@ public class Names
     public static final String[] quadIndexes = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
 
     /** Properties information for a FileGroup*/ 
-    public static final String metaData         = "meta" ;
+    public static final String metaData         = "info" ;
     
     /** B+Trees - nodes file and records file */
     public static final String bptExt1          = "idn" ;

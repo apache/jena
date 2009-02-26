@@ -22,21 +22,22 @@ public class NodeTableFactory
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
 
-    /** Cutom node table */
+    /** Custom node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location, 
                                    String tableName, String nodeTableIdxName,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         if ( location == null )
-            return new NodeTableIndex(indexBuilder) ;
+        {
+            // Must be a an in-memory 
+            return NodeTableIndex.createMem(indexBuilder) ;
+        }
         return new NodeTableIndex(indexBuilder, location, tableName, nodeTableIdxName, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
-    
-    
     public static NodeTable createMem(IndexBuilder indexBuilder)
     {
-        return new NodeTableIndex(indexBuilder) ;
+        return NodeTableIndex.createMem(indexBuilder) ;
     }
     
     public static NodeTable createSink(IndexBuilder indexBuilder, Location location)

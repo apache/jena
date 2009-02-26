@@ -635,7 +635,6 @@ public final class BPTreeNode extends BPTreePage
         
         // Go to bottom
         // Need to return the new key.
-        // Pass down index ****
         Record r2 =  page.internalDelete(rec) ;
         if ( x >= 0 )
         {
@@ -813,12 +812,8 @@ public final class BPTreeNode extends BPTreePage
         if ( CheckingNode && ! left.isFull() )
             error("Inconsistent node size: %d", left.getCount()) ; 
 
-
         // Remove from parent (which is "this")
         shuffleDown(dividingSlot) ;
-        // Which pointer goes?
-
-
         this.put();
         internalCheckNodeDeep() ;
         if ( logging() )

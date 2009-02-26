@@ -26,7 +26,7 @@ public class GraphTDBFactoryTest
         return FactoryGraphTDB.createGraph(builder, location) ;
     }
 
-    /** Create a graph backed with storage at a location using and B+Tree indexes (testing) */
+    /** Create a graph backed with storage at a location using B+Tree indexes (testing) */
     public static GraphTriplesTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTest) ;

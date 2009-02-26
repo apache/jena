@@ -29,13 +29,18 @@ public class NodeTableIndex extends NodeTableBase
     }
     
     // Memory version - testing.
-    public NodeTableIndex(IndexBuilder factory)
+    private NodeTableIndex(IndexBuilder factory)
     {
         super() ;
         Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, "") ;
         
         ObjectFile objects = new ObjectFileMem() ;
         init(nodeToId, objects, 100, 100) ;
+    }
+
+    public static NodeTable createMem(IndexBuilder indexBuilder)
+    {
+        return new NodeTableIndex(indexBuilder) ;
     }
 }
 /*
