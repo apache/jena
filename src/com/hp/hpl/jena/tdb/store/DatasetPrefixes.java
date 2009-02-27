@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-P;ackard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -50,18 +50,19 @@ public class DatasetPrefixes implements Closeable, Sync
         TupleIndex index = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(location, factory, Names.indexPrefix)) ;
         TupleIndex[] indexes = { index } ;
         // No node cache.  Prefixes are cached.
-        NodeTable nodes = NodeTableFactory.create(indexBuilder, location, Names.prefixesData, Names.indexPrefix2Id, -1, -1) ;
+        NodeTable nodes = NodeTableFactory.create(indexBuilder, location, Names.prefixeNodeTable, Names.indexPrefix2Id, -1, -1) ;
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     
     private DatasetPrefixes()
     {
-        // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
-        
-        TupleIndex index = new TupleIndexRecord(3, colMap, factory, IndexBuilder.mem().newRangeIndex(null, factory, Names.indexPrefix)) ;
-        TupleIndex[] indexes = { index } ;
-        NodeTable nodes = NodeTableFactory.create(IndexBuilder.mem(), null, Names.prefixesData, Names.indexPrefix2Id, -1, -1) ;
-        nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
+        this(IndexBuilder.mem(), null) ;
+//        // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
+//        
+//        TupleIndex index = new TupleIndexRecord(3, colMap, factory, IndexBuilder.mem().newRangeIndex(null, factory, Names.indexPrefix)) ;
+//        TupleIndex[] indexes = { index } ;
+//        NodeTable nodes = NodeTableFactory.create(IndexBuilder.mem(), null, Names.prefixesData, Names.indexPrefix2Id, -1, -1) ;
+//        nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     
     /** Testing - dataset prefixes in-memory */

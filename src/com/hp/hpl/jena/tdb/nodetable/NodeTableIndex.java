@@ -7,20 +7,22 @@
 package com.hp.hpl.jena.tdb.nodetable;
 
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableIndex(IndexBuilder indexBuilder, Location loc, String tableName, String nodeTableIdxName, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableIndex(IndexBuilder indexBuilder, FileSet fileset, String nodeTableIdxName, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super() ;
-        Index nodeToId = indexBuilder.newIndex(loc, FactoryGraphTDB.nodeRecordFactory, nodeTableIdxName) ;
+        
+        Index nodeToId = indexBuilder.newIndex(fileset.getLocation(), FactoryGraphTDB.nodeRecordFactory, nodeTableIdxName) ;
             
 //        // Data file.
 //        // FileSet.
@@ -31,7 +33,8 @@ public class NodeTableIndex extends NodeTableBase
 //        String dir = path.get(2) ;
 //        
 //        FileSet fs = new FileSet(loc, tableName) ;
-        ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(tableName));
+        String filename = fileset.filename(Names.nodeDataExt) ;
+        ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         //init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }

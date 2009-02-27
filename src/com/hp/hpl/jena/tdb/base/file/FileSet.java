@@ -22,6 +22,8 @@ import com.hp.hpl.jena.tdb.sys.Names;
  */
 public class FileSet
 {
+    // Cope with "in-memory" fileset (location == null)
+    
     private static Logger log = LoggerFactory.getLogger(FileSet.class) ;
     
     private Location location ;
@@ -83,6 +85,9 @@ public class FileSet
     {
         setProperty(key, Integer.toString(value)) ;
     }
+    
+    public Location getLocation()   { return location ; }
+    public String getBasename()     { return basename ; }
     
     public RandomAccessFile openReadOnly(String ext)
     {
@@ -146,7 +151,7 @@ public class FileSet
         RandomAccessFile out = open(ext, "rw") ;
         return out.getChannel() ;
     }
-    
+
 }
 
 /*

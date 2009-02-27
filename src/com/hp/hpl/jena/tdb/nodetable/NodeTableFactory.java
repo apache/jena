@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.sys.Names;
@@ -16,8 +17,9 @@ public class NodeTableFactory
     /** Regular node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
+        // Meta data?
         return  create(indexBuilder, location, 
-                       Names.nodesData, Names.indexNode2Id,
+                       Names.nodeTable, Names.indexNode2Id,
                        SystemTDB.Node2NodeIdCacheSize,
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
@@ -32,7 +34,10 @@ public class NodeTableFactory
             // Must be a an in-memory 
             return NodeTableIndex.createMem(indexBuilder) ;
         }
-        return new NodeTableIndex(indexBuilder, location, tableName, nodeTableIdxName, nodeToIdCacheSize, idToNodeCacheSize) ;
+        
+        FileSet fileSet = new FileSet(location, tableName) ;
+        
+        return new NodeTableIndex(indexBuilder, fileSet, nodeTableIdxName, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
     public static NodeTable createMem(IndexBuilder indexBuilder)
