@@ -8,53 +8,55 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.File;
 
-/** Wrapper for a file system directory; can create filenames in that directory.
- *  Enforces some simple consistency policies
- *  on naming to reduce errors.   
+/** 
+ *  Wrapper for a file system directory; can create filenames in that directory.
+ *  Enforces some simple consistency policies and provides a
+ *  "typed string" for a filename to reduce errors.
  */   
  
 public class Location
 {
     static String pathSeparator = File.separator ;  // Or just "/"
     
-    public static Location dirname(String filename)
-    {
-        filename = filename.replace('\'', '/') ;
-        int i = filename.lastIndexOf('/') ;
-        if ( i == filename.length()-1 )
-            return new Location(filename) ;
-        String dirname = filename.substring(0, i) ; // Exclude final /
-        return new Location(dirname) ;
-    }
+//    // Filename bashing moved to FileOps.
+//    private static Location dirname(String filename)
+//    {
+//        filename = filename.replace('\'', '/') ;
+//        int i = filename.lastIndexOf('/') ;
+//        if ( i == filename.length()-1 )
+//            return new Location(filename) ;
+//        String dirname = filename.substring(0, i) ; // Exclude final /
+//        return new Location(dirname) ;
+//    }
+//    
+//    private static Location ensureDirectory(String dirname)
+//    {
+//        File file = new File(dirname) ;
+//        
+//        if ( ! file.exists() )
+//        {
+//            if ( ! file.mkdirs() )
+//                throw new FileException("Failed to create directory: "+file.getAbsolutePath()) ;
+//        }
+//        if ( ! file.isDirectory() )
+//            throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
+//        Location loc = new Location() ;
+//        loc.setPathname(dirname) ;
+//        return loc ;
+//    }
     
-    public static Location ensureDirectory(String dirname)
-    {
-        File file = new File(dirname) ;
-        
-        if ( ! file.exists() )
-        {
-            if ( ! file.mkdirs() )
-                throw new FileException("Failed to create directory: "+file.getAbsolutePath()) ;
-        }
-        if ( ! file.isDirectory() )
-            throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
-        Location loc = new Location() ;
-        loc.setPathname(dirname) ;
-        return loc ;
-    }
-    
+    static final String pathnameMem = "--mem--" ;
     String pathname ;
-    private Location() {}
     
-    private void setPathname(String pathname)
-    {
-        if ( ! pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
-            pathname = pathname + pathSeparator ;
-        this.pathname = pathname ;
-    }
+    static Location mem = new Location() ;
+    static public Location mem() { return new Location(); } 
+    
+    private Location() { pathname = pathnameMem ; }
     
     public Location(String rootname)
     { 
+        // Prefer "/"
+        rootname = rootname.replace('\'', '/') ;
         File file = new File(rootname) ;
         
         if ( ! file.exists() )
@@ -62,18 +64,23 @@ public class Location
             file.mkdir() ;
             //throw new FileException("Not found: "+file.getAbsolutePath()) ;
         }
-
-        if ( ! file.isDirectory() )
+        else if ( ! file.isDirectory() )
             throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
-
-        setPathname(file.getAbsolutePath()) ;
+        pathname = file.getAbsolutePath() ;
+        if ( ! pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
+            pathname = pathname + pathSeparator ;
     }        
-    
+
     public String getDirectoryPath()
     {
         return pathname ;
     }
 
+    public boolean isMem()
+    {
+        return pathname.equals(pathnameMem) ;
+    }
+    
     public Location getSubLocation(String dirname)
     {
         String newName = pathname+dirname ;

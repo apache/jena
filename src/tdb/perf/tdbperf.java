@@ -119,14 +119,14 @@ public class tdbperf extends CmdSub
             RecordFactory nr = FactoryGraphTDB.nodeRecordFactory ;
             
             
-            Index nodeToId = IndexBuilder.mem().newIndex(null, nr , "FOO") ;
+            Index nodeToId = IndexBuilder.mem().newIndex(null, nr) ;
             NodeTable nodeTable =
                 //new NodeTableSink() ;
                 new NodeTableBase(nodeToId, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
 
             TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
             ReorderTransformation transform = ReorderLib.identity() ;
-            DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+            DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
             return new GraphTriplesTDB(table, prefixes, transform, location) ;
         } 
     }

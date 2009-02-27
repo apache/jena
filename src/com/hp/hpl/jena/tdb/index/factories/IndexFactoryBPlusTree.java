@@ -9,10 +9,10 @@ package com.hp.hpl.jena.tdb.index.factories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
@@ -36,28 +36,30 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory factory)
+    public Index createIndex(FileSet fileset, RecordFactory factory)
     {
-        return createRangeIndex(location, name, factory) ;
+        return createRangeIndex(fileset, factory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(Location location, String name, RecordFactory factory)
+    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory)
     {
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
+        
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        if ( params.getBlockSize() > blockSize )
+            throw new TDBException("Calculated block size is greater than required size") ;
         
         if ( false )
         {
-            FileSet fileSet = new FileSet(location, name) ;
             // Params from previous settings
-            if ( fileSet.existsMetaData() )
+            if ( fileset.existsMetaData() )
             {
                 // Put block size in BPTParams?
                 
-                BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileSet) ;
+                BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileset) ;
                 
-                int blkSize2 = fileSet.getPropertyAsInteger(ParamBlockSize) ;
+                int blkSize2 = fileset.getPropertyAsInteger(ParamBlockSize) ;
     //            log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
     //            log.info("Read: "+params2.toString()) ;
     //            log.info("Calc: "+params.toString()) ;
@@ -69,16 +71,16 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
             else
             {
                 params = new BPlusTreeParams(order, factory) ;
-                fileSet.setProperty(ParamBlockSize, blockSize) ;
-                params.addToMetaData(fileSet) ;
-                fileSet.flush();
+                fileset.setProperty(ParamBlockSize, blockSize) ;
+                params.addToMetaData(fileset) ;
+                fileset.flush();
             }
         }        
         
-        String fnNodes = location.getPath(name, Names.bptExt1) ;
+        String fnNodes = fileset.filename(Names.bptExt1) ;
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
         
-        String fnRecords = location.getPath(name, Names.bptExt2) ;
+        String fnRecords = fileset.filename(Names.bptExt2) ;
         BlockMgr blkMgrRecords = createBlockMgr(fnRecords, blockSize) ;
 
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;

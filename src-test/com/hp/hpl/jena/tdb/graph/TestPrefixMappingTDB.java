@@ -50,12 +50,12 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     {
         FileOps.clearDirectory(TS_Store.testArea) ;
         
-        DatasetPrefixes prefixes = new DatasetPrefixes(new Location(TS_Store.testArea)) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(TS_Store.testArea)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
-        prefixes = new DatasetPrefixes(new Location(TS_Store.testArea)) ;
+        prefixes = DatasetPrefixes.create(new Location(TS_Store.testArea)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
     }
 

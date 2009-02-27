@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
@@ -38,6 +39,12 @@ public class IndexBuilder
         return createIndexBuilderMem(SystemTDB.getIndexType()) ;
     }
 
+    /** Convert the index name to a file name */
+    public static String filenameForIndex(String indexName) { return indexName ; }
+
+    /** Convert the index name to a file name */
+    public static FileSet filesetForIndex(Location location, String indexName) { return new FileSet(location, filenameForIndex(indexName)) ; }
+    
     private static synchronized IndexBuilder chooseIndexBuilder()
     {
         return createIndexBuilder(SystemTDB.getIndexType()) ;
@@ -93,26 +100,24 @@ public class IndexBuilder
     }
 
     /** Create an index at the specified place
-     * @param location  Place to put the file or files needed
-     * @param name      Name of index within the location
+     * @param fileset   Place and basename where the file or files needed are found/created.
      * @return Index
      */ 
-    static public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    static public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return builder.newIndex(location, recordFactory, name) ;
+        return builder.newIndex(fileset, recordFactory) ;
     }
 
     /** Create a range index at the specified place
-     * @param location  Place to put the file or files needed
-     * @param name      Name of index within the location
+     * @param fileset   Place and basename where the file or files needed are found/created.
      * @return RangeIndex
      */ 
-    static public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+    static public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return builder.newRangeIndex(location, recordFactory, name) ;
+        return builder.newRangeIndex(fileset, recordFactory) ;
     }
 
-    // ---- The class ....
+    // ---- The class .... a pairing of an index builder and a range index builder.
     IndexFactory factoryIndex = null ;
     IndexRangeFactory builderRangeIndex = null ;
 
@@ -122,14 +127,14 @@ public class IndexBuilder
         builderRangeIndex = rangeIndexBuilder ;
     }
     
-    public Index newIndex(Location location, RecordFactory factory, String name)
+    public Index newIndex(FileSet fileset, RecordFactory factory)
     {
-        return factoryIndex.createIndex(location, name, factory) ;
+        return factoryIndex.createIndex(fileset, factory) ;
     }
     
-    public RangeIndex newRangeIndex(Location location, RecordFactory factory, String name)
+    public RangeIndex newRangeIndex(FileSet fileset , RecordFactory factory)
     {
-        return builderRangeIndex.createRangeIndex(location, name, factory) ;
+        return builderRangeIndex.createRangeIndex(fileset, factory) ;
     }
 }
 

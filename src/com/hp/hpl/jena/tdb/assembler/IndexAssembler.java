@@ -19,6 +19,7 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -30,7 +31,6 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
-    // Subassembler of a PGraph assembler and is called directly.
     /* 
      * [ :description "SPO" ; :file "SPO.idx" ]
      */
@@ -68,14 +68,19 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
                 throw new TDBException("Bad length for index description: "+desc) ;
                 
         }
-        RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), desc, rf) ;
+        // Problems with spotting the index technology.
+        FileSet fileset = null ; //FileSet.fromFilename(filename) ;
+        
+        RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, rf) ;
         return new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), rf, rIndex) ;
     }
 
-    public static RangeIndex rangeIndex(String filename, String name)
-    {
-        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordTripleFactory) ;
-    }
+//    public static RangeIndex rangeIndex(String filename, String name)
+//    {
+//     // Problems with spotting the index technology.
+//        FileSet fileset = IndexBuilder.filesetForIndex(new Location(filename), desc) ;
+//        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordTripleFactory) ;
+//    }
 
 }
 

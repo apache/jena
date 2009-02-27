@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index.factories;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
@@ -24,7 +24,7 @@ public class IndexFactoryExtHashMem implements IndexFactory
     { }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
         return ExtHash.createMem(recordFactory, SystemTDB.BlockSize) ;
     }

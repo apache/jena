@@ -13,9 +13,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.FileUtils;
-
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.util.FileUtils;
 
 /** Naming, access and metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
@@ -34,6 +33,17 @@ public class FileSet
     private Properties properties ;
     private String metaFilename ;
 
+    /** FileSet for "in-memory" */
+    public static FileSet mem()
+    {
+        FileSet fs = new FileSet() ;
+        fs.location = Location.mem() ;
+        fs.basename = "mem" ;
+        fs.metaFilename = null ;
+        fs.properties = new Properties() ;
+        return fs ;
+    }
+    
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(String directory, String basename)
     {
@@ -49,6 +59,8 @@ public class FileSet
         this.properties = new Properties() ;
         loadProperties() ;
     }
+    
+    private FileSet() {}
     
     private void loadProperties()
     {
@@ -116,8 +128,15 @@ public class FileSet
         return f.exists() && f.isFile() ;
     }
     
+    public boolean isMem()
+    {
+        return location.isMem() ;
+    }
+    
     public void flush()
     {
+        if ( isMem() )
+            return ;
         try {
             FileOutputStream fos = new FileOutputStream(metaFilename) ;
             Writer w = FileUtils.asUTF8(fos) ;
@@ -151,7 +170,6 @@ public class FileSet
         RandomAccessFile out = open(ext, "rw") ;
         return out.getChannel() ;
     }
-
 }
 
 /*

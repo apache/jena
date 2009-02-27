@@ -18,24 +18,14 @@ import com.hp.hpl.jena.tdb.sys.Names;
 public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableIndex(IndexBuilder indexBuilder, FileSet fileset, String nodeTableIdxName, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableIndex(IndexBuilder indexBuilder, FileSet filesetIdx, FileSet filesetTable, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super() ;
-        
-        Index nodeToId = indexBuilder.newIndex(fileset.getLocation(), FactoryGraphTDB.nodeRecordFactory, nodeTableIdxName) ;
-            
-//        // Data file.
-//        // FileSet.
-//        Tuple<String> path = FileOps.parse(tableName) ; 
-//
-//        String ext = path.get(0) ;
-//        String basename = path.get(1) ;
-//        String dir = path.get(2) ;
-//        
-//        FileSet fs = new FileSet(loc, tableName) ;
-        String filename = fileset.filename(Names.nodeDataExt) ;
+        // Index.
+        Index nodeToId = indexBuilder.newIndex(filesetIdx, FactoryGraphTDB.nodeRecordFactory) ;
+        // Node table.
+        String filename = filesetTable.filename(Names.nodeDataExt) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
-        //init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
     
@@ -43,7 +33,7 @@ public class NodeTableIndex extends NodeTableBase
     private NodeTableIndex(IndexBuilder factory)
     {
         super() ;
-        Index nodeToId = factory.newIndex(null, FactoryGraphTDB.nodeRecordFactory, "") ;
+        Index nodeToId = factory.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
         
         ObjectFile objects = new ObjectFileMem() ;
         init(nodeToId, objects, 100, 100) ;

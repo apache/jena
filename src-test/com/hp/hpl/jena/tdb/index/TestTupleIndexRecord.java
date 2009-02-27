@@ -17,6 +17,7 @@ import org.junit.Test;
 import tdb.Cmd;
 import test.BaseTest;
 
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -35,7 +36,7 @@ public class TestTupleIndexRecord extends BaseTest
     
     static TupleIndexRecord create(String description)
     {
-        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
+        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(FileSet.mem(), factory) ;
         ColumnMap cmap = new ColumnMap("SPO", description) ;
         TupleIndexRecord index = new TupleIndexRecord(3, cmap, factory, rIdx) ;
         return index ;

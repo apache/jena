@@ -14,7 +14,7 @@ import tdb.cmdline.ModFormat;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
@@ -116,9 +116,8 @@ public class tdbdump extends CmdSub
         
         private void execOne(String fn)
         {
-            // XXX Fix location stuff.
-            Location location = new Location("DB") ;
-            RangeIndex rIndex = IndexBuilder.createRangeIndex(location, "SPO", FactoryGraphTDB.indexRecordTripleFactory) ;
+            FileSet fileset = new FileSet("DB", "SPO") ;
+            RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, FactoryGraphTDB.indexRecordTripleFactory) ;
             for ( Record r : rIndex )
             {
                 System.out.println(r.toString()) ;

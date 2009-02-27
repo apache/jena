@@ -26,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -103,7 +104,7 @@ public class FactoryGraphTDB
     /** Create a TDB graph in-memory - for testing */
     public static GraphTriplesTDB createGraphMem(IndexBuilder indexBuilder)
     {
-        return createGraph(indexBuilder, null) ;
+        return createGraph(indexBuilder, Location.mem()) ;
     }
 
     /** Create a TDB graph at the location and wrap it up as a Model.  
@@ -127,7 +128,7 @@ public class FactoryGraphTDB
     /** Create or connect a TDB dataset in-memory - for testing */ 
     public static DatasetGraph createDatasetGraphMem()
     {
-        return createDatasetGraph(IndexBuilder.mem(), null, tripleIndexes, quadIndexes) ;
+        return createDatasetGraph(IndexBuilder.mem(), Location.mem(), tripleIndexes, quadIndexes) ;
     }
 
     /** Create or connect a TDB dataset (graph-level) */
@@ -167,7 +168,7 @@ public class FactoryGraphTDB
     static TripleTable createTripleTableMem()
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
-        return createTripleTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
+        return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes) ;
     }
 
     /** Testing */
@@ -184,7 +185,7 @@ public class FactoryGraphTDB
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;
-        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
         return new GraphTriplesTDB(table, prefixes, transform, location) ;
     }
     
@@ -194,7 +195,7 @@ public class FactoryGraphTDB
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadDesc) ;
-        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
         //return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }
@@ -217,7 +218,9 @@ public class FactoryGraphTDB
     
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)
     {
-        RangeIndex rIdx1 = indexBuilder.newRangeIndex(location, recordFactory, desc) ;
+        // Map name of index to name of file.
+        FileSet fileset = new FileSet(location, desc) ;
+        RangeIndex rIdx1 = indexBuilder.newRangeIndex(fileset, recordFactory) ;
         TupleIndex tupleIndex = new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), recordFactory, rIdx1) ; 
         return tupleIndex ;
     }

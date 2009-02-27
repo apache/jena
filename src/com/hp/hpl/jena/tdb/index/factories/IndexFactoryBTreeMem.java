@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index.factories;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
@@ -25,15 +25,15 @@ public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return createRangeIndex(location, name, recordFactory) ;
+        return createRangeIndex(fileset, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return BTree.makeMem(name, order, recordFactory.keyLength(), recordFactory.valueLength()) ;
+        return BTree.makeMem(fileset.getBasename(), order, recordFactory.keyLength(), recordFactory.valueLength()) ;
     }
 }
 

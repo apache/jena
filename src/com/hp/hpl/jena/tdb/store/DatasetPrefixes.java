@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -33,36 +34,48 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public class DatasetPrefixes implements Closeable, Sync
 {
+    // Index on GPU and a nodetable.
+    // The nodetable is itself an index and a data file.. 
+    
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     private final NodeTupleTable nodeTupleTable ;
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-    public DatasetPrefixes(Location location)
-    {
-        this(IndexBuilder.get(), location) ;
-    }
+
+    public static DatasetPrefixes create(Location location) { return create(IndexBuilder.get(), location) ; }
     
-    public DatasetPrefixes(IndexBuilder indexBuilder, Location location)
+    public static DatasetPrefixes create(IndexBuilder indexBuilder, Location location)
+    { return new DatasetPrefixes(indexBuilder, location) ; }
+
+    
+    private DatasetPrefixes(IndexBuilder indexBuilder, Location location)
     {
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
+        // GPU index
+        FileSet filesetGPU = null ;
+        if ( location != null )
+            filesetGPU = new FileSet(location, Names.indexPrefix) ;
         
-        TupleIndex index = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(location, factory, Names.indexPrefix)) ;
+        TupleIndex index = new TupleIndexRecord(3, colMap, factory, indexBuilder.newRangeIndex(filesetGPU, factory)) ;
         TupleIndex[] indexes = { index } ;
-        // No node cache.  Prefixes are cached.
-        NodeTable nodes = NodeTableFactory.create(indexBuilder, location, Names.prefixeNodeTable, Names.indexPrefix2Id, -1, -1) ;
+        
+        // Node table.
+        FileSet filesetNodeTableIdx = null ;
+        if ( location != null )
+            filesetNodeTableIdx = new FileSet(location, Names.indexPrefix2Id) ;
+        
+        FileSet filesetNodeTable = null ;
+        if ( location != null )
+            filesetNodeTable = new FileSet(location, Names.prefixNodeTable) ;
+        
+        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTableIdx, filesetNodeTableIdx, -1, -1) ;
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     
     private DatasetPrefixes()
     {
-        this(IndexBuilder.mem(), null) ;
-//        // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
-//        
-//        TupleIndex index = new TupleIndexRecord(3, colMap, factory, IndexBuilder.mem().newRangeIndex(null, factory, Names.indexPrefix)) ;
-//        TupleIndex[] indexes = { index } ;
-//        NodeTable nodes = NodeTableFactory.create(IndexBuilder.mem(), null, Names.prefixesData, Names.indexPrefix2Id, -1, -1) ;
-//        nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
+        this(IndexBuilder.mem(), Location.mem()) ;
     }
     
     /** Testing - dataset prefixes in-memory */

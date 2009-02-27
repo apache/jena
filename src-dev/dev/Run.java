@@ -64,7 +64,6 @@ public class Run
 //        System.exit(0) ;
 //        tdb.tdbdump.main("index","DB/SPO") ; System.exit(0) ;
 
-        Location loc = Location.dirname("DB/SPO") ;
         FileSet fileSet = new FileSet(new Location("DB"), "SPO") ;
         System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
         System.out.println("Exists? "+fileSet.exists("idn")) ;
@@ -140,7 +139,7 @@ public class Run
         
         TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
         ReorderTransformation transform = ReorderLib.identity() ;
-        DatasetPrefixes prefixes = new DatasetPrefixes(indexBuilder, location) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
         GraphTDB g = new GraphTriplesTDB(table, prefixes, transform, location) ;
         return g ;
     }

@@ -17,27 +17,29 @@ public class NodeTableFactory
     /** Regular node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
-        // Meta data?
-        return  create(indexBuilder, location, 
-                       Names.nodeTable, Names.indexNode2Id,
+        // The index of node to id
+        FileSet filesetIdx = null ;
+        if ( location != null )
+            filesetIdx = new FileSet(location, Names.indexNode2Id) ;
+        
+        FileSet filesetNodeTable = null ;
+        if ( location != null )
+            filesetNodeTable = new FileSet(location, Names.nodeTable) ;
+        
+        // The node table (id to node).
+        return  create(indexBuilder, filesetIdx, filesetNodeTable,
                        SystemTDB.Node2NodeIdCacheSize,
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
 
     /** Custom node table */
-    public static NodeTable create(IndexBuilder indexBuilder, Location location, 
-                                   String tableName, String nodeTableIdxName,
+    public static NodeTable create(IndexBuilder indexBuilder, FileSet filesetIdx, FileSet filesetNodeTable,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
-        if ( location == null )
-        {
-            // Must be a an in-memory 
+        if ( filesetIdx.isMem() )
             return NodeTableIndex.createMem(indexBuilder) ;
-        }
         
-        FileSet fileSet = new FileSet(location, tableName) ;
-        
-        return new NodeTableIndex(indexBuilder, fileSet, nodeTableIdxName, nodeToIdCacheSize, idToNodeCacheSize) ;
+        return new NodeTableIndex(indexBuilder, filesetIdx, filesetNodeTable, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
     public static NodeTable createMem(IndexBuilder indexBuilder)

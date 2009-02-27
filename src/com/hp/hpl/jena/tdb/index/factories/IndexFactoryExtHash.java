@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.index.factories;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.PlainFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -32,12 +32,12 @@ public class IndexFactoryExtHash implements IndexFactory
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        String fnDictionary = location.getPath(name, Names.extHashExt) ;
+        String fnDictionary = fileset.filename(Names.extHashExt) ;
         PlainFile dictionary = FileFactory.createPlainFileDisk(fnDictionary) ;
         
-        String fnBuckets = location.getPath(name, Names.extHashBucketExt) ;
+        String fnBuckets = fileset.filename(Names.extHashBucketExt) ;
         BlockMgr mgr =  BlockMgrFactory.createFile(fnBuckets, blockSize) ;
         ExtHash eHash = new ExtHash(dictionary, recordFactory, mgr) ;
         return eHash ;

@@ -86,7 +86,7 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             Location location = getLocation() ;
-            DatasetPrefixes prefixes = new DatasetPrefixes(location) ; 
+            DatasetPrefixes prefixes = DatasetPrefixes.create(location) ; 
             for ( String gn : prefixes.graphNames() )
             {
                 System.out.println("Graph: "+gn) ;

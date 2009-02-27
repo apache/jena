@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.index.factories;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
@@ -28,17 +28,18 @@ public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return createRangeIndex(location, name, recordFactory) ;
+        return createRangeIndex(fileset, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
     {
         int order = BTreeParams.calcOrder(blockSize, recordFactory) ;
         BTreeParams params = new BTreeParams(order, recordFactory) ;
-        BTree bTree = new BTree(params, createBlockMgr(location.getPath(name, Names.btExt), blockSize)) ; 
+        String fn = fileset.filename(Names.btExt) ;
+        BTree bTree = new BTree(params, createBlockMgr(fn, blockSize)) ; 
         return bTree ;
     }
     
