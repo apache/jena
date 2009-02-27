@@ -9,8 +9,6 @@ package dev;
 public class Dev
 {
     // Location+String => Filesets
-    //   Location.mem()
-    //   FileSet.mem()
     //   createBlockMgr - tie to metadata?
     
     // ==== Next

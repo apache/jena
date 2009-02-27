@@ -20,7 +20,6 @@ import org.junit.runners.Suite;
 } )
 public class TS_Store
 { 
-    public static final String testArea = "tmp/testing" ;
 }
 
 

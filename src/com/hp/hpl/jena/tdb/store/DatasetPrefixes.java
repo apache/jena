@@ -69,7 +69,7 @@ public class DatasetPrefixes implements Closeable, Sync
         if ( location != null )
             filesetNodeTable = new FileSet(location, Names.prefixNodeTable) ;
         
-        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTableIdx, filesetNodeTableIdx, -1, -1) ;
+        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTableIdx, filesetNodeTable, -1, -1) ;
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     

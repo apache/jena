@@ -12,12 +12,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.graph.Graph;
-
+import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
-import com.hp.hpl.jena.tdb.store.TS_Store;
 
 /** Programmatic tests on persistent graph */
 public class TestGraphTDB extends AbstractTestGraph2
@@ -26,7 +25,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(TS_Store.testArea), TDBFactory.stdFactory) ;
+        graphLocation = new GraphLocation(new Location(ConfigTest.testingDir), TDBFactory.stdFactory) ;
         graphLocation.clearDirectory() ; 
         graphLocation.createGraph() ;
     }

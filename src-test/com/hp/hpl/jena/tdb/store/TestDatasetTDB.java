@@ -24,6 +24,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
@@ -39,7 +40,7 @@ public class TestDatasetTDB extends BaseTest
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(TS_Store.testArea), TDBFactory.stdFactory) ;
+        graphLocation = new GraphLocation(new Location(ConfigTest.testingDir), TDBFactory.stdFactory) ;
     }
         
     @Before public void before()

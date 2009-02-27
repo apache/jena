@@ -15,6 +15,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.InstallationTest;
 import com.hp.hpl.jena.tdb.TDB;
 
@@ -23,12 +24,12 @@ public class tdbtest
 {
     public static void main(String ... argv)
     {
-        ensureDir("tmp") ;
-        ensureDir("tmp/testing") ;
+        //ensureDir("tmp") ;
+        ensureDir(ConfigTest.testingDir) ; 
         
         PrintStream out = System.out ;
         if ( TDB.VERSION.equals("DEV") )
-            out.printf("TDB test suite\n") ;
+            out.printf("TDB test suite (development)\n") ;
         else
             out.printf("TDB v%s test suite (Built: %s)\n", TDB.VERSION, TDB.BUILD_DATE) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;

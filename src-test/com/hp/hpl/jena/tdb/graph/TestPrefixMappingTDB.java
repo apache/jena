@@ -10,10 +10,9 @@ import lib.FileOps;
 import org.junit.Test;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-
+import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
-import com.hp.hpl.jena.tdb.store.TS_Store;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
 {
@@ -48,14 +47,15 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     // Persistent.
     @Test public void persistent1()
     {
-        FileOps.clearDirectory(TS_Store.testArea) ;
+        FileOps.clearDirectory(ConfigTest.testingDir) ;
         
-        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(TS_Store.testArea)) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(ConfigTest.testingDir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
-        prefixes = DatasetPrefixes.create(new Location(TS_Store.testArea)) ;
+        // This fails when run in the complete test suite, but not run individually. 
+        prefixes = DatasetPrefixes.create(new Location(ConfigTest.testingDir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
     }
 
