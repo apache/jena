@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -454,31 +454,34 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<String>();
 
     final private Map<String, SchemeSpecificPart> schemes = new HashMap<String, SchemeSpecificPart>();
     
-    public void useSchemeSpecificRules(String scheme, boolean asErr) {
-        if (scheme.equals("*")) {
-            Iterator<String> it =
-            Specification.schemes.keySet().iterator();
-            while (it.hasNext()) {
-                scheme = it.next();
-                if (!schemes.containsKey(scheme))
-                   useSchemeSpecificRules(scheme,asErr);
+    public void useSchemeSpecificRules(String scheme, boolean asErr)
+    {
+        if (scheme.equals("*"))
+        {
+            Iterator<String> it = Specification.schemes.keySet().iterator() ;
+            while (it.hasNext())
+            {
+                scheme = it.next() ;
+                if (!schemes.containsKey(scheme)) useSchemeSpecificRules(scheme, asErr) ;
             }
-            return;
-        } 
-        scheme = scheme.toLowerCase();
-        SchemeSpecification spec = (SchemeSpecification)Specification.schemes.get(scheme);
-        if (spec==null) {
-            schemes.put(scheme,noScheme);
-        } else {
-            schemes.put(scheme,new WithScheme(spec,asErr));
+            return ;
         }
-        
+        scheme = scheme.toLowerCase() ;
+        SchemeSpecification spec = (SchemeSpecification) Specification.schemes.get(scheme) ;
+        if (spec == null)
+        {
+            schemes.put(scheme, noScheme) ;
+        } else
+        {
+            schemes.put(scheme, new WithScheme(spec, asErr)) ;
+        }
+
     }
 }
 
 
 /*
- *  (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
