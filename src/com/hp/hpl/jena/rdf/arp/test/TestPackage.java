@@ -26,6 +26,7 @@ public class TestPackage extends TestSuite
         addTest( com.hp.hpl.jena.rdf.arp.states.test.TestARPStates.suite());
         addTest( com.hp.hpl.jena.rdf.arp.test.URITests.suite());
         addTest( com.hp.hpl.jena.rdf.arp.test.TaintingTests.suite());
+        addTest( com.hp.hpl.jena.rdf.arp.test.SAX2RDFTest.suite());
     }
     
     private void addTest(String name, TestSuite tc) {

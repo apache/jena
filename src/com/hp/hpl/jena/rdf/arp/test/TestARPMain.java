@@ -36,7 +36,7 @@ public class TestARPMain
 {
     static public Test suite()
     {
-        TestSuite test0 = new TestSuite("ARP1") ;
+        TestSuite test0 = new TestSuite("ARP") ;
         WGTestSuite test1 = 
             new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(
                                                          new TestInputStreamFactory(
