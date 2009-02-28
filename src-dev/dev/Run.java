@@ -9,7 +9,6 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
@@ -52,18 +51,6 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        
-        String TEXT = "<?xml version=\"1.0\" ?>\n" +
-        "<r:RDF xmlns:r=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n" +
-        " <r:Description>\n" +
-        "  <r:value r:resource=\"http://example/some random text\"/>\n" +
-        " </r:Description>\n" +
-        "</r:RDF>\n";
-        
-        Model model = ModelFactory.createDefaultModel() ;
-        model.read(new StringReader(TEXT), "http://example/") ;
-        model.write(System.out, "N-TRIPLES") ;
-        System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
         
