@@ -90,21 +90,19 @@
 	</configuration>
       </plugin>
 
-      <!-- No javadoc shipped?
-	   <plugin>
-	   <groupId>org.apache.maven.plugins</groupId>
-	   <artifactId>maven-javadoc-plugin</artifactId>
-	   <executions>
-	   <execution>
-	   <id>attach-javadocs</id>
-	   <goals>
-	   <goal>jar</goal>
-	   </goals>
-	   </execution>
-	   </executions>
-	   </plugin>
-      -->
-
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>attach-javadocs</id>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      
       <plugin>
 	<artifactId>maven-assembly-plugin</artifactId>
 	<version>2.2-beta-3</version>
@@ -115,26 +113,6 @@
 	  </descriptors>
 	</configuration>
 
-	<!--
-	  <executions>
-	    <execution>
-	      <id>create-executable-jar</id>
-	      <phase>package</phase>
-	      <goals>
-		<goal>single</goal>
-	      </goals>
-	      <configuration>
-
-
-		<descriptorRefs>
-		  <descriptorRef>
-		    jar-with-dependencies
-		  </descriptorRef>
-		</descriptorRefs>
-	      </configuration>
-	    </execution>
-	</executions>
-	-->
       </plugin>
 
     </plugins>
