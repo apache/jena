@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c)     Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.1 2009-02-28 00:16:08 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.2 2009-02-28 17:39:14 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.iri.test;
@@ -88,7 +88,7 @@ public class MoreTests extends TestCase {
 }
 
 /*
- * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
