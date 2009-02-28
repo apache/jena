@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Iso3166.java,v 1.7 2008-12-28 19:32:35 andy_seaborne Exp $
+ * * $Id: Iso3166.java,v 1.8 2009-02-28 18:09:56 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -52,7 +52,7 @@ import java.util.Map;
 public class Iso3166  {
 
    
-    static final Map all = new HashMap();
+    static final Map<String, Iso3166> all = new HashMap<String, Iso3166>();
 
     /** Creates new Iso639 */
     private Iso3166(String code,String engName) {
@@ -67,7 +67,7 @@ public class Iso3166  {
  * or null if not in the list.
  */    
     static public Iso3166 find(String countryId) {
-        return (Iso3166)all.get(countryId);
+        return all.get(countryId);
     }
 /** The 2 character country code.
  */    

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 public abstract class AbsXMLLiteral extends Frame {
     boolean checkComposingChar = true;
 
-    static Map xmlNameSpace = new TreeMap();
+    static Map<String, String> xmlNameSpace = new TreeMap<String, String>();
     static {
         xmlNameSpace.put("xml", xmlns);
         xmlNameSpace.put("", "");
@@ -31,7 +31,7 @@ public abstract class AbsXMLLiteral extends Frame {
     }
     
     final protected StringBuffer rslt;
-    public final Map namespaces; 
+    public final Map<String, String> namespaces; 
 
     private static String prefix(String qname) {
         int colon = qname.indexOf(':');
@@ -56,7 +56,7 @@ public abstract class AbsXMLLiteral extends Frame {
         rslt = r;
         namespaces = xmlNameSpace;
     }
-    public AbsXMLLiteral(AbsXMLLiteral p, Map ns) {
+    public AbsXMLLiteral(AbsXMLLiteral p, Map<String, String> ns) {
         super(p, p.xml);
         rslt = p.rslt;
         namespaces = ns;
@@ -68,7 +68,7 @@ public abstract class AbsXMLLiteral extends Frame {
     }
     
    
-    private void useNameSpace(String prefix, String uri, Map ns) {
+    private void useNameSpace(String prefix, String uri, Map<String, String> ns) {
         if (!uri.equals(namespaces.get(prefix)))
               ns.put(prefix, uri);
     }
@@ -76,7 +76,7 @@ public abstract class AbsXMLLiteral extends Frame {
     @Override
     abstract public void endElement() throws SAXParseException;
 
-    void startLitElement(String uri, String rawName, Map ns) {
+    void startLitElement(String uri, String rawName, Map<String, String> ns) {
         append('<');
         append(rawName);
         useNameSpace(prefix(rawName),uri, ns);
@@ -182,8 +182,8 @@ public abstract class AbsXMLLiteral extends Frame {
 
         checkComposingChar = true;
         
-        Map attrMap = new TreeMap();
-        Map childNameSpaces = new TreeMap();
+        Map<String, String> attrMap = new TreeMap<String, String>();
+        Map<String, String> childNameSpaces = new TreeMap<String, String>();
         startLitElement( uri,  rawName, childNameSpaces);
         for (int i = atts.getLength()-1;i>=0;i--) {
             String ns = atts.getURI(i);
@@ -198,26 +198,26 @@ public abstract class AbsXMLLiteral extends Frame {
         // attrMap contains the attributes
         // Both are sorted correctly, so we just read them off,
         // namespaces first.
-        Iterator it = childNameSpaces.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = childNameSpaces.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry<String, String> pair = it.next();
             append(" xmlns");
-            String prefix = (String)pair.getKey();
+            String prefix = pair.getKey();
             if (!"".equals(prefix)) {
                 append(':');
                 append(prefix);
             }
             append("=\"");
-            appendAttrValue((String)pair.getValue());
+            appendAttrValue(pair.getValue());
             append('"');
         }
         it = attrMap.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry<String, String> pair = it.next();
             append(' ');
-            append((String)pair.getKey());
+            append(pair.getKey());
             append("=\"");
-            appendAttrValue((String)pair.getValue());
+            appendAttrValue(pair.getValue());
             append('"');
         }
         append('>');
@@ -229,8 +229,8 @@ public abstract class AbsXMLLiteral extends Frame {
         } else {
             it = namespaces.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                String prefix = (String)pair.getKey();
+                Map.Entry<String, String> pair = it.next();
+                String prefix = pair.getKey();
                 if (!childNameSpaces.containsKey(prefix))
                     childNameSpaces.put(prefix,pair.getValue());
                 // else prefix was overwritten with different value

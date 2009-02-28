@@ -262,7 +262,7 @@ public class SAX2Model extends SAX2RDF {
     }
 
     private Object setArpProperty(String str, Object v) {
-        return JenaReader.setArpProperty(getOptions(), str, v, errorHandler);
+        return JenaReader.processArpOptions(getOptions(), str, v, errorHandler);
     }
 }
 

@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.rdf.arp.states.test;
 
+import com.hp.hpl.jena.rdf.arp.states.FrameI;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -20,7 +22,7 @@ public class TestEventList extends TestCase implements Test {
     }
 
     private void check(String start, EventRecord first, EventRecord second) {
-        Class f = TestData.toState(start);
+        Class< ? extends FrameI> f = TestData.toState(start);
         String ev[] = new String[first.startEvents.length
                 + second.startEvents.length];
         System.arraycopy(first.startEvents, 0, ev, 0, first.startEvents.length);

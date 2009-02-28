@@ -591,6 +591,21 @@ An ARP property is
  <th>Legal Values</th>
  </tr>
  <tr BGCOLOR="white" CLASS="TableRowColor">
+ <td><code>iri-rules</code></td>
+ <td>
+ Set the engine for checking and resolving. <code>&quot;strict&quot;</code> sets the IRI 
+	engine with rules for valid IRIs, XLink and RDF; it does not permit spaces 
+	in IRIs. <code>&quot;iri&quot; </code>sets the IRI engine to IRI (<a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 
+	3986</a>, <a href="http://www.ietf.org/rfc/rfc3987.txt">RFC 3987</a>) <code>
+	.</code> The default is <code>&quot;lax&quot; </code>(for backwards compatibility)<code>,</code> 
+	the rules for RDF URI references only, which does permit spaces although the 
+	use of spaces is not good practice.</td>
+ <td>String</td>
+ <td><CODE>lax</CODE><br>
+	<CODE>strict</CODE><br>
+	<CODE>iri</CODE></td>
+ </tr>
+ <tr BGCOLOR="white" CLASS="TableRowColor">
  <td><CODE>error-mode</CODE></td>
  <td>
  <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setDefaultErrorMode()"><CODE>ARPOptions.setDefaultErrorMode()</CODE></A><br>
@@ -680,6 +695,21 @@ but allow <code>"daml:collection"</code>, the following works:
 <CODE><B><A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#IGN_DAML_COLLECTION">IGN_DAML_COLLECTION</A></B></CODE>
 is treated as an error, and so the second call to setProperty overwrites the effect of
 the first.
+</p>
+	<p>The IRI rules and resolver can be set on a per-reader basis:</p>
+<pre>    InputStream in = ... ;
+    String baseURI = ... ;
+    Model model = Modelfactory.createDefaultModel();
+    RDFReader r = model.getReader(&quot;RDF/XML&quot;);
+    r.setProperty(&quot;iri-rules&quot;, &quot;strict&quot;) ;
+    r.setProperty(&quot;error-mode&quot;, &quot;strict&quot;) ;	// Warning will be errors.</pre>
+	<pre>    // Alternative to the above &quot;error-mode&quot;: set specific warning to be an error.
+    //r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR) ;
+    r.read(model, in, baseURI) ;
+    in.close();</pre>
+	<p>The global default IRI engine can be set with:</p>
+	<pre>ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation()) ;</pre>
+	<p>or other IRI rule engine from <code>IRIFactory</code>.</p>
 </p>
 <h3><a name="arp-interrupt">5.2 Interrupting ARP</a></h3>
 <p>

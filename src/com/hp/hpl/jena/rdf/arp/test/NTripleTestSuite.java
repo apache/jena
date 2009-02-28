@@ -78,8 +78,8 @@ class NTripleTestSuite extends WGTestSuite {
 			xCountDown = cnt;
 		}
 		final int xCountDown;
-		Set anon = new HashSet();
-		Set oldAnon = new HashSet();
+		Set<AResource> anon = new HashSet<AResource>();
+		Set<AResource> oldAnon = new HashSet<AResource>();
 		int state = 1; // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
 		int countDown;
 		public void statement(AResource subj, AResource pred, AResource obj) {
@@ -174,10 +174,10 @@ class NTripleTestSuite extends WGTestSuite {
 		 */
 		public void atEndOfFile() {
 			if (!anon.isEmpty()) {
-				Iterator it = anon.iterator();
+				Iterator<AResource> it = anon.iterator();
 				while (it.hasNext()) {
                     AResource a =
-                    ((AResource) it.next());
+                    it.next();
 					System.err.print(a.getAnonymousID() + ", ");
                     if (ARPResource.DEBUG) {
                         RuntimeException rte = (RuntimeException)a.getUserData();

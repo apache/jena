@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: IanaLanguageTag.java,v 1.7 2008-12-28 19:32:35 andy_seaborne Exp $
+ * * $Id: IanaLanguageTag.java,v 1.8 2009-02-28 18:09:56 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author jjc
  */
 public class IanaLanguageTag extends LanguageTag {
-    static final Map all = new HashMap();
+    static final Map<String, IanaLanguageTag[]> all = new HashMap<String, IanaLanguageTag[]>();
     static {
         try {
         all.put("lojban",new IanaLanguageTag[]{new IanaLanguageTag("art-lojban")});
@@ -136,7 +136,7 @@ public class IanaLanguageTag extends LanguageTag {
     static public IanaLanguageTag find(LanguageTag t) {
         if ( t.tags.length < 2)
             return null;
-        IanaLanguageTag matches[] = (IanaLanguageTag[])all.get(t.tags[1]);
+        IanaLanguageTag matches[] = all.get(t.tags[1]);
         if ( matches == null )
             return null;
         nextMatch:

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: StatementListener.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+  $Id: StatementListener.java,v 1.11 2009-02-28 18:09:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
 
 import com.hp.hpl.jena.rdf.model.*;
+
 import java.util.*;
 
 /**
@@ -28,16 +29,16 @@ public class StatementListener implements ModelChangedListener
 /* */
     public void addedStatements( Statement [] statements ) 
         { for (int i = 0; i < statements.length; i += 1) addedStatement( statements[i] ); }
-    public void addedStatements( List statements ) 
-        { for (int i = 0; i < statements.size(); i += 1) addedStatement( (Statement) statements.get(i) ); }
+    public void addedStatements( List<Statement> statements ) 
+        { for (int i = 0; i < statements.size(); i += 1) addedStatement( statements.get(i) ); }
     public void addedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) addedStatement( statements.nextStatement() ); }
     public void addedStatements( Model m ) 
         { addedStatements( m.listStatements() ); }
     public void removedStatements( Statement [] statements ) 
         { for (int i = 0; i < statements.length; i += 1) removedStatement( statements[i] ); }
-    public void removedStatements( List statements ) 
-        { for (int i = 0; i < statements.size(); i += 1) removedStatement( (Statement) statements.get(i) ); }
+    public void removedStatements( List<Statement> statements ) 
+        { for (int i = 0; i < statements.size(); i += 1) removedStatement( statements.get(i) ); }
     public void removedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) removedStatement( statements.nextStatement() ); }
     public void removedStatements( Model m ) 

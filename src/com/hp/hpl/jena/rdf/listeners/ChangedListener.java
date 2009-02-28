@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ChangedListener.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+  $Id: ChangedListener.java,v 1.11 2009-02-28 18:09:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -34,12 +34,12 @@ public class ChangedListener implements ModelChangedListener
     public boolean hasChanged() { try { return changed; } finally { changed = false; } }
     public void addedStatement( Statement s ) { setChanged(); }
     public void addedStatements( Statement [] statements ) { setChanged(); }
-    public void addedStatements( List statements ) { setChanged(); }
+    public void addedStatements( List<Statement> statements ) { setChanged(); }
     public void addedStatements( StmtIterator statements ) { setChanged(); }
     public void addedStatements( Model m ) { setChanged(); }
     public void removedStatement( Statement s ) { setChanged(); }   
     public void removedStatements( Statement [] statements ) { setChanged(); }
-    public void removedStatements( List statements ) { setChanged(); }
+    public void removedStatements( List<Statement> statements ) { setChanged(); }
     public void removedStatements( StmtIterator statements ) { setChanged(); }
     public void removedStatements( Model m ) { setChanged(); }          
     public void notifyEvent( Model m, Object event ) {}

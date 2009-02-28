@@ -280,7 +280,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
 
     private String pairwiseIncompatibleErrorMessage(int nextStateCode,
             AttributeLexer ap, String propAttrs) {
-        ArrayList cases = new ArrayList();
+        ArrayList<String> cases = new ArrayList<String>();
         if ((nextStateCode & PARSETYPE) != 0)
             cases.add("rdf:parseType");
         if ((nextStateCode & TYPEDLITERAL) != 0)

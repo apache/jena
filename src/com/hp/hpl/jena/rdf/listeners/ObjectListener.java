@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ObjectListener.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+  $Id: ObjectListener.java,v 1.11 2009-02-28 18:09:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
 
 import com.hp.hpl.jena.rdf.model.*;
+
 import java.util.*;
 
 /**
@@ -30,12 +31,12 @@ public class ObjectListener implements ModelChangedListener
 /* */
     public void addedStatement( Statement s ) { added( s ); }
     public void addedStatements( Statement [] statements ) { added( statements ); }
-    public void addedStatements( List statements ) { added( statements ); }
+    public void addedStatements( List<Statement> statements ) { added( statements ); }
     public void addedStatements( StmtIterator statements ) { added( statements ); }
     public void addedStatements( Model m ) { added( m ); }
     public void removedStatement( Statement s ) { removed( s ); }   
     public void removedStatements( Statement [] statements ) { removed( statements ); }
-    public void removedStatements( List statements ) { removed( statements ); }
+    public void removedStatements( List<Statement> statements ) { removed( statements ); }
     public void removedStatements( StmtIterator statements ) { removed( statements ); }
     public void removedStatements( Model m ) { removed( m ); }       
     public void notifyEvent( Model m, Object event ) {}         

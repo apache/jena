@@ -55,7 +55,7 @@ class EventList implements Attributes, Cloneable {
     }
     public EventList(String[] ev) {
         for (int i=0;i<ev.length;i++)
-            add((Event)TestData.short2Event.get(ev[i]));
+            add(TestData.short2Event.get(ev[i]));
     }
     public EventList copy() {
         try {
@@ -115,7 +115,7 @@ class EventList implements Attributes, Cloneable {
         size--;
         
     }
-    boolean test(Class cl) {
+    boolean test(Class<? extends FrameI> cl) {
         try {
             testException = false;
             testFailure = true;

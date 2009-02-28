@@ -137,9 +137,11 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
             throws SAXParseException {
         if (rslt.hasViolation(false)) {
 
-            Iterator it = rslt.violations(false);
+            
+            @SuppressWarnings("unchecked")
+            Iterator<Violation> it = rslt.violations(false);
             while (it.hasNext()) {
-                Violation irie = (Violation) it.next();
+                Violation irie = it.next();
                 // if (irie.getViolationCode() ==
                 // ViolationCodes.REQUIRED_COMPONENT_MISSING)
                 String msg = irie.getShortMessage();

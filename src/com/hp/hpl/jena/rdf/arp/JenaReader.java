@@ -24,6 +24,8 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.iri.IRIFactory;
+
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
@@ -402,7 +404,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
 
     private Object setArpProperty(String str, Object v) {
-        return setArpProperty(getOptions(), str, v, errorHandler);
+        return processArpOptions(getOptions(), str, v, errorHandler);
     }
 
 	public ARPOptions getOptions() {
@@ -414,12 +416,16 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	}
 
     /**
-     * Supported proprties: error-mode (String) default, lax, strict,
-     * strict-ignore, strict-warning, strict-error, strict-fatal embedding
-     * (String/Boolean) true, false ERR_* (String/Integer) em_warning, em_fatal,
-     * em_ignore, em_error IGN_* ditto WARN_* ditto
+     * Supported properties: 
+     * error-mode (String) default, lax, strict,
+     * strict-ignore, strict-warning, strict-error, strict-fatal <br/> 
+     * embedding (String/Boolean) true, false<br/>
+     * ERR_* (String/Integer) em_warning, em_fatal, em_ignore, em_error<br/>
+     * IGN_* ditto<br/>
+     * WARN_* ditto<br/>
+     * iri-rules (String), "Jena", "IRI", "strict", "lax"
      */
-    static Object setArpProperty(ARPOptions options, String str, Object v,
+    static Object processArpOptions(ARPOptions options, String str, Object v,
             RDFErrorHandler eh) {
         // ARPOptions options = arpf.getOptions();
         str = str.toUpperCase();
@@ -460,10 +466,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     return null;
                 }
             }
-            eh
-                    .error(new IllegalArgumentException(
-                            "Property \"ERROR-MODE\" takes the following values: "
-                                    + "\"default\", \"lax\", \"strict\", \"strict-ignore\", \"strict-warning\", \"strict-error\", \"strict-fatal\"."));
+            eh.error(new IllegalArgumentException(
+                                                  "Property \"ERROR-MODE\" takes the following values: "
+                                                  + "\"default\", \"lax\", \"strict\", \"strict-ignore\", \"strict-warning\", \"strict-error\", \"strict-fatal\".")) ;
             return null;
         }
         if (str.equals("EMBEDDING")) {
@@ -521,6 +526,19 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 return new Integer(old);
             }
         }
+        
+        if ( str.equals("IRI-RULES") )
+        {
+            IRIFactory old = options.getIRIFactory() ;
+            if ( v.equals("STRICT") )   { options.setIRIFactory(IRIFactory.semanticWebImplementation()) ; }
+            else if ( v.equals("IRI") ) { options.setIRIFactory(IRIFactory.iriImplementation()) ; }
+            else if ( v.equals("LAX") ) { options.setIRIFactory(IRIFactory.jenaImplementation()) ; }
+            else
+                eh.error(new IllegalArgumentException(
+                "Property \"IRI-RULES\" requires one of 'STRICT', 'IRI' or 'LAX'"));
+            return old ;
+        }
+        
         eh.error(new UnknownPropertyException(str));
         return null;
     }

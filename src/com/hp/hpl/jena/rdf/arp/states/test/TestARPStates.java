@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: TestARPStates.java,v 1.5 2008-12-28 19:31:53 andy_seaborne Exp $
+ $Id: TestARPStates.java,v 1.6 2009-02-28 18:09:55 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.states.test;
@@ -26,7 +26,7 @@ public class TestARPStates extends TestCase {
     public static TestSuite suite() {
         TestSuite rslt = new TestSuite();
         rslt.setName("ARP state machine");
-        Map tests = new HashMap();
+        Map<String, TestSuite> tests = new HashMap<String, TestSuite>();
         try {
           LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile));
           while (true) {
@@ -38,7 +38,7 @@ public class TestARPStates extends TestCase {
               String fields[] = line.split("  *");
               if (fields.length==0)
                   continue;
-              TestSuite child = (TestSuite)tests.get(fields[0]);
+              TestSuite child = tests.get(fields[0]);
               if (child==null) {
                   child = new TestSuite();
                   child.setName(TestData.stateLongName(fields[0]));

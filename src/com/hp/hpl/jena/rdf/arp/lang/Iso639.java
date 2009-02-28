@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Iso639.java,v 1.7 2008-12-28 19:32:35 andy_seaborne Exp $
+ * * $Id: Iso639.java,v 1.8 2009-02-28 18:09:56 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -52,7 +52,7 @@ import java.util.Map;
  */
 
 public class Iso639  implements LanguageTagCodes  {
-    static final Map all = new HashMap();
+    static final Map<String, Iso639> all = new HashMap<String, Iso639>();
 
     /** Creates new Iso639 */
     private Iso639(String engName,String two,String term,String bib, int classify) {
@@ -75,7 +75,7 @@ public class Iso639  implements LanguageTagCodes  {
  * or null if not in the list.
  */  
     static public Iso639 find(String lang) {
-        Iso639 rslt = (Iso639)all.get(lang);
+        Iso639 rslt = all.get(lang);
         if ( rslt == null ) {
             if ( lang != null 
                  && lang.compareTo("qaa") >= 0
@@ -114,7 +114,7 @@ public class Iso639  implements LanguageTagCodes  {
     
     static private void put(String key,Iso639 v) {
         if ( key!= null ) {
-            Iso639 old = (Iso639)all.put(key,v);
+            Iso639 old = all.put(key,v);
             if ( old != null && old != v ) {
                 System.err.println("ISO-639 code '" + key + "' is overloaded.");
             }
@@ -301,7 +301,7 @@ public class Iso639  implements LanguageTagCodes  {
         new Iso639("Greek, Modern (1453-)","el","ell","gre");
         new Iso639("Guarani","gn","grn","grn");
         new Iso639("Gujarati","gu","guj","guj");
-        new Iso639("Gwich´in",null,"gwi","gwi");
+        new Iso639("Gwichï¿½in",null,"gwi","gwi");
         new Iso639("Haida",null,"hai","hai");
         new Iso639("Hausa","ha","hau","hau");
         new Iso639("Hawaiian",null,"haw","haw");
@@ -457,7 +457,7 @@ public class Iso639  implements LanguageTagCodes  {
         
         new Iso639("Northern Sami","se","sme","sme");
         new Iso639("Norwegian","no","nor","nor");
-        new Iso639("Norwegian Bokmål","nb","nob","nob");
+        new Iso639("Norwegian Bokmï¿½l","nb","nob","nob");
         new Iso639("Norwegian Nynorsk","nn","nno","nno");
         new Iso639("Nubian languages",null,"nub","nub");
         new Iso639("Nyamwezi",null,"nym","nym");
@@ -471,7 +471,7 @@ public class Iso639  implements LanguageTagCodes  {
         
         
         
-        new Iso639("Occitan (post 1500); Provençal","oc","oci","oci");
+        new Iso639("Occitan (post 1500); Provenï¿½al","oc","oci","oci");
         new Iso639("Ojibwa",null,"oji","oji");
         new Iso639("Oriya","or","ori","ori");
         new Iso639("Oromo","om","orm","orm");
@@ -496,8 +496,8 @@ public class Iso639  implements LanguageTagCodes  {
         new Iso639("Polish","pl","pol","pol");
         new Iso639("Portuguese","pt","por","por");
         new Iso639("Prakrit languages",null,"pra","pra");
-       // new Iso639("Provençal; Occitan (post 1500)","oc","oci","oci");
-        new Iso639("Provençal, Old (to 1500)",null,"pro","pro");
+       // new Iso639("Provenï¿½al; Occitan (post 1500)","oc","oci","oci");
+        new Iso639("Provenï¿½al, Old (to 1500)",null,"pro","pro");
         new Iso639("Pushto","ps","pus","pus");
         
         
@@ -616,7 +616,7 @@ public class Iso639  implements LanguageTagCodes  {
         new Iso639("Vai",null,"vai","vai");
         new Iso639("Venda",null,"ven","ven");
         new Iso639("Vietnamese","vi","vie","vie");
-        new Iso639("Volapük","vo","vol","vol");
+        new Iso639("Volapï¿½k","vo","vol","vol");
         new Iso639("Votic",null,"vot","vot");
         new Iso639("Wakashan languages",null,"wak","wak");
         new Iso639("Walamo",null,"wal","wal");

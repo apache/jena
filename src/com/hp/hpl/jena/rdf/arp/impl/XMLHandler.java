@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.34 2009-01-16 17:23:49 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.35 2009-02-28 18:09:55 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -75,9 +75,11 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     boolean encodingProblems = false;
 
-    protected Map idsUsed = new HashMap();
+    protected Map<IRI, Map<String,Location>> idsUsed = new HashMap<IRI, Map<String,Location>>();
     protected int idsUsedCount = 0;
 
+    public XMLHandler() {}
+    
     public void triple(ANode s, ANode p, ANode o) {
         StatementHandler stmt;
         boolean bad=s.isTainted() || p.isTainted() || o.isTainted();
@@ -150,7 +152,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                     + getSimpleName(frame.getClass()));
     }
 
-    static public String getSimpleName(Class c) {
+    static public String getSimpleName(Class< ? extends FrameI> c) {
         String rslt[] = c.getName().split("\\.");
         return rslt[rslt.length - 1];
     }
@@ -391,14 +393,14 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
        
     }
 
-    private Map nodeIdUserData;
+    private Map<String, Object> nodeIdUserData;
 
     public void initParse(String base, String lang) throws SAXParseException {
-        nodeIdUserData = new HashMap();
+        nodeIdUserData = new HashMap<String, Object>();
         idsUsed = 
         	ignoring(WARN_REDEFINITION_OF_ID)?
         			null:
-        	        new HashMap();
+        	        new HashMap<IRI, Map<String,Location>>();
         idsUsedCount = 0;
         if (options.getEmbedding())
             frame = new LookingForRDF(this, initialContext(base, lang));
@@ -425,9 +427,9 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     void endBnodeScope() {
         if (handlers.getExtendedHandler() != nullScopeHandler) {
-            Iterator it = nodeIdUserData.keySet().iterator();
+            Iterator<String> it = nodeIdUserData.keySet().iterator();
             while (it.hasNext()) {
-                String nodeId = (String) it.next();
+                String nodeId = it.next();
                 ARPResource bn = new ARPResource(this, nodeId);
                 handlers.getExtendedHandler().endBNodeScope(bn);
             }
@@ -438,38 +440,13 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return new Location(locator);
     }
 
-    private IRIFactory factory = IRIFactory.jenaImplementation();
+    private IRIFactory factory = null ;
 
     IRIFactory iriFactory() {
         if (factory == null) {
-            
-            // TODO locator stuff
-//            factory = new IRIFactory();
-//            factory.useSpecificationRDF(false);
-            /*
-            if (locator != null)
-                factory = new IRIFactory(locator);
-            else
-                factory = new IRIFactory(new Locator() {
-
-                    public int getColumnNumber() {
-                        return locator == null ? -1 : locator.getColumnNumber();
-                    }
-
-                    public int getLineNumber() {
-                        return locator == null ? -1 : locator.getLineNumber();
-                    }
-
-                    public String getPublicId() {
-                        return locator == null ? null : locator.getPublicId();
-                    }
-
-                    public String getSystemId() {
-                        return locator == null ? null : locator.getSystemId();
-                    }
-
-                });
-              */
+            factory = options.getIRIFactory() ;
+            if ( factory == null )
+                factory = ARPOptions.getIRIFactoryGlobal() ;
         }
         return factory;
     }

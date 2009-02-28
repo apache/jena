@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NullListener.java,v 1.10 2008-12-28 19:32:27 andy_seaborne Exp $
+  $Id: NullListener.java,v 1.11 2009-02-28 18:09:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -20,12 +20,12 @@ public class NullListener implements ModelChangedListener
     {
     public void addedStatement( Statement s ) {}
     public void addedStatements( Statement [] statements ) {}
-    public void addedStatements( List statements ) {}
+    public void addedStatements( List<Statement> statements ) {}
     public void addedStatements( StmtIterator statements ) {}
     public void addedStatements( Model m ) {}
     public void removedStatement( Statement s ) {}   
     public void removedStatements( Statement [] statements ) {}
-    public void removedStatements( List statements ) {}
+    public void removedStatements( List<Statement> statements ) {}
     public void removedStatements( StmtIterator statements ) {}
     public void removedStatements( Model m ) {}            
     public void notifyEvent( Model m, Object event ) {}

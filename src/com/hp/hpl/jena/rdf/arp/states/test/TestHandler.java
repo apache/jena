@@ -7,12 +7,16 @@ package com.hp.hpl.jena.rdf.arp.states.test;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
+import com.hp.hpl.jena.rdf.arp.impl.Location;
 import com.hp.hpl.jena.rdf.arp.impl.Taint;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+
+import com.hp.hpl.jena.iri.IRI;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
@@ -46,7 +50,7 @@ class TestHandler extends XMLHandler {
         triples = 0;
         scope = 0;
         this.failOnWarning = failOnWarning_;
-        idsUsed = new HashMap();
+        idsUsed = new HashMap<IRI, Map<String,Location>>();
         idsUsedCount = 0;
     }
 

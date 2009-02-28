@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.38 2009-01-16 17:23:52 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.39 2009-02-28 18:09:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -193,11 +193,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
     TestInputStreamFactory factory;
     
-    static private Collection misc =
+    static private Collection<String> misc =
         Arrays.asList(
             new String[] { "http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-uri-substructure/error001" });
             
-    private Map behaviours = new HashMap();
+    private Map<ResourceImpl, Act> behaviours = new HashMap<ResourceImpl, Act>();
     
     {
         behaviours
@@ -311,7 +311,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 
                 while (si.hasNext()) {
                     Statement st = si.nextStatement();
-                    Act action = (Act) behaviours.get(st.getObject());
+                    Act action = behaviours.get(st.getObject());
                     if (action == null) {
                         System.err.println(
                             "Unknown test class: "
@@ -350,14 +350,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             true);
     }
 
-    private Map parts = new HashMap();
+    private Map<String, TestSuite> parts = new HashMap<String, TestSuite>();
     
     private void addTest(Resource key, TestCase test)  {
         String keyName =
             key.hasProperty(status)
                 ? key.getRequiredProperty(status).getString()
                 : "no status";
-        TestSuite sub = (TestSuite) parts.get(keyName);
+        TestSuite sub = parts.get(keyName);
         if (sub == null) {
             if ( keyName.equals("OBSOLETED"))
               return;
@@ -552,7 +552,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void initExpected()  {
-            expected = new HashSet();
+            expected = new HashSet<Integer>();
         }
     }
     
@@ -579,15 +579,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
     class NegativeTest extends Test {
         Model m1;
-        Set expected;
+        Set<Integer> expected;
         int expectedLevel = 1;
-        private Set found = new HashSet();
+        private Set<Integer> found = new HashSet<Integer>();
         private int errorCnt[] = new int[] { 0, 0, 0 };
         String createExpected() {
             String rslt = "new int[]{";
             if ( expected == null)
                return "null";
-            Iterator it = expected.iterator();
+            Iterator<Integer> it = expected.iterator();
             while (it.hasNext())
                 rslt += it.next() + ", ";
             return rslt + "}";
@@ -618,7 +618,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         void initExpectedFromModel()  {
             StmtIterator si = testID.listProperties(errorCodes);
             if (si.hasNext()) {
-                expected = new HashSet();
+                expected = new HashSet<Integer>();
                 while (si.hasNext()) {
                     String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
@@ -649,13 +649,13 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(ioe.getMessage());
             }
             if (expected != null && !expected.equals(found)) {
-                Set dup = new HashSet();
+                Set<Integer> dup = new HashSet<Integer>();
                 dup.addAll(found);
                 dup.removeAll(expected);
                 expected.removeAll(found);
-                Iterator it = expected.iterator();
+                Iterator<Integer> it = expected.iterator();
                 while (it.hasNext()) {
-                    int eCode = ((Integer) it.next()).intValue();
+                    int eCode = it.next().intValue();
                     String msg =
                         "Expected error  "
                             + ParseException.errorCodeName(eCode)
@@ -682,7 +682,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     fail(
                         "Detected error  "
                             + ParseException.errorCodeName(
-                                ((Integer) it.next()).intValue())
+                                it.next().intValue())
                             + ", was not expected.");
             }
             for (int j = 2; j >= 0; j--)
@@ -850,7 +850,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
         }
         void initExpected()  {
-            expected = new HashSet();
+            expected = new HashSet<Integer>();
         }
     }
     
@@ -869,11 +869,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
     class NegativeTest2 extends Test2 {
         Model m1;
-        Set expected;
+        Set<Integer> expected;
         int expectedLevel = 1;
         String in;
         boolean intype;
-        private Set found = new HashSet();
+        private Set<Integer> found = new HashSet<Integer>();
         private int errorCnt[] = new int[] { 0, 0, 0 };
         NegativeTest2(String uri, String in, boolean intype, int errs[]) {
             super(uri);
@@ -903,7 +903,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if ( errs == null )
                return;
             if (errs.length != 0)
-                expected = new HashSet();
+                expected = new HashSet<Integer>();
             for (int i = 0; i < errs.length; i++) {
 
                 expected.add(new Integer(errs[i]));
@@ -930,24 +930,24 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             } catch (IOException ioe) {
                 fail(ioe.getMessage());
             }
-            // TODO: not for 2.3. Tidy up this code a bit, I don't understand it.
-            HashSet ex2 = expected==null?null:new HashSet(expected);
+            // Tidy up this code a bit, I don't understand it.
+            HashSet<Integer> ex2 = expected==null?null:new HashSet<Integer>(expected);
             if (expected==null)
             for (int j = 2; j >= 0; j--)
                 if (j != expectedLevel)  {
                     if (errorCnt[j] != 0)
-                        ex2 = new HashSet();
+                        ex2 = new HashSet<Integer>();
                 }
             if (ex2 != null && !ex2.equals(found)) {
-                Set dup = new HashSet();
+                Set<Integer> dup = new HashSet<Integer>();
                 dup.addAll(found);
                 dup.removeAll(ex2);
                 ex2.removeAll(found);
                 if (expected != null)
                     expected.removeAll(found);
-                Iterator it = ex2.iterator();
+                Iterator<Integer> it = ex2.iterator();
                 while (it.hasNext()) {
-                    int eCode = ((Integer) it.next()).intValue();
+                    int eCode = it.next().intValue();
                     String msg =
                         "Expected error  "
                             + ParseException.errorCodeName(eCode)
@@ -964,7 +964,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     fail(
                         "Detected error  "
                             + ParseException.errorCodeName(
-                                ((Integer) it.next()).intValue())
+                                it.next().intValue())
                             + ", was not expected.");
             }
             for (int j = 2; j >= 0; j--)

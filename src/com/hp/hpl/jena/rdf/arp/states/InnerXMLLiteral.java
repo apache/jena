@@ -10,7 +10,7 @@ import java.util.Map;
 public class InnerXMLLiteral extends AbsXMLLiteral {
 
     final String qname;
-    public InnerXMLLiteral(AbsXMLLiteral f, String rawName, Map ns) {
+    public InnerXMLLiteral(AbsXMLLiteral f, String rawName, Map<String, String> ns) {
         super(f,ns);
         qname = rawName;
     }

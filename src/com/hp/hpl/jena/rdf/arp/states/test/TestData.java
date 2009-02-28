@@ -8,39 +8,14 @@ package com.hp.hpl.jena.rdf.arp.states.test;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.Names;
-import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLBaselessContext;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
-import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
-import com.hp.hpl.jena.rdf.arp.states.DAMLCollection;
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
-import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
-import com.hp.hpl.jena.rdf.arp.states.InnerXMLLiteral;
-import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
-import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
-import com.hp.hpl.jena.rdf.arp.states.RDFCollection;
-import com.hp.hpl.jena.rdf.arp.states.WantEmpty;
-import com.hp.hpl.jena.rdf.arp.states.WantLiteralValueOrDescription;
-import com.hp.hpl.jena.rdf.arp.states.WantPropertyElement;
-import com.hp.hpl.jena.rdf.arp.states.WantTopLevelDescription;
-import com.hp.hpl.jena.rdf.arp.states.WantTypedLiteral;
-import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
+import com.hp.hpl.jena.rdf.arp.impl.*;
+import com.hp.hpl.jena.rdf.arp.states.*;
 
 /**
  * For each state s, for each element-attribute event e1, - test s, e1 - if s,
@@ -139,7 +114,7 @@ public class TestData implements ARPErrorNumbers{
                 }
             }, };
 
-    static Map short2Event = new HashMap();
+    static Map<String, Event> short2Event = new HashMap<String, Event>();
     static {
         for (int i=0;i<allEvents.length;i++) {
             String key = allEvents[i].oneChar;
@@ -148,15 +123,15 @@ public class TestData implements ARPErrorNumbers{
             short2Event.put(key,allEvents[i]);
         }
     }
-    static Map state2Name = new HashMap();
+    static Map<Class< ? extends FrameI>, String> state2Name = new HashMap<Class< ? extends FrameI>, String>();
 
-    static Map state2ShortName = new HashMap();
+    static Map<Class<? extends FrameI>, String> state2ShortName = new HashMap<Class<? extends FrameI>, String>();
 
-    static Map shortName2State = new HashMap();
+    static Map<String, Class<? extends FrameI>> shortName2State = new HashMap<String, Class<? extends FrameI>>();
 
-    static Map state2Args = new HashMap();
+    static Map<Class<? extends FrameI>, Object[]> state2Args = new HashMap<Class<? extends FrameI>, Object[]>();
 
-    static void add(String sh, String nm, Class f, Object args[]) {
+    static void add(String sh, String nm, Class< ? extends FrameI> f, Object args[]) {
         state2Name.put(f, nm);
         sh = getSimpleName(f);
         if (shortName2State.get(sh) != null) {
@@ -167,7 +142,7 @@ public class TestData implements ARPErrorNumbers{
         state2ShortName.put(f, sh);
     }
 
-    private static String getSimpleName(Class f) {
+    private static String getSimpleName(Class<? extends FrameI> f) {
         return XMLHandler.getSimpleName(f);
     }
 
@@ -229,7 +204,7 @@ public class TestData implements ARPErrorNumbers{
     };
 
     boolean inCharacterize = false;
-    void characterize(Class f){
+    void characterize(Class< ? extends FrameI> f){
         inCharacterize = true;
         int sz = eventList.size;
         StringBuffer rslt = new StringBuffer();
@@ -258,7 +233,7 @@ public class TestData implements ARPErrorNumbers{
         inCharacterize = false;
     }
 
-    private String eventListName(Class f, Class f2) {
+    private String eventListName(Class< ? extends FrameI> f, Class< ? extends FrameI> f2) {
         StringBuffer rslt = new StringBuffer();
         rslt.append(stateName(f, f2));
         for (int i=0;i<eventList.size;i++) {
@@ -268,32 +243,32 @@ public class TestData implements ARPErrorNumbers{
         return rslt.toString();
     }
 
-    private String stateName(Class f, Class f2) {
-        return f==f2?"*":(String)state2ShortName.get(f);
+    private String stateName(Class< ? extends FrameI> f, Class< ? extends FrameI> f2) {
+        return f==f2?"*":state2ShortName.get(f);
     }
 
     private void addEvents(String string) {
         String all[] = string.split(" ");
         for (int i=0;i<all.length;i++){
-           eventList.add((Event)short2Event.get(all[i]));   
+           eventList.add(short2Event.get(all[i]));   
         }
     }
 
-    private String testInfo(Class f) {
+    private String testInfo(Class< ? extends FrameI> f) {
         return 
         eventList.testFailure ? (eventList.testException ? "!" : "?") :
            (stateName(eventList.testResult.getClass(),f) + " " + 
                 xmlHandler.info() + " " + testFrame.info());
     }
 
-    static Class tryClasses[] = { FrameI.class, AbsXMLLiteral.class,
+    static Class<?> tryClasses[] = { FrameI.class, AbsXMLLiteral.class,
             HasSubjectFrameI.class, WantsObjectFrameI.class };
 
   
-   static FrameI create(Class cl) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    static FrameI create(Class<? extends FrameI> cl) throws InstantiationException, IllegalAccessException, InvocationTargetException {
        FrameI frame = null; 
-       Object args[] = (Object[]) state2Args.get(cl);
-        Class types[] = new Class[args.length];
+       Object args[] = state2Args.get(cl);
+        Class<?> types[] = new Class<?>[args.length];
         for (int i = 1; i < args.length; i++) {
             types[i] = args[i].getClass();
             if (types[i]==XMLContext.class)
@@ -305,7 +280,7 @@ public class TestData implements ARPErrorNumbers{
             types[0] = tryClasses[j];
 
             try {
-                frame = (FrameI) cl.getConstructor(types).newInstance(args);
+                frame = cl.getConstructor(types).newInstance(args);
                 break;
             } catch (NoSuchMethodException e) {
                 continue;
@@ -314,7 +289,7 @@ public class TestData implements ARPErrorNumbers{
         return frame;
     }
     
-    void expand(Class f) {
+    void expand(Class< ? extends FrameI> f) {
         if (AbsXMLLiteral.class.isAssignableFrom(f))
             return;
         if (randomPurgeXMLAttrs())
@@ -366,7 +341,7 @@ public class TestData implements ARPErrorNumbers{
         return false;
     }
 
-    private boolean shorterTestFails(Class f) {
+    private boolean shorterTestFails(Class< ? extends FrameI> f) {
         if (eventList.size <= 2)
             return false;
           for (int i=1;i<eventList.size-1;i++){
@@ -378,15 +353,15 @@ public class TestData implements ARPErrorNumbers{
           return false;
     }
 
-    Set data = new TreeSet(new Comparator(){
-        public int compare(Object arg1, Object arg2) {
-            StringBuffer b1 = new StringBuffer((String)arg1).reverse();
-            StringBuffer b2 = new StringBuffer((String)arg2).reverse();
+    Set<String> data = new TreeSet<String>(new Comparator<String>(){
+        public int compare(String arg1, String arg2) {
+            StringBuffer b1 = new StringBuffer(arg1).reverse();
+            StringBuffer b2 = new StringBuffer(arg2).reverse();
             return b1.toString().compareTo(b2.toString());
         }}
             );
 
-    void stats(Class f) {
+    void stats(Class< ? extends FrameI> f) {
         if (false)
         System.out.println(state2ShortName.get(f) + ":" + state2Name.get(f)
                 + ":" + getSimpleName(f) + "  " + localCount + "/"
@@ -395,9 +370,9 @@ public class TestData implements ARPErrorNumbers{
     }
 
     void test1() throws IOException {
-        Iterator it = state2Name.keySet().iterator();
+        Iterator<Class< ? extends FrameI>> it = state2Name.keySet().iterator();
         while (it.hasNext()) {
-            Class f = (Class) it.next();
+            Class< ? extends FrameI> f = it.next();
 //            System.out.println(state2ShortName.get(f) + ":" + state2Name.get(f)
 //                    + ":" + f.getSimpleName());
             localCount = 0;
@@ -411,9 +386,9 @@ public class TestData implements ARPErrorNumbers{
             stats(f);
         }
         FileWriter fw = new FileWriter(dataFile);
-        it = data.iterator();
+        Iterator<String> it2 = data.iterator();
         while (it.hasNext()) {
-            fw.write((String)it.next());
+            fw.write(it2.next());
             fw.write('\n');
         }
         fw.close();
@@ -426,11 +401,11 @@ public class TestData implements ARPErrorNumbers{
     }
 
     public static String stateLongName(String sh) {
-        return (String)state2Name.get(shortName2State.get(sh));
+        return state2Name.get(shortName2State.get(sh));
     }
 
-    public static Class toState(String sh) {
-        return (Class)shortName2State.get(sh);
+    public static Class< ? extends FrameI> toState(String sh) {
+        return shortName2State.get(sh);
     }
 
 }

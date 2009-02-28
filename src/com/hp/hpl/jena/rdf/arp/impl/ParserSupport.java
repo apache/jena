@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.17 2008-12-28 19:32:24 andy_seaborne Exp $
+ * * $Id: ParserSupport.java,v 1.18 2009-02-28 18:09:55 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -62,7 +62,7 @@ public class ParserSupport
 		this.arp = arp;
         this.xml= xml;
 	}
-    Map idsUsed() {
+    Map<IRI, Map<String,Location>> idsUsed() {
         return arp.idsUsed;
     }
     protected final XMLHandler arp;
@@ -74,12 +74,12 @@ public class ParserSupport
 		throws SAXParseException {
 		if (arp.idsUsed != null) {
 			IRI uri = ctxt.uri;
-            Map idsUsedForBase = (Map) idsUsed().get(uri);
+            Map<String,Location> idsUsedForBase = idsUsed().get(uri);
 			if (idsUsedForBase == null) {
-				idsUsedForBase = new HashMap();
+				idsUsedForBase = new HashMap<String, Location>();
 				idsUsed().put(uri, idsUsedForBase);
 			}
-			Location prev = (Location) idsUsedForBase.get(str);
+			Location prev = idsUsedForBase.get(str);
 			if (prev != null) {
 				arp.warning(taintMe,
 					WARN_REDEFINITION_OF_ID,

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: LanguageTag.java,v 1.8 2008-12-28 19:32:35 andy_seaborne Exp $
+ * * $Id: LanguageTag.java,v 1.9 2009-02-28 18:09:56 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -51,7 +51,7 @@ public class LanguageTag implements LanguageTagCodes {
  */
     public LanguageTag(String tag) throws LanguageTagSyntaxException {
        String lc = tag.toLowerCase();
-       Vector v = new Vector();
+       Vector<String> v = new Vector<String>();
        int subT;
        while (true) {
            subT = lc.indexOf('-');
