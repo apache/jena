@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.48 2009-01-16 17:23:52 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.49 2009-02-28 20:10:34 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -27,13 +27,9 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.ARP;
-import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.ParseException;
-import com.hp.hpl.jena.rdf.arp.StatementHandler;
+import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
@@ -51,7 +47,6 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Plus");
 
-		
 		suite.addTest(TestErrorMsg.suite());
 
         suite.addTest(TestPropEltErrorMsg.suite());
@@ -60,25 +55,27 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         
         suite.addTest(new MoreDOM2RDFTest("testDOMwithARP"));
 	
-		suite.addTest(new MoreTests("testIcu"));
-		suite.addTest(new MoreTests("testLatin1"));
-		suite.addTest(new MoreTests("testIcu2"));
-		suite.addTest(new MoreTests("testEncodingMismatch1"));
-		suite.addTest(new MoreTests("testEncodingMismatch2"));
-		suite.addTest(new MoreTests("testEncodingMismatch3"));
-		suite.addTest(new MoreTests("testNullBaseParamOK"));
-		suite.addTest(new MoreTests("testNullBaseParamError"));
-		suite.addTest(new MoreTests("testEmptyBaseParamOK"));
-		suite.addTest(new MoreTests("testEmptyBaseParamError"));
-        suite.addTest(new MoreTests("testBadBaseParamOK"));
-        suite.addTest(new MoreTests("testBadBaseParamError"));
-        suite.addTest(new MoreTests("testRelativeBaseParamOK"));
-        suite.addTest(new MoreTests("testRelativeBaseParamError"));
-        suite.addTest(new MoreTests("testBaseTruncation"));
-		suite.addTest(new MoreTests("testWineDefaultNS"));
-		suite.addTest(new MoreTests("testInterrupt"));
-        suite.addTest(new MoreTests("testDanBriXMLBase"));
-		suite.addTest(new MoreTests("testToString"));
+        // Better add tests automatcally:
+        suite.addTestSuite(MoreTests.class) ;
+//		suite.addTest(new MoreTests("testIcu"));
+//		suite.addTest(new MoreTests("testLatin1"));
+//		suite.addTest(new MoreTests("testIcu2"));
+//		suite.addTest(new MoreTests("testEncodingMismatch1"));
+//		suite.addTest(new MoreTests("testEncodingMismatch2"));
+//		suite.addTest(new MoreTests("testEncodingMismatch3"));
+//		suite.addTest(new MoreTests("testNullBaseParamOK"));
+//		suite.addTest(new MoreTests("testNullBaseParamError"));
+//		suite.addTest(new MoreTests("testEmptyBaseParamOK"));
+//		suite.addTest(new MoreTests("testEmptyBaseParamError"));
+//      suite.addTest(new MoreTests("testBadBaseParamOK"));
+//      suite.addTest(new MoreTests("testBadBaseParamError"));
+//      suite.addTest(new MoreTests("testRelativeBaseParamOK"));
+//      suite.addTest(new MoreTests("testRelativeBaseParamError"));
+//      suite.addTest(new MoreTests("testBaseTruncation"));
+//		suite.addTest(new MoreTests("testWineDefaultNS"));
+//		suite.addTest(new MoreTests("testInterrupt"));
+//      suite.addTest(new MoreTests("testDanBriXMLBase"));
+//		suite.addTest(new MoreTests("testToString"));
 		
 //for (int i=0; i< 20; i++ ) {
 		//suite.addTest(new MoreTests("testTokenGarbage1"));
@@ -506,6 +503,67 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	}
 
+	static String RDF_TEXT = "<?xml version=\"1.0\" ?>\n" +
+    "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n" +
+    " <rdf:Description>\n" +
+    "  <rdf:value rdf:resource=\"http://example/some random text\"/>\n" +
+    "  <rdf:value rdf:resource=\"relative random text\"/>\n" +
+    " </rdf:Description>\n" +
+    "</rdf:RDF>\n";
+	
+	public void testIRIRules_1()
+	{
+        Model model = ModelFactory.createDefaultModel() ;
+        model.read(new StringReader(RDF_TEXT), "http://example/") ;
+	}
+	
+	public void testIRIRules_2()
+	{
+        Model model = ModelFactory.createDefaultModel() ;
+	    IRIFactory f = ARPOptions.getIRIFactoryGlobal() ;
+	    try {
+	        ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation()) ;
+	        RDFReader r =  model.getReader("RDF/XML") ;
+            expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
+	        r.setErrorHandler(this);
+	        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
+	    } finally { ARPOptions.setIRIFactoryGlobal(f) ; }
+        checkExpected() ;
+	}	        
+
+    public void testIRIRules_2a()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader r =  model.getReader("RDF/XML") ;
+        r.setErrorHandler(this);
+        expected = new int[] { };
+        model.read(new StringReader(RDF_TEXT), "http://example/") ;
+        checkExpected() ;
+    }           
+	
+    public void testIRIRules_3()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader r =  model.getReader("RDF/XML") ;
+        r.setErrorHandler(this);
+        expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
+        r.setProperty("iri-rules", "strict") ;
+        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
+        checkExpected() ;
+    }           
+
+    public void testIRIRules_4()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader r =  model.getReader("RDF/XML") ;
+        r.setProperty("iri-rules", "strict") ;
+        r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR) ;
+        r.setErrorHandler(this);
+        expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };   // Errors actually continue.
+        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
+        checkExpected() ;
+    }
+	
 	private void checkExpected() {
 		for (int i = 0; i < expected.length; i++)
 			if (expected[i] != 0) {
