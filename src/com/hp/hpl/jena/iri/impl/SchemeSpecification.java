@@ -6,6 +6,7 @@
 package com.hp.hpl.jena.iri.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.hp.hpl.jena.iri.IRIComponents;
 import com.hp.hpl.jena.iri.ViolationCodes;
@@ -25,23 +26,27 @@ IRIComponents {
     }
 
 
+    @Override
 	public boolean applies(String scheme) {
 		return name().equalsIgnoreCase(scheme);
 	}
 	
-    private ArrayList dUris = new ArrayList();
-    private ArrayList dDefnText = new ArrayList();
-    private ArrayList dDefnHtml = new ArrayList();
+    private List<String> dUris = new ArrayList<String>();
+    private List<String> dDefnText = new ArrayList<String>();
+    private List<String> dDefnHtml = new ArrayList<String>();
+    @Override
     public void addDefinition(String uri, String defn, String defnHtml) {
         dUris.add(uri);
         dDefnText.add(defn);
         dDefnHtml.add(defnHtml);
     }
 
+    @Override
     public void setDNS(boolean b) {
         usesDNS = b;
     }
 
+    @Override
     public void port(int i) {
         port = i;
     }
@@ -49,6 +54,7 @@ IRIComponents {
 
     private ComponentPattern pattern[] = new ComponentPattern[Parser.fields.length];
     
+    @Override
     public void setPattern(int component, String string) {
          ComponentPattern p = new ComponentPattern(string);
 //        if (component==PATHQUERY) {
@@ -66,6 +72,7 @@ IRIComponents {
      * the percent-escaped form, and the normal form are
      * equivalent.
      */
+    @Override
     public void setReserved(int component, String subDelims) {
         if (component==PATHQUERY) {
             setReserved(PATH,subDelims);

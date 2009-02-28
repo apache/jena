@@ -67,7 +67,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * @return The {@link Violation}s found which violate the
      *         factory's standards.
      */
-    abstract public Iterator violations(boolean includeWarnings);
+    abstract public Iterator<Violation> violations(boolean includeWarnings);
     
     
     /**
@@ -378,6 +378,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * such as error messages.
      * @return The IRI string
      */
+    @Override
     abstract public String toString();
     /**
      * The IRI string with any recommended bi-directional control

@@ -33,7 +33,7 @@ import com.hp.hpl.jena.iri.impl.PatternCompiler;
 public class TestMoreExamples extends TestCase implements
         ViolationCodes {
     static class TestReader extends DefaultHandler {
-        private Stack stack = new Stack();
+        private Stack<Test> stack = new Stack<Test>();
 
         TestReader(TestSuite s) {
             stack.push(s);
@@ -43,6 +43,7 @@ public class TestMoreExamples extends TestCase implements
             stack.push(t);
         }
 
+        @Override
         public void startElement(String arg1, String arg2, String name,
                 Attributes att) {
             if (name.equals("IRI"))
@@ -61,11 +62,13 @@ public class TestMoreExamples extends TestCase implements
             ((TestMoreExamples) stack.peek()).add(name, att);
         }
 
+        @Override
         public void characters(char ch[], int st, int lg) {
             String text = new String(ch,st,lg).trim();
             if (text.length()>0)
                 ((TestMoreExamples) stack.peek()).add(text);
         }
+        @Override
         public void endElement(String arg1, String arg2, String name) {
             if (name.equals("Resolve")) {
                 TestSuite t = (TestSuite) stack.pop();
@@ -81,15 +84,15 @@ public class TestMoreExamples extends TestCase implements
 
     }
 
-    static Map attr2map(Attributes a) {
-        Map rslt = new HashMap();
+    static Map<String, String> attr2map(Attributes a) {
+        Map<String, String> rslt = new HashMap<String, String>();
         for (int i = a.getLength()-1;i>=0;i--)
             rslt.put(a.getQName(i),a.getValue(i));
         return rslt;
     }
-    Map att;
+    Map<String, String> att;
     TestSuite parent;
-    private Map methods = new HashMap();
+    private Map<String, Map<String, String>> methods = new HashMap<String, Map<String, String>>();
     private long violations = 0l;
     private IRI iri;
 
@@ -153,11 +156,13 @@ public class TestMoreExamples extends TestCase implements
     
 //    static int cnt = 0;
     
+    @Override
     public void setUp() throws Exception {
 //        System.err.println("setUp"+cnt);
         super.setUp();
     }
 
+    @Override
     public void tearDown() throws Exception {
 //        System.err.println("tearDown"+cnt++);
         super.tearDown();
@@ -172,13 +177,14 @@ public class TestMoreExamples extends TestCase implements
 
     private long getViolations() {
     	long result = 0l;
-    	Iterator it = ((AbsIRIImpl)iri).allViolations();
+    	Iterator<Violation> it = ((AbsIRIImpl)iri).allViolations();
         while (it.hasNext()) {
-           result |= (1l<<((Violation)it.next()).getViolationCode());
+           result |= (1l<<(it.next()).getViolationCode());
                   
         }
         return result;
     }
+    @Override
     public void runTest() {
 //        System.err.println("runTest"+cnt + " " + getName());
        iri = getIRI();
@@ -186,11 +192,11 @@ public class TestMoreExamples extends TestCase implements
        
        assertEquals("violations",violations,getViolations());
        
-       Iterator it = methods.entrySet().iterator();
+       Iterator<Map.Entry<String, Map<String,String>>> it = methods.entrySet().iterator();
        while (it.hasNext()) {
-           Map.Entry ent = (Map.Entry)it.next();
-           String m = (String)ent.getKey();
-           Map attrs = (Map)ent.getValue();
+           Map.Entry<String, Map<String,String>> ent = it.next();
+           String m = ent.getKey();
+           Map<String,String> attrs = ent.getValue();
            try {
                Object r = IRI.class.getDeclaredMethod(m,TestCreator.nullSign)
                 .invoke(iri,new Object[]{});

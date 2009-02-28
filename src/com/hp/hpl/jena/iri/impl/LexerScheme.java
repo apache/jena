@@ -219,6 +219,7 @@ class LexerScheme extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes
     
     
     
+    @Override
     char[] zzBuffer() {
      yyreset(null);
     this.zzAtEOF = true;
@@ -371,7 +372,8 @@ class LexerScheme extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes
   /**
    * Returns the text matched by the current regular expression.
    */
-  public final String yytext() {
+  @Override
+public final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
   }
 
@@ -450,6 +452,8 @@ class LexerScheme extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
+  @SuppressWarnings("fallthrough")
+@Override
   public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

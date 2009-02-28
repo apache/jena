@@ -9,7 +9,6 @@ package com.hp.hpl.jena.iri.impl;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactoryI;
-import com.hp.hpl.jena.iri.Violation;
 
 abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
 
@@ -29,11 +28,12 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
                 );
     }
     
-
+    @Override
     public IRI construct(String s) throws IRIException {
       return throwAnyErrors(create(s));
     }
 
+    @Override
     public IRI construct(IRI i) throws IRIException {
         return throwAnyErrors(create(i));
         
@@ -46,7 +46,7 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
     }
     protected IRI throwAnyErrors(IRI rslt) throws IRIException {
         if (rslt.hasViolation(false)) {
-            throw new IRIImplException((Violation)rslt.violations(false).next());
+            throw new IRIImplException(rslt.violations(false).next());
 //            Iterator it = rslt.exceptions();
 //            while (it.hasNext()){
 //                Violation v = (Violation)it.next();

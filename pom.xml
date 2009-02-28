@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- POM file for Jena IRI library -->
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>iri</artifactId>
+  <packaging>jar</packaging>
+  <name>Jena IRI</name>
+  <version>0.6-SNAPSHOT</version>
+  <description/>
+  <url>http://jena.sf.net/iri</url>
+
+  <organization>
+    <name>Hewlett-Packard</name>
+    <url>http://www.hp.com/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>BSD-style license</name>
+      <url>http://jena.sourceforge.net/iri/license.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>http://jena.cvs.sourceforge.net/jena/iri</url>
+    <!--<connection>scm:cvs:pserver:anonymous@jena.cvs.sourceforge.net:/cvsroot/jena/iri</connection>-->
+  </scm>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.4.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>src-test</testSourceDirectory>
+
+    <resources>
+     <resource>
+       <directory>resources</directory>
+     </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+	  <source>1.6</source>
+	  <target>1.6</target>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-source-plugin</artifactId>
+	<executions> 
+	  <execution>
+	    <id>attach-sources</id>
+	    <phase>verify</phase>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<configuration>
+	  <includes>
+	    <include>com/hp/hpl/jena/iri/test/TestPackage.java</include>
+	  </includes>
+	</configuration>
+      </plugin>
+
+      <!-- No javadoc shipped?
+	   <plugin>
+	   <groupId>org.apache.maven.plugins</groupId>
+	   <artifactId>maven-javadoc-plugin</artifactId>
+	   <executions>
+	   <execution>
+	   <id>attach-javadocs</id>
+	   <goals>
+	   <goal>jar</goal>
+	   </goals>
+	   </execution>
+	   </executions>
+	   </plugin>
+      -->
+
+      <plugin>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<version>2.2-beta-3</version>
+
+	<configuration>
+	  <descriptors>
+	    <descriptor>assembly.xml</descriptor>
+	  </descriptors>
+	</configuration>
+
+	<!--
+	  <executions>
+	    <execution>
+	      <id>create-executable-jar</id>
+	      <phase>package</phase>
+	      <goals>
+		<goal>single</goal>
+	      </goals>
+	      <configuration>
+
+
+		<descriptorRefs>
+		  <descriptorRef>
+		    jar-with-dependencies
+		  </descriptorRef>
+		</descriptorRefs>
+	      </configuration>
+	    </execution>
+	</executions>
+	-->
+      </plugin>
+
+    </plugins>
+
+  </build>
+  
+  <distributionManagement>
+    <repository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
+      <layout>default</layout>
+    </repository>
+  </distributionManagement>
+
+</project>

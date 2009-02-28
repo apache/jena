@@ -64,36 +64,44 @@ implements IRIComponents {
 //        }
     }
 
+    @Override
     protected IRIFactoryImpl getFactory() {
         return factory;
     }
 
-    long errors(int i) {
+    @Override
+   long errors(int i) {
         return parser.errors(i);
     }
 
+    @Override
     boolean has(int component) {
         return parser.has(component);
     }
 
+    @Override
     String get(int comp) {
        return parser.get(comp);
     }
 
+    @Override
     String pathRemoveDots() {
         if (dotsOK())
           return path;
         return removeDotSegments(path);
     }
 
+    @Override
     boolean dotsOK() {
         return (errors(PATH)&(1l<<NON_INITIAL_DOT_SEGMENT))==0;
     }
     
+    @Override
     public String toString() {
         return original;
     }
 
+    @Override
     SchemeSpecificPart getSchemeSpec() {
         return scheme;
     }

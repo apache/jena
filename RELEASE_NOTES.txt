@@ -1,6 +1,9 @@
 
 Release Notes:
 
+iri-0.6:
+Convert to Java6
+
 iri-0.4: 
   fixed mailto scheme rules
   set file: to allow sameSchemeRelativeRefs in jenaImplementation

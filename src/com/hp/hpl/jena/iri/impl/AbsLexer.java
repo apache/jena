@@ -101,6 +101,7 @@ abstract class AbsLexer implements ViolationCodes {
     }
 
 
+    @SuppressWarnings("deprecation")
     private void difficultCodePoint(int codePoint, String txt) {
         /* Legal XML
         #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
@@ -277,7 +278,7 @@ abstract class AbsLexer implements ViolationCodes {
 	static void runJFlex(String[] strings) {
 		Method main = null;
 		try {
-			Class jflex = Class.forName("JFlex.Main");
+			Class<?> jflex = Class.forName("JFlex.Main");
 			main = jflex.getMethod("main", new Class[]{
 					strings.getClass()});
 		} catch (Exception e) {

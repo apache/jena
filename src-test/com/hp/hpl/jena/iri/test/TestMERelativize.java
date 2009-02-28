@@ -3,20 +3,37 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.iri.impl;
+package com.hp.hpl.jena.iri.test;
 
-import java.util.regex.Matcher;
+import junit.framework.TestSuite;
 
-public class ErrorAction extends GroupAction {
-    final private int eCode;
-    ErrorAction(int code){
-        this.eCode = code;
+import org.xml.sax.Attributes;
+
+import com.hp.hpl.jena.iri.IRI;
+
+public class TestMERelativize extends TestMoreExamples {
+    static int count;
+    public TestMERelativize(Attributes att, TestSuite suite) {
+        super("relativize"+ (++count),att,suite);
     }
+
     @Override
-    public void check(Matcher m, Parser parser, int range) {
-        parser.recordError(range,eCode);
+    IRI computeIRI() {
+        IRI base = ((TestMoreExamples)parent.testAt(0)).getIRI();
+        IRI rel = ((TestMoreExamples)parent.testAt(2)).getIRI();
+        return base.relativize(rel, TestCreator.RelativizeFlags);
     }
-
+    
+    @Override
+    public void runTest() {
+    	if (!"true".equals(att.get("same"))) {
+    		super.runTest();
+    	} else {
+    		assertEquals(computeIRI(),
+    				((TestMoreExamples)parent.testAt(1)).getIRI());
+    	}
+    	
+    }
 }
 
 

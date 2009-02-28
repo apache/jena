@@ -231,16 +231,19 @@ class LexerUserinfo extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCod
   /* user code: */
     
     
-    private int lastChar;
-    char[] zzBuffer() {
-     yyreset(null);
-    this.zzAtEOF = true;
-    int length = parser.end(range)-parser.start(range);
-    lastChar = length - 1;
-    zzEndRead = length;
-    while (length > zzBuffer.length)
-        zzBuffer = new char[zzBuffer.length*2];
-      return zzBuffer;
+    private int            lastChar ;
+
+    @Override
+    char[] zzBuffer()
+    {
+        yyreset(null) ;
+        this.zzAtEOF = true ;
+        int length = parser.end(range) - parser.start(range) ;
+        lastChar = length - 1 ;
+        zzEndRead = length ;
+        while (length > zzBuffer.length)
+            zzBuffer = new char[zzBuffer.length * 2] ;
+        return zzBuffer ;
     }
     
 
@@ -383,6 +386,7 @@ class LexerUserinfo extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCod
   /**
    * Returns the text matched by the current regular expression.
    */
+  @Override
   public final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
   }
@@ -462,6 +466,8 @@ class LexerUserinfo extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCod
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
+  @SuppressWarnings("fallthrough")
+@Override
   public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

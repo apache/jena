@@ -18,12 +18,14 @@ public class TestMEResult extends TestMoreExamples {
         super("result"+ (++count),att, suite);
     }
 
+    @Override
     IRI computeIRI() {
         IRI base = ((TestMoreExamples)parent.testAt(0)).getIRI();
         IRI rel = ((TestMoreExamples)parent.testAt(1)).getIRI();
         return base.create(rel);
     }
     
+    @Override
     public void runTest() {
         super.runTest();
     }

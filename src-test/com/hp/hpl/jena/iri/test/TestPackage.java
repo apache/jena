@@ -3,20 +3,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.iri.impl;
+package com.hp.hpl.jena.iri.test;
 
-import java.util.regex.Matcher;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-public class ErrorAction extends GroupAction {
-    final private int eCode;
-    ErrorAction(int code){
-        this.eCode = code;
+public class TestPackage extends TestCase{
+    
+    public static TestSuite suite() {
+        TestSuite rslt = new TestSuite();
+
+        rslt.setName("IRI");
+        rslt.addTest(TestExample.suite());
+        rslt.addTest(TestMoreExamples.suite());
+        rslt.addTest(MoreTests.suite());
+        
+        return rslt;
     }
-    @Override
-    public void check(Matcher m, Parser parser, int range) {
-        parser.recordError(range,eCode);
-    }
-
 }
 
 

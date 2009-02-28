@@ -12,6 +12,8 @@ public class IRIImplException extends IRIException {
 
     private static final long serialVersionUID = 1072420548744246731L;
     private final Violation violation;
+
+    @Override
     public Violation getViolation() {
         return violation;
     }
@@ -19,6 +21,8 @@ public class IRIImplException extends IRIException {
         super();
         violation = e;
     }
+
+    @Override
     public String getMessage() {
         return getViolation().getShortMessage();
     }

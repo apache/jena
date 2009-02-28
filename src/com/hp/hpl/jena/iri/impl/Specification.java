@@ -12,10 +12,10 @@ import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.InSpec;
 
 public class Specification extends IRIExamples {
     
-    static public final Map iris = new HashMap();
-    static final public Map schemes = new HashMap();
-    static final private Map other = new HashMap();
-    static public final Map all = new HashMap();
+    static public final Map<String, Specification> iris = new HashMap<String, Specification>();
+    static final public Map<String, Specification> schemes = new HashMap<String, Specification>();
+    static final private Map<String, Specification> other = new HashMap<String, Specification>();
+    static public final Map<String, Specification> all = new HashMap<String, Specification>();
 
     private final String uri;
     private final String name;
@@ -74,7 +74,7 @@ public class Specification extends IRIExamples {
     
     public static Specification get(String name) {
         
-        Specification rslt = (Specification)all.get(name);
+        Specification rslt = all.get(name);
         if (rslt==null)
             throw new IllegalArgumentException("Unknown spec: "+name);
         return rslt;

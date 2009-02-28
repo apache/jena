@@ -214,6 +214,7 @@ public class PatternCompiler implements ViolationCodes {
         }
         int ruleCount = 1;
 
+        @Override
         void doIt(String regex, int eCount, int[] eCodes, int cCount,
                 String c[]) {
             
@@ -430,7 +431,7 @@ static VarPattern unreservedDNSLabel[] = {
         return eCodeNames[j];
     }
 
-	static String[] constantsFromClass(Class cl, int cnt) {
+	static String[] constantsFromClass(Class<?> cl, int cnt) {
 		String[] names;
 		names = new String[cnt];
 		Field f[] = cl.getDeclaredFields();

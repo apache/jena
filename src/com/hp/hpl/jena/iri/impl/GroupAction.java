@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 public abstract class GroupAction {
 
     public static final GroupAction NoAction = new GroupAction() {
+        @Override
         public void check(Matcher m, Parser parser, int range) {
         }
     };

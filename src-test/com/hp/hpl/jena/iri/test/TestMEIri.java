@@ -5,33 +5,24 @@
 
 package com.hp.hpl.jena.iri.test;
 
-import junit.framework.TestSuite;
-
 import org.xml.sax.Attributes;
 
 import com.hp.hpl.jena.iri.IRI;
 
-public class TestMERelativize extends TestMoreExamples {
+public class TestMEIri extends TestMoreExamples {
     static int count;
-    public TestMERelativize(Attributes att, TestSuite suite) {
-        super("relativize"+ (++count),att,suite);
+
+    public TestMEIri(Attributes att) {
+//        super(att.getValue("iri"),att); 
+        super(true? ( //"["+(++count)+"]" + 
+                att.getValue("iri").replaceAll("\n","\\\\n")) :( "iri"+(++count)),att);
     }
 
+    @Override
     IRI computeIRI() {
-        IRI base = ((TestMoreExamples)parent.testAt(0)).getIRI();
-        IRI rel = ((TestMoreExamples)parent.testAt(2)).getIRI();
-        return base.relativize(rel, TestCreator.RelativizeFlags);
+        return TestCreator.factory.create(att.get("iri"));
     }
-    
-    public void runTest() {
-    	if (!"true".equals(att.get("same"))) {
-    		super.runTest();
-    	} else {
-    		assertEquals(computeIRI(),
-    				((TestMoreExamples)parent.testAt(1)).getIRI());
-    	}
-    	
-    }
+
 }
 
 

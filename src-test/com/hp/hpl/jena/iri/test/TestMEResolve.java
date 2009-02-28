@@ -5,22 +5,26 @@
 
 package com.hp.hpl.jena.iri.test;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.xml.sax.Attributes;
 
-import com.hp.hpl.jena.iri.IRI;
 
-public class TestMEIri extends TestMoreExamples {
-    static int count;
+public class TestMEResolve extends TestSuite {
 
-    public TestMEIri(Attributes att) {
-//        super(att.getValue("iri"),att); 
-        super(true? ( //"["+(++count)+"]" + 
-                att.getValue("iri").replaceAll("\n","\\\\n")) :( "iri"+(++count)),att);
+    public TestMEResolve(Attributes att) {
+        super();
     }
-
-    IRI computeIRI() {
-        return TestCreator.factory.create((String)att.get("iri"));
+    
+    void pop() {
+        setName(((TestCase)testAt(0)).getName() + "  " +
+                ((TestCase)testAt(1)).getName());
     }
+    
+//    public void runTest(Test arg0, TestResult arg1) {
+//        super.runTest(arg0,arg1);
+//    }
 
 }
 

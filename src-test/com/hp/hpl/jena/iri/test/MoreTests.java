@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.3 2008-01-15 10:19:39 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.1 2009-02-28 00:16:08 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.iri.test;
@@ -66,9 +66,9 @@ public class MoreTests extends TestCase {
 		IRIFactory f = IRIFactory.jenaImplementation();
 		IRI base = f.create("http://example.org/");
 		IRI frag = base.resolve("http://eg.com/test.txt#xpointer(/unit[5])");
-		Iterator it = frag.violations(false);
+		Iterator<Violation> it = frag.violations(false);
 		while (it.hasNext()) {
-			System.err.println(((Violation)it.next()).getLongMessage());
+			System.err.println(it.next().getLongMessage());
 		}
 		
 	}
@@ -79,9 +79,9 @@ public class MoreTests extends TestCase {
 				"3AE35F7230700D3E3AEE226D20A49A390BCD779EC5D4700"+
 				"00003DB3650000D3E3AEE226D20A49A390BCD779EC5D470"+
 					"00001182DB0000/www.uconnectevent.org");
-		Iterator it = frag.violations(false);
+		Iterator <Violation>it = frag.violations(false);
 		while (it.hasNext()) {
-			System.err.println(((Violation)it.next()).getLongMessage());
+			System.err.println(it.next().getLongMessage());
 		}
 		
 	}

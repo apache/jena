@@ -45,7 +45,8 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         final private int component;
         final private String definition;
         final private String definitionHtml;
-		public boolean applies(int slot, String scheme) {
+		@Override
+        public boolean applies(int slot, String scheme) {
 			if (component != -1 && component != slot)
 			   return false;
 			return spec.applies(scheme);
@@ -61,6 +62,7 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
             definitionHtml = defnHtml;
         }
 
+        @Override
         public String definition() {
         	return "[[ " + definition + " ]]";
         }
@@ -78,7 +80,8 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         public FromSpec_scheme(String name, int component, String uri) {
             this(name,component,uri,null,null);
         }
-		public boolean isIRISpec() {
+        @Override
+        public boolean isIRISpec() {
 			return false;
 		}
     }
@@ -92,10 +95,10 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         public FromAlso(String spec, String uri) {
             super(spec,uri);
         }
-        public boolean isSeeAlso() {
+        @Override public boolean isSeeAlso() {
         	return true;
         }
-		public boolean applies(int slot, String scheme) {
+        @Override public boolean applies(int slot, String scheme) {
 			return false;
 		}
         

@@ -6,8 +6,7 @@
     <!-- default value useful in Jeremy's development environment -->
     <property name="jena.home" value="../jena2"/>
 
-    <property name="dist.name" value="iri-0.5"/>
-	  
+    <property name="dist.name" value="iri-0.6"/>
 
     <property name="lib.dir" value="lib/"/>
     <property name="src.dir" value="src/"/>
@@ -62,8 +61,8 @@
 	    <property name="java.debuglevel"  value=""/>
 	    <property name="java.deprecation" value="false"/>
 	    <property name="java.optimize"    value="true"/>
-	    <property name="java.source"      value="1.4"/>
-	    <property name="java.target"      value="1.4"/>
+	    <property name="java.source"      value="1.5"/>
+	    <property name="java.target"      value="1.5"/>
 	  </target>
 
 	  <target name="default-javac-flags"
@@ -73,8 +72,8 @@
 	    <property name="java.debuglevel"  value="source,lines,vars"/>
 	    <property name="java.deprecation" value="false"/>
 	    <property name="java.optimize"    value="false"/>
-	    <property name="java.source"      value="1.4"/>
-	    <property name="java.target"      value="1.4"/>
+	    <property name="java.source"      value="1.5"/>
+	    <property name="java.target"      value="1.5"/>
 	  </target>
 
     <target name="jar">

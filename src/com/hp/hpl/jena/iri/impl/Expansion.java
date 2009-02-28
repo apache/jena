@@ -19,7 +19,7 @@ abstract public class Expansion {
     public Expansion() {
     }
 
-    Map doing = new HashMap();
+    Map<String, String> doing = new HashMap<String, String>();
 
     abstract void doIt(String regex, int eCount, int eCodes[], int cCount, String coms[]);
 
@@ -37,7 +37,7 @@ abstract public class Expansion {
             String varName = data.substring(at + 2, match);
             if (doing.containsKey(varName)) {
 //                System.err.println("Possible Recursion: " + varName);
-                String p = (String) doing.get(varName);
+                String p = doing.get(varName);
                 String nData = data.replaceAll("@\\{" + varName + "\\}", p);
                 expand(nData);
             } else {

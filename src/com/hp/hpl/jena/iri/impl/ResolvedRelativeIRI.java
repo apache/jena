@@ -175,11 +175,13 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
     }
 
 
+    @Override
     protected IRIFactoryImpl getFactory() {
         return base.getFactory();
     }
 
 
+    @Override
     long errors(int field) {
         return 
            field==PATH?pathErrors:
@@ -187,32 +189,38 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
                rel.errors(field);
     }
 
+    @Override
     boolean has(int field) {
         return field==PATH||(
             field<useBaseUntilThisComponent?base.has(field):
                 rel.has(field) );
     }
 
+    @Override
     String get(int field) {
         return field==PATH?path:
                 field<useBaseUntilThisComponent?base.get(field):
                     rel.get(field);
     }
 
+    @Override
     public String toString() {
         return iri;
     }
 
+    @Override
     String pathRemoveDots() {
         return useBaseUntilThisComponent > PATH?
             base.pathRemoveDots():
             path;
     }
 
+    @Override
     boolean dotsOK() {
         return true;
     }
 
+    @Override
     SchemeSpecificPart getSchemeSpec() {
         if (
         useBaseUntilThisComponent == SCHEME

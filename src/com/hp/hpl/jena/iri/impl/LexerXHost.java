@@ -232,6 +232,7 @@ class LexerXHost extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes,
     
     
     private int lastChar;
+    @Override
     char[] zzBuffer() {
      yyreset(null);
     this.zzAtEOF = true;
@@ -243,6 +244,7 @@ class LexerXHost extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes,
       return zzBuffer;
     }
     
+    @Override
     protected void error(int e) {
        switch(e) {
           case PERCENT:
@@ -393,6 +395,7 @@ class LexerXHost extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes,
   /**
    * Returns the text matched by the current regular expression.
    */
+  @Override
   public final String yytext() {
     return new String( zzBuffer, zzStartRead, zzMarkedPos-zzStartRead );
   }
@@ -472,6 +475,8 @@ class LexerXHost extends AbsLexer implements com.hp.hpl.jena.iri.ViolationCodes,
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
+  @SuppressWarnings("fallthrough")
+@Override
   public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

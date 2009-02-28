@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.iri.impl;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,7 +79,7 @@ public class ComponentPatternParser implements ViolationCodes {
         //return splitter.split(p); 
         
         Matcher m = keyword.matcher(p);
-        ArrayList rslt = new ArrayList();
+        List<String> rslt = new ArrayList<String>();
         int pos = 0;
 //        rslt.add("");
         while (m.find()) {
@@ -95,7 +96,7 @@ public class ComponentPatternParser implements ViolationCodes {
 //        String preSplit[] = keyword.split(p);
 //        String rslt[] = new String[preSplit.length*2];
         
-        return (String[])rslt.toArray(emptyStringArray);
+        return rslt.toArray(emptyStringArray);
         
     }
     
@@ -166,6 +167,7 @@ public class ComponentPatternParser implements ViolationCodes {
         }
     }
 
+    @SuppressWarnings("fallthrough")
     private void next() {
         switch (classify[field]) {
         case CLOSE_SQ:
@@ -211,6 +213,7 @@ public class ComponentPatternParser implements ViolationCodes {
         }
     }
 
+    @SuppressWarnings("fallthrough")
     private void addLowerCase() {
         int sqCount=0;
         field++;
@@ -298,6 +301,7 @@ public class ComponentPatternParser implements ViolationCodes {
         field++;
     }
     
+    @Override
     public String toString() {
         return pattern.pattern();
     }

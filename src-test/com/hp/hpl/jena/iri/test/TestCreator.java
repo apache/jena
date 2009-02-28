@@ -57,8 +57,8 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         return result + s.substring(lastPos, s.length());
     }
 //    static final IRI empty = IRIFactory.defaultFactory().emptyIRI();
-    static final Class attSign[] = new Class[] { Attributes.class };
-    static final Class nullSign[] = new Class[] { };
+    static final Class<?> attSign[] = new Class[] { Attributes.class };
+    static final Class<?> nullSign[] = new Class[] { };
 
     static PrintWriter out;
     static void load() throws SAXException, IOException, ParserConfigurationException {
@@ -91,6 +91,7 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
     }
     
     
+    @Override
     public void startElement(
     String arg1,
     String arg2,
@@ -112,6 +113,7 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
             e.printStackTrace();
         }
     }
+    @Override
     public void endElement(
             String arg1,
             String arg2,
@@ -220,11 +222,11 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
             
         }
 
-        Iterator it = ((AbsIRIImpl)iri).allViolations();
+        Iterator<Violation> it = ((AbsIRIImpl)iri).allViolations();
         out.println("<violations>");
         while (it.hasNext()) {
             out.print("<violation>");
-            out.print(((Violation)it.next()).codeName());
+            out.print((it.next()).codeName());
             out.println("</violation>");
                     
         }

@@ -36,31 +36,37 @@ public class ViolationImpl extends Violation {
       this.slot = slot;
     }
 
-
+    @Override
     public int getViolationCode() {
         return code;
     }
 
+    @Override
     public IRI getIRI() {
         return iri;
     }
 
+    @Override
     public int getComponent() {
         return slot;
     }
     
+    @Override
     public String component() {
     	return componentName(slot);
     }
 
+    @Override
     public String codeName() {
         return PatternCompiler.errorCodeName(code);
     }
 
+    @Override
     public boolean isError() {
         return (iri.getSchemeSpec().getMask(false) & (1l << code)) != 0;
     }
 
+    @Override
     public String getShortMessage() {
         return  "<" + getIRI() + "> Code: " + code + "/"+ codeName() + " in "+component() +": " +
               description();
@@ -75,6 +81,7 @@ public class ViolationImpl extends Violation {
 	}
 
 
+    @Override
 	public String getLongMessage() {
         return "<" + getIRI() + "> Code: " + code + "/"+ codeName()  +
         " in "+component() + ": " +description() +
@@ -89,6 +96,7 @@ public class ViolationImpl extends Violation {
 		return info.specs(slot,iri.getFactory(), iri.getScheme());
 	}
 
+    @Override
 	public String getSpecificationURL() {
         // TODO getSpecificationURL
         throw new UnsupportedOperationException("Not yet implemented.");

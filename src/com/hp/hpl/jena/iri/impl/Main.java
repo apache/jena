@@ -17,11 +17,11 @@ import com.hp.hpl.jena.iri.Violation;
 
 public class Main {
 
-    private static final Class[] noParams = new Class[0];
+    private static final Class<?>[] noParams = new Class[0];
 
     private static final Object[] noObjects = new Object[0];
 
-    private static final Class[] strParams = new Class[] { String.class };
+    private static final Class<?>[] strParams = new Class[] { String.class };
 
     private boolean usedASpec = false;
 
@@ -83,9 +83,9 @@ public class Main {
         IRI iri = factory.create(string);
         if (iri.hasViolation(true)) {
             System.out.println("n: " + string);
-            Iterator it = iri.violations(true);
+            Iterator<Violation> it = iri.violations(true);
             while (it.hasNext()) {
-                Violation v = (Violation) it.next();
+                Violation v = it.next();
                 System.out.println(v.getLongMessage());
             }
         } else {

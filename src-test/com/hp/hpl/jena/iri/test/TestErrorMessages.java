@@ -25,8 +25,8 @@ public class TestErrorMessages extends TestCase
     }
 
  
-    static Specification specs[] = (Specification[]) Specification.all
-            .values().toArray(new Specification[0]);
+    static Specification specs[] = Specification.all
+                    .values().toArray(new Specification[0]);
 
 
     String uri;
@@ -74,11 +74,12 @@ public class TestErrorMessages extends TestCase
 
     static public IRIFactory f = IRIFactory.jenaImplementation();
    
+    @Override
     public void runTest() {
         IRI iri = f.create(uri);
-        Iterator it = iri.violations(true);
+        Iterator<Violation> it = iri.violations(true);
         while (it.hasNext()) {
-            Violation v = (Violation) it.next();
+            Violation v = it.next();
             printErrorMessages(v);
             
         }

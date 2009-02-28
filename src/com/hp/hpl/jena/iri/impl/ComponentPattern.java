@@ -6,6 +6,7 @@
 package com.hp.hpl.jena.iri.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,7 @@ public class ComponentPattern implements ViolationCodes {
 
     final GroupAction actions[];
 
-    static final ArrayList allPatterns = new ArrayList();
+    static final List<Pattern> allPatterns = new ArrayList<Pattern>();
 
     ComponentPattern(String p) {
         ComponentPatternParser parser = new ComponentPatternParser(p);
@@ -25,7 +26,6 @@ public class ComponentPattern implements ViolationCodes {
 //        System.err.println(allPatterns.size() + ": " + p + " ==> "
 //                + pattern.toString());
         allPatterns.add(pattern);
-
     }
 
     

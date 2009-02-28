@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIComponents;
@@ -120,7 +121,7 @@ public static final int UNKNOWN_SYNTAX = -4;
     protected long errors;
     protected long warnings;
     
-    protected Set specs = new HashSet();
+    protected Set<Specification> specs = new HashSet<Specification>();
 
     public IRIFactoryImpl() {
     }
@@ -129,7 +130,7 @@ public static final int UNKNOWN_SYNTAX = -4;
         if (backwardCompatibleRelativeRefs.size()==Integer.MAX_VALUE)
     	   backwardCompatibleRelativeRefs = template.backwardCompatibleRelativeRefs;
         else 
-        	backwardCompatibleRelativeRefs = new HashSet(backwardCompatibleRelativeRefs);
+        	backwardCompatibleRelativeRefs = new HashSet<String>(backwardCompatibleRelativeRefs);
         encoding = template.encoding;
         errors = template.errors;
         prohibited = template.prohibited;
@@ -137,10 +138,10 @@ public static final int UNKNOWN_SYNTAX = -4;
         warnings = template.warnings;
         System.arraycopy(template.asErrors,0,asErrors,0,asErrors.length);
         System.arraycopy(template.asWarnings,0,asWarnings,0,asWarnings.length);
-        Iterator it = template.schemes.entrySet().iterator();
+        Iterator<Entry<String, SchemeSpecificPart>> it = template.schemes.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            SchemeSpecificPart p = (SchemeSpecificPart)entry.getValue();
+            Map.Entry<String, SchemeSpecificPart> entry = it.next();
+            SchemeSpecificPart p = entry.getValue();
             if (p.withScheme()) {
                 schemes.put(entry.getKey(),new WithScheme((WithScheme)p));
             } else if (p.port()!=IRI.NO_PORT) {
@@ -166,10 +167,12 @@ public static final int UNKNOWN_SYNTAX = -4;
         return includeWarnings?(errors|warnings):errors;
     }
 
+    @Override
     protected IRIFactoryImpl getFactory() {
         return this;
     }
-
+    
+    @Override
     public IRI create(IRI i) {
         if (i instanceof AbsIRIImpl && 
                 ((AbsIRIImpl)i).getFactory()==this)
@@ -232,13 +235,14 @@ public static final int UNKNOWN_SYNTAX = -4;
 //    }
 
     private boolean initializing = true;
-private Set backwardCompatibleRelativeRefs = new HashSet();
+private Set<String> backwardCompatibleRelativeRefs = new HashSet<String>();
     protected void initializing() {
         if (!initializing)
             throw new IllegalStateException("Cannot reinitialize IRIFactory after first use.");
         
     }
     
+    @Override
     public IRI create(String s) {
         initializing = false;
         return super.create(s);
@@ -246,19 +250,23 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
 
     public void setSameSchemeRelativeReferences(String scheme) {
         if (scheme.equals("*"))
-          backwardCompatibleRelativeRefs  = new AbstractSet(){
+          backwardCompatibleRelativeRefs  = new AbstractSet<String>(){
 
+            @Override
             public int size() {
                 return Integer.MAX_VALUE;
             }
 
-            public Iterator iterator() {
+            @Override
+            public Iterator<String> iterator() {
                 throw new UnsupportedOperationException();
             }
-            public boolean add(Object o) {
+            @Override
+            public boolean add(String o) {
                 return false;
             }
 
+            @Override
             public boolean contains(Object o) {
                 return true;
             }
@@ -288,7 +296,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
     public SchemeSpecificPart getScheme(String scheme, Parser parser) {
         
         scheme = scheme.toLowerCase();
-        SchemeSpecificPart p = (SchemeSpecificPart)schemes.get(scheme);
+        SchemeSpecificPart p = schemes.get(scheme);
         if (p!=null) {
             p.usedBy(parser);
             return p;
@@ -300,7 +308,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             } else {
             	if (nonIETFScheme==null)
             		nonIETFScheme = new NoScheme() {
-                  void usedBy(Parser pp) {
+            	    @Override void usedBy(Parser pp) {
                       pp.recordError(SCHEME,UNREGISTERED_NONIETF_SCHEME_TREE);
                   }
                 };
@@ -312,7 +320,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
         } else{
         	if (unregisteredScheme==null){
         		unregisteredScheme = new NoScheme() {
-        	        void usedBy(Parser pp) {
+        		    @Override void usedBy(Parser pp) {
         	            pp.recordError(SCHEME,UNREGISTERED_IANA_SCHEME);
         	        }
         	      };
@@ -359,7 +367,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             }
             
         }
-        void usedBy(Parser parser) {
+        @Override void usedBy(Parser parser) {
             if (!inited) {
                 inited = true;
                 zerrors |= errors;
@@ -370,23 +378,27 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             }
             
         }
+        @Override
         public long getMask(boolean includeWarnings) {
             return includeWarnings?(zerrors|zwarnings):zerrors;
         }
-
+        @Override
         public int getRequired() {
             return zrequired;
         }
-
+        @Override
         public int getProhibited() {
             return zprohibited;
         }
+        @Override
         public void analyse(Parser parser, int range) {
             scheme.analyse(parser,range);
         }
+        @Override
         public int port() {
             return scheme.port;
         }
+        @Override
         public boolean withScheme() {
             return true;
         }
@@ -401,27 +413,27 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
         NoScheme(int i) {
             port = i;
         }
-
+        @Override
         public long getMask(boolean includeWarnings) {
             return IRIFactoryImpl.this.getMask(includeWarnings);
         }
-
+        @Override
         public int getRequired() {
             return IRIFactoryImpl.this.getRequired();
         }
-
+        @Override
         public int getProhibited() {
             return IRIFactoryImpl.this.getProhibited();
         }
-
+        @Override
         void usedBy(Parser parser) { /* nothing */ }
-
+        @Override
         public void analyse(Parser parser, int range) {/* nothing */ }
-
+        @Override
         public int port() {
             return port;
         }
-
+        @Override
         public boolean withScheme() {
             return false;
         }
@@ -440,14 +452,14 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
         return prohibited ;
     }
 
-    final private Map schemes = new HashMap();
+    final private Map<String, SchemeSpecificPart> schemes = new HashMap<String, SchemeSpecificPart>();
     
     public void useSchemeSpecificRules(String scheme, boolean asErr) {
         if (scheme.equals("*")) {
-            Iterator it =
+            Iterator<String> it =
             Specification.schemes.keySet().iterator();
             while (it.hasNext()) {
-                scheme = (String)it.next();
+                scheme = it.next();
                 if (!schemes.containsKey(scheme))
                    useSchemeSpecificRules(scheme,asErr);
             }

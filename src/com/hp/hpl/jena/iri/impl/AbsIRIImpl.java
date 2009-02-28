@@ -120,7 +120,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         return (allErrors & mask) != 0;
     }
 
-    private ArrayList foundExceptions;
+    private ArrayList<Violation> foundExceptions;
 
     protected String path;
 /*
@@ -136,7 +136,7 @@ abstract public class AbsIRIImpl extends  IRI implements
 */
     static final private char hex[] = "0123456789ABCDEF".toCharArray();
 
-    static final Iterator nullIterator = new ArrayList(0).iterator();
+    static final Iterator<Violation> nullIterator = new ArrayList<Violation>(0).iterator();
 
     protected static final int NO_EXCEPTIONS = 1;
 
@@ -150,13 +150,13 @@ abstract public class AbsIRIImpl extends  IRI implements
         super();
     }
 
-    Iterator exceptionsMask(final long mask) {
+    Iterator<Violation> exceptionsMask(final long mask) {
         createExceptions(mask);
         return foundExceptions == null ? nullIterator : 
-            new Iterator() {
-               private Iterator underlying = foundExceptions.iterator();
+            new Iterator<Violation>() {
+               private Iterator<Violation> underlying = foundExceptions.iterator();
   
-                private Object next;
+                private Violation next;
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
@@ -165,7 +165,7 @@ abstract public class AbsIRIImpl extends  IRI implements
                     if (next==null) {
                         while (underlying.hasNext()) {
                             next = underlying.next();
-                            if (((1l << ((Violation) next).getViolationCode()) 
+                            if (((1l << (next).getViolationCode()) 
                                     & mask) != 0) 
                                 return true;
                         }
@@ -175,9 +175,9 @@ abstract public class AbsIRIImpl extends  IRI implements
                     return true;
                 }
 
-                public Object next() {
+                public Violation next() {
                     if (hasNext()) {
-                        Object rslt = next;
+                        Violation rslt = next;
                         next = null;
                         return rslt;
                     }
@@ -191,7 +191,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         m &= ~foundExceptionMask;
         if ((allErrors & m) != 0) {
             if (foundExceptions == null) {
-                foundExceptions = new ArrayList();
+                foundExceptions = new ArrayList<Violation>();
             }
             for (int i = 0; i < Parser.fields.length; i++) {
                 int f = Parser.fields[i];
@@ -208,12 +208,14 @@ abstract public class AbsIRIImpl extends  IRI implements
         foundExceptionMask |= m;
     }
 
+    @Override
     public boolean isAbsolute() {
         return has(SCHEME);
     }
 
     abstract boolean has(int component);
 
+    @Override
     public boolean isRelative() {
         return !has(SCHEME);
     }
@@ -241,14 +243,17 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
     */
 
+    @Override
     public boolean hasViolation(boolean includeWarnings) {
         return hasExceptionMask(getSchemeSpec().getMask(includeWarnings));
     }
 
-    public Iterator violations(boolean includeWarnings) {
+    @Override
+    public Iterator<Violation> violations(boolean includeWarnings) {
         return exceptionsMask(getSchemeSpec().getMask(includeWarnings));
     }
 
+    @Override
     public URL toURL() throws MalformedURLException {
         return new URL(toASCIIString());
     }
@@ -262,6 +267,7 @@ abstract public class AbsIRIImpl extends  IRI implements
             | (1l << NOT_XML_SCHEMA_WHITESPACE) | (1l << NON_XML_CHARACTER)
             | (1l << DOUBLE_DASH_IN_REG_NAME);
 */
+    @Override
     public String toASCIIString() throws MalformedURLException {
         if (hasExceptionMask(ToAsciiMask)) {
             return createASCIIString();
@@ -404,7 +410,8 @@ abstract public class AbsIRIImpl extends  IRI implements
     static private final PathRelativize
         child = new PathRelativize(CHILD, CHILD | PARENT | GRANDPARENT,
         		"."){
-    	String descendentMatch(String descendent) {
+    	@Override
+        String descendentMatch(String descendent) {
     		return maybeDotSlash( descendent);
     	}
     },
@@ -487,14 +494,17 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
     
 
+    @Override
     public IRI relativize(String abs, int flags) {
         return relativize(new IRIImpl(getFactory(), abs), flags);
     }
 
+    @Override
     public IRI relativize(String abs) {
         return relativize(abs, defaultRelative);
     }
 
+    @Override
     public IRI relativize(IRI abs) {
         return relativize(abs, defaultRelative);
     }
@@ -502,6 +512,7 @@ abstract public class AbsIRIImpl extends  IRI implements
      * public String relativize(String abs, int flags) { return
      * relativize(factory.create(abs),abs,flags); }
      */
+    @Override
     public IRI relativize(IRI abs, int flags) {
         String rslt = relativize(abs, null, flags);
         return rslt == null ? abs : getFactory().create(rslt);
@@ -591,15 +602,17 @@ abstract public class AbsIRIImpl extends  IRI implements
         return s1 == s2;
     }
 
-    public Iterator allViolations() {
+    public Iterator<Violation> allViolations() {
         return exceptionsMask(~0l);
     }
 
-    public String getRawUserinfo() {
+    @Override
+   public String getRawUserinfo() {
         return get(USER);
     }
 
-    public int getPort() {
+    @Override
+   public int getPort() {
         String port = get(PORT);
         if (port == null)
             return IRI.NO_PORT;
@@ -613,28 +626,34 @@ abstract public class AbsIRIImpl extends  IRI implements
         }
     }
 
+    @Override
     public String getRawQuery() {
         return get(QUERY);
     }
 
+    @Override
     public String getRawFragment() {
         return get(FRAGMENT);
     }
 
+    @Override
     public String getRawHost() {
         return get(HOST);
     }
 
+    @Override
     public String getScheme() {
         return get(SCHEME);
     }
 
     abstract String get(int comp);
 
+    @Override
     public String getRawPath() {
         return path;
     }
 
+    @Override
     public boolean isRootless() {
         if (!has(SCHEME))
             return false;
@@ -651,19 +670,23 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     abstract boolean dotsOK();
 
+    @Override
     public String getRawAuthority() {
         return get(AUTHORITY);
     }
 
+    @Override
     public IRI create(IRI i) {
         return new ResolvedRelativeIRI(this, (AbsIRIImpl) getFactory()
                 .create(i));
     }
 
+    @Override
     public IRI create(String s) {
         return create(new IRIImpl(getFactory(), s) );
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == null)
             return false;
@@ -672,30 +695,37 @@ abstract public class AbsIRIImpl extends  IRI implements
         return toString().equals(o.toString());
     }
 
+    @Override
     public int hashCode() {
         return toString().hashCode();
     }
 
+    @Override
     public String getAuthority() {
         return getCooked(AUTHORITY);
     }
 
+    @Override
     public String getFragment() {
         return getCooked(FRAGMENT);
     }
 
+    @Override
     public String getHost() {
         return getCooked(HOST);
     }
 
+    @Override
     public String getPath() {
         return getCooked(PATH);
     }
 
+    @Override
     public String getQuery() {
         return getCooked(QUERY);
     }
 
+    @Override
     public String getUserinfo() {
         return getCooked(USER);
     }
@@ -705,6 +735,7 @@ abstract public class AbsIRIImpl extends  IRI implements
     	throw new UnsupportedOperationException("not yet implemented");
     }
 
+    @Override
     public IRI normalize(boolean useDns) {
         // TODO normalize
     	throw new UnsupportedOperationException("not yet implemented");
@@ -717,6 +748,7 @@ abstract public class AbsIRIImpl extends  IRI implements
      * DIRECTIONAL FORMATTING (PDF).
      * 
      */
+    @Override
     public String toDisplayString() {
         return "\u202A" + toString() + "\u202C";
     }
@@ -724,6 +756,7 @@ abstract public class AbsIRIImpl extends  IRI implements
     // TODO http://example.com/&#x10300;&#x10301;&#x10302 =>
     // http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82
 
+    @Override
     public String getASCIIHost() throws MalformedURLException {
         StringBuffer asciiString = new StringBuffer();
 
@@ -734,11 +767,13 @@ abstract public class AbsIRIImpl extends  IRI implements
         return asciiString.toString();
     }
 
+    @Override
     public boolean ladderEquals(IRI iri, int other) {
         // TODO ladderEquals
     	throw new UnsupportedOperationException("not yet implemented");
     }
 
+    @Override
     public int ladderEquals(IRI iri) {
         // TODO ladderEquals
     	throw new UnsupportedOperationException("not yet implemented");

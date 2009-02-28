@@ -30,8 +30,8 @@ public class TestExample extends TestCase
     // while (it.hasNext())
     // System.err.println(it.next().getClass().toString());
     // }
-    static Specification specs[] = (Specification[]) Specification.all
-            .values().toArray(new Specification[0]);
+    static Specification specs[] = Specification.all
+                    .values().toArray(new Specification[0]);
 
     static IRIFactory all[][] = new IRIFactory[specs.length][Force.SIZE];
 
@@ -123,6 +123,7 @@ public class TestExample extends TestCase
         return rslt.toString();
     }
 
+    @Override
     public void runTest() {
         if (specID == -1)
             runTestErrorCode();
@@ -141,7 +142,7 @@ public class TestExample extends TestCase
         IRI iri = f.create(uri);
         if (iri.hasViolation(false)) {
             if (good) fail("Unexpected violation found: "+
-            ((Violation)(iri.violations(false).next())).codeName()
+            ((iri.violations(false).next())).codeName()
             
             );
         } else {
@@ -188,9 +189,9 @@ public class TestExample extends TestCase
         }
         boolean hasError = false;
         boolean hasWarning = false;
-        Iterator it = iri.violations(true);
+        Iterator<Violation> it = iri.violations(true);
         while (it.hasNext()) {
-            Violation v = (Violation) it.next();
+            Violation v = it.next();
             if (v.getViolationCode() == violation.getCode()) {
                 if (v.isError()) {
                     if (!expectError)

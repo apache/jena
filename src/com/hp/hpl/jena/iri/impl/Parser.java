@@ -205,17 +205,17 @@ public class Parser implements IRIComponents, ViolationCodes {
         System.out.println("Query: " + iri.getRawQuery());
 
         System.out.println("Fragment: " + iri.getRawFragment());
-        Iterator it = ((AbsIRIImpl) iri).allViolations();
+        Iterator<Violation> it = ((AbsIRIImpl) iri).allViolations();
         while (it.hasNext()) {
-            System.out.println(((Violation) it.next()).getLongMessage());
+            System.out.println(it.next().getLongMessage());
         }
         it = ((AbsIRIImpl) iri).violations(true);
         while (it.hasNext()) {
-            System.out.println("+"+((Violation) it.next()).getLongMessage());
+            System.out.println("+"+it.next().getLongMessage());
         }
         it = ((AbsIRIImpl) iri).violations(false);
         while (it.hasNext()) {
-            System.out.println("++"+((Violation) it.next()).getLongMessage());
+            System.out.println("++"+it.next().getLongMessage());
         }
     }
 
