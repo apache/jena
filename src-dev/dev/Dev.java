@@ -10,6 +10,9 @@ public class Dev
 {
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
+     
+    // NodeLib.encode/decode ==> swap to a Nodec
+    // '_' => '__' and ' ' => _20 ;
     
     // ==== Next
     // Quad pattern execution/optimization with filters (done for default graph).

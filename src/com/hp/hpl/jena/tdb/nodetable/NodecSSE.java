@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class NodecSSE implements Nodec
 {
+    public NodecSSE() {}
+    
     @Override
     public void encode(Node node, ByteBuffer bb, int idx)
     {
