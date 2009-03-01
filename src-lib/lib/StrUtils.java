@@ -178,7 +178,13 @@ public class StrUtils
     //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
             };
 
-    /** Encode a string using hex values e.g. %20 */
+    /** Encode a string using hex values e.g. %20
+     * 
+     * @param str       String to encode
+     * @param marker    Marker character
+     * @param escapees  Characters to encode (must include the marker)
+     * @return          Encoded string
+     */
     public static String encode(String str, char marker, char[] escapees)
     {
         // We make a first pass to see if there is anything to do.
@@ -244,7 +250,12 @@ public class StrUtils
         return -1 ;
     }
     
-    /** Decode a string using marked hex values e.g. %20 */
+    /** Decode a string using marked hex values e.g. %20
+     * 
+     * @param str       String to decode
+     * @param marker    The marker charcater
+     * @return          Decoded string
+     */
     public static String decode(String str, char marker)
     {
         int idx = str.indexOf(marker) ;

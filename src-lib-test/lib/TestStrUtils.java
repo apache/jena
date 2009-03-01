@@ -1,35 +1,52 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import test.BaseTest;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class
-    , TestBitsLong.class
-    , TestBitsInt.class
-    , TestBytes.class
-    , TestListUtils.class
-    , TestSetUtils.class
-    , TestCacheNG.class
-    , TestColumnMap.class
-    , TestFileOps.class
-    , TestStrUtils.class
-} )
-
-public class TS_Lib
+public class TestStrUtils extends BaseTest
 {
+    static char marker = '_' ;
+    static char esc[] = { ' ' , '_' } ; 
+    
+    static void test(String x)
+    {
+        test(x, null) ;
+    }
+    
+    static void test(String x, String z)
+    {
+        String y = StrUtils.encode(x, marker, esc) ;
+        if ( z != null )
+            assertEquals(z, y) ;
+        String x2 = StrUtils.decode(y, marker) ;
+        assertEquals(x, x2) ;
+    }
+    
+    @Test public void enc01() { test("abc") ; } 
 
+    @Test public void enc02() { test("") ; } 
+
+    @Test public void enc03() { test("_", "_5F" ) ; } 
+    
+    @Test public void enc04() { test(" ", "_20" ) ; } 
+    
+    @Test public void enc05() { test("_ _", "_5F_20_5F" ) ; } 
+    
+    @Test public void enc06() { test("_5F", "_5F5F" ) ; } 
+    
+    @Test public void enc07() { test("_2") ; } 
+    
+    @Test public void enc08() { test("AB_CD", "AB_5FCD") ; } 
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
