@@ -165,6 +165,10 @@ public class StrUtils
         return characters ;
     }
     
+    // ==== Encoding and decoding strings based on a marker character (e.g. %)
+    // and then the hexadecimal representation of the character.  
+    // Only characters 0-255 can be encoded.
+    
     final static char[] hexDigits = {
             '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
             '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
@@ -221,14 +225,14 @@ public class StrUtils
         }
         return buff.toString();
     }
-//    
+
 //    static private byte hexEncode(int i) {
 //        if (i<10)
 //            return (byte) ('0' + i);
 //        else
 //            return (byte)('A' + i - 10);
 //    }
-//    
+
     // Encoding is table-driven but for decode, we use code.
     static private int hexDecode(char ch) {
         if (ch >= '0' && ch <= '9' )
