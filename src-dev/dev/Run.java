@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 import java.io.IOException;
 
 import lib.FileOps;
+import lib.StrUtils;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
@@ -49,8 +50,22 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
+    private static void t(String string)
+    {
+        char esc[] = { '_' , ' ' } ;
+        String x = StrUtils.encode(string, '_', esc) ;
+        String y = StrUtils.decode(x, '_') ;
+        System.out.printf("'%s' => '%s' => '%s'\n", string, x,y) ;
+    }
+
     public static void main(String ... args) throws IOException
     {
+        
+        //t("foo") ;
+        t("here and there__") ;
+        
+        System.exit(0) ;
+        
         
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
         

@@ -129,7 +129,7 @@ public class StrUtils
         return str1.contains(str2) ;
     }
     
-    public final  static String replace(String string, String target, String replacement)
+    public final static String replace(String string, String target, String replacement)
     {
         return string.replace(target, replacement) ;
     }
@@ -163,6 +163,110 @@ public class StrUtils
         for ( Character ch : str.toCharArray() )
             characters.add(ch) ;
         return characters ;
+    }
+    
+    final static char[] hexDigits = {
+            '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
+            '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
+    //         , 'g' , 'h' ,
+    //        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+    //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+    //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
+            };
+
+    /** Encode a string using hex values e.g. %20 */
+    public static String encode(String str, char marker, char[] escapees)
+    {
+        // We make a first pass to see if there is anything to do.
+        // This is assuming
+        // (1) the string is shortish (e.g. fits in L1)
+        // (2) necessary escaping is not common
+        
+        int N = str.length();
+        int idx = 0 ;
+        // Scan stage.
+        outer: 
+            for ( ; idx < N ; idx++ )
+        {
+            char ch = str.charAt(idx) ;
+            for ( int j = 0 ; j < escapees.length ; j++ )
+                if ( ch == escapees[j] )
+                    // and idx is the first char needed to be worked on.
+                    break outer ;
+        }
+        if ( idx == N )
+            return str ;
+
+        // At least one char to convert
+        StringBuilder buff = new StringBuilder() ;
+        buff.append(str, 0, idx) ;  // Insert first part.
+        for ( ; idx < N ; idx++ )
+        {
+            char ch = str.charAt(idx) ;
+            int j = 0 ; 
+            for ( ; j < escapees.length ; j++ )
+            {
+                if ( ch == escapees[j] )
+                {
+                    buff.append(marker) ;
+                    int lo = ch & 0xF ;
+                    int hi = ch >> 4 ;
+                    buff.append(hexDigits[hi]) ;                
+                    buff.append(hexDigits[lo]) ; 
+                    break ; // Out of escapees loop.
+                }
+            }
+            if ( j >= escapees.length )
+                buff.append(ch) ;
+        }
+        return buff.toString();
+    }
+//    
+//    static private byte hexEncode(int i) {
+//        if (i<10)
+//            return (byte) ('0' + i);
+//        else
+//            return (byte)('A' + i - 10);
+//    }
+//    
+    // Encoding is table-driven but for decode, we use code.
+    static private int hexDecode(char ch) {
+        if (ch >= '0' && ch <= '9' )
+            return ch - '0' ;
+        if ( ch >= 'A' && ch <= 'F' )
+            return ch - 'A' + 10 ;
+        if ( ch >= 'a' && ch <= 'f' )
+            return ch - 'a' + 10 ;
+        return -1 ;
+    }
+    
+    /** Decode a string using marked hex values e.g. %20 */
+    public static String decode(String str, char marker)
+    {
+        int idx = str.indexOf(marker) ;
+        if ( idx == -1 )
+            return str ;
+        StringBuilder buff = new StringBuilder() ;
+        
+        buff.append(str, 0, idx) ;
+        int N = str.length() ;
+        
+        for ( ; idx < N ; idx++ ) 
+        {
+            char ch = str.charAt(idx) ;
+            // First time through this is true, always.
+            if ( ch != marker )
+                buff.append(ch) ;
+            else
+            {
+                char hi = str.charAt(idx+1) ; 
+                char lo = str.charAt(idx+2) ;   // exceptions.
+                char ch2 = (char)(hexDecode(hi)<<4 | hexDecode(lo)) ;
+                buff.append(ch2) ;
+                idx += 2 ;
+            }
+        }
+        return buff.toString() ; 
     }
 }
 
