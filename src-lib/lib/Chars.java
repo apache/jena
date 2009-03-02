@@ -15,7 +15,7 @@ public class Chars
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
     
-    public static final Charset utf8 = Charset.forName(encodingUTF8) ;
+    private /*public*/ static final Charset utf8 = Charset.forName(encodingUTF8) ;
     
     // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap.
     // Initial pool size. Any additional encoder/decoder are later

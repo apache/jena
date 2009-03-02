@@ -175,7 +175,6 @@ public class Bytes
     private static byte byte2(int x) { return (byte)(x >> 16); }
     private static byte byte1(int x) { return (byte)(x >>  8); }
     private static byte byte0(int x) { return (byte)(x >>  0); }
-    
 
     /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x)
@@ -209,10 +208,11 @@ public class Bytes
     public static void toByteBuffer(CharSequence s, ByteBuffer bb)
     {
         CharsetEncoder enc = Chars.getEncoder();
+        
         // Blocking finite Pool - does not happen.
         // Plain Pool (sync wrapped) - might - allocate an extra one. 
         if ( enc == null ) 
-            enc = Chars.utf8.newEncoder();
+            enc = Chars.createEncoder() ;
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
@@ -237,7 +237,7 @@ public class Bytes
         {
             CharsetDecoder dec = Chars.getDecoder();
             if ( dec == null )
-                dec = Chars.utf8.newDecoder() ;
+                dec = Chars.createDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
             // No need to flush - the packaged form decode(ByteBuffer) does that. 
 //            CoderResult r = dec.flush(cBuff) ;  // If no bytes, crashes here (illegal state).
