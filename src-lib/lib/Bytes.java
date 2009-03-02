@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
@@ -177,9 +176,7 @@ public class Bytes
     private static byte byte1(int x) { return (byte)(x >>  8); }
     private static byte byte0(int x) { return (byte)(x >>  0); }
     
-    /** Java name for UTF-8 encoding */
-    private static final String encodingUTF8     = "utf-8" ;
-    
+
     /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x)
     {
@@ -207,39 +204,15 @@ public class Bytes
             return null ;
         }
     }
-    
-    private static Charset utf8 = null ;
-    
-    // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap.
-    // Initial pool size. Any additional encoder/decoder are later
-    // placed in the pool - it's an infinite, reusing, pool.
-    private static final int PoolSize = 1 ;
-    private static Pool<CharsetEncoder> encoders = new PoolSync<CharsetEncoder>() ;
-    private static Pool<CharsetDecoder> decoders = new PoolSync<CharsetDecoder>() ;
-    
-    static {
-        try {
-            utf8 = Charset.forName(encodingUTF8) ;
-            // Fill the pool.
-            for ( int i = 0 ; i < PoolSize ; i++ )
-            {
-                encoders.put(utf8.newEncoder()) ;
-                decoders.put(utf8.newDecoder()) ;
-            }
-        } catch (Throwable ex)
-        {
-            ex.printStackTrace(System.err);
-        }
-    }
-    
+
     /** Encode a string into a ByteBuffer */
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
-        CharsetEncoder enc = encoders.get();
+        CharsetEncoder enc = Chars.getEncoder();
         // Blocking finite Pool - does not happen.
         // Plain Pool (sync wrapped) - might - allocate an extra one. 
         if ( enc == null ) 
-            enc = utf8.newEncoder();
+            enc = Chars.utf8.newEncoder();
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
@@ -251,7 +224,7 @@ public class Bytes
         if ( r.isOverflow() )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
         enc.reset();
-        encoders.put(enc) ;
+        Chars.putEncoder(enc) ;
     }
     
     /** Decode a string into a ByteBuffer */
@@ -262,16 +235,16 @@ public class Bytes
         
         try
         {
-            CharsetDecoder dec = decoders.get();
+            CharsetDecoder dec = Chars.getDecoder();
             if ( dec == null )
-                dec = utf8.newDecoder() ;
+                dec = Chars.utf8.newDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
             // No need to flush - the packaged form decode(ByteBuffer) does that. 
 //            CoderResult r = dec.flush(cBuff) ;  // If no bytes, crashes here (illegal state).
 //            if ( r == CoderResult.OVERFLOW )
 //                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
             dec.reset() ;
-            decoders.put(dec) ;
+            Chars.putDecoder(dec) ;
             // Yuk - another copy.
             return cBuff.toString() ;
         } catch (CharacterCodingException ex)

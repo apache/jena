@@ -11,11 +11,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.CharsetDecoder;
+
+import lib.Chars;
+import lib.Log;
 
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.util.FileUtils;
-
-import lib.Log;
 
 /** Parsing-centric reader.  Faster than using BufferedReader, sometimes a lot fatser.
  *  1/ One character lookahead.
@@ -53,10 +57,60 @@ public final class PeekReader extends Reader
 
     private int currChar = UNSET ;
 
-    private Reader in;
+    private Source source;
     private long posn ;
     private long colNum ;
     private long lineNum ;
+    
+    // Local adapter/encapsulation
+    private interface Source
+    { 
+        int fill(char[] array) ;
+        void close() ; 
+    }
+    
+    static final class SourceReader implements Source
+    {
+        final Reader reader ;
+        SourceReader(Reader r) { reader = r ; }
+        
+        @Override
+        public void close()
+        { 
+            try { reader.close() ; } catch (IOException ex) { exception(ex) ; } 
+        }
+        
+        @Override
+        public int fill(char[] array)
+        {
+            try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+        }
+    }
+    
+    static final class SourceChannel implements Source
+    {
+        final ReadableByteChannel channel ;
+        CharsetDecoder decoder = Chars.createDecoder() ;
+        SourceChannel(ReadableByteChannel r) { channel = r ; }
+        
+        @Override
+        public void close()
+        { 
+            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
+        }
+        
+        @Override
+        public int fill(char[] array)
+        {
+            // Encoding foo.
+//             Bytes
+//             
+//            ByteBuffer b = ByteBuffer.wrap(null) ;
+//            
+//            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+            return -1 ;
+        }
+    }
     
     public static PeekReader make(Reader r)
     {
@@ -66,25 +120,29 @@ public final class PeekReader extends Reader
         if ( r instanceof BufferedReader )
             Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
             
-        return new PeekReader(r) ;
+        return new PeekReader(new SourceReader(r)) ;
     }
     
+    public static void exception(IOException ex)
+    { throw new TDBException(ex) ; }
+
     public static PeekReader makeUTF8(InputStream in) 
     {
         Reader r = FileUtils.asUTF8(in) ;
         return make(r) ;
     }
     
-    private PeekReader(Reader in)
+    private PeekReader(Source in)
     {
         this(in, CB_SIZE, PUSHBACK_SIZE) ;
     }
     
     /** Testing */
     public static PeekReader make(String x)         { return make(x, CB_SIZE) ; }
-    static PeekReader make(String x, int buffSize)  { return new PeekReader(new StringReader(x), buffSize, PUSHBACK_SIZE) ; }
+    static PeekReader make(String x, int buffSize)
+    { return new PeekReader(new SourceReader(new StringReader(x)), buffSize, PUSHBACK_SIZE) ; }
     
-    private PeekReader(Reader in, int buffSize, int pushBackSize)
+    private PeekReader(Source in, int buffSize, int pushBackSize)
     {
         this.chars = new char[buffSize];
         this.buffLen = 0 ;
@@ -93,12 +151,15 @@ public final class PeekReader extends Reader
         this.pushbackChars = new char[pushBackSize] ; 
         this.idxPushback = -1 ;
         
-        this.in = in;
+        this.source = in;
         this.colNum = 0;
         this.lineNum = 1;
         this.posn = 0 ;
         
-        oneChar() ;    // Advance always so that the peek character is valid.
+        // We start at charcater "-1", i.e. just before thr file starts.
+        // Advance always so that the peek character is valid (is character 0) 
+        // Returns the character before the file starts (i.e. UNSET).
+        oneChar() ;    
         if ( currChar == UNSET )
             setCurrChar(EOF) ;
     }
@@ -120,7 +181,7 @@ public final class PeekReader extends Reader
     @Override
     public void close() throws IOException
     {
-        in.close() ;
+        source.close() ;
     }
 
     @Override
@@ -197,17 +258,10 @@ public final class PeekReader extends Reader
 
     private int fillArray()
     {
-        try {
-            int x = in.read(chars) ;
-            idx = 0 ;
-            buffLen = x ;   // Maybe -1
-            return x ;
-        }
-        catch(IOException ex)
-        {
-            ex.printStackTrace(System.err) ;
-            return -1 ; 
-        }
+        int x = source.fill(chars) ;
+        idx = 0 ;
+        buffLen = x ;   // Maybe -1
+        return x ;
     }
     
     // Invariants.
