@@ -21,12 +21,15 @@ import lib.Log;
  *  1/ One character lookahead.
  *  2/ Line count
  *  3/ Not thread safe.
- * @author Andy Seaborne
  */ 
 
 
 public final class PeekReader extends Reader
 {
+    // Possible separation:
+    // An object that can fill the 'chars' array.  See fillArray.
+    // CharBuffer?
+    
     // Does buffering here instead of using a BufferedReader help?
     // YES.  A lot (Java6).
     
@@ -40,7 +43,7 @@ public final class PeekReader extends Reader
     static final int  EOF = -1 ;
     static final int  UNSET = -2 ;
     
-    private final char[] chars ;
+    private final char[] chars ;            // CharBuffer?
     
     private char[] pushbackChars ;
     private int idxPushback ;
@@ -176,17 +179,8 @@ public final class PeekReader extends Reader
     private void fillAndAdvance()
     {
         if ( idx >= buffLen )
-        {
-            try {
-                int x = in.read(chars) ;
-                idx = 0 ;
-                buffLen = x ;   // Maybe -1
-            }
-            catch(IOException ex)
-            {
-                ex.printStackTrace(System.err) ;
-            }
-        }
+            // Points outsize the array.  Refill it 
+            fillArray() ;
         
         // Advance one character.
         if ( buffLen >= 0 )
@@ -201,6 +195,21 @@ public final class PeekReader extends Reader
             setCurrChar(EOF) ;
     }
 
+    private int fillArray()
+    {
+        try {
+            int x = in.read(chars) ;
+            idx = 0 ;
+            buffLen = x ;   // Maybe -1
+            return x ;
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace(System.err) ;
+            return -1 ; 
+        }
+    }
+    
     // Invariants.
     // currChar is either chars[idx-1] or pushbackChars[idxPushback]
     private int oneChar()
