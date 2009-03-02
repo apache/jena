@@ -206,7 +206,7 @@ public class Bytes
     }
 
     /** Encode a string into a ByteBuffer */
-    public static void toByteBuffer(String s, ByteBuffer bb)
+    public static void toByteBuffer(CharSequence s, ByteBuffer bb)
     {
         CharsetEncoder enc = Chars.getEncoder();
         // Blocking finite Pool - does not happen.
