@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSForwardRuleReasoner.java,v 1.11 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: RDFSForwardRuleReasoner.java,v 1.12 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> 
- * @version $Revision: 1.11 $ on $Date: 2009-01-16 17:23:56 $ */
+ * @version $Revision: 1.12 $ on $Date: 2009-03-03 18:32:39 $ */
 
 public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
@@ -31,7 +31,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
 //    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
     
     /** The parsed rules */
-    protected static List ruleSet;
+    protected static List<Rule> ruleSet;
     
     /**
      * Constructor
@@ -45,7 +45,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
     /**
      * Return the RDFS rule set, loading it in if necessary
      */
-    public static List loadRules() {
+    public static List<Rule> loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE ); 
         return ruleSet;
     }

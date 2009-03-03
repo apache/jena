@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.38 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: GenericRuleReasoner.java,v 1.39 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.39 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -37,6 +37,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected RuleMode mode = HYBRID;
     
     /** Flag, if true we cache the closure of the pure rule set with its axioms */
+    @SuppressWarnings("hiding")
     protected static final boolean cachePreload = true;
     
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs, only applicable to HYBRID reasoners */
@@ -46,7 +47,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected boolean enableOWLTranslation = false;
     
     /** Optional set of preprocessing hooks  to be run in sequence during preparation time, only applicable to HYBRID modes */
-    protected HashSet preprocessorHooks;
+    protected HashSet<RulePreprocessHook> preprocessorHooks;
     
     /** Flag, if true then find results will be filtered to remove functors and illegal RDF */
     public boolean filterFunctors = true;
@@ -74,7 +75,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public GenericRuleReasoner(List rules) {
+    public GenericRuleReasoner(List<Rule> rules) {
         super(rules);
     }
     
@@ -94,7 +95,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public GenericRuleReasoner(List rules, ReasonerFactory factory) {
+    public GenericRuleReasoner(List<Rule> rules, ReasonerFactory factory) {
         super(rules, factory);
     }
     
@@ -102,7 +103,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    protected GenericRuleReasoner(List rules, Graph schemaGraph, ReasonerFactory factory, RuleMode mode) {
+    protected GenericRuleReasoner(List<Rule> rules, Graph schemaGraph, ReasonerFactory factory, RuleMode mode) {
         this(rules, factory);
         this.schemaGraph = schemaGraph;
         this.mode = mode;
@@ -135,7 +136,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * @param rules a list of Rule objects
      */
     @Override
-    public void setRules(List rules) {
+    public void setRules(List<Rule> rules) {
         // Currently redunant but it will differ from the inherited
         // version in the future
         super.setRules(rules);
@@ -185,7 +186,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      */
     public void addPreprocessingHook(RulePreprocessHook hook) {
         if (preprocessorHooks == null) {
-            preprocessorHooks = new HashSet();
+            preprocessorHooks = new HashSet<RulePreprocessHook>();
         }
         preprocessorHooks.add(hook);
     }
@@ -216,8 +217,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
 
     private void addRulesFromStrings( Resource value )
         {
-        Iterator it = getHasRuleStatements( value );
-        while (it.hasNext()) addRuleFromString( ((Statement) it.next()).getString() );
+        Iterator<Statement> it = getHasRuleStatements( value );
+        while (it.hasNext()) addRuleFromString( it.next().getString() );
         }
 
     private void addRuleFromString( String ruleString )
@@ -225,16 +226,16 @@ public class GenericRuleReasoner extends FBRuleReasoner {
 
     private void addRulesFromURLs( Resource value )
         {
-        Iterator that = getRuleSetURLStatements( value );
-        while (that.hasNext()) addRules( Rule.rulesFromURL( ((Statement) that.next()).getResource().getURI() ) );
+        Iterator<Statement> that = getRuleSetURLStatements( value );
+        while (that.hasNext()) addRules( Rule.rulesFromURL( that.next().getResource().getURI() ) );
         }
 
-    private Iterator getHasRuleStatements( Resource value )
+    private Iterator<Statement> getHasRuleStatements( Resource value )
         { 
         return value.listProperties( ReasonerVocabulary.hasRule ); 
         }
 
-    private Iterator getRuleSetURLStatements( Resource value )
+    private Iterator<Statement> getRuleSetURLStatements( Resource value )
         {
         return value.listProperties( ReasonerVocabulary.ruleSetURL ); 
         }
@@ -323,7 +324,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         } else if (mode == BACKWARD) {
             graph = tbox;
         } else {
-            List ruleSet = rules;
+            List<Rule> ruleSet = rules;
             graph = new FBRuleInfGraph(this, ruleSet, getPreload(), tbox);
             if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
             ((FBRuleInfGraph)graph).prepare();
@@ -334,8 +335,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         grr.setTransitiveClosureCaching(enableTGCCaching);
         grr.setFunctorFiltering(filterFunctors);
         if (preprocessorHooks != null) {
-            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                grr.addPreprocessingHook((RulePreprocessHook)i.next());
+            for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                grr.addPreprocessingHook(i.next());
             }
         }
         return grr;
@@ -366,15 +367,15 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             graph = new LPBackwardRuleInfGraph(this, getBruleStore(), data, schemaArg);
             ((LPBackwardRuleInfGraph)graph).setTraceOn(traceOn);
         } else {
-            List ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
+            List<Rule> ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
             FBRuleInfGraph fbgraph = new FBRuleInfGraph(this, ruleSet, schemaArg);
             graph = fbgraph; 
             if (enableTGCCaching) fbgraph.setUseTGCCache();
             fbgraph.setTraceOn(traceOn);
             fbgraph.setFunctorFiltering(filterFunctors);
             if (preprocessorHooks!= null) {
-                for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                    fbgraph.addPreprocessingHook((RulePreprocessHook)i.next());
+                for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                    fbgraph.addPreprocessingHook(i.next());
                 }
             }
         }

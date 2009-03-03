@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.32 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: ReasonerRegistry.java,v 1.33 2009-03-03 18:32:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2008-12-28 19:32:04 $
+ * @version $Revision: 1.33 $ on $Date: 2009-03-03 18:32:49 $
  */
 public class ReasonerRegistry {
 
@@ -44,7 +44,7 @@ public class ReasonerRegistry {
     protected static ReasonerRegistry theRegistry;
     
     /** Map from reasoner URI to the associated factory */
-    protected Map reasonerFactories = new HashMap();
+    protected Map<String, ReasonerFactory> reasonerFactories = new HashMap<String, ReasonerFactory>();
     
     /** Union of the all reasoner capability descriptions */
     protected Model allDescriptions;
@@ -132,7 +132,7 @@ public class ReasonerRegistry {
      * @return the ReasonerFactory instance for this reasoner
      */
     public ReasonerFactory getFactory(String uri) {
-        return (ReasonerFactory)reasonerFactories.get(uri);
+        return reasonerFactories.get(uri);
     }
     
     /**

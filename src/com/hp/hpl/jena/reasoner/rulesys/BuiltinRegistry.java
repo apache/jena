@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.27 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: BuiltinRegistry.java,v 1.28 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,17 +18,17 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.27 $ on $Date: 2008-12-28 19:32:09 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.28 $ on $Date: 2009-03-03 18:32:39 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
     public static BuiltinRegistry theRegistry;
     
     /** Mapping from functor name to Builtin implementing it */
-    protected Map builtins = new HashMap();
+    protected Map<String,Builtin> builtins = new HashMap<String,Builtin>();
     
     /** Mapping from URI of builtin to implementation */
-    protected Map builtinsByURI = new HashMap();
+    protected Map<String,Builtin> builtinsByURI = new HashMap<String,Builtin>();
     
     // Static initilizer for the singleton instance
     static {
@@ -119,7 +119,7 @@ public class BuiltinRegistry {
      * @return a Builtin or null if there is none registered under that name
      */
     public Builtin getImplementation(String functor) {
-        return (Builtin)builtins.get(functor);
+        return builtins.get(functor);
     }
     
     /**
@@ -128,7 +128,7 @@ public class BuiltinRegistry {
      * @return a Builtin or null if there is none registered under that name
      */
     public Builtin getImplementationByURI(String uri) {
-        return (Builtin)builtinsByURI.get(uri);
+        return builtinsByURI.get(uri);
     }
     
 }

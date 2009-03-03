@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ValidityReport.java,v 1.16 2009-01-16 17:23:59 andy_seaborne Exp $
+ * $Id: ValidityReport.java,v 1.17 2009-03-03 18:32:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * each of which has a severity, a type (string) and a description (string).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-01-16 17:23:59 $
+ * @version $Revision: 1.17 $ on $Date: 2009-03-03 18:32:49 $
  */
 public interface ValidityReport {
     
@@ -39,7 +39,7 @@ public interface ValidityReport {
     /**
      * Return an iterator over the separate ValidityReport.Report records.
      */
-    public Iterator getReports();
+    public Iterator<Report> getReports();
     
     // Inner class defining the datastructure of a single error report
     static class Report {

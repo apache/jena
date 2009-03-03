@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.13 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.14 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.14 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
@@ -29,7 +29,7 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
      * @param rules the rules to process
      * @param schema the (optional) schema graph to be included
      */
-    public RDFSRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
+    public RDFSRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
         super(reasoner, rules, schema);
     }
 
@@ -40,7 +40,7 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
      * @param schema the (optional) schema graph to be included
      * @param data the data graph to be processed
      */
-    public RDFSRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
+    public RDFSRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema, Graph data) {
         super(reasoner, rules, schema, data);
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.22 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.23 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.23 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
@@ -47,16 +47,16 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     protected static final String SIMPLE_RULE_FILE = "etc/rdfs-fb-tgc-simple.rules";
     
     /** The cached rule sets, indexed by processing level */
-    protected static HashMap ruleSets = new HashMap();
+    protected static Map<String, List<Rule>> ruleSets = new HashMap<String, List<Rule>>();
     
     /** The rule file names, indexed by processing level */
-    protected static HashMap ruleFiles;
+    protected static Map<String, String> ruleFiles;
     
     /** The (stateless) preprocessor for container membership properties */
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
     
     static {
-        ruleFiles = new HashMap();
+        ruleFiles = new HashMap<String, String>();
         ruleFiles.put(DEFAULT_RULES, RULE_FILE);
         ruleFiles.put(FULL_RULES, FULL_RULE_FILE);
         ruleFiles.put(SIMPLE_RULES, SIMPLE_RULE_FILE);
@@ -141,14 +141,15 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     public InfGraph bind(Graph data) throws ReasonerException {
         Graph schemaArg = schemaGraph == null ? getPreload() : schemaGraph;
         InfGraph graph = null; 
-        List ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
+        List<Rule> ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
         FBRuleInfGraph fbgraph = new RDFSRuleInfGraph(this, ruleSet, schemaArg);
         graph = fbgraph; 
         if (enableTGCCaching) fbgraph.setUseTGCCache();
         fbgraph.setTraceOn(traceOn);
         if (preprocessorHooks!= null) {
-            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                fbgraph.addPreprocessingHook((RulePreprocessHook)i.next());
+            for (RulePreprocessHook rulePreprocessHook : preprocessorHooks)
+            {
+                fbgraph.addPreprocessingHook(rulePreprocessHook);
             }
         }
         graph.setDerivationLogging(recordDerivations);
@@ -174,8 +175,9 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         grr.setTransitiveClosureCaching(enableTGCCaching);
         grr.setFunctorFiltering(filterFunctors);
         if (preprocessorHooks != null) {
-            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                grr.addPreprocessingHook((RulePreprocessHook)i.next());
+            for (RulePreprocessHook rulePreprocessHook : preprocessorHooks)
+            {
+                grr.addPreprocessingHook(rulePreprocessHook);
             }
         }
         return grr;
@@ -185,10 +187,10 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      * Return the RDFS rule set, loading it in if necessary.
      * @param level a string defining the processing level required
      */
-    public static List loadRulesLevel(String level) {
-        List ruleSet = (List)ruleSets.get(level);
+    public static List<Rule> loadRulesLevel(String level) {
+        List<Rule> ruleSet = ruleSets.get(level);
         if (ruleSet == null) {
-            String file = (String)ruleFiles.get(level);
+            String file = ruleFiles.get(level);
             if (file == null) {
                 throw new ReasonerException("Illegal RDFS conformance level: " + level);
             }

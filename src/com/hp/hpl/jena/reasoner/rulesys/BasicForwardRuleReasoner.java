@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.20 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.21 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
@@ -19,14 +19,14 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.20 $ on $Date: 2008-12-28 19:32:09 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.21 $ on $Date: 2009-03-03 18:32:39 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
     protected ReasonerFactory factory;
 
     /** The rules to be used by this instance of the forward engine */
-    protected List rules;
+    protected List<Rule> rules;
     
     /** A precomputed set of schema deductions */
     protected InfGraph schemaGraph;
@@ -45,7 +45,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public BasicForwardRuleReasoner(List rules) {
+    public BasicForwardRuleReasoner(List<Rule> rules) {
         this.rules = rules;
     }
     
@@ -54,7 +54,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public BasicForwardRuleReasoner(List rules, ReasonerFactory factory) {
+    public BasicForwardRuleReasoner(List<Rule> rules, ReasonerFactory factory) {
         this.rules = rules;
         this.factory = factory;
     }
@@ -63,7 +63,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    private BasicForwardRuleReasoner(List rules, InfGraph schemaGraph, ReasonerFactory factory) {
+    private BasicForwardRuleReasoner(List<Rule> rules, InfGraph schemaGraph, ReasonerFactory factory) {
         this.rules = rules;
         this.schemaGraph = schemaGraph;
         this.factory = factory;
@@ -148,7 +148,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Return the this of Rules used by this reasoner
      * @return a List of Rule objects
      */
-    public List getRules() {
+    public List<Rule> getRules() {
         return rules;
     } 
    

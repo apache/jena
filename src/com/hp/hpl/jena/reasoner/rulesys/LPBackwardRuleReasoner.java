@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleReasoner.java,v 1.12 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: LPBackwardRuleReasoner.java,v 1.13 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.13 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -33,7 +33,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
     protected ReasonerFactory factory;
     
     /** The rules to be used by this instance of the backward engine */
-    protected List rules;
+    protected List<Rule> rules;
     
     /** Indexed, normalized copy of the rule list */
     protected LPRuleStore ruleStore;
@@ -55,7 +55,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public LPBackwardRuleReasoner(List rules) {
+    public LPBackwardRuleReasoner(List<Rule> rules) {
         this.rules = rules;
         ruleStore = new LPRuleStore(rules);
     }
@@ -65,7 +65,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public LPBackwardRuleReasoner(List rules, ReasonerFactory factory) {
+    public LPBackwardRuleReasoner(List<Rule> rules, ReasonerFactory factory) {
         this.rules = rules;
         this.factory = factory;
         ruleStore = new LPRuleStore(rules);
@@ -166,7 +166,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
      * Return the this of Rules used by this reasoner
      * @return a List of Rule objects
      */
-    public List getRules() {
+    public List<Rule> getRules() {
         return rules;
     } 
    

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSFBRuleReasoner.java,v 1.12 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: RDFSFBRuleReasoner.java,v 1.13 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * based upon the basic backward rule interpreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.13 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class RDFSFBRuleReasoner extends FBRuleReasoner {
     
@@ -28,7 +28,7 @@ public class RDFSFBRuleReasoner extends FBRuleReasoner {
     public static final String RULE_FILE = "etc/rdfs-fb.rules";
     
     /** The parsed rules */
-    protected static List ruleSet;
+    protected static List<Rule> ruleSet;
     
     /**
      * Constructor
@@ -40,7 +40,7 @@ public class RDFSFBRuleReasoner extends FBRuleReasoner {
     /**
      * Return the RDFS rule set, loading it in if necessary
      */
-    public static List loadRules() {
+    public static List<Rule> loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
     }

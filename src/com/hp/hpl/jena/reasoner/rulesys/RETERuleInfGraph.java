@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETERuleInfGraph.java,v 1.13 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: RETERuleInfGraph.java,v 1.14 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * RETE implementation of the forward rule infernce graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.14 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
@@ -48,7 +48,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      * @param rules the list of rules to use this time
      * @param schema the (optional) schema or preload data which is being processed
      */
-    public RETERuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
+    public RETERuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
         super(reasoner, rules, schema);
     }    
 
@@ -61,7 +61,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
       * @param schema the (optional) schema or preload data which is being processed
       * @param data the data graph to be processed
       */
-     public RETERuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
+     public RETERuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema, Graph data) {
          super(reasoner, rules, schema, data);
      }
 
@@ -71,7 +71,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      * @param rules the rule set or null if there are not rules bound in yet.
      */
     @Override
-    protected void instantiateRuleEngine(List rules) {
+    protected void instantiateRuleEngine(List<Rule> rules) {
         if (rules != null) {
             engine = new RETEEngine(this, rules);
         } else {

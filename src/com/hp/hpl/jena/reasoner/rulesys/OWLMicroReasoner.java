@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasoner.java,v 1.11 2009-01-16 17:23:56 andy_seaborne Exp $
+ * $Id: OWLMicroReasoner.java,v 1.12 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2009-01-16 17:23:56 $
+ * @version $Revision: 1.12 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
 
@@ -37,12 +37,12 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
     protected static final String MICRO_RULE_FILE = "etc/owl-fb-micro.rules";
     
     /** The parsed rules */
-    protected static List microRuleSet;
+    protected static List<Rule> microRuleSet;
     
     /**
      * Return the rule set, loading it in if necessary
      */
-    public static List loadRules() {
+    public static List<Rule> loadRules() {
         if (microRuleSet == null) microRuleSet = loadRules( MICRO_RULE_FILE );
         return microRuleSet;
     }

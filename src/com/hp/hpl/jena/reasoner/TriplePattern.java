@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.30 2009-01-16 17:23:59 andy_seaborne Exp $
+ * $Id: TriplePattern.java,v 1.31 2009-03-03 18:32:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2009-01-16 17:23:59 $
+ * @version $Revision: 1.31 $ on $Date: 2009-03-03 18:32:49 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -152,7 +152,7 @@ public class TriplePattern implements ClauseEntry {
      * of the same variable.
      */
     public boolean variantOf(TriplePattern pattern) {
-        Map vmap = CollectionFactory.createHashedMap();
+        Map<Node, Node> vmap = CollectionFactory.createHashedMap();
         if ( ! variantOf(subject, pattern.subject, vmap) ) return false;
         if ( ! variantOf(predicate, pattern.predicate, vmap) ) return false;
         if (Functor.isFunctor(object) && Functor.isFunctor(pattern.object)) {
@@ -174,7 +174,7 @@ public class TriplePattern implements ClauseEntry {
     /**
      * Test if one node is a variant of another give a table of variable matches.
      */
-    private boolean variantOf(Node n, Node p, Map vmap) {
+    private boolean variantOf(Node n, Node p, Map<Node, Node> vmap) {
         if (n instanceof Node_RuleVariable) {
             if (p instanceof Node_RuleVariable) {
                 Object nMatch = vmap.get(n);

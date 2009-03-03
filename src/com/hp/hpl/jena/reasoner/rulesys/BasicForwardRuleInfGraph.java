@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.53 2009-01-26 10:28:21 chris-dollin Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.54 2009-03-03 18:32:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.53 $ on $Date: 2009-01-26 10:28:21 $
+ * @version $Revision: 1.54 $ on $Date: 2009-03-03 18:32:39 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -52,12 +52,12 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     protected FRuleEngineI engine;
     
     /** The original rule set as supplied */
-    protected List<Rule> rules;
+    private List<Rule> rules;
     
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     protected boolean traceOn = false;
     
-    protected static Log logger = LogFactory.getLog(BasicForwardRuleInfGraph.class);
+    private static Log logger = LogFactory.getLog(BasicForwardRuleInfGraph.class);
     
 //=======================================================================
 // Core methods
