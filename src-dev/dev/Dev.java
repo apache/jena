@@ -44,6 +44,7 @@ public class Dev
     
     // ---- Optimizer
     //   Relationship of filter placement and OpExecutor and StageGenerators.
+    //   The disjunction/UNION rewrite
     
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)
