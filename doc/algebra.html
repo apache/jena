@@ -78,11 +78,11 @@ calls to the writer operation from the
 <code>com.hp.hpl.jena.sparql.sse.writer</code>
 package.</p>
 <h2>Creating an algebra expression programmatically</h2>
-<p>See the example in src-examples/ arq.examples.AlgebraExec.</p>
+<p>See the example in <code>src-examples/arq.examples.AlgebraExec</code>.</p>
 <p>To produce the complete javadoc for ARQ, download an ARQ distribution and run 
 the ant task 'javadoc-all'.</p>
 <h2>Evaluating a algebra expression</h2>
-<p>See the example in src-examples/ arq.examples.AlgebraExec.</p><font SIZE="1">
+<p>See the example in <code>src-examples/arq.examples.AlgebraExec</code>.</p><font SIZE="1">
 <pre class="box">QueryIterator qIter = Algebra.<i>exec</i>(op,graph) ;</pre>
 <pre class="box">QueryIterator qIter = Algebra.<i>exec</i>(op,datasetGraph) ;</pre>
 <p>Evaluating an algebra expression produces a iterator of query solutions 
@@ -99,7 +99,8 @@ qIter.close() ;</pre>
 <font SIZE="1">
 <p>Operations of <code>CONSTRUCT</code>, <code>DESCRIBE</code>
 and <code>ASK</code> are done on on top of algebra evaluation. Applications can 
-access this functionality by creating their own <code>QueryEngine</code> (see arq.examples.engine.MyQueryEngine) 
+access this functionality by creating their own <code>QueryEngine</code> (see 
+<code>arq.examples.engine.MyQueryEngine</code>) 
 and it's factory. A query engine is a one-time use object for each query 
 execution.</p>
 </font>
