@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
+import lib.Sink;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;

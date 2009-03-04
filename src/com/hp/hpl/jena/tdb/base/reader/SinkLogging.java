@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
+import lib.Sink;
 import org.slf4j.Logger;
 
 public class SinkLogging<T> implements Sink<T>

@@ -40,6 +40,8 @@ import java.util.concurrent.BlockingQueue;
 import lib.CacheSetLRU;
 import lib.InternalError;
 import lib.Log;
+import lib.SinkNull;
+import lib.Sink;
 import lib.Tuple;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -267,7 +269,7 @@ public final class NodeTupleReader
     // Testing
     NodeTupleReader(String string)
   {
-        this(new NullSink<Tuple<Node>>(), PeekReader.make(string), null) ;
+        this(new SinkNull<Tuple<Node>>(), PeekReader.make(string), null) ;
   }
     
     private NodeTupleReader(Sink<Tuple<Node>> sink, PeekReader reader, String base)

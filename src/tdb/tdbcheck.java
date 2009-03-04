@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.SinkNull;
 import lib.Tuple;
 
 import arq.cmd.CmdUtils;
@@ -33,7 +34,6 @@ import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 
 import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
-import com.hp.hpl.jena.tdb.base.reader.NullSink;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -101,7 +101,7 @@ public class tdbcheck extends CmdARQ
             if ( forceISO8859 )
                 forceISO8859() ;
 
-            NullSink<Tuple<Node>> x = NullSink.create() ;
+            SinkNull<Tuple<Node>> x = SinkNull.create() ;
             NodeTupleReader.read(x, System.in, null) ;
         }
     }
@@ -121,7 +121,7 @@ public class tdbcheck extends CmdARQ
             return ;
         }
 
-        NodeTupleReader.read(new NullSink<Tuple<Node>>(), r, null) ;
+        NodeTupleReader.read(new SinkNull<Tuple<Node>>(), r, null) ;
     }
 
     @Override

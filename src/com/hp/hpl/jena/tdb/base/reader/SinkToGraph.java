@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
+import lib.Sink;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 

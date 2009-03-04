@@ -4,15 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.reader;
+package lib;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
 
-/** Interface for the destination of things */
-public interface Sink<T> extends Closeable
+
+public final class SinkNull<T> implements Sink<T>
 {
-    void send(T item) ;
-    void flush() ;
+    public static <X> SinkNull<X> create() { return new SinkNull<X>() ; }
+    
+    @Override public void send(T thing)  {}
+    @Override public void close() {}
+    @Override public void flush() { }
 }
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
