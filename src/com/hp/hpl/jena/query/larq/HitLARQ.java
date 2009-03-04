@@ -12,8 +12,8 @@ import com.hp.hpl.jena.graph.Node;
 
 public class HitLARQ
 {
-    private Node node ;
-    private float score ;
+    protected Node node ;
+    protected float score ;
 
     public HitLARQ(Hit hit)
     {
