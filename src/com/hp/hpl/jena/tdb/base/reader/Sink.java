@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.base.reader;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 
-/** Interface for the desination of things */
+/** Interface for the destination of things */
 public interface Sink<T> extends Closeable
 {
     void send(T item) ;
+    void flush() ;
 }
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP

@@ -44,6 +44,9 @@ public abstract class SinkToGraph<T> implements Sink<T>
     }
 
     @Override
+    public void flush() { }
+    
+    @Override
     public void close()
     {
         EventManager.unregister(this, NodeTupleReader.startRead, el1) ;

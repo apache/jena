@@ -21,9 +21,9 @@ public class SinkLogging<T> implements Sink<T>
         log.info("Sink: "+item) ;
     }
 
-    @Override
-    public void close()
-    {}
+    @Override public void flush() { }
+    @Override public void close() {}
+
 }
 
 /*

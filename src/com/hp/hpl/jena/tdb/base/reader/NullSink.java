@@ -13,6 +13,7 @@ public final class NullSink<T> implements Sink<T>
     
     @Override public void send(T thing)  {}
     @Override public void close() {}
+    @Override public void flush() { }
 }
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP

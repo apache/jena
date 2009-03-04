@@ -171,6 +171,9 @@ public final class NodeTupleReader
                     throw new InternalError("NodeTupleReader: InterruptedException") ;
                 }
             }
+             
+            @Override public void flush() { }
+            
             @Override
             public void close()
             { send(endMarker) ; }

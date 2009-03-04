@@ -11,6 +11,7 @@ public final class SinkCounting<T> implements Sink<T>
 {
     public long count = 0 ; 
     @Override public void send(T thing)  { count++ ; }
+    @Override public void flush() { }
     @Override public void close() {}
 }
 /*
