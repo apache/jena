@@ -1,10 +1,12 @@
-PREFIX concepts: <http://example/>
+PREFIX : <http://example/>
 
-SELECT ?concept ?property ?value 
-{ 
-  { ?concept ?property ?value . FILTER (?concept = concepts:ConceptId1) }
-  UNION 
-  { ?concepts ?property ?value . FILTER (?concept = concepts:ConceptId2) } 
+SELECT  ?s ?n ?a ?h ?w ?g ?c
+WHERE {
+  ?s :age  ?a .
+  ?s :height  ?h .
+  ?s :weight  ?w .
+  ?s :country  ?c .
+  ?s :gender  ?g .
+  ?s :name ?n .
+  FILTER regex(?n, "Dor")
 }
-
-
