@@ -271,7 +271,6 @@ public class WriterOp
         {
             start(opService, NoNL) ;
             out.println(FmtUtils.stringForNode(opService.getService())) ;
-            out.incIndent() ;
             opService.getSubOp().visit(this) ;
             finish(opService) ;
         }

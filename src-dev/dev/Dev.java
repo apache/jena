@@ -8,6 +8,7 @@ package dev;
 
 public class Dev
 {
+    // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
     // (Jena) Cached IRI checking (minor)
     

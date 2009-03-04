@@ -1,9 +1,10 @@
-PREFIX vcard:      <http://www.w3.org/2001/vcard-rdf/3.0#>
-PREFIX elements:         <http://purl.org/dc/elements/1.1/>
+PREFIX concepts: <http://example/>
 
-SELECT ?title
-             WHERE  {
-              ?uri vcard:FN "John Smith-7" .
-              ?bookURI elements:creator ?uri . 
-              ?bookURI elements:title ?title . 
-             }
+SELECT ?concept ?property ?value 
+{ 
+  { ?concept ?property ?value . FILTER (?concept = concepts:ConceptId1) }
+  UNION 
+  { ?concepts ?property ?value . FILTER (?concept = concepts:ConceptId2) } 
+}
+
+
