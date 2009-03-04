@@ -78,6 +78,42 @@ public class Log
     {
         return LoggerFactory.getLogger(cls) ;
     }
+    
+    /** Turn on a logger (all levels). 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void enable(String logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ALL) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.ALL) ;
+    }
+    
+    /** Turn on a logger (all levels). 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void enable(Class<?> logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ALL) ;
+        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.ALL) ;
+    }
+    
+    /** Turn on a logger (all levels). 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void disable(String logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.OFF) ;
+    }
+    /** Turn on a logger (all levels). 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void disable(Class<?> logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
+        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.OFF) ;
+    }
+
 }
 
 /*
