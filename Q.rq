@@ -1,12 +1,6 @@
 PREFIX : <http://example/>
 
-SELECT  ?s ?n ?a ?h ?w ?g ?c
-WHERE {
-  ?s :age  ?a .
-  ?s :height  ?h .
-  ?s :weight  ?w .
-  ?s :country  ?c .
-  ?s :gender  ?g .
-  ?s :name ?n .
-  FILTER regex(?n, "Dor")
+SELECT *
+{
+    "a" :foo "b" .
 }
