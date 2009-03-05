@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb;
 
 public class ConfigTest
 {
-    public static final String testingDir = "testing/tmp" ;
+    public static final String testingDir = "tmp/testing" ;
 }
 
 /*

@@ -24,7 +24,7 @@ public class tdbtest
 {
     public static void main(String ... argv)
     {
-        //ensureDir("tmp") ;
+        ensureDir("tmp") ;
         ensureDir(ConfigTest.testingDir) ; 
         
         PrintStream out = System.out ;
