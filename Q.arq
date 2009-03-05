@@ -4,8 +4,6 @@ PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
 
 SELECT ?concept ?property ?value 
 { 
-   ?s ?p ?o .
-   (?x ?y) apf:textMatch ('foo' 100 2) .
-    EXT jfn:debug(?x ?y)
-    SERVICE <http://host/> { ?s :p ?o1 }
+   SERVICE <http://host/> { ?s ?p ?o . }
+   OPTIONAL {?s ?p1 ?o1 . SERVICE <http://host/> { ?s ?p1 ?o1 }}
 }
