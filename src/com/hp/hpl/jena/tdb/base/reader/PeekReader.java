@@ -25,6 +25,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *  1/ One character lookahead.
  *  2/ Line count
  *  3/ Not thread safe.
+ * Initially, line = 1, col = 1.  Columns go 1..N
  */ 
 
 
@@ -59,6 +60,10 @@ public final class PeekReader extends Reader
 
     private Source source;
     private long posn ;
+    
+    public static final int INIT_LINE = 1 ;
+    public static final int INIT_COL = 1 ;
+    
     private long colNum ;
     private long lineNum ;
     
@@ -152,16 +157,18 @@ public final class PeekReader extends Reader
         this.idxPushback = -1 ;
         
         this.source = in;
-        this.colNum = 0;
-        this.lineNum = 1;
+        this.colNum = INIT_COL ;
+        this.lineNum = INIT_LINE ;
         this.posn = 0 ;
         
         // We start at charcater "-1", i.e. just before thr file starts.
         // Advance always so that the peek character is valid (is character 0) 
         // Returns the character before the file starts (i.e. UNSET).
-        oneChar() ;    
-        if ( currChar == UNSET )
-            setCurrChar(EOF) ;
+        
+        //OPPS - means we read char.
+//        oneChar() ;    
+//        if ( currChar == UNSET )
+//            setCurrChar(EOF) ;
     }
 
     public long getLineNum()            { return lineNum; }
@@ -170,7 +177,20 @@ public final class PeekReader extends Reader
 
     public long getPosition()           { return posn; }
 
-    public int peekChar()               { return currChar ; }
+    //---- Do not access currChar except with peekChar/setCurrChar.
+    public int peekChar()
+    { 
+        // If not started ... delayed initialization.
+        if ( currChar == UNSET )
+            init() ;
+        return currChar ;
+    }
+    
+    // And the correct way to read the currChar is to call peekChar.
+    private void setCurrChar(int ch)
+    {
+        currChar = ch ;
+    }
     
     public int readChar()               { return oneChar() ; }
     
@@ -189,7 +209,7 @@ public final class PeekReader extends Reader
     {
         if ( eof() )
             return EOF ;
-        int x = oneChar() ;
+        int x = readChar() ;
         return x ;
     }
     
@@ -201,7 +221,7 @@ public final class PeekReader extends Reader
         // Note - need to preserve line count, so single char ops are reasonably efficient.
         for ( int i = 0 ; i < len ; i++ )
         {
-            int ch = oneChar() ;
+            int ch = readChar() ;
             if ( ch == EOF )
                 return (i==0)? EOF : i ;
             cbuf[i+off] = (char)ch ;
@@ -209,7 +229,7 @@ public final class PeekReader extends Reader
         return len ;
     }
 
-    public final boolean eof()   { return currChar == EOF ; }
+    public final boolean eof()   { return peekChar() == EOF ; }
 
     // ----------------
     // The methods below are the only ones to manipulate the character buffers.
@@ -236,6 +256,13 @@ public final class PeekReader extends Reader
         setCurrChar(ch) ;
     }
     
+    private void init()
+    {
+        fillAndAdvance() ; 
+        if ( currChar == UNSET )
+            setCurrChar(EOF) ;
+    }
+
     // Ensure the buffer is not empty, or boolean eof is set
     private void fillAndAdvance()
     {
@@ -249,7 +276,6 @@ public final class PeekReader extends Reader
             // Advance the lookahead character
             setCurrChar(chars[idx]) ;
             idx++ ;
-            posn++ ;
         }  
         else
             // Buffer empty, end of stream.
@@ -268,7 +294,7 @@ public final class PeekReader extends Reader
     // currChar is either chars[idx-1] or pushbackChars[idxPushback]
     private int oneChar()
     {
-        int ch = currChar ;
+        int ch = peekChar() ;
         if ( ch == EOF )
             return EOF ;
         
@@ -279,11 +305,12 @@ public final class PeekReader extends Reader
         }
 
         fillAndAdvance() ;
+        posn++ ;
         
         if (ch == '\n')
         {
             lineNum++;
-            colNum = 0;
+            colNum = INIT_COL ;
         } 
         else
             colNum++;
@@ -309,11 +336,6 @@ public final class PeekReader extends Reader
             // Had been a read.
             nextCurrChar = chars[idx-1] ;
         setCurrChar(nextCurrChar) ;
-    }
-
-    private void setCurrChar(int ch)
-    {
-        currChar = ch ;
     }
 }
 
