@@ -12,6 +12,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestIndentedWriter.class
+    , TestPeekReader.class
+    , TestBufferingWriter.class
 } )
 public class TS_IO
 {

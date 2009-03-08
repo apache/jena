@@ -4,9 +4,8 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.reader;
+package lib;
 
-import lib.Sink;
 
 
 public final class SinkCounting<T> implements Sink<T>

@@ -4,9 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.reader;
+package io;
 
-import com.hp.hpl.jena.tdb.base.reader.PeekReader;
+import io.PeekReader;
 
 import org.junit.Test;
 import test.BaseTest;

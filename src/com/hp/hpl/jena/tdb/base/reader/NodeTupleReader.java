@@ -29,6 +29,8 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
+import io.PeekReader;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.reader;
+package io;
 
 import java.io.BufferedReader;
 import java.io.IOException;

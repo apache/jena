@@ -10,6 +10,7 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 
 import lib.ColumnMap;
+import lib.SinkCounting;
 import lib.Tuple;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
@@ -33,7 +35,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
-import com.hp.hpl.jena.tdb.base.reader.SinkCounting;
 import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
