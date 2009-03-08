@@ -208,14 +208,21 @@ public class Bytes
     public static void toByteBuffer(CharSequence s, ByteBuffer bb)
     {
         CharsetEncoder enc = Chars.getEncoder();
-        
+
         // Blocking finite Pool - does not happen.
         // Plain Pool (sync wrapped) - might - allocate an extra one. 
         if ( enc == null ) 
             enc = Chars.createEncoder() ;
-//        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
-//                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
-        
+        //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
+        //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
+
+        toByteBuffer(s, bb, enc) ;
+        Chars.putEncoder(enc) ;
+    }
+    
+    /** Encode a string into a ByteBuffer */
+    public static void toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc)
+    {
         CharBuffer cBuff = CharBuffer.wrap(s);
         CoderResult r = enc.encode(cBuff, bb, true) ;
         if ( r.isOverflow() )
@@ -224,27 +231,33 @@ public class Bytes
         if ( r.isOverflow() )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
         enc.reset();
-        Chars.putEncoder(enc) ;
     }
     
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
+    {
+        CharsetDecoder dec = Chars.getDecoder();
+        if ( dec == null )
+            dec = Chars.createDecoder() ;
+        String x = fromByteBuffer(bb, dec) ;
+        Chars.putDecoder(dec) ;
+        return x ;
+    }
+    
+    /** Decode a string into a ByteBuffer */
+    public static String fromByteBuffer(ByteBuffer bb, CharsetDecoder dec)
     {
         if ( bb.remaining() == 0 )
             return "" ;
         
         try
         {
-            CharsetDecoder dec = Chars.getDecoder();
-            if ( dec == null )
-                dec = Chars.createDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
             // No need to flush - the packaged form decode(ByteBuffer) does that. 
 //            CoderResult r = dec.flush(cBuff) ;  // If no bytes, crashes here (illegal state).
 //            if ( r == CoderResult.OVERFLOW )
 //                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
             dec.reset() ;
-            Chars.putDecoder(dec) ;
             // Yuk - another copy.
             return cBuff.toString() ;
         } catch (CharacterCodingException ex)

@@ -8,6 +8,7 @@ package io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.WritableByteChannel;
@@ -21,20 +22,28 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDBException;
 
-public class BufferingWriter //extends Writer
+/** Buffering writer (and own methods which do not throw checked exceptions).
+ *  Only support UTF-8. 
+ *  <p>
+ *  The java.io classes have hidden synchronization so in some very critical
+ *  situations, this can be expensive (such situations are not common).
+ *  This class generalises the notion of destination via the Sink
+ *  abstraction (block output based on ByteBuffers).
+ *  </p>
+ *  This class is not thread safe.
+
+ *  @see PeekReader 
+ */
+
+public final class BufferingWriter extends Writer
 {
     private static Logger log = LoggerFactory.getLogger(BufferingWriter.class) ;
     
-    // Opposite of PeekReader. 
+    // ComOpposite of PeekReader. 
     // As usualy, the java.io classes have hidden synchronization
     // so in some very critical situations, this can be expensive.
     // Also, this class generalises the notion of destination via the Sink
-    // abstraction. 
-    
-    // If we are buffering, will write decent size units so
-    // simply check if output stream of a socket has an additional copy
-    // otherwise use a charbuffer/bytebuffer.
-    // NIO is probably optimized (e.g. sun.misc.unsafe).
+    // abstraction (block  outout based on ByteBuffers). 
     
     // UTF-8 notes:
     // In the very worse case, one codepoint is 4 bytes.  That's very unlikely.
@@ -43,32 +52,34 @@ public class BufferingWriter //extends Writer
     // to find the length).  The effect is just that not quite 8K bytes will
     // be sent, assumning that typical items are in the range 0-100 chars.
   
-    
+    // Default sizes
     private static final int SIZE = 8*1024 ;                // Unit size in bytes.
     private static final int BLOB_SIZE = SIZE/2 ;           // Large object size, worse case, bytes
     
+    // Sizes for this instance
     private final int blockSize ;
     private final int blobSize ;
     
     private ByteBuffer buffer = ByteBuffer.allocate(SIZE) ;
     private Sink<ByteBuffer> out ;
-    
-//    /** Create output to a byte buffer - for testing - the byte buffer must be large enough */ 
-//    public static BufferingWriter create(ByteBuffer byteBuffer, int size, int blobSize)
-//    { return new  BufferingWriter(byteBuffer, size, blobSize) ; }
-    
+    private char[] oneChar = new char[1] ;
+
+    /** Convenience factor operation to output to a WritableByteChannel */
     public static BufferingWriter create(WritableByteChannel out)
     {
         return create(out, SIZE) ;
     }
     
+    /** Convenience factor operation to output to a WritableByteChannel */
     public static BufferingWriter create(WritableByteChannel out, int size)
     {
         return new BufferingWriter(new SinkChannel(out), size, size/2) ;
     }
     
+    /** Create a buffering output stream of charcaters to a {@link lib.Sink} */
     public BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
     
+    /** Create a buffering output stream of charcaters to a {@link lib.Sink} */
     public BufferingWriter(Sink<ByteBuffer> sink, int size, int blobSize)
     {
         this.out = sink ;
@@ -76,12 +87,7 @@ public class BufferingWriter //extends Writer
         this.blobSize = blobSize ;
     }
     
-//    public BufferingWriter(OutputStream out)
-//    {
-//        this.out = FileUtils.asUTF8(out) ;
-//    }
-
-    // Nice names.  No exceptions.
+    /** Output characters (The String class implements CharSequence)*/
     public void output(CharSequence string)
     {
         int space = string.length() ;   // Chars
@@ -112,16 +118,30 @@ public class BufferingWriter //extends Writer
         return buffer.position() ;
     }
 
+    /** Output an array of characters */
     public void output(char chars[])
     {
         output(CharBuffer.wrap(chars)) ;
     }
     
-    // Not ideal.
+    /** Output an array of characters
+     * 
+     * @param chars     Characters
+     * @param start     Start (inclusive)
+     * @param finish    Finish (exclusive)
+     */
+    public void output(char chars[],int start, int finish)
+    {
+        output(CharBuffer.wrap(chars, start, finish)) ;
+    }
+    
+
+    /** Output a single character */
     public void output(int ch)
     {
-        char[] b = { (char)ch } ;
-        output(b) ;
+        oneChar[0] = (char)ch ;
+        output(oneChar) ;
+        oneChar[0] = 0;
     }
     
     private static void send(Sink<ByteBuffer> out, ByteBuffer bb)
@@ -147,13 +167,13 @@ public class BufferingWriter //extends Writer
 
     // ---- Writer
     
-    //@Override
+    @Override
     public void close()
     {
         out.close() ;
     }
 
-    //@Override
+    @Override
     public void flush()
     {
         if ( bufferSize() > 0 )
@@ -224,32 +244,30 @@ public class BufferingWriter //extends Writer
         public void flush()
         { try { out.flush() ; } catch (IOException ex) { exception(ex) ; } }
     }
-    
 
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException
+    {
+        output(CharBuffer.wrap(cbuf, off, len)) ;
+    }
+    
+    @Override
+    public void write(char[] cbuf) throws IOException
+    {
+        write(cbuf, 0, cbuf.length) ;
+    }
     
 //    @Override
-//    public void write(char[] cbuf, int off, int len) throws IOException
-//    {
-//        output(CharBuffer.wrap(cbuf, off, len)) ;
-//    }
-//    
-//    @Override
-//    public void write(char[] cbuf) throws IOException
-//    {
-//        write(cbuf, 0, cbuf.length) ;
-//    }
-//    
-////    @Override
-////    public void write(String string, int off, int len) throws IOException
-////    { }
-//    
-//    @Override
-//    public void write(String string) throws IOException
-//    { output(string) ; }
-//    
-//    @Override
-//    public void write(int ch) throws IOException
-//    { outpout(ch) ; } 
+//    public void write(String string, int off, int len) throws IOException
+//    { }
+    
+    @Override
+    public void write(String string) throws IOException
+    { output(string) ; }
+    
+    @Override
+    public void write(int ch) throws IOException
+    { output(ch) ; } 
 }
 
 /*

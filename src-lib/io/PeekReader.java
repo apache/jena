@@ -21,20 +21,20 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** Parsing-centric reader.  Faster than using BufferedReader, sometimes a lot fatser.
- *  1/ One character lookahead.
- *  2/ Line count
- *  3/ Not thread safe.
- * Initially, line = 1, col = 1.  Columns go 1..N
+/** Parsing-centric reader.
+ *  <p>Faster than using BufferedReader, sometimes a lot faster when
+ *  tokenizing is the critical performance point.
+ *  </p>
+ *  <p>Supports a line and column
+ *  count. Initially, line = 1, col = 1.  Columns go 1..N
+ *  </p>
+ *  This class is not thread safe.
+ * @see BufferingWriter
  */ 
 
 
 public final class PeekReader extends Reader
 {
-    // Possible separation:
-    // An object that can fill the 'chars' array.  See fillArray.
-    // CharBuffer?
-    
     // Does buffering here instead of using a BufferedReader help?
     // YES.  A lot (Java6).
     
