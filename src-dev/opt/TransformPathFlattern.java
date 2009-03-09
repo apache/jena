@@ -25,19 +25,22 @@ public class TransformPathFlattern extends TransformCopy
     @Override
     public Op transform(OpPath opPath)
     {
-        return super.transform(opPath) ;
+//        if ( true )
+            return super.transform(opPath) ;
+        
 //        Path path = opPath.getTriplePath().getPath() ;
 //        
-//        // Step 1 : flatten down to triples where possible. 
+//        // Step 1 : flatten down to triples where possible.
+//        // Fix up - need reduce for paths, not syntactic path blocks.
 //        pattern = pathCompiler.reduce(pattern) ;
 //
 //        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
 //        BasicPattern bp = null ;
 //        Op op = null ;
 //
-//        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+//        for ( Iterator<TriplePath> iter = pattern.iterator() ; iter.hasNext() ; )
 //        {
-//            TriplePath obj = (TriplePath)iter.next();
+//            TriplePath obj = iter.next();
 //            if ( obj.isTriple() )
 //            {
 //                if ( bp == null )
@@ -49,9 +52,9 @@ public class TransformPathFlattern extends TransformCopy
 //            op = flush(bp, op) ;
 //            bp = null ;
 //
-//            TriplePath tp = (TriplePath)obj ;
-//            OpPath opPath = new OpPath(tp) ;
-//            op = OpSequence.create(op, opPath) ;
+//            TriplePath tp = obj ;
+//            OpPath opPath2 = new OpPath(tp) ;
+//            op = OpSequence.create(op, opPath2) ;
 //            continue ;
 //        }
 //
