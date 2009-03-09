@@ -20,7 +20,8 @@ Reasoners:
      datatype range checking that can cope with user datatypes as done for RDFS.
      Places the culprit Triple as the ValidityReport.Report extension value.
    o Removed deprecated reasoners (RDFS1, RDFSExpt, OWLExpt) and associated support.
-
+   o Fixed RDFS-SIMPLE to include properties being reflexive
+   
 JenaModelSpec:
    o This long-deprecated vocabulary (which supported the old ModelSpec system)
      has been removed. ModelSpec was replaced by Assembler long ago.
