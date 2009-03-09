@@ -13,6 +13,12 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -30,6 +36,46 @@ import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class PathLib
 {
+    /** Convert any paths of exactly one predicate to a triple pattern */ 
+    public static Op pathToTriples(PathBlock pattern)
+    {
+        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
+        BasicPattern bp = null ;
+        Op op = null ;
+
+        for ( TriplePath tp : pattern )
+        {
+            if ( tp.isTriple() )
+            {
+                if ( bp == null )
+                    bp = new BasicPattern() ;
+                bp.add(tp.asTriple()) ;
+                continue ;
+            }
+            // Path form.
+            op = flush(bp, op) ;
+            bp = null ;
+
+            OpPath opPath2 = new OpPath(tp) ;
+            op = OpSequence.create(op, opPath2) ;
+            continue ;
+        }
+
+        // End.  Finish off any outstanding BGP.
+        op = flush(bp, op) ;
+        return op ;
+    }
+    
+    static private Op flush(BasicPattern bp, Op op)
+    {
+        if ( bp == null || bp.isEmpty() )
+            return op ;
+        
+        OpBGP opBGP = new OpBGP(bp) ;
+        op = OpSequence.create(op, opBGP) ;
+        return op ;
+    }
+    
     /** Install a path as a property function in the global property function registry */
     public static void install(String uri, Path path)
     { install(uri, path, PropertyFunctionRegistry.get()) ; }

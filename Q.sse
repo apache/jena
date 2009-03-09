@@ -1,8 +1,4 @@
-(base <file:///c:/home/afs/Projects/ARQ/testing/ARQ/Union/union-6.rq>
-  (prefix ((: <http://example/>)
-           (dir: <.>))
-    (graph ?g
-        (union
-          (BGP (triple ?x :p ?v))
-          (BGP (triple ?y :q ?w))
-        ))))
+(prefix ((: <http://example/>))
+  (sequence 
+    (path ?s (seq :p (alt :p :q)) ?o)
+    ))

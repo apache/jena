@@ -8,6 +8,7 @@ package dev;
 
 import java.util.Iterator;
 
+import opt.RunT;
 import arq.sparql;
 import arq.sse_query;
 
@@ -17,18 +18,15 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
-import com.hp.hpl.jena.sparql.algebra.op.OpGroupAgg;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
@@ -107,123 +105,14 @@ public class Run
 
     public static void main(String[] argv) throws Exception
     {
-        Op op = SSE.parseOp("(project (?s) (bgp (?s ?p ?o)))") ;
-        Query q = OpAsQuery.asQuery(op) ;
-        System.out.println(q) ;
+        RunT.main(argv) ;
         System.exit(0) ;
         
         
         execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
-        {
-        String x1 = "SELECT  (count(?x) AS ?countX) {}" ;
-        String x2 = "SELECT  (1+2 AS ?countX) {}" ;
         
-//        String y = "(project (?countX)\n"+
-//                    "(assign ((?countX ?.0))\n"+
-//                    "  (group (?p) ((?.0 (count ?x)))\n"+
-//                    "    (bgp (triple ?x <http://example/p> ?p)\n"+
-//                    "))))" ;  
-//        
-//
-//          Op op1 = SSE.parseOp(y) ;
-//          IndentedLineBuffer buff = new IndentedLineBuffer() ;
-//          WriterSSE.out(buff.getIndentedWriter(), op1, null) ;
-//          String str = buff.getBuffer().toString() ;
-//          
-//          Op op2 = SSE.parseOp(str) ;
-//          
-//          if ( op1.hashCode() != op2.hashCode() )
-//              System.out.println("DIFFERENT") ;
-//          else
-//              System.out.println("SAME") ;
-//          
-//          if ( ! op1.equals(op2) ) 
-//              System.out.println("DIFFERENT") ;
-//          else
-//              System.out.println("SAME") ;
-              
-          
-        // Issue is:
-        //
-        // In query, have "SELECT  (count(?x) AS ?countX)" which places 
-        // a project VarExpr of (?countX, ?countX=count(?X))
-        //
-        // Later, that is mangeled out to an assignment:
-        //(?countX, ?countX=?.0) over (?.0 count(?x))
-        // which is written out as the Op.
-        //
-        // See AlgebraGenerator.compileModifiers, which takes the
-        // assignment for the SELECT from the originally added (query syntax)
-        // projection, ignoring any OpGroupAgg assigned new variables.
-        //
-        // But why does it not cause a bug in execution?
-        
-        process(x1) ;
-        
-        //process(x2) ;
-        System.exit(0) ;
         divider() ;
-       
-
-//        OpAssign opZ = new OpAssign(OpTable.unit()) ;
-//        opZ.add(Var.alloc("x"), SSE.parseExpr("(+ 1 2)")) ;
-//        
-//        System.out.println(opZ) ;
-//        System.out.println(opZ.getVarExprList()) ;
-        
-        Query query = QueryFactory.create(x1,Syntax.syntaxARQ) ;
-          checkOp(query, false) ;
-//          
-//          System.out.println(x) ;
-//          System.out.println(query) ;
-//          QueryUtils.checkOp(query, false) ;
-//          QueryUtils.checkParse(query) ;
-          System.exit(0) ;
-        
-        
-        }
-        System.exit(0) ;
-        
-        fetch() ; System.exit(0) ; 
-
-        // Compressed syntax
-        // match(Subject, Path, Object, PrefixMapping)
-
-        runQParse() ;
-        System.exit(0) ;
     }
-    
-    private static void process(String x)
-    {
-        divider() ;
-        Query query = QueryFactory.create(x,Syntax.syntaxARQ) ;
-        Op op1 = Algebra.compile(query) ;
-        System.out.println(op1) ;
-        
-        divider() ;
-        decompose(op1) ;
-
-        divider() ;
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        WriterSSE.out(buff.getIndentedWriter(), op1, null) ;
-        String str = buff.getBuffer().toString() ;
-        
-        Op op2 = SSE.parseOp(str) ;
-        decompose(op2) ;
-
-        //divider() ;
-        OpAssign opAssign1 = (OpAssign)((OpProject)op1).getSubOp() ;
-        OpAssign opAssign2 = (OpAssign)((OpProject)op2).getSubOp() ;
-        
-        OpGroupAgg opGroup1 = (OpGroupAgg)opAssign1.getSubOp() ;
-        OpGroupAgg opGroup2 = (OpGroupAgg)opAssign1.getSubOp() ;
-        
-        compare("group", opGroup1, opGroup2) ;
-        compare("assign", opAssign1, opAssign2) ; 
-        compare("project", op1, op2) ;
-        checkOp(op1, false, null) ;
-    }
-
 
     private static void compare(String string, Op op1, Op op2)
     {
@@ -263,8 +152,6 @@ public class Run
         //System.out.println("----") ;
         System.exit(0) ; 
     }
-    
- 
     
     public static void code()
     {

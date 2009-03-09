@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformPathFlattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify;
 import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
+import com.hp.hpl.jena.sparql.path.PathLib;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.syntax.*;
@@ -325,51 +327,19 @@ public class AlgebraGenerator
     
     protected Op compilePathBlock(PathBlock pathBlock)
     {
-        // Step 1 : flatten down to triples where possible. 
-        pathBlock = pathCompiler.reduce(pathBlock) ;
-        
-        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
-        BasicPattern bp = null ;
-        Op op = null ;
-        
-        for ( TriplePath obj : pathBlock )
-        {
-            if ( obj.isTriple() )
-            {
-                if ( bp == null )
-                    bp = new BasicPattern() ;
-                bp.add(obj.asTriple()) ;
-                continue ;
-            }
-            // Path form.
-            op = flush(bp, op) ;
-            bp = null ;
-                
-            TriplePath tp = obj ;
-            OpPath opPath = new OpPath(tp) ;
-            op = OpSequence.create(op, opPath) ;
-            continue ;
-        }
+        // Empty path block : the parser does not generate this case.
+        if ( pathBlock.size() == 0 )
+            return OpTable.unit() ;
 
-        // End.  Finish off any outstanding BGP.
-        op = flush(bp, op) ;
-        return op ;
+        if ( ! TransformPathFlattern.enableTransformPathFlattern )
+            // Flatten down to triples where possible.
+            // Else do in the optimizerrewrite suite.
+            pathBlock = pathCompiler.reduce(pathBlock) ;
+        
+        // Always turns the most basic paths to triples.
+        return PathLib.pathToTriples(pathBlock) ;
     }
 
-    private Op flush(BasicPattern bp, Op op)
-    {
-        if ( bp == null || bp.isEmpty() )
-            return op ;
-
-        OpBGP opBGP = new OpBGP(bp) ;
-        op = OpSequence.create(op, opBGP) ;
-        return op ;
-        
-//        Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-//        op = OpSequence.create(op, op2) ;
-//        return op ;
-    }
-    
     protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;

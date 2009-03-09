@@ -4,19 +4,26 @@
  * [See end of file]
  */
 
-package opt;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
+import com.hp.hpl.jena.sparql.path.PathLib;
 
 public class TransformPathFlattern extends TransformCopy
 {
+    // This also turns off path flattening in the algebra generator.
+    // Note that the algebra generator always truns paths of exactly one predicate to triples.
+    public static boolean enableTransformPathFlattern = false ;
+    
     // Need previous BGP?
     private PathCompiler pathCompiler ;
 
+    public TransformPathFlattern() { this(new PathCompiler()) ; }
+    
     public TransformPathFlattern(PathCompiler pathCompiler)
     {
         this.pathCompiler = pathCompiler ;
@@ -25,53 +32,11 @@ public class TransformPathFlattern extends TransformCopy
     @Override
     public Op transform(OpPath opPath)
     {
-//        if ( true )
-            return super.transform(opPath) ;
-        
-//        Path path = opPath.getTriplePath().getPath() ;
-//        
-//        // Step 1 : flatten down to triples where possible.
-//        // Fix up - need reduce for paths, not syntactic path blocks.
-//        pattern = pathCompiler.reduce(pattern) ;
-//
-//        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
-//        BasicPattern bp = null ;
-//        Op op = null ;
-//
-//        for ( Iterator<TriplePath> iter = pattern.iterator() ; iter.hasNext() ; )
-//        {
-//            TriplePath obj = iter.next();
-//            if ( obj.isTriple() )
-//            {
-//                if ( bp == null )
-//                    bp = new BasicPattern() ;
-//                bp.add(obj.asTriple()) ;
-//                continue ;
-//            }
-//            // Path form.
-//            op = flush(bp, op) ;
-//            bp = null ;
-//
-//            TriplePath tp = obj ;
-//            OpPath opPath2 = new OpPath(tp) ;
-//            op = OpSequence.create(op, opPath2) ;
-//            continue ;
-//        }
-//
-//        // End.  Finish off any outstanding BGP.
-//        op = flush(bp, op) ;
-//
-//        return op ;
-    }
-    
-    private Op flush(BasicPattern bp, Op op)
-    {
-        if ( bp == null || bp.isEmpty() )
-            return op ;
-        
-        //Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-        //op = OpSequence.create(op, op2) ;
-        return op ;
+        // Flatten down to triples where possible.
+        PathBlock pattern = pathCompiler.reduce(opPath.getTriplePath()) ;
+        // Any generated paths of exactly one.
+        return PathLib.pathToTriples(pattern) ;
+        // Would be good to merge sequences overall.
     }
 }
 

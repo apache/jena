@@ -18,10 +18,12 @@ public class PathCompiler
     // Convert to work on OpPath.
     // Need pre (and post) BGPs.
     
-    
     VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
     
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
+    
+    // ---- Syntax-based
+    
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
     public PathBlock reduce(PathBlock pathBlock)
     {
@@ -36,7 +38,7 @@ public class PathCompiler
         reduce(x, pathBlock, varAlloc) ;
         return x ;
     }
-    
+   
     void reduce(PathBlock x, PathBlock pathBlock, VarAlloc varAlloc )
     {
         for ( TriplePath tp : pathBlock )
@@ -49,6 +51,22 @@ public class PathCompiler
             reduce(x, varAlloc, tp.getSubject(), tp.getPath(), tp.getObject()) ;
         }
     }
+    
+    // ---- Algebra-based transformation.
+    public PathBlock reduce(TriplePath triplePath)
+    {
+        PathBlock x = new PathBlock() ;
+        reduce(x, varAlloc, triplePath.getSubject(), triplePath.getPath(), triplePath.getObject()) ;
+        return x ;
+    }
+    
+    public PathBlock reduce(Node start, Path path, Node finish)
+    {
+        PathBlock x = new PathBlock() ;
+        reduce(x, varAlloc, start, path, finish) ;
+        return x ;
+    }
+    
     
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
@@ -100,7 +118,6 @@ public class PathCompiler
         // Nothing can be done.
         x.add(new TriplePath(startNode, path, endNode)) ;
     }
-
 }
 
 /*

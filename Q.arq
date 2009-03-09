@@ -2,8 +2,8 @@ PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX : <http://example/>
 PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
 
-SELECT ?concept ?property ?value 
+SELECT *
 { 
-   SERVICE <http://host/> { ?s ?p ?o . }
-   OPTIONAL {?s ?p1 ?o1 . SERVICE <http://host/> { ?s ?p1 ?o1 }}
+    ?x :p/:q  ?v .
+    ?x :p/:q  ?v .
 }
