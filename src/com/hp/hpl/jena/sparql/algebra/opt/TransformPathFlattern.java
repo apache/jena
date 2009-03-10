@@ -19,7 +19,7 @@ public class TransformPathFlattern extends TransformCopy
     // Note that the algebra generator always truns paths of exactly one predicate to triples.
     public static boolean enableTransformPathFlattern = false ;
     
-    // Need previous BGP?
+    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
     private PathCompiler pathCompiler ;
 
     public TransformPathFlattern() { this(new PathCompiler()) ; }
@@ -34,9 +34,8 @@ public class TransformPathFlattern extends TransformCopy
     {
         // Flatten down to triples where possible.
         PathBlock pattern = pathCompiler.reduce(opPath.getTriplePath()) ;
-        // Any generated paths of exactly one.
+        // Any generated paths of exactly one to triple; convert to Op.
         return PathLib.pathToTriples(pattern) ;
-        // Would be good to merge sequences overall.
     }
 }
 

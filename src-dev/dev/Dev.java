@@ -8,7 +8,8 @@ package dev;
 
 public class Dev
 {
-    // Linearization as a transform.
+    
+    // *** Linearization as a transform.
     //   Need (se
     // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
