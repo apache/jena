@@ -54,7 +54,7 @@ public class StageGeneratorGeneric implements StageGenerator
         
         if ( graph instanceof GraphMemFaster )
         {
-            reorder = basicStats(graph) ;
+            reorder = reorderBasicStats(graph) ;
             executor = executeInline ; 
         }
         else if ( graph instanceof GraphRDB )
@@ -64,7 +64,7 @@ public class StageGeneratorGeneric implements StageGenerator
         }
         else if ( graph instanceof GraphMem )            // Old Graph-in-memory
         {
-            reorder = basicStats(graph) ;
+            reorder = reorderBasicStats(graph) ;
             executor = executeInline ; 
         }
         else
@@ -114,13 +114,15 @@ public class StageGeneratorGeneric implements StageGenerator
         
     // ---- Reorder policies
         
-    private static ReorderTransformation fixed() { return ReorderLib.fixed() ; } 
+    // Fixed - Variable counting only. 
+    private static ReorderTransformation reorderFixed() { return ReorderLib.fixed() ; } 
 
-    private static ReorderTransformation basicStats(Graph graph)
+    // Uses Jena's statistics handler.
+    private static ReorderTransformation reorderBasicStats(Graph graph)
     {
         GraphStatisticsHandler stats = graph.getStatisticsHandler() ;
         if ( stats == null )
-            return fixed() ;
+            return reorderFixed() ;
         return new ReorderStatsHandler(graph, graph.getStatisticsHandler()) ;
     }
 
@@ -150,7 +152,7 @@ public class StageGeneratorGeneric implements StageGenerator
     /** Reorder a basic graph pattern using a graph statistic handler */
     private static class ReorderStatsHandler extends ReorderTransformationBase
     {
-        static ReorderFixed fixed = (ReorderFixed)fixed() ;        // We need our own copy to call into.
+        static ReorderFixed fixed = (ReorderFixed)reorderFixed() ;        // We need our own copy to call into.
         
         // Guesses at the selectivity of fixed, but unknown, values.
         // Choose these for large graphs because bad guesses don't harm small graphs.  
