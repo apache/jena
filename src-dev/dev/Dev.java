@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // DefaultUnionGraph : OpExecutorTDB:line 249
+    // Need all variables in scope, not just the BGP.
+    
+    // Logging quad execution - check
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
      

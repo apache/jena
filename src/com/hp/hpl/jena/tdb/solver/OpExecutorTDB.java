@@ -206,7 +206,7 @@ public class OpExecutorTDB extends OpExecutor
         boolean doingUnion = false ;
         
         if ( isUnionDefaultGraph && Quad.isDefaultGraphNode(gn) ) 
-            // Implicit: default graph is union of named graphs 
+            // Implicit: default graph is union of named graphs. 
             doingUnion = true ;
         
         if ( gn.equals(Quad.unionGraph) )
@@ -245,6 +245,10 @@ public class OpExecutorTDB extends OpExecutor
         {
             //??? QueryIterProjectHide
             List<Var> vars = new ArrayList<Var>() ;
+            
+            // NEED VARS IN INPUT AS WELL - sequenced join.
+            
+            // What about vars in the input? 
             OpVars.vars(bgp, vars) ;
             qIter = new QueryIterProject(qIter, vars, execCxt) ;
             qIter = new QueryIterDistinct(qIter, execCxt) ;
