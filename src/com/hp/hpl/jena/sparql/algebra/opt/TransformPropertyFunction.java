@@ -17,11 +17,11 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** Rewrite to replace a property function property with the call to the property function implementation */
 public class TransformPropertyFunction extends TransformCopy
 {
-    private Context context ;
+    private final Context context ;
 
     public TransformPropertyFunction(Context context)
     {
-     this.context = context ;   
+        this.context = context ;   
     }
     
     @Override

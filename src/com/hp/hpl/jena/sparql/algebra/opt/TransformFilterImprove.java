@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-/** Imporvements to filters that do not chnage the rest of the tree 
+/** Improvements to filters that do not chnage the rest of the tree 
  * (so, fo rexample, not filter replacement or equality/assignment
  *  which both do change the sub opof the filter).  
  * 

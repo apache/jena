@@ -17,8 +17,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** Choose join strategy */ 
 public class TransformJoinStrategy extends TransformCopy
 {
-    // Not active yet but should work.
-    public static boolean enabled = true ;
+    public static boolean enabled = false ;
     
     private final Context context ;
 
