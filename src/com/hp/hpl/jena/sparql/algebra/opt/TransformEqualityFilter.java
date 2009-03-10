@@ -25,7 +25,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 public class TransformEqualityFilter extends TransformCopy
 {
     // TODO (Carefully) Two forms - aggressive and strict
-    //Aggressive on strins goes for efficient over exactlness of xsd:string/plain literal. 
+    //Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
+    // Extend to disjunctions of equalties.
     
     public TransformEqualityFilter() {}
     

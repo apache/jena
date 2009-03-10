@@ -10,7 +10,8 @@ public class Dev
 {
     
     // *** Linearization as a transform.
-    //   Need (se
+    //  TransformJoinStrategy
+
     // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
     // (Jena) Cached IRI checking (minor)

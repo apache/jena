@@ -153,6 +153,8 @@ public class OpExecutor
 
     protected QueryIterator execute(OpJoin opJoin, QueryIterator input)
     {
+        // ** Will replace with a transform.
+
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
 
@@ -194,6 +196,7 @@ public class OpExecutor
     
     protected QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
     {
+        // ** Will replace with a transform.
         ExprList exprs = opLeftJoin.getExprs() ;
         if ( exprs != null )
             exprs.prepareExprs(execCxt.getContext()) ;
@@ -230,10 +233,9 @@ public class OpExecutor
 
     protected QueryIterator execute(OpConditional opCondition, QueryIterator input)
     {
-        if ( true )
-            throw new ARQNotImplemented("OpCompile: OpConditional") ;
-        //QueryIterOptionalIndex
-        return null ;
+        QueryIterator left = executeOp(opCondition.getLeft(), input) ;
+        QueryIterator qIter = new QueryIterOptionalIndex(left, opCondition.getRight(), execCxt) ;
+        return qIter ;
     }
     
     protected QueryIterator execute(OpDiff opDiff, QueryIterator input)

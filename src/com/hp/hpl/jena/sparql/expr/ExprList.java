@@ -81,11 +81,12 @@ public class ExprList implements Iterable<Expr>
     
     public void prepareExprs(Context context)
     {
+        ExprBuild build = new ExprBuild(context) ;
         // Give each expression the chance to set up (bind functions)
         for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
             Expr expr = iter.next() ;
-            ExprWalker.walk(new ExprBuild(context), expr) ;
+            ExprWalker.walk(build, expr) ;
         }
     }
     
