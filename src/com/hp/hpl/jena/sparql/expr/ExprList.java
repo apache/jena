@@ -32,10 +32,8 @@ public class ExprList implements Iterable<Expr>
     
     public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
-        // Dream of generics
-        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
+        for (Expr expr : expressions)
         {
-            Expr expr = iter.next();
             if ( ! expr.isSatisfied(binding, execCxt) )
                 return false ;
         }
@@ -55,11 +53,8 @@ public class ExprList implements Iterable<Expr>
     
     public void varsMentioned(Collection<Var> acc)
     {
-        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = iter.next();
+        for (Expr expr : expressions)
             expr.varsMentioned(acc) ;
-        }
     }
     
     public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, true) ; }
@@ -83,11 +78,8 @@ public class ExprList implements Iterable<Expr>
     {
         ExprBuild build = new ExprBuild(context) ;
         // Give each expression the chance to set up (bind functions)
-        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = iter.next() ;
+        for (Expr expr : expressions)
             ExprWalker.walk(build, expr) ;
-        }
     }
     
     @Override
@@ -108,11 +100,8 @@ public class ExprList implements Iterable<Expr>
     public static ExprList splitConjunction(ExprList exprList1)
     {
         ExprList exprList2 = new ExprList() ;
-        for ( Iterator<Expr> iter = exprList1.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = iter.next() ;
+        for (Expr expr : exprList1)
             split(exprList2, expr) ;
-        }
         return exprList2 ;
     }
     
@@ -122,7 +111,6 @@ public class ExprList implements Iterable<Expr>
         split(exprList, expr) ;
         return exprList ;
     }
-    
     
     private static void split(ExprList exprList, Expr expr)
     {

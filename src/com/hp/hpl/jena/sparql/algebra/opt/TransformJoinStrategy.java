@@ -50,7 +50,7 @@ public class TransformJoinStrategy extends TransformCopy
       if ( exprs != null )
           exprs.prepareExprs(execCxt.getContext()) ;
 
-      // Do an indexed substitute into the right if possible.
+      // Test whether we can do an indexed substitute into the right if possible.
       boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
       
       if ( canDoLinear )
