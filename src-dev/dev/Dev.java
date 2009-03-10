@@ -10,7 +10,9 @@ public class Dev
 {
     
     // *** Linearization as a transform.
-    //  TransformJoinStrategy - testing.
+    //  TransformJoinStrategy - done / testing.
+    //  Ditto path flattening.
+    // Amalgamation: BGPs,Quads, Sequences.
 
     // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
@@ -56,13 +58,6 @@ public class Dev
     
     // Dev: escapes in Literals and symbols in SSE (ParseSSEBase)
     // Need configurable escape processing.
-    
-    // ---- Migrate:
-    // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
-    // But needs to merge adjacent BGPs
-    //   Do adjacent BGP merging afterwards.
-    //   compilePathBlock(PathBlock pathBlock) 
-    //     calls .reduce(pathBlock) 
 }
 
 /*
