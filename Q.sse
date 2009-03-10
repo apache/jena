@@ -1,4 +1,15 @@
-(prefix ((: <http://example/>))
-  (sequence 
-    (path ?s (seq :p (alt :p :q)) ?o)
-    ))
+(base <file:///c:/home/afs/Projects/ARQ/testing/ARQ/PropertyFunctions/splitIRI-9.rq>
+  (prefix ((: <http://example.org/>)
+           (apf: <http://jena.hpl.hp.com/ARQ/property#>))
+    (project (?ns ?ln)
+      (leftjoin
+        (bgp (triple ?x :p 1)
+        )
+        (bgp
+          (triple ?x apf:splitIRI ??0)
+          (triple ??0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?ns)
+          (triple ??0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ??1)
+          (triple ??1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?ln)
+          (triple ??1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>)
+        )
+      ))))

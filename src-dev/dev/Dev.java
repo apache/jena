@@ -10,10 +10,17 @@ public class Dev
 {
     
     // *** Linearization as a transform.
-    //  TransformJoinStrategy - done / testing.
-    //  Ditto path flattening.
+    //   TransformJoinStrategy - done, testing?
+    //   TransformPathFlattening - done, testing?
+    //   TransformEqualityFilter ==> disjunctions as well.
     // Amalgamation: BGPs,Quads, Sequences.
+    // E_Exists(Op).
 
+    // === Integrate optimization from TDB
+    // Interaction of filter placement  
+    // TDB StageGeneratorGeneric, TDB solver.reorder, solver.stats
+    // Extend to quads.  Triple=>quad 
+    
     // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
     // (Jena) Cached IRI checking (minor)
@@ -24,9 +31,6 @@ public class Dev
     //   which can be simplified to a sequence.
     //  Generate a sequence always? 
     
-    // === Integrate optimization from TDB
-    // Interaction of filter placement  
-    
     // ----
     
     // Document:
@@ -34,10 +38,6 @@ public class Dev
     
     // ---- [quad paths]
     
-    // ?? Extends Algebra back to reading graphs and making datasets?
-    // What's the generalization?
-    // FETCH : visitor, syntax tests, Algebra, execution
-
     // ---- SPARQL/Update
     // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
     //   Check for already a GraphStore [DONE]
