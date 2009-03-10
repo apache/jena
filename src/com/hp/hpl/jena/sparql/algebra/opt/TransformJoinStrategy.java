@@ -9,22 +9,24 @@ package com.hp.hpl.jena.sparql.algebra.opt;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.Context;
 
 /** Choose join strategy */ 
 public class TransformJoinStrategy extends TransformCopy
 {
-    // Not active yet.
-    private final ExecutionContext execCxt ;
+    // Not active yet but should work.
+    public static boolean enabled = true ;
+    
+    private final Context context ;
 
     // OpSequence - linear join
     // OpCondition - linear left join
-    TransformJoinStrategy(ExecutionContext execCxt)
+    public TransformJoinStrategy(Context context)
     {
-        this.execCxt = execCxt ;
+        this.context = context ;
     }
     
     
@@ -48,7 +50,7 @@ public class TransformJoinStrategy extends TransformCopy
     { 
       ExprList exprs = opLeftJoin.getExprs() ;
       if ( exprs != null )
-          exprs.prepareExprs(execCxt.getContext()) ;
+          exprs.prepareExprs(context) ;
 
       // Test whether we can do an indexed substitute into the right if possible.
       boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;

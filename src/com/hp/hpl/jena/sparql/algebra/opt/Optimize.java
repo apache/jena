@@ -91,9 +91,11 @@ public class Optimize implements Rewrite
             // This can be done too early (breaks up BGPs).
             op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
-        if ( TransformPathFlattern.enableTransformPathFlattern )
-            op = apply("Path flattening", new TransformPathFlattern(), op) ;
+        if ( TransformJoinStrategy.enabled )
+            op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
+        if ( TransformPathFlattern.enabled )
+            op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark
         op = OpLabel.create("Transformed", op) ;
         return op ;

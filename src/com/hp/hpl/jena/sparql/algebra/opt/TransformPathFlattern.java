@@ -17,7 +17,8 @@ public class TransformPathFlattern extends TransformCopy
 {
     // This also turns off path flattening in the algebra generator.
     // Note that the algebra generator always truns paths of exactly one predicate to triples.
-    public static boolean enableTransformPathFlattern = false ;
+    
+    public static boolean enabled = false ;
     
     // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
     private PathCompiler pathCompiler ;

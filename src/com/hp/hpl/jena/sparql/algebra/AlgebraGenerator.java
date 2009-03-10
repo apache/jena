@@ -321,7 +321,6 @@ public class AlgebraGenerator
     
     protected Op compileBasicPattern(BasicPattern pattern)
     {
-        // Property functions : done as a transform later
         return new OpBGP(pattern) ;
     }
     
@@ -331,7 +330,7 @@ public class AlgebraGenerator
         if ( pathBlock.size() == 0 )
             return OpTable.unit() ;
 
-        if ( ! TransformPathFlattern.enableTransformPathFlattern )
+        if ( ! TransformPathFlattern.enabled )
             // Flatten down to triples where possible.
             // Else do in the optimizerrewrite suite.
             pathBlock = pathCompiler.reduce(pathBlock) ;

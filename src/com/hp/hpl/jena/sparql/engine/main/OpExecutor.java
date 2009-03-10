@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformJoinStrategy;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -155,12 +156,16 @@ public class OpExecutor
     {
         // ** Will replace with a transform.
 
-        // Look one level in for any filters with out-of-scope variables.
-        boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
-
-        if ( canDoLinear )
-            // Streamed evaluation
-            return stream(opJoin.getLeft(), opJoin.getRight(), input) ;
+        if ( ! TransformJoinStrategy.enabled )
+        {
+            
+            // Look one level in for any filters with out-of-scope variables.
+            boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+    
+            if ( canDoLinear )
+                // Streamed evaluation
+                return stream(opJoin.getLeft(), opJoin.getRight(), input) ;
+        }
         
         // Can't do purely indexed (e.g. a filter referencing a variable out of scope is in the way)
         // To consider: partial substitution for improved performance (but does it occur for real?)
@@ -201,25 +206,28 @@ public class OpExecutor
         if ( exprs != null )
             exprs.prepareExprs(execCxt.getContext()) ;
 
-        // Do an indexed substitute into the right if possible.
-        boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
         
-        if ( canDoLinear )
+        if ( ! TransformJoinStrategy.enabled )
         {
-            // Pass left into right for substitution before right side evaluation.
-            // In an indexed left join, the LHS bindings are visible to the
-            // RHS execution so the expression is evaluated by moving it to be 
-            // a filter over the RHS pattern. 
+            // Do an indexed substitute into the right if possible.
+            boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
             
-            Op opLeft = opLeftJoin.getLeft() ;
-            Op opRight = opLeftJoin.getRight() ;
-            if (exprs != null )
-                opRight = OpFilter.filter(exprs, opRight) ;
-            QueryIterator left = executeOp(opLeft, input) ;
-            QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
-            return qIter ;
+            if ( canDoLinear )
+            {
+                // Pass left into right for substitution before right side evaluation.
+                // In an indexed left join, the LHS bindings are visible to the
+                // RHS execution so the expression is evaluated by moving it to be 
+                // a filter over the RHS pattern. 
+                
+                Op opLeft = opLeftJoin.getLeft() ;
+                Op opRight = opLeftJoin.getRight() ;
+                if (exprs != null )
+                    opRight = OpFilter.filter(exprs, opRight) ;
+                QueryIterator left = executeOp(opLeft, input) ;
+                QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
+                return qIter ;
+            }
         }
-
 		// Not index-able.
         // Do it by sub-evaluation of left and right then left join.
         // Can be expensive if RHS returns a lot.

@@ -10,7 +10,7 @@ public class Dev
 {
     
     // *** Linearization as a transform.
-    //  TransformJoinStrategy
+    //  TransformJoinStrategy - testing.
 
     // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets

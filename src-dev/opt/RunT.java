@@ -9,9 +9,10 @@ package opt;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformPathFlattern;
-import com.hp.hpl.jena.sparql.path.PathCompiler;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformJoinStrategy;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.ARQ;
 
 public class RunT
 {
@@ -31,7 +32,10 @@ public class RunT
         
         //op = apply("Property Functions", new TransformPropertyFunction(ARQ.getContext()), op) ;
         
-        op = apply("Path flattening", new TransformPathFlattern(new PathCompiler()), op) ;
+        // op = apply("Path flattening", new TransformPathFlattern(new PathCompiler()), op) ;
+        
+        op = apply("Join strategy", new TransformJoinStrategy(ARQ.getContext()), op) ;
+        
         // 
 //        op = apply("Filter placement 1", new TransformFilterPlacement(), op) ;
 //        op = apply("Filter placement 2", new TransformFilterPlacement(), op) ;  // No-op
