@@ -8,7 +8,6 @@ package dev;
 
 import java.util.Iterator;
 
-import opt.RunT;
 import arq.sparql;
 import arq.sse_query;
 
@@ -25,7 +24,6 @@ import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
-import com.hp.hpl.jena.sparql.algebra.op.Op1;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
