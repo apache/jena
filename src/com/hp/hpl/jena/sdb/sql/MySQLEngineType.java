@@ -11,7 +11,9 @@ import com.hp.hpl.jena.sdb.SDBException;
 public enum MySQLEngineType
 {
     MyISAM    { @Override public String getEngineName() { return "MyISAM" ; } } ,
+    Maria     { @Override public String getEngineName() { return "Maria" ; } } ,
     InnoDB    { @Override public String getEngineName() { return "InnoDB" ; } } ,
+    Falcon    { @Override public String getEngineName() { return "Falcon" ; } } ,
     Memory    { @Override public String getEngineName() { return "MEMORY" ; } } ,
     BDB       { @Override public String getEngineName() { return "BDB" ; } } ,
     NDB       { @Override public String getEngineName() { return "NDB" ; } } ,
@@ -21,7 +23,9 @@ public enum MySQLEngineType
     public static MySQLEngineType convert(String engineName)
     {
         if ( check(engineName, MyISAM) )  return MyISAM ;
+        if ( check(engineName, Maria) )   return Maria ;
         if ( check(engineName, InnoDB) )  return InnoDB ;
+        if ( check(engineName, Falcon) )  return Falcon ;
         if ( check(engineName, Memory) )  return Memory ;
         if ( check(engineName, BDB) )     return BDB ;
         if ( check(engineName, NDB) )     return NDB ;
