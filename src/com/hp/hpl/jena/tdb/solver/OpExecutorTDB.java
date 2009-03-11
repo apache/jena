@@ -7,10 +7,6 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lib.StrUtils;
 import logging.Log;
 import org.slf4j.Logger;
@@ -18,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
@@ -30,13 +26,9 @@ import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinct;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterProject;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
@@ -214,8 +206,8 @@ public class OpExecutorTDB extends OpExecutor
             doingUnion = true ;
         
         if ( doingUnion )
-            // Name for the union of named graphs
-            gn = VarAlloc.getVarAllocator().allocVar() ;
+            // Set the "any" graph node.
+            gn = Node.ANY ;
         
         // ----
         // TEMP: Filters were not considered.
@@ -225,34 +217,25 @@ public class OpExecutorTDB extends OpExecutor
         {
             QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
             input = peek ; // Original input now invalid.
-            bgp = reorder(bgp, peek, transform) ;
+            BasicPattern bgp2 = reorder(bgp, peek, transform) ;
+            explain(bgp2, execCxt) ;
+            bgp = bgp2 ;
         }
         
         // -- Filter placement
         // Does not operate on an op at this point.
         // Needs rework.  Needs intergation with the bgp execution path.
         if ( exprs != null )
-            log.warn("Expression for filters passed to quad otimize/execute") ;
+            log.warn("Expression for filters passed to quad optimize/execute") ;
         
 //        Op op = null ;
 //        if ( exprs != null )
 //            op = TransformFilterPlacement.transform(exprs, bgp) ;
 //        else
 //            op = new OpBGP(bgp) ;
-        // May not be a BGP - now what?
+// May not be a BGP - now what?
         
-        QueryIterator qIter = SolverLib.execute(ds, gn, doingUnion, bgp, input, execCxt) ;
-//        if ( doingUnion )
-//        {
-//            //??? QueryIterProjectHide
-//            List<Var> vars = new ArrayList<Var>() ;
-//            // What about vars in the input? 
-//            // See boolean flag to SolverLib.execute
-//            // When done - remove this if block.
-//            OpVars.vars(bgp, vars) ;
-//            qIter = new QueryIterProject(qIter, vars, execCxt) ;
-//            qIter = new QueryIterDistinct(qIter, execCxt) ;
-//        }
+        QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
         return qIter ;
     }
     
@@ -323,15 +306,7 @@ public class OpExecutorTDB extends OpExecutor
             op = new OpBGP(pattern) ;
         
         // -- Explain
-        if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
-        {
-            String x = op.toString();
-            x = StrUtils.chop(x) ;
-            while ( x.endsWith("\n") || x.endsWith("\r") )
-                x = StrUtils.chop(x) ;
-            x = "Execute:: \n"+x ;
-            logExec.info(x) ;
-        }
+        explain(op, execCxt) ;
         
         // -- Execute
         // Switch to a non-reordring executor
@@ -346,6 +321,33 @@ public class OpExecutorTDB extends OpExecutor
         // (filter (bgp...)) or (filter (quadpattern ...))
         // so there are no nested patterns to reorder.
         return QC.execute(op, peek, ec2) ;
+    }
+
+    // Move to "Explain"
+    
+    private static void explain(Op op, ExecutionContext execCxt)
+    {
+        if ( explaining(execCxt) )
+            explain(op.toString()) ;
+    }
+    
+    private static void explain(BasicPattern bgp, ExecutionContext execCxt)
+    {
+        if ( explaining(execCxt) )
+            explain(bgp.toString()) ;
+    }
+    
+    private static void explain(String explanation)
+    {
+        while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
+            explanation = StrUtils.chop(explanation) ;
+        explanation = "Execute:: \n"+explanation ;
+        logExec.info(explanation) ;
+        //System.out.println(explanation) ;
+    }
+    private static boolean explaining(ExecutionContext execCxt)
+    {
+        return execCxt.getContext().isTrue(TDB.symLogExec) ; //&& logExec.isInfoEnabled() ;
     }
     
     private static BasicPattern reorder(BasicPattern pattern, QueryIterPeek peek, ReorderTransformation transform)
@@ -404,7 +406,7 @@ public class OpExecutorTDB extends OpExecutor
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 Node gn = opQuadPattern.getGraphNode() ;
-                return SolverLib.execute(ds, gn, false, bgp, input, execCxt) ;
+                return SolverLib.execute(ds, gn, bgp, input, execCxt) ;
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opQuadPattern, input) ;

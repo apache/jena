@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package logging;
+package logging.java;
 
 import java.util.Date;
 import java.util.logging.Formatter;

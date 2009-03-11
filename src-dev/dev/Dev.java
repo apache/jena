@@ -9,6 +9,7 @@ package dev;
 public class Dev
 {
     // Now - fixing up the "dummy" graph variable does not extend to second triple in BGP.
+    // StageMatchTriple - ensure it does not matter if G node is first or last.
     
     // DefaultUnionGraph : StageMatchTriple.
     //    SolverLib - remove "mergedGraph" - same as make "graphNode==null && tupleLength == 4" 

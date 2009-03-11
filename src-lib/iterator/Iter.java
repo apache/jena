@@ -238,6 +238,35 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter ;
     }
     
+    /** Apply an action to everything in stream, yielding a stream of the same items */ 
+    public static <T> Iterator<T> operate(Iterable<? extends T> stream, Action<T> converter)
+    { return operate(stream.iterator(), converter) ; }
+
+    /** Apply an action to everything in stream, yielding a stream of the same items */ 
+    public static <T> Iterator<T> operate(final Iterator<? extends T> stream, 
+                                          final Action<T> action)
+    {
+        final Iterator<T> iter = new Iterator<T>(){
+            public boolean hasNext()
+            {
+                return stream.hasNext() ;
+            }
+    
+            public T next()
+            {
+                T t = stream.next() ;
+                action.apply(t) ;
+                return t ;
+            }
+    
+            public void remove() { throw new UnsupportedOperationException("operate.remove") ; }
+        } ;
+        return iter ;
+    }
+    
+  
+
+    
     public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {
         return Iterator2.create(iterator(iter1), iterator(iter2));
@@ -410,6 +439,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public <R> Iter<R> map(Transform<T, R> converter)
     {
         return iter(map(iterator, converter)) ;
+    }
+    
+    /** Apply an action to everything in the stream, yielding a stream of the same items */ 
+    public Iter<T> operate(Action<T> action)
+    {
+        return iter(operate(iterator, action)) ;
     }
 
     public <R> R reduce(Accumulate<T, R> aggregator)

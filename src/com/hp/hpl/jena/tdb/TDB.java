@@ -68,7 +68,6 @@ public class TDB
         TDB.getContext().set(TDB.symLogExec, state) ;
         if ( ! logExec.isInfoEnabled() )
             log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
-        
     }
     
     public static Context getContext()     { return ARQ.getContext() ; }  

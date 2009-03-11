@@ -38,7 +38,7 @@ public class QueryTestTDB extends EarlTestCase
     private Dataset dataset = null ;
 
     boolean skipThisTest = false ;
-    //TestItem item ;
+
     final List<String> defaultGraphURIs ;
     final List<String> namedGraphURIs ;
     final String queryFile ; 
@@ -54,8 +54,10 @@ public class QueryTestTDB extends EarlTestCase
     @SuppressWarnings("unchecked")
     public QueryTestTDB(String testName, EarlReport report, TestItem item, TDBFactory.ImplFactory factory)
     {
-        this(testName, report, item.getURI(), item.getDefaultGraphURIs(), item.getNamedGraphURIs(), item.getResultSet(),
-             item.getQueryFile(), factory) ;
+        this(testName, report, item.getURI(), 
+             item.getDefaultGraphURIs(), item.getNamedGraphURIs(), 
+             item.getResultSet(), item.getQueryFile(),
+             factory) ;
     }
     
     public QueryTestTDB(String testName, EarlReport report, 

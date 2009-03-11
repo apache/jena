@@ -8,20 +8,14 @@ package dev;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
-import iterator.Iter;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.TextListener2;
 import junit.framework.TestCase;
-
 import lib.FileOps;
-import lib.StrUtils;
-import lib.Tuple;
 import lib.cache.CacheNG;
-import logging.Log;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import arq.cmd.CmdUtils;
@@ -64,29 +58,14 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
-    @SuppressWarnings("unchecked")
     public static void main(String ... args) throws IOException
     {
-        if ( false )
-        {
-            Tuple<Integer> t1 = Tuple.create(null, 1) ;
-            Tuple<Integer> t2 = Tuple.create(null, 1) ;
-            List<Tuple<Integer>> list = Arrays.asList(t1, t2) ;
-            System.out.println(list) ;
-            list = Iter.iter(list).distinct().toList() ;
-            System.out.println(list) ;
-            System.exit(0) ;
-        }
         //tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
         
-        Log.enable(TDB.logExec.getClass()) ;
+        //Log.enable(TDB.logExec.getName()) ;
+        //Log.enable("com.hp.hpl.jena.tdb.exec") ;
         TDB.setExecutionLogging(true) ;
-        
-        // And Iter.distinct of tuples with a null.
-        test() ; System.exit(0) ;
-        
-        
-        
+        test() ; System.out.flush(); System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
         

@@ -59,7 +59,7 @@ public class InstallationTest
     @BeforeClass static public void beforeClass()   
     {
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
     }
     

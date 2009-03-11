@@ -4,9 +4,10 @@
  * [See end of file]
  */
 
-package logging;
+package logging.java;
 
 import java.util.logging.*;
+
 
 public class ConsoleHandlerStdout extends Handler 
 {

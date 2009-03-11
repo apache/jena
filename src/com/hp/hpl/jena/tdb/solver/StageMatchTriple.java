@@ -11,7 +11,6 @@ import iterator.NullIterator;
 import iterator.RepeatApplyIterator;
 import iterator.Transform;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,15 +32,15 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     private final Tuple<Node> tuple ;
 
     private final ExecutionContext execCxt ;
-    private boolean mergedGraphs ;
+    private boolean anyGraphs ;
 
-    public StageMatchTriple(NodeTupleTable nodeTupleTable, boolean mergedGraphs, Iterator<BindingNodeId> input, Tuple<Node> tuple, ExecutionContext execCxt)
+    public StageMatchTriple(NodeTupleTable nodeTupleTable, boolean anyGraphs, Iterator<BindingNodeId> input, Tuple<Node> tuple, ExecutionContext execCxt)
     {
         super(input) ;
         this.nodeTupleTable = nodeTupleTable ; 
         this.tuple = tuple ;
         this.execCxt = execCxt ;
-        this.mergedGraphs = mergedGraphs ; 
+        this.anyGraphs = anyGraphs ; 
     }
 
     @Override
@@ -57,7 +56,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         {
             Node n = tuple.get(i) ;
             // Substitution and turning into NodeIds
-            // Varaibles unsubstituted are null NodeIds
+            // Variables unsubstituted are null NodeIds
             NodeId nId = idFor(nodeTupleTable.getNodeTable(), input, n) ;
             if ( nId == NodeId.NodeDoesNotExist )
                 new NullIterator<BindingNodeId>() ;
@@ -66,47 +65,21 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 var[i] = asVar(n) ;
         }
 
-        boolean VERBOSE = true ;
-
-        // **** New code - in development.
-        if ( mergedGraphs )
-        {
-            if ( VERBOSE ) System.err.println("-------") ;
-            if ( VERBOSE ) System.err.println(Arrays.asList(ids)) ;
-        }
-        
         // Go directly to the tuple table
-        Iterator<Tuple<NodeId>> _iter = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
+        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
         
-        // **** New code - in development.
-        if ( mergedGraphs )
+        // If we want to reduce to RDF semantics over quads,
+        // we need to reduce the quads to unique triples. 
+        // We do that by overwring the graph slot with a fixed NodeId, then running
+        // through a distinct-ifier. 
+        // Assumes quads are GSPO - zaps the first slot.
+        // Assumes that tuples are not shared.
+        if ( anyGraphs )
         {
-            if ( VERBOSE ) System.err.println("BEFORE") ;
-            if ( VERBOSE ) _iter = print(_iter) ;
-
-            Transform<Tuple<NodeId>,Tuple<NodeId>> a = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
-                @Override
-                public Tuple<NodeId> convert(Tuple<NodeId> item)
-                {
-                    // Zap graph node id.
-                    Tuple<NodeId> t2 = Tuple.create(NodeId.NodeDoesNotExist,    // Can't be null - gets bound to a daft variable.
-                                                    item.get(1),
-                                                    item.get(2),
-                                                    item.get(3)) ;
-                    return t2 ;
-                } } ;
-            _iter = Iter.map(_iter, a) ;
-            if ( VERBOSE ) System.err.println("MAPPED") ;
-            if ( VERBOSE )  _iter = print(_iter) ;
-            
-            // DOES NOT WORK WHEN THERE'S A NULL
-            // TUPLE.equals????
-            _iter = Iter.distinct(_iter) ;  // WRT only three slots.
-
-            if ( VERBOSE ) System.err.println("AFTER") ;
-            if ( VERBOSE ) _iter = print(_iter) ;
+            //iterMatches = Iter.map(iterMatches, projectToTriples) ;
+            iterMatches = Iter.operate(iterMatches, actionToTriples) ;
+            iterMatches = Iter.distinct(iterMatches) ;  // WRT only three slots.
         }
-
         
         // Map to BindingNodeId
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
@@ -128,8 +101,28 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 return output ;
             }
         } ;
-        return Iter.iter(_iter).map(binder).removeNulls() ;
+        return Iter.iter(iterMatches).map(binder).removeNulls() ;
     }
+    
+    // -- Mutating "transform in place"
+    private static Action<Tuple<NodeId>> actionToTriples = new Action<Tuple<NodeId>>(){
+        @Override
+        public void apply(Tuple<NodeId> item)
+        { item.tuple()[0] = NodeId.NodeIdAny ; }
+    } ;
+    
+    // -- Copying
+    private static Transform<Tuple<NodeId>,Tuple<NodeId>> projectToTriples = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
+        @Override
+        public Tuple<NodeId> convert(Tuple<NodeId> item)
+        {
+            // Zap graph node id.
+            Tuple<NodeId> t2 = Tuple.create(NodeId.NodeIdAny,    // Can't be null - gets bound to a daft variable.
+                                            item.get(1),
+                                            item.get(2),
+                                            item.get(3)) ;
+            return t2 ;
+        } } ;
     
     
     private static Iterator<Tuple<NodeId>> print(Iterator<Tuple<NodeId>> iter)

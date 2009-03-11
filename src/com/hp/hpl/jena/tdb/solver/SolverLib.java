@@ -55,21 +55,22 @@ public class SolverLib
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        return execute(graph.getNodeTupleTable(), null, false, pattern, input, execCxt) ;
+        return execute(graph.getNodeTupleTable(), null, pattern, input, execCxt) ;
     }
     
-    /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, boolean mergedGraphs, 
+    /** Non-reordering execution of a quad pattern, given a iterator of bindings as input.
+     *  GraphNode is Node.ANY for execution over the union of named graphs.
+     */ 
+    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, 
                                         BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, mergedGraphs, pattern, input, execCxt) ;
+        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, execCxt) ;
     }
     
     // The worker.  Callers choose the NodeTupleTable.  
-    //     graphNode maybe null.  
-    //     mergedGraphs indicates whether we should make triples unique over quads.
-    // (same as tuple length four and graphNode null)?
-    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, boolean mergedGraphs,
+    //     graphNode maybe Node.ANY, meaning we should make triples unique.
+
+    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode,
                                          BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         @SuppressWarnings("unchecked")
@@ -77,6 +78,7 @@ public class SolverLib
         
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = input ;
+        boolean anyGraph = (Node.ANY.equals(graphNode)) ;
         
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
         if ( graphNode == null ) {
@@ -99,7 +101,7 @@ public class SolverLib
             else
                 // 4-tuples.
                 tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(nodeTupleTable, chain, tuple, mergedGraphs, execCxt) ;
+            chain = solve(nodeTupleTable, chain, tuple, anyGraph, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
@@ -107,10 +109,10 @@ public class SolverLib
     }
     
     private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
-                                                 Tuple<Node> tuple, boolean mergedGraphs,
+                                                 Tuple<Node> tuple, boolean anyGraph,
                                                  ExecutionContext execCxt)
     {
-        return new StageMatchTriple(nodeTupleTable, mergedGraphs, chain, tuple, execCxt) ;
+        return new StageMatchTriple(nodeTupleTable, anyGraph, chain, tuple, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding
