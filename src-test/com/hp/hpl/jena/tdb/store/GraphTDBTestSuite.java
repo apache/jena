@@ -24,7 +24,7 @@ public class GraphTDBTestSuite extends TestSuite
     
     private GraphTDBTestSuite()
     {
-        super("GraphTDB") ;
+        super("TDB-Scripts") ;
         TestFactoryTDB.make(this, manifestMain, "TDB-", TDBFactory.stdFactory) ;
     }
 

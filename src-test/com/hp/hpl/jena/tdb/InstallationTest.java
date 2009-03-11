@@ -24,6 +24,7 @@ import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.store.GraphTDBTestSuite;
 import com.hp.hpl.jena.tdb.store.TS_Store;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.TS_Sys;
@@ -46,12 +47,16 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     
     , TS_Index.class
     
-    , TS_Store.class     // The main storage implementation.
+    , TS_Store.class     // The main storage implementation.  Slow tests.
     
     , TS_Solver.class
     , TS_Sys.class
     , TS_Graph.class
     , TS_TDB.class
+    
+    // The script suite
+    , GraphTDBTestSuite.class
+
 } )
 
 public class InstallationTest

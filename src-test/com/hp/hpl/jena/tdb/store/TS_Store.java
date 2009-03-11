@@ -11,12 +11,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNodeId.class,
-    TestTripleTable.class,
-    TestGraphTDB.class,
-    TestDatasetTDB.class,
-    TestDataset.class,
-    GraphTDBTestSuite.class
+    TestNodeId.class
+    , TestTripleTable.class
+    , TestGraphTDB.class
+    , TestDatasetTDB.class
+    , TestDataset.class
 } )
 public class TS_Store
 { 
