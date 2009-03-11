@@ -15,11 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.base.block.TS_Block;
-import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.reader.TS_Loader;
-import com.hp.hpl.jena.tdb.base.record.TS_Record;
-import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+import com.hp.hpl.jena.tdb.base.TS_Base;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
@@ -34,16 +30,17 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_Lib.class
+      TS_Lib.class
     , TS_Iterator.class
 
-    //, TS_Base.class
-    , TS_Block.class
-    , TS_File.class
-    , TS_Loader.class
-    , TS_Record.class
-    //, TS_Base.class
-    , TS_RecordFile.class
+    //--------
+    , TS_Base.class
+//    , TS_Block.class
+//    , TS_File.class
+//    , TS_Loader.class
+//    , TS_Record.class
+//    , TS_RecordFile.class
+    //--------
     
     , TS_Index.class
     
