@@ -6,8 +6,9 @@
 
 package tdb;
 
-import java.io.File;
 import java.io.PrintStream;
+
+import junit.framework.TestSuite;
 
 import org.junit.internal.TextListener;
 import org.junit.runner.Description;
@@ -15,39 +16,54 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.InstallationTest;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 
-
-public class tdbtest
+/** Run test script suites */
+public class tdbsuite
 {
     public static void main(String ... argv)
     {
-        ensureDir("tmp") ;
-        ensureDir(ConfigTest.testingDir) ; 
+        if ( argv.length == 0 )
+        {
+            System.err.println(Utils.classShortName(tdbsuite.class)+": No manifest file (did you mean to run tdbverify?)") ;
+            System.exit(1) ;
+            
+        }
+        
+        if ( argv.length != 1 )
+        {
+            System.err.println(Utils.classShortName(tdbsuite.class)+"Required: test manaifest file") ;
+            System.exit(1) ;
+        }
+        
+        String manifestFile = argv[0] ;
         
         PrintStream out = System.out ;
         if ( TDB.VERSION.equals("DEV") )
-            out.printf("TDB test suite (development)\n") ;
+            out.printf("TDB (development) %s\n", manifestFile) ;
         else
-            out.printf("TDB v%s test suite (Built: %s)\n", TDB.VERSION, TDB.BUILD_DATE) ;
+            out.printf("TDB v%s (Built: %s) %s\n", TDB.VERSION, TDB.BUILD_DATE, manifestFile) ;
+
+        TestSuite ts = new TestSuite() ;
+        TestFactoryTDB.make(ts, manifestFile, "TDB-", TDBFactory.stdFactory) ;
+        
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new MyTextListener(out)) ;
-        Result result = runner.run(InstallationTest.class) ;
+        
+        InstallationTest.beforeClass() ;
+        Result result = runner.run(ts) ;
+        InstallationTest.afterClass() ;
         
         if ( result.getFailureCount() > 0 )
             System.exit(1) ;
         
     }
 
-    private static void ensureDir(String dirname)
-    {
-        File dir = new File(dirname) ;
-        if ( ! dir.exists() )
-            dir.mkdir() ;
-    }
-
+    // Factor out - share with tdbtest
     static class MyTextListener extends TextListener
     {
 

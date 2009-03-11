@@ -40,7 +40,7 @@ public class TestDatasetTDB extends BaseTest
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(ConfigTest.testingDir), TDBFactory.stdFactory) ;
+        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDir()), TDBFactory.stdFactory) ;
     }
         
     @Before public void before()

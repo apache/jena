@@ -55,17 +55,22 @@ public class SolverLib
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        return execute(graph.getNodeTupleTable(), null, pattern, input, execCxt) ;
+        return execute(graph.getNodeTupleTable(), null, false, pattern, input, execCxt) ;
     }
     
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, boolean mergedGraphs, 
+                                        BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, execCxt) ;
+        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, mergedGraphs, pattern, input, execCxt) ;
     }
     
-    // The worker.  Callers choose the NodeTupleTable.  graphNode maybe null.
-    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    // The worker.  Callers choose the NodeTupleTable.  
+    // graphNode maybe null.  
+    // mergedGraphs indicates whether we should make triples unique over quads.
+    // (same as tuple length four and graphNode null)?
+    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, boolean mergedGraphs,
+                                         BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         @SuppressWarnings("unchecked")
         List<Triple> triples = pattern.getList() ;
@@ -74,8 +79,7 @@ public class SolverLib
         Iterator<Binding> iter = input ;
         
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
-        if ( graphNode == null )
-        {
+        if ( graphNode == null ) {
             if ( 3 != tupleLen )
                 throw new TDBException("SolverLib: Null graph node but tuples are of length "+tupleLen) ;
         } else {
@@ -95,7 +99,7 @@ public class SolverLib
             else
                 // 4-tuples.
                 tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(nodeTupleTable, chain, tuple, execCxt) ;
+            chain = solve(nodeTupleTable, chain, tuple, mergedGraphs, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
@@ -103,8 +107,10 @@ public class SolverLib
     }
     
     private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
-                                                 Tuple<Node> tuple, ExecutionContext execCxt)
+                                                 Tuple<Node> tuple, boolean mergedGraphs,
+                                                 ExecutionContext execCxt)
     {
+        // If merged graphs, need to project/distinct the graph node away
         return new StageMatchTriple(nodeTupleTable, chain, tuple, execCxt) ;
     }
     

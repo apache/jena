@@ -10,6 +10,7 @@ import iterator.TS_Iterator;
 import lib.TS_Lib;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -61,6 +62,8 @@ public class InstallationTest
         Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
     }
+    
+    @AfterClass static public void afterClass() {}   
     
     // For "ant" before 1.7 that only understands JUnit3. 
     public static junit.framework.Test suite() {

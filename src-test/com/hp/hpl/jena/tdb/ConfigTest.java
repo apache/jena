@@ -6,9 +6,24 @@
 
 package com.hp.hpl.jena.tdb;
 
+import lib.FileOps;
+
 public class ConfigTest
 {
-    public static final String testingDir = "tmp/testing" ;
+    private static final String testingDir = "tmp/testing" ;
+    
+    static boolean initialized = false ; 
+    
+    public static final String getTestingDir()
+    {
+        if ( ! initialized )
+        {
+            FileOps.ensureDir("tmp") ;
+            FileOps.ensureDir(testingDir) ;
+        }
+        return testingDir ;
+    }
+    
 }
 
 /*

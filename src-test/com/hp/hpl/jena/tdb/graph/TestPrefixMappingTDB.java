@@ -47,15 +47,16 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     // Persistent.
     @Test public void persistent1()
     {
-        FileOps.clearDirectory(ConfigTest.testingDir) ;
+        String dir = ConfigTest.getTestingDir() ;
+        FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(ConfigTest.testingDir)) ;
+        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(dir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
         // This fails when run in the complete test suite, but not run individually. 
-        prefixes = DatasetPrefixes.create(new Location(ConfigTest.testingDir)) ;
+        prefixes = DatasetPrefixes.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
     }
 

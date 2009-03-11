@@ -6,23 +6,19 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import static com.hp.hpl.jena.tdb.ConfigTest.testingDir;
-
 import java.io.File;
-
-import com.hp.hpl.jena.tdb.base.file.MetaFile;
-
-
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import test.BaseTest;
 
+import com.hp.hpl.jena.tdb.ConfigTest;
+
 public class TestMetaFile extends BaseTest
 {
-    static String testfile = testingDir+"/file" ;
-    static String testfileMeta = testingDir+"/file.meta" ;
+    static String testfile = ConfigTest.getTestingDir()+"/file" ;
+    static String testfileMeta = ConfigTest.getTestingDir()+"/file.meta" ;
     
     @Before public void before()
     {

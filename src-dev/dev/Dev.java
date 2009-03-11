@@ -8,8 +8,15 @@ package dev;
 
 public class Dev
 {
+    
+    
     // DefaultUnionGraph : OpExecutorTDB:line 249
     // Need all variables in scope, not just the BGP.
+    // Do as per-triple wrappers (or otherwise after substitution, before adding to overall binding)
+    
+    // Tests for quads and <urn:x-arq:UnionGraph> etc. 
+    //   Tests from SDB/testing/UnionGraph
+    
     
     // Logging quad execution - check
     // Location+String => Filesets

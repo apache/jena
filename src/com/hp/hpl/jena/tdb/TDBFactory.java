@@ -58,6 +58,26 @@ public class TDBFactory
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     };
     
+    // Always in-memory implementation factory
+    public final static ImplFactory memFactory = new ImplFactory()
+    {
+        @Override
+        public Graph createGraph()
+        { return FactoryGraphTDB.createGraphMem() ; }
+    
+        @Override
+        public Graph createGraph(Location loc)      
+        { return FactoryGraphTDB.createGraphMem() ; }
+
+        @Override
+        public DatasetGraph createDatasetGraph(Location location)
+        { return FactoryGraphTDB.createDatasetGraphMem() ; }
+
+        @Override
+        public DatasetGraph createDatasetGraph()
+        { return FactoryGraphTDB.createDatasetGraphMem() ; }
+    };
+    
     static { 
         TDB.init(); 
         setImplFactory(stdFactory) ;

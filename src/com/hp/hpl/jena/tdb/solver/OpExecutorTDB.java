@@ -240,7 +240,7 @@ public class OpExecutorTDB extends OpExecutor
 //        else
 //            op = new OpBGP(bgp) ;
         
-        QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
+        QueryIterator qIter = SolverLib.execute(ds, gn, doingUnion, bgp, input, execCxt) ;
         if ( doingUnion )
         {
             //??? QueryIterProjectHide
@@ -405,7 +405,7 @@ public class OpExecutorTDB extends OpExecutor
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 Node gn = opQuadPattern.getGraphNode() ;
-                return SolverLib.execute(ds, gn, bgp, input, execCxt) ;
+                return SolverLib.execute(ds, gn, false, bgp, input, execCxt) ;
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opQuadPattern, input) ;

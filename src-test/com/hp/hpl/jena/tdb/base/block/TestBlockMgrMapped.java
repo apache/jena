@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import static com.hp.hpl.jena.tdb.ConfigTest.testingDir;
 import lib.FileOps;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import arq.cmd.CmdUtils;
+
+import com.hp.hpl.jena.tdb.ConfigTest;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
@@ -19,7 +20,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
     
     static { if ( logging ) CmdUtils.setLog4j() ; }
     
-    static final String filename = testingDir+"/block-mgr" ;
+    static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
     
     // Windows is iffy about deleting memory mapped files.
     

@@ -70,6 +70,13 @@ public class FileOps
         }
     }
 
+    public static void ensureDir(String dirname)
+    {
+        File dir = new File(dirname) ;
+        if ( ! dir.exists() )
+            dir.mkdir() ;
+    }
+    
     /** Split a file name into path, basename and extension.  Nulls returned if don't make sense. */
     public static Tuple<String> split(String filename)
     {
