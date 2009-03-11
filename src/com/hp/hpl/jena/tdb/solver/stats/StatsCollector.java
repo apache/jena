@@ -14,9 +14,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lib.Log;
 import lib.MapUtils;
 import lib.Tuple;
+import logging.Log;
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 

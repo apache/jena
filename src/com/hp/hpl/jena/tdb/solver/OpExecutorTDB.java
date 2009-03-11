@@ -11,8 +11,8 @@ import static com.hp.hpl.jena.tdb.TDB.logExec;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.Log;
 import lib.StrUtils;
+import logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,17 +242,17 @@ public class OpExecutorTDB extends OpExecutor
         // May not be a BGP - now what?
         
         QueryIterator qIter = SolverLib.execute(ds, gn, doingUnion, bgp, input, execCxt) ;
-        if ( doingUnion )
-        {
-            //??? QueryIterProjectHide
-            List<Var> vars = new ArrayList<Var>() ;
-            // What about vars in the input? 
-            // See boolean flag to SolverLib.execute
-            // When done - remove this if block.
-            OpVars.vars(bgp, vars) ;
-            qIter = new QueryIterProject(qIter, vars, execCxt) ;
-            qIter = new QueryIterDistinct(qIter, execCxt) ;
-        }
+//        if ( doingUnion )
+//        {
+//            //??? QueryIterProjectHide
+//            List<Var> vars = new ArrayList<Var>() ;
+//            // What about vars in the input? 
+//            // See boolean flag to SolverLib.execute
+//            // When done - remove this if block.
+//            OpVars.vars(bgp, vars) ;
+//            qIter = new QueryIterProject(qIter, vars, execCxt) ;
+//            qIter = new QueryIterDistinct(qIter, execCxt) ;
+//        }
         return qIter ;
     }
     

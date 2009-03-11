@@ -21,20 +21,20 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 
 /** Run test script suites */
-public class tdtest
+public class tdbtest
 {
     public static void main(String ... argv)
     {
         if ( argv.length == 0 )
         {
-            System.err.println(Utils.classShortName(tdtest.class)+": No manifest file (did you mean to run tdbverify?)") ;
+            System.err.println(Utils.classShortName(tdbtest.class)+": No manifest file (did you mean to run tdbverify?)") ;
             System.exit(1) ;
             
         }
         
         if ( argv.length != 1 )
         {
-            System.err.println(Utils.classShortName(tdtest.class)+"Required: test manifest file") ;
+            System.err.println(Utils.classShortName(tdbtest.class)+"Required: test manifest file") ;
             System.exit(1) ;
         }
         

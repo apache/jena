@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import lib.FileOps;
 import lib.StrUtils;
 import lib.cache.CacheNG;
+import logging.Log;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import arq.cmd.CmdUtils;
@@ -34,6 +35,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -59,16 +61,12 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
-    private static void t(String string)
-    {
-        char esc[] = { '_' , ' ' } ;
-        String x = StrUtils.encode(string, '_', esc) ;
-        String y = StrUtils.decode(x, '_') ;
-        System.out.printf("'%s' => '%s' => '%s'\n", string, x,y) ;
-    }
-
     public static void main(String ... args) throws IOException
     {
+        //tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
+        
+        Log.enable(TDB.logExec.getClass()) ;
+        TDB.setExecutionLogging(true) ;
         
         test() ; System.exit(0) ;
         
@@ -241,8 +239,8 @@ public class Run
         String dir = "testing/UnionGraph/" ;
         List<String> dftGraphs = Arrays.asList(dir+"data-dft.ttl") ;
         List<String> namedGraphs = Arrays.asList(dir+"data-1.ttl", dir+"data-2.ttl") ;
-        String queryFile = dir+"merge-1.rq" ;
-        ResultSet rs = ResultSetFactory.load(dir+"merge-1-results.srx") ;
+        String queryFile = dir+"merge-4.rq" ;
+        ResultSet rs = ResultSetFactory.load(dir+"merge-4-results.srx") ;
         
         TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBFactory.memFactory) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;

@@ -15,7 +15,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.CharsetDecoder;
 
 import lib.Chars;
-import lib.Log;
+import logging.Log;
 
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.tdb.TDBException;

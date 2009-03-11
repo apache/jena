@@ -66,8 +66,8 @@ public class SolverLib
     }
     
     // The worker.  Callers choose the NodeTupleTable.  
-    // graphNode maybe null.  
-    // mergedGraphs indicates whether we should make triples unique over quads.
+    //     graphNode maybe null.  
+    //     mergedGraphs indicates whether we should make triples unique over quads.
     // (same as tuple length four and graphNode null)?
     private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, boolean mergedGraphs,
                                          BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
@@ -110,8 +110,7 @@ public class SolverLib
                                                  Tuple<Node> tuple, boolean mergedGraphs,
                                                  ExecutionContext execCxt)
     {
-        // If merged graphs, need to project/distinct the graph node away
-        return new StageMatchTriple(nodeTupleTable, chain, tuple, execCxt) ;
+        return new StageMatchTriple(nodeTupleTable, mergedGraphs, chain, tuple, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding

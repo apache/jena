@@ -41,10 +41,10 @@ import java.util.concurrent.BlockingQueue;
 
 import lib.CacheSetLRU;
 import lib.InternalError;
-import lib.Log;
 import lib.SinkNull;
 import lib.Sink;
 import lib.Tuple;
+import logging.Log;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;

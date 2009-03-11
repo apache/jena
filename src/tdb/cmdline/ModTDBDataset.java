@@ -9,7 +9,7 @@ package tdb.cmdline;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.Log;
+import logging.Log;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
