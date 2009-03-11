@@ -18,20 +18,24 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
+import com.hp.hpl.jena.sparql.algebra.op.Op1;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -42,6 +46,7 @@ import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -56,16 +61,22 @@ public class Run
         nextDivider = divider ;
     }
     
-    public static void checkOp(Query query, boolean optimizeAlgebra)
+    public static void main(String[] argv) throws Exception
+    {
+        queryEquality() ;
+        
+        execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
+        
+        divider() ;
+    }
+
+    public static void check(Query query, boolean optimizeAlgebra)
     {
         Op op = Algebra.compile(query) ;
-        checkOp( op, optimizeAlgebra, query) ;        
+        check( op, optimizeAlgebra, query) ;        
     }
     
-    
-    
-    
-    private static void checkOp(Op op, boolean optimizeAlgebra, Prologue prologue)
+    private static void check(Op op, boolean optimizeAlgebra, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         if ( optimizeAlgebra )
@@ -89,7 +100,25 @@ public class Run
             // Expression in assignment for op 
             
             if ( ! op.equals(op2) )
+            {
+                Expr e1 = ((OpFilter)op).getExprs().get(0) ;
+                Expr e2 = ((OpFilter)op2).getExprs().get(0) ;
+
+                op = ((OpFilter)op).getSubOp() ;
+                op2 = ((OpFilter)op2).getSubOp() ;
+
+                if ( ! op.equals(op2) )
+                    System.err.println("Sub patterns unequal") ;
+                
+                if ( ! e1.equals(e2) )
+                {
+                    System.err.println(e1) ;
+                    System.err.println(e2) ;
+                    System.err.println("Expressions unequal") ;
+                }
+                
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
+            }
         } catch (SSEParseException ex)
         { 
             System.err.println(str);
@@ -103,17 +132,44 @@ public class Run
 
     }
 
-    public static void main(String[] argv) throws Exception
+    static void queryEquality()
     {
-        RunT.main(argv) ;
+        String[] x1 = { "PREFIX  :     <http://example/>", 
+            "PREFIX  foaf: <http://xmlns.com/foaf/0.1/>",
+            "",
+            "SELECT  ?x ?n",
+            "WHERE", 
+            "  { ?x foaf:name ?n" ,
+            "    { SELECT  ?x",
+            "      WHERE",
+            "        { ?x foaf:knows ?z}",
+            "      GROUP BY ?x",
+            "      HAVING ( count(*) >= 10 )",
+            "    }",
+        "  }" } ;
+        
+        String[] x2 = { "PREFIX  :     <http://example/>", 
+            "PREFIX  foaf: <http://xmlns.com/foaf/0.1/>",
+            "SELECT  *",
+            "{ }",
+            "GROUP BY ?x",
+            "HAVING ( count(*) )"
+        } ;
+        
+        String[] x3 = { "(filter (>= ?.0 10)",
+            "   (group (?x) ((?.0 (count)))" ,
+            "   (table unit)",
+            "))" } ;
+        
+//        Op op = SSE.parseOp(StringUtils.join("\n", x3)) ;
+//        checkOp(op, false, null) ;
+//        System.out.println();
+        Query query = QueryFactory.create(StringUtils.join("\n", x2), Syntax.syntaxARQ) ;
+        check(query, false) ;
         System.exit(0) ;
-        
-        
-        execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
-        
-        divider() ;
-    }
 
+    }
+    
     private static void compare(String string, Op op1, Op op2)
     {
         divider() ;

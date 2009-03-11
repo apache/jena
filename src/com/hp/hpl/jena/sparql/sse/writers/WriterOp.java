@@ -262,7 +262,6 @@ public class WriterOp
         {
             start(opGraph, NoNL) ;
             out.println(FmtUtils.stringForNode(opGraph.getNode())) ;
-            out.incIndent() ;
             opGraph.getSubOp().visit(this) ;
             finish(opGraph) ;
         }
