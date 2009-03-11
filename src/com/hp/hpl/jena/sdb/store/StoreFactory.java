@@ -43,7 +43,7 @@ public class StoreFactory
      * Create a store, based on the store description and
      * connection information read from the file. 
      * @param filename
-     * @return
+     * @return Store
      */
     public static Store create(String filename)
     { return create(StoreDesc.read(filename), null) ; }
@@ -66,8 +66,6 @@ public class StoreFactory
     /**
      * Create a store, based on the store description.
      * The store description must include connection details if to be used to actually connect.
-     * @param desc
-     * @return
      */
     public static Store create(LayoutType layout, DatabaseType dbType)
     { 
@@ -78,17 +76,12 @@ public class StoreFactory
     /**
      * Create a store, based on the store description.
      * The store description must include connection details if to be used to actually connect.
-     * @param desc
-     * @return
      */
     public static Store create(StoreDesc desc)
     { return create(desc, null) ; }
     
     /** 
      * Create a store, based on the store description and connection.
-     * @param desc
-     * @param sdb
-     * @return
      */
     public static Store create(StoreDesc desc, SDBConnection sdb)
     {

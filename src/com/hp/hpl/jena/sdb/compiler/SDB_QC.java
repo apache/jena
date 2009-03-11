@@ -88,7 +88,6 @@ public class SDB_QC
     /** Find the variables needed out of this query.
      * If we don't do sorting in-DB, then we need the ORDER BY variables as well. 
      * @param query
-     * @return
      */
     @SuppressWarnings("unchecked")
     public static List<Var> queryOutVars(Query query)
