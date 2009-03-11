@@ -63,16 +63,14 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        //tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
+        tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
         
         Log.enable(TDB.logExec.getClass()) ;
         TDB.setExecutionLogging(true) ;
         
         test() ; System.exit(0) ;
         
-        
-        //t("foo") ;
-        t("here and there__") ;
+  
         
         System.exit(0) ;
         
@@ -236,11 +234,12 @@ public class Run
     */
     private static void test()
     {
+        String testNum = "1" ;
         String dir = "testing/UnionGraph/" ;
         List<String> dftGraphs = Arrays.asList(dir+"data-dft.ttl") ;
         List<String> namedGraphs = Arrays.asList(dir+"data-1.ttl", dir+"data-2.ttl") ;
-        String queryFile = dir+"merge-4.rq" ;
-        ResultSet rs = ResultSetFactory.load(dir+"merge-4-results.srx") ;
+        String queryFile = dir+"merge-"+testNum+".rq" ;
+        ResultSet rs = ResultSetFactory.load(dir+"merge-"+testNum+"-results.srx") ;
         
         TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBFactory.memFactory) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;

@@ -16,8 +16,9 @@ public class Dev
     // Need all variables in scope, not just the BGP.
     // Do as per-triple wrappers (or otherwise after substitution, before adding to overall binding)
     
+
     
-    // Logging quad execution - check
+    // Logging quad execution - does not log!
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
      

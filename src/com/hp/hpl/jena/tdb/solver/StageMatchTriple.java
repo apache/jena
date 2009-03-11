@@ -11,9 +11,11 @@ import iterator.NullIterator;
 import iterator.RepeatApplyIterator;
 import iterator.Transform;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.Action;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
@@ -64,33 +66,45 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 var[i] = asVar(n) ;
         }
 
+        boolean VERBOSE = false ;
+
         // **** New code - in development.
         if ( mergedGraphs )
         {
-            // Temp
-            // Not a copy - modify directly.  Naughty, naughty.
-            Node[] nodes = tuple.tuple() ;
-            // Now the match will not bind the graph node over quads for a union of the named graphs  
-            nodes[0] = Node.ANY ;
+            if ( VERBOSE ) System.err.println("-------") ;
+            if ( VERBOSE ) System.err.println(Arrays.asList(ids)) ;
         }
-        // If merged graphs, need to project/distinct the graph node away
         
-        // Go directly to the tuple table 
+        // Go directly to the tuple table
         Iterator<Tuple<NodeId>> _iter = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
         
         // **** New code - in development.
         if ( mergedGraphs )
         {
-            List<Tuple<NodeId>> r = Iter.toList(_iter) ;
-            System.err.println() ;
-            System.err.println("-------") ;
-            String str = Iter.asString(r, "\n") ;
-            System.err.println(str) ;
+            if ( VERBOSE ) System.err.println("BEFORE") ;
+            if ( VERBOSE ) _iter = print(_iter) ;
+
+            Transform<Tuple<NodeId>,Tuple<NodeId>> a = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
+                @Override
+                public Tuple<NodeId> convert(Tuple<NodeId> item)
+                {
+                    // Zap graph node id.
+                    Tuple<NodeId> t2 = Tuple.create(NodeId.NodeDoesNotExist,    // Can't be null
+                                                    item.get(1),
+                                                    item.get(2),
+                                                    item.get(3)) ;
+                    return t2 ;
+                } } ;
+            _iter = Iter.map(_iter, a) ;
+            if ( VERBOSE ) System.err.println("MAPPED") ;
+            if ( VERBOSE )  _iter = print(_iter) ;
             
-            
-            _iter = Iter.distinct(r) ;
-            
-            
+            // DOES NOT WORK WHEN THERE'S A NULL
+            // TUPLE.equals????
+            _iter = Iter.distinct(_iter) ;  // WRT only three slots.
+
+            if ( VERBOSE ) System.err.println("AFTER") ;
+            if ( VERBOSE ) _iter = print(_iter) ;
         }
 
         
@@ -115,6 +129,22 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             }
         } ;
         return Iter.iter(_iter).map(binder).removeNulls() ;
+    }
+    
+    
+    private static Iterator<Tuple<NodeId>> print(Iterator<Tuple<NodeId>> iter)
+    {
+        if ( ! iter.hasNext() )
+            System.err.println("<empty>") ;
+        else
+        {
+            List<Tuple<NodeId>> r = Iter.toList(iter) ;
+            String str = Iter.asString(r, "\n") ;
+            System.err.println(str) ;
+            // Reset iter
+            iter = Iter.iter(r) ;
+        }
+        return iter ;
     }
     
     private static boolean reject(BindingNodeId output , Var var, NodeId value)
