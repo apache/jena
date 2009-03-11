@@ -63,7 +63,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
+        //tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
         
         Log.enable(TDB.logExec.getClass()) ;
         TDB.setExecutionLogging(true) ;
@@ -234,7 +234,7 @@ public class Run
     */
     private static void test()
     {
-        String testNum = "1" ;
+        String testNum = "2" ;
         String dir = "testing/UnionGraph/" ;
         List<String> dftGraphs = Arrays.asList(dir+"data-dft.ttl") ;
         List<String> namedGraphs = Arrays.asList(dir+"data-1.ttl", dir+"data-2.ttl") ;
