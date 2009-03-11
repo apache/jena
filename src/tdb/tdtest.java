@@ -8,13 +8,11 @@ package tdb;
 
 import java.io.PrintStream;
 
+import junit.TextListener2;
 import junit.framework.TestSuite;
 
-import org.junit.internal.TextListener;
-import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.InstallationTest;
@@ -23,20 +21,20 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 
 /** Run test script suites */
-public class tdbsuite
+public class tdtest
 {
     public static void main(String ... argv)
     {
         if ( argv.length == 0 )
         {
-            System.err.println(Utils.classShortName(tdbsuite.class)+": No manifest file (did you mean to run tdbverify?)") ;
+            System.err.println(Utils.classShortName(tdtest.class)+": No manifest file (did you mean to run tdbverify?)") ;
             System.exit(1) ;
             
         }
         
         if ( argv.length != 1 )
         {
-            System.err.println(Utils.classShortName(tdbsuite.class)+"Required: test manaifest file") ;
+            System.err.println(Utils.classShortName(tdtest.class)+"Required: test manifest file") ;
             System.exit(1) ;
         }
         
@@ -52,7 +50,7 @@ public class tdbsuite
         TestFactoryTDB.make(ts, manifestFile, "TDB-", TDBFactory.stdFactory) ;
         
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
-        runner.addListener(new MyTextListener(out)) ;
+        runner.addListener(new TextListener2(out)) ;
         
         InstallationTest.beforeClass() ;
         Result result = runner.run(ts) ;
@@ -60,52 +58,6 @@ public class tdbsuite
         
         if ( result.getFailureCount() > 0 )
             System.exit(1) ;
-        
-    }
-
-    // Factor out - share with tdbtest
-    static class MyTextListener extends TextListener
-    {
-
-        private PrintStream out ;
-        int count = 0 ;
-
-        public MyTextListener(PrintStream writer)
-        {
-            super(writer) ;
-            this.out = writer ;
-        }
-        
-        @Override
-        public void testRunStarted(Description description)
-        {
-            //count = 0 ;
-        }
-        
-        @Override
-        public void testStarted(Description description) {
-            newline() ;
-            out.append('.');
-        }
-
-        private void newline()
-        {
-            if ( count != 0 && count%50 == 0 )
-                out.println();
-            count++ ;
-        }
-
-        @Override
-        public void testFailure(Failure failure) {
-            newline() ;
-            out.append('E');
-        }
-
-        @Override
-        public void testIgnored(Description description) {
-            newline() ;
-            out.append('I');
-        }
         
     }
 }

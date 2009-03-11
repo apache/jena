@@ -10,6 +10,7 @@
         <Pattern/manifest.ttl>
         <Quads/manifest.ttl>
         <Values/manifest.ttl>
+        <UnionGraph/manifest.ttl>
     ) .
 
 

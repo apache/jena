@@ -239,23 +239,22 @@ public class OpExecutorTDB extends OpExecutor
 //            op = TransformFilterPlacement.transform(exprs, bgp) ;
 //        else
 //            op = new OpBGP(bgp) ;
+        // May not be a BGP - now what?
         
         QueryIterator qIter = SolverLib.execute(ds, gn, doingUnion, bgp, input, execCxt) ;
         if ( doingUnion )
         {
             //??? QueryIterProjectHide
             List<Var> vars = new ArrayList<Var>() ;
-            
-            // NEED VARS IN INPUT AS WELL - sequenced join.
-            
             // What about vars in the input? 
+            // See boolean flag to SolverLib.execute
+            // When done - remove this if block.
             OpVars.vars(bgp, vars) ;
             qIter = new QueryIterProject(qIter, vars, execCxt) ;
             qIter = new QueryIterDistinct(qIter, execCxt) ;
         }
         return qIter ;
     }
-    
     
     // Is this a query against the real default graph in the storage (in a 3-tuple table). 
     private static boolean isDefaultGraphStorage(boolean isUnionDefaultGraph, Node gn, BasicPattern bgp)

@@ -1,0 +1,8 @@
+PREFIX :    <http://example>
+PREFIX arq: <urn:x-arq:>
+
+SELECT *
+{
+    GRAPH arq:UnionGraph { ?s ?p ?o . }
+    { ?o ?q ?v }
+}

@@ -9,10 +9,17 @@ package dev;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import junit.TextListener2;
+import junit.framework.TestCase;
 
 import lib.FileOps;
 import lib.StrUtils;
 import lib.cache.CacheNG;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -26,11 +33,13 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 
 import com.hp.hpl.jena.query.*;
 
+import com.hp.hpl.jena.tdb.InstallationTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
@@ -60,6 +69,9 @@ public class Run
 
     public static void main(String ... args) throws IOException
     {
+        
+        test() ; System.exit(0) ;
+        
         
         //t("foo") ;
         t("here and there__") ;
@@ -212,6 +224,33 @@ public class Run
         ResultSet rs = qexec.execSelect() ;
         ResultSetFormatter.out(rs) ;
         qexec.close() ;
+    }
+    
+    /*
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+       [ qt:query  <merge-1.rq> ;
+         qt:data <data-dft.ttl> ;
+         qt:graphData <data-1.ttl> ;
+         qt:graphData <data-2.ttl> ;
+       ] ;
+    mf:result <merge-1-results.srx>
+    */
+    private static void test()
+    {
+        String dir = "testing/UnionGraph/" ;
+        List<String> dftGraphs = Arrays.asList(dir+"data-dft.ttl") ;
+        List<String> namedGraphs = Arrays.asList(dir+"data-1.ttl", dir+"data-2.ttl") ;
+        String queryFile = dir+"merge-1.rq" ;
+        ResultSet rs = ResultSetFactory.load(dir+"merge-1-results.srx") ;
+        
+        TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBFactory.memFactory) ;
+        JUnitCore runner = new org.junit.runner.JUnitCore() ;
+        runner.addListener(new TextListener2(System.out)) ;
+        
+        InstallationTest.beforeClass() ;
+        Result result = runner.run(t) ;
+        InstallationTest.afterClass() ;
     }
     
     private static void tdbquery(String... args)

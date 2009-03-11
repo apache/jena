@@ -38,20 +38,42 @@ public class QueryTestTDB extends EarlTestCase
     private Dataset dataset = null ;
 
     boolean skipThisTest = false ;
-    TestItem item ;
-    private ImplFactory factory ;
+    //TestItem item ;
+    final List<String> defaultGraphURIs ;
+    final List<String> namedGraphURIs ;
+    final String queryFile ; 
+    final ResultSet resultSet ;
+    
+    final private ImplFactory factory ;
  
     // Track what's currently loaded in the GraphLocation
     private static List<String> currentDefaultGraphs = null ;
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
+    @SuppressWarnings("unchecked")
     public QueryTestTDB(String testName, EarlReport report, TestItem item, TDBFactory.ImplFactory factory)
     {
-        super(testName, item.getURI(), report) ;
-        this.item = item ;
+        this(testName, report, item.getURI(), item.getDefaultGraphURIs(), item.getNamedGraphURIs(), item.getResultSet(),
+             item.getQueryFile(), factory) ;
+    }
+    
+    public QueryTestTDB(String testName, EarlReport report, 
+                        String uri,
+                        List<String> dftGraphs,
+                        List<String> namedGraphs,
+                        ResultSet rs,
+                        String queryFile,
+                        TDBFactory.ImplFactory factory)
+    {
+        super(testName, uri, report) ;
+        this.defaultGraphURIs = dftGraphs ;
+        this.namedGraphURIs = namedGraphs ;
+        this.queryFile = queryFile ;
+        this.resultSet = rs ;
         this.factory = factory ;
     }
+    
     
     @Override public void setUp()
     {
@@ -64,25 +86,21 @@ public class QueryTestTDB extends EarlTestCase
         if ( dataset != null ) dataset.close() ; 
     }
     
-    @SuppressWarnings("unchecked")
     public void setupData()
     {
-        List<String> current = item.getDefaultGraphURIs() ;
-        List<String> named = item.getNamedGraphURIs() ;
-        
-        if ( compareLists(current, currentDefaultGraphs) &&
-             compareLists(named, currentNamedGraphs) )
+        if ( compareLists(defaultGraphURIs, currentDefaultGraphs) &&
+             compareLists(namedGraphURIs, currentNamedGraphs) )
             return ;
         
-        if ( current == null )
+        if ( defaultGraphURIs == null )
             throw new TDBTestException("No default graphs given") ;
 
         //graphLocation.clear() ;
         
-        for ( String fn : current )
+        for ( String fn : defaultGraphURIs )
             load(dataset.getDefaultModel(), fn) ;
         
-        for ( String fn : named )
+        for ( String fn : namedGraphURIs )
             load(dataset.getNamedModel(fn), fn) ;
     }
     
@@ -96,22 +114,21 @@ public class QueryTestTDB extends EarlTestCase
             return ;
         }
         
-        Query query = QueryFactory.read(item.getQueryFile()) ;
+        Query query = QueryFactory.read(queryFile) ;
         
         // Make sure a plain, no sameValueAs graph is used.
         Object oldValue = ARQ.getContext().get(ARQ.strictGraph) ;
         ARQ.setTrue(ARQ.strictGraph) ;
-        Dataset ds = DatasetFactory.create(item.getDefaultGraphURIs(), item.getNamedGraphURIs()) ;
+        Dataset ds = DatasetFactory.create(defaultGraphURIs, namedGraphURIs) ;
         ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
-        ResultSet rs = item.getResultSet() ;
         ResultSetRewindable rs1 = null ;
         String expectedLabel = "" ;
-        if ( rs != null )
+        if ( resultSet != null )
         {
-            rs1 = ResultSetFactory.makeRewindable(rs) ;
+            rs1 = ResultSetFactory.makeRewindable(resultSet) ;
             expectedLabel = "Results file" ;
         }
         else
@@ -127,7 +144,7 @@ public class QueryTestTDB extends EarlTestCase
 
         Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
         QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2) ;
-        rs = qExec2.execSelect() ;
+        ResultSet rs = qExec2.execSelect() ;
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;
         
         // See if the same.
