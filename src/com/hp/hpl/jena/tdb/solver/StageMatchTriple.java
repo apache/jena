@@ -66,7 +66,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 var[i] = asVar(n) ;
         }
 
-        boolean VERBOSE = false ;
+        boolean VERBOSE = true ;
 
         // **** New code - in development.
         if ( mergedGraphs )
@@ -89,7 +89,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 public Tuple<NodeId> convert(Tuple<NodeId> item)
                 {
                     // Zap graph node id.
-                    Tuple<NodeId> t2 = Tuple.create(NodeId.NodeDoesNotExist,    // Can't be null
+                    Tuple<NodeId> t2 = Tuple.create(NodeId.NodeDoesNotExist,    // Can't be null - gets bound to a daft variable.
                                                     item.get(1),
                                                     item.get(2),
                                                     item.get(3)) ;

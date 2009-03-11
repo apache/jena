@@ -8,11 +8,12 @@ package dev;
 
 public class Dev
 {
-    
+    // Now - fixing up the "dummy" graph variable does not extend to second triple in BGP.
     
     // DefaultUnionGraph : StageMatchTriple.
     //    SolverLib - remove "mergedGraph" - same as make "graphNode==null && tupleLength == 4" 
     // 
+    
     // Need all variables in scope, not just the BGP.
     // Do as per-triple wrappers (or otherwise after substitution, before adding to overall binding)
     

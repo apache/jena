@@ -64,7 +64,10 @@ public final class Tuple<T>
     { 
         int x = 99 ;
         for ( T n : tuple )
-            x = x<<1 ^ n.hashCode() ;
+        {
+            if ( n != null )
+                x = x<<1 ^ n.hashCode() ;
+        }
         return x ;  
     }
     
