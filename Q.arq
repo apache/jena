@@ -1,9 +1,7 @@
-PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX : <http://example/>
-PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+PREFIX  :     <http://example/>
+PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT *
-{ 
-    ?x :p/:q  ?v .
-    ?x :p/:q  ?v .
-}
+  SELECT  ?x
+    WHERE
+    { ?x foaf:knows ?z}
+    HAVING ( count(*) >= 10 )
