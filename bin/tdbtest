@@ -1,13 +1,5 @@
 #!/bin/bash
 
-if ! [ -e "testing" ] 
-then
-    echo "Not in the root of a TDB installation" 1>&2
-    exit 1
-    fi
-export TDBROOT=$PWD
 
 source "$TDBROOT/bin/tdb_init"
-
-# Set classpath directly - must be in the root directory
 exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.$TDB_CMD" "$@"
