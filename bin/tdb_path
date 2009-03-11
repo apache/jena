@@ -2,5 +2,5 @@
 # Sets CP
 
 # Adds "classes" and "build/classes"
-CP="$(make_classpath "$TDBROOT")"
+CP="$($TDBROOT/bin/make_classpath "$TDBROOT")"
 echo "$CP"

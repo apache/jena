@@ -70,7 +70,7 @@ public class StageGeneratorGeneric implements StageGenerator
         else
         {
             // When in doubt ... use the general pass-through to graph query handler matcher.
-            // Includes union graphs, InfGraphs and many other unusual kinds.
+            // Includes union graphs, InfGraphs and other composite or unusual kinds.
             reorder = null ;
             executor = executeInline ;
         }
