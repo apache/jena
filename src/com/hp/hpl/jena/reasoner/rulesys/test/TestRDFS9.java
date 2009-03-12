@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFS9.java,v 1.9 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestRDFS9.java,v 1.10 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
  * of modified versions of rule rdfs9.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.10 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class TestRDFS9 extends TestCase {
     
@@ -78,8 +78,8 @@ public class TestRDFS9 extends TestCase {
         // Check if first of these is in the wildcard listing
         boolean ok = false;
         Triple target = new Triple(a,ty,D);
-        for (Iterator i = igraph.find(null,ty,null); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = igraph.find(null,ty,null); i.hasNext(); ) {
+            Triple t = i.next();
             if (t.equals(target)) {
                 ok = true;
                 break;
@@ -95,8 +95,8 @@ public class TestRDFS9 extends TestCase {
         // Check if first of these is in the wildcard listing
         ok = false;
         target = new Triple(a,ty,D);
-        for (Iterator i = igraph.find(null,ty,null); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = igraph.find(null,ty,null); i.hasNext(); ) {
+            Triple t = i.next();
             if (t.equals(target)) {
                 ok = true;
                 break;

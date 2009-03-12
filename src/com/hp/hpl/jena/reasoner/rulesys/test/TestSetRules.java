@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestSetRules.java,v 1.13 2008-12-28 19:32:00 andy_seaborne Exp $
+  $Id: TestSetRules.java,v 1.14 2009-03-12 21:49:37 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ public class TestSetRules extends ModelTestBase
     public static TestSuite suite()
         { return new TestSuite( TestSetRules.class ); }
 
-    static final List rules = Rule.parseRules( "[name: (?s owl:foo ?p) -> (?s ?p ?a)]" );
+    static final List<Rule> rules = Rule.parseRules( "[name: (?s owl:foo ?p) -> (?s ?p ?a)]" );
     
     public void testRuleReasonerWrapper()
         {
@@ -42,12 +42,12 @@ public class TestSetRules extends ModelTestBase
     
     private static class MockFactory implements ReasonerFactory
         {
-        List done = new ArrayList();
+        List<String> done = new ArrayList<String>();
         static final Model capabilities = modelWithStatements( "this isA Capability" );
         static final String uri = "eg:mockURI";
         static final Reasoner reasoner = new GenericRuleReasoner( rules );
         
-        public void addRules( List rules )
+        public void addRules( List<Rule> rules )
             { assertEquals( TestSetRules.rules, rules );
             done.add( "addRules" ); }
     

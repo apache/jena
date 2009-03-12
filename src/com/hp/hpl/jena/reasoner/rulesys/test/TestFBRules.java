@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.54 2009-02-02 20:38:12 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.55 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.54 $ on $Date: 2009-02-02 20:38:12 $
+ * @version $Revision: 1.55 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class TestFBRules extends TestCase {
     
@@ -89,7 +89,7 @@ public class TestFBRules extends TestCase {
     /**
      * Override in subclasses to test other reasoners.
      */
-    public Reasoner createReasoner(List rules) {
+    public Reasoner createReasoner(List<Rule> rules) {
         FBRuleReasoner reasoner = new FBRuleReasoner(rules); 
         reasoner.tablePredicate(RDFS.Nodes.subClassOf);
         reasoner.tablePredicate(RDF.Nodes.type);
@@ -217,7 +217,7 @@ public class TestFBRules extends TestCase {
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
                        "[testBRule4: (n3 p ?a) <- (n1, p, ?a)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         Graph schema = Factory.createGraphMem();
         schema.add(new Triple(n1, p, n3));
         Graph data = Factory.createGraphMem();
@@ -311,8 +311,8 @@ public class TestFBRules extends TestCase {
      */
     public void testRebindAll() {
         String NS = "http://jena.hpl.hp.com/example#";
-        List rules1 = Rule.parseRules( "(?x http://jena.hpl.hp.com/example#p ?y) -> (?x http://jena.hpl.hp.com/example#q ?y)." );
-        List rules2 = Rule.parseRules( "(?x http://jena.hpl.hp.com/example#q ?y) -> (?x http://jena.hpl.hp.com/example#r ?y)." );
+        List<Rule> rules1 = Rule.parseRules( "(?x http://jena.hpl.hp.com/example#p ?y) -> (?x http://jena.hpl.hp.com/example#q ?y)." );
+        List<Rule> rules2 = Rule.parseRules( "(?x http://jena.hpl.hp.com/example#q ?y) -> (?x http://jena.hpl.hp.com/example#r ?y)." );
         Model m = ModelFactory.createDefaultModel();
         Property p = m.createProperty(NS + "p");
         Property q = m.createProperty(NS + "q");
@@ -504,7 +504,7 @@ public class TestFBRules extends TestCase {
               
         // Check derivation tracing as well
         // Suppressed until LP engine implements derivation tracing
-        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        Iterator<Derivation> di = infgraph.getDerivation(new Triple(b, p, a));
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
         assertTrue(d.getRule().getName().equals("r1b"));
@@ -941,7 +941,7 @@ public class TestFBRules extends TestCase {
      * if there is more than one.
      */
     private Node getValue(Graph g, Node s, Node p) {
-        ExtendedIterator i = g.find(s, p, null);
+        ExtendedIterator<Triple> i = g.find(s, p, null);
         assertTrue(i.hasNext());
         Node result = ((Triple)i.next()).getObject();
         if (i.hasNext()) {
@@ -965,7 +965,7 @@ public class TestFBRules extends TestCase {
             InfGraph infgraph = reasoner.bind(data);
             Node rbPrototypeProp = Node.createURI(ReasonerVocabulary.RBNamespace+"prototype");
             int count = 0;
-            for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+            for (Iterator<Triple> i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
                 Object t = i.next();
 //                System.out.println(" - " + PrintUtil.print(t));
                 count++;
@@ -975,8 +975,8 @@ public class TestFBRules extends TestCase {
             
             infgraph = reasoner.bindSchema(data).bind(Factory.createGraphMem());
             count = 0;
-            for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
-                Object t = i.next();
+            for (Iterator<Triple> i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+                Triple t = i.next();
 //                System.out.println(" - " + PrintUtil.print(t));
                 count++;
             }
@@ -1010,8 +1010,8 @@ public class TestFBRules extends TestCase {
      * Helper function to list a graph out to logger.info
      */
     public void listGraph(Graph g) {
-        for (Iterator i = g.find(null,null,null); i.hasNext();) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = g.find(null,null,null); i.hasNext();) {
+            Triple t = i.next();
             logger.info(PrintUtil.print(t));
         }
         logger.info("  --------  ");

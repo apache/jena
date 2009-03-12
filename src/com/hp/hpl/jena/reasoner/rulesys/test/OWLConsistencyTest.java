@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLConsistencyTest.java,v 1.8 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: OWLConsistencyTest.java,v 1.9 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -20,13 +20,15 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.reasoner.ValidityReport.Report;
+
 import com.hp.hpl.jena.util.FileManager;
 
 /**
  * Utility for checking OWL validation results.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds </a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 
 public class OWLConsistencyTest extends TestCase {
@@ -142,8 +144,8 @@ public class OWLConsistencyTest extends TestCase {
         }
         if (culprit != null) {
             boolean foundit = false;
-            for (Iterator i = report.getReports(); i.hasNext();) {
-                ValidityReport.Report r = (ValidityReport.Report) i.next();
+            for (Iterator<Report> i = report.getReports(); i.hasNext();) {
+                ValidityReport.Report r = i.next();
                 if (r.getExtension() != null
                         && r.getExtension().equals(culprit)) {
                     foundit = true;

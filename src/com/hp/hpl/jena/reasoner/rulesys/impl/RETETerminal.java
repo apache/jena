@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.19 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RETETerminal.java,v 1.20 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.20 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -78,7 +78,8 @@ public class RETETerminal implements RETESinkNode {
      * @param netCopy a map from RETENode to cloned instance
      * @param context the new context to which the network is being ported
      */
-    public RETENode clone(Map netCopy, RETERuleContext contextIn) {
+    
+    public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext contextIn) {
         RETETerminal clone = (RETETerminal)netCopy.get(this);
         if (clone == null) {
             RETERuleContext newContext = new RETERuleContext((ForwardRuleInfGraphI)contextIn.getGraph(), contextIn.getEngine());

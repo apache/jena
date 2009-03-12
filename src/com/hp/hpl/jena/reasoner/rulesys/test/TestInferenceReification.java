@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestInferenceReification.java,v 1.4 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: TestInferenceReification.java,v 1.5 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -127,7 +127,7 @@ public class TestInferenceReification extends AbstractTestReifier
     private InfGraph makeInfGraph(String rules, String data, ReificationStyle style ) {
         PrintUtil.registerPrefix("eh", "eh:/");
         Graph base = graphWith( data, style );
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         return new FBRuleReasoner(ruleList).bind( base );
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLExptRuleTranslationHook.java,v 1.9 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: OWLExptRuleTranslationHook.java,v 1.10 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of restrictions to functors.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.10 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
 
@@ -37,17 +37,17 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
      * all new deductions that should be seen by the rules.
      */
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
-        Iterator it = dataFind.find(new TriplePattern(null, OWL.intersectionOf.asNode(), null));
+        Iterator<Triple> it = dataFind.find(new TriplePattern(null, OWL.intersectionOf.asNode(), null));
         while (it.hasNext()) {
-            Triple decl = (Triple)it.next();
+            Triple decl = it.next();
             Node className = decl.getSubject();
-            List elements = new ArrayList();
+            List<Node> elements = new ArrayList<Node>();
             translateIntersectionList(decl.getObject(), dataFind, elements);
             // Generate the corresponding ruleset
-            List recognitionBody = new ArrayList();
+            List<ClauseEntry> recognitionBody = new ArrayList<ClauseEntry>();
             Node var = new Node_RuleVariable("?x", 0);
-            for (Iterator i = elements.iterator(); i.hasNext(); ) {
-                Node description = (Node)i.next();
+            for (Iterator<Node> i = elements.iterator(); i.hasNext(); ) {
+                Node description = i.next();
                 // Implication rule
                 Rule ir = new Rule("intersectionImplication", new ClauseEntry[] {
                                     new TriplePattern(className, RDFS.subClassOf.asNode(), description)
@@ -57,7 +57,7 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
                // Recognition rule elements
                recognitionBody.add(new TriplePattern(var, RDF.type.asNode(), description));
             }
-            List recognitionHead = new ArrayList(1);
+            List<ClauseEntry> recognitionHead = new ArrayList<ClauseEntry>(1);
             recognitionHead.add(new TriplePattern(var, RDF.type.asNode(), className));
             Rule rr = new Rule("intersectionRecognition", recognitionHead, recognitionBody);
             rr.setBackward(true);
@@ -72,7 +72,7 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
      * @param data the source data to use as a context for this processing
      * @param elements the list of elements found so far
      */
-    protected static void translateIntersectionList(Node node, Finder dataFind, List elements) {
+    protected static void translateIntersectionList(Node node, Finder dataFind, List<Node> elements) {
         if (node.equals(RDF.nil.asNode())) {
             return; // end of list
         } 

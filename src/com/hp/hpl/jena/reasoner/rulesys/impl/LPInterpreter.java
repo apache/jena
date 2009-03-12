@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.19 2009-01-26 10:28:22 chris-dollin Exp $
+ * $Id: LPInterpreter.java,v 1.20 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2009-01-26 10:28:22 $
+ * @version $Revision: 1.20 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class LPInterpreter {
 
@@ -587,7 +587,7 @@ public class LPInterpreter {
                                 if (envFrame instanceof EnvironmentFrameWithDerivation) {
                                     EnvironmentFrameWithDerivation efd = (EnvironmentFrameWithDerivation) envFrame;
                                     Triple result = efd.getResult();
-                                    List matches = efd.getMatchList();
+                                    List<Triple> matches = efd.getMatchList();
                                     BackwardRuleInfGraphI infGraph = engine.getInfGraph();
                                     RuleDerivation d = new RuleDerivation(envFrame.getRule(), result, matches, infGraph);
                                     infGraph.logDerivation(result, d);

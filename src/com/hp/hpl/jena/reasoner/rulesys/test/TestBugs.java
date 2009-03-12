@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.65 2009-03-09 18:10:23 der Exp $
+ * $Id: TestBugs.java,v 1.66 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.65 $ on $Date: 2009-03-09 18:10:23 $
+ * @version $Revision: 1.66 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class TestBugs extends TestCase {
 
@@ -77,7 +77,7 @@ public class TestBugs extends TestCase {
         boolean foundBadList = false;
         try {
             InfGraph infgraph = ReasonerRegistry.getOWLReasoner().bind(base.getGraph());
-            ExtendedIterator ci = infgraph.find(null, RDF.Nodes.type, OWL.Class.asNode());
+            ExtendedIterator<Triple> ci = infgraph.find(null, RDF.Nodes.type, OWL.Class.asNode());
             ci.close();
         } catch (ReasonerException e) {
             foundBadList = true;
@@ -121,7 +121,7 @@ public class TestBugs extends TestCase {
     private boolean anyInstancesOfNothing(Model model) {
         boolean hasAny = false;
         try {
-            ExtendedIterator it = model.listStatements(null, RDF.type, OWL.Nothing);
+            ExtendedIterator<Statement> it = model.listStatements(null, RDF.type, OWL.Nothing);
             hasAny = it.hasNext();
             it.close();
         } catch (ConversionException x) {
@@ -268,7 +268,7 @@ public class TestBugs extends TestCase {
         OntModel modeloOnt = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, modelo );
         Individual indi = modeloOnt.getIndividual("http://decsai.ugr.es/~ontoserver/bacarex2.owl#JS");
         indi.remove();
-        ClosableIterator it = modeloOnt.listStatements(indi, null, (RDFNode) null);
+        ClosableIterator<Statement> it = modeloOnt.listStatements(indi, null, (RDFNode) null);
         boolean ok = ! it.hasNext();
         it.close();
         assertTrue(ok);
@@ -318,8 +318,8 @@ public class TestBugs extends TestCase {
         System.out.println(" - " + s3);
         System.out.println("List all instances of C");
         int count = 0;
-        for (Iterator i = infmodel.listStatements(null, RDF.type, C); i.hasNext(); ) {
-            Statement st = (Statement)i.next();
+        for (Iterator<Statement> i = infmodel.listStatements(null, RDF.type, C); i.hasNext(); ) {
+            Statement st = i.next();
             System.out.println(" - " + st);
             count++;
         }
@@ -363,7 +363,7 @@ public class TestBugs extends TestCase {
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
         OntClass c = m.createClass(NS + "C");
         OntResource i = m.createIndividual(c);
-        Iterator res = m.listStatements(null, RDF.type, c);
+        Iterator<Statement> res = m.listStatements(null, RDF.type, c);
         TestUtil.assertIteratorValues(this, res, new Statement[] {
             m.createStatement(i, RDF.type, c)
         });
@@ -382,9 +382,9 @@ public class TestBugs extends TestCase {
         for (int os = 0; os < specs.length; os++) {
             OntModelSpec spec = specs[os];
             OntModel m = ModelFactory.createOntologyModel(spec, null);
-            Iterator i = m.listOntProperties();
+            Iterator<OntProperty> i = m.listOntProperties();
             while (i.hasNext()) {
-                Resource r = (Resource)i.next();
+                Resource r = i.next();
                 if (r.getURI() != null && r.getURI().startsWith(ReasonerVocabulary.RBNamespace)) {
                     assertTrue("Rubrik internal property leaked out: " + r + "(" + os + ")", false);
                 }
@@ -590,8 +590,8 @@ public class TestBugs extends TestCase {
             OntClass c = q.remove( 0 );
             seen.add( c );
 
-            for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
-                OntClass sub = (OntClass) i.next();
+            for (Iterator<OntClass> i = c.listSubClasses( true ); i.hasNext(); ) {
+                OntClass sub = i.next();
                 if (!seen.contains( sub )) {
                     q.add( sub );
                 }
@@ -994,7 +994,7 @@ public class TestBugs extends TestCase {
         assertTrue (! validity.isValid()); 
         
         // Check culprit reporting
-        ValidityReport.Report report = (ValidityReport.Report)(validity.getReports().next());
+        ValidityReport.Report report = (validity.getReports().next());
         Triple culprit = (Triple)report.getExtension();
         assertEquals(culprit.getSubject().getURI(), NS + "c");
         assertEquals(culprit.getPredicate(), hasValue.asNode());
@@ -1020,7 +1020,7 @@ public class TestBugs extends TestCase {
         InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         ValidityReport validity = im.validate();
         assertTrue (! validity.isValid()); 
-        ValidityReport.Report report = (ValidityReport.Report)(validity.getReports().next());
+        ValidityReport.Report report = (validity.getReports().next());
         assertTrue( report.getExtension() instanceof RDFNode);
         return (RDFNode)report.getExtension();
     }

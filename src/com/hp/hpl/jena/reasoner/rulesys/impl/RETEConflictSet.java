@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.7 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RETEConflictSet.java,v 1.8 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 
 public class RETEConflictSet {
@@ -50,7 +50,7 @@ public class RETEConflictSet {
     protected boolean isMonotonic;
     
     /** the list of rule activations left to fire */
-    protected ArrayList conflictSet = new ArrayList();
+    protected ArrayList<CSEntry> conflictSet = new ArrayList<CSEntry>();
 
     /** count the number of positive entries - optimization hack */
     protected int nPos = 0;
@@ -78,8 +78,8 @@ public class RETEConflictSet {
             // Add to the conflict set, compressing +/- pairs
             boolean done = false;
             if ( (isAdd && nNeg > 0) || (!isAdd && nPos > 0) ) {
-                for (Iterator i = conflictSet.iterator(); i.hasNext(); ) {
-                    CSEntry cse = (CSEntry)i.next();
+                for (Iterator<CSEntry> i = conflictSet.iterator(); i.hasNext(); ) {
+                    CSEntry cse = i.next();
                     if (cse.rule != rule) continue;
                     if (cse.env.equals(env)) {
                         if (isAdd != cse.isAdd) {
@@ -113,7 +113,7 @@ public class RETEConflictSet {
     public boolean fireOne() {
         if (isEmpty()) return false;
         int index = conflictSet.size() - 1;
-        CSEntry cse = (CSEntry)conflictSet.remove(index);
+        CSEntry cse = conflictSet.remove(index);
         if (cse.isAdd) nPos--; else nNeg --;
         RETERuleContext context = new RETERuleContext((ForwardRuleInfGraphI)gcontext.getGraph(), gcontext.getEngine());
         context.setEnv(cse.env);
@@ -137,10 +137,10 @@ public class RETEConflictSet {
         }
         RETEEngine engine = context.getEngine();
         engine.incRuleCount();
-        List matchList = null;
+        List<Triple> matchList = null;
         if (infGraph.shouldLogDerivations() && isAdd) {
             // Create derivation record
-            matchList = new ArrayList(rule.bodyLength());
+            matchList = new ArrayList<Triple>(rule.bodyLength());
             for (int i = 0; i < rule.bodyLength(); i++) {
                 Object clause = rule.getBodyElement(i);
                 if (clause instanceof TriplePattern) {

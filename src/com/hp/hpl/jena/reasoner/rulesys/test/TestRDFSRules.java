@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.27 2009-01-13 13:49:43 andy_seaborne Exp $
+ * $Id: TestRDFSRules.java,v 1.28 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.27 $ on $Date: 2009-01-13 13:49:43 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.28 $ on $Date: 2009-03-12 21:49:37 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -104,7 +104,7 @@ public class TestRDFSRules extends TestCase {
         for (int lp = 0; lp < loop; lp++) {
             Model m = ModelFactory.createModelForGraph(r.bindSchema(tbox.getGraph()).bind(data.getGraph()));
             count = 0;
-            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+            for (Iterator<Statement> i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
         }
         long t2 = System.currentTimeMillis();
         long time10 = (t2-t1)*10/loop;

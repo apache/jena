@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.42 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestBasics.java,v 1.43 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.42 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.43 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class TestBasics extends TestCase  {
     
@@ -194,7 +194,7 @@ public class TestBasics extends TestCase  {
     public void testClauseMaching() {
         BindingStack env = new BindingStack();
         env.reset(MAX_VARS);
-        List rules = new ArrayList();
+        List<Rule> rules = new ArrayList<Rule>();
         BasicForwardRuleInfGraph inf = new BasicForwardRuleInfGraph(
                                             new BasicForwardRuleReasoner(rules), rules, null);
         TriplePattern p1 = new TriplePattern(
@@ -243,7 +243,7 @@ public class TestBasics extends TestCase  {
                        "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
                        "[r3: (?a p ?a), (n1 p ?c), (n1, p, ?a) -> (?a, p, ?c)]" +
                        "[r4: (n4 ?p ?a) -> (n4, ?a, ?p)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         infgraph.add(new Triple(n1, p, n2));
@@ -270,7 +270,7 @@ public class TestBasics extends TestCase  {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         infgraph.setDerivationLogging(true);
@@ -289,11 +289,11 @@ public class TestBasics extends TestCase  {
                 new Triple(res, p, n3)
             });
         
-        Iterator derivs = infgraph.getDerivation(new Triple(res, p, n3));
+        Iterator<Derivation> derivs = infgraph.getDerivation(new Triple(res, p, n3));
         StringWriter outString = new StringWriter(250);
         PrintWriter out = new PrintWriter(outString);
         while (derivs.hasNext()) {
-            Derivation d = (Derivation) derivs.next();
+            Derivation d = derivs.next();
             d.printTrace(out, true);
         }
         out.flush();
@@ -315,7 +315,7 @@ public class TestBasics extends TestCase  {
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
                        "[axiom1: -> (n1 p n3)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
@@ -347,7 +347,7 @@ public class TestBasics extends TestCase  {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         Graph schema = Factory.createGraphMem();
         schema.add(new Triple(n1, p, n3));
         Graph data = Factory.createGraphMem();
@@ -380,7 +380,7 @@ public class TestBasics extends TestCase  {
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
                        "[ (?x eg:prop functor(?v, ?*)) -> (?x eg:propfunc ?v) ]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         
         Model data = ModelFactory.createDefaultModel();
         Resource R1 = data.createResource(PrintUtil.egNS + "R1");
@@ -421,7 +421,7 @@ public class TestBasics extends TestCase  {
                        "[axiom1: -> (n1 p 1)]" +
                        "[axiom2: -> (n1 p 4)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
@@ -443,7 +443,7 @@ public class TestBasics extends TestCase  {
         String rules =  
                        "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
@@ -465,7 +465,7 @@ public class TestBasics extends TestCase  {
         String rules =  
                        "[rule1: (?x p ?y) -> drop(0)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
@@ -484,7 +484,7 @@ public class TestBasics extends TestCase  {
      */
     public void testRebind() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
@@ -508,7 +508,7 @@ public class TestBasics extends TestCase  {
      */
     public void testSize() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
@@ -559,16 +559,16 @@ public class TestBasics extends TestCase  {
         data.add(new Triple(n5, rest, nil));
         
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        List ruleList = Rule.parseRules(rules);
+        List<Rule> ruleList = Rule.parseRules(rules);
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
         
         RuleContext context = new BFRuleContext( (ForwardRuleInfGraphI) infgraph);
-        List result = Util.convertList(n1, context);
+        List<Node> result = Util.convertList(n1, context);
         assertEquals(result.size(), 2);
         assertEquals(result.get(0), p);
         assertEquals(result.get(1), q);
 
-        List result2 = Util.convertList(n3, context);
+        List<Node> result2 = Util.convertList(n3, context);
         assertEquals(result2.size(), 1);
         assertEquals(result2.get(0), p);
     }

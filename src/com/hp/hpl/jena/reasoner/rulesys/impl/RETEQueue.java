@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEQueue.java,v 1.12 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RETEQueue.java,v 1.13 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,12 +19,12 @@ import java.util.*;
  * against.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.13 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class RETEQueue implements RETESinkNode, RETESourceNode {
     
     /** A multi-set of partially bound envionments */
-    protected HashMap queue = new HashMap();
+    protected HashMap<BindingVector, Count> queue = new HashMap<BindingVector, Count>();
     
     /** A set of variable indices which should match between the two inputs */
     protected byte[] matchIndices;
@@ -79,7 +79,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
      */
     public void fire(BindingVector env, boolean isAdd) {
         // Store the new token in this store
-        Count count = (Count)queue.get(env);
+        Count count = queue.get(env);
         if (count == null) {
             // no entry yet
             if (!isAdd) return;
@@ -96,8 +96,8 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
         }
         
         // Cross match new token against the entries in the sibling queue
-        for (Iterator i = sibling.queue.keySet().iterator(); i.hasNext(); ) {
-            Node[] candidate = ((BindingVector)i.next()).getEnvironment();
+        for (Iterator<BindingVector> i = sibling.queue.keySet().iterator(); i.hasNext(); ) {
+            Node[] candidate = i.next().getEnvironment();
             Node[] envNodes = env.getEnvironment();
             boolean matchOK = true;
             for (int j = 0; j < matchIndices.length; j++) {
@@ -158,7 +158,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
      * Clone this node in the network.
      * @param context the new context to which the network is being ported
      */
-    public RETENode clone(Map netCopy, RETERuleContext context) {
+    public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) {
         RETEQueue clone = (RETEQueue)netCopy.get(this);
         if (clone == null) {
             clone = new RETEQueue(matchIndices);

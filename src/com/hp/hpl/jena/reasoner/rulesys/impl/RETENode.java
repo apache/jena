@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETENode.java,v 1.11 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RETENode.java,v 1.12 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  * Interface for all nodes in the network.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.12 $ on $Date: 2009-03-12 21:49:47 $
  */
 public interface RETENode {
     
@@ -24,7 +24,7 @@ public interface RETENode {
      * @param netCopy a map from RETENodes to cloned instance so far.
      * @param context the new context to which the network is being ported
      */
-    public RETENode clone(Map netCopy, RETERuleContext context);
+    public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) ;
 
 }
 

@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.29 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: FRuleEngine.java,v 1.30 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
@@ -27,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.30 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -35,13 +36,13 @@ public class FRuleEngine implements FRuleEngineI {
     protected ForwardRuleInfGraphI infGraph;
     
     /** Set of rules being used */
-    protected List rules;
+    protected List<Rule> rules;
     
     /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
-    protected OneToManyMap clauseIndex;
+    protected OneToManyMap<Node, ClausePointer> clauseIndex;
     
     /** List of predicates used in rules to assist in fast data loading */
-    protected HashSet predicatesUsed;
+    protected HashSet<Node> predicatesUsed;
     
     /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
     protected boolean wildcardRule;
@@ -72,7 +73,7 @@ public class FRuleEngine implements FRuleEngineI {
      * holds the deductions graph and source data.
      * @param rules the rule set to be processed
      */
-    public FRuleEngine(ForwardRuleInfGraphI parent, List rules) {
+    public FRuleEngine(ForwardRuleInfGraphI parent, List<Rule> rules) {
         infGraph = parent;
         this.rules = rules;
     }
@@ -118,14 +119,14 @@ public class FRuleEngine implements FRuleEngineI {
         BFRuleContext context = new BFRuleContext(infGraph);
         // Insert the data
         if (wildcardRule) {
-            for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
-                context.addTriple((Triple)i.next());
+            for (Iterator<Triple> i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
+                context.addTriple(i.next());
             }
         } else {
-            for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
-                Node predicate = (Node)p.next();
-                for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
-                    context.addTriple((Triple)i.next());
+            for (Iterator<Node> p = predicatesUsed.iterator(); p.hasNext(); ) {
+                Node predicate = p.next();
+                for (Iterator<Triple> i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
+                    context.addTriple(i.next());
                 }
             }
         }
@@ -213,12 +214,12 @@ public class FRuleEngine implements FRuleEngineI {
                 logger.info("Processing: " + PrintUtil.print(t));
             }
             // Check for rule triggers
-            HashSet firedRules = new HashSet();
-            Iterator i1 = clauseIndex.getAll(t.getPredicate());
-            Iterator i2 = clauseIndex.getAll(Node.ANY);
-            Iterator i = new ConcatenatedIterator(i1, i2);
+            HashSet<Rule> firedRules = new HashSet<Rule>();
+            Iterator<ClausePointer> i1 = clauseIndex.getAll(t.getPredicate());
+            Iterator<ClausePointer> i2 = clauseIndex.getAll(Node.ANY);
+            Iterator<ClausePointer> i = new ConcatenatedIterator<ClausePointer>(i1, i2);
             while (i.hasNext()) {
-                ClausePointer cp = (ClausePointer) i.next();
+                ClausePointer cp = i.next();
                 if (firedRules.contains(cp.rule)) continue;
                 context.resetEnv( cp.rule.getNumVars() );
                 TriplePattern trigger = (TriplePattern) cp.rule.getBodyElement(cp.index);
@@ -240,13 +241,13 @@ public class FRuleEngine implements FRuleEngineI {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      * @return an object that can be installed into the engine using setRuleStore.
      */
-    public void compile(List rules, boolean ignoreBrules) {
-        clauseIndex = new OneToManyMap();
-        predicatesUsed = new HashSet();
+    public void compile(List<Rule> rules, boolean ignoreBrules) {
+        clauseIndex = new OneToManyMap<Node, ClausePointer>();
+        predicatesUsed = new HashSet<Node>();
         wildcardRule = false;
             
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (ignoreBrules && r.isBackward()) continue;
             Object[] body = r.getBody();
             for (int j = 0; j < body.length; j++) {
@@ -274,8 +275,8 @@ public class FRuleEngine implements FRuleEngineI {
      */
     protected void findAndProcessAxioms() {
         BFRuleContext context = new BFRuleContext(infGraph);
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (r.bodyLength() == 0) {
                 // An axiom
                 for (int j = 0; j < r.headLength(); j++) {
@@ -298,8 +299,8 @@ public class FRuleEngine implements FRuleEngineI {
      */
     protected void findAndProcessActions() {
         BFRuleContext context = new BFRuleContext(infGraph);
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (r.bodyLength() == 0) {
                 // An axiom
                 for (int j = 0; j < r.headLength(); j++) {
@@ -329,9 +330,9 @@ public class FRuleEngine implements FRuleEngineI {
     private boolean matchRuleBody(int trigger, BFRuleContext context) {
         Rule rule = context.getRule();
         // Create an ordered list of body clauses to process, best at the end
-        Object[] body = rule.getBody();
+        ClauseEntry[] body = rule.getBody();
         int len = body.length;
-        ArrayList clauses = new ArrayList(len-1);
+        List<ClauseEntry> clauses = new ArrayList<ClauseEntry>(len-1);
         
         if (len <= 1) {
             // No clauses to add, just fall through to clause matcher
@@ -339,7 +340,7 @@ public class FRuleEngine implements FRuleEngineI {
             // Only one clause remaining, no reordering necessary
             Object clause = body[trigger == 0 ? 1 : 0];
             if (clause instanceof TriplePattern) {
-                clauses.add(clause);
+                clauses.add((TriplePattern)clause);
             }
          } else {
             // Pick most bound remaining clause as the best one to go first
@@ -386,7 +387,7 @@ public class FRuleEngine implements FRuleEngineI {
      * @param context a context containing a set of new triples to be added
      * @return true if the rule actually fires
      */
-    private boolean matchClauseList(List clauses, BFRuleContext context) {
+    private boolean matchClauseList(List<ClauseEntry> clauses, BFRuleContext context) {
         Rule rule = context.getRule();
         BindingStack env = context.getEnvStack();
         int index = clauses.size() - 1;
@@ -405,10 +406,10 @@ public class FRuleEngine implements FRuleEngineI {
             if (infGraph.shouldTrace()) {
                 logger.info("Fired rule: " + rule.toShortString() + " = " + rule.instantiate(env));
             }
-            List matchList = null;
+            List<Triple> matchList = null;
             if (recordDerivations) {
                 // Create derivation record
-                matchList = new ArrayList(rule.bodyLength());
+                matchList = new ArrayList<Triple>(rule.bodyLength());
                 for (int i = 0; i < rule.bodyLength(); i++) {
                     Object clause = rule.getBodyElement(i);
                     if (clause instanceof TriplePattern) {
@@ -451,20 +452,20 @@ public class FRuleEngine implements FRuleEngineI {
             return true;
         }
         // More clauses left to match ...
-        ArrayList clausesCopy = (ArrayList)((ArrayList)clauses).clone();
+        List<ClauseEntry> clausesCopy = new ArrayList<ClauseEntry>(clauses);
         TriplePattern clause = (TriplePattern) clausesCopy.remove(index);
         Node objPattern = env.getBinding(clause.getObject());
         if (Functor.isFunctor(objPattern)) {
             // Can't search on functor patterns so leave that as a wildcard
             objPattern = null;
         }
-        Iterator i = infGraph.findDataMatches(
+        Iterator<Triple> i = infGraph.findDataMatches(
                             env.getBinding(clause.getSubject()),
                             env.getBinding(clause.getPredicate()),
                             env.getBinding(objPattern));
         boolean foundMatch = false;
         while (i.hasNext()) {
-            Triple t = (Triple) i.next();
+            Triple t = i.next();
             // Add the bindings to the environment
             env.push();
             if (match(clause.getPredicate(), t.getPredicate(), env)
@@ -616,16 +617,16 @@ public class FRuleEngine implements FRuleEngineI {
     public static class RuleStore {
     
         /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
-        protected OneToManyMap clauseIndex;
+        protected OneToManyMap<Node, ClausePointer> clauseIndex;
     
         /** List of predicates used in rules to assist in fast data loading */
-        protected HashSet predicatesUsed;
+        protected HashSet<Node> predicatesUsed;
     
         /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
         protected boolean wildcardRule;
         
         /** Constructor */
-        RuleStore(OneToManyMap clauseIndex, HashSet predicatesUsed, boolean wildcardRule) {
+        RuleStore(OneToManyMap<Node, ClausePointer> clauseIndex, HashSet<Node> predicatesUsed, boolean wildcardRule) {
             this.clauseIndex = clauseIndex;
             this.predicatesUsed = predicatesUsed;
             this.wildcardRule = wildcardRule;

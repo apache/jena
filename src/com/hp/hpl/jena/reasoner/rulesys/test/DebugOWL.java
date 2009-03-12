@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.36 2009-01-13 13:22:49 der Exp $
+ * $Id: DebugOWL.java,v 1.37 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2009-01-13 13:22:49 $
+ * @version $Revision: 1.37 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class DebugOWL {
 
@@ -120,7 +120,7 @@ public class DebugOWL {
                         
             case RDFSLPExpt:
                 try {
-                    List rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules"));
+                    List<Rule> rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules"));
                     reasoner = new FBRuleReasoner(rules);
                 } catch (WrappedIOException e) {
                     System.out.println("Failed to open rules file: " + e.getCause());
@@ -254,8 +254,8 @@ public class DebugOWL {
         long t1 = System.currentTimeMillis();
         init();
         int count = 0;
-        for (Iterator i = infgraph.find(s,p,o); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
+        for (Iterator<Triple> i = infgraph.find(s,p,o); i.hasNext(); ) {
+            Triple t = i.next();
             count++;
             if (print) {
                 logger.info(PrintUtil.print(t));

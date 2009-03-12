@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.28 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: WebOntTestHarness.java,v 1.29 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
+
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
@@ -27,7 +28,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.29 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class WebOntTestHarness {
 
@@ -290,9 +291,9 @@ public class WebOntTestHarness {
     /**
      * Run all tests in the given list.
      */
-    public void runTests(List tests) {
-        for (Iterator i = tests.iterator(); i.hasNext(); ) {
-            runTest( (Resource) i.next() );
+    public void runTests(List<Resource> tests) {
+        for (Iterator<Resource> i = tests.iterator(); i.hasNext(); ) {
+            runTest( i.next() );
         }
     }
     
@@ -475,7 +476,7 @@ public class WebOntTestHarness {
      */
     public void comprehensionAxioms(Model premises, Model conclusions) {
         // Comprehend all restriction declarations and note them in a map
-        Map comprehension = new HashMap();
+        Map<Resource, Resource> comprehension = new HashMap<Resource, Resource>();
         StmtIterator ri = conclusions.listStatements(null, RDF.type, OWL.Restriction);
         while (ri.hasNext()) {
             Resource restriction = ri.nextStatement().getSubject();
@@ -530,14 +531,14 @@ public class WebOntTestHarness {
      * Helper. Adds to the target model a translation of the given RDF list
      * with each element replaced according to the map.
      */
-    private Resource mapList(Model target, Resource list, Map map) {
+    private Resource mapList(Model target, Resource list, Map<Resource, Resource> map) {
         if (list.equals(RDF.nil)) {
             return RDF.nil;
         } else {
             Resource head = (Resource) list.getRequiredProperty(RDF.first).getObject();
             Resource rest = (Resource) list.getRequiredProperty(RDF.rest).getObject();
             Resource mapElt = target.createResource();
-            Resource mapHead = (Resource) map.get(head);
+            Resource mapHead = map.get(head);
             if (mapHead == null) mapHead = head;
             mapElt.addProperty(RDF.first, mapHead);
             mapElt.addProperty(RDF.rest, mapList(target, rest, map));
@@ -549,8 +550,8 @@ public class WebOntTestHarness {
 //  Internal helper functions
     
     /** Return a list of all tests of the given type, according to the current filters */
-    public List findTestsOfType(Resource testType) {
-        ArrayList result = new ArrayList();
+    public List<Resource> findTestsOfType(Resource testType) {
+        ArrayList<Resource> result = new ArrayList<Resource>();
         StmtIterator si = testDefinitions.listStatements(null, RDF.type, testType);
         while (si.hasNext()) {
             Resource test = si.nextStatement().getSubject();

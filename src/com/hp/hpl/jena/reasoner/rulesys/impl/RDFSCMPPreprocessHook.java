@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSCMPPreprocessHook.java,v 1.11 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RDFSCMPPreprocessHook.java,v 1.12 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of container membership properties and adds those to the deductions set.  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.12 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
     protected static String memberPrefix = RDF.getURI() + "_";
@@ -40,10 +40,10 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
      * all new deductions that should be seen by the rules.
      */
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
-        ExtendedIterator it = dataFind.find(new TriplePattern(null, null, null));
-        HashSet properties = new HashSet();
+        ExtendedIterator<Triple> it = dataFind.find(new TriplePattern(null, null, null));
+        HashSet<Node> properties = new HashSet<Node>();
         while (it.hasNext()) {
-            Triple triple = (Triple)it.next();
+            Triple triple = it.next();
             Node prop = triple.getPredicate();
             if (prop.equals(RDF.Nodes.type) && triple.getObject().equals(RDF.Nodes.Property) ) {
                 prop = triple.getSubject();

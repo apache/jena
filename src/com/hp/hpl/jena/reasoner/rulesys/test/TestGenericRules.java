@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.27 2008-12-28 19:32:00 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.28 2009-03-12 21:49:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2008-12-28 19:32:00 $
+ * @version $Revision: 1.28 $ on $Date: 2009-03-12 21:49:37 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -58,7 +58,7 @@ public class TestGenericRules extends TestCase {
     Node ty = RDF.Nodes.type;
     Node sC = RDFS.Nodes.subClassOf;
 
-    List ruleList = Rule.parseRules("[r1: (?a p ?b), (?b p ?c) -> (?a p ?c)]" +
+    List<Rule> ruleList = Rule.parseRules("[r1: (?a p ?b), (?b p ?c) -> (?a p ?c)]" +
                                     "[r2: (?a q ?b) -> (?a p ?c)]" +
                                     "-> table(p). -> table(q).");
     Triple[] ans = new Triple[] { new Triple(a, p, b),
@@ -133,7 +133,7 @@ public class TestGenericRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(p, ty, s));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "[a1: -> (a rdf:type t)]" +
         "[r0: (?x r ?y) -> (?x p ?y)]" +
         "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]" +
@@ -154,7 +154,7 @@ public class TestGenericRules extends TestCase {
               } );
               
         // Check derivation tracing as well
-        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        Iterator<Derivation> di = infgraph.getDerivation(new Triple(b, p, a));
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
 //        java.io.PrintWriter out = new java.io.PrintWriter(System.out); 
@@ -170,7 +170,7 @@ public class TestGenericRules extends TestCase {
      */
     public void testBRuleErrorHandling() {
         Graph data = Factory.createGraphMem();
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                     "[a1: -> [(?x eg:p ?y) (?x eg:q ?y) <- (?x eg:r ?y)]]"
                 );
         boolean foundException = false;
@@ -210,7 +210,7 @@ public class TestGenericRules extends TestCase {
               } );
               
         // Check derivation tracing as well
-        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+        Iterator<Derivation> di = infgraph.getDerivation(new Triple(b, p, a));
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
         assertTrue(d.getRule().getName().equals("r1b"));
@@ -295,7 +295,7 @@ public class TestGenericRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(a, p, s));
-        List rules = Rule.parseRules( "[r0: (?x r ?y) (?x p ?z) -> (?x q func(?y, ?z)) ]" );        
+        List<Rule> rules = Rule.parseRules( "[r0: (?x r ?y) (?x p ?z) -> (?x q func(?y, ?z)) ]" );        
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(rules);
         reasoner.setMode(GenericRuleReasoner.HYBRID);
@@ -317,7 +317,7 @@ public class TestGenericRules extends TestCase {
      * Test the @prefix and @include extensions to the rule parser
      */
     public void testExtendedRuleParser() {
-        List rules = Rule.rulesFromURL("file:testing/reasoners/ruleParserTest1.rules");
+        List<Rule> rules = Rule.rulesFromURL("file:testing/reasoners/ruleParserTest1.rules");
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         reasoner.setTransitiveClosureCaching(true);
         Model base = ModelFactory.createDefaultModel();
@@ -356,7 +356,7 @@ public class TestGenericRules extends TestCase {
      */
     private boolean checkIncludeFound(String ruleSrc) {
         try {
-            List rules = Rule.rulesFromURL(ruleSrc);
+            List<Rule> rules = Rule.rulesFromURL(ruleSrc);
             GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
             Model base = ModelFactory.createDefaultModel();
             InfModel m = ModelFactory.createInfModel(reasoner, base);
@@ -387,7 +387,7 @@ public class TestGenericRules extends TestCase {
         data.add(new Triple(a, p, C1));
         data.add(new Triple(C1, sC, C2));
         data.add(new Triple(C2, sC, C3));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
         "-> table(rdf:type)." +
         "[r1: (?x p ?c) -> (?x rdf:type ?c)] " +
         "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]"
@@ -445,7 +445,7 @@ public class TestGenericRules extends TestCase {
     public void testAddRemove2() {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, Util.makeIntNode(0)));
-        List rules = Rule.parseRules(
+        List<Rule> rules = Rule.parseRules(
                 "(?x p ?v)-> (?x q inc(1, a)).\n" +
                 "(?x p ?v)-> (?x q inc(1, b)).\n" +
                 "(?x p ?v) (?x q inc(?i, ?t)) noValue(?x r ?t) sum(?v, ?i, ?s) -> remove(0,1), (?x p ?s) (?x r ?t).\n");

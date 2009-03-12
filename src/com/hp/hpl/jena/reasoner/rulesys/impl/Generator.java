@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Generator.java,v 1.12 2009-01-16 17:23:53 andy_seaborne Exp $
+ * $Id: Generator.java,v 1.13 2009-03-12 21:49:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2009-01-16 17:23:53 $
+ * @version $Revision: 1.13 $ on $Date: 2009-03-12 21:49:47 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -34,11 +34,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     protected LPInterpreter interpreter;
         
     /** The ordered set of results available for the goal */
-    protected ArrayList results = new ArrayList();
+    protected ArrayList<Object> results = new ArrayList<Object>();
     
     /** A indexed version of the result set, used while the generator is live 
      *  to detect duplicate results */
-    protected Set resultSet;
+    protected Set<Object> resultSet;
     
     /** set to true if the dependent generator has new results ready for us */
     protected boolean isReady = true;
@@ -47,10 +47,10 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     protected boolean checkReadyNeeded = false;
     
     /** The set of choice points producing results for us to use */
-    protected Set generatingCPs = new HashSet();
+    protected Set<ConsumerChoicePointFrame> generatingCPs = new HashSet<ConsumerChoicePointFrame>();
     
     /** The list of active consumer choice points consuming results from this generator */
-    protected Set consumingCPs = new HashSet();
+    protected Set<ConsumerChoicePointFrame> consumingCPs = new HashSet<ConsumerChoicePointFrame>();
     
     /** Flags whether the generator is live/dead/unknown during completion checking */
     protected LFlag completionState;
@@ -77,7 +77,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
         this.interpreter = interpreter;
         this.goal = goal;       // Just used for debugging
         isSingleton = goal.isGround();
-        if (!isSingleton) resultSet = new HashSet();
+        if (!isSingleton) resultSet = new HashSet<Object>();
     }
     
     /**
@@ -95,8 +95,8 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
         if (isComplete()) return false;
         if (checkReadyNeeded) {
             isReady = false;
-            for (Iterator i = generatingCPs.iterator(); i.hasNext(); ) {
-                if ( ((ConsumerChoicePointFrame)i.next()).isReady() ) {
+            for (Iterator<ConsumerChoicePointFrame> i = generatingCPs.iterator(); i.hasNext(); ) {
+                if ( i.next().isReady() ) {
                     isReady = true;
                     break;
                 }
@@ -153,8 +153,8 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
             isReady = false;
             completionState = LFlag.DEAD;
             // Anyone we were generating results for is now finished
-            for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
-                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
+            for (Iterator<ConsumerChoicePointFrame> i = consumingCPs.iterator(); i.hasNext(); ) {
+                ConsumerChoicePointFrame ccp = i.next();
                 if ( ! ccp.isReady()) {
                     ccp.setFinished();
                 }
@@ -193,8 +193,8 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      */
     public void notifyResults() {
         LPBRuleEngine engine = interpreter.getEngine();
-        for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
-            ConsumerChoicePointFrame cons = (ConsumerChoicePointFrame)i.next();
+        for (Iterator<ConsumerChoicePointFrame> i = consumingCPs.iterator(); i.hasNext(); ) {
+            ConsumerChoicePointFrame cons = i.next();
             cons.setReady();
         }
     }
@@ -275,7 +275,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * dependent on can run.
      */
     public void checkForCompletions() {
-        HashSet visited = new HashSet();
+        HashSet<Generator> visited = new HashSet<Generator>();
         if (runCompletionCheck(visited) != LFlag.LIVE) {
             postCompletionCheckScan(visited);
         }
@@ -286,7 +286,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * been run.
      */
     public static void checkForCompletions(Collection completions) {
-        HashSet visited = new HashSet();
+        HashSet<Generator> visited = new HashSet<Generator>();
         boolean atLeastOneZombie = false;
         for (Iterator i = completions.iterator(); i.hasNext(); ) {
             Generator g = (Generator)i.next();
@@ -304,15 +304,15 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * generator), dead (complete) or in a deadlock loop which might or
      * might not be live (unknown).
      */
-    protected LFlag runCompletionCheck(Set visited) {
+    protected LFlag runCompletionCheck(Set<Generator> visited) {
         if (isComplete()) return LFlag.DEAD;
         if (! visited.add(this)) return this.completionState;
         completionState = LFlag.UNKNOWN;
         if (isReady()) {
             completionState = LFlag.LIVE;
         } else {
-            for (Iterator i = generatingCPs.iterator(); i.hasNext(); ) {
-                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
+            for (Iterator<ConsumerChoicePointFrame> i = generatingCPs.iterator(); i.hasNext(); ) {
+                ConsumerChoicePointFrame ccp = i.next();
                 if (ccp.isReady()) {
                     completionState = LFlag.LIVE;
                     break;
@@ -330,12 +330,12 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * unknowns are actually live and set the remaining (deadlocked) states
      * to complete.
      */
-    protected static void postCompletionCheckScan(Set visited ) {
-        for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
-            Generator g = (Generator)iv.next();
+    protected static void postCompletionCheckScan(Set<Generator> visited ) {
+        for (Iterator<Generator> iv = visited.iterator(); iv.hasNext(); ) {
+            Generator g = iv.next();
             if (g.completionState == LFlag.LIVE) {
-                for (Iterator i = g.consumingCPs.iterator(); i.hasNext(); ) {
-                    LPInterpreterContext link = ((ConsumerChoicePointFrame)i.next()).getConsumingContext();
+                for (Iterator<ConsumerChoicePointFrame> i = g.consumingCPs.iterator(); i.hasNext(); ) {
+                    LPInterpreterContext link = i.next().getConsumingContext();
                     if (link instanceof Generator) {
                         ((Generator)link).propagateLive(visited); 
                     }
@@ -343,8 +343,8 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
             }
         }
         
-        for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
-            Generator g = (Generator)iv.next();
+        for (Iterator<Generator> iv = visited.iterator(); iv.hasNext(); ) {
+            Generator g = iv.next();
             if (g.completionState != LFlag.LIVE) {
                 g.setComplete();
             }
@@ -356,11 +356,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Propagate liveness state forward to consuming generators, but only those 
      * within the filter set.
      */
-    protected void propagateLive(Set filter) {
+    protected void propagateLive(Set<Generator> filter) {
         if (completionState != LFlag.LIVE) {
             completionState = LFlag.LIVE;
-            for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
-                LPInterpreterContext link = ((ConsumerChoicePointFrame)i.next()).getConsumingContext();
+            for (Iterator<ConsumerChoicePointFrame> i = consumingCPs.iterator(); i.hasNext(); ) {
+                LPInterpreterContext link = i.next().getConsumingContext();
                 if (link instanceof Generator) {
                     ((Generator)link).propagateLive(filter); 
                 }
