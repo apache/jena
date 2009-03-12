@@ -8,7 +8,7 @@ package dev;
 
 public class Dev
 {
-    // StateMatcher - 
+    // StatsMatcher - 
     //   Default no hit mode --> first match vs best match. 
     //   See TestReorder.match_25
     // Location+String => Filesets
