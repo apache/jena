@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 
+// Not good.  Does not know about which variables are bound.
 public class TransformReorderBGP extends TransformCopy
 {
     private ReorderTransformation transform ;
