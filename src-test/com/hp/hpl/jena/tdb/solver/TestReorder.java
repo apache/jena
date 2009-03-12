@@ -155,14 +155,15 @@ public class TestReorder extends BaseTest
         assertEquals(11, d, 0) ;
     }
     
-//    // Bounds abbreviation rules.
-//    @Test public void match_25()
-//    {
-//        StatsMatcher matcher = matcher("(:p 3) (TERM 1)") ;
-//        Triple t = triple("(:x :p ?v)") ;
-//        double d = matcher.match(t) ;
-//        assertEquals(2, d, 0) ;
-//    }
+    // Bounds abbreviation rules.
+    //@Test 
+    public void match_25()
+    {
+        StatsMatcher matcher = matcher("(:p 3) (TERM 1)") ;
+        Triple t = triple("(:x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(2, d, 0) ;
+    }
 
     // Bounds abbreviation rules.
     @Test public void match_26()
