@@ -219,13 +219,13 @@ public final class StatsMatcher
     // Knowing ?PO is quite important - it ranges from IFP (1) to
     // rdf:type rdf:Resource (potentially everything).
 
-    static final double weightSP = 2 ;
-    static final double weightPO = 10 ;
-    static final double weightTypeO = 1000 ; // ? rdf:type <Object> -- Avoid as can be very, very bad.
+    public static final double weightSP = 2 ;
+    public static final double weightPO = 10 ;
+    public static final double weightTypeO = 1000 ; // ? rdf:type <Object> -- Avoid as can be very, very bad.
     
-    static final double weightSP_small = 2 ;
-    static final double weightPO_small = 4 ;
-    static final double weightTypeO_small = 40 ;
+    public static final double weightSP_small = 2 ;
+    public static final double weightPO_small = 4 ;
+    public static final double weightTypeO_small = 40 ;
     
     /** Add patterns based solely on the predicate count and some guessing */  
     public void addPatterns(Node predicate, double numProp)

@@ -12,13 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -31,7 +27,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -56,18 +51,6 @@ public class OpExecutorTDB extends OpExecutor
         { return new OpExecutorTDB(execCxt) ; }
     } ;
     
-
-    // ---- Stop a BGP being reordered.
-    // Normally, this is done by swapping to OpExecutorPlainTDB but this
-    // allows specific control for experimentation.
-    private static final String executeNow = "TDB:NoReorder" ;
-    private static Transform labelBGP = new TransformCopy()
-    {
-        @Override
-        public Op transform(OpBGP opBGP)
-        { return OpLabel.create(executeNow, opBGP) ; }
-    } ;
-    
     private final boolean isForTDB ;
     private final boolean isUnionDefaultGraph ;
     
@@ -78,25 +61,6 @@ public class OpExecutorTDB extends OpExecutor
         super(execCxt) ;
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
         isUnionDefaultGraph = execCxt.getContext().isTrue(TDB.symUnionDefaultGraph) ;
-    }
-
-    @Override
-    protected QueryIterator execute(OpLabel opLabel, QueryIterator input)
-    {
-        // This finds "TDB:NoReorder" labels and send the nested op (a BGP) straight to the matcher.
-        // Unused.  The reorder code puts in a differntexecutor to avoid cycling. 
-        if ( ! isForTDB )
-            return super.execute(opLabel, input) ;
-        
-        if ( executeNow.equals(opLabel.getObject()) )
-        {
-            log.warn("Unexpected call to execute/label") ;
-            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-            OpBGP opBGP = (OpBGP)opLabel.getSubOp() ; 
-            return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
-        }
-    
-        return super.execute(opLabel, input) ;
     }
 
     @Override
@@ -126,7 +90,7 @@ public class OpExecutorTDB extends OpExecutor
             // else drop through.
         }
         
-//        // No filter placement.
+//        // No filter placement for quads yet.
 //        if ( opFilter.getSubOp() instanceof OpQuadPattern && ! isUnionDefaultGraph )
 //        {
 //            DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
@@ -237,28 +201,6 @@ public class OpExecutorTDB extends OpExecutor
         return qIter ;
     }
     
-    // Is this a query against the real default graph in the storage (in a 3-tuple table). 
-    private static boolean isDefaultGraphStorage(boolean isUnionDefaultGraph, Node gn, BasicPattern bgp)
-    {
-        // Graph names with special meaning:
-        //   Quad.defaultGraphIRI -- the IRI used in GRAPH <> to mean the default graph.
-        //   Quad.defaultGraphNode -- the internal marker node used for the quad form of queries.
-        //   Quad.unionGraph -- the IRI used in GRAPH <> to mean the union of named graphs
-        // Also: isUnionDefaultGraph if implicit union of named graphs.
-        
-        if ( ! isUnionDefaultGraph && Quad.isDefaultGraphNode(gn) )
-            // Not accessing the union of named graphs as the default graph
-            // and pattern is directed to the default graph.
-            return true ;
-
-        // Add QuadPattern.
-        if ( gn.equals(Quad.defaultGraphIRI) )
-            // Explicit GRAPH <urn:x-arq:DefaultGraph> {}
-            return true ;
-        
-        return false ;
-    }
-    
     @Override
     protected QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
@@ -339,6 +281,30 @@ public class OpExecutorTDB extends OpExecutor
         }
         return pattern ;
     }
+    
+    // Is this a query against the real default graph in the storage (in a 3-tuple table). 
+    private static boolean isDefaultGraphStorage(boolean isUnionDefaultGraph, Node gn, BasicPattern bgp)
+    {
+        // Graph names with special meaning:
+        //   Quad.defaultGraphIRI -- the IRI used in GRAPH <> to mean the default graph.
+        //   Quad.defaultGraphNode -- the internal marker node used for the quad form of queries.
+        //   Quad.unionGraph -- the IRI used in GRAPH <> to mean the union of named graphs
+        // Also: isUnionDefaultGraph if implicit union of named graphs.
+        
+        if ( ! isUnionDefaultGraph && Quad.isDefaultGraphNode(gn) )
+            // Not accessing the union of named graphs as the default graph
+            // and pattern is directed to the default graph.
+            return true ;
+    
+        // Add QuadPattern.
+        if ( gn.equals(Quad.defaultGraphIRI) )
+            // Explicit GRAPH <urn:x-arq:DefaultGraph> {}
+            return true ;
+        
+        return false ;
+    }
+
+    // ---- OpExecute factories and plain executor.
     
     private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;
     private static class OpExecutorPlainFactoryTDB implements OpExecutorFactory

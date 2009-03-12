@@ -113,7 +113,48 @@ public class TestReorder extends BaseTest
         assertEquals(10, d, 0) ;
     }
 
+    // Abbreviated forms.
+    @Test public void match_20()
+    {
+        StatsMatcher matcher = matcher("(:p 10) ") ;
+        Triple t = triple("(?x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(10, d, 0) ;
+        
+    }
     
+    @Test public void match_21()
+    {
+        StatsMatcher matcher = matcher("(:p 10) ") ;
+        Triple t = triple("(?x :p 1913)") ;
+        double d = matcher.match(t) ;
+        assertEquals(StatsMatcher.weightPO_small, d, 0) ;
+    }
+    
+    @Test public void match_22()
+    {
+        StatsMatcher matcher = matcher("(:p 11) ") ;
+        Triple t = triple("(:x :p 1913)") ;
+        double d = matcher.match(t) ;
+        assertEquals(1, d, 0) ;
+    }
+
+    @Test public void match_23()
+    {
+        StatsMatcher matcher = matcher("(:p 11) ") ;
+        Triple t = triple("(:x ?p 1913)") ; // No match.
+        double d = matcher.match(t) ;
+        assertEquals(-1, d, 0) ;
+    }
+
+    @Test public void match_24()
+    {
+        StatsMatcher matcher = matcher("(:p 11) (TERM 11)") ;
+        Triple t = triple("(?x :q ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(11, d, 0) ;
+    }
+
     @Test public void reorderIndexes1() 
     { 
         ReorderProc proc = new ReorderProcIndexes(new int[]{0,1}) ;
@@ -130,9 +171,6 @@ public class TestReorder extends BaseTest
         BasicPattern bgp3 = proc.reorder(bgp1) ;
         assertEquals(bgp2, bgp3) ;
     }
-    
-    // TestReorder covers the main machinary
-    // This class tests the rules
     
     @Test public void stats_01()
     {
