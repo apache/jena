@@ -1,0 +1,219 @@
+diff -uN SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/JDBC.java SDB-1.2/src/com/hp/hpl/jena/sdb/sql/JDBC.java
+--- SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/JDBC.java	2009-01-16 14:02:04.000000000 +0100
++++ SDB-1.2/src/com/hp/hpl/jena/sdb/sql/JDBC.java	2009-02-27 12:05:28.000000000 +0100
+@@ -65,6 +65,26 @@
+     { 
+         return getDriver(DatabaseType.fetch(type)) ;
+     }
++
++	/*MOMENT - code for store/get connection parameters */
++	private static String storedJdbcURL = null;
++	private static String storedUser = null;
++	private static String storedPassword = null;
++	public static String getStoredJdbcURL(){
++		return storedJdbcURL;
++	}
++	public static String getStoredUser(){
++		return storedUser;
++	}
++	public static String getStoredPassword(){
++		return storedPassword;
++	}
++	private static void storeConnectionData(String url, String user, String password){
++		storedJdbcURL=url;
++		storedUser=user;
++		storedPassword=password;
++	}
++	/*MOMENT*/
+     
+     // This is the only place a driver is created.
+     public static Connection createConnection(String url, String user, String password) throws SQLException
+@@ -79,6 +99,11 @@
+             user = Access.getUser() ;
+         if ( password == null )
+             password = Access.getPassword() ;
++
++	/*MOMENT - store connection parameters */
++	storeConnectionData(url,user,password);
++	System.err.println("MOMENT: create JDBC connection to " + url);
++	/*MOMENT*/
+ 
+         return DriverManager.getConnection(url, user, password) ;
+     }
+diff -uN SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/SDBConnectionHolder.java SDB-1.2/src/com/hp/hpl/jena/sdb/sql/SDBConnectionHolder.java
+--- SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/SDBConnectionHolder.java	2009-01-16 14:02:04.000000000 +0100
++++ SDB-1.2/src/com/hp/hpl/jena/sdb/sql/SDBConnectionHolder.java	2009-02-27 12:18:42.000000000 +0100
+@@ -5,6 +5,16 @@
+  */
+ 
+ package com.hp.hpl.jena.sdb.sql;
++
++/*MOMENT - imports needed*/
++import java.sql.Connection;
++import java.sql.SQLException;
++import java.sql.Statement;
++import static java.sql.ResultSet.CONCUR_READ_ONLY;
++import static java.sql.ResultSet.TYPE_FORWARD_ONLY;
++import com.hp.hpl.jena.graph.TransactionHandler;
++import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
++/*MOMENT*/
+ 
+ /** Common container for SDBConnections 
+  *  
+@@ -16,11 +26,47 @@
+     // making a container for it.
+     
+     private SDBConnection conn ;
++
++	/*MOMENT - variable to store whether the previous action was a reconnection */
++	public static boolean reconnect = false;
++	/*MOMENT*/
+ 
+     protected SDBConnectionHolder(SDBConnection connection) { this.conn = connection ; }
+     
+     // Leave the getter free so the subclass can decide whether to reveal the connection or not.
+-    protected SDBConnection connection() { return conn ; }
++	/*MOMENT - take care of reconnection*/
++    //protected SDBConnection connection() { return conn ; }
++	protected SDBConnection connection() {
++		try{
++			// Try to make a Statement
++			Statement s = conn.getSqlConnection().createStatement(TYPE_FORWARD_ONLY, CONCUR_READ_ONLY) ;
++			s.cancel();
++		} catch (SQLException ex) {
++			if(ex.getSQLState().equals("HY000") && (ex.getErrorCode()==1094)) {
++				// If the SQLException is "HY000" we need reconnection
++				try{
++					// Try to reconnect
++					System.err.println("MOMENT: try to JDBC reconnect");
++					reconnect = true;
++					// Close connection and open new one
++					conn.getSqlConnection().close();
++					Connection sqlConnection = JDBC.createConnection(JDBC.getStoredJdbcURL(), JDBC.getStoredUser(), JDBC.getStoredPassword());
++					conn.setSqlConnection(sqlConnection);
++					// Try to make a Statement
++					Statement s = conn.getSqlConnection().createStatement(TYPE_FORWARD_ONLY, CONCUR_READ_ONLY) ;
++					s.cancel();
++					// New TransactionHandlerSDB and initialize it
++					conn.transactionHandler = new TransactionHandlerSDB(conn) ;
++					//conn.inTransaction = false;
++				} catch (SQLException ex2) {
++					// Failed reconnection
++					System.err.println("MOMENT: error trying to JDBC reconnect - 'SQLState "+ex2.getSQLState()+" / ErrorCode "+ex2.getErrorCode()+" / Cause "+ex2.getCause()+"'");
++				}
++			}
++		}
++		return conn ;
++	}
++	/*MOMENT*/
+ }
+ 
+ /*
+@@ -48,4 +94,4 @@
+  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+\ No hay ningún carácter de nueva línea al final del fichero
++ */
+diff -uN SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/SDBConnection.java SDB-1.2/src/com/hp/hpl/jena/sdb/sql/SDBConnection.java
+--- SDB-1.2-original/src/com/hp/hpl/jena/sdb/sql/SDBConnection.java	2009-01-16 14:02:04.000000000 +0100
++++ SDB-1.2/src/com/hp/hpl/jena/sdb/sql/SDBConnection.java	2009-02-27 12:10:30.000000000 +0100
+@@ -74,7 +74,10 @@
+     
+     public SDBConnection(Connection jdbcConnection, String url)
+     { 
+-        sqlConnection = jdbcConnection ;
++	/*MOMENT - setSqlConnection */
++        //sqlConnection = jdbcConnection ;
++	setSqlConnection(jdbcConnection);
++	/*MOMENT*/
+         transactionHandler = new TransactionHandlerSDB(this) ;
+         if ( url != null ) setJdbcURL(url) ;
+     }
+@@ -260,6 +263,13 @@
+         // Potential pool point.
+         return sqlConnection ;
+     }
++
++	/*MOMENT - setSqlConnection */
++	public void setSqlConnection(Connection jdbcConnection){
++		System.err.println("MOMENT: set sqlConnection in SDBConnection to " + jdbcConnection.toString());
++		sqlConnection = jdbcConnection ;
++	}
++	/*MOMENT*/    
+     
+     public void close()
+     {
+@@ -363,4 +373,4 @@
+  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+\ No hay ningún carácter de nueva línea al final del fichero
++ */
+Subdirectorios comunes: SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/expr y SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/expr
+Subdirectorios comunes: SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/hash y SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/hash
+Subdirectorios comunes: SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/index y SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/index
+diff -uN SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/LoaderTuplesNodes.java SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/LoaderTuplesNodes.java
+--- SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/LoaderTuplesNodes.java	2009-01-16 14:02:04.000000000 +0100
++++ SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/LoaderTuplesNodes.java	2009-02-27 12:06:42.000000000 +0100
+@@ -215,7 +215,18 @@
+ 
+ 	private void init()
+ 	{
+-	    if ( initialized ) return ;
++		/*MOMENT - take into account whether there has been a reconnection*/
++	    //if ( initialized ) return ;
++		if ( initialized ) {
++			if (super.reconnect) {
++				// Reconnection => re-init currentLoader
++				currentLoader.start();
++				// set reconnect to false
++				super.reconnect = false;
++			}
++			return ;
++		}
++		/*MOMENT*/
+ 	    
+ 	    tupleLoaders = new HashMap<String, TupleLoader>();
+ 	    currentLoader = null;
+@@ -373,4 +384,4 @@
+  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+\ No hay ningún carácter de nueva línea al final del fichero
++ */
+\ No hay ningún carácter de nueva línea al final del fichero
+diff -uN SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/TupleLoaderBase.java SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/TupleLoaderBase.java
+--- SDB-1.2-original/src/com/hp/hpl/jena/sdb/layout2/TupleLoaderBase.java	2009-01-16 14:02:04.000000000 +0100
++++ SDB-1.2/src/com/hp/hpl/jena/sdb/layout2/TupleLoaderBase.java	2009-02-27 12:07:36.000000000 +0100
+@@ -60,6 +60,26 @@
+ 		clearNodeLoader = connection().prepareStatement(getClearTempNodes());
+ 		clearTupleLoader = connection().prepareStatement(getClearTempTuples());
+ 	}
++
++	/*MOMENT - re-init the TupleLoaderBase */
++	// Override the function start() of the father 'store.TupleLoaderBase' */
++	@Override
++	public void start() {
++		if (super.reconnect) {
++			finish();
++
++			this.amLoading = true;
++			this.tupleNum = 0;
++			this.seenNodes = new HashSet<Long>();
++			try {
++				init();
++			} catch (SQLException e) {
++				throw new SDBException("Problem re-initialising loader", e);
++			}
++		}
++		super.start();
++	}
++	/*MOMENT*/
+ 	
+ 	public int getArity() {
+ 		return this.getTableWidth();
+
