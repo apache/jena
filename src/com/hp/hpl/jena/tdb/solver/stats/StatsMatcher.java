@@ -30,6 +30,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import lib.NotImplemented;
+import logging.Log;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -162,33 +164,42 @@ public final class StatsMatcher
             
             Item elt = list.car() ;
             list = list.cdr();
-            
-            Item pat = elt.getList().get(0) ;
-            
-            if ( pat.isNode() )
-            {
-                double numProp = elt.getList().get(1).getDouble() ;
-                
-                if ( count < 100 )
-                    addPatternsSmall(pat, numProp) ;
-                else
-                    addPatterns(pat, numProp) ;
-            }
-            else
-            {
-                // It's of the form ((S P O) weight)
-                Item w =  elt.getList().get(1) ;
-                Pattern pattern = new Pattern(((Number)(w.getNode().getLiteralValue())).doubleValue(),
-                                              intern(pat.getList().get(0)),
-                                              intern(pat.getList().get(1)),
-                                              intern(pat.getList().get(2))) ;
-                addPattern(pattern) ;
-            }
-            
+            onePattern(elt) ;
             // Round and round
         }
     }
      
+    private void onePattern(Item elt)
+    {
+        Item pat = elt.getList().get(0) ;
+        
+        if ( pat.isNode() )
+        {
+            double numProp = elt.getList().get(1).getDouble() ;
+            
+            if ( count < 100 )
+                addPatternsSmall(pat, numProp) ;
+            else
+                addPatterns(pat, numProp) ;
+        } else if ( pat.isSymbol() ) {
+            // ****
+            Log.info(this, "Symbol: "+pat.toString()) ;
+        } else if ( pat.isList() && pat.getList().size() == 3 )
+        {
+            // It's of the form ((S P O) weight)
+            Item w =  elt.getList().get(1) ;
+            Pattern pattern = new Pattern(((Number)(w.getNode().getLiteralValue())).doubleValue(),
+                                          intern(pat.getList().get(0)),
+                                          intern(pat.getList().get(1)),
+                                          intern(pat.getList().get(2))) ;
+            addPattern(pattern) ;
+        }
+        else
+        {
+            Log.warn(this, "Unrecognized pattern: "+pat) ;
+        }
+    }
+    
     // Knowing ?PO is quite important - it ranges from IFP (1) to
     // rdf:type rdf:Resource (potentially everything).
 

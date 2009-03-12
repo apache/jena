@@ -34,7 +34,9 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
 
-    public StageMatchTriple(NodeTupleTable nodeTupleTable, boolean anyGraphs, Iterator<BindingNodeId> input, Tuple<Node> tuple, ExecutionContext execCxt)
+    public StageMatchTriple(NodeTupleTable nodeTupleTable, boolean anyGraphs, 
+                            Iterator<BindingNodeId> input, Tuple<Node> tuple, 
+                            ExecutionContext execCxt)
     {
         super(input) ;
         this.nodeTupleTable = nodeTupleTable ; 
@@ -77,8 +79,8 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         if ( anyGraphs )
         {
             //iterMatches = Iter.map(iterMatches, projectToTriples) ;
-            iterMatches = Iter.operate(iterMatches, actionToTriples) ;
-            iterMatches = Iter.distinct(iterMatches) ;  // WRT only three slots.
+            iterMatches = Iter.operate(iterMatches, quadsToTriples) ;
+            iterMatches = Iter.distinct(iterMatches) ;  // WRT only three varying slots.
         }
         
         // Map to BindingNodeId
@@ -105,7 +107,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     }
     
     // -- Mutating "transform in place"
-    private static Action<Tuple<NodeId>> actionToTriples = new Action<Tuple<NodeId>>(){
+    private static Action<Tuple<NodeId>> quadsToTriples = new Action<Tuple<NodeId>>(){
         @Override
         public void apply(Tuple<NodeId> item)
         { item.tuple()[0] = NodeId.NodeIdAny ; }

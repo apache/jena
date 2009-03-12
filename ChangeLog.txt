@@ -5,6 +5,21 @@ ChangeLog for TDB
 
 + Upgrade to Java5 version of ARQ.
 
++ Execution logging now cayches all execution paths
+
++ Metadata files attached to database files.  
+  New files wil appear in the database directory.
+
++ "tdbtest" renamed "tdbverify".  New "tdbtest" runs an individual test 
+   manifest (similar to ARQ and SDB). 
+
+Bug fixes:
+
+- Query over the union of named graphs only works in simple cases.  
+  Now works for any pattern. 
+
+- Stats optimizer: 
+
 ==== 0.7.2
 
 Bug fixes:

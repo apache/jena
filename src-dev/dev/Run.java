@@ -20,19 +20,14 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
-
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.InstallationTest;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -43,7 +38,11 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 
 public class Run
 {
@@ -60,14 +59,14 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        //tdb.tdbtest.main("testing/UnionGraph/manifest.ttl") ; System.exit(0) ;
+        //tdbtest("testing/UnionGraph/manifest.ttl") ;
         
         //Log.enable(TDB.logExec.getName()) ;
         //Log.enable("com.hp.hpl.jena.tdb.exec") ;
-        TDB.setExecutionLogging(true) ;
-        test() ; System.out.flush(); System.exit(0) ;
-        
-        tdbquery("--tdb=tdb.ttl", "--file=Q.arq") ; 
+//        TDB.setExecutionLogging(true) ;
+//        test() ; System.out.flush(); System.exit(0) ;
+//        
+        tdbquery("-v", "--tdb=tdb.ttl", "--file=Q.rq") ; 
         
 //        Location loc = Location.dirname("DB/SPO") ;
 //        //new File("DB/SPO").get
@@ -257,6 +256,12 @@ public class Run
     private static void tdbdump(String... args)
     {
         tdb.tdbdump.main(args) ; 
+        System.exit(0) ;
+    }
+    
+    private static void tdbtest(String...args)
+    {
+        tdb.tdbtest.main(args) ;
         System.exit(0) ;
     }
     
