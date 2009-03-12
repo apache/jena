@@ -5,7 +5,7 @@ ChangeLog for TDB
 
 + Upgrade to Java5 version of ARQ.
 
-+ Execution logging now cayches all execution paths
++ Execution logging now catches all execution paths
 
 + Metadata files attached to database files.  
   New files wil appear in the database directory.
@@ -18,7 +18,7 @@ Bug fixes:
 - Query over the union of named graphs only works in simple cases.  
   Now works for any pattern. 
 
-- Stats optimizer: 
+- Stats optimizer: failed to gracefully handle abbreviated patterns with TERM
 
 ==== 0.7.2
 

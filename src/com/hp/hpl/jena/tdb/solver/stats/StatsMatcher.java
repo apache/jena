@@ -30,7 +30,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import lib.NotImplemented;
-import logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -59,6 +60,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 
 public final class StatsMatcher
 {
+    private static Logger log = LoggerFactory.getLogger(StatsMatcher.class) ; 
     public static final String STATS     = "stats" ; 
     public static final String META      = "meta" ; 
     public static final String COUNT     = "count" ;
@@ -161,43 +163,57 @@ public final class StatsMatcher
        
         while (!list.isEmpty()) 
         {
-            
             Item elt = list.car() ;
             list = list.cdr();
             onePattern(elt) ;
-            // Round and round
         }
     }
      
     private void onePattern(Item elt)
     {
         Item pat = elt.getList().get(0) ;
-        
-        if ( pat.isNode() )
+
+        if (pat.isNode())
         {
-            double numProp = elt.getList().get(1).getDouble() ;
-            
-            if ( count < 100 )
-                addPatternsSmall(pat, numProp) ;
-            else
-                addPatterns(pat, numProp) ;
-        } else if ( pat.isSymbol() ) {
-            // ****
-            Log.info(this, "Symbol: "+pat.toString()) ;
-        } else if ( pat.isList() && pat.getList().size() == 3 )
+            // (<uri> weight)
+            Node n = pat.getNode() ;
+            if (!n.isURI())
+            {
+                log.warn("Not a prdciate URI: " + pat.toString()) ;
+                return ;
+            }
+            addAbbreviation(elt) ;
+        } 
+        else if (pat.isSymbol())
+        {
+            // (TERM weight)
+            addAbbreviation(elt) ;
+        } 
+        else if (pat.isList() && pat.getList().size() == 3)
         {
             // It's of the form ((S P O) weight)
-            Item w =  elt.getList().get(1) ;
+            Item w = elt.getList().get(1) ;
             Pattern pattern = new Pattern(((Number)(w.getNode().getLiteralValue())).doubleValue(),
-                                          intern(pat.getList().get(0)),
-                                          intern(pat.getList().get(1)),
+                                          intern(pat.getList().get(0)), intern(pat.getList().get(1)),
                                           intern(pat.getList().get(2))) ;
             addPattern(pattern) ;
-        }
+        } 
         else
         {
-            Log.warn(this, "Unrecognized pattern: "+pat) ;
+            log.warn("Unrecognized pattern: " + pat) ;
         }
+    }
+    
+    private void addAbbreviation(Item elt)
+    {
+        Item predicateTerm = elt.getList().get(0) ;
+        // Single node - it's a predicate abbreviate.
+        double numProp = elt.getList().get(1).getDouble() ;
+        
+        if ( count < 100 )
+            addPatternsSmall(predicateTerm, numProp) ;
+        else
+            addPatterns(predicateTerm, numProp) ;
     }
     
     // Knowing ?PO is quite important - it ranges from IFP (1) to
@@ -241,7 +257,7 @@ public final class StatsMatcher
         double wSP = weightSP_small ;
         double wPO = weightPO_small ;
         
-        if ( NodeConst.nodeRDFType.equals(predicate.getNode()) )
+        if ( predicate.isNode() && NodeConst.nodeRDFType.equals(predicate.getNode()) )
             wPO = weightTypeO_small ;
         addPatterns(predicate, numProp, wSP, wPO) ;
     }

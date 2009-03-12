@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec;
-import lib.StrUtils;
 import logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +216,7 @@ public class OpExecutorTDB extends OpExecutor
             QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
             input = peek ; // Original input now invalid.
             BasicPattern bgp2 = reorder(bgp, peek, transform) ;
-            explain(bgp2, execCxt) ;
+            Explain.explain(bgp2, execCxt) ;
             bgp = bgp2 ;
         }
         
@@ -306,7 +304,7 @@ public class OpExecutorTDB extends OpExecutor
             op = new OpBGP(pattern) ;
         
         // -- Explain
-        explain(op, execCxt) ;
+        Explain.explain(op, execCxt) ;
         
         // -- Execute
         // Switch to a non-reordring executor
@@ -323,33 +321,6 @@ public class OpExecutorTDB extends OpExecutor
         return QC.execute(op, peek, ec2) ;
     }
 
-    // Move to "Explain"
-    
-    private static void explain(Op op, ExecutionContext execCxt)
-    {
-        if ( explaining(execCxt) )
-            explain(op.toString()) ;
-    }
-    
-    private static void explain(BasicPattern bgp, ExecutionContext execCxt)
-    {
-        if ( explaining(execCxt) )
-            explain(bgp.toString()) ;
-    }
-    
-    private static void explain(String explanation)
-    {
-        while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
-            explanation = StrUtils.chop(explanation) ;
-        explanation = "Execute:: \n"+explanation ;
-        logExec.info(explanation) ;
-        //System.out.println(explanation) ;
-    }
-    private static boolean explaining(ExecutionContext execCxt)
-    {
-        return execCxt.getContext().isTrue(TDB.symLogExec) ; //&& logExec.isInfoEnabled() ;
-    }
-    
     private static BasicPattern reorder(BasicPattern pattern, QueryIterPeek peek, ReorderTransformation transform)
     {
         if ( transform != null )
