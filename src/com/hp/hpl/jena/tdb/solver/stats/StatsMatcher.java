@@ -245,6 +245,8 @@ public final class StatsMatcher
     {
         double wSP = weightSP ;
         double wPO = weightPO ;
+        wPO = Math.min(numProp, wPO) ;
+        wSP = Math.min(numProp, wSP) ;
         
         if ( NodeConst.nodeRDFType.equals(predicate.getNode()) )
             // ? rdf:type <Object> -- Avoid as can be very, very bad.
@@ -256,6 +258,9 @@ public final class StatsMatcher
     {
         double wSP = weightSP_small ;
         double wPO = weightPO_small ;
+        wPO = Math.min(numProp, wPO) ;
+        wSP = Math.min(numProp, wSP) ;
+
         
         if ( predicate.isNode() && NodeConst.nodeRDFType.equals(predicate.getNode()) )
             wPO = weightTypeO_small ;
