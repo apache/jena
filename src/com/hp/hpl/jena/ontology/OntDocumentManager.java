@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.67 $
+ * Revision           $Revision: 1.68 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:59 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 10:43:21 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.67 2009-01-16 17:23:59 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.68 2009-03-13 10:43:21 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -132,14 +132,11 @@ public class OntDocumentManager
     /** Flag to indicate we're using a copy of the global file manager */
     protected boolean m_usingGlobalFileMgr = false;
 
-    /** Mapping of public public URI's to language resources */
-    protected Map m_languageMap = new HashMap();
-
     /** Flag: process the imports closure */
     protected boolean m_processImports = true;
 
     /** List of URI's that will be ignored when doing imports processing */
-    protected Set m_ignoreImports = new HashSet();
+    protected Set<String> m_ignoreImports = new HashSet<String>();
 
     /** Default prefix mapping to use to seed all models */
     protected PrefixMapping m_prefixMap = new PrefixMappingImpl();
@@ -413,7 +410,6 @@ public class OntDocumentManager
             getFileManager().resetCache();
         }
 
-        m_languageMap.clear();
         m_ignoreImports.clear();
         m_prefixMap = new PrefixMappingImpl();
 
@@ -448,7 +444,7 @@ public class OntDocumentManager
      * @return An Iterator ranging over the public URI strings for the known
      * document URI's.
      */
-    public Iterator listDocuments() {
+    public Iterator<String> listDocuments() {
         return getFileManager().getLocationMapper().listAltEntries();
     }
 
@@ -464,52 +460,6 @@ public class OntDocumentManager
      */
     public String doAltURLMapping( String uri ) {
         return getFileManager().mapURI( uri );
-    }
-
-
-    /**
-     * <p>
-     * Answer the representation of the ontology document with the given URI, if known.
-     * </p>
-     *
-     * @param uri The ontology document to lookup
-     * @return The URI of the representation language, or null.
-     * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
-     */
-    @Deprecated
-    public String getLanguage( String uri ) {
-        return (String) m_languageMap.get( uri );
-    }
-
-
-    /**
-     * <p>
-     * Answer the prefix for the qnames in the given document, if known.
-     * </p>
-     *
-     * @param uri The ontology document to lookup
-     * @return  The string to use as a prefix when serialising qnames in the
-     *          given document's namespace, or null if not known
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    @Deprecated
-    public String getPrefixForURI( String uri ) {
-        return m_prefixMap.getNsURIPrefix( uri );
-    }
-
-
-    /**
-     * <p>
-     * Answer the base URI for qnames with the given prefix, if known.
-     * </p>
-     *
-     * @param prefix A prefix string
-     * @return The basename that the prefix expands to, or null
-     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
-     */
-    @Deprecated
-    public String getURIForPrefix( String prefix ) {
-        return m_prefixMap.getNsPrefixURI( prefix );
     }
 
 
@@ -588,22 +538,6 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Add an entry that <code>language</code> is the URI defining the
-     * representation language for the given document
-     * </p>
-     *
-     * @param docURI The public URI of the ontology document
-     * @param language A string defining the URI of the language
-     * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
-     */
-    @Deprecated
-    public void addLanguageEntry( String docURI, String language ) {
-        m_languageMap.put( docURI, language );
-    }
-
-
-    /**
-     * <p>
      * Remove all managed entries for the given document.  Note does not side-effect
      * the prefixes table: this will have to be done separately.
      * </p>
@@ -613,7 +547,6 @@ public class OntDocumentManager
     public void forget( String docURI ) {
         getFileManager().getLocationMapper().removeAltEntry( docURI );
         getFileManager().removeCacheModel( docURI );
-        m_languageMap.remove( docURI );
     }
 
 
@@ -732,7 +665,7 @@ public class OntDocumentManager
      * <p>Answer an iterator over the set of URI's we're ignoring</p>
      * @return An iterator over ignored imports
      */
-    public Iterator listIgnoredImports() {
+    public Iterator<String> listIgnoredImports() {
         return m_ignoreImports.iterator();
     }
 
@@ -769,7 +702,7 @@ public class OntDocumentManager
      */
     public void loadImports( OntModel model ) {
         if (m_processImports) {
-            List readQueue = new ArrayList();
+            List<String> readQueue = new ArrayList<String>();
 
             // add the imported statements from the given model to the processing queue
             queueImports( model, readQueue, model.getProfile() );
@@ -787,7 +720,7 @@ public class OntDocumentManager
      */
     public void loadImport( OntModel model, String uri ) {
         if (m_processImports) {
-            List readQueue = new ArrayList();
+            List<String> readQueue = new ArrayList<String>();
             readQueue.add( uri );
             loadImports( model, readQueue );
         }
@@ -802,7 +735,7 @@ public class OntDocumentManager
      */
     public void unloadImport( OntModel model, String uri ) {
         if (m_processImports) {
-            List unloadQueue = new ArrayList();
+            List<String> unloadQueue = new ArrayList<String>();
             unloadQueue.add( uri );
             unloadImports( model, unloadQueue );
         }
@@ -828,10 +761,10 @@ public class OntDocumentManager
      * @param model The model to load the imports into
      * @param readQueue The queue of imports to load
      */
-    protected void loadImports( OntModel model, List readQueue ) {
+    protected void loadImports( OntModel model, List<String> readQueue ) {
         while (!readQueue.isEmpty()) {
             // we process the import statements as a FIFO queue
-            String importURI = (String) readQueue.remove( 0 );
+            String importURI = readQueue.remove( 0 );
 
             if (!model.hasLoadedImport( importURI )  &&  !ignoringImport( importURI )) {
                 // this file has not been processed yet
@@ -849,10 +782,10 @@ public class OntDocumentManager
      * @param model The model to unload the imports from
      * @param unloadQueue The queue of imports to unload
      */
-    protected void unloadImports( OntModel model, List unloadQueue ) {
+    protected void unloadImports( OntModel model, List<String> unloadQueue ) {
         while (!unloadQueue.isEmpty()) {
             // we process the import statements as a FIFO queue
-            String importURI = (String) unloadQueue.remove( 0 );
+            String importURI = unloadQueue.remove( 0 );
 
             if (model.hasLoadedImport( importURI )) {
                 // this import has not been unloaded yet
@@ -860,7 +793,7 @@ public class OntDocumentManager
                 // look up the cached model - if we can't find it, we can't unload the import
                 Model importModel = getModel( importURI );
                 if (importModel != null) {
-                    List imports = new ArrayList();
+                    List<String> imports = new ArrayList<String>();
 
                     // collect a list of the imports from the model that is scheduled for removal
                     for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
@@ -890,7 +823,7 @@ public class OntDocumentManager
     /**
      * <p>Add the ontologies imported by the given model to the end of the queue.</p>
      */
-    protected void queueImports( Model model, List readQueue, Profile profile ) {
+    protected void queueImports( Model model, List<String> readQueue, Profile profile ) {
         if (model instanceof OntModel) {
             // add the imported ontologies to the queue
             readQueue.addAll( ((OntModel) model).listImportedOntologyURIs() );
@@ -1036,7 +969,7 @@ public class OntDocumentManager
      * @param importURI The URI of the document to load
      * @param readQueue Cumulative read queue for this operation
      */
-    protected void loadImport( OntModel model, String importURI, List readQueue ) {
+    protected void loadImport( OntModel model, String importURI, List<String> readQueue ) {
         if (m_processImports) {
             // add this model to occurs check list
             model.addLoadedImport( importURI );
