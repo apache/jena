@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-09 17:23:44 $
+ * Last modified on   $Date: 2009-03-13 10:12:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.59 2009-02-09 17:23:44 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.60 2009-03-13 10:12:46 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -211,7 +211,7 @@ public class schemagen {
     // Static variables
     //////////////////////////////////
 
-    private static List KEYWORD_LIST;
+    private static List<String> KEYWORD_LIST;
     static {
         KEYWORD_LIST = Arrays.asList( JAVA_KEYWORDS );
     }
@@ -220,7 +220,7 @@ public class schemagen {
     //////////////////////////////////
 
     /** The list of command line arguments */
-    protected List m_cmdLineArgs;
+    protected List<String> m_cmdLineArgs;
 
     /** The root of the options in the config file */
     protected Resource m_root;
@@ -276,7 +276,7 @@ public class schemagen {
     };
 
     /** Stack of replacements to apply */
-    protected List m_replacements = new ArrayList();
+    protected List<Replacement> m_replacements = new ArrayList<Replacement>();
 
     /** Output file newline char - default is Unix, override with --dos */
     protected String m_nl = "\n";
@@ -285,13 +285,13 @@ public class schemagen {
     protected int m_indentStep = 4;
 
     /** Set of names used so far */
-    protected Set m_usedNames = new HashSet();
+    protected Set<String> m_usedNames = new HashSet<String>();
 
     /** Map from resources to java names */
-    protected Map m_resourcesToNames = new HashMap();
+    protected Map<Resource,String> m_resourcesToNames = new HashMap<Resource, String>();
 
     /** List of allowed namespace URI strings for admissible values */
-    protected List m_includeURI = new ArrayList();
+    protected List<String> m_includeURI = new ArrayList<String>();
 
 
     // Constructors
@@ -560,13 +560,13 @@ public class schemagen {
     }
 
     /** Answer all values for the given options as Strings */
-    protected List getAllValues( Object option ) {
-        List values = new ArrayList();
+    protected List<String> getAllValues( Object option ) {
+        List<String> values = new ArrayList<String>();
         OptionDefinition opt = getOpt( option );
 
         // look in the command line arguments
-        for (Iterator i = m_cmdLineArgs.iterator(); i.hasNext(); ) {
-            String s = (String) i.next();
+        for (Iterator<String> i = m_cmdLineArgs.iterator(); i.hasNext(); ) {
+            String s = i.next();
             if (s.equals( opt.m_cmdLineForm )) {
                 // next iterator value is the arg value
                 values.add( i.next() );
@@ -638,8 +638,8 @@ public class schemagen {
     protected String substitute( String sIn ) {
         String s = sIn;
 
-        for (Iterator i = m_replacements.iterator(); i.hasNext(); ) {
-            Replacement r = (Replacement) i.next();
+        for (Iterator<Replacement> i = m_replacements.iterator(); i.hasNext(); ) {
+            Replacement r = i.next();
 
             s = r.pattern.matcher( s ).replaceAll( r.sub );
         }
@@ -998,7 +998,7 @@ public class schemagen {
 
     /** Guess the URI from the most prevalent URI */
     protected String guessNamespace() {
-        Map nsCount = new HashMap();
+        Map<String,Integer> nsCount = new HashMap<String, Integer>();
 
         // count all of the namespaces used in the model
         for (StmtIterator i = m_source.listStatements(); i.hasNext(); ) {
@@ -1013,8 +1013,8 @@ public class schemagen {
         // now find the maximal element
         String ns = null;
         int max = 0;
-        for (Iterator i = nsCount.keySet().iterator(); i.hasNext(); ) {
-            String nsKey = (String) i.next();
+        for (Iterator<String> i = nsCount.keySet().iterator(); i.hasNext(); ) {
+            String nsKey = i.next();
 
             // we ignore the usual suspects
             if (! (OWL.getURI().equals( nsKey ) ||
@@ -1022,7 +1022,7 @@ public class schemagen {
                    RDFS.getURI().equals( nsKey ) ||
                    XSD.getURI().equals( nsKey ))) {
                 // not an ignorable namespace
-                int count = ((Integer) nsCount.get( nsKey )).intValue();
+                int count = nsCount.get( nsKey ).intValue();
 
                 if (count > max) {
                     // highest count seen so far
@@ -1036,7 +1036,7 @@ public class schemagen {
     }
 
     /** Record a use of the given namespace in the count map */
-    private void countNamespace( Resource r, Map nsCount ) {
+    private void countNamespace( Resource r, Map<String,Integer> nsCount ) {
         if (!r.isAnon()) {
             String ns = r.getNameSpace();
 
@@ -1077,7 +1077,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = sorted( m_source.listObjectProperties() ); i.hasNext(); ) {
+            for (Iterator<? extends RDFNode> i = sorted( m_source.listObjectProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "ObjectProperty", "createObjectProperty", "_PROP" );
             }
         }
@@ -1088,7 +1088,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = sorted( m_source.listDatatypeProperties() ); i.hasNext(); ) {
+            for (Iterator<? extends RDFNode> i = sorted( m_source.listDatatypeProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "DatatypeProperty", "createDatatypeProperty", "_PROP" );
             }
         }
@@ -1099,7 +1099,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = sorted( m_source.listAnnotationProperties() ); i.hasNext(); ) {
+            for (Iterator<? extends RDFNode> i = sorted( m_source.listAnnotationProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "AnnotationProperty", "createAnnotationProperty", "_PROP" );
             }
         }
@@ -1123,7 +1123,7 @@ public class schemagen {
         }
 
         // collect the properties to be written
-        List propertyResources = new ArrayList();
+        List<Resource> propertyResources = new ArrayList<Resource>();
         for (int j = 0;  j < props.length; j++) {
             for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
                 propertyResources.add( i.nextStatement().getSubject() );
@@ -1131,7 +1131,7 @@ public class schemagen {
         }
 
         // now write the properties
-        for (Iterator i = sorted( propertyResources ); i.hasNext(); ) {
+        for (Iterator<? extends RDFNode> i = sorted( propertyResources ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, propType, "create" + propType, "_PROP" );
         }
     }
@@ -1158,7 +1158,7 @@ public class schemagen {
     protected void writeOntClasses() {
         String template = hasValue( OPT_CLASS_TEMPLATE ) ?  getValue( OPT_CLASS_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = sorted( m_source.listClasses() ); i.hasNext(); ) {
+        for (Iterator<? extends RDFNode> i = sorted( m_source.listClasses() ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "OntClass", "createClass", "_CLASS" );
         }
     }
@@ -1177,13 +1177,13 @@ public class schemagen {
         }
 
         // collect the classes to list
-        List classes = m_source.listStatements( null, RDF.type, cls ).mapWith( new Map1() {
-                                                public Object map1( Object o ) {
-                                                    return ((Statement) o).getSubject();
-                                                }}
-                                              ).toList();
+        List<Resource> classes = m_source.listStatements( null, RDF.type, cls ).mapWith( new Map1<Statement, Resource>() {
+                                                            public Resource map1( Statement s ) {
+                                                                return s.getSubject();
+                                                            }}
+                                                          ).toList();
 
-        for (Iterator i = sorted( classes ); i.hasNext(); ) {
+        for (Iterator<? extends RDFNode> i = sorted( classes ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "Resource", "createResource", "_CLASS" );
         }
     }
@@ -1210,14 +1210,14 @@ public class schemagen {
     protected void writeOntIndividuals() {
         String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_INDIVIDUAL_TEMPLATE;
 
-        for (Iterator i = selectIndividuals(); i.hasNext(); ) {
+        for (Iterator<? extends RDFNode> i = selectIndividuals(); i.hasNext(); ) {
             Individual ind = ((Resource) i.next()).as( Individual.class );
 
             // do we have a local class resource
             Resource cls = ind.getOntClass();
             if (cls == null) { cls = OWL.Thing; }
 
-            String varName = (String) m_resourcesToNames.get( cls );
+            String varName = m_resourcesToNames.get( cls );
             String valType = (varName != null) ? varName : "m_model.createClass( \"" + cls.getURI() + "\" )";
 
             // push the individuals type onto the stack
@@ -1232,14 +1232,14 @@ public class schemagen {
     protected void writeRDFIndividuals() {
         String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = selectIndividuals(); i.hasNext(); ) {
+        for (Iterator<? extends RDFNode> i = selectIndividuals(); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "Resource", "createResource", "_INSTANCE" );
         }
     }
 
     /** Answer an iterator over the individuals selected for output */
-    protected ExtendedIterator selectIndividuals() {
-        List candidates = new ArrayList();
+    protected ExtendedIterator<? extends RDFNode> selectIndividuals() {
+        List<Resource> candidates = new ArrayList<Resource>();
         for (StmtIterator i = m_source.listStatements( null, RDF.type, (RDFNode) null ); i.hasNext(); ) {
             Statement candidate = i.nextStatement();
 
@@ -1269,8 +1269,8 @@ public class schemagen {
 
         if (!r.isAnon()) {
             String uri = r.getURI();
-            for (Iterator j = m_includeURI.iterator();  !accepted && j.hasNext(); ) {
-                accepted = uri.startsWith( (String) j.next() );
+            for (Iterator<String> j = m_includeURI.iterator();  !accepted && j.hasNext(); ) {
+                accepted = uri.startsWith( j.next() );
             }
         }
 
@@ -1419,8 +1419,8 @@ public class schemagen {
         }
 
         // search the allowed URI's
-        for (Iterator i = m_includeURI.iterator(); i.hasNext(); ) {
-            String uri = (String) i.next();
+        for (Iterator<String> i = m_includeURI.iterator(); i.hasNext(); ) {
+            String uri = i.next();
             if (r.getURI().startsWith( uri )) {
                 // in
                 return false;
@@ -1437,8 +1437,8 @@ public class schemagen {
                     String typeURI = typeRes.getURI();
 
                     // for any type that is in a permitted NS
-                    for (Iterator i = m_includeURI.iterator(); i.hasNext(); ) {
-                        String uri = (String) i.next();
+                    for (Iterator<String> i = m_includeURI.iterator(); i.hasNext(); ) {
+                        String uri = i.next();
                         if (typeURI.startsWith( uri )) {
                             // in
                             return false;
@@ -1533,17 +1533,14 @@ public class schemagen {
     }
 
     /** Answer an iterator that contains the elements of the given list, but sorted by URI */
-    protected ExtendedIterator sorted( ExtendedIterator i ) {
+    protected ExtendedIterator<? extends RDFNode> sorted( ExtendedIterator<? extends RDFNode> i ) {
         return sorted( i.toList() );
     }
 
     /** Answer an iterator that contains the elements of the given iterator, but sorted by URI */
-    protected ExtendedIterator sorted( List members ) {
-        Collections.sort( members, new Comparator() {
-            public int compare( Object arg0, Object arg1 ) {
-                RDFNode n0 = (RDFNode) arg0;
-                RDFNode n1 = (RDFNode) arg1;
-
+    protected ExtendedIterator<? extends RDFNode> sorted( List<? extends RDFNode> members ) {
+        Collections.sort( members, new Comparator<RDFNode>() {
+            public int compare( RDFNode n0, RDFNode n1 ) {
                 if (n0.isLiteral() || n1.isLiteral()) {
                     if (n0.isLiteral() && n1.isLiteral()) {
                         // two literals
@@ -1624,7 +1621,7 @@ public class schemagen {
 
             if (index >= 0) {
                 try {
-                    return (String) m_cmdLineArgs.get( index + 1 );
+                    return m_cmdLineArgs.get( index + 1 );
                 }
                 catch (IndexOutOfBoundsException e) {
                     System.err.println( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.");
@@ -1664,7 +1661,7 @@ public class schemagen {
 
             if (index >= 0) {
                 try {
-                    return m_config.getResource( (String) m_cmdLineArgs.get( index + 1 ) );
+                    return m_config.getResource( m_cmdLineArgs.get( index + 1 ) );
                 }
                 catch (IndexOutOfBoundsException e) {
                     System.err.println( "Value for parameter " + m_cmdLineForm  + " not set! Aborting.");
