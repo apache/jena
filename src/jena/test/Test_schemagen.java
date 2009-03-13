@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-09 17:23:28 $
+ * Last modified on   $Date: 2009-03-13 10:25:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.12 2009-02-09 17:23:28 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.13 2009-03-13 10:25:35 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -549,10 +549,10 @@ public class Test_schemagen
 
         // now get ready to invoke javac
         try {
-            Class jcMain = Class.forName(  "sun.tools.javac.Main" );
+            Class<?> jcMain = Class.forName(  "sun.tools.javac.Main" );
 
             // constructor
-            Constructor jcConstruct = jcMain.getConstructor( new Class[] {OutputStream.class, String.class} );
+            Constructor<?> jcConstruct = jcMain.getConstructor( new Class[] {OutputStream.class, String.class} );
             Method jcCompile = jcMain.getMethod( "compile", new Class[] {String[].class} );
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
             Object jc = jcConstruct.newInstance( new Object[] {byteOut, "javac"} );

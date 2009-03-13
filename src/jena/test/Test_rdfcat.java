@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
      All rights reserved - see end of file.
-     $Id: Test_rdfcat.java,v 1.6 2009-01-16 17:24:02 andy_seaborne Exp $
+     $Id: Test_rdfcat.java,v 1.7 2009-03-13 10:25:35 ian_dickinson Exp $
 */
 
 package jena.test;
@@ -199,7 +199,7 @@ public class Test_rdfcat extends TestCase
 
         rdfcatFixture rc = new rdfcatFixture( so );
 
-        List l = new ArrayList();
+        List<String> l = new ArrayList<String>();
         if (outFormArg != null) {
             l.add(  "-out" );
             l.add(  outFormArg );
@@ -209,7 +209,7 @@ public class Test_rdfcat extends TestCase
 
         String[] args = new String[l.size()];
         for (int i = 0; i < l.size(); i++) {
-            args[i] = (String) l.get(i);
+            args[i] = l.get(i);
         }
         // use file extension guessing
         rc.testGo( args );
