@@ -79,6 +79,7 @@ public final class Tuple<T> implements Iterable<T>
         return x ;  
     }
     
+    /** Equality of tuples is based on equality of the elements in the tuple */
     @Override
     public boolean equals(Object other) 
     {
@@ -101,7 +102,7 @@ public final class Tuple<T> implements Iterable<T>
     @Override
     public String toString()
     {
-        return "["+Iter.asString(asList(), ", ")+"]" ;
+        return "["+Iter.asString(this, ", ")+"]" ;
     }
 }
 
