@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:05 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,15 +39,15 @@ import java.util.*;
  * Vocabulary constants for DAML+OIL, March 2001 version. This version of the DAML
  * vocabulary uses RDFS namespace terms for subClass, subProperty, etc. This was not
  * the case up to and including Jena 2.1.  In Jena 2.1, all of the constants in the
- * DAML vocabulary used the DAML namespace.  The DAML langauge defines both as
+ * DAML vocabulary used the DAML namespace.  The DAML language defines both as
  * equivalent, but recognising this equivalence requires the use of the DAML micro
- * reasoner.  For backwards compatability with Jena 2.1, developers should use
+ * reasoner.  For backwards compatibility with Jena 2.1, developers should use
  * {@link DAML_OILLegacyProfile} with the OntModelSpec.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.32 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.33 2009-03-13 15:40:05 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -224,7 +224,7 @@ public class DAML_OILProfile
     }
 
     /** There are no first-class axioms in DAML */
-    public Iterator getAxiomTypes() {
+    public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
             }
@@ -232,14 +232,14 @@ public class DAML_OILProfile
     }
 
     /** The annotation properties of DAML (currently none) */
-    public Iterator getAnnotationProperties() {
+    public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
             }
         ).iterator();
     }
 
-    public Iterator getClassDescriptionTypes() {
+    public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
                 DAML_OIL.Class,
@@ -265,7 +265,7 @@ public class DAML_OILProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
-    public boolean isSupported( Node n, EnhGraph g, Class type ) {
+    public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
 
@@ -280,7 +280,7 @@ public class DAML_OILProfile
             }
             else {
                 // lookup the profile check for this resource
-                SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
+                SupportsCheck check = s_supportsChecks.get( type );
 
                 return (check == null)  || check.doCheck( n, g );
             }
@@ -515,12 +515,12 @@ public class DAML_OILProfile
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    protected static HashMap s_supportsChecks = new HashMap();
+    protected static HashMap<Class<?>,SupportsCheck> s_supportsChecks = new HashMap<Class<?>, SupportsCheck>();
 
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckTable.length;  i++) {
-            s_supportsChecks.put( s_supportsCheckTable[i][0], s_supportsCheckTable[i][1] );
+            s_supportsChecks.put( (Class<?>) s_supportsCheckTable[i][0], (SupportsCheck) s_supportsCheckTable[i][1] );
         }
     }
 

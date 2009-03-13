@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AllDifferentImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,8 +30,8 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Map1;
 
 
 /**
@@ -41,11 +41,11 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferentImpl.java,v 1.22 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: AllDifferentImpl.java,v 1.23 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class AllDifferentImpl
     extends OntResourceImpl
-    implements AllDifferent 
+    implements AllDifferent
 {
     // Constants
     //////////////////////////////////
@@ -55,20 +55,21 @@ public class AllDifferentImpl
 
     /**
      * A factory for generating AllDifferent facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new AllDifferentImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to AllDifferent");
-            } 
+            }
         }
-        
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an AllDifferent facet if it has rdf:type owl:AllDifferent or equivalent
@@ -88,7 +89,7 @@ public class AllDifferentImpl
      * <p>
      * Construct an all different axiom represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the axiom
      * @param g The enhanced graph that contains n
      */
@@ -103,11 +104,11 @@ public class AllDifferentImpl
 
     /**
      * <p>Assert that the list of distinct individuals in this AllDifferent declaration
-     * is the given list. Any existing 
+     * is the given list. Any existing
      * statements for <code>distinctMembers</code> will be removed.</p>
      * @param members A list of the members that are declared to be distinct.
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
+     */
     public void setDistinctMembers( RDFList members ) {
         setPropertyValue( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", members );
     }
@@ -115,28 +116,28 @@ public class AllDifferentImpl
     /**
      * <p>Add the given individual to the list of distinct members of this AllDifferent declaration.</p>
      * @param res A resource that will be added to the list of all different members.
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
+     */
     public void addDistinctMember( Resource res ) {
         addListPropertyValue( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", res );
     }
 
     /**
      * <p>Add the given individuals to the list of distinct members of this AllDifferent declaration.</p>
-     * @param individuals An iterator over the distinct invididuals that will be added 
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
-     */ 
-    public void addDistinctMembers( Iterator individuals ) {
+     * @param individuals An iterator over the distinct invididuals that will be added
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
+     */
+    public void addDistinctMembers( Iterator<? extends Resource> individuals ) {
         while (individuals.hasNext()) {
-            addDistinctMember( (Resource) individuals.next() );
+            addDistinctMember( individuals.next() );
         }
     }
 
     /**
      * <p>Answer the list of distinct members for this AllDifferent declaration.</p>
      * @return The list of individuals declared distinct by this AllDifferent declaration.
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
+     */
     public RDFList getDistinctMembers() {
         return objectAs( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", RDFList.class );
     }
@@ -145,22 +146,25 @@ public class AllDifferentImpl
      * <p>Answer an iterator over all of the individuals that are declared to be distinct by
      * this AllDifferent declaration. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over distinct individuals.
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
-     */ 
-    public ExtendedIterator listDistinctMembers() {
-        return getDistinctMembers().iterator();
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
+     */
+    public ExtendedIterator<? extends OntResource> listDistinctMembers() {
+        return getDistinctMembers().mapWith( new Map1<RDFNode,OntResource>() {
+            public OntResource map1( RDFNode o ) {
+                return ((Resource) o).as( OntResource.class );
+            }} );
     }
 
     /**
      * <p>Answer true if this AllDifferent declaration includes <code>res</code> as one of the distinct individuals.</p>
      * @param res A resource to test against
      * @return True if <code>res</code> is declared to be distinct from the other individuals in this declation.
-     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
     public boolean hasDistinctMember( Resource res ) {
         return getDistinctMembers().contains( res );
     }
-    
+
     /**
      * <p>Remove the given resource from the list of distinct individuals.  If this statement
      * is not true of the current model, nothing happens.</p>
@@ -169,7 +173,7 @@ public class AllDifferentImpl
     public void removeDistinctMember( Resource res ) {
         setDistinctMembers( getDistinctMembers().remove( res ) );
     }
-    
+
 
 
     // Internal implementation methods

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClass.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:38:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,9 +39,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClass.java,v 1.19 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: EnumeratedClass.java,v 1.20 2009-03-13 15:38:51 ian_dickinson Exp $
  */
-public interface EnumeratedClass 
+public interface EnumeratedClass
     extends OntClass
 {
     // Constants
@@ -53,54 +53,54 @@ public interface EnumeratedClass
 
 
     // oneOf
-    
+
     /**
-     * <p>Assert that this class is exactly the enumeration of the given individuals. Any existing 
+     * <p>Assert that this class is exactly the enumeration of the given individuals. Any existing
      * statements for <code>oneOf</code> will be removed.</p>
      * @param en A list of individuals that defines the class extension for this class
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public void setOneOf( RDFList en );
 
     /**
      * <p>Add an individual to the enumeration that defines the class extension of this class.</p>
      * @param res An individual to add to the enumeration
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public void addOneOf( Resource res );
 
     /**
-     * <p>Add each individual from the given iteratation to the 
+     * <p>Add each individual from the given iteration to the
      * enumeration that defines the class extension of this class.</p>
      * @param individuals An iterator over individuals
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
-    public void addOneOf( Iterator individuals );
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
+    public void addOneOf( Iterator<? extends Resource> individuals );
 
     /**
      * <p>Answer a list of individuals that defines the extension of this class.</p>
      * @return A list of individuals that is the class extension
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public RDFList getOneOf();
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be the class extension for
      * this class. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the individuals in the class extension
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
-    public ExtendedIterator listOneOf();
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
+    public ExtendedIterator<? extends OntResource> listOneOf();
 
     /**
      * <p>Answer true if the given individual is one of the enumerated individuals in the class extension
      * of this class.</p>
      * @param res An individual to test
      * @return True if the given individual is in the class extension for this class.
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
     public boolean hasOneOf( Resource res );
-    
+
     /**
      * <p>Remove the statement that this enumeration includes <code>res</code> among its members.  If this statement
      * is not true of the current model, nothing happens.</p>
@@ -108,7 +108,7 @@ public interface EnumeratedClass
      * no longer one of the enumeration values.
      */
     public void removeOneOf( Resource res );
-    
+
 
 }
 

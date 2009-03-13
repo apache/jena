@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:05 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.20 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.21 2009-03-13 15:40:05 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -55,6 +55,7 @@ public class IndividualImpl
      * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -185,8 +186,10 @@ public class IndividualImpl
      * @return An iterator over the set of this individual's classes. Each member
      * of the iteration will be an {@link OntClass}.
      */
-    public ExtendedIterator listOntClasses( boolean direct ) {
-        return listRDFTypes( direct ).mapWith( new AsMapper( OntClass.class ) );
+    @SuppressWarnings("unchecked")
+    public  ExtendedIterator<? extends OntClass> listOntClasses( boolean direct ) {
+        return listRDFTypes( direct ).mapWith( new ResourceAsMapper<OntClass>( OntClass.class ) );
+
     }
 
     /**

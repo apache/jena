@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.23 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.24 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -93,8 +93,8 @@ public class OWLDLProfile
             {  AnnotationProperty.class,    new SupportsCheck() {
                 @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    for (Iterator i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
-                        if (((Resource) i.next()).asNode().equals( n )) {
+                    for (Iterator<Resource> i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
+                        if (i.next().asNode().equals( n )) {
                             // a built-in annotation property
                             return true;
                         }
@@ -296,17 +296,17 @@ public class OWLDLProfile
     }
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    private static HashMap s_supportsChecks = new HashMap();
+    private static HashMap<Class<?>,SupportsCheck> s_supportsChecks = new HashMap<Class<?>, SupportsCheck>();
 
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckData.length;  i++) {
-            s_supportsChecks.put( s_supportsCheckData[i][0], s_supportsCheckData[i][1] );
+            s_supportsChecks.put( (Class<?>) s_supportsCheckData[i][0], (SupportsCheck) s_supportsCheckData[i][1] );
         }
     }
 
     @Override
-    protected Map getCheckTable() {
+    protected Map<Class<?>,SupportsCheck> getCheckTable() {
         return s_supportsChecks;
     }
 

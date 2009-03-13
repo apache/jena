@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 08:37:09 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.38 2009-01-26 08:37:09 chris-dollin Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.39 2009-03-13 15:40:06 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -190,7 +190,7 @@ public class OWLProfile
             }
             else {
                 // lookup the profile check for this resource
-                SupportsCheck check = (SupportsCheck) getCheckTable().get( type );
+                SupportsCheck check = getCheckTable().get( type );
 
                 // a check must be defined for the test to succeed
                 return (check != null)  && check.doCheck( n, g );
@@ -438,16 +438,16 @@ public class OWLProfile
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    private static HashMap<Object, Object> s_supportsChecks = new HashMap<Object, Object>();
+    private static HashMap<Class<?>, SupportsCheck> s_supportsChecks = new HashMap<Class<?>, SupportsCheck>();
 
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckData.length;  i++) {
-            s_supportsChecks.put( s_supportsCheckData[i][0], s_supportsCheckData[i][1] );
+            s_supportsChecks.put( (Class<?>) s_supportsCheckData[i][0], (SupportsCheck) s_supportsCheckData[i][1] );
         }
     }
 
-    protected Map<Object, Object> getCheckTable() {
+    protected Map<Class<?>, SupportsCheck> getCheckTable() {
         return s_supportsChecks;
     }
 }

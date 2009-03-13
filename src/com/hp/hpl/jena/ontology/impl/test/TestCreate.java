@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            03-Apr-2003
  * Filename           $RCSfile: TestCreate.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,9 +38,9 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestCreate.java,v 1.18 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestCreate.java,v 1.19 2009-03-13 15:40:07 ian_dickinson Exp $
  */
-public class TestCreate 
+public class TestCreate
     extends TestCase
 {
     // Constants
@@ -64,14 +64,14 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof Ontology;}
         },
-        
+
         new CreateTestCase( "OWL create class", ProfileRegistry.OWL_LANG, NS + "C" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createClass( NS + "C" ); }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass;}
         },
-        
+
         new CreateTestCase( "OWL create anon complement class", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createComplementClass( null, m.createClass( NS + "A" ) ); }
@@ -81,12 +81,12 @@ public class TestCreate
         new CreateTestCase( "OWL create anon enumeration class", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createEnumeratedClass( null, l ); 
+                return m.createEnumeratedClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof EnumeratedClass; }
@@ -94,12 +94,12 @@ public class TestCreate
         new CreateTestCase( "OWL create anon union class", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createUnionClass( null, l ); 
+                return m.createUnionClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof UnionClass; }
@@ -107,17 +107,17 @@ public class TestCreate
         new CreateTestCase( "OWL create anon intersection class", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createIntersectionClass( null, l ); 
+                return m.createIntersectionClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof IntersectionClass; }
         },
-        
+
         new CreateTestCase( "OWL create class", ProfileRegistry.OWL_LANG, NS + "C" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createClass( NS + "C" ); }
@@ -137,7 +137,7 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass;}
         },
-        
+
         new CreateTestCase( "DAML create anon complement class", ProfileRegistry.DAML_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createComplementClass( null, m.createClass( NS + "A" ) ); }
@@ -147,12 +147,12 @@ public class TestCreate
         new CreateTestCase( "DAML create anon enumeration class", ProfileRegistry.DAML_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createEnumeratedClass( null, l ); 
+                return m.createEnumeratedClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof EnumeratedClass; }
@@ -160,12 +160,12 @@ public class TestCreate
         new CreateTestCase( "DAML create anon union class", ProfileRegistry.DAML_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createUnionClass( null, l ); 
+                return m.createUnionClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof UnionClass; }
@@ -173,12 +173,12 @@ public class TestCreate
         new CreateTestCase( "DAML create anon intersection class", ProfileRegistry.DAML_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" ); 
+                OntClass A = m.createClass( NS + "A" );
                 Individual a0 = m.createIndividual( A );
                 Individual a1 = m.createIndividual( A );
                 Individual a2 = m.createIndividual( A );
                 RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createIntersectionClass( null, l ); 
+                return m.createIntersectionClass( null, l );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof IntersectionClass; }
@@ -186,41 +186,41 @@ public class TestCreate
 
         new CreateTestCase( "OWL create individual", ProfileRegistry.OWL_LANG, NS + "a" ) {
             @Override
-            public OntResource doCreate( OntModel m )   { 
+            public OntResource doCreate( OntModel m )   {
                 OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( NS + "a", c ); 
+                return m.createIndividual( NS + "a", c );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof Individual;}
         },
         new CreateTestCase( "OWL create anon individual", ProfileRegistry.OWL_LANG, null ) {
             @Override
-            public OntResource doCreate( OntModel m )   { 
+            public OntResource doCreate( OntModel m )   {
                 OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( c ); 
+                return m.createIndividual( c );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof Individual;}
         },
         new CreateTestCase( "DAML create individual", ProfileRegistry.DAML_LANG, NS + "a" ) {
             @Override
-            public OntResource doCreate( OntModel m )   { 
+            public OntResource doCreate( OntModel m )   {
                 OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( NS + "a", c ); 
+                return m.createIndividual( NS + "a", c );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof Individual;}
         },
         new CreateTestCase( "DAML create anon individual", ProfileRegistry.DAML_LANG, null ) {
             @Override
-            public OntResource doCreate( OntModel m )   { 
+            public OntResource doCreate( OntModel m )   {
                 OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( c ); 
+                return m.createIndividual( c );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof Individual;}
         },
-        
+
         // OWL property types
         new CreateTestCase( "OWL create object property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             @Override
@@ -240,7 +240,7 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  r.canAs( FunctionalProperty.class );}
         },
-        
+
         new CreateTestCase( "OWL create transitive property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createTransitiveProperty( NS + "p" ); }
@@ -319,7 +319,7 @@ public class TestCreate
                                                                  r.canAs( FunctionalProperty.class );
                                                         }
         },
-        
+
         new CreateTestCase( "OWL create datatype property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p" ); }
@@ -338,14 +338,14 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  r.canAs( FunctionalProperty.class );}
         },
-        
+
         new CreateTestCase( "OWL create annotation property", ProfileRegistry.OWL_LANG, NS + "p" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createAnnotationProperty( NS + "p" ); }
             @Override
             public boolean test( OntResource r )        { return r instanceof AnnotationProperty;}
         },
-        
+
         // DAML property types
         new CreateTestCase( "DAML create object property", ProfileRegistry.DAML_LANG, NS + "p" ) {
             @Override
@@ -365,7 +365,7 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  r.canAs( FunctionalProperty.class );}
         },
-        
+
         new CreateTestCase( "DAML create transitive property", ProfileRegistry.DAML_LANG, NS + "p" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createTransitiveProperty( NS + "p" ); }
@@ -418,7 +418,7 @@ public class TestCreate
                                                                  r.canAs( FunctionalProperty.class );
                                                         }
         },
-        
+
         new CreateTestCase( "DAML create datatype property", ProfileRegistry.DAML_LANG, NS + "p" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p" ); }
@@ -437,16 +437,16 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  r.canAs( FunctionalProperty.class );}
         },
-        
+
         new CreateTestCase( "OWL create allDifferent", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createAllDifferent(); }
             @Override
             public boolean test( OntResource r )        { return r instanceof AllDifferent;}
         },
-        
+
         // Restrictions
-        
+
         new CreateTestCase( "OWL create restriction", ProfileRegistry.OWL_LANG, NS + "C" ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C", null ); }
@@ -459,128 +459,158 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
-        
+
         new CreateTestCase( "OWL create has value restriction", ProfileRegistry.OWL_LANG, null ) {
             @Override
-            public OntResource doCreate( OntModel m )   { 
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 Resource x = m.createResource( NS + "x" );
-                return m.createHasValueRestriction( null, p,  x ); 
+                return m.createHasValueRestriction( null, p,  x );
             }
             @Override
             public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
         },
         new CreateTestCase( "OWL create has value restriction (literal)", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createDatatypeProperty( NS + "p" );
                 Literal x = m.createTypedLiteral( new Integer( 42 ) );
-                return m.createHasValueRestriction( null, p,  x ); 
+                return m.createHasValueRestriction( null, p,  x );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
         },
         new CreateTestCase( "OWL create all values from restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 OntClass c = m.createClass( NS + "C" );
-                return m.createAllValuesFromRestriction( null, p,  c ); 
+                return m.createAllValuesFromRestriction( null, p,  c );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof AllValuesFromRestriction;}
         },
         new CreateTestCase( "OWL create some values from restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 OntClass c = m.createClass( NS + "C" );
-                return m.createSomeValuesFromRestriction( null, p,  c ); 
+                return m.createSomeValuesFromRestriction( null, p,  c );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof SomeValuesFromRestriction;}
         },
         new CreateTestCase( "OWL create cardinality restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createCardinalityRestriction( null, p,  17 ); 
+                return m.createCardinalityRestriction( null, p,  17 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof CardinalityRestriction;}
         },
         new CreateTestCase( "OWL create min cardinality restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createMinCardinalityRestriction( null, p,  1 ); 
+                return m.createMinCardinalityRestriction( null, p,  1 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof MinCardinalityRestriction;}
         },
         new CreateTestCase( "OWL create max cardinality restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createMaxCardinalityRestriction( null, p,  4 ); 
+                return m.createMaxCardinalityRestriction( null, p,  4 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof MaxCardinalityRestriction;}
         },
-        
+
         new CreateTestCase( "DAML create restriction", ProfileRegistry.DAML_LANG, NS + "C" ) {
+            @Override
             public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C", null ); }
+            @Override
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         new CreateTestCase( "DAML create anon restriction", ProfileRegistry.DAML_LANG, null ) {
+            @Override
             public OntResource doCreate( OntModel m )   { return m.createRestriction( null ); }
+            @Override
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
-        
+
         new CreateTestCase( "DAML create has value restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 Resource x = m.createResource( NS + "x" );
-                return m.createHasValueRestriction( null, p,  x ); 
+                return m.createHasValueRestriction( null, p,  x );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
         },
         new CreateTestCase( "DAML create has value restriction (literal)", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createDatatypeProperty( NS + "p" );
                 Literal x = m.createTypedLiteral( new Integer( 42 ) );
-                return m.createHasValueRestriction( null, p,  x ); 
+                return m.createHasValueRestriction( null, p,  x );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
         },
         new CreateTestCase( "DAML create all values from restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 OntClass c = m.createClass( NS + "C" );
-                return m.createAllValuesFromRestriction( null, p,  c ); 
+                return m.createAllValuesFromRestriction( null, p,  c );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof AllValuesFromRestriction;}
         },
         new CreateTestCase( "DAML create some values from restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
                 OntClass c = m.createClass( NS + "C" );
-                return m.createSomeValuesFromRestriction( null, p,  c ); 
+                return m.createSomeValuesFromRestriction( null, p,  c );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof SomeValuesFromRestriction;}
         },
         new CreateTestCase( "DAML create cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createCardinalityRestriction( null, p,  17 ); 
+                return m.createCardinalityRestriction( null, p,  17 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof CardinalityRestriction;}
         },
         new CreateTestCase( "DAML create min cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createMinCardinalityRestriction( null, p,  1 ); 
+                return m.createMinCardinalityRestriction( null, p,  1 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof MinCardinalityRestriction;}
         },
         new CreateTestCase( "DAML create max cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { 
+            @Override
+            public OntResource doCreate( OntModel m )   {
                 Property p = m.createObjectProperty( NS + "p" );
-                return m.createMaxCardinalityRestriction( null, p,  4 ); 
+                return m.createMaxCardinalityRestriction( null, p,  4 );
             }
+            @Override
             public boolean test( OntResource r )        { return r instanceof MaxCardinalityRestriction;}
         },
-        
+
     };
-    
+
     // Instance variables
     //////////////////////////////////
 
@@ -590,27 +620,27 @@ public class TestCreate
     public TestCreate( String name ) {
         super( name );
     }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
     protected String getTestName() {
         return "TestCreate";
     }
-    
+
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestCreate" );
-        
+
         for (int i = 0;  i < testCases.length;  i++) {
             s.addTest( testCases[i] );
         }
-        
+
         return s;
     }
 
-    
-    
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -623,47 +653,49 @@ public class TestCreate
     {
         protected String m_lang;
         protected String m_uri;
-        
+
         public CreateTestCase( String name, String lang, String uri ) {
             super( name );
             m_lang = lang;
             m_uri = uri;
         }
-        
+
+        @Override
         public void runTest() {
             OntModel m = ModelFactory.createOntologyModel( m_lang );
-            
+
             // do the creation step
             OntResource r = doCreate( m );
             assertNotNull( "Result of creation step should not be null", r );
-            
+
             if (m_uri == null) {
                 assertTrue( "Created resource should be anonymous", r.isAnon() );
             }
-            else { 
+            else {
                 assertEquals( "Created resource has wrong uri", m_uri, r.getURI() );
             }
-            
+
             assertTrue( "Result test failed", test( r ));
         }
-        
+
+        @Override
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
         }
-        
-        
+
+
         /* get the resource */
         public OntResource doCreate( OntModel m ) {
             // to be overridden in sub-classes
             return null;
         }
-        
+
         /* test the Java type of the result, and other tests */
         public boolean test( OntResource r ) {
             return true;
         }
-        
+
     }
 }
 

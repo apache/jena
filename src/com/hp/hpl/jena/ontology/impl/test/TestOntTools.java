@@ -218,7 +218,7 @@ public class TestOntTools
     }
 
     /** Shortest path tests */
-    
+
     static final Filter<Statement> ANY = Filter.any();
 
     public void testShortestPath0() {
@@ -352,7 +352,7 @@ public class TestOntTools
         m_e.addSubClass( m_e );
         m_e.addSubClass( m_f );
 
-        List nhr = OntTools.namedHierarchyRoots( m_model );
+        List<OntClass> nhr = OntTools.namedHierarchyRoots( m_model );
         assertEquals( 3, nhr.size() );
         assertTrue( nhr.contains( m_a ));
         assertTrue( nhr.contains( m_e ));
@@ -370,7 +370,7 @@ public class TestOntTools
         anon0.addSubClass( m_a );
         anon0.addSubClass( m_e );
 
-        List nhr = OntTools.namedHierarchyRoots( m_model );
+        List<OntClass> nhr = OntTools.namedHierarchyRoots( m_model );
         assertEquals( 3, nhr.size() );
         assertTrue( nhr.contains( m_a ));
         assertTrue( nhr.contains( m_e ));
@@ -391,7 +391,7 @@ public class TestOntTools
         m_e.addSubClass( m_e );
         m_e.addSubClass( m_f );
 
-        List nhr = OntTools.namedHierarchyRoots( m_model );
+        List<OntClass> nhr = OntTools.namedHierarchyRoots( m_model );
         assertEquals( 3, nhr.size() );
         assertTrue( nhr.contains( m_a ));
         assertTrue( nhr.contains( m_e ));
@@ -413,7 +413,7 @@ public class TestOntTools
         m_a.addSubClass( m_f );
         m_a.addSubClass( m_g );
 
-        List nhr = OntTools.namedHierarchyRoots( m_model );
+        List<OntClass> nhr = OntTools.namedHierarchyRoots( m_model );
         assertEquals( 1, nhr.size() );
         assertTrue( nhr.contains( m_a ));
     }
@@ -434,7 +434,7 @@ public class TestOntTools
         m_a.addSubClass( m_f );
         m_a.addSubClass( m_g );
 
-        List nhr = OntTools.namedHierarchyRoots( m_model );
+        List<OntClass> nhr = OntTools.namedHierarchyRoots( m_model );
         assertEquals( 1, nhr.size() );
         assertTrue( nhr.contains( m_a ));
     }
@@ -446,9 +446,9 @@ public class TestOntTools
         assertEquals( expected.length, path.size() );
 
         int i = 0;
-        Iterator j = path.iterator();
+        Iterator<Statement> j = path.iterator();
         while (j.hasNext()) {
-            assertEquals( "path position: " + i, expected[i], ((Statement) j.next()).getPredicate() );
+            assertEquals( "path position: " + i, expected[i], j.next().getPredicate() );
             i++;
         }
     }

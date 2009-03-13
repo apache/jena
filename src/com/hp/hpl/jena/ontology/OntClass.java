@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 07:57:35 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:38:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.32 2009-01-27 07:57:35 chris-dollin Exp $
+ * @version CVS $Id: OntClass.java,v 1.33 2009-03-13 15:38:51 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -413,7 +413,7 @@ public interface OntClass
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public ExtendedIterator listInstances();
+    public ExtendedIterator<? extends OntResource> listInstances();
 
 
     /**
@@ -425,7 +425,7 @@ public interface OntClass
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
-    public ExtendedIterator listInstances( boolean direct );
+    public ExtendedIterator<? extends OntResource> listInstances( boolean direct );
 
 
     /**

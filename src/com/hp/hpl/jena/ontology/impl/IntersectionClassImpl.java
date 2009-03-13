@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: IntersectionClassImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:05 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,9 +37,9 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IntersectionClassImpl.java,v 1.13 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: IntersectionClassImpl.java,v 1.14 2009-03-13 15:40:05 ian_dickinson Exp $
  */
-public class IntersectionClassImpl 
+public class IntersectionClassImpl
     extends BooleanClassDescriptionImpl
     implements IntersectionClass
 {
@@ -51,27 +51,28 @@ public class IntersectionClassImpl
 
     /**
      * A factory for generating IntersectionClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new IntersectionClassImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to IntersectionClass");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an IntersectionClass facet if it has rdf:type owl:Class and an owl:intersectionOf statement (or equivalents) 
+            // node will support being an IntersectionClass facet if it has rdf:type owl:Class and an owl:intersectionOf statement (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  
+            return (profile != null)  &&
                    profile.isSupported( node, eg, OntClass.class )  &&
-                   AbstractProfile.containsSome( eg, node, profile.INTERSECTION_OF() ); 
+                   AbstractProfile.containsSome( eg, node, profile.INTERSECTION_OF() );
         }
     };
 
@@ -86,7 +87,7 @@ public class IntersectionClassImpl
      * <p>
      * Construct an intersection class node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -98,11 +99,11 @@ public class IntersectionClassImpl
     // External signature methods
     //////////////////////////////////
 
-	@Override
+    @Override
     public Property operator() {return getProfile().INTERSECTION_OF();}
-	@Override
+    @Override
     public String getOperatorName() {return "INTERSECTION_OF";}
-    
+
 
     // Internal implementation methods
     //////////////////////////////////

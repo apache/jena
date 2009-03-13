@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILLegacyProfile.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 08:37:09 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,13 +39,13 @@ import java.util.*;
  * Vocabulary constants for DAML+OIL March 2001 version. This version of the vocabulary is
  * the one that was in use up to Jena 2.1.  It has been replaced by a new version that
  * uses RDFS namespace terms for subClass and subProperty, which is more normal practice
- * in DAML ontologies. This version is retained for backwards compatability with Jena 2.1
+ * in DAML ontologies. This version is retained for backwards compatibility with Jena 2.1
  * programs.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.9 2009-01-26 08:37:09 chris-dollin Exp $
+ * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.10 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class DAML_OILLegacyProfile
     extends AbstractProfile

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.20 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.21 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class TestOntReasoning
     extends TestCase
@@ -273,9 +273,9 @@ public class TestOntReasoning
     //////////////////////////////////
 
     /** Test that an iterator delivers the expected values */
-    protected void iteratorTest( Iterator i, Object[] expected ) {
+    protected void iteratorTest( Iterator<?> i, Object[] expected ) {
         Log logger = LogFactory.getLog( getClass() );
-        List expList = new ArrayList();
+        List<Object> expList = new ArrayList<Object>();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );
         }
@@ -294,7 +294,7 @@ public class TestOntReasoning
 
         if (!(expList.size() == 0)) {
             logger.debug( getName() + " Expected iterator results not found" );
-            for (Iterator j = expList.iterator(); j.hasNext(); ) {
+            for (Iterator<?> j = expList.iterator(); j.hasNext(); ) {
                 logger.debug( getName() + " - missing: " + j.next() );
             }
         }

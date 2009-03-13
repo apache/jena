@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:38:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.18 2008-12-28 19:32:01 andy_seaborne Exp $
+ * @version CVS $Id: Individual.java,v 1.19 2009-03-13 15:38:51 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource
@@ -130,7 +130,7 @@ public interface Individual
      * @return An iterator over the set of this individual's classes. Each member
      * of the iteration will be an {@link OntClass}.
      */
-    public ExtendedIterator listOntClasses( boolean direct );
+    public <T extends OntClass> ExtendedIterator<T> listOntClasses( boolean direct );
 
     /**
      * <p>

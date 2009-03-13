@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.20 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.21 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class ComplementClassImpl
     extends OntClassImpl
@@ -57,6 +57,7 @@ public class ComplementClassImpl
      * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
         public EnhNode wrap( Node n, EnhGraph eg ) {
@@ -145,7 +146,7 @@ public class ComplementClassImpl
      * @exception Always throws UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
-    public void addOperands( Iterator classes ) {
+    public void addOperands( Iterator<? extends Resource> classes ) {
         throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
     }
 
@@ -159,12 +160,12 @@ public class ComplementClassImpl
     }
 
     /**
-     * <p>Answer an iterator over all of the clases that are the operands of this
+     * <p>Answer an iterator over all of the classes that are the operands of this
      * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the operands of the expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
-    public ExtendedIterator listOperands() {
+    public ExtendedIterator<? extends OntClass> listOperands() {
         return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
     }
 

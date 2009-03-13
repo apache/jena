@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Jun-2003
  * Filename           $RCSfile: TestResourceUtils.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:23 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,16 +40,16 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.12 2008-12-28 19:32:23 andy_seaborne Exp $
+ * @version CVS $Id: TestResourceUtils.java,v 1.13 2009-03-13 15:40:08 ian_dickinson Exp $
  */
-public class TestResourceUtils 
+public class TestResourceUtils
     extends TestCase
 {
     // Constants
     //////////////////////////////////
 
     public static final String NS = "http://jena.hp.com/test#";
-    
+
     // Static variables
     //////////////////////////////////
 
@@ -62,26 +62,26 @@ public class TestResourceUtils
     public TestResourceUtils( String name ) {
         super( name );
     }
-    
+
     // External signature methods
     //////////////////////////////////
 
     public void testMaximalLowerElements() {
         Model m = ModelFactory.createDefaultModel();
-        
+
         Resource a = m.createResource( NS + "a" );
         Resource b = m.createResource( NS + "b" );
         Resource c = m.createResource( NS + "c" );
         Resource d = m.createResource( NS + "d" );
-        
+
         b.addProperty( RDFS.subClassOf, a );
         c.addProperty( RDFS.subClassOf, a );
         d.addProperty( RDFS.subClassOf, c );
         d.addProperty( RDFS.subClassOf, a );
-        
-        List abcd = Arrays.asList( new Object[] {a,b,c,d} );
-        List bcd = Arrays.asList( new Object[] {b,c,d} );
-        List cd = Arrays.asList( new Object[] {c,d} );
+
+        List<Resource> abcd = Arrays.asList( new Resource[] {a,b,c,d} );
+        List<Resource> bcd = Arrays.asList( new Resource[] {b,c,d} );
+        List<Resource> cd = Arrays.asList( new Resource[] {c,d} );
 
         assertEquals( "Wrong number of remaining resources", 1, ResourceUtils.maximalLowerElements( abcd, RDFS.subClassOf, true ).size() );
         assertEquals( "Result should be a", a, ResourceUtils.maximalLowerElements( abcd, RDFS.subClassOf, true ).iterator().next() );
@@ -89,62 +89,62 @@ public class TestResourceUtils
         assertEquals( "Wrong number of remaining resources", 1, ResourceUtils.maximalLowerElements( cd, RDFS.subClassOf, true ).size() );
         assertEquals( "Result should be a", c, ResourceUtils.maximalLowerElements( cd, RDFS.subClassOf, true ).iterator().next() );
     }
-    
+
     public void testRenameResource() {
         Model m = ModelFactory.createDefaultModel();
-        
+
         Resource a = m.createResource( NS + "a" );
         Resource b = m.createResource( NS + "b" );
         Resource c = m.createResource( NS + "c" );
         Resource d = m.createResource( NS + "d" );
-        
+
         Property p = m.createProperty( NS, "p" );
         Property q = m.createProperty( NS, "q" );
-        
+
         a.addProperty( p, b );
         a.addProperty( q, c );
         d.addProperty( p, a );
         d.addProperty( p, b );
-        
+
         // now rename a to e
         Resource e = ResourceUtils.renameResource( a, NS + "e" );
-        
+
         assertTrue( "should be no properties of a", !a.listProperties().hasNext() );
         assertEquals( "uri of a", NS + "a", a.getURI() );
         assertEquals( "uri of e", NS + "e", e.getURI() );
 
         assertTrue( "d should not have p a", !d.hasProperty( p, a ));
         assertTrue( "d should have p e", d.hasProperty( p, e ));
-        
+
         assertTrue( "e should have p b", e.hasProperty( p, b ) );
         assertTrue( "e should have q c", e.hasProperty( q, c ) );
-        
+
         assertTrue( "d p b should be unchanged", d.hasProperty( p, b ) );
-        
+
         // now rename e to anon
         Resource anon = ResourceUtils.renameResource( e, null );
-        
+
         assertTrue( "should be no properties of e", !e.listProperties().hasNext() );
         assertEquals( "uri of e", NS + "e", e.getURI() );
         assertTrue( "anon", anon.isAnon() );
 
         assertTrue( "d should not have p e", !d.hasProperty( p, e ));
         assertTrue( "d should have p anon", d.hasProperty( p, anon ));
-        
+
         assertTrue( "anon should have p b", anon.hasProperty( p, b ) );
         assertTrue( "anon should have q c", anon.hasProperty( q, c ) );
-        
+
         assertTrue( "d p b should be unchanged", d.hasProperty( p, b ) );
-        
+
         // reflexive case
         Resource f = m.createResource( NS + "f" );
         f.addProperty( p, f );
-        
+
         Resource f1 = ResourceUtils.renameResource( f, NS +"f1" );
         assertFalse( "Should be no f statements",  m.listStatements( f, null, (RDFNode) null).hasNext() );
         assertTrue( "f1 has p f1", f1.hasProperty( p, f1 ) );
     }
-    
+
     public void testReachableGraphClosure() {
         Model m0 = ModelFactory.createDefaultModel();
         Resource a = m0.createResource( "a" );
@@ -152,63 +152,63 @@ public class TestResourceUtils
         Resource c = m0.createResource( "c" );
         Resource d = m0.createResource( "d" );
         Property p = m0.createProperty( "p" );
-        
+
         m0.add( a, p, b );
         m0.add( a, p, c );
         m0.add( b, p, b );  // unit loop
         m0.add( b, p, a );  // loop
         m0.add( d, p, a );  // not reachable from a
-        
+
         Model m1 = ModelFactory.createDefaultModel();
         m1.add( a, p, b );
         m1.add( a, p, c );
         m1.add( b, p, b );
         m1.add( b, p, a );
-        
+
         assertTrue( "m1 should be isomorphic with the reachable sub-graph from a", m1.isIsomorphicWith( ResourceUtils.reachableClosure(a)));
     }
-    
+
     public void testRemoveEquiv() {
         Model m = ModelFactory.createDefaultModel();
-        
+
         Resource a = m.createResource( NS + "a" );
         Resource b = m.createResource( NS + "b" );
         Resource c = m.createResource( NS + "c" );
         Resource d = m.createResource( NS + "d" );
         Resource e = m.createResource( NS + "e" );
-        
+
         b.addProperty( RDFS.subClassOf, a );
         a.addProperty( RDFS.subClassOf, b );  // a,b are equivalent
         d.addProperty( RDFS.subClassOf, e );
         e.addProperty( RDFS.subClassOf, d );  // d,e are equivalent
-        
+
         // reflexive relations - would be inferred by inf engine
         a.addProperty( RDFS.subClassOf, a );
         b.addProperty( RDFS.subClassOf, b );
         c.addProperty( RDFS.subClassOf, c );
         d.addProperty( RDFS.subClassOf, d );
         e.addProperty( RDFS.subClassOf, e );
-        
-        List abcde = Arrays.asList( new Object[] {a,b,c,d,e} );
-        List ab = Arrays.asList( new Object[] {a,b} );
-        List cde = Arrays.asList( new Object[] {c,d,e} );
-        List abde = Arrays.asList( new Object[] {a,b,d,e} );
-        List de = Arrays.asList( new Object[] {d,e} );
 
-        List in = new ArrayList();
+        List<Resource> abcde = Arrays.asList( new Resource[] {a,b,c,d,e} );
+        List<Resource> ab = Arrays.asList( new Resource[] {a,b} );
+        List<Resource> cde = Arrays.asList( new Resource[] {c,d,e} );
+        List<Resource> abde = Arrays.asList( new Resource[] {a,b,d,e} );
+        List<Resource> de = Arrays.asList( new Resource[] {d,e} );
+
+        List<Resource> in = new ArrayList<Resource>();
         in.addAll( abcde );
-        List out = null;
+        List<Resource> out = null;
         assertTrue( in.equals( abcde ) );
         assertFalse( in.equals( cde ));
         assertNull( out );
-        
+
         out = ResourceUtils.removeEquiv( in, RDFS.subClassOf, a );
 
         assertFalse( in.equals( abcde ) );
         assertTrue( in.equals( cde ));
         assertNotNull( out );
         assertEquals( out, ab );
-        
+
         out = ResourceUtils.removeEquiv( in, RDFS.subClassOf, e );
 
         assertFalse( in.equals( abcde ) );
@@ -216,41 +216,41 @@ public class TestResourceUtils
         assertNotNull( out );
         assertEquals( out, de );
     }
-    
+
     public void testPartition() {
         Model m = ModelFactory.createDefaultModel();
-        
+
         Resource a = m.createResource( NS + "a" );
         Resource b = m.createResource( NS + "b" );
         Resource c = m.createResource( NS + "c" );
         Resource d = m.createResource( NS + "d" );
         Resource e = m.createResource( NS + "e" );
-        
+
         b.addProperty( RDFS.subClassOf, a );
         a.addProperty( RDFS.subClassOf, b );  // a,b are equivalent
         d.addProperty( RDFS.subClassOf, e );
         e.addProperty( RDFS.subClassOf, d );  // d,e are equivalent
-        
+
         // reflexive relations - would be inferred by inf engine
         a.addProperty( RDFS.subClassOf, a );
         b.addProperty( RDFS.subClassOf, b );
         c.addProperty( RDFS.subClassOf, c );
         d.addProperty( RDFS.subClassOf, d );
         e.addProperty( RDFS.subClassOf, e );
-        
-        List abcde = Arrays.asList( new Object[] {a,b,c,d,e} );
-        List ab = Arrays.asList( new Object[] {b,a} );
-        List cc = Arrays.asList( new Object[] {c} );
-        List de = Arrays.asList( new Object[] {e,d} );
 
-        List partition = ResourceUtils.partition( abcde, RDFS.subClassOf );
+        List<Resource> abcde = Arrays.asList( new Resource[] {a,b,c,d,e} );
+        List<Resource> ab = Arrays.asList( new Resource[] {b,a} );
+        List<Resource> cc = Arrays.asList( new Resource[] {c} );
+        List<Resource> de = Arrays.asList( new Resource[] {e,d} );
+
+        List<List<Resource>> partition = ResourceUtils.partition( abcde, RDFS.subClassOf );
         assertEquals( "Should be 3 partitions", 3, partition.size() );
         assertEquals( "First parition should be (a,b)", ab, partition.get(0) );
         assertEquals( "First parition should be (c)", cc, partition.get(1) );
         assertEquals( "First parition should be (d,e)", de, partition.get(2) );
     }
 
-    
+
     // Internal implementation methods
     //////////////////////////////////
 

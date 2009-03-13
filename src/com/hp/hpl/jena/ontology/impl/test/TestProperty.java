@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 13:28:52 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.19 2009-01-27 13:28:52 chris-dollin Exp $
+ * @version CVS $Id: TestProperty.java,v 1.20 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase
@@ -580,7 +580,7 @@ public class TestProperty
                     assertFalse( iteratorContains( p.listReferringRestrictions(), r2 ) );
                     assertFalse( iteratorContains( p.listReferringRestrictions(), r3 ) );
 
-                    assertTrue( p.listReferringRestrictions().next() instanceof Restriction );
+                    assertNotNull( p.listReferringRestrictions().next() );
                 }
             }
         };

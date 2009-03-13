@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-28 14:37:09 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.30 2009-01-28 14:37:09 chris-dollin Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.31 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -503,7 +503,7 @@ public class OntPropertyImpl
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
-    public ExtendedIterator<OntProperty> listInverseOf() {
+    public ExtendedIterator<? extends OntProperty> listInverseOf() {
         return listAs( getProfile().INVERSE_OF(), "INVERSE_OF", OntProperty.class );
     }
 
@@ -781,10 +781,10 @@ public class OntPropertyImpl
                 // in the non-direct case, global properties appear in the ldp
                 // of all classes, but we ignore the built-in classes
                 return ((OntModel) getModel()).listClasses()
-                                              .filterDrop( new Filter() {
+                                              .filterDrop( new Filter<OntClass>() {
                                                 @Override
-                                                public boolean accept( Object o ) {
-                                                    return ((OntClass) o).isOntLanguageTerm();
+                                                public boolean accept( OntClass c ) {
+                                                    return c.isOntLanguageTerm();
                                                 }} );
             }
             else {

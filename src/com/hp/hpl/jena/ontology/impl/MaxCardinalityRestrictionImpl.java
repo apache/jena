@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-May-2003
  * Filename           $RCSfile: MaxCardinalityRestrictionImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,9 +37,9 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MaxCardinalityRestrictionImpl.java,v 1.11 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: MaxCardinalityRestrictionImpl.java,v 1.12 2009-03-13 15:40:07 ian_dickinson Exp $
  */
-public class MaxCardinalityRestrictionImpl 
+public class MaxCardinalityRestrictionImpl
     extends RestrictionImpl
     implements MaxCardinalityRestriction
 {
@@ -51,24 +51,25 @@ public class MaxCardinalityRestrictionImpl
 
     /**
      * A factory for generating MaxCardinalityRestriction facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new MaxCardinalityRestrictionImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to MaxCardinalityRestriction");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a MaxCardinalityRestriction facet if it has rdf:type owl:Restriction or equivalent
-            // and the combination of owl:onProperty and owl:cardinality (or equivalents) 
+            // and the combination of owl:onProperty and owl:cardinality (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
             return (profile != null)  &&  profile.isSupported( node, eg, MaxCardinalityRestriction.class );
         }
@@ -85,7 +86,7 @@ public class MaxCardinalityRestrictionImpl
      * <p>
      * Construct a max cardinality restriction node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -97,14 +98,14 @@ public class MaxCardinalityRestrictionImpl
     //////////////////////////////////
 
     // maxCardinality
-    
+
     /**
      * <p>Assert that this restriction restricts the property to have the given
      * maximum cardinality. Any existing statements for <code>maxCardinality</code>
      * will be removed.</p>
      * @param cardinality The maximum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.
+     */
     public void setMaxCardinality( int cardinality ) {
         setPropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
@@ -112,24 +113,24 @@ public class MaxCardinalityRestrictionImpl
     /**
      * <p>Answer the maximum cardinality of the restricted property.</p>
      * @return The maximum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.
+     */
     public int getMaxCardinality() {
         return objectAsInt( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
     }
 
     /**
      * <p>Answer true if this property restriction has the given maximum cardinality.</p>
-     * @param cardinality The cardinality to test against 
+     * @param cardinality The cardinality to test against
      * @return True if the given cardinality is the max cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.
      */
     public boolean hasMaxCardinality( int cardinality ) {
         return hasPropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
-    
+
     /**
-     * <p>Remove the statement that this restriction has the given maximum cardinality 
+     * <p>Remove the statement that this restriction has the given maximum cardinality
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cardinality A max cardinality value to be removed from this restriction
@@ -137,7 +138,7 @@ public class MaxCardinalityRestrictionImpl
     public void removeMaxCardinality( int cardinality ) {
         removePropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
-    
+
 
     // Internal implementation methods
     //////////////////////////////////

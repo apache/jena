@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.18 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.19 2009-03-13 15:40:08 ian_dickinson Exp $
  */
 public abstract class OntTestBase
     extends TestSuite
@@ -154,7 +154,7 @@ public abstract class OntTestBase
         protected abstract void ontTest( OntModel m ) throws Exception;
 
         /** Test that an iterator delivers the expected values */
-        protected void iteratorTest( Iterator i, Object[] expected ) {
+        protected void iteratorTest( Iterator<?> i, Object[] expected ) {
             TestUtil.assertIteratorValues( this, i, expected );
         }
 
@@ -169,7 +169,7 @@ public abstract class OntTestBase
         }
 
         /** Answer true if an iterator contains a given value */
-        protected boolean iteratorContains( Iterator i, Object target ) {
+        protected boolean iteratorContains( Iterator<?> i, Object target ) {
             boolean found = false;
             while (i.hasNext()) {
                 found = i.next().equals( target ) || found;

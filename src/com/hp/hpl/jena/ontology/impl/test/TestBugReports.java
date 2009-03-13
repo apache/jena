@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.99 $
+ * Revision           $Revision: 1.100 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-02 20:38:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -99,7 +99,7 @@ public class TestBugReports
         schema.read( "file:doc/inference/data/owlDemoSchema.xml", null );
 
         int count = 0;
-        for (Iterator i = schema.listIndividuals(); i.hasNext(); ) {
+        for (Iterator<Individual> i = schema.listIndividuals(); i.hasNext(); ) {
             //Resource r = (Resource) i.next();
             i.next();
             count++;
@@ -122,7 +122,7 @@ public class TestBugReports
 
         OntProperty p0 = m0.getOntProperty( "file:testing/ontology/bugs/test_hk_07B.owl#PropB" );
         int count = 0;
-        for (Iterator i = p0.listDomain(); i.hasNext();) {
+        for (Iterator<? extends OntResource> i = p0.listDomain(); i.hasNext();) {
             count++;
             i.next();
         }
@@ -135,7 +135,7 @@ public class TestBugReports
 
         OntProperty p1 = m1.getOntProperty( "file:testing/ontology/bugs/test_hk_07B.owl#PropB" );
         count = 0;
-        for (Iterator i = p1.listDomain(); i.hasNext();) {
+        for (Iterator<? extends OntResource> i = p1.listDomain(); i.hasNext();) {
             count++;
             i.next();
         }
@@ -150,8 +150,8 @@ public class TestBugReports
         assertEquals( "Graph count..", 2, mymod.getSubGraphs().size() );
 
 //        for (Iterator it = mymod.listImportedModels(); it.hasNext();) {
-        for (Iterator it = mymod.listSubModels(); it.hasNext();) {
-                mymod.removeSubModel( (Model) it.next() );
+        for (Iterator<OntModel> it = mymod.listSubModels(); it.hasNext();) {
+                mymod.removeSubModel( it.next() );
         }
 
         assertEquals( "Graph count..", 0, mymod.getSubGraphs().size() );
@@ -355,9 +355,9 @@ public class TestBugReports
 
         // TODO this workaround to be removed
         SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getImportModelMaker()).getGraphMaker();
-        List toGo = new ArrayList();
-        for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() )) {/**/}
-        for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() )) {/**/}
+        List<String> toGo = new ArrayList<String>();
+        for (Iterator<String> i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() )) {/**/}
+        for (Iterator<String> i = toGo.iterator(); i.hasNext(); sgm.removeGraph( i.next() )) {/**/}
         dm.clearCache();
 
         OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
@@ -372,7 +372,7 @@ public class TestBugReports
 
     private int getTripleCount(Graph graph) {
         int count = 0;
-        for (Iterator it = graph.find(null, null, null); it.hasNext();) {
+        for (Iterator<Triple> it = graph.find(null, null, null); it.hasNext();) {
             it.next();
             count++;
         }
@@ -508,9 +508,9 @@ public class TestBugReports
 
         boolean found = false;
 
-        Iterator it = kc1.listSuperClasses(false);
+        Iterator<OntClass> it = kc1.listSuperClasses(false);
         while (it.hasNext()) {
-            OntClass oc = (OntClass) it.next();
+            OntClass oc = it.next();
             if (oc.isRestriction()) {
                 Restriction r = oc.asRestriction();
                 if (r.isSomeValuesFromRestriction()) {
@@ -566,8 +566,8 @@ public class TestBugReports
 
         OntModel m = ModelFactory.createOntologyModel(spec, aBox);
 
-        List inds = new ArrayList();
-        for (Iterator i = m.listIndividuals(); i.hasNext();) {
+        List<Individual> inds = new ArrayList<Individual>();
+        for (Iterator<Individual> i = m.listIndividuals(); i.hasNext();) {
             inds.add(i.next());
         }
 
@@ -636,8 +636,8 @@ public class TestBugReports
         boolean foundP3 = false;
 
         // iterator of properties should include p1-3
-        for (Iterator i = m.listOntProperties(); i.hasNext();) {
-            Resource r = (Resource) i.next();
+        for (Iterator<OntProperty> i = m.listOntProperties(); i.hasNext();) {
+            Resource r = i.next();
             foundP1 = foundP1 || r.getURI().equals("http://example.org/foo#p1");
             foundP2 = foundP2 || r.getURI().equals("http://example.org/foo#p2");
             foundP3 = foundP3 || r.getURI().equals("http://example.org/foo#p3");
@@ -652,8 +652,8 @@ public class TestBugReports
         foundP3 = false;
 
         // iterator of object properties should include p1-3
-        for (Iterator i = m.listObjectProperties(); i.hasNext();) {
-            Resource r = (Resource) i.next();
+        for (Iterator<ObjectProperty> i = m.listObjectProperties(); i.hasNext();) {
+            Resource r = i.next();
             foundP1 = foundP1 || r.getURI().equals("http://example.org/foo#p1");
             foundP2 = foundP2 || r.getURI().equals("http://example.org/foo#p2");
             foundP3 = foundP3 || r.getURI().equals("http://example.org/foo#p3");
@@ -708,8 +708,8 @@ public class TestBugReports
         int nRestriction = 0;
         int nAnon = 0;
 
-        for (ExtendedIterator iter2 = ontclass.listSuperClasses(true); iter2.hasNext();) {
-            OntClass ontsuperclass = (OntClass) iter2.next();
+        for (ExtendedIterator<OntClass> iter2 = ontclass.listSuperClasses(true); iter2.hasNext();) {
+            OntClass ontsuperclass = iter2.next();
 
             //this is to view different anonymous IDs
             if (!ontsuperclass.isAnon()) {
@@ -720,7 +720,6 @@ public class TestBugReports
                 nRestriction++;
             }
             else {
-                //System.out.println("anon. super: " + ontsuperclass.getId());
                 nAnon++;
             }
         }
@@ -742,8 +741,7 @@ public class TestBugReports
 
         int count = 0;
 
-        for (Iterator j = i.listPropertyValues(p); j.hasNext();) {
-            //System.err.println("Individual i has p value: " + j.next());
+        for (Iterator<RDFNode> j = i.listPropertyValues(p); j.hasNext();) {
             j.next();
             count++;
         }
@@ -762,7 +760,7 @@ public class TestBugReports
 
         for (int i = 0; i < classes.length; i++) {
             OntClass c = m.getOntClass( classes[i] );
-            for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() ) {/**/}
+            for (Iterator<OntProperty> j = c.listDeclaredProperties(); j.hasNext(); j.next() ) {/**/}
         }
     }
 
@@ -843,7 +841,7 @@ public class TestBugReports
         m.read(new ByteArrayInputStream(sourceT.getBytes()), "file:/C:/orel/orel0_5.owl");
 
         OntClass myPlay = m.getOntClass( ns + "MyPlay");
-        for (Iterator i = myPlay.listDeclaredProperties(); i.hasNext(); ) {
+        for (Iterator<OntProperty> i = myPlay.listDeclaredProperties(); i.hasNext(); ) {
             //System.err.println( "prop " + i.next() );
             i.next();
         }
@@ -969,8 +967,8 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM, null);
         m.read(new ByteArrayInputStream( SOURCE.getBytes()), ns );
 
-        for (ExtendedIterator j = m.listRestrictions(); j.hasNext(); ) {
-              Restriction r = (Restriction) j.next();
+        for (ExtendedIterator<Restriction> j = m.listRestrictions(); j.hasNext(); ) {
+              Restriction r = j.next();
               if (r.isHasValueRestriction()) {
                   HasValueRestriction hv = r.asHasValueRestriction();
                   hv.getHasValue().toString();
@@ -1004,16 +1002,16 @@ public class TestBugReports
 
         System.out.println( prompt );
         OntClass r = m.getOntClass( ns + "Reiseliv" );
-        List q = new ArrayList();
-        Set seen = new HashSet();
+        List<OntClass> q = new ArrayList<OntClass>();
+        Set<OntClass> seen = new HashSet<OntClass>();
         q.add( r );
 
         while (!q.isEmpty()) {
-            OntClass c = (OntClass) q.remove( 0 );
+            OntClass c = q.remove( 0 );
             seen.add( c );
 
-            for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
-                OntClass sub = (OntClass) i.next();
+            for (Iterator<OntClass> i = c.listSubClasses( true ); i.hasNext(); ) {
+                OntClass sub = i.next();
                 if (!seen.contains( sub )) {
                     q.add( sub );
                 }
@@ -1034,8 +1032,8 @@ public class TestBugReports
             }
         }
 
-        for (Iterator k = seen.iterator();  k.hasNext(); ) {
-            Resource res = (Resource) k.next();
+        for (Iterator<OntClass> k = seen.iterator();  k.hasNext(); ) {
+            Resource res = k.next();
             boolean isExpected = false;
             for (int j = 0;  !isExpected && j < expected.length; j++) {
                 isExpected = expected[j].equals( res );
@@ -1298,7 +1296,7 @@ public class TestBugReports
         OntModel composite = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, schema );
         composite.addSubModel( data );
 
-        Set s = composite.listIndividuals().toSet();
+        Set<Individual> s = composite.listIndividuals().toSet();
         assertEquals( "should be one individual", 1, s.size() );
         assertTrue( s.contains( i ));
     }
@@ -1326,7 +1324,7 @@ public class TestBugReports
 
         boolean ex = false;
         try {
-            Iterator i = m.listIndividuals(); // if this throws a DIG exception
+            Iterator<Individual> i = m.listIndividuals(); // if this throws a DIG exception
             System.out.println( i.hasNext() ); // then this doesn't return
         }
         catch (DIGWrappedException e) {
@@ -1387,7 +1385,7 @@ public class TestBugReports
         a0.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a0.listUnionClasses(); i.hasNext(); ) {
+        for( Iterator<UnionClass> i = a0.listUnionClasses(); i.hasNext(); ) {
             i.next();
         }
 
@@ -1395,7 +1393,7 @@ public class TestBugReports
         a1.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a1.listUnionClasses(); i.hasNext(); ) {
+        for( Iterator<UnionClass> i = a1.listUnionClasses(); i.hasNext(); ) {
             i.next();
         }
     }
@@ -1417,7 +1415,7 @@ public class TestBugReports
         a0.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a0.listIntersectionClasses(); i.hasNext(); ) {
+        for( Iterator<IntersectionClass> i = a0.listIntersectionClasses(); i.hasNext(); ) {
             i.next();
         }
 
@@ -1425,7 +1423,7 @@ public class TestBugReports
         a1.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a1.listIntersectionClasses(); i.hasNext(); ) {
+        for( Iterator<IntersectionClass> i = a1.listIntersectionClasses(); i.hasNext(); ) {
             i.next();
         }
 
@@ -1433,7 +1431,7 @@ public class TestBugReports
         a2.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a2.listIntersectionClasses(); i.hasNext(); ) {
+        for( Iterator<IntersectionClass> i = a2.listIntersectionClasses(); i.hasNext(); ) {
             i.next();
         }
     }
@@ -1455,7 +1453,7 @@ public class TestBugReports
         a0.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a0.listComplementClasses(); i.hasNext(); ) {
+        for( Iterator<ComplementClass> i = a0.listComplementClasses(); i.hasNext(); ) {
             i.next();
         }
 
@@ -1463,7 +1461,7 @@ public class TestBugReports
         a1.read( new StringReader( SOURCEA ), null );
 
         // throws conversion exception ...
-        for( Iterator i = a1.listComplementClasses(); i.hasNext(); ) {
+        for( Iterator<ComplementClass> i = a1.listComplementClasses(); i.hasNext(); ) {
             i.next();
         }
     }
@@ -1632,7 +1630,7 @@ public class TestBugReports
         spec.setReasoner(reasoner);
         OntModel ml = ModelFactory.createOntologyModel( spec,null );
 
-        Iterator it3= ml.listHierarchyRootClasses();
+        Iterator<OntClass> it3= ml.listHierarchyRootClasses();
          while(it3.hasNext()){
             it3.next();
         }
@@ -1849,7 +1847,7 @@ public class TestBugReports
 
     private int getStatementCount(OntModel ontModel) {
         int count = 0;
-        for (Iterator it = ontModel.listStatements(); it.hasNext(); it.next()) {
+        for (Iterator<Statement> it = ontModel.listStatements(); it.hasNext(); it.next()) {
             count++;
         }
         return count;

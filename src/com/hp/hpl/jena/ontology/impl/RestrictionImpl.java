@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:21 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,11 +38,11 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.22 2009-01-26 10:28:21 chris-dollin Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.23 2009-03-13 15:40:07 ian_dickinson Exp $
  */
-public class RestrictionImpl 
+public class RestrictionImpl
     extends OntClassImpl
-    implements Restriction 
+    implements Restriction
 {
     // Constants
     //////////////////////////////////
@@ -52,20 +52,21 @@ public class RestrictionImpl
 
     /**
      * A factory for generating Restriction facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new RestrictionImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to Restriction");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an Restriction facet if it has rdf:type owl:Restriction or equivalent
@@ -85,7 +86,7 @@ public class RestrictionImpl
      * <p>
      * Construct a restriction node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -98,13 +99,13 @@ public class RestrictionImpl
     //////////////////////////////////
 
     // onProperty
-    
+
     /**
-     * <p>Assert that the property that this restriction applies to is the given property. Any existing 
+     * <p>Assert that the property that this restriction applies to is the given property. Any existing
      * statements for <code>onProperty</code> will be removed.</p>
      * @param prop The property that this restriction applies to
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
+     */
     public void setOnProperty( Property prop ) {
         setPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
@@ -114,8 +115,8 @@ public class RestrictionImpl
      * more than one such resource, an arbitrary selection is made (though well-defined property restrictions
      * should not have more than one <code>onProperty</code> statement.</p>
      * @return The property that this property restriction applies to
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
+     */
     public OntProperty getOnProperty() {
         return objectAs( getProfile().ON_PROPERTY(), "ON_PROPERTY", OntProperty.class );
     }
@@ -124,12 +125,12 @@ public class RestrictionImpl
      * <p>Answer true if this restriction is a property restriction on the given property.</p>
      * @param prop A property to test against
      * @return True if this restriction is a restriction on <code>prop</code>
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
     public boolean onProperty( Property prop ) {
         return hasPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
-    
+
     /**
      * <p>Remove the given property as the property that this restriction applies to.  If this statement
      * is not true of the current model, nothing happens.</p>
@@ -138,9 +139,9 @@ public class RestrictionImpl
     public void removeOnProperty( Property prop ) {
         removePropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
-    
 
-    /** 
+
+    /**
      * <p>Answer a view of this restriction as an all values from  expression</p>
      * @return This class, but viewed as an AllValuesFromRestriction node
      * @exception ConversionException if the class cannot be converted to an all values from restriction
@@ -149,8 +150,8 @@ public class RestrictionImpl
     public AllValuesFromRestriction asAllValuesFromRestriction() {
         return as( AllValuesFromRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Answer a view of this restriction as a some values from  expression</p>
      * @return This class, but viewed as a SomeValuesFromRestriction node
      * @exception ConversionException if the class cannot be converted to an all values from restriction
@@ -159,8 +160,8 @@ public class RestrictionImpl
     public SomeValuesFromRestriction asSomeValuesFromRestriction() {
         return as( SomeValuesFromRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Answer a view of this restriction as a has value expression</p>
      * @return This class, but viewed as a HasValueRestriction node
      * @exception ConversionException if the class cannot be converted to a has value restriction
@@ -169,8 +170,8 @@ public class RestrictionImpl
     public HasValueRestriction asHasValueRestriction() {
         return as( HasValueRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Answer a view of this restriction as a cardinality restriction class expression</p>
      * @return This class, but viewed as a CardinalityRestriction node
      * @exception ConversionException if the class cannot be converted to a cardinality restriction
@@ -180,7 +181,7 @@ public class RestrictionImpl
         return as( CardinalityRestriction.class );
     }
 
-    /** 
+    /**
      * <p>Answer a view of this restriction as a min cardinality restriction class expression</p>
      * @return This class, but viewed as a MinCardinalityRestriction node
      * @exception ConversionException if the class cannot be converted to a min cardinality restriction
@@ -190,7 +191,7 @@ public class RestrictionImpl
         return as( MinCardinalityRestriction.class );
     }
 
-    /** 
+    /**
      * <p>Answer a view of this restriction as a max cardinality restriction class expression</p>
      * @return This class, but viewed as a MaxCardinalityRestriction node
      * @exception ConversionException if the class cannot be converted to a max cardinality restriction
@@ -202,8 +203,8 @@ public class RestrictionImpl
 
 
     // type tests
-    
-    /** 
+
+    /**
      * <p>Answer true if this restriction is an all values from restriction</p>
      * @return True if this is an allValuesFrom property restriction
      * @exception ProfileException if {@link Profile#ALL_VALUES_FROM()} is not supported in the current profile
@@ -212,8 +213,8 @@ public class RestrictionImpl
         checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
         return hasProperty( getProfile().ALL_VALUES_FROM() );
     }
-         
-    /** 
+
+    /**
      * <p>Answer true if this restriction is a some values from restriction</p>
      * @return True if this is a someValuesFrom property restriction
      * @exception ProfileException if {@link Profile#SOME_VALUES_FROM()} is not supported in the current profile
@@ -222,8 +223,8 @@ public class RestrictionImpl
         checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
         return hasProperty( getProfile().SOME_VALUES_FROM() );
     }
-         
-    /** 
+
+    /**
      * <p>Answer true if this restriction is a has value restriction</p>
      * @return True if this is a hasValue property restriction
      * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
@@ -232,8 +233,8 @@ public class RestrictionImpl
         checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
         return hasProperty( getProfile().HAS_VALUE() );
     }
-         
-    /** 
+
+    /**
      * <p>Answer true if this restriction is a cardinality restriction (ie is a property restriction
      * constructed with an <code>owl:cardinality</code> operator, or similar). This is not a test for
      * a restriction that tests cardinalities in general.</p>
@@ -245,7 +246,7 @@ public class RestrictionImpl
         return hasProperty( getProfile().CARDINALITY() );
     }
 
-    /** 
+    /**
      * <p>Answer true if this restriction is a min cardinality restriction (ie is a property restriction
      * constructed with an <code>owl:minCardinality</code> operator, or similar). This is not a test for
      * a restriction that tests cardinalities in general.</p>
@@ -257,7 +258,7 @@ public class RestrictionImpl
         return hasProperty( getProfile().MIN_CARDINALITY() );
     }
 
-    /** 
+    /**
      * <p>Answer true if this restriction is a max cardinality restriction (ie is a property restriction
      * constructed with an <code>owl:maxCardinality</code> operator, or similar). This is not a test for
      * a restriction that tests cardinalities in general.</p>
@@ -271,8 +272,8 @@ public class RestrictionImpl
 
 
     // conversions
-    
-    /** 
+
+    /**
      * <p>Convert this restriction to an all values from class expression.</p>
      * @param cls The class to which all values of the restricted property must belong, to be in the
      * extension of this restriction
@@ -283,8 +284,8 @@ public class RestrictionImpl
         setPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
         return as( AllValuesFromRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Convert this restriction to a some values from class expression</p>
      * @param cls The class to which at least one value of the restricted property must belong, to be in the
      * extension of this restriction
@@ -295,8 +296,8 @@ public class RestrictionImpl
         setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
         return as( SomeValuesFromRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Convert this restriction to a has value class expression</p>
      * @param value The value which the restricted property must have, for resource to be
      * in the extension of this restriction
@@ -307,8 +308,8 @@ public class RestrictionImpl
         setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
         return as( HasValueRestriction.class );
     }
-         
-    /** 
+
+    /**
      * <p>Convert this restriction to a cardinality restriction class expression</p>
      * @param cardinality The exact cardinality for the restricted property
      * @return This class, but converted to a CardinalityRestriction node
@@ -319,7 +320,7 @@ public class RestrictionImpl
         return as( CardinalityRestriction.class );
     }
 
-    /** 
+    /**
      * <p>Convert this restriction to a min cardinality restriction class expression</p>
      * @param cardinality The minimum cardinality for the restricted property
      * @return This class, but converted to a MinCardinalityRestriction node
@@ -330,7 +331,7 @@ public class RestrictionImpl
         return as( MinCardinalityRestriction.class );
     }
 
-    /** 
+    /**
      * <p>Convert this restriction to a max cardinality restriction class expression</p>
      * @param cardinality The maximum cardinality for the restricted property
      * @return This class, but converted to a MaxCardinalityRestriction node

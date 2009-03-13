@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 07:57:35 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:38:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.44 2009-01-27 07:57:35 chris-dollin Exp $
+ * @version CVS $Id: OntResource.java,v 1.45 2009-03-13 15:38:51 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -113,7 +113,7 @@ public interface OntResource
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listSameAs();
+    public ExtendedIterator<? extends Resource> listSameAs();
 
     /**
      * <p>Answer true if this resource is the same as the given resource.</p>
@@ -161,7 +161,7 @@ public interface OntResource
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
-    public ExtendedIterator listDifferentFrom();
+    public ExtendedIterator<? extends Resource> listDifferentFrom();
 
     /**
      * <p>Answer true if this resource is different from the given resource.</p>

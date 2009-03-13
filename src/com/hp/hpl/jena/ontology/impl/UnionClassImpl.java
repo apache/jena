@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: UnionClassImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,9 +37,9 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: UnionClassImpl.java,v 1.14 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: UnionClassImpl.java,v 1.15 2009-03-13 15:40:06 ian_dickinson Exp $
  */
-public class UnionClassImpl 
+public class UnionClassImpl
     extends BooleanClassDescriptionImpl
     implements UnionClass
 {
@@ -51,29 +51,30 @@ public class UnionClassImpl
 
     /**
      * A factory for generating UnionClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new UnionClassImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to UnionClass");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an UnionClass facet if it has rdf:type owl:Class and an owl:unionOf statement (or equivalents) 
+            // node will support being an UnionClass facet if it has rdf:type owl:Class and an owl:unionOf statement (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
             Property union = (profile == null) ? null : profile.UNION_OF();
-            
-            return (profile != null)  &&  
+
+            return (profile != null)  &&
                    profile.isSupported( node, eg, OntClass.class )  &&
-                   union != null && 
+                   union != null &&
                    eg.asGraph().contains( node, union.asNode(), Node.ANY );
         }
     };
@@ -89,7 +90,7 @@ public class UnionClassImpl
      * <p>
      * Construct a union class node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -101,9 +102,9 @@ public class UnionClassImpl
     // External signature methods
     //////////////////////////////////
 
-	@Override
+    @Override
     public Property operator() {return getProfile().UNION_OF();}
-	@Override
+    @Override
     public String getOperatorName() {return "UNION_OF";}
 
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.34 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.35 2009-03-13 15:40:08 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -483,12 +483,12 @@ public class TestOntModel
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
 
-        List subs = m.getSubGraphs();
+        List<Graph> subs = m.getSubGraphs();
 
         assertEquals( "n subgraphs should be ", 3, subs.size() );
 
         boolean isGraph = true;
-        for (Iterator i = subs.iterator(); i.hasNext(); ) {
+        for (Iterator<Graph> i = subs.iterator(); i.hasNext(); ) {
             Object x = i.next();
             if (!(x instanceof Graph)) {
                 isGraph = false;
@@ -502,7 +502,7 @@ public class TestOntModel
     public void testListImportURIs() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport6/a.owl" );
-        Collection c = m.listImportedOntologyURIs();
+        Collection<String> c = m.listImportedOntologyURIs();
 
         assertEquals( "Should be two non-closed import URI's", 2, c.size() );
         assertTrue( "b should be imported ", c.contains( "file:testing/ontology/testImport6/b.owl" ));
@@ -658,8 +658,8 @@ public class TestOntModel
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
 
-        List importModels = new ArrayList();
-        for (Iterator j = m.listSubModels(); j.hasNext(); ) {
+        List<OntModel> importModels = new ArrayList<OntModel>();
+        for (Iterator<OntModel> j = m.listSubModels(); j.hasNext(); ) {
             importModels.add( j.next() );
         }
 
@@ -668,7 +668,7 @@ public class TestOntModel
         boolean isOntModel = true;
         int nImports = 0;
 
-        for (Iterator i = importModels.iterator(); i.hasNext(); ) {
+        for (Iterator<OntModel> i = importModels.iterator(); i.hasNext(); ) {
             Object x = i.next();
             if (!(x instanceof OntModel)) {
                 isOntModel = false;
@@ -690,8 +690,8 @@ public class TestOntModel
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
 
-        List importModels = new ArrayList();
-        for (Iterator j = m.listSubModels( true ); j.hasNext(); ) {
+        List<OntModel> importModels = new ArrayList<OntModel>();
+        for (Iterator<OntModel> j = m.listSubModels( true ); j.hasNext(); ) {
             importModels.add( j.next() );
         }
 
@@ -700,7 +700,7 @@ public class TestOntModel
         boolean isOntModel = true;
         int nImports = 0;
 
-        for (Iterator i = importModels.iterator(); i.hasNext(); ) {
+        for (Iterator<OntModel> i = importModels.iterator(); i.hasNext(); ) {
             Object x = i.next();
             if (!(x instanceof OntModel)) {
                 isOntModel = false;
@@ -738,16 +738,16 @@ public class TestOntModel
      * missing in the DL and Lite profiles, unless by design.
      * Not strictly a model test, but it has to go somewhere */
     public void testProfiles() {
-        List notInDL = Arrays.asList( new Class[] {} );
-        List notInLite = Arrays.asList( new Class[] {DataRange.class, HasValueRestriction.class} );
+        List<Class<?>> notInDL = Arrays.asList( new Class<?>[] {} );
+        List<Class<?>> notInLite = Arrays.asList( new Class<?>[] {DataRange.class, HasValueRestriction.class} );
 
-        Map fullProfileMap = new OWLProfileExt().getSupportsMap();
-        Map dlProfileMap = new OWLDLProfileExt().getSupportsMap();
-        Map liteProfileMap = new OWLLiteProfileExt().getSupportsMap();
+        Map<?,?> fullProfileMap = new OWLProfileExt().getSupportsMap();
+        Map<?,?> dlProfileMap = new OWLDLProfileExt().getSupportsMap();
+        Map<?,?> liteProfileMap = new OWLLiteProfileExt().getSupportsMap();
 
-        for (Iterator i = fullProfileMap.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry kv = (Map.Entry) i.next();
-            Class c = (Class) kv.getKey();
+        for (Iterator<?> i = fullProfileMap.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry<?,?> kv = (Map.Entry<?,?>) i.next();
+            Class<?> c = (Class<?>) kv.getKey();
             assertTrue( "Key in OWL DL profile: " + c.getName(), dlProfileMap.containsKey( c ) || notInDL.contains( c ));
             assertTrue( "Key in OWL lite profile: " + c.getName(), liteProfileMap.containsKey( c ) || notInLite.contains( c ));
         }
@@ -817,7 +817,7 @@ public class TestOntModel
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
         m.read(new StringReader(doc), base);
 
-        Iterator i = m.listDataRanges();
+        Iterator<DataRange> i = m.listDataRanges();
         assertTrue( "Should be at least one DataRange", i.hasNext() );
         Object dr = i.next();
         assertInstanceOf( DataRange.class, dr );
@@ -1040,7 +1040,7 @@ public class TestOntModel
     /**
      * Answer true iff an iterator contains a given value.
      */
-    private boolean iteratorContains( Iterator i, Object x ) {
+    private boolean iteratorContains( Iterator<?> i, Object x ) {
         boolean found = false;
         while (i.hasNext()) {
             found = i.next().equals( x ) || found;
@@ -1055,21 +1055,21 @@ public class TestOntModel
 
     protected class OWLProfileExt extends OWLProfile
     {
-        public Map getSupportsMap() {
+        public Map<?,?> getSupportsMap() {
             return getCheckTable();
         }
     }
 
     protected class OWLDLProfileExt extends OWLDLProfile
     {
-        public Map getSupportsMap() {
+        public Map<?,?> getSupportsMap() {
             return getCheckTable();
         }
     }
 
     protected class OWLLiteProfileExt extends OWLLiteProfile
     {
-        public Map getSupportsMap() {
+        public Map<?,?> getSupportsMap() {
             return getCheckTable();
         }
     }

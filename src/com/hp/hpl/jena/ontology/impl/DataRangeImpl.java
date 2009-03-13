@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            19-Aug-2003
  * Filename           $RCSfile: DataRangeImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 07:57:28 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,9 +41,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DataRangeImpl.java,v 1.13 2009-01-27 07:57:28 chris-dollin Exp $
+ * @version CVS $Id: DataRangeImpl.java,v 1.14 2009-03-13 15:40:06 ian_dickinson Exp $
  */
-public class DataRangeImpl 
+public class DataRangeImpl
     extends OntResourceImpl
     implements DataRange
 {
@@ -55,20 +55,21 @@ public class DataRangeImpl
 
     /**
      * A factory for generating DataRange facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new DataRangeImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to DataRange");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an DataRange facet if it has rdf:type owl:Datarange and is a bNode
@@ -88,7 +89,7 @@ public class DataRangeImpl
      * <p>
      * Construct a data range node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -104,13 +105,13 @@ public class DataRangeImpl
     //////////////////////////////////
 
     // oneOf
-    
+
     /**
-     * <p>Assert that this data range is exactly the enumeration of the given individuals. Any existing 
+     * <p>Assert that this data range is exactly the enumeration of the given individuals. Any existing
      * statements for <code>oneOf</code> will be removed.</p>
      * @param en A list of literals that defines the permissible values for this datarange
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public void setOneOf( RDFList en ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", en );
     }
@@ -118,18 +119,18 @@ public class DataRangeImpl
     /**
      * <p>Add a literal to the enumeration that defines the permissible values of this class.</p>
      * @param lit A literal to add to the enumeration
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public void addOneOf( Literal lit ) {
         addListPropertyValue( getProfile().ONE_OF(), "ONE_OF", lit );
     }
 
     /**
-     * <p>Add each literal from the given iteratation to the 
+     * <p>Add each literal from the given iteratation to the
      * enumeration that defines the permissible values of this datarange.</p>
      * @param literals An iterator over literals
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public void addOneOf( Iterator<Literal> literals ) {
         while( literals.hasNext() ) {
             addOneOf( literals.next() );
@@ -139,8 +140,8 @@ public class DataRangeImpl
     /**
      * <p>Answer a list of literals that defines the extension of this datarange.</p>
      * @return A list of literals that is the permissible values
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public RDFList getOneOf() {
         return objectAs( getProfile().ONE_OF(), "ONE_OF", RDFList.class );
     }
@@ -149,10 +150,10 @@ public class DataRangeImpl
      * <p>Answer an iterator over all of the literals that are declared to be the permissible values for
      * this class. Each element of the iterator will be an {@link Literal}.</p>
      * @return An iterator over the literals that are the permissible values
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
+     */
     public ExtendedIterator<Literal> listOneOf() {
-        return getOneOf().iterator().mapWith( new AsMapper( Literal.class ) );
+        return getOneOf().iterator().mapWith( new AsMapper<Literal>( Literal.class ) );
     }
 
     /**
@@ -160,12 +161,12 @@ public class DataRangeImpl
      * of this datarange.</p>
      * @param lit A literal to test
      * @return True if the given literal is in the permissible values for this class.
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
     public boolean hasOneOf( Literal lit ) {
         return getOneOf().contains( lit );
     }
-    
+
     /**
      * <p>Remove the statement that this enumeration includes <code>lit</code> among its members.  If this statement
      * is not true of the current model, nothing happens.</p>
@@ -175,7 +176,7 @@ public class DataRangeImpl
     public void removeOneOf( Literal lit ) {
         setOneOf( getOneOf().remove( lit ) );
     }
-    
+
 
     // Internal implementation methods
     //////////////////////////////////

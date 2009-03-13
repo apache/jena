@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.33 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.34 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -116,14 +116,14 @@ public class TestOntDocumentManager
 
         // forget any cached models in the model spec
         // TODO remove this once we rationalise modelmakers in the OntModel code
-        Set modelNames = new HashSet();
+        Set<String> modelNames = new HashSet<String>();
         ModelMaker memMaker = OntModelSpec.OWL_MEM.getImportModelMaker();
-        for (Iterator i = memMaker.listModels(); i.hasNext(); ) {
+        for (Iterator<String> i = memMaker.listModels(); i.hasNext(); ) {
             modelNames.add( i.next() );
         }
-        for (Iterator i = modelNames.iterator(); i.hasNext(); ) {
 
-            String mn = (String) i.next();
+        for (Iterator<String> i = modelNames.iterator(); i.hasNext(); ) {
+            String mn = i.next();
             memMaker.removeModel( mn );
         }
     }

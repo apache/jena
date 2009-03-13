@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.71 $
+ * Revision           $Revision: 1.72 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 07:57:26 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:05 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.71 2009-01-27 07:57:26 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.72 2009-03-13 15:40:05 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1437,7 +1437,7 @@ public class OntResourceImpl
         // determine the subject and object pairs for the list statements calls
         Resource subject = inverse ? null : this;
         Resource object  = inverse ? this : null;
-        Map1<Statement, T> mapper      = inverse ? (Map1) new SubjectAsMapper( cls ) : (Map1) new ObjectAsMapper( cls );
+        Map1<Statement, T> mapper      = inverse ? new SubjectAsMapper<T>( cls ) : new ObjectAsMapper<T>( cls );
 
         // are we working on an inference graph?
         OntModel m = (OntModel) getGraph();
@@ -1472,13 +1472,14 @@ public class OntResourceImpl
      * @param mapper
      * @return
      */
+    @SuppressWarnings("unchecked")
     private <T extends Resource> Iterator<T> computeDirectValues( Property p, Property orderRel, boolean inverse, Resource subject, Resource object, Map1<Statement, T> mapper ) {
         // graph does not support direct directly
         ExtendedIterator<T> j = getModel().listStatements( subject, p, object )
                                        .mapWith( mapper );
 
         // collect a list of the candidates
-        List s = new ArrayList();
+        List<T> s = new ArrayList<T>();
         for( ; j.hasNext(); ) {
             s.add( j.next() );
         }
@@ -1492,20 +1493,20 @@ public class OntResourceImpl
         // we now compress the list by reducing all equivalent values to a single representative
 
         // first partition the list by equivalence under orderRel
-        List partition = ResourceUtils.partition( s, orderRel );
-        Map<Resource, List> equivSets = new HashMap<Resource, List>();
+        List<List<T>> partition = ResourceUtils.partition( s, orderRel );
+        Map<Resource, List<T>> equivSets = new HashMap<Resource, List<T>>();
 
         // then reduce each part of the partition to a singleton, but remember the others
         s.clear();
-        for (Iterator i = partition.iterator(); i.hasNext(); ) {
-            List part = (List) i.next();
+        for (Iterator<List<T>> i = partition.iterator(); i.hasNext(); ) {
+            List<T> part = i.next();
             // if this is a singleton we just add it to the compressed candidates
             if (part.size() == 1) {
                 s.add( part.get(0) );
             }
             else {
                 // we select a single representative
-                Resource r = (Resource) part.remove( 0 );
+                T r = part.remove( 0 );
                 // remember the other equivalent values
                 equivSets.put( r, part );
                 s.add( r );
@@ -1519,9 +1520,9 @@ public class OntResourceImpl
         s = ResourceUtils.maximalLowerElements( s, orderRel, inverse );
 
         // create a list of these values lower elements, plus their equivalents (if any)
-        List s2 = new ArrayList();
-        for (Iterator i = s.iterator(); i.hasNext(); ) {
-            Resource r = (Resource) i.next();
+        List<T> s2 = new ArrayList<T>();
+        for (Iterator<T> i = s.iterator(); i.hasNext(); ) {
+            T r = i.next();
             s2.add( r );
             if (equivSets.containsKey( r )) {
                 s2.addAll( equivSets.get( r ) );
@@ -1530,7 +1531,7 @@ public class OntResourceImpl
 
         // put myself back if needed
         if (withheld) {
-            s2.add( this );
+            s2.add( (T) this );
         }
 
         return s2.iterator();
@@ -1553,12 +1554,20 @@ public class OntResourceImpl
     // Inner class definitions
     //==============================================================================
 
-    /** Implementation of Map1 that performs as( Class ) for a given class */
+    /** Implementation of Map1 that performs as( Class ) for a given class, against an argument {@link RDFNode} */
     protected static class AsMapper<T extends RDFNode> implements Map1<RDFNode, T>
     {
         private Class<T> m_as;
         public AsMapper( Class<T> as ) { m_as = as; }
         public T map1( RDFNode x ) { return x.as( m_as ); }
+    }
+
+    /** Implementation of Map1 that performs as( Class ) for a given class, against an argument {@link Resource} */
+    protected static class ResourceAsMapper<T extends RDFNode> implements Map1<Resource, T>
+    {
+        private Class<T> m_as;
+        public ResourceAsMapper( Class<T> as ) { m_as = as; }
+        public T map1( Resource x ) { return x.as( m_as ); }
     }
 
     /** Implementation of Map1 that performs as( Class ) for a given class, on the subject of a statement */
@@ -1568,13 +1577,6 @@ public class OntResourceImpl
         public SubjectAsMapper( Class<T> as ) { m_as = as; }
         public T map1( Statement x ) {
             return x.getSubject().as( m_as );
-//            if (x instanceof Statement) {
-//                RDFNode subj = ((Statement) x).getSubject();
-//                return (m_as == null) ? subj : subj.as( m_as );
-//            }
-//            else {
-//                return x;
-//            }
         }
     }
 
@@ -1590,17 +1592,10 @@ public class OntResourceImpl
     protected static class ObjectAsMapper<T extends RDFNode> implements Map1<Statement, T>
     {
         private Class<T> m_as;
-        public ObjectAsMapper( Class<T> as ) 
+        public ObjectAsMapper( Class<T> as )
             { m_as = as; }
         public T map1( Statement x ) {
             return x.getObject().as( m_as );
-//            if (x instanceof Statement) {
-//                RDFNode obj = ((Statement) x).getObject();
-//                return (m_as == null) ? obj : obj.as( m_as );
-//            }
-//            else {
-//                return x;
-//            }
         }
     }
 
@@ -1621,16 +1616,10 @@ public class OntResourceImpl
     {
         public RDFNode map1( Statement x ) {
             return asOntResource( x.getObject() );
-//            if (x instanceof Statement) {
-//                return asOntResource( ((Statement) x).getObject() );
-//            }
-//            else {
-//                return x;
-//            }
         }
     }
 
-    /** Filter for matching language tags on tghe objects of statements */
+    /** Filter for matching language tags on the objects of statements */
     protected class LangTagFilter extends Filter<Statement>
     {
         protected String m_lang;
@@ -1639,16 +1628,6 @@ public class OntResourceImpl
         public boolean accept( Statement x ) {
             RDFNode o = x.getObject();
             return o.isLiteral() && langTagMatch( m_lang, ((Literal) o).getLanguage() );
-//            if (x instanceof Literal) {
-//                return langTagMatch( m_lang, ((Literal) x).getLanguage() );
-//            }
-//            else if (x instanceof Statement) {
-//                // we assume for a statement that we're filtering on the object of the statement
-//                return accept( ((Statement) x).getObject() );
-//            }
-//            else {
-//                return false;
-//            }
         }
     }
 

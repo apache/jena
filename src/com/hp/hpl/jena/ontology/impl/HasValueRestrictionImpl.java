@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestrictionImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:04 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,11 +38,11 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestrictionImpl.java,v 1.16 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: HasValueRestrictionImpl.java,v 1.17 2009-03-13 15:40:04 ian_dickinson Exp $
  */
 public class HasValueRestrictionImpl
     extends RestrictionImpl
-    implements HasValueRestriction 
+    implements HasValueRestriction
 {
     // Constants
     //////////////////////////////////
@@ -52,24 +52,25 @@ public class HasValueRestrictionImpl
 
     /**
      * A factory for generating HasValueRestriction facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new HasValueRestrictionImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to HasValueRestriction");
-            } 
+            }
         }
-            
+
         @Override
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a HasValueRestriction facet if it has rdf:type owl:Restriction or equivalent
-            // and the combination of owl:onProperty and owl:hasValue (or equivalents) 
+            // and the combination of owl:onProperty and owl:hasValue (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
             return (profile != null)  &&  profile.isSupported( node, eg, HasValueRestriction.class );
         }
@@ -86,7 +87,7 @@ public class HasValueRestrictionImpl
      * <p>
      * Construct a hasValue restriction node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -99,16 +100,16 @@ public class HasValueRestrictionImpl
     //////////////////////////////////
 
     // hasValue
-    
+
     /**
      * <p>Assert that this restriction restricts the property to have the given
      * value. Any existing statements for <code>hasValue</code>
      * will be removed.</p>
-     * @param value The RDF value (an individual or a literal) 
+     * @param value The RDF value (an individual or a literal)
      * that is the value that the restricted property must have to be a member of the
      * class defined by this restriction.
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
+     */
     public void setHasValue( RDFNode value ) {
         setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }
@@ -116,31 +117,31 @@ public class HasValueRestrictionImpl
     /**
      * <p>Answer the RDF value that all values of the restricted property must be equal to.</p>
      * @return An RDFNode that is the value of the restricted property
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
+     */
     public RDFNode getHasValue() {
         checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
         RDFNode n = getPropertyValue( getProfile().HAS_VALUE() );
-        
-        // map to an individual in the case of a resource value 
+
+        // map to an individual in the case of a resource value
         if (!(n instanceof Literal) && n.canAs( Individual.class )) {
             n = n.as( Individual.class );
         }
-        
+
         return n;
     }
 
     /**
-     * <p>Answer true if this property restriction has the given RDF value as the value which all 
+     * <p>Answer true if this property restriction has the given RDF value as the value which all
      * values of the restricted property must equal.</p>
-     * @param value An RDF value to test 
+     * @param value An RDF value to test
      * @return True if the given value is the value of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
      */
     public boolean hasValue( RDFNode value ) {
         return hasPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }
-    
+
     /**
      * <p>Remove the statement that this restriction requires the restricted property to have
      * the given value.  If this statement
@@ -150,7 +151,7 @@ public class HasValueRestrictionImpl
     public void removeHasValue( RDFNode value ) {
         removePropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }
-    
+
 
     // Internal implementation methods
     //////////////////////////////////

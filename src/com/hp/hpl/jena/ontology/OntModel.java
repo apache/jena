@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.60 $
+ * Revision           $Revision: 1.61 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:22 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:38:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.60 2009-01-26 10:28:22 chris-dollin Exp $
+ * @version CVS $Id: OntModel.java,v 1.61 2009-03-13 15:38:51 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1551,45 +1551,6 @@ public interface OntModel
      * executing the queries.
      */
     public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey );
-
-
-    /**
-     * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language
-     * level that the constructs
-     * used in this model lie entirely within.
-     * This method requires that the separate download
-     * <code>owlsyntax.jar</code> is on the Java classpath.
-     * The three possible return values are
-     * {@link com.hp.hpl.jena.vocabulary.OWL#FULL_LANG FULL_LANG} for OWL-full,
-     * {@link com.hp.hpl.jena.vocabulary.OWL#DL_LANG DL_LANG} for OWL-DL or
-     * {@link com.hp.hpl.jena.vocabulary.OWL#LITE_LANG LITE_LANG} for OWL-Lite.
-     * Note that these URI's are <strong>not</strong> officially sanctioned by the WebOnt
-     * working group.  For unknown reasons, the working group chose not to assign official
-     * URI's to represent the different OWL language levels. There is a slim chance that this
-     * may change in future, in which case these return values will change appropriately.
-     * In addition to the method return value,
-     * the given <code>problems</problems> list, if non-null, will be filled with the syntax
-     * problems detected by the syntax checker.
-     * </p>
-     * <p>
-     * The Jena OWL syntax checker will normally list as problems those constructs used in
-     * this model that are in OWL Full but not permitted in OWL DL.  The exception to this
-     * is if the {@linkplain #getProfile() language profile} for this model is
-     * {@linkplain com.hp.hpl.jena.ontology.impl.OWLLiteProfile OWL Lite}, then the syntax checker will
-     * test for constructs that lie in OWL-DL or OWL-Full and hence outside in OWL-Lite.
-     * </p>
-     * <p>
-     * <strong>Note</strong> that performing this test requires every statement in the model
-     * to be examined, so it can be quite an expensive operation on large models, or on
-     * persistent database models.
-     * </p>
-     *
-     * @param problems A list that, if non-null, will have the various problems discovered by the OWL syntax
-     * checker added to it.
-     * @return A resource denoting the minimum OWL language level for this model
-     * @exception OntologyException if this model is not an OWL model
-     */
-    public Resource getOWLLanguageLevel( List problems );
 
 
     // output operations

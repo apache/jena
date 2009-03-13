@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestIndividual.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestIndividual.java,v 1.13 2009-01-16 17:23:57 andy_seaborne Exp $
+ * @version CVS $Id: TestIndividual.java,v 1.14 2009-03-13 15:40:08 ian_dickinson Exp $
  */
 public class TestIndividual
     extends OntTestBase
@@ -182,8 +182,8 @@ public class TestIndividual
                     iteratorTest( x.listOntClasses( false ), new Object[] {A,B} );
 
                     // now check the return types
-                    for (Iterator i = x.listOntClasses( false ) ; i.hasNext(); ) {
-                        assertTrue( i.next() instanceof OntClass );
+                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                        assertNotNull( i.next() );
                     }
                 }
             },
@@ -201,8 +201,8 @@ public class TestIndividual
                     iteratorTest( x.listOntClasses( true ), new Object[] {B} );
 
                     // now check the return types
-                    for (Iterator i = x.listOntClasses( true ) ; i.hasNext(); ) {
-                        assertTrue( i.next() instanceof OntClass );
+                    for (Iterator<OntClass> i = x.listOntClasses( true ) ; i.hasNext(); ) {
+                        assertNotNull( i.next() );
                     }
                 }
             },
@@ -223,8 +223,8 @@ public class TestIndividual
 
                     // test again
                     iteratorTest( x.listOntClasses( false ), new Object[] {A,B} );
-                    for (Iterator i = x.listOntClasses( false ) ; i.hasNext(); ) {
-                        assertTrue( i.next() instanceof OntClass );
+                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                        assertNotNull( i.next() );
                     }
                 }
             },
@@ -245,8 +245,8 @@ public class TestIndividual
 
                     // test again
                     iteratorTest( x.listOntClasses( false ), new Object[] {B} );
-                    for (Iterator i = x.listOntClasses( false ) ; i.hasNext(); ) {
-                        assertTrue( i.next() instanceof OntClass );
+                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                        assertNotNull( i.next() );
                     }
                 }
             },

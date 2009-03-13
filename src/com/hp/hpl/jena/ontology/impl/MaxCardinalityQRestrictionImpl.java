@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: MaxCardinalityQRestrictionImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-16 17:23:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -36,9 +36,9 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MaxCardinalityQRestrictionImpl.java,v 1.10 2009-01-16 17:23:53 andy_seaborne Exp $
+ * @version CVS $Id: MaxCardinalityQRestrictionImpl.java,v 1.11 2009-03-13 15:40:07 ian_dickinson Exp $
  */
-public class MaxCardinalityQRestrictionImpl 
+public class MaxCardinalityQRestrictionImpl
     extends QualifiedRestrictionImpl
     implements MaxCardinalityQRestriction
 {
@@ -47,40 +47,41 @@ public class MaxCardinalityQRestrictionImpl
 
     // Static variables
     //////////////////////////////////
-    
+
     /**
      * A factory for generating QualifiedRestriction facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
+    @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new MaxCardinalityQRestrictionImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to MaxCardinalityQRestriction");
-            } 
+            }
         }
-            
+
         @Override
-        public boolean canWrap( Node node, EnhGraph eg ) 
+        public boolean canWrap( Node node, EnhGraph eg )
             { return isMaxCardinalityQRestriction( node, eg ); }
     };
-    
 
-    public static boolean isMaxCardinalityQRestriction( Node node, EnhGraph eg ) 
+
+    public static boolean isMaxCardinalityQRestriction( Node node, EnhGraph eg )
         {
         // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
         Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
         return (profile != null)  &&  profile.isSupported( node, eg, MaxCardinalityQRestriction.class );
         }
-    
+
     @Override
     public boolean isValid()
         { return super.isValid() &&  isMaxCardinalityQRestriction( asNode(), getGraph() );  }
-    
+
     // Instance variables
     //////////////////////////////////
 
@@ -88,7 +89,7 @@ public class MaxCardinalityQRestrictionImpl
      * <p>
      * Construct a qualified restriction node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -108,8 +109,8 @@ public class MaxCardinalityQRestrictionImpl
      * max cardinality. Any existing statements for <code>cardinalityQ</code>
      * will be removed.</p>
      * @param cardinality The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     */
     public void setMaxCardinalityQ( int cardinality ) {
         setPropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -117,33 +118,33 @@ public class MaxCardinalityQRestrictionImpl
     /**
      * <p>Answer the cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     */
     public int getMaxCardinalityQ() {
         return objectAsInt( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q" );
     }
 
     /**
      * <p>Answer true if this property restriction has the given cardinality.</p>
-     * @param cardinality The cardinality to test against 
+     * @param cardinality The cardinality to test against
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     public boolean hasMaxCardinalityQ( int cardinality ) {
         return hasPropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
-    
+
     /**
-     * <p>Remove the statement that this restriction has the given cardinality 
+     * <p>Remove the statement that this restriction has the given cardinality
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cardinality A cardinality value to be removed from this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     public void removeMaxCardinalityQ( int cardinality ) {
         removePropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
-    
+
 
     // Internal implementation methods
     //////////////////////////////////

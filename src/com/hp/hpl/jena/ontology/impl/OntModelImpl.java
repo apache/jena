@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.117 $
+ * Revision           $Revision: 1.118 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 07:57:28 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-13 15:40:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -34,16 +34,13 @@ import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
 import com.hp.hpl.jena.enhanced.EnhNode;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
-import com.hp.hpl.jena.graph.query.BindingQueryPlan;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.Query;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.IteratorFactory;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.shared.ConfigException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -58,7 +55,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.117 2009-01-27 07:57:28 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.118 2009-03-13 15:40:07 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -427,8 +424,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over Individuals.
      */
     public ExtendedIterator<Individual> listIndividuals() {
-        // since the reasoner implements some OWL full functionality for RDF compatability, we
-        // have to decide which strategy to use for indentifying individuals depending on whether
+        // since the reasoner implements some OWL full functionality for RDF compatibility, we
+        // have to decide which strategy to use for identifying individuals depending on whether
         // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
         boolean supportsIndAsThing = false;
         if (getGraph() instanceof InfGraph) {
@@ -440,8 +437,8 @@ public class OntModelImpl extends ModelCom implements OntModel
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
 
             // we have to build the query plans dynamically - these were done once-only in pre-Jena-2.5,
-            // but this can interfere with some opimisations
-            ExtendedIterator indivI = queryFor( queryXTypeOfType( getProfile().CLASS() ), null, Individual.class );
+            // but this can interfere with some optimisations
+            ExtendedIterator<Individual> indivI = queryFor( queryXTypeOfType( getProfile().CLASS() ), null, Individual.class );
 
             if (getProfile().RESTRICTION() != null) {
                 // and things whose rdf:type is Restriction
@@ -516,7 +513,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             {
                 // we have have both direct sub-class of and a :Thing class to test against
                 return listStatements( null, ReasonerVocabulary.directSubClassOf, getProfile().THING() )
-                       .mapWith( new OntResourceImpl.SubjectAsMapper( OntClass.class ));
+                       .mapWith( new OntResourceImpl.SubjectAsMapper<OntClass>( OntClass.class ));
             }
         }
 
@@ -2019,49 +2016,6 @@ public class OntModelImpl extends ModelCom implements OntModel
     }
 
     /**
-     * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language
-     * level that the constructs
-     * used in this model lie entirely within.  The three possible return values are
-     * {@link OWL#FULL_LANG} for OWL-full,
-     * {@link OWL#DL_LANG} for OWL-DL or
-     * {@link OWL#LITE_LANG} for OWL-lite.
-     * Note that these URI's are <strong>not</strong> officially sanctioned by the WebOnt
-     * working group.  For unknown reasons, the working group chose not to assign official
-     * URI's to represent the different OWL language levels. There is a slim chance that this
-     * may change in future, in which case these return values will change apropriately.
-     * In addition, the given <code>problems</problems> list, if non-null, will be filled with the syntax
-     * problems detected by the syntax checker (<code> com.hp.hpl.jena.ontology.tidy.Checker</code>).
-     * </p>
-     * <p>
-     * The Jena OWL syntax checker will normally list as problems those constructs used in
-     * this model that are in OWL Full but not permitted in OWL DL.  The exception to this
-     * is if the {@linkplain #getProfile() language profile} for this model is
-     * {@linkplain OWLLiteProfile OWL Lite}, then the syntax checker will
-     * test for constructs that lie in OWL-DL or OWL-Full and hence outside in OWL-Lite.
-     * </p>
-     *
-     * @param problems A list that, if non-null, will have the various problems discovered by the OWL syntax
-     * checker added to it.
-     * @return A resource denoting the minimum OWL language level for this model
-     * @exception OntologyException if this model is not an OWL model
-     */
-    public Resource getOWLLanguageLevel( List problems ) {
-        initSyntaxCheckerClass();
-        try {
-          return
-            ((OWLSyntaxChecker)owlSyntaxCheckerClass.newInstance()).
-            getOWLLanguageLevel(this, problems);
-        }
-        catch (InstantiationException e){
-            throw new BrokenException("Syntax Checker misconfigured: ",e);
-        }
-        catch (IllegalAccessException e){
-            throw new BrokenException("Syntax Checker misconfigured: ",e);
-        }
-    }
-
-
-    /**
      * <p>Read statements into the model from the given source, and then load
      * imported ontologies (according to the document manager policy).</p>
      * @param uri URI to read from, may be mapped to a local source by the document manager
@@ -2728,7 +2682,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         if (getGraph() instanceof InfGraph) {
-            Iterator iter = getInfGraph().find( asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
+            Iterator<Triple> iter = getInfGraph().find( asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
             return IteratorFactory.asStmtIterator(iter,this);
         }
         else {
@@ -2754,7 +2708,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
-    public Iterator getDerivation(Statement statement) {
+    public Iterator<Derivation> getDerivation(Statement statement) {
         return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).getDerivation( statement.asTriple() ) : null;
     }
 
@@ -3090,7 +3044,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         }
 
     }
-    
+
     /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
     protected class NodeAs<To extends RDFNode> implements Map1<Node, To>
     {
@@ -3101,7 +3055,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             return getNodeAs( x, m_asKey );
         }
     }
-    
+
     protected class NodeCanAs<T extends RDFNode> extends Filter<Node>
     {
         protected Class<T> m_asKey;
@@ -3114,7 +3068,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         return true;
     }
 
-        
+
     }
 
     /** Filter that accepts nodes that can be mapped to the given facet */
