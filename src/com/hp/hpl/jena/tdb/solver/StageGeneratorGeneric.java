@@ -181,7 +181,7 @@ public class StageGeneratorGeneric implements StageGenerator
         {
             double x = fixed.weight(pt) ;
             // If there are two fixed terms, use the fixed weighting, all of which are quite small.
-            // This choose a less optimal triple but the worse choice is still a very selective choice.
+            // This chooses a less optimal triple but the worse choice is still a very selective choice.
             // One case is IFPs: the multi term choice for PO is not 1. 
             if ( x < ReorderFixed.MultiTermMax )
             {

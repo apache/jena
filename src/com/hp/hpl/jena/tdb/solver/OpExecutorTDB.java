@@ -180,7 +180,7 @@ public class OpExecutorTDB extends OpExecutor
             QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
             input = peek ; // Original input now invalid.
             BasicPattern bgp2 = reorder(bgp, peek, transform) ;
-            Explain.explain(bgp2, execCxt) ;
+            Explain.explain(bgp2, execCxt.getContext()) ;
             bgp = bgp2 ;
         }
         
@@ -246,7 +246,7 @@ public class OpExecutorTDB extends OpExecutor
             op = new OpBGP(pattern) ;
         
         // -- Explain
-        Explain.explain(op, execCxt) ;
+        Explain.explain(op, execCxt.getContext()) ;
         
         // -- Execute
         // Switch to a non-reordring executor

@@ -11,36 +11,51 @@ import lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.tdb.TDB;
 
 public class Explain
 {
 
-    public static void explain(Op op, ExecutionContext execCxt)
+    public static void explain(Op op, Context context)
     {
-        if ( explaining(execCxt) )
-            explain("Execute", op.toString()) ;
+        if ( explaining(context) )
+            _explain("Execute", op.toString()) ;
     }
 
-    public static void explain(BasicPattern bgp, ExecutionContext execCxt)
+    public static void explain(BasicPattern bgp, Context context)
     {
-        if ( explaining(execCxt) )
-            explain("Execute", bgp.toString()) ;
+        if ( explaining(context) )
+            _explain("Execute", bgp.toString()) ;
     }
 
-    public static void explain(String reason, String explanation)
+    private static void _explain(String reason, String explanation)
     {
+        explanation = StrUtils.chop(explanation) ;
+        
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
         explanation = reason+"\n"+explanation ;
-        logExec.info(explanation) ;
+        _explain(explanation) ;
         //System.out.println(explanation) ;
     }
-
-    private static boolean explaining(ExecutionContext execCxt)
+    
+    private static void _explain(String explanation)
     {
-        return execCxt.getContext().isTrue(TDB.symLogExec) ; //&& logExec.isInfoEnabled() ;
+        logExec.info(explanation) ;
+    }
+
+    public static void explain(Context context, String message)
+    {
+        if ( explaining(context) )
+            _explain(message) ;
+    }
+
+    
+    
+    public static boolean explaining(Context context)
+    {
+        return context.isTrue(TDB.symLogExec) && logExec.isInfoEnabled() ;
     }
 
 }

@@ -11,8 +11,8 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class ReorderLib
 {
-    
-    private static ReorderProc _identityProc = new ReorderProc() {
+    private static class ReorderProcIdentity implements ReorderProc
+    {
         @Override
         public BasicPattern reorder(BasicPattern pattern)
         {
@@ -24,8 +24,10 @@ public class ReorderLib
             return "identity reorder" ;
         }
     } ;
+    private static ReorderProc _identityProc = new ReorderProcIdentity() ;
 
-    private static ReorderTransformation _identity = new ReorderTransformation() {
+    private static class ReorderTransformationIdentity implements ReorderTransformation
+    {
         @Override
         public BasicPattern reorder(BasicPattern pattern)
         {
@@ -36,7 +38,9 @@ public class ReorderLib
         public ReorderProc reorderIndexes(BasicPattern pattern)
         {
             return _identityProc ;
-        } } ;
+        }
+    } ;
+    private static ReorderTransformation _identity = new ReorderTransformationIdentity() ;
 
     public static ReorderProc identityProc()
     { return _identityProc ; }

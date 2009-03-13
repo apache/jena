@@ -133,7 +133,7 @@ public class Reorganise
         }
     }
     
-    /** ReorderTransformation that uses a set of defined variables (defined bfore this BGP is reached) */
+    /** ReorderTransformation that uses a set of defined variables (defined before this BGP is reached) */
     static class ReorderTransformationReorg extends ReorderTransformationBase  
     {
         

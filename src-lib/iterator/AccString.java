@@ -21,12 +21,18 @@ public class AccString<T> implements Accumulate<T, String>
         if ( ! first )
             buffer.append(sep) ;
         if ( item != null )
-            buffer.append(item.toString()) ;
+            buffer.append(toString(item)) ;
         else
             buffer.append("<null>") ;
         first = false ;
     }
 
+    /** Make into a string */
+    protected String toString(T item)
+    {
+        return item.toString() ; 
+    }
+    
     public String get()
     {
         return buffer.toString() ;

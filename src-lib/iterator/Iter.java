@@ -317,28 +317,37 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return action.getCount() ;
     }
 
-    
-
     // ---- String related helpers
     
     public static <T> String asString(Iterable<T> stream)
-    { return reduce(stream, new AccString<T>()) ; }
+    { return asString(stream, new AccString<T>()) ; }
 
     public static <T> String asString(Iterator<T> stream)
-    { return reduce(stream, new AccString<T>()) ; }
+    { return asString(stream, new AccString<T>()) ; }
 
     public static <T> String asString(Iter<T> stream)
-    { return reduce(stream.iterator(), new AccString<T>()) ; }
+    { return asString(stream, new AccString<T>()) ; }
 
     public static <T> String asString(Iterable<T> stream, String sep)
-    { return reduce(stream, new AccString<T>(sep)) ; }
+    { return asString(stream, new AccString<T>(sep)) ; }
 
     public static <T> String asString(Iterator<T> stream, String sep)
-    { return reduce(stream, new AccString<T>(sep)) ; }
+    { return asString(stream, new AccString<T>(sep)) ; }
 
     public static <T> String asString(Iter<T> stream, String sep)
-    { return reduce(stream.iterator(), new AccString<T>(sep)) ; }
+    { return asString(stream.iterator(), new AccString<T>(sep)) ; }
 
+    public static <T> String asString(Iterable<T> stream, AccString<T> formatter)
+    { return reduce(stream, formatter) ; }
+
+    public static <T> String asString(Iterator<T> stream, AccString<T> formatter)
+    { return reduce(stream, formatter) ; }
+
+    public static <T> String asString(Iter<T> stream, AccString<T> formatter)
+    { return reduce(stream.iterator(), formatter) ; }
+
+    // ----
+    
     public static <T> void close(Iterator<T> iter)
     {
         if ( iter instanceof ClosableIterator )

@@ -157,6 +157,13 @@ public class StrUtils
         return x.substring(0, x.length()-1) ;
     }
 
+    public static String noNewlineEnding(String x)
+    {
+        while ( x.endsWith("\n") || x.endsWith("\r") )
+            x = StrUtils.chop(x) ;
+        return x ;
+    }
+    
     public static List<Character> toCharList(String str)
     {
         List<Character> characters = new ArrayList<Character>(str.length()) ;

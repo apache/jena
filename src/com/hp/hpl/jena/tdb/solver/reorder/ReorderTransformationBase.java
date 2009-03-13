@@ -6,28 +6,30 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
+import static com.hp.hpl.jena.tdb.TDB.logExec;
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 import static iterator.Iter.map;
 import static iterator.Iter.toList;
+import iterator.AccString;
+import iterator.Iter;
 import iterator.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.StrUtils;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
-
 import com.hp.hpl.jena.tdb.TDBException;
-
 
 /** Machinary */
 public abstract class ReorderTransformationBase implements ReorderTransformation
 {
-    protected static final boolean DEBUG = false ;
+    protected static final boolean DEBUG = false ;  
     
     @Override
     public BasicPattern reorder(BasicPattern pattern)
@@ -35,13 +37,13 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return reorderIndexes(pattern).reorder(pattern) ;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final ReorderProc reorderIndexes(BasicPattern pattern)
     {
         if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
         
+        @SuppressWarnings("unchecked")
         List<Triple> triples = pattern.getList() ; ;
 
         // Could merge into the conversion step to do the rewrite WRT an Binding.
@@ -61,12 +63,22 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return components ;
     }
 
+    private static AccString<PatternTriple> formatter = 
+        new AccString<PatternTriple>() 
+        {   @Override 
+            protected String toString(PatternTriple pt) 
+              { return "("+printAbbrev(pt.toString())+")" ; }
+        } ;
+    
     private ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)
     {
         int N = components.size() ;
         int numReorder = N ;        // Maybe choose 4, say, and copy over the rest.
         int indexes[] = new int[N] ;
 
+        if ( DEBUG )
+            logExec.info("Reorder: "+Iter.asString(components, formatter)) ;
+        
         //Set<Var> varsInScope = new HashSet<Var>() ;
         int idx = 0 ;
         for ( ; idx < numReorder ; idx++ )
@@ -90,9 +102,10 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
             //VarUtils.addVarsFromTriple(varsInScope, triples.get(i)) ;
         }
         if ( triples.size() != idx )
-            throw new TDBException(String.format("Inconsistency: number of triples (%d) not equal to number of indexes processed (%d)", triples.size(), idx)) ;
+            throw new TDBException(String.format("Inconsistency: number of triples (%d) does not equal to number of indexes processed (%d)", triples.size(), idx)) ;
         
-        ReorderProc proc = new ReorderProcIndexes(indexes) ; 
+        ReorderProc proc = new ReorderProcIndexes(indexes) ;
+        
         return proc ;
     }
     
@@ -110,28 +123,30 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     {
         if ( DEBUG )
         {
-            System.out.println(">> Input") ;
             int i = -1 ;
+            StringBuilder buff = new StringBuilder() ; 
             for ( PatternTriple pt : pTriples )
             {
                 i++ ;
                 if ( pt == null )
                 {
-                    System.out.printf("%d          : null\n", i) ;
+                    buff.append(String.format("    %d          : null\n", i)) ;
                     continue ;
                 }
                 double w2 = weight(pt) ;
-                System.out.printf("%d %8.0f : %s\n", i, w2, printAbbrev(pt)) ;
+                buff.append(String.format("    %d %8.0f : %s\n", i, w2, printAbbrev(pt))) ;
             }
+            String x = StrUtils.noNewlineEnding(buff.toString());
+            logExec.info(">> Input\n"+x) ;
         }
         
         int idx = processPTriples(pTriples, null) ; 
         
         if ( DEBUG )
         {
-            System.out.println("<< Output: "+idx) ;
             String x = printAbbrev(pTriples.get(idx)) ;
-            System.out.println(x) ;
+            x = StrUtils.noNewlineEnding(x) ;
+            logExec.info("<< Output\n    "+x) ;
         }
         return idx ;
     }
@@ -156,15 +171,39 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
             PatternTriple pt = pTriples.get(i) ;
             if ( pt == null )
                 continue ;
+            // ****
             double x = weight(pt) ;
             if ( x < 0 )
             {
-                // Not found.  Make sure something is returned. 
+                
+                DefaultChoice choice = defaultChoice(pt) ;
+                if ( choice != null )
+                {
+                    switch (choice)
+                    {
+                        case FIRST :
+                            break ;
+                        case LAST :
+                            // Default action : 
+                            break ;
+                        case ZERO :
+                            break ;
+                        case NUMERIC :
+                            x = defaultWeight(pt) ;
+                            break ;
+                    }
+                }
+                
+                
+                
+                // Not found.  No default action.
+                // Make sure something is returned but otherwise ignore this pattern (goes last). 
                 if ( idx == -1 )
                 {
                     idx = i ;
                     if ( results != null ) results.add(i) ;
                 }
+                // Do nothing.  Does not update min so will be not be in results. 
                 continue ;
             }
             
@@ -188,8 +227,23 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return idx ;
     }
     
+    /** Return the weight of the pattern, or -1 if no knowdleg for it */
     protected abstract double weight(PatternTriple pt) ;
+    
+    /** What to do if the {@link weight} comes back as "not found".
+     * Choices are:
+     *    ZERO      Assume the weight is zero (the rules were complete over the data so this is a pattern that will not match the data. 
+     *    LAST      Place after all explciitly weighted triple patterns
+     *    FIRST     Place before all explciitly weighted triple patterns
+     *    NUMERIC   Use value returned by {@link defaultWeight}
+     * The default, default choice is LAST.   
+     */
+    protected /*abstract*/ DefaultChoice defaultChoice(PatternTriple pt) { return null ; } // return DefaultChoice.LAST ; }
+    
+    protected /*abstract*/ double defaultWeight(PatternTriple pt) { return -1 ; }
 
+    protected enum DefaultChoice { ZERO, LAST, FIRST , NUMERIC ; }
+    
     /** Update components to note any variables from triple */
     protected static void update(Triple triple, List<PatternTriple> components)
     {
