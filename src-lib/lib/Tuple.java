@@ -7,11 +7,13 @@
 package lib;
 
 import iterator.Iter;
+import iterator.IteratorArray;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-public final class Tuple<T>
+public final class Tuple<T> implements Iterable<T>
 {
     public static <X> Tuple<X> blankTuple(int len)
     {
@@ -44,6 +46,12 @@ public final class Tuple<T>
     public List<T> asList() { return Arrays.asList(tuple) ; }
     
     public T[] tuple() { return tuple ; }
+
+    @Override
+    public Iterator<T> iterator()
+    {
+        return IteratorArray.create(tuple) ;
+    }
 
     /** Return a tuple with the column mapping applied */
     public Tuple<T> map(ColumnMap colMap)
