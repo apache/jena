@@ -84,8 +84,37 @@ public class Log
      */
     static public void enable(String logger)
     {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ALL) ;
-        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.ALL) ;
+        enable(logger, "all") ;
+    }
+    
+    static public void enable(String logger, String level)
+    {
+        org.apache.log4j.Level level1 = org.apache.log4j.Level.ALL ;
+        java.util.logging.Level level2 = java.util.logging.Level.ALL ;
+        if ( level.equalsIgnoreCase("info"))
+        {
+            level1 = org.apache.log4j.Level.INFO ;
+            level2 = java.util.logging.Level.INFO ;
+        }
+
+        if ( level.equalsIgnoreCase("debug"))
+        {
+            level1 = org.apache.log4j.Level.DEBUG ;
+            level2 = java.util.logging.Level.FINE ;
+        }
+        
+        if ( level.equalsIgnoreCase("warn"))
+        {
+            level1 = org.apache.log4j.Level.WARN ;
+            level2 = java.util.logging.Level.WARNING ;
+        }
+        logLevel(logger, level1, level2) ;
+    }
+    
+    static public void logLevel(String logger, org.apache.log4j.Level level1, java.util.logging.Level level2 )
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(level1) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(level2) ;
     }
     
     /** Turn on a logger (all levels). 
