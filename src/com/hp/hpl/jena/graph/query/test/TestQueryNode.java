@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryNode.java,v 1.11 2008-12-28 19:32:23 andy_seaborne Exp $
+    $Id: TestQueryNode.java,v 1.12 2009-03-16 14:25:06 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -120,7 +120,7 @@ public class TestQueryNode extends QueryTestBase
 
     protected void testClassifyBind( Node bind, Mapping m, int index )
         {
-        QueryNode n = QueryNode.classify( F, m, new HashSet(), bind );
+        QueryNode n = QueryNode.classify( F, m, new HashSet<Node>(), bind );
         assertInstanceOf( QueryNode.Bind.class, n );
         assertSame( n.node, bind );
         assertEquals( index, n.index );
@@ -139,7 +139,7 @@ public class TestQueryNode extends QueryTestBase
         Node bound = NodeCreateUtils.create( "?bound" );
         Mapping m = getPreloadedMapping( index );
         m.newIndex( bound );
-        QueryNode n = QueryNode.classify( F, m, new HashSet(), bound );
+        QueryNode n = QueryNode.classify( F, m, new HashSet<Node>(), bound );
         assertInstanceOf( QueryNode.Bound.class, n );
         assertSame( n.node, bound );
         assertEquals( index, n.index );
@@ -158,7 +158,7 @@ public class TestQueryNode extends QueryTestBase
         Node recent = NodeCreateUtils.create( "?recent" );
         Mapping m = getPreloadedMapping( index );
         m.newIndex( recent );
-        Set withRecent = new HashSet();
+        Set<Node> withRecent = new HashSet<Node>();
         withRecent.add( recent );
         QueryNode n = QueryNode.classify( F, m, withRecent, recent );
         assertInstanceOf( QueryNode.JustBound.class, n );
@@ -170,7 +170,7 @@ public class TestQueryNode extends QueryTestBase
         {
         Node X = NodeCreateUtils.create( "?X" );
         Mapping m = getPreloadedMapping( 0 );
-        Set s = new HashSet();
+        Set<Node> s = new HashSet<Node>();
         QueryNode n = QueryNode.classify( F, m, s, X );
         assertTrue( s.contains( X ) );
         }
@@ -179,7 +179,7 @@ public class TestQueryNode extends QueryTestBase
         {
         Node X = NodeCreateUtils.create( "?X" ), Y = NodeCreateUtils.create( "?Y" );
         Mapping m = getPreloadedMapping( 0 );
-        Set s = new HashSet();
+        Set<Node> s = new HashSet<Node>();
         QueryNode.classify( F, m, s, X );
         QueryNode.classify( F, m, s, Y );
         assertTrue( s.contains( X ) );

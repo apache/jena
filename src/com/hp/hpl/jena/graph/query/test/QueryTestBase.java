@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.11 2009-01-16 17:23:57 andy_seaborne Exp $
+  $Id: QueryTestBase.java,v 1.12 2009-03-16 14:25:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -74,12 +74,10 @@ public abstract class QueryTestBase extends GraphTestBase
         Answer a filter that selects the <code>index</code>th element of the
         list it's given.
     */
-    protected Map1 select( final int index )
+    protected Map1<Domain, Node> select( final int index )
         {
-        return new Map1() 
-            { 
-            public Object map1( Object o ) { return ((List) o).get( index ); }
-            };
+        return new Map1<Domain, Node>() 
+            { public Node map1( Domain o ) { return o.get( index ); } };
         }
 
     /**

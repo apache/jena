@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryTriple.java,v 1.10 2008-12-28 19:32:23 andy_seaborne Exp $
+    $Id: TestQueryTriple.java,v 1.11 2009-03-16 14:25:06 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -48,14 +48,14 @@ public class TestQueryTriple extends QueryTestBase
         {
         Mapping m = new Mapping( new Node[0] );
         Mapping m2 = new Mapping( new Node[0] );
-        Set s = new HashSet();
+        Set<Node> s = new HashSet<Node>();
         QueryTriple q = QueryTriple.classify( F, m, t );
         testClassifiedOK( t.getSubject(), m2, s, q.S );
         testClassifiedOK( t.getPredicate(), m2, s, q.P );
         testClassifiedOK( t.getObject(), m2, s, q.O );
         }
 
-    protected void testClassifiedOK( Node node, Mapping m2, Set s, QueryNode q )
+    protected void testClassifiedOK( Node node, Mapping m2, Set<Node> s, QueryNode q )
         {
         assertSame( node, q.node );
         assertSame( QueryNode.classify( F, m2, s, node ).getClass(), q.getClass() );

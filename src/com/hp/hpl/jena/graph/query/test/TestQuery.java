@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestQuery.java,v 1.3 2008-12-28 19:32:23 andy_seaborne Exp $
+ 	$Id: TestQuery.java,v 1.4 2009-03-16 14:25:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -19,7 +19,7 @@ public class TestQuery extends QueryTestBase
 
     public void testEmptyQueryPattern()
         {
-        assertEquals( new ArrayList(), new Query().getPattern() );
+        assertEquals( new ArrayList<Triple>(), new Query().getPattern() );
         }
     
     public void testIOneTriple()
@@ -33,7 +33,7 @@ public class TestQuery extends QueryTestBase
     public void testSeveralTriples()
         {
         Triple [] triples = tripleArray( "a P b; c Q ?d; ?e R '17'" );
-        List expected = new ArrayList();
+        List<Triple> expected = new ArrayList<Triple>();
         Query q = new Query();
         for (int i = 0; i < triples.length; i += 1)
             {
