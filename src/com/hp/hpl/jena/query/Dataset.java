@@ -39,7 +39,7 @@ public interface Dataset
     /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 
     
-    /** Close the datset, potentially releasing any associated resources.
+    /** Close the dataset, potentially releasing any associated resources.
      *  The dataset can not be used for query after this call.
      */
     public void close() ;
