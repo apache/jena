@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: GraphTripleStoreBase.java,v 1.8 2009-01-16 17:23:50 andy_seaborne Exp $
+    $Id: GraphTripleStoreBase.java,v 1.9 2009-03-16 15:45:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -86,18 +86,17 @@ public abstract class GraphTripleStoreBase implements TripleStore
      public boolean isEmpty()
          { return subjects.isEmpty(); }
      
-     public ExtendedIterator listSubjects()
-         { return WrappedIterator.createNoRemove( subjects.domain() ); }
+     public ExtendedIterator<Node> listSubjects()
+         { return WrappedIterator.<Node>createNoRemove( subjects.domain() ); }
 
-     public ExtendedIterator listPredicates()
-         { return WrappedIterator.createNoRemove( predicates.domain() ); }
+     public ExtendedIterator<Node> listPredicates()
+         { return WrappedIterator.<Node>createNoRemove( predicates.domain() ); }
      
-     public ExtendedIterator listObjects()
+     public ExtendedIterator<Node> listObjects()
          {
          return new ObjectIterator( objects.domain() )
              {
-             @Override
-            protected Iterator iteratorFor( Object y )
+             @Override protected Iterator iteratorFor( Object y )
                  { return objects.iteratorForIndexed( y ); }
              };
          }
@@ -128,7 +127,7 @@ public abstract class GraphTripleStoreBase implements TripleStore
          (ANY, P, O) searches on largish models with few predicates declined
          dramatically - specifically on the not-galen.owl ontology.
      */
-     public ExtendedIterator find( TripleMatch tm )
+     public ExtendedIterator<Triple> find( TripleMatch tm )
          {
          Triple t = tm.asTriple();
          Node pm = t.getPredicate();

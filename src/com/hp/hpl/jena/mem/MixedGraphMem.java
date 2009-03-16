@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.19 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: MixedGraphMem.java,v 1.20 2009-03-16 15:45:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public class MixedGraphMem extends GraphMemBase implements Graph
     {    
-    protected MixedGraphMemStore store = new MixedGraphMemStore( this );
+    protected MixedGraphMemStore mixedStore = new MixedGraphMemStore( this );
     
     public MixedGraphMem()
         { this( ReificationStyle.Minimal ); }
@@ -27,56 +27,47 @@ public class MixedGraphMem extends GraphMemBase implements Graph
     /**
         MixedGraphMem's don't use TripleStore's at present. 
     */
-    @Override
-    protected TripleStore createTripleStore()
+    @Override protected TripleStore createTripleStore()
         { return null; }
     
-    @Override
-    public void performAdd( Triple t )
-        { if (!getReifier().handledAdd( t )) store.add( t ); }
+    @Override public void performAdd( Triple t )
+        { if (!getReifier().handledAdd( t )) mixedStore.add( t ); }
     
-    @Override
-    public void performDelete( Triple t )
-        { if (!getReifier().handledRemove( t )) store.remove( t ); }
+    @Override public void performDelete( Triple t )
+        { if (!getReifier().handledRemove( t )) mixedStore.remove( t ); }
     
-    @Override
-    public int graphBaseSize()  
-        { return store.size(); }
+    @Override public int graphBaseSize()  
+        { return mixedStore.size(); }
 
     /**
         Answer true iff t matches some triple in the graph. If t is concrete, we
         can use a simple membership test; otherwise we resort to the generic
         method using find.
     */
-    @Override
-    public boolean graphBaseContains( Triple t ) 
-        { return isSafeForEquality( t ) ? store.contains( t ) : containsByFind( t ); }
+    @Override public boolean graphBaseContains( Triple t ) 
+        { return isSafeForEquality( t ) ? mixedStore.contains( t ) : containsByFind( t ); }
     
-    @Override
-    protected void destroy()
-        { store = null; }
+    @Override protected void destroy()
+        { mixedStore = null; }
     
-    @Override
-    public boolean isEmpty()
+    @Override public boolean isEmpty()
         {
         checkOpen();
-        return store.isEmpty();
+        return mixedStore.isEmpty();
         }
     
-    @Override
-    public void clear()
-        { store.clear(); }
+    @Override public void clear()
+        { mixedStore.clear(); }
     
-    @Override
-    public ExtendedIterator graphBaseFind( TripleMatch m ) 
+    @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
         {
         Triple t = m.asTriple();
         Node S = t.getSubject(), P = t.getPredicate(), O = t.getObject();
         return 
-        	S.isConcrete() ? store.iterator( S, t )
-            : P.isConcrete() ? store.iterator( P, t )
-            : O.isURI() || O.isBlank() ? store.iterator( O, t )
-            : store.iterator( m.asTriple() )
+        	S.isConcrete() ? mixedStore.iterator( S, t )
+            : P.isConcrete() ? mixedStore.iterator( P, t )
+            : O.isURI() || O.isBlank() ? mixedStore.iterator( O, t )
+            : mixedStore.iterator( m.asTriple() )
             ; 
         }
 

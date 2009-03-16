@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ObjectIterator.java,v 1.6 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: ObjectIterator.java,v 1.7 2009-03-16 15:45:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -21,28 +21,26 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
     
     @author kers
 */
-public abstract class ObjectIterator extends NiceIterator
+public abstract class ObjectIterator extends NiceIterator<Node>
     {
     public ObjectIterator( Iterator domain )
         { this.domain = domain; }
 
-    protected abstract Iterator iteratorFor( Object y );
+    protected abstract Iterator<Triple> iteratorFor( Object y );
 
     final Iterator domain;
     
-    final Set seen = CollectionFactory.createHashedSet();
+    final Set<Node> seen = CollectionFactory.createHashedSet();
     
-    final List pending = new ArrayList();
+    final List<Node> pending = new ArrayList<Node>();
     
-    @Override
-    public boolean hasNext()
+    @Override public boolean hasNext()
         {
         while (pending.isEmpty() && domain.hasNext()) refillPending();
         return !pending.isEmpty();                
         }
     
-    @Override
-    public Object next()
+    @Override public Node next()
         {
         if (!hasNext()) throw new NoSuchElementException
             ( "FasterTripleStore listObjects next()" );
@@ -53,20 +51,19 @@ public abstract class ObjectIterator extends NiceIterator
         {
         Object y = domain.next();
         if (y instanceof Node)
-            pending.add( y );
+            pending.add( (Node) y );
         else
             {
-            Iterator z = iteratorFor( y );
+            Iterator<Triple> z = iteratorFor( y );
             while (z.hasNext())
                 {
-                Node object = ((Triple) z.next()).getObject();
+                Node object = z.next().getObject();
                 if (seen.add( object )) pending.add( object );
                 }
             }
         }
     
-    @Override
-    public void remove()
+    @Override public void remove()
         { throw new UnsupportedOperationException( "listObjects remove()" ); }
     }
 

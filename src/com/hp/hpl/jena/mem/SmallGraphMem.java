@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.17 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: SmallGraphMem.java,v 1.18 2009-03-16 15:45:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class SmallGraphMem extends GraphMemBase
     {
-    protected Set triples = CollectionFactory.createHashedSet();
+    protected Set<Triple> triples = CollectionFactory.createHashedSet();
     
     public SmallGraphMem()
         { this( ReificationStyle.Minimal ); }
@@ -34,20 +34,16 @@ public class SmallGraphMem extends GraphMemBase
     /**
         SmallGraphMem's don't use TripleStore's at present. 
     */
-    @Override
-    protected TripleStore createTripleStore()
+    @Override protected TripleStore createTripleStore()
         { return null; }
     
-    @Override
-    public void performAdd( Triple t )
+    @Override public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) triples.add( t ); }
     
-    @Override
-    public void performDelete( Triple t )
+    @Override public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) triples.remove( t ); }
     
-    @Override
-    public int graphBaseSize()  
+    @Override public int graphBaseSize()  
         { return triples.size(); }
 
     /**
@@ -55,30 +51,25 @@ public class SmallGraphMem extends GraphMemBase
         can use a simple membership test; otherwise we resort to the generic
         method using find.
     */
-    @Override
-    public boolean graphBaseContains( Triple t ) 
+    @Override public boolean graphBaseContains( Triple t ) 
         { return isSafeForEquality( t ) ? triples.contains( t ) : containsByFind( t ); }
 
-    @Override
-    protected void destroy()
+    @Override protected void destroy()
         { triples = null; }
     
-    @Override
-    public void clear()
+    @Override public void clear()
         { 
         triples.clear(); 
         ((SimpleReifier) getReifier()).clear();
         }
     
-    @Override
-    public BulkUpdateHandler getBulkUpdateHandler()
+    @Override public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
         return bulkHandler;
         }
     
-    @Override
-    public ExtendedIterator graphBaseFind( TripleMatch m ) 
+    @Override public ExtendedIterator <Triple>graphBaseFind( TripleMatch m ) 
         {
         return 
             SimpleEventManager.notifyingRemove( this, triples.iterator() ) 

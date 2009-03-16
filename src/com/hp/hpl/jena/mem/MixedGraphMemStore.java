@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: MixedGraphMemStore.java,v 1.8 2009-01-26 15:24:28 andy_seaborne Exp $
+ 	$Id: MixedGraphMemStore.java,v 1.9 2009-03-16 15:45:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -19,20 +19,20 @@ public class MixedGraphMemStore
     public MixedGraphMemStore( Graph parent )
         { this.parent = parent; }
     
-    protected Map map = CollectionFactory.createHashedMap();
+    protected Map<Node, Set<Triple>> map = CollectionFactory.createHashedMap();
     
     protected int size = 0;
     
     protected boolean add( Node key, Triple t )
         {
-        Set s = (Set) map.get( key );
+        Set<Triple> s = map.get( key );
         if (s == null) map.put( key, s = CollectionFactory.createHashedSet() );
         return s.add( t );
         }
     
     protected boolean remove( Node key, Triple t )
         {
-        Set s = (Set) map.get( key );
+        Set<Triple> s = map.get( key );
         if (s != null)
             {
             boolean removed = s.remove( t );
@@ -56,27 +56,25 @@ public class MixedGraphMemStore
             remove( t.getObject(), t ); } }
     
     public boolean contains( Triple t )
-        { Set s = (Set) map.get( t.getSubject() );
+        { Set<Triple> s = map.get( t.getSubject() );
         return s != null && s.contains( t ); }
     
-    public ExtendedIterator iterator( final Node key, Triple pattern )
+    public ExtendedIterator<Triple> iterator( final Node key, Triple pattern )
         {
-        Set s = (Set) map.get( key );
+        Set<Triple> s = map.get( key );
         if (s == null)
             return NullIterator.instance();
         else
             {
-            final Iterator it = s.iterator();
-            return new NiceIterator()
+            final Iterator<Triple> it = s.iterator();
+            return new NiceIterator<Triple>()
             	{
                 private Triple remember = null;
                 
-                @Override
-                public Object next()
-                    { return remember = (Triple) it.next(); }
+                @Override public Triple next()
+                    { return remember = it.next(); }
                 
-                @Override
-                public boolean hasNext()
+                @Override public boolean hasNext()
                     { return it.hasNext(); }
     
                 public void excise( Node k, Triple triple )
@@ -84,8 +82,7 @@ public class MixedGraphMemStore
                     if (k != key) MixedGraphMemStore.this.remove( k, triple );
                     }
                 
-                @Override
-                public void remove()
+                @Override public void remove()
                     {
                     it.remove();
                     size -= 1;
@@ -99,32 +96,30 @@ public class MixedGraphMemStore
             }
         }
     
-    public ExtendedIterator iterator( final Triple pattern )
+    public ExtendedIterator<Triple> iterator( final Triple pattern )
         {
-        return new NiceIterator()
+        return new NiceIterator<Triple>()
             {
-            protected Iterator keys = map.keySet().iterator();
-            protected Iterator current = NullIterator.instance();
+            protected Iterator<Node> keys = map.keySet().iterator();
+            protected Iterator<Triple> current = NullIterator.instance();
             protected Triple triple = null;
             protected Triple remember = null;
             protected Node key = null;
-            protected Set seen = CollectionFactory.createHashedSet();
+            protected Set<Triple> seen = CollectionFactory.createHashedSet();
                         
-            @Override
-            public Object next()
+            @Override public Triple next()
                 {
                 ensureHasNext();
                 try { return remember = triple; } finally { triple = null; }
                 }
             
-            @Override
-            public boolean hasNext()
+            @Override public boolean hasNext()
                 {
                 if (triple == null)
                     {
                     while (current.hasNext())
                         { 
-                        triple = (Triple) current.next(); 
+                        triple = current.next(); 
                         if (!pattern.matches( triple ) || seen.contains( triple ))
                             {
                             triple = null;
@@ -137,8 +132,8 @@ public class MixedGraphMemStore
                         }
                     if (keys.hasNext())
                         {
-                        key = (Node) keys.next();
-                        Set s = (Set) map.get( key );
+                        key = keys.next();
+                        Set<Triple> s = map.get( key );
                         if (s == null) return hasNext();
                         current = s.iterator();
                         return hasNext();
@@ -154,8 +149,7 @@ public class MixedGraphMemStore
                 if (key != this.key) MixedGraphMemStore.this.remove( key, triple );
                 }
             
-            @Override
-            public void remove()
+            @Override public void remove()
                 { 
                 current.remove(); 
                 size -= 1;

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: WrappedHashMap.java,v 1.9 2008-12-28 19:32:28 andy_seaborne Exp $
+    $Id: WrappedHashMap.java,v 1.10 2009-03-16 15:45:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public class WrappedHashMap implements BunchMap
     {
-    protected final Map map = CollectionFactory.createHashedMap();
+    protected final Map<Object, TripleBunch> map = CollectionFactory.createHashedMap();
     
     public void clear()
         { map.clear(); }
@@ -24,7 +24,7 @@ public class WrappedHashMap implements BunchMap
         { return map.size(); }
 
     public TripleBunch get( Object key )
-        { return (TripleBunch) map.get( key ); }
+        { return map.get( key ); }
 
     public void put( Object key, TripleBunch value )
         { map.put( key, value ); }
@@ -32,7 +32,7 @@ public class WrappedHashMap implements BunchMap
     public void remove( Object key )
         { map.remove( key ); }
 
-    public ExtendedIterator keyIterator()
+    public ExtendedIterator<Object> keyIterator()
         { return WrappedIterator.create( map.keySet().iterator() ); }
     }
 
