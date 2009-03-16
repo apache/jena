@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.14 2009-01-16 17:24:02 andy_seaborne Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.15 2009-03-16 16:02:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2009-01-16 17:24:02 $
+ * @version $Revision: 1.15 $ on $Date: 2009-03-16 16:02:27 $
  */
 public class TestCurrentRDFWG extends ReasonerTestBase {
     
@@ -96,8 +96,8 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
     private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf", TEST_DIR);
-        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             suite.addTest(new TestReasonerWG(tester, test, rf, config));
         }
     }        

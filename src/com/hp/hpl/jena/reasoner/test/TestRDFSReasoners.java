@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.21 2009-01-16 17:24:02 andy_seaborne Exp $
+ * $Id: TestRDFSReasoners.java,v 1.22 2009-03-16 16:02:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 //import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
+import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
@@ -29,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2009-01-16 17:24:02 $
+ * @version $Revision: 1.22 $ on $Date: 2009-03-16 16:02:27 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
@@ -103,8 +104,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
         Reasoner r = rf.create(config);
-        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             suite.addTest(new TestReasonerFromManifest(tester, test, r));
         }
     }
@@ -114,8 +115,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
      */
     private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
-        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             suite.addTest(new TestReasonerWG(tester, test, rf, config));
         }
     }
@@ -126,8 +127,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
      */
     public static void constructQuerytests(TestSuite suite, String manifest, Reasoner reasoner) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
-        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             suite.addTest(new TestReasonerFromManifest(tester, test, reasoner));
         }
     }
@@ -271,7 +272,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
             ValidityReport report = g.validate();
             if (!report.isValid()) {
                 logger.debug("Validation error report:");
-                for (Iterator i = report.getReports(); i.hasNext(); ) {
+                for (Iterator<Report> i = report.getReports(); i.hasNext(); ) {
                     logger.debug(i.next().toString());
                 }
             }

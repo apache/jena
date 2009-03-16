@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.33 2009-01-26 10:28:24 chris-dollin Exp $
+ * $Id: ReasonerTester.java,v 1.34 2009-03-16 16:02:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -44,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2009-01-26 10:28:24 $
+ * @version $Revision: 1.34 $ on $Date: 2009-03-16 16:02:27 $
  */
 public class ReasonerTester {
 
@@ -89,7 +89,7 @@ public class ReasonerTester {
     protected Model testManifest;
     
     /** A cache of loaded source files, map from source name to Model */
-    protected Map sourceCache = new HashMap();
+    protected Map<String, Model> sourceCache = new HashMap<String, Model>();
     
     protected static Log logger = LogFactory.getLog(ReasonerTester.class);
     
@@ -110,7 +110,7 @@ public class ReasonerTester {
      */
     public Model loadFile(String file, boolean cache) throws IOException {
         if (cache && sourceCache.keySet().contains(file)) {
-            return (Model)sourceCache.get(file);
+            return sourceCache.get(file);
         }
         String langType = "RDF/XML";
         if (file.endsWith(".nt")) {
@@ -179,8 +179,8 @@ public class ReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
-        for (Iterator i = listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         return true;
@@ -195,8 +195,8 @@ public class ReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(Reasoner reasoner, TestCase testcase) throws IOException {
-        for (Iterator i = listTests().iterator(); i.hasNext(); ) {
-            String test = (String)i.next();
+        for (Iterator<String> i = listTests().iterator(); i.hasNext(); ) {
+            String test = i.next();
             if (!runTest(test, reasoner, testcase)) return false;
         }
         return true;
@@ -205,8 +205,8 @@ public class ReasonerTester {
     /**
      * Return a list of all test names defined in the manifest for this test harness.
      */
-    public List listTests() {
-        List testList = new ArrayList();
+    public List<String> listTests() {
+        List<String> testList = new ArrayList<String>();
         ResIterator tests = testManifest.listResourcesWithProperty(RDF.type, testClass);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());
@@ -258,13 +258,13 @@ public class ReasonerTester {
         Graph queryG = loadTestFile(test, queryP);
         Graph resultG = Factory.createGraphMem();
 
-        Iterator queries = queryG.find(null, null, null);
+        Iterator<Triple> queries = queryG.find(null, null, null);
         while (queries.hasNext()) {
-            TriplePattern query = tripleToPattern((Triple)queries.next());
+            TriplePattern query = tripleToPattern( queries.next() );
             logger.debug("Query: " + query);
-            Iterator answers = graph.find(query.asTripleMatch());
+            Iterator<Triple> answers = graph.find(query.asTripleMatch());
             while (answers.hasNext()) {
-                Triple ans = (Triple)answers.next();
+                Triple ans = answers.next();
                 logger.debug("ans: " + TriplePattern.simplePrintString(ans));
                 resultG.add(ans);
             }

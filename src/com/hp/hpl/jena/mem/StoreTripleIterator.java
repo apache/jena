@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StoreTripleIterator.java,v 1.11 2009-01-19 14:33:57 chris-dollin Exp $
+  $Id: StoreTripleIterator.java,v 1.12 2009-03-16 16:02:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.*;
 
 /**
      An iterator wrapper for NodeToTriplesMap iterators which ensures that
@@ -27,7 +27,7 @@ public class StoreTripleIterator extends TrackingTripleIterator
     protected Graph toNotify;
     
     public StoreTripleIterator
-        ( Graph toNotify, Iterator it, 
+        ( Graph toNotify, Iterator<Triple> it, 
           NodeToTriplesMapBase X, 
           NodeToTriplesMapBase A, 
           NodeToTriplesMapBase B )

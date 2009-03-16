@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.36 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestReasoners.java,v 1.37 2009-03-16 16:02:27 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -24,7 +23,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +30,7 @@ import java.util.Set;
  * Outline unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2008-12-28 19:32:22 $
+ * @version $Revision: 1.37 $ on $Date: 2009-03-16 16:02:27 $
  */
 public class TestReasoners extends TestCase {
     
@@ -262,8 +260,8 @@ public class TestReasoners extends TestCase {
         for (ResIterator i = im.listSubjects(); i.hasNext();) {
             Resource base = i.nextResource();
             
-            List directLinks = new ArrayList();
-            for (Iterator j = im.listObjectsOfProperty(base, dp); j.hasNext(); ) {
+            List<RDFNode> directLinks = new ArrayList<RDFNode>();
+            for (NodeIterator j = im.listObjectsOfProperty(base, dp); j.hasNext(); ) {
                 directLinks.add(j.next());
             }
 
@@ -395,7 +393,7 @@ public class TestReasoners extends TestCase {
         OntModel om = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_TRANS_INF, m );
         OntClass rootClass = om.getOntClass( RDFS.Resource.getURI() );
         Resource c = m.getResource("c");
-        Set direct = IteratorCollection.iteratorToSet( rootClass.listSubClasses( true ));
+        Set<OntClass> direct = rootClass.listSubClasses( true ).toSet();
         assertFalse( direct.contains( c ) );
         
     }

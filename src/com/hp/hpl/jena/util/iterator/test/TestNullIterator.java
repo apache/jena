@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNullIterator.java,v 1.7 2009-01-26 15:24:34 andy_seaborne Exp $
+  $Id: TestNullIterator.java,v 1.8 2009-03-16 16:02:20 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.iterator.test;
 
@@ -34,7 +34,7 @@ public class TestNullIterator extends ModelTestBase
     
     public void testAndThenReturnsArgument()
         {
-        ExtendedIterator it = new NiceIterator();
+        ExtendedIterator<Object> it = new NiceIterator<Object>();
         assertSame( it, NullIterator.instance().andThen( it ) );
         }
     }

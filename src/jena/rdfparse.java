@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: rdfparse.java,v 1.11 2008-12-28 19:32:20 andy_seaborne Exp $
+  $Id: rdfparse.java,v 1.12 2009-03-16 16:02:27 chris-dollin Exp $
 */
 
 package jena;
@@ -78,8 +78,8 @@ public class rdfparse {
          wrapped this way so JUnit not a compile-time requirement.
     */
     protected static void runTests( boolean internetTest ) throws Exception { 
-        Class rdfparse = Class.forName( "jena.test.rdfparse" );
-        Constructor constructor = rdfparse.getConstructor( new Class[] {boolean.class} );
+        Class<?> rdfparse = Class.forName( "jena.test.rdfparse" );
+        Constructor<?> constructor = rdfparse.getConstructor( new Class[] {boolean.class} );
         Command c = (Command) constructor.newInstance( new Object[] {new Boolean( internetTest ) } );
         c.execute();
 //        ARPTests.internet = internetTest;
