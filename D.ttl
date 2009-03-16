@@ -3,7 +3,6 @@
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix :        <http://example/> .
 
-:x = :y .
 
 :x :p "x" .
 :x :p "y" .

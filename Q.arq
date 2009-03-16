@@ -1,7 +1,8 @@
-PREFIX  :     <http://example/>
-PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX afn: <http://jena.hpl.hp.com/function#>
 
-  SELECT  ?x
-    WHERE
-    { ?x foaf:knows ?z}
-    HAVING ( count(*) >= 10 )
+SELECT
+?a
+{ 
+  ?s ?p ?o .
+  LET (?a := afn:namespace(?p))
+}
