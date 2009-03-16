@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.15 2009-01-27 10:52:49 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.16 2009-03-16 14:00:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -12,19 +12,22 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
-     Iterator which delivers all the triples from a Fragment's map.
+     Iterator which delivers all the triples from a Fragment's map. Subclasses
+     must override <code>fill(GraphAdd,Node,T)</code> to fill the GraphAdd
+     object with the triples implied by the unrefied <code>T</code> object.
+     In the codebase, T is instantiated as either a Triple or a Fragments.     
 */
-public abstract class FragmentTripleIterator extends NiceIterator<Triple>
+public abstract class FragmentTripleIterator<T> extends NiceIterator<Triple>
     {
     private final GraphAddList pending;
-    private final Iterator it;
+    private final Iterator<Map.Entry<Node, T>> it;
     
     /**
         An iterator over all the reification triples buried in <code>it</code> that match
         <code>match</code>. The elements of the iterator are either Triples
         or Fragmentss.
     */
-    public FragmentTripleIterator( Triple match, Iterator it )
+    public FragmentTripleIterator( Triple match, Iterator<Map.Entry<Node, T>> it )
         {
         super();
         this.it = it;
@@ -60,7 +63,7 @@ public abstract class FragmentTripleIterator extends NiceIterator<Triple>
         entity (which will be our list). It would be nice if we could create an interface
         for the fragmentObject's type.
     */
-    protected abstract void fill( GraphAdd ga, Node n, Object fragmentsObject );
+    protected abstract void fill( GraphAdd ga, Node n, T fragmentsObject );
         
     /**
         Refill the pending list. Keep trying until either there are some elements
@@ -74,11 +77,8 @@ public abstract class FragmentTripleIterator extends NiceIterator<Triple>
          <code>next</code>. The default behaviour is to assume that this object is 
          a Map.Entry; over-ride if it's something else.
     */
-    protected void refillFrom( GraphAdd pending, Object next )
-        {
-        Map.Entry e  = (Map.Entry) next;
-        fill( pending, (Node) e.getKey(), e.getValue() );
-        }
+    protected void refillFrom( GraphAdd pending, Map.Entry<Node, T> x )
+        { fill( pending, x.getKey(), x.getValue() ); }
 }
 
 /*

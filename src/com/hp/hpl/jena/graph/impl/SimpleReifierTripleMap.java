@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.18 2009-01-27 10:52:53 chris-dollin Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.19 2009-03-16 14:00:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -103,11 +103,11 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         else
             {
             final Iterator<Map.Entry<Node, Triple>> it = forwardMap.entrySet().iterator();   
-            return new FragmentTripleIterator( pattern, it )
+            return new FragmentTripleIterator<Triple>( pattern, it )
                 {
-                @Override public void fill( GraphAdd ga, Node n, Object fragmentsObject )
+                @Override public void fill( GraphAdd ga, Node n, Triple t )
                     {
-                    SimpleReifier.graphAddQuad( ga, n, (Triple) fragmentsObject );         
+                    SimpleReifier.graphAddQuad( ga, n, t );         
                     }
                 };
             }

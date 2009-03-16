@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.55 2009-03-03 18:32:39 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.56 2009-03-16 14:00:11 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,6 +24,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.shared.JenaException;
@@ -74,7 +75,7 @@ import com.hp.hpl.jena.util.Tokenizer;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.55 $ on $Date: 2009-03-03 18:32:39 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.56 $ on $Date: 2009-03-16 14:00:11 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -812,6 +813,8 @@ public class Rule implements ClauseEntry {
             } else if (token.startsWith("<") && token.endsWith(">")) {
                 String uri = token.substring(1, token.length()-1);
                 return Node.createURI(uri);
+            } else if (token.startsWith( "_" )) { // TODO rationalise [this is for the RIF code]
+                return Node.createAnon( new AnonId( token.substring( 1 ) ) );
             } else if (token.indexOf(':') != -1) {
                 String exp = prefixMapping.expandPrefix(token); // Local map first
                 exp = PrintUtil.expandQname(exp);  // Retain global map for backward compatibility
