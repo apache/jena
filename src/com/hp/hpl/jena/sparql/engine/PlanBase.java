@@ -57,7 +57,7 @@ public abstract class PlanBase extends PrintSerializableBase implements Plan
         if ( closed )
             return ;
         if ( closeable != null )
-            // called once
+            // Called once
             // Two routes - explicit QueryExecution.close
             // or natural end of QueryIterator (see PlanOp)
             closeable.close() ;
