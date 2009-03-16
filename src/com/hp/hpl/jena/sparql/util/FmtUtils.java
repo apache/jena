@@ -115,7 +115,7 @@ public class FmtUtils
 //    
 //    private static String stringForQuad(Quad quad, PrefixMapping prefixMap)
 //    {
-//        StringBuffer buff = new StringBuffer() ;
+//        StringBuilder buff = new StringBuilder() ;
 //        
 //        if ( ! quad.isDefaultGraph() )
 //        {
@@ -233,7 +233,7 @@ public class FmtUtils
             // Not a recognized form.
         }
         
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         sbuff.append("\"") ;
         stringEsc(sbuff, s, true) ;
         sbuff.append("\"") ;
@@ -256,7 +256,7 @@ public class FmtUtils
     
     public static String stringForString(String str)
     {
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         sbuff.append("\"") ;
         stringEsc(sbuff, str, true) ;
         sbuff.append("\"") ;
@@ -444,15 +444,15 @@ public class FmtUtils
     
     public static String stringEsc(String s, boolean singleLineString)
     {
-        StringBuffer sb = new StringBuffer() ;
+        StringBuilder sb = new StringBuilder() ;
         stringEsc(sb, s, singleLineString) ;
         return sb.toString() ;
     }
     
-    public static void stringEsc(StringBuffer sbuff, String s)
+    public static void stringEsc(StringBuilder sbuff, String s)
     { stringEsc( sbuff,  s, true ) ; }
 
-    public static void stringEsc(StringBuffer sbuff, String s, boolean singleLineString)
+    public static void stringEsc(StringBuilder sbuff, String s, boolean singleLineString)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
