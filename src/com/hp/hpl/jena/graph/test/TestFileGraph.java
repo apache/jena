@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.22 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestFileGraph.java,v 1.23 2009-03-16 15:21:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -125,7 +125,7 @@ public class TestFileGraph extends GraphTestBase
 
     public void testClosingNotifys()
         {
-        final List history = new ArrayList();
+        final List<File> history = new ArrayList<File>();
         FileGraph.NotifyOnClose n = new FileGraph.NotifyOnClose() 
             {
             public void notifyClosed( File f )
@@ -133,14 +133,14 @@ public class TestFileGraph extends GraphTestBase
             };
         File file = FileUtils.tempFileName( "fileGraph", ".nt" );
         Graph g = new FileGraph( n, file, true, true, ReificationStyle.Minimal );
-        assertEquals( new ArrayList(), history );
+        assertEquals( new ArrayList<File>(), history );
         g.close();
         assertEquals( oneElementList( file ), history );
         }
     
-    protected List oneElementList( Object x )
+    protected List<Object> oneElementList( Object x )
         {
-        List result = new ArrayList();
+        List<Object> result = new ArrayList<Object>();
         result.add( x );
         return result;
         }

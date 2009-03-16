@@ -2,9 +2,9 @@
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
 <<<<<<< TestFindLiterals.java
- 	$Id: TestFindLiterals.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.13 2009-03-16 15:21:14 chris-dollin Exp $
 =======
- 	$Id: TestFindLiterals.java,v 1.12 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.13 2009-03-16 15:21:14 chris-dollin Exp $
 >>>>>>> 1.4
 */
 
@@ -23,9 +23,9 @@ public class TestFindLiterals extends GraphTestBase
     public TestFindLiterals( String name )
         { super( name ); }
 
-    static final Map1 getObject = new Map1() 
+    static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
         {
-        public Object map1( Object o ) { return ((Triple) o).getObject(); }
+        public Node map1( Triple o ) { return o.getObject(); }
         };
     
     public static TestFindLiterals aTest
@@ -45,8 +45,7 @@ public class TestFindLiterals extends GraphTestBase
                 Node literal = NodeCreateUtils.create( search );
             //
                 assertEquals( "graph has wrong size", n, g.size() );
-                Set got = iteratorToSet
-                    ( g.find( Node.ANY, Node.ANY, literal ).mapWith( getObject ) );
+                Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( getObject ).toSet();
                 assertEquals( nodeSet( results ), got );
                 }
             };

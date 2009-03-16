@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphUtils.java,v 1.9 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestGraphUtils.java,v 1.10 2009-03-16 15:21:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -34,8 +34,7 @@ public class TestGraphUtils extends GraphTestBase
         final Bool foundAll = new Bool( false );
         Graph mock = new GraphBase() 
             {
-            @Override
-            public ExtendedIterator graphBaseFind( TripleMatch m )
+            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
                 { 
                 Triple t = m.asTriple();
                 assertEquals( Node.ANY, t.getSubject() ); 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.70 2009-01-16 17:23:55 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.71 2009-03-16 15:21:14 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.70 $ on $Date: 2009-01-16 17:23:55 $
+ * @version $Revision: 1.71 $ on $Date: 2009-03-16 15:21:14 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -480,7 +480,7 @@ public class TestTypedLiterals extends TestCase {
         String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
         String filename = "testing/xsd/daml+oil-ex-dt.xsd";
         TypeMapper tm = TypeMapper.getInstance();
-        List typenames = XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
+        List<String> typenames = XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
         assertIteratorValues(typenames.iterator(), new Object[] {
             uri + "#XSDEnumerationHeight",
             uri + "#over12",
@@ -805,7 +805,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
         Query q = new Query();
         q.addMatch(a.asNode(), p.asNode(), l2.asNode());
-        Iterator qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
+        Iterator<Domain> qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
         assertTrue(qi.hasNext());
         // Similar tests at Model API level
         // Selector s1 = new SimpleSelector(a, p, l2);
@@ -1162,7 +1162,7 @@ public class TestTypedLiterals extends TestCase {
     }
     
     /** Helper function test an iterator against a list of objects - order dependent */
-    public void assertIteratorValues(Iterator it, Object[] vals) {
+    public void assertIteratorValues( Iterator<String> it, Object[] vals ) {
         boolean[] found = new boolean[vals.length];
         for (int i = 0; i < vals.length; i++) found[i] = false;
         while (it.hasNext()) {

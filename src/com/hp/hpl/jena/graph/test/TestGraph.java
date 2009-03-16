@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.31 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: TestGraph.java,v 1.32 2009-03-16 15:21:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -75,11 +75,9 @@ public class TestGraph extends GraphTestBase
     public void testListSubjectsDoesntUseFind()
         {
         final boolean [] called = {false};
-        
         Graph g = Factory.createGraphMem();
-        
-        ExtendedIterator subjects = g.queryHandler().subjectsFor( null, null );
-        Set s = CollectionFactory.createHashedSet();
+        ExtendedIterator<Node> subjects = g.queryHandler().subjectsFor( null, null );
+        Set<Node> s = CollectionFactory.createHashedSet();
         while (subjects.hasNext()) s.add( subjects.next() );
         assertFalse( "find should not have been called", called[0] );
         }   
@@ -87,11 +85,9 @@ public class TestGraph extends GraphTestBase
     public void testListPredicatesDoesntUseFind()
         {
         final boolean [] called = {false};
-        
         Graph g = Factory.createGraphMem();
-        
-        ExtendedIterator predicates = g.queryHandler().predicatesFor( null, null );
-        Set s = CollectionFactory.createHashedSet();
+        ExtendedIterator<Node> predicates = g.queryHandler().predicatesFor( null, null );
+        Set<Node> s = CollectionFactory.createHashedSet();
         while (predicates.hasNext()) s.add( predicates.next() );
         assertFalse( "find should not have been called", called[0] );
         }
@@ -99,11 +95,9 @@ public class TestGraph extends GraphTestBase
     public void testListObjectsDoesntUseFind()
         {
         final boolean [] called = {false};
-        
         Graph g = Factory.createGraphMem();
-        
-        ExtendedIterator subjects = g.queryHandler().objectsFor( null, null );
-        Set s = CollectionFactory.createHashedSet();
+        ExtendedIterator<Node> subjects = g.queryHandler().objectsFor( null, null );
+        Set<Node> s = CollectionFactory.createHashedSet();
         while (subjects.hasNext()) s.add( subjects.next() );
         assertFalse( "find should not have been called", called[0] );
         }   

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.19 2009-01-16 17:23:55 andy_seaborne Exp $
+  $Id: TestFileGraphMaker.java,v 1.20 2009-03-16 15:21:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -82,7 +82,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
         FileGraphMaker m = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         m.createGraph( "example" ).close();
-        assertEquals( new HashSet(), iteratorToSet( m.listGraphs() ) );
+        assertEquals( new HashSet<String>(), m.listGraphs().toSet() );
         m.close();
         }
     

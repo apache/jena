@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.81 2008-12-28 19:31:53 andy_seaborne Exp $i
+  $Id: AbstractTestGraph.java,v 1.82 2009-03-16 15:21:14 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -80,7 +80,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testFindByFluidTriple()
         {
         Graph g = getGraphWith( "x y z " );
-        Set expect = tripleSet( "x y z" );
+        Set<Triple> expect = tripleSet( "x y z" );
         assertEquals( expect, g.find( triple( "?? y z" ) ).toSet() );
         assertEquals( expect, g.find( triple( "x ?? z" ) ).toSet() );
         assertEquals( expect, g.find( triple( "x y ??" ) ).toSet() );
@@ -224,7 +224,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         assertContainsAll( title + ": modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
         assertOmitsAll( title + ": modified simple graph", g, "x R y; a T b" );
     /* */ 
-        ClosableIterator it = g.find( Node.ANY, node("lift"), Node.ANY );
+        ClosableIterator<Triple> it = g.find( Node.ANY, node("lift"), Node.ANY );
         assertTrue( title + ": finds some triple(s)", it.hasNext() );
         assertEquals( title + ": finds a 'lift' triple", triple("spindizzies lift cities"), it.next() );
         assertFalse( title + ": finds exactly one triple", it.hasNext() );
@@ -279,12 +279,12 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
 
     static final Triple [] tripleArray = tripleArray( "S P O; A R B; X Q Y" );
 
-    static final List tripleList = Arrays.asList( tripleArray( "i lt j; p equals q" ) );
+    static final List<Triple> tripleList = Arrays.asList( tripleArray( "i lt j; p equals q" ) );
         
     static final Triple [] setTriples = tripleArray
         ( "scissors cut paper; paper wraps stone; stone breaks scissors" );
         
-    static final Set tripleSet = CollectionFactory.createHashedSet( Arrays.asList( setTriples ) );
+    static final Set<Triple> tripleSet = CollectionFactory.createHashedSet( Arrays.asList( setTriples ) );
                 
     public void testBulkUpdate()
         {
@@ -392,7 +392,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testRemove( String findRemove, String findCheck )
         {
         Graph g = getGraphWith( "S P O" );
-        ExtendedIterator it = g.find( Triple.create( findRemove ) );
+        ExtendedIterator<Triple> it = g.find( Triple.create( findRemove ) );
         try 
             {
             it.next(); it.remove(); it.close();
@@ -449,8 +449,8 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         graphAdd( g, "S P O" );
-        assertDiffer( new HashSet(), g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );
-        assertDiffer( new HashSet(), g.find( Triple.ANY ).toSet() );
+        assertDiffer( new HashSet<Triple>(), g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );
+        assertDiffer( new HashSet<Triple>(), g.find( Triple.ANY ).toSet() );
         }
 
     protected boolean canBeEmpty( Graph g )
@@ -503,56 +503,57 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     public void testListSubjects()
         {
-        Set emptySubjects = listSubjects( getGraphWith( "" ) );
+        Set<Node> emptySubjects = listSubjects( getGraphWith( "" ) );
         Graph g = getGraphWith( "x P y; y Q z" );
         assertEquals( nodeSet( "x y" ), remove( listSubjects( g ), emptySubjects ) );
         g.delete( triple( "x P y" ) );
         assertEquals( nodeSet( "y" ), remove( listSubjects( g ), emptySubjects ) );
         }
 
-    protected Set listSubjects( Graph g )
+    protected Set<Node> listSubjects( Graph g )
         {
-        return iteratorToSet( g.queryHandler().subjectsFor( Node.ANY, Node.ANY ) );
+        return g.queryHandler().subjectsFor( Node.ANY, Node.ANY ).toSet();
         }
     
     public void testListPredicates()
         {
-        Set emptyPredicates = listPredicates( getGraphWith( "" ) );
+        Set<Node> emptyPredicates = listPredicates( getGraphWith( "" ) );
         Graph g = getGraphWith( "x P y; y Q z" );
         assertEquals( nodeSet( "P Q" ), remove( listPredicates( g ), emptyPredicates ) );
         g.delete( triple( "x P y" ) );
         assertEquals( nodeSet( "Q" ), remove( listPredicates( g ), emptyPredicates ) );
         }
 
-    protected Set listPredicates( Graph g )
+    protected Set<Node> listPredicates( Graph g )
         {
-        return iteratorToSet( g.queryHandler().predicatesFor( Node.ANY, Node.ANY ) );
+        return g.queryHandler().predicatesFor( Node.ANY, Node.ANY ).toSet();
         }    
     
     public void testListObjects()
         {
-        Set emptyObjects = listObjects( getGraphWith( "" ) );
+        Set<Node> emptyObjects = listObjects( getGraphWith( "" ) );
         Graph g = getGraphWith( "x P y; y Q z" );
         assertEquals( nodeSet( "y z" ), remove( listObjects( g ), emptyObjects ) );
         g.delete( triple( "x P y" ) );
         assertEquals( nodeSet( "z" ), remove( listObjects( g ), emptyObjects ) );
         }
 
-    protected Set listObjects( Graph g )
+    protected Set<Node> listObjects( Graph g )
         {
-        return iteratorToSet( g.queryHandler().objectsFor( Node.ANY, Node.ANY ) );
+        return g.queryHandler().objectsFor( Node.ANY, Node.ANY ).toSet();
         }
 
     /**
         Answer a set with all the elements of <code>A</code> except those
         in <code>B</code>.
     */
-    private Set remove( Set A, Set B )
+    private <T> Set<T> remove( Set<T> A, Set<T> B )
         {
-        Set result = new HashSet( A );
+        Set<T> result = new HashSet<T>( A );
         result.removeAll(  B  );        
         return result;
         }
+    
     /**
          Ensure that triples removed by calling .remove() on the iterator returned by
          a find() will generate deletion notifications.
@@ -564,7 +565,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
             {
             Triple toRemove = triple( "remove this triple" );
             g.add( toRemove );
-            ExtendedIterator rtr = g.find( toRemove );
+            ExtendedIterator<Triple> rtr = g.find( toRemove );
             assertTrue( "ensure a(t least) one triple", rtr.hasNext() );
             rtr.next(); rtr.remove(); rtr.close();
             L.assertHas( new Object[] { "add", g, toRemove, "delete", g, toRemove} );
@@ -619,7 +620,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testBulkAddList()
         {
         Graph g = getAndRegister( L );
-        List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
+        List<Triple> elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
         g.getBulkUpdateHandler().add( elems );
         L.assertHas( new Object[] {"addList", g, elems} );
         }
@@ -635,7 +636,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testBulkDeleteList()
         {
         Graph g = getAndRegister( L );
-        List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
+        List<Triple> elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
         g.getBulkUpdateHandler().delete( elems );
         L.assertHas( new Object[] {"deleteList", g, elems} );
         }
@@ -656,7 +657,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         L.assertHas( new Object[] {"deleteIterator", g, Arrays.asList( triples )} );
         }
         
-    public Iterator asIterator( Triple [] triples )
+    public Iterator<Triple> asIterator( Triple [] triples )
         { return Arrays.asList( triples ).iterator(); }
     
     public void testBulkAddGraph()
@@ -735,15 +736,15 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     protected void testSameSubjects( Graph g, Node p, Node o )
         {
-        Set bis = iteratorToSet( SimpleQueryHandler.subjectsFor( g, p, o ) );
-        Set qhs = iteratorToSet( g.queryHandler().subjectsFor( p, o ) );
+        Set<Node> bis = SimpleQueryHandler.subjectsFor( g, p, o ).toSet();
+        Set<Node> qhs = g.queryHandler().subjectsFor( p, o ).toSet();
         assertEquals( bis, qhs );
         }    
     
     public void testListSubjectsNoRemove()
         {
         Graph g = getGraphWith( "a P b; b Q c; c R a" );
-        Iterator it = g.queryHandler().subjectsFor( Node.ANY, Node.ANY );
+        Iterator<Node> it = g.queryHandler().subjectsFor( Node.ANY, Node.ANY );
         it.next();
         try { it.remove(); fail( "listSubjects for " + g.getClass() + " should not support .remove()" ); }
         catch (UnsupportedOperationException e) { pass(); }
@@ -759,15 +760,15 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     protected void testSameObjects( Graph g, Node s, Node p )
         {
-        Set bis = iteratorToSet( SimpleQueryHandler.objectsFor( g, s, p ) );
-        Set qhs = iteratorToSet( g.queryHandler().objectsFor( s, p ) );
+        Set<Node> bis = SimpleQueryHandler.objectsFor( g, s, p ).toSet();
+        Set<Node> qhs = g.queryHandler().objectsFor( s, p ).toSet();
         assertEquals( bis, qhs );
         }
 
     public void testListObjectsNoRemove()
         {
         Graph g = getGraphWith( "a P b; b Q c; c R a" );
-        Iterator it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
+        Iterator<Node> it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
         it.next();
         try { it.remove(); fail( "listObjects for " + g.getClass() + " should not support .remove()" ); }
         catch (UnsupportedOperationException e) { pass(); }
@@ -778,7 +779,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         Graph g = getGraphWith( "a P 1; b P 1" );
         int count = 0;
         Node one = node( "1" );
-        Iterator it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
+        Iterator<Node> it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
         while (it.hasNext()) if (it.next().equals( one )) count += 1;
         assertEquals( 1, count );
         }
@@ -794,15 +795,15 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     protected void testSamePredicates( Graph g, Node s, Node o )
         {
-        Set bis = iteratorToSet( SimpleQueryHandler.predicatesFor( g, s, o ) );
-        Set qhs = iteratorToSet( g.queryHandler().predicatesFor( s, o ) );
+        Set<Node> bis = SimpleQueryHandler.predicatesFor( g, s, o ).toSet();
+        Set<Node> qhs = g.queryHandler().predicatesFor( s, o ).toSet();
         assertEquals( bis, qhs );
         }
 
     public void testListPredicatesNoRemove()
         {
         Graph g = getGraphWith( "a P b; b Q c; c R a" );
-        Iterator it = g.queryHandler().predicatesFor( Node.ANY, Node.ANY );
+        Iterator<Node> it = g.queryHandler().predicatesFor( Node.ANY, Node.ANY );
         it.next();
         try { it.remove(); fail( "listPredicates for " + g.getClass() + " should not support .remove()" ); }
         catch (UnsupportedOperationException e) { pass(); }
