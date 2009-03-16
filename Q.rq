@@ -3,4 +3,5 @@ SELECT *
 { 
   ?s ?p ?o .
   ?s :notme ?o .
+  ?s :p ?o .
 }
