@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.11 2009-01-27 15:07:27 chris-dollin Exp $
+  $Id: TestEarlyConstraints.java,v 1.12 2009-03-16 14:59:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -54,7 +54,7 @@ public class TestEarlyConstraints extends QueryTestBase
                 return super.find( tm ); 
                 }
             };
-        Set s = iteratorToSet( q.executeBindings( g, new Node[] {Query.S} ) .mapWith ( getFirst ) );
+        Set<Node> s = q.executeBindings( g, new Node[] {Query.S} ) .mapWith ( getFirst ).toSet();
         assertEquals( nodeSet( "c" ), s );
         assertEquals( 1, count[0] );
         }

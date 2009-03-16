@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.27 2009-01-29 10:07:27 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.28 2009-03-16 14:59:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -167,7 +167,7 @@ public class TestExpressionConstraints extends QueryTestBase
         Expression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
         Query q = new Query().addConstraint( Dyadic.and( e1, e2 ) );
         Set<Expression> eBoth = CollectionFactory.createHashedSet(); eBoth.add( e1 ); eBoth.add( e2 );
-        Set s = iteratorToSet( q.getConstraints().iterator() );
+        Set<Expression> s = iteratorToSet( q.getConstraints().iterator() );
         assertEquals( eBoth, s );
         }
     
