@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: MemoryModelGetter.java,v 1.4 2008-12-28 19:31:52 andy_seaborne Exp $
+ 	$Id: MemoryModelGetter.java,v 1.5 2009-03-17 15:30:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,14 +15,14 @@ import com.hp.hpl.jena.rdf.model.ModelReader;
 
 public class MemoryModelGetter implements ModelGetter
 	{
-	protected HashMap models = new HashMap();
+	protected HashMap<String, Model> models = new HashMap<String, Model>();
 	
 	public Model getModel(String URL) 
-		{ return (Model) models.get( URL ); }
+		{ return models.get( URL ); }
 	
 	public Model getModel(String URL, ModelReader loadIfAbsent) 
 		{
-		Model m = (Model) models.get( URL );
+		Model m = models.get( URL );
 		if (m == null) models.put( URL, m = ModelFactory.createDefaultModel() );
 		return m;
 		}

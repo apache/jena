@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.26 2009-01-16 20:53:22 andy_seaborne Exp $
+ 	$Id: FasterTripleStore.java,v 1.27 2009-03-17 15:30:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.faster;
 
@@ -67,7 +67,7 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
             {
             protected final QueryNode p = pt.P;
         
-            public Iterator find( Domain d )
+            public Iterator<Triple> find( Domain d )
                 {
                 Node P = p.finder( d );
                 if (P.isConcrete())
@@ -76,13 +76,10 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
                     return subjects.iterateAll();
                 }
     
-            @Override
-            public void applyToTriples( Domain d, Matcher m, StageElement next )
+            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
-                Iterator it = find( d );
-                while (it.hasNext())
-                    if (m.match( d, (Triple) it.next() )) 
-                         next.run( d );
+                Iterator<Triple> it = find( d );
+                while (it.hasNext()) if (m.match( d, it.next() )) next.run( d );
                 }
             };
         }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: SimpleXMLPathIterator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:28 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 15:30:10 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathIterator.java,v 1.9 2008-12-28 19:32:28 andy_seaborne Exp $
+ * @version CVS $Id: SimpleXMLPathIterator.java,v 1.10 2009-03-17 15:30:10 chris-dollin Exp $
  */
 public class SimpleXMLPathIterator 
     implements Iterator
@@ -50,7 +50,7 @@ public class SimpleXMLPathIterator
     //////////////////////////////////
 
     /** The stack of iterators we use to search down the paths */
-    protected List m_stack;
+    protected List<Iterator> m_stack;
     
     /** The simple path we are evaluating */
     protected SimpleXMLPath m_path;
@@ -70,7 +70,7 @@ public class SimpleXMLPathIterator
     public SimpleXMLPathIterator( SimpleXMLPath path, Node node ) {
         m_path = path;
         m_len = path.getPathComponents().size();
-        m_stack = new ArrayList( m_len );
+        m_stack = new ArrayList<Iterator>( m_len );
         
         // put the first stage on the stack
         m_stack.add( path.getPathComponent( 0 ).getAll( node ) );
@@ -139,7 +139,7 @@ public class SimpleXMLPathIterator
         i--;
         
         while (i >= 0 && i < min(m_len, m_stack.size())) {
-            Iterator j = (Iterator) m_stack.get( i );
+            Iterator j = m_stack.get( i );
             
             if (j == null) {
                 // go back a stage

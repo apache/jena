@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.22 2009-01-16 17:23:48 andy_seaborne Exp $
+  $Id: ModelListenerAdapter.java,v 1.23 2009-03-17 15:30:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -39,25 +39,25 @@ public class ModelListenerAdapter implements GraphListener
     public void notifyAddTriple( Graph g, Triple t )
         { L.addedStatement( m.asStatement( t ) ); }
 
-    public void notifyAddList( Graph g, List triples )
+    public void notifyAddList( Graph g, List<Triple> triples )
         { L.addedStatements( m.asStatements( triples ) ); }  
               
-    public void notifyAddIterator( Graph g, Iterator it )
+    public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { L.addedStatements( m.asStatements( it ) ); }
         
     public void notifyAddGraph( Graph g, Graph added )
         { L.addedStatements( m.asModel( added ) ); }
         
-    public void notifyDeleteIterator( Graph g, Iterator it )
+    public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { L.removedStatements( m.asStatements( it ) ); }
         
     public void notifyDeleteTriple( Graph g, Triple t )
         { L.removedStatement( m.asStatement( t ) ); }
         
-    public void notifyAddIterator( Graph g, List triples )
+    public void notifyAddIterator( Graph g, List<Triple> triples )
         { L.addedStatements( m.asStatements( triples ) ); }
         
-    public void notifyDeleteList( Graph g, List triples )
+    public void notifyDeleteList( Graph g, List<Triple> triples )
         { L.removedStatements( m.asStatements( triples ) ); }
 
     public void notifyDeleteGraph( Graph g, Graph removed )

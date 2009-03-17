@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.13 2008-12-28 19:31:52 andy_seaborne Exp $
+ * $Id: InfModelImpl.java,v 1.14 2009-03-17 15:30:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-12-28 19:31:52 $
+ * @version $Revision: 1.14 $ on $Date: 2009-03-17 15:30:10 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -114,7 +114,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @param object    The value sought
      */ 
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
-        Iterator iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
+        Iterator<Triple> iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
         return IteratorFactory.asStmtIterator(iter,this);
     }
     
@@ -134,7 +134,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
-    public Iterator getDerivation(Statement statement) {
+    public Iterator<Derivation> getDerivation(Statement statement) {
         return getInfGraph().getDerivation(statement.asTriple());
     }
     

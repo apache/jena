@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.24 2009-03-17 11:01:52 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.25 2009-03-17 15:30:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -90,7 +90,7 @@ public abstract class NodeToTriplesMapBase
         Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
-    public abstract Iterator iteratorForIndexed( Object y );
+    public abstract Iterator<Triple> iteratorForIndexed( Object y );
     
     /**
         Answer an iterator over all the triples in this NTM.
