@@ -7,7 +7,7 @@
 :x :p "x" .
 :x :p "y" .
 :x :p "z" .
-@prefix :        <http://example/ns#> .
+
 :y :p 1 .
 :y :p 2 .
 :y :p 3 .
