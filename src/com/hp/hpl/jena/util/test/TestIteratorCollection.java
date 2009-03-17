@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestIteratorCollection.java,v 1.8 2009-01-26 15:24:32 andy_seaborne Exp $
+  $Id: TestIteratorCollection.java,v 1.9 2009-03-17 08:38:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -32,13 +32,13 @@ public class TestIteratorCollection extends GraphTestBase
     
     public void testSingletonToSingleSet()
         {
-        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator( "single" ) ) );
+        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<String>( "single" ) ) );
         }
     
     public void testLotsToSet()
         {
         Object [] elements = new Object[] {"now", "is", "the", "time"};
-        Iterator it = Arrays.asList( elements ).iterator();
+        Iterator<Object> it = Arrays.asList( elements ).iterator();
         assertEquals( setLots( elements ), IteratorCollection.iteratorToSet( it ) );
         }
     
@@ -54,26 +54,25 @@ public class TestIteratorCollection extends GraphTestBase
     protected void testCloseForSet( Object[] objects )
         {
         final boolean [] closed = {false};
-        Iterator iterator = new WrappedIterator( Arrays.asList( objects ).iterator() ) 
-            { @Override
-            public void close() { super.close(); closed[0] = true; } };
+        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() ) 
+            { @Override public void close() { super.close(); closed[0] = true; } };
         iteratorToSet( iterator );
         assertTrue( closed[0] );
         }
 
     public void testEmptyToEmptyList()
         {
-        assertEquals( new ArrayList(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
+        assertEquals( new ArrayList<Object>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
     
     public void testSingletonToSingletonList()
         {
-        assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator( "just one" ) ) );
+        assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<String>( "just one" ) ) );
         }
     
     public void testLotsToList()
         {
-        List list = Arrays.asList( new Object[] {"to", "be", "or", "not", "to", "be"}  );
+        List<Object> list = Arrays.asList( new Object[] {"to", "be", "or", "not", "to", "be"}  );
         assertEquals( list, IteratorCollection.iteratorToList( list.iterator() ) );
         }
         
@@ -89,30 +88,29 @@ public class TestIteratorCollection extends GraphTestBase
     protected void testCloseForList( Object[] objects )
         {
         final boolean [] closed = {false};
-        Iterator iterator = new WrappedIterator( Arrays.asList( objects ).iterator() ) 
-            { @Override
-            public void close() { super.close(); closed[0] = true; } };
+        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() ) 
+            { @Override public void close() { super.close(); closed[0] = true; } };
         iteratorToList( iterator );
         assertTrue( closed[0] );
         }
 
-    protected Set oneSet( Object x )
+    protected Set<Object> oneSet( Object x )
         {
-        Set result = new HashSet();
+        Set<Object> result = new HashSet<Object>();
         result.add( x );
         return result;
         }
     
-    protected Set setLots( Object [] elements )
+    protected Set<Object> setLots( Object [] elements )
         {
-        Set result = new HashSet();
+        Set<Object> result = new HashSet<Object>();
         for (int i = 0; i < elements.length; i += 1) result.add( elements[i] );
         return result;
         }
     
-    protected List oneList( Object x )
+    protected List<Object> oneList( Object x )
         {
-        List result = new ArrayList();
+        List<Object> result = new ArrayList<Object>();
         result.add( x );
         return result;
         }

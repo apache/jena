@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestMonitors.java,v 1.7 2008-12-28 19:32:22 andy_seaborne Exp $
+ * $Id: TestMonitors.java,v 1.8 2009-03-17 08:38:00 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util.test;
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * Tests for MonitorGraph implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 
 public class TestMonitors extends TestCase {
@@ -71,8 +71,8 @@ public class TestMonitors extends TestCase {
         base.add(t3);
         
         // Test changes from empty
-        List additions = new ArrayList();
-        List deletions = new ArrayList();
+        List<Triple> additions = new ArrayList<Triple>();
+        List<Triple> deletions = new ArrayList<Triple>();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
@@ -107,8 +107,8 @@ public class TestMonitors extends TestCase {
         listener.has(new Object[]{});
         
         // Test changes from empty
-        List additions = new ArrayList();
-        List deletions = new ArrayList();
+        List<Triple> additions = new ArrayList<Triple>();
+        List<Triple> deletions = new ArrayList<Triple>();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
@@ -157,8 +157,8 @@ public class TestMonitors extends TestCase {
         base.add(s3);
         
         // Test changes from empty
-        List additions = new ArrayList();
-        List deletions = new ArrayList();
+        List<Statement> additions = new ArrayList<Statement>();
+        List<Statement> deletions = new ArrayList<Statement>();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {s1, s2, s3});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});

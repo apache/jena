@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /** TestLocationMapper
  * 
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.11 2008-12-28 19:32:22 andy_seaborne Exp $
+ * @version $Id: TestLocationMapper.java,v 1.12 2009-03-17 08:38:00 chris-dollin Exp $
  */
 
 public class TestLocationMapper extends TestCase
@@ -72,16 +72,16 @@ public class TestLocationMapper extends TestCase
         
         // Light test that the two location mappers are "the same"
         LocationMapper locMap = new LocationMapper(mapping) ;
-        for ( Iterator iter = loc.listAltEntries() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = loc.listAltEntries() ; iter.hasNext() ; )
         {
-            String e = (String)iter.next() ;
+            String e = iter.next() ;
             String v1 = locMap.getAltEntry(e) ;
             String v2 = loc.getAltEntry(e) ;
             assertEquals("Different entries", v1, v2) ;
         }
-        for ( Iterator iter = loc.listAltPrefixes() ; iter.hasNext() ; )
+        for ( Iterator<String> iter = loc.listAltPrefixes() ; iter.hasNext() ; )
         {
-            String e = (String)iter.next() ;
+            String e = iter.next() ;
             String v1 = locMap.getAltPrefix(e) ;
             String v2 = loc.getAltPrefix(e) ;
             assertEquals("Different entries", v1, v2) ;

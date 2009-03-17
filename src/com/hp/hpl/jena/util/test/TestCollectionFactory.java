@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestCollectionFactory.java,v 1.7 2008-12-28 19:32:22 andy_seaborne Exp $
+  $Id: TestCollectionFactory.java,v 1.8 2009-03-17 08:38:00 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.test;
 
@@ -26,37 +26,34 @@ public class TestCollectionFactory extends ModelTestBase
 
     public void testHashMapExists()
         {
-        Map map = CollectionFactory.createHashedMap();
-        assertInstanceOf( Map.class, map );
+        assertInstanceOf( Map.class, CollectionFactory.<Object, Object>createHashedMap() );
         }
     
     public void testHashMapSized()
         {
-        Map map = CollectionFactory.createHashedMap( 42 );
-        assertInstanceOf( Map.class, map );
+        assertInstanceOf( Map.class, CollectionFactory.<Object, Object>createHashedMap( 42 ) );
         }
     
     public void testHashMapCopy()
         {
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         map.put( "here", "Bristol" );
         map.put( "there", "Oxford" );
-        Map copy = CollectionFactory.createHashedMap( map );
+        Map<String, String> copy = CollectionFactory.createHashedMap( map );
         assertEquals( map, copy );
         }
     
     public void testHashSetExists()
         {
-        Set set = CollectionFactory.createHashedSet();
-        assertInstanceOf( Set.class, set );
+        assertInstanceOf( Set.class, CollectionFactory.<Object>createHashedSet() );
         }
     
     public void testHashSetCopy()
         {
-        Set s = new HashSet();
+        Set<String> s = new HashSet<String>();
         s.add( "jelly" );
         s.add( "concrete" );
-        Set copy = CollectionFactory.createHashedSet( s );
+        Set<String> copy = CollectionFactory.createHashedSet( s );
         assertEquals( s, copy );
         }
     }
