@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-27 09:48:56 $
+ * Last modified on   $Date: 2009-03-17 10:28:56 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.22 2009-01-27 09:48:56 chris-dollin Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.23 2009-03-17 10:28:56 chris-dollin Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -63,8 +63,7 @@ public class RDFListImpl
      */
     @SuppressWarnings("hiding")
     public static Implementation factory = new Implementation() {
-        @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        @Override public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
                 RDFListImpl impl = new RDFListImpl( n, eg );
                 
@@ -84,8 +83,7 @@ public class RDFListImpl
             } 
         }
             
-        @Override
-        public boolean canWrap( Node node, EnhGraph eg ) {
+        @Override public boolean canWrap( Node node, EnhGraph eg ) {
             Graph g = eg.asGraph();
             
             // if we are using a language profile, get the first, rest and next resources from there
@@ -163,7 +161,7 @@ public class RDFListImpl
     public Resource listNil()           { return m_listNil; }
     public Property listFirst()         { return m_listFirst; }
     public Property listRest()          { return m_listRest; }
-    public Class<RDFList> listAbstractionClass() { return RDFList.class; }
+    public Class<? extends RDFList> listAbstractionClass() { return RDFList.class; }
     
     
     /**

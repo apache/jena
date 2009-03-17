@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.21 2009-01-26 10:28:24 chris-dollin Exp $
+ * $Id: TestUtil.java,v 1.22 2009-03-17 10:28:56 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2009-01-26 10:28:24 $
+ * @version $Revision: 1.22 $ on $Date: 2009-03-17 10:28:56 $
  */
 public class TestUtil {
     
@@ -30,7 +30,7 @@ public class TestUtil {
      * @param it The iterator to test
      * @param vals The expected values of the iterator
      */
-    public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals) {
+    public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals) {
         assertIteratorValues( testCase, it, vals, 0 );
     }
     
@@ -44,7 +44,7 @@ public class TestUtil {
      * @param anonCount If non zero, count the number of anonymous resources returned by <code>it</code>,
      * and don't check these resources against the expected <code>vals</code>.
      */
-    public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals, int countAnon ) {
+    public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals, int countAnon ) {
         Log logger = LogFactory.getLog( testCase.getClass() );
         
         boolean[] found = new boolean[vals.length];
@@ -117,7 +117,7 @@ public class TestUtil {
     /**
      * Check the length of an iterator.
      */
-    public static void assertIteratorLength(Iterator it, int expectedLength) {
+    public static void assertIteratorLength(Iterator<?> it, int expectedLength) {
         int length = 0;
         while (it.hasNext()) {
             it.next();

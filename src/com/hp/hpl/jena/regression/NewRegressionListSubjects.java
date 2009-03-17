@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.16 2009-03-16 16:02:28 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.17 2009-03-17 10:28:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -63,15 +63,16 @@ public class NewRegressionListSubjects extends ModelTestBase
         return result;
         }
     
-    public void testListResourcesOnObject()
-        {
-        Object d = new Date();
-        Model m = modelWithStatements( "" );
-        m.addLiteral( resource( "S" ), property( "P" ), d );
-        m.addLiteral( resource( "X" ), property( "P" ), new Object() );
-        List answers = m.listResourcesWithProperty( property( "P" ), d ).toList();
-        assertEquals( listOfOne( resource( "S" ) ), answers );
-        }
+// the methods are deprecated, the tests eliminated
+//    public void testListResourcesOnObject()
+//        {
+//        Object d = new Date();
+//        Model m = modelWithStatements( "" );
+//        m.addLiteral( resource( "S" ), property( "P" ), d );
+//        m.addLiteral( resource( "X" ), property( "P" ), new Object() );
+//        List answers = m.listResourcesWithProperty( property( "P" ), d ).toList();
+//        assertEquals( listOfOne( resource( "S" ) ), answers );
+//        }
     
     public void test8()  
         {

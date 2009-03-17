@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RecordingModelListener.java,v 1.9 2009-01-26 10:28:23 chris-dollin Exp $
+  $Id: RecordingModelListener.java,v 1.10 2009-03-17 10:28:38 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class RecordingModelListener implements ModelChangedListener
     {
-    List history = new ArrayList();
+    List<Object> history = new ArrayList<Object>();
     
     public void addedStatement( Statement s )
         { record( "add", s ); }
@@ -28,7 +28,7 @@ public class RecordingModelListener implements ModelChangedListener
     public void addedStatements( Statement [] statements )
         { record( "add[]", Arrays.asList( statements ) ); }
         
-    public void addedStatements( List statements )
+    public void addedStatements( List<Statement> statements )
         { record( "addList", statements ); }
         
     public void addedStatements( StmtIterator statements )
@@ -43,7 +43,7 @@ public class RecordingModelListener implements ModelChangedListener
    public void removedStatement( Statement s )
         { record( "remove", s ); }
         
-    public void removedStatements( List statements )
+    public void removedStatements( List<Statement> statements )
         { record( "removeList", statements ); }
         
     public void removedStatements( StmtIterator statements )
@@ -70,27 +70,27 @@ public class RecordingModelListener implements ModelChangedListener
             Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );
         }    
     
-    public boolean has( List things )
+    public boolean has( List<?> things )
             { return history.equals( things ); } 
         
-    public boolean hasStart( List L )
+    public boolean hasStart( List<Object> L )
         { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
     
-    public boolean hasEnd( List L )
+    public boolean hasEnd( List<Object> L )
         { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
     
-    public void assertHas( List things )
+    public void assertHas( List<?> things )
         { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }  
     
     public void assertHasStart( Object [] start )
         { 
-        List L = Arrays.asList( start );
+        List<Object> L = Arrays.asList( start );
         if (hasStart( L ) == false) Assert.fail( "expected " + L + " at the beginning of " + history );
         }
     
     public void assertHasEnd( Object [] end )
         {
-        List L = Arrays.asList( end );
+        List<Object> L = Arrays.asList( end );
         if (hasEnd( L ) == false) Assert.fail( "expected " + L + " at the end of " + history );        
         }
     

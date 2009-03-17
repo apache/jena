@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.21 2009-01-26 10:28:23 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.22 2009-03-17 10:28:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -209,10 +209,10 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         utility method: get a set of all the elements delivered by
         _m.listReifiedStatements_.
     */  
-    public Set getSetRS( Model m )
-        { return GraphTestBase.iteratorToSet( m.listReifiedStatements() ); }
+    public Set<ReifiedStatement> getSetRS( Model m )
+        { return m.listReifiedStatements().toSet(); }
    
-    protected static Set empty = CollectionFactory.createHashedSet();
+    protected static Set<ReifiedStatement> noStatements = CollectionFactory.createHashedSet();
     
     /**
         test that listReifiedStatements produces an iterator that contains
@@ -222,18 +222,18 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     */
     public void testListReifiedStatements()
         {
-        assertEquals( "initially: no reified statements", empty, getSetRS( model ) );
+        assertEquals( "initially: no reified statements", noStatements, getSetRS( model ) );
         ReifiedStatement rs = model.createReifiedStatement( aURI, SPO );
         // assertEquals( "still: no reified statements", empty, getSetRS( m ) );
     /* */
         model.add( rs, P, O );   
-        Set justRS = arrayToSet( new Object [] {rs} );
+        Set<ReifiedStatement> justRS = arrayToSet( new ReifiedStatement [] {rs} );
         assertEquals( "post-add: one reified statement", justRS, getSetRS( model ) );
         model.add( S, P, rs );
         assertEquals( "post-add: still one reified statement", justRS, getSetRS( model ) );
     /* */
         ReifiedStatement rs2 = model.createReifiedStatement( anotherURI, SPO2 );
-        Set bothRS = arrayToSet( new Object[] {rs, rs2} );
+        Set<ReifiedStatement> bothRS = arrayToSet( new ReifiedStatement[] {rs, rs2} );
         model.add( rs2, P, O );
         assertEquals( "post-add: still one reified statement", bothRS, getSetRS( model ) );
         }
@@ -250,19 +250,19 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         assertTrue( "should be non-empty", model.listReifiedStatements().hasNext() );
         }
         
-    public Set getSetRS( Model m, Statement st )
-        { return GraphTestBase.iteratorToSet( m.listReifiedStatements( st ) ); }
+    public Set<ReifiedStatement> getSetRS( Model m, Statement st )
+        { return m.listReifiedStatements( st ).toSet(); }
         
     public void testListReifiedSpecificStatements()
         {
-        assertEquals( "no statements should match st", empty, getSetRS( model, SPO ) );
+        assertEquals( "no statements should match st", noStatements, getSetRS( model, SPO ) );
     /* */
         ReifiedStatement rs = model.createReifiedStatement( aURI, SPO );
         ReifiedStatement rs2 = model.createReifiedStatement( anotherURI, SPO2 );
         model.add( rs, P, O );
         // assertEquals( "still no matching statement", empty, getSetRS( m, stOther ) );
     /* */
-        Set justRS2 = arrayToSet( new Object [] {rs2} );
+        Set<ReifiedStatement> justRS2 = arrayToSet( new ReifiedStatement [] {rs2} );
         model.add( rs2, P, O );
         assertEquals( "now one matching statement", justRS2, getSetRS( model, SPO2 ) );        
         }
@@ -271,9 +271,9 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         {
         Statement st = SPO;
         Model m = model;
-        assertEquals( "it's not there yet", empty, GraphTestBase.iteratorToSet( st.listReifiedStatements() ) );
+        assertEquals( "it's not there yet", noStatements, GraphTestBase.iteratorToSet( st.listReifiedStatements() ) );
         ReifiedStatement rs = m.createReifiedStatement( aURI, st );
-        Set justRS = arrayToSet( new Object [] {rs} );
+        Set<ReifiedStatement> justRS = arrayToSet( new ReifiedStatement [] {rs} );
         m.add( rs, P, O );
         assertEquals( "it's here now", justRS, GraphTestBase.iteratorToSet( st.listReifiedStatements() ) );    
         }

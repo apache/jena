@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-02 20:38:12 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 10:28:38 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,7 +32,6 @@ import org.apache.commons.logging.LogFactory;
 import junit.framework.*;
 
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.*;
@@ -51,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.19 2009-02-02 20:38:12 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.20 2009-03-17 10:28:38 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -118,9 +117,9 @@ public class TestList
     //////////////////////////////////
 
     /** Test that an iterator delivers the expected values */
-    protected static void iteratorTest( Iterator i, Object[] expected ) {
+    protected static void iteratorTest( Iterator<?> i, Object[] expected ) {
         Log logger = LogFactory.getLog( TestList.class );
-        List expList = new ArrayList();
+        List<Object> expList = new ArrayList<Object>();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );
         }
@@ -139,7 +138,7 @@ public class TestList
         
         if (!(expList.size() == 0)) {
             logger.debug( "TestList - Expected iterator results not found" );
-            for (Iterator j = expList.iterator(); j.hasNext(); ) {
+            for (Iterator<Object> j = expList.iterator(); j.hasNext(); ) {
                 logger.debug( "TestList - missing: " + j.next() );
             }
         }
@@ -734,7 +733,7 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             RDFList root = getListRoot( m );
-            iteratorTest( root.mapWith( new Map1() {public Object map1(Object x){return ((Resource) x).getLocalName();} } ), 
+            iteratorTest( root.mapWith( new Map1<RDFNode, String>() {public String map1( RDFNode x ){return ((Resource) x).getLocalName();} } ), 
                           new Object[] {"a","b","c","d","e"} );            
         }
     }
@@ -919,7 +918,7 @@ public class TestList
         
         @Override
         public void runTest() {
-            BuiltinPersonalities.model.add( UserDefList.class, UserDefListImpl.factory );
+            BuiltinPersonalities.model.add( UserDefList.class, UserDefListImpl.factoryForTests );
             
             Model m = ModelFactory.createDefaultModel();
             
@@ -941,7 +940,7 @@ public class TestList
     protected static interface UserDefList extends RDFList {}
     
     protected static class UserDefListImpl extends RDFListImpl implements UserDefList {
-        public static final String NS = "http://example.org/testlist#";
+        @SuppressWarnings("hiding") public static final String NS = "http://example.org/testlist#";
         public static final Property FIRST = ResourceFactory.createProperty( NS+"first" );
         public static final Property REST = ResourceFactory.createProperty( NS+"rest" );
         public static final Resource NIL = ResourceFactory.createResource( NS+"nil" );
@@ -950,9 +949,8 @@ public class TestList
         /**
          * A factory for generating UserDefList facets from nodes in enhanced graphs.
          */
-        public static Implementation factory = new Implementation() {
-            @Override
-            public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public static Implementation factoryForTests = new Implementation() {
+            @Override public EnhNode wrap( Node n, EnhGraph eg ) { 
                 if (canWrap( n, eg )) {
                     UserDefListImpl impl = new UserDefListImpl( n, eg );
                     
@@ -969,8 +967,7 @@ public class TestList
                 } 
             }
                 
-            @Override
-            public boolean canWrap( Node node, EnhGraph eg ) {
+            @Override public boolean canWrap( Node node, EnhGraph eg ) {
                 Graph g = eg.asGraph();
                 
                 return  node.equals( NIL.asNode() ) || 
@@ -981,8 +978,7 @@ public class TestList
         };
 
         /** This method returns the Java class object that defines which abstraction facet is presented */
-        @Override
-        public Class listAbstractionClass() { 
+        @Override public Class<? extends RDFList> listAbstractionClass() { 
             return UserDefList.class; 
         }
 

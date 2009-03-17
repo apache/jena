@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.40 2009-01-27 14:32:45 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.41 2009-03-17 10:28:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -64,7 +64,7 @@ public class GraphTestBase extends JenaTestBase
     /**
         Answer a set of the elements of <code>A</code>.
     */
-    public Set<Object> arrayToSet( Object [] A )
+    public <T> Set<T> arrayToSet( T [] A )
         { return CollectionFactory.createHashedSet( Arrays.asList( A ) ); }
     
     /**
