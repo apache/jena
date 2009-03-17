@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: ClassHierarchy.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-02 20:38:12 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 10:53:40 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,12 +37,12 @@ import java.util.*;
  * <p>
  * Simple demonstration program to show how to list a hierarchy of classes. This
  * is not a complete solution to the problem (sub-classes of restrictions, for example,
- * are not shown).  It is inteded only to be illustrative of the general approach.
+ * are not shown).  It is intended only to be illustrative of the general approach.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.3 2009-02-02 20:38:12 andy_seaborne Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.4 2009-03-17 10:53:40 ian_dickinson Exp $
  */
 public class ClassHierarchy {
     // Constants
@@ -55,7 +55,7 @@ public class ClassHierarchy {
     //////////////////////////////////
 
     protected OntModel m_model;
-    private Map m_anonIDs = new HashMap();
+    private Map<AnonId,String> m_anonIDs = new HashMap<AnonId, String>();
     private int m_anonCount = 0;
 
 
@@ -69,15 +69,15 @@ public class ClassHierarchy {
     /** Show the sub-class hierarchy encoded by the given model */
     public void showHierarchy( PrintStream out, OntModel m ) {
         // create an iterator over the root classes that are not anonymous class expressions
-        Iterator i = m.listHierarchyRootClasses()
-                      .filterDrop( new Filter() {
+        Iterator<OntClass> i = m.listHierarchyRootClasses()
+                      .filterDrop( new Filter<OntClass>() {
                                     @Override
-                                    public boolean accept( Object o ) {
-                                        return ((Resource) o).isAnon();
+                                    public boolean accept( OntClass r ) {
+                                        return r.isAnon();
                                     }} );
 
         while (i.hasNext()) {
-            showClass( out, (OntClass) i.next(), new ArrayList(), 0 );
+            showClass( out, i.next(), new ArrayList<OntClass>(), 0 );
         }
     }
 
@@ -88,14 +88,14 @@ public class ClassHierarchy {
     /** Present a class, then recurse down to the sub-classes.
      *  Use occurs check to prevent getting stuck in a loop
      */
-    protected void showClass( PrintStream out, OntClass cls, List occurs, int depth ) {
+    protected void showClass( PrintStream out, OntClass cls, List<OntClass> occurs, int depth ) {
         renderClassDescription( out, cls, depth );
         out.println();
 
         // recurse to the next level down
         if (cls.canAs( OntClass.class )  &&  !occurs.contains( cls )) {
-            for (Iterator i = cls.listSubClasses( true );  i.hasNext(); ) {
-                OntClass sub = (OntClass) i.next();
+            for (Iterator<OntClass> i = cls.listSubClasses( true );  i.hasNext(); ) {
+                OntClass sub = i.next();
 
                 // we push this expression on the occurs list before we recurse
                 occurs.add( cls );
@@ -154,7 +154,7 @@ public class ClassHierarchy {
 
     /** Render an anonymous class or restriction */
     protected void renderAnonymous( PrintStream out, Resource anon, String name ) {
-        String anonID = (String) m_anonIDs.get( anon.getId() );
+        String anonID = m_anonIDs.get( anon.getId() );
         if (anonID == null) {
             anonID = "a-" + m_anonCount++;
             m_anonIDs.put( anon.getId(), anonID );

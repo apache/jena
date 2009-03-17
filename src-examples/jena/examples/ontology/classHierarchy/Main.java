@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Aug-2003
  * Filename           $RCSfile: Main.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 17:49:07 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 10:53:40 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.1 2005-10-06 17:49:07 andy_seaborne Exp $
+ * @version CVS $Id: Main.java,v 1.2 2009-03-17 10:53:40 ian_dickinson Exp $
  */
 public class Main {
     // Constants
@@ -59,7 +59,11 @@ public class Main {
         // we have a local copy of the wine ontology
         m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine",
                                             "file:testing/reasoners/bugs/wine.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine.owl",
+                                            "file:testing/reasoners/bugs/wine.owl" );
         m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/food",
+                                            "file:testing/reasoners/bugs/food.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/food.owl",
                                             "file:testing/reasoners/bugs/food.owl" );
 
         m.read( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine" );

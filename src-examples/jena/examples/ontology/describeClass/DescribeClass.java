@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Jul-2003
  * Filename           $RCSfile: DescribeClass.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-02-02 20:38:12 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 10:53:41 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.2 2009-02-02 20:38:12 andy_seaborne Exp $
+ * @version CVS $Id: DescribeClass.java,v 1.3 2009-03-17 10:53:41 ian_dickinson Exp $
  */
 public class DescribeClass {
     // Constants
@@ -57,7 +57,7 @@ public class DescribeClass {
     // Instance variables
     //////////////////////////////////
 
-    private Map m_anonIDs = new HashMap();
+    private Map<AnonId,String> m_anonIDs = new HashMap<AnonId,String>();
     private int m_anonCount = 0;
 
 
@@ -82,19 +82,18 @@ public class DescribeClass {
      */
     public void describeClass( PrintStream out, OntClass cls ) {
         renderClassDescription( out, cls );
-        out.println();
 
         // sub-classes
-        for (Iterator i = cls.listSuperClasses( true ); i.hasNext(); ) {
+        for (Iterator<OntClass> i = cls.listSuperClasses( true ); i.hasNext(); ) {
             out.print( "  is a sub-class of " );
-            renderClassDescription( out, (OntClass) i.next() );
+            renderClassDescription( out, i.next() );
             out.println();
         }
 
         // super-classes
-        for (Iterator i = cls.listSubClasses( true ); i.hasNext(); ) {
+        for (Iterator<OntClass> i = cls.listSubClasses( true ); i.hasNext(); ) {
             out.print( "  is a super-class of " );
-            renderClassDescription( out, (OntClass) i.next() );
+            renderClassDescription( out, i.next() );
             out.println();
         }
     }
@@ -199,7 +198,7 @@ public class DescribeClass {
     }
 
     protected void renderAnonymous( PrintStream out, Resource anon, String name ) {
-        String anonID = (String) m_anonIDs.get( anon.getId() );
+        String anonID = m_anonIDs.get( anon.getId() );
         if (anonID == null) {
             anonID = "a-" + m_anonCount++;
             m_anonIDs.put( anon.getId(), anonID );
@@ -215,9 +214,9 @@ public class DescribeClass {
         out.print( op );
         out.println( " of {" );
 
-        for (Iterator i = boolClass.listOperands(); i.hasNext(); ) {
+        for (Iterator<? extends OntClass> i = boolClass.listOperands(); i.hasNext(); ) {
             out.print( "      " );
-            renderClassDescription( out, (OntClass) i.next() );
+            renderClassDescription( out, i.next() );
             out.println();
         }
         out.print( "  } " );

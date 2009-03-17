@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Jul-2003
  * Filename           $RCSfile: PersistentOntology.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 17:49:07 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-03-17 10:53:41 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PersistentOntology.java,v 1.1 2005-10-06 17:49:07 andy_seaborne Exp $
+ * @version CVS $Id: PersistentOntology.java,v 1.2 2009-03-17 10:53:41 ian_dickinson Exp $
  */
 public class PersistentOntology {
     // Constants
@@ -81,8 +81,8 @@ public class PersistentOntology {
         // create an ontology model using the persistent model as base
         OntModel m = ModelFactory.createOntologyModel( getModelSpec( maker ), base );
 
-        for (Iterator i = m.listClasses(); i.hasNext(); ) {
-            OntClass c = (OntClass) i.next();
+        for (Iterator<OntClass> i = m.listClasses(); i.hasNext(); ) {
+            OntClass c = i.next();
             System.out.println( "Class " + c.getURI() );
         }
     }
