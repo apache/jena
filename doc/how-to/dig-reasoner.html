@@ -22,248 +22,32 @@
 <body>
 
 <h1>HOWTO use Jena with an external DIG reasoner</h1>
-<p>Index</p>
+
+<h2>Deprecation of DIG 1.0 interface</h2>
+<p>With effect from Jena 2.6.0 onwards, we have taken the decision to remove
+support for the DIG 1.0 external reasoner interface from Jena. DIG 1.0 has not been
+an actively
+supported interface specification for some time,
+and few extant products implement it any more. Moreover, it
+does not support a complete range of OWL inference operations. Users who wish
+to continue to interface to an external reasoner while working with updated
+versions of Jena
+have two options:</p>
 <ul>
-  <li><a href="#overview">Overview</a></li>
-  <li><a href="#setup">Setting up a Jena DIG reasoner</a></li>
-  <li><a href="#model">Attaching a DIG reasoner to an ontology model</a></li>
-  <li><a href="#config">Configuring the DIG reasoner interface</a></li>
-  <li><a href="#example">Extended example</a></li>
-  <li><a href="#cautions">Caveats and cautions</a></li>
+<li>(recommended) use the <a href="http://clarkparsia.com/pellet/">Pellet</a> reasoner,
+which has a native Jena interface not dependent on DIG 1.0</li>
+<li>retrieve the DIG 1.0 code from the Jena CVS repository on
+<a href="https://sourceforge.net/projects/jena">SourceForge</a></li>
 </ul>
-<p>
-  The built-in Jena rule-based reasoners are able to provide semantic entailments for ontologies using
-  OWL-lite, and some constructs from OWL-DL and OWL-full.  However, for large or complex ontologies 
-  the rule-based approach can computationally very expensive.  Moreover, there are useful modelling primitives
-  in OWL-DL that many semantic-web applications will wish to make use of, but which the rule-based 
-  reasoners don't handle.  Jena's architecture provides
-  a mechanism for attaching external reasoners to Jena models, by re-implementing the Graph interface.
-  Jena version 2.1 onwards provides an illustration of this technique by providing a transparent 
-  gateway between Jena ontology models and external reasoners implementing the 
-  <a href="http://dl-web.man.ac.uk/dig/">DIG description
-  logic reasoner interface</a> (henceforth abbreviated simply to the <em>DIG interface</em>).
+<p>In the latter case, if there is sufficient demand from the user-base we will provide an
+easily-downloadable zip or tar archive of the DIG 1.0 sources. If you would benefit from such
+an archive, please notify the developers via the
+<a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support list</a>.
 </p>
-<p>
-  The DIG interface is an emerging standard for providing access to description-logic reasoning
-  via an HTTP-based interface to a separate reasoning process. Available DIG reasoners 
-  at the time of writing include:
-  <a href="http://www.racer-systems.com/">Racer</a>,
-  <a href="http://www.cs.man.ac.uk/~horrocks/FaCT/">FaCT</a> and
-  <a href="http://www.mindswap.org/2003/pellet/index.shtml">Pellet</a>.
-  In principle, Jena should work with any conformant DIG reasoner (but see note below).  The current
-  release is known to work with Pellet, version 1.3-beta.  Jena's DIG interface <strong>does
-  not work correctly</strong> with RacerPro (i.e. versions greater than 1.7.23, which was the last
-  free release). Now that RacerPro is a commercial product, we are unfortunately not in a position
-  to test the Jena code against it.  </p>
-<p>Our current recommendation is to use the Pellet reasoner, 
-  since it is robust and scalable, and is available under under an open-source license. Pellet
-  is available from <a href="http://www.mindswap.org/2003/pellet/download.shtml">this download site</a>.
-</p>
-
-<h2 id="overview">Overview</h2>
-<p>
-  Figure 1 shows an overview of the connection between a Jena ontology model and an existing DIG reasoner
-  process.
-</p>
-<p>
-  <img src="../images/digSchematic.png" alt="schematic diagram" />
-  <br />
-  <span class="centered"><strong>Figure 1: Schematic of dataflows between Jena model and DIG reasoner</strong></span>
-</p>
-<p>
-  As figure 1 shows, accessing a DIG reasoner in Jena uses the
-  identical API to accessing a normal in-memory model.  That is, the usual model API is used to, for example, 
-  list the classes in the model or determine the properties of an individual. Moreover, the information
-  inferred by the reasoner is available as RDF triples.  So, if the reasoner determines that a class
-  <code>A</code> is unsatisfiable, the triple <code>:A&nbsp;rdfs:subClassOf&nbsp;owl:Nothing</code>
-  will appear in the model.  Figure 1 also illustrates that the DIG adapter must
-  be told the host name and port number for accessing the HTTP interface of the reasoner.
-</p>
-<h2 id="setup">Setting up a Jena DIG reasoner</h2>
-<p>
-  In Jena, a <em>reasoner</em> is an object that creates instances of an inference graph
-  (<a href="../javadoc/com/hp/hpl/jena/reasoner/InfGraph.html"><code>InfGraph</code></a>) 
-  that is able to produce additional triples based on the triples
-  asserted in the base graph.  This is shown in Figure 1: the base graph is maintained on the
-  Jena side (i.e. client-side); when a triple is added to a model backed by a DIG reasoner 
-  it is first asserted into the base graph. This allows Jena programs access to the raw data, 
-  as well as  the inferred data. For example, it is typically only the contents of the base graph that is 
-  written out when the model is serialized.
-</p>
-<p>
-  To create a <a href="../javadoc/com/hp/hpl/jena/reasoner/dig/DIGReasoner.html"><code>DIGReasoner</code></a> 
-  object that can bind a base graph to an external reasoner,
-  we invoke the <a href="../javadoc/com/hp/hpl/jena/reasoner/dig/DIGReasonerFactory.html"><code>DIGReasonerFactory</code></a>.  The full syntax for doing this is:
-</p>
-<pre>
-   DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
-                                                                 .getFactory( DIGReasonerFactory.URI );
-   DIGReasoner r = (DIGReasoner) drf.create( null );</pre>
-<p>
-  Since this is quite verbose, a short-cut exists:
-</p>
-<pre>
-   DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );</pre>
-<p>
-  However, note that there are circumstances when the longer form is required (see below). 
-  The <code>null</code> parameter passed to the <code>create</code> call is an optional
-  configuration 
-    <a href="../javadoc/com/hp/hpl/jena/rdf/model/Resource.html"><code>Resource</code></a>. 
-  To pass configuration parameters to the reasoner, such
-  as a non-default host or port address for connecting to the reasoner, properties are attached
-  to a resource and passed in to the <code>create</code> call.
-</p>
-<p>
-  Note that a DIG reasoner does not necessarily have built-in knowledge of the common semantic-web
-  ontology languages (such as OWL and DAML+OIL).  The DIG encoding language is neutral to such
-  specific encodings.  This presents a problem when working with OWL and DAML, as some facts are
-  assumed to be common knowledge (for example the fact that <code>owl:TransitiveProperty</code>
-  is an <code>owl:ObjectProperty</code>).  The Jena rule reasoner handles this requirement by 
-  defining specific rules for the common-knowledge language axioms.  This is not an option for 
-  the Jena DIG reasoner (a model that relied on both internal and external reasoners would be
-  complex indeed!). Instead, we provide an option to create a DIG reasoner with a specific set
-  of axioms built-in to the model.  These are provided by variants to the <code>create()</code>
-  call: 
-  <code>createWithDAMLAxioms(Resource&nbsp;configuration)</code>
-  <code>createWithOWLAxioms(Resource&nbsp;configuration)</code>. Thus, to create a DIG reasoner
-  specialised for OWL usage, with configuration parameters attached to the resource
-  <code>config</code> we would use:
-</p>
-<pre>
-   DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
-                                                                 .getFactory( DIGReasonerFactory.URI );
-   DIGReasoner r = (DIGReasoner) drf.createWithOWLAxioms( config );</pre>
-<p>
-   It may be noted that creating a reasoner with pre-loaded axioms in this way precludes the
-   use of the short-cut form.
-</p>
-
-<h2 id="model">Attaching a DIG reasoner to an ontology model</h2>
-<p>
-  A Jena OntModel provides a convenience API for working with semantic web ontology sources.
-  To bind an OntModel to the DIG reasoner, we create an ontology model spec that includes
-  the DIG reasoner created above. A typical pattern (assuming reasoner <code>r</code> has
-  already been created, see above) is:
-</p>
-<pre>
-  OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
-  spec.setReasoner( r );
-  OntModel m = ModelFactory.createOntologyModel( spec, null );</pre>
-<p>
-  Ontology model <code>m</code> can then be used in the normal way.  If a large model is to be
-  prepared, it may sometimes be more efficient to create the model first, with no reasoner, then
-  bind that model to the reasoner to create the inference model. A typical pattern is:
-</p>
-<pre>
-  OntModel base = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
-  // ... build or load the model contents ...
-  
-  OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
-  spec.setReasoner( r );
-  
-  OntModel m = ModelFactory.createOntologyModel( spec, base );</pre>
-
-<h2 id="config">Configuring the DIG reasoner interface</h2>
-<p>
-  The DIG reasoner can be configured by passing configuration properties attached 
-  to a config resource when invoking <code>create()</code> on the reasoner factory.
-  The following table shows the configuration parameters recognised by the DIG reasoner.
-  Note that the prefix <code>rConf:</code> is defined as 
-  <code>http://jena.hpl.hp.com/2003/JenaReasoner#</code>, and that vocabulary constants
-  are available from the 
-    <a href="../javadoc/com/hp/hpl/jena/vocabulary/ReasonerVocabulary.html"><code>ReasonerVocabulary</code></a> 
-  class in Java.
-</p>
-<table width="700" cellpadding="1" cellspacing="0" border="1">
-  <tr><th style="width:150">URI</th><th style="width:150">Vocabulary constant</th><th style="width:400">Meaning</th></tr>
-  <tr><td><code>rConf:extReasonerURL</code></td>
-    <td><code>EXT_REASONER_URL</code></td>
-    <td>Specifies the URL of the connection to the reasoner. Only the hostname and port
-      are used.  Default value is <code>http://localhost:8081</code>.</td>
-  </tr>
-  <tr><td><code>rConf: extReasonerOntologyLang</code></td>
-    <td><code>EXT_REASONER_ONT_LANG</code></td>
-    <td>A URI that specifies the ontology language (OWL or DAML) that will be used with the reasoner.
-      The URI constants are available from the <code>ProfileRegistry</code>.  Default is OWL.</td>
-  </tr>
-  <tr><td><code>rConf:extReasonerAxioms</code></td>
-    <td><code>EXT_REASONER_AXIOMS</code></td>
-    <td>Specifies a URL for a set of axioms to load into the reasoner to support the ontology
-      language being used.  Default value is none.</td>
-  </tr>
-</table>
-<h2 id="example">Extended example</h2>
-<p>
-  The following program shows a complete example of using the DIG reasoner, with a non-default
-  URL to connect to.  We assume that the DIG reasoner has been started on port 2004 (e.g.
-  with <code>sh pellet-dig.sh&nbsp;-port&nbsp;2004</code>).
-</p>
-<pre>
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.reasoner.dig.*;
-import com.hp.hpl.jena.vocabulary.*;
-
-
-public class DIGExample
-{
-  public static void main( String[] args ) {
-    // set up a configuration resource to connect to the reasoner
-    // on port 2004 on the local system
-    Model cModel = ModelFactory.createDefaultModel();
-    Resource conf = cModel.createResource();
-    conf.addProperty( ReasonerVocabulary.EXT_REASONER_URL, 
-                      cModel.createResource( "http://localhost:2004" ) );
-       
-    // create the reasoner factory and the reasoner
-    DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
-                                                                  .getFactory( DIGReasonerFactory.URI );
-    DIGReasoner r = (DIGReasoner) drf.create( conf );
-        
-    // now make a model
-    OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
-    spec.setReasoner( r );
-    OntModel m = ModelFactory.createOntologyModel( spec, null );
-        
-    // load an input document
-    m.read( "http://protege.stanford.edu/plugins/owl/owl-library/koala.owl" );
-        
-    // list the inconsistent classes
-    StmtIterator i = m.listStatements( null, OWL.equivalentClass, OWL.Nothing );
-    while (i.hasNext()) {
-        System.out.println( "Class " + i.nextStatement().getSubject() + " is unsatisfiable" );
-    }
-  }
-}</pre>
-<p>
-  The output produced by this program was:
-</p>
-<pre>Class http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#KoalaWithPhD is unsatisfiable
-Class 2d9c06:fca384780f:-7ff4 is unsatisfiable
-Class http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Koala is unsatisfiable
-Class http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Quokka is unsatisfiable</pre>
-<p>
-  The second value is Jena's anonymous node (bNode) identifier for a class expression from
-  the input document that intersects with Koala, which is itself unsatisfiable.
-</p>
-
-<h2 id="cautions">Caveats and cautions</h2>
-<p>
-  The DIG interface has been tested with OWL as the input language and Pellet as the reasoning engine.
-  Other reasoners, or the use of DAML+OIL as the input language, are provided for in the
-  code but not well tested yet.  Users are encouraged to report problems and suggestions to 
-  the <a href="http://groups.yahoo.com/group/jena-dev/">Jena support list</a>.
-</p>
-<p>
-  Note also that DIG itself is an immature standard.  Some parts of OWL-DL cannot be expressed
-  in the DIG tell language, and some desirable queries are not possible.  An ongoing discussion
-  about improving DIG is continuing on the DIG-users list, hosted by 
-    <a href="http://sourceforge.net/projects/dig">SourceForge</a>.
-</p>
+<p>The Jena team<br />March 17th, 2009</p>
 
 <hr />
-<p><small>CVS $Id: dig-reasoner.html,v 1.2 2005-10-05 15:23:01 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: dig-reasoner.html,v 1.3 2009-03-17 11:36:54 ian_dickinson Exp $</small></p>
 
 </body>
 </html>

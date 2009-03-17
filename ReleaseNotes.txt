@@ -6,7 +6,7 @@ Release Notes
 
 ** Codebase converted to Java 5
 
-   o Exceptions AlreadyExistsException, DoesNotExistException and RulesetNotFoundException no longer inherit via RDFRDBException 
+   o Exceptions AlreadyExistsException, DoesNotExistException and RulesetNotFoundException no longer inherit via RDFRDBException
 
 Jar changes:
    o Removed antlr-2.7.5.jar (no longer used)
@@ -16,12 +16,13 @@ Deprecation clearance.
    Methods, classes and statics marked deprecated in previous releases have been largely removed.
 
 Reasoners:
-   o Extended validity checking for OWL configurations to include 
+   o Extended validity checking for OWL configurations to include
      datatype range checking that can cope with user datatypes as done for RDFS.
      Places the culprit Triple as the ValidityReport.Report extension value.
    o Removed deprecated reasoners (RDFS1, RDFSExpt, OWLExpt) and associated support.
    o Fixed RDFS-SIMPLE to include properties being reflexive
-   
+   o Removed DIG 1.0 reasoner interface
+
 JenaModelSpec:
    o This long-deprecated vocabulary (which supported the old ModelSpec system)
      has been removed. ModelSpec was replaced by Assembler long ago.
@@ -38,11 +39,16 @@ N3:
      The dialect of N3 that Jena supported (which is quite old) has some idioms that
      are not legal Turtle although they are nowadays not correct N3 either.
    o Turtle writer now speeded up when many namespaces in use.
-        
+
+Ontology API:
+   o Removed support for no-longer-supported OWL syntax checker.
+   o Removed previously-deprecated namespace management methods from OntDocumentManager.
+     Namespaces should be managed via the PrefixMapping API.
+
 ==== Jena 2.5.7
 
 Database layer:
-   o Compatibility fixes for PostgreSQL 8.3 (no schema changes)  
+   o Compatibility fixes for PostgreSQL 8.3 (no schema changes)
    o Compatibility fixes for MS SQL Server 2008 (no schema changes)
 
 ReasonerFactoryAssembler
@@ -50,23 +56,23 @@ ReasonerFactoryAssembler
       to the reasoners that the factory produces.
 
 Reasoners:
-    o Modified @include processing and Rule.rulesFromURL to support 
+    o Modified @include processing and Rule.rulesFromURL to support
       FileManager redirects.
     o Fixed problem withLPTopGoalIterator which caused one extra level
       of lookahead in some circumstances.
-    
-==== Jena 2.5.6 
+
+==== Jena 2.5.6
 
 Typed literals:
     o Fixed bug in retrieval of decimal values with trailing fractional
       zeros by canonicalizing values after parsing and improving
       canonicalization.
-      
+
 ==== Jena 2.5.5
 
 Jar changes:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
-    o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar 
+    o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar
 
 Deprecated Method Removal Frenzy
     o A bunch of methods in Resource, Model, ModelCon, and Statement have
@@ -110,7 +116,7 @@ PrefixMapping loses deprecated usePrefix
 ModelSpec
     o ModelSpec, which has been deprecated for a while, has been removed,
       along with ModelSpecImpl. OntModelSpec, which used to implement
-      ModelSpec (via OntModelSpecObsolete, also removed), doesn't any more. 
+      ModelSpec (via OntModelSpecObsolete, also removed), doesn't any more.
 
 RDF/XML-ABBREV
     o Aesthetic improvement changes most RDF/XML-ABBREV output.
