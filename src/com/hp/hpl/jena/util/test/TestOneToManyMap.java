@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            21-Jan-2005
  * Filename           $RCSfile: TestOneToManyMap.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-17 08:38:00 $
+ * Last modified on   $Date: 2009-03-17 09:10:06 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.8 2009-03-17 08:38:00 chris-dollin Exp $)
+ * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.9 2009-03-17 09:10:06 chris-dollin Exp $)
  */
 public class TestOneToManyMap 
     extends TestCase
@@ -70,12 +70,13 @@ public class TestOneToManyMap
     @Override public void tearDown() {}
     
     public void testConstruct0() {
-        OneToManyMap map0 = new OneToManyMap();
+        // the types of these maps
+        OneToManyMap<String, Integer> map0 = new OneToManyMap<String, Integer>();
         assertNotNull( map0 );
         
         assertTrue( map0.isEmpty() );
         
-        OneToManyMap map1 = new OneToManyMap( map0 );
+        OneToManyMap<String, Integer> map1 = new OneToManyMap<String, Integer>( map0 );
         assertNotNull( map1 );
         assertTrue( map1.isEmpty() );
     }
@@ -156,8 +157,8 @@ public class TestOneToManyMap
         boolean s0s2 = false;
         boolean s3s4 = false;
         
-        for (Iterator i = map0.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry e = (Map.Entry) i.next();
+        for (Iterator<Map.Entry<String, String>> i = map0.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry<String, String> e = i.next();
             if (e.getKey().equals( s0 ) && e.getValue().equals( s1 )) {
                 s0s1 = true;
             }

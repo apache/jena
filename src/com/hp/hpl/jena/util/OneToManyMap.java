@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 12:10:26 $
+ * Last modified on   $Date: 2009-03-17 09:10:05 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.20 2009-01-26 12:10:26 chris-dollin Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.21 2009-03-17 09:10:05 chris-dollin Exp $
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {
@@ -140,8 +140,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @return A Set of the mappings as Map.Entry values.
      */
-    public Set entrySet() {
-        Set s = CollectionFactory.createHashedSet();
+    public Set<Map.Entry<From, To>> entrySet() {
+        Set<Map.Entry<From, To>> s = CollectionFactory.createHashedSet();
 
         for (Iterator<From> e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
             From key = e0.next();
@@ -149,7 +149,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
 
             // add each key-value pair to the result set
             for (ListIterator<To> e1 = values.listIterator();  e1.hasNext(); ) {
-                s.add( new Entry( key, e1.next() ) );
+                s.add( new Entry<From, To>( key, e1.next() ) );
             }
         }
 
@@ -169,13 +169,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param o The object to be compared for equality with this map.
      * @return True if the specified object is equal to this map.
      */
-    @Override
-    public boolean equals( Object o ) {
-        if (o instanceof java.util.Map) {
-            return entrySet().equals( ((Map) o).entrySet() );
-        }
-        else
-            return false;
+    @Override public boolean equals( Object o ) {
+        return o instanceof java.util.Map<?,?> && entrySet().equals( ((Map<?,?>) o).entrySet() );
     }
 
 
@@ -223,11 +218,10 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * that t1.hashCode()==t2.hashCode() for any two maps t1 and t2,
      * as required by the general contract of Object.hashCode
      */
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         int hc = 0;
 
-        for (Iterator i = entrySet().iterator();  i.hasNext(); ) {
+        for (Iterator<Map.Entry<From, To>> i = entrySet().iterator();  i.hasNext(); ) {
             hc ^= i.next().hashCode();
         }
 
@@ -366,8 +360,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * <p>Answer a string representation of this map. This can be quite a long string for
      * large maps.<p>
      */
-    @Override
-    public String toString() {
+    @Override public String toString() {
         StringBuffer buf = new StringBuffer( "OneToManyMap{" );
         String sep = "";
         
@@ -408,20 +401,19 @@ public class OneToManyMap<From, To> implements Map<From, To>
     /**
      * Helper class to implement the Map.Entry interface to enumerate entries in the map
      */
-    public static class Entry
-        implements Map.Entry
+    public static class Entry<From, To> implements Map.Entry<From, To>
     {
         /** My key object */
-        private Object m_key = null;
+        private From m_key = null;
 
         /** My value object */
-        private Object m_value = null;
+        private To m_value = null;
 
 
         /**
          * Constructor - save the key and value
          */
-        private Entry( Object key, Object value ) {
+        private Entry( From key, To value ) {
             m_key = key;
             m_value = value;
         }
@@ -443,11 +435,9 @@ public class OneToManyMap<From, To> implements Map<From, To>
          * @param x The object to compare against
          * @return True if the given object is equal to this Map.Entry object.
          */
-        @Override
-        public boolean equals( Object x ) {
+        @Override public boolean equals( Object x ) {
             if (x instanceof java.util.Map.Entry) {
-                Map.Entry e1 = (Map.Entry) x;
-
+                Map.Entry<?,?> e1 = (Map.Entry<?,?>) x;
                 return (e1.getKey()==null ?
                                           m_key==null : e1.getKey().equals(m_key))  &&
                        (e1.getValue()==null ?
@@ -463,7 +453,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          *
          * @return The key object
          */
-        public Object getKey() {
+        public From getKey() {
             return m_key;
         }
 
@@ -473,7 +463,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          *
          * @return The value object
          */
-        public Object getValue() {
+        public To getValue() {
             return m_value;
         }
 
@@ -481,7 +471,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
         /**
          * Set the value, which writes through to the map. Not implemented.
          */
-        public Object setValue( Object value )
+        public To setValue( To value )
             throws  UnsupportedOperationException
         {
             throw new UnsupportedOperationException( "not implemented" );
@@ -497,8 +487,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          * This ensures that e1.equals(e2) implies that e1.hashCode()==e2.hashCode() for any two
          * Entries e1 and e2, as required by the general contract of Object.hashCode.
          */
-        @Override
-        public int hashCode() {
+        @Override public int hashCode() {
             return (getKey()==null   ? 0 : getKey().hashCode()) ^
                    (getValue()==null ? 0 : getValue().hashCode());
         }
