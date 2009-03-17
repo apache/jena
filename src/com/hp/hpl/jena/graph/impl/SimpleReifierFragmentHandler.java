@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentHandler.java,v 1.8 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentHandler.java,v 1.9 2009-03-17 14:45:38 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -10,10 +10,10 @@ import com.hp.hpl.jena.graph.Triple;
 
 public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHandler 
     { 
-    int which; 
+    Fragments.GetSlot which; 
     SimpleReifierFragmentsMap map;
     
-    public SimpleReifierFragmentHandler( SimpleReifierFragmentsMap map, int n ) 
+    public SimpleReifierFragmentHandler( SimpleReifierFragmentsMap map, Fragments.GetSlot n ) 
         { which = n; this.map = map; }
     
     public abstract boolean clashesWith( ReifierFragmentsMap map, Node fragmentObject, Triple reified );
