@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.55 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.56 2009-03-17 17:33:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.55 $ on $Date: 2009-03-12 21:49:37 $
+ * @version $Revision: 1.56 $ on $Date: 2009-03-17 17:33:47 $
  */
 public class TestFBRules extends TestCase {
     
@@ -943,7 +943,7 @@ public class TestFBRules extends TestCase {
     private Node getValue(Graph g, Node s, Node p) {
         ExtendedIterator<Triple> i = g.find(s, p, null);
         assertTrue(i.hasNext());
-        Node result = ((Triple)i.next()).getObject();
+        Node result = i.next().getObject();
         if (i.hasNext()) {
             assertTrue("multiple values not expected", false);
             i.close();
