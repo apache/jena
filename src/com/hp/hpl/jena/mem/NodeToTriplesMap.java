@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.50 2009-01-27 15:32:17 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.51 2009-03-17 15:12:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -25,8 +25,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#add(com.hp.hpl.jena.graph.Triple)
     */
-    @Override
-    public boolean add( Triple t ) 
+    @Override public boolean add( Triple t ) 
         {
         Object o = getIndexField( t );
         OpenSetBunch s = (OpenSetBunch) bunchMap.get( o );
@@ -41,7 +40,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         public OpenSetBunch()
             { super( empty ); }
         
-        public Set baseSet()
+        public Set<Triple> baseSet()
             { return elements; }
         }
     
@@ -51,8 +50,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#remove(com.hp.hpl.jena.graph.Triple)
     */
-    @Override
-    public boolean remove( Triple t )
+    @Override public boolean remove( Triple t )
         { 
         Object o = getIndexField( t );
         OpenSetBunch s = (OpenSetBunch) bunchMap.get( o );
@@ -60,7 +58,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             return false;
         else
             {
-            Set base = s.baseSet();
+            Set<Triple> base = s.baseSet();
             boolean result = base.remove( t );
             if (result) size -= 1;
             if (base.isEmpty()) bunchMap.remove( o );
@@ -68,18 +66,16 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         	} 
         }
     
-    @Override
-    public Iterator iterator( Object o, HashCommon.NotifyEmpty container )
+    @Override public ExtendedIterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container )
         {
         TripleBunch b = bunchMap.get( o );
-        return b == null ? NullIterator.instance() : b.iterator();
+        return b == null ? NullIterator.<Triple>instance() : b.iterator();
         }
     
     /** 
      	@see com.hp.hpl.jena.mem.Temp#contains(com.hp.hpl.jena.graph.Triple)
     */
-    @Override
-    public boolean contains( Triple t )
+    @Override public boolean contains( Triple t )
         { 
         TripleBunch s = bunchMap.get( getIndexField( t ) );
         return s == null ? false : s.contains( t );
@@ -102,9 +98,8 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             return false;
         else
             {
-            Iterator it = s.iterator();
-            while (it.hasNext())
-                if (t.matches( (Triple) it.next() )) return true;
+            Iterator<Triple> it = s.iterator();
+            while (it.hasNext()) if (t.matches( it.next() )) return true;
             return false;
             }
         }
@@ -112,7 +107,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#iterateAll(com.hp.hpl.jena.graph.Triple)
     */
-    public ExtendedIterator iterateAll( Triple pattern )
+    public ExtendedIterator<Triple> iterateAll( Triple pattern )
         {
         return
             indexField.filterOn( pattern )
@@ -136,7 +131,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
-    @Override public Iterator iteratorForIndexed( Object y )
+    @Override public Iterator<Triple> iteratorForIndexed( Object y )
         { return get( y ).iterator();  }
     
     /** 

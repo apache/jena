@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestReificationWrapper.java,v 1.3 2009-01-16 17:23:55 andy_seaborne Exp $
+ 	$Id: TestReificationWrapper.java,v 1.4 2009-03-17 15:12:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -20,10 +20,10 @@ import com.hp.hpl.jena.shared.*;
 */
 public class TestReificationWrapper extends AbstractTestReifier
     {
-    protected final Class graphClass;
+    protected final Class<? extends Graph> graphClass;
     protected final ReificationStyle style;
     
-    public TestReificationWrapper( Class graphClass, String name, ReificationStyle style ) 
+    public TestReificationWrapper( Class<? extends Graph> graphClass, String name, ReificationStyle style ) 
         {
         super( name );
         this.graphClass = graphClass;

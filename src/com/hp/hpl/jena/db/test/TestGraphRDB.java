@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.17 2009-01-26 15:24:28 andy_seaborne Exp $
+  $Id: TestGraphRDB.java,v 1.18 2009-03-17 15:12:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,7 +24,7 @@ public class TestGraphRDB extends MetaTestGraph
     public TestGraphRDB( String name )
         { super( name ); }
     
-    public TestGraphRDB( Class<?> graphClass, String name, ReificationStyle style ) 
+    public TestGraphRDB( Class<? extends Graph> graphClass, String name, ReificationStyle style ) 
         { super( graphClass, name, style ); }
         
     public static TestSuite suite()
@@ -34,13 +34,11 @@ public class TestGraphRDB extends MetaTestGraph
     private int count = 0;
     private Graph properties;
     
-    @Override
-    public void setUp()
+    @Override public void setUp()
         { con = TestConnection.makeAndCleanTestConnection();
         properties = con.getDefaultModelProperties().getGraph(); }
         
-    @Override
-    public void tearDown() throws SQLException
+    @Override public void tearDown() throws SQLException
         { con.close(); }
         
     public class LocalGraphRDB extends GraphRDB
@@ -56,12 +54,10 @@ public class TestGraphRDB extends MetaTestGraph
             super( con, "testGraph-" + count ++, properties, styleRDB( ReificationStyle.Minimal ), true );
             }
 
-        @Override
-        public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )
+        @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )
             { throw new JenaException( "find is Not Allowed" ); }
         
-        @Override
-        public void performDelete( Triple t )
+        @Override public void performDelete( Triple t )
             { throw new JenaException( "delete is Not Allowed" ); }
         }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.32 2009-03-16 15:21:14 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.33 2009-03-17 15:12:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -45,7 +45,7 @@ public class TestGraph extends GraphTestBase
         return result;
         }
         
-    public static TestSuite suite( Class classWithTests, Class graphClass )
+    public static TestSuite suite( Class<? extends Test> classWithTests, Class<? extends Graph> graphClass )
         { return MetaTestGraph.suite( classWithTests, graphClass ); }
         
     /**
