@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.50 2009-01-28 09:02:57 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.51 2009-03-17 17:14:41 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -1481,19 +1481,19 @@ class Unparser {
     /**
      * The order of outputting the resources. This all supports wObjStar.
      */
-    private Set<RDFNode> infinite;
+    private Set<Resource> infinite;
 
     private void findInfiniteCycles() {
         // find all statements that haven't been done.
         StmtIterator ss = model.listStatements();
-        Relation<RDFNode> relation = new Relation<RDFNode>();
+        Relation<Resource> relation = new Relation<Resource>();
         try {
             while (ss.hasNext()) {
                 Statement s = ss.nextStatement();
                 if (!doneSet.contains(s)) {
                     RDFNode rn = s.getObject();
                     if (rn instanceof Resource) {
-                        relation.set(s.getSubject(), rn);
+                        relation.set(s.getSubject(), (Resource)rn);
                     }
                 }
             }
@@ -1508,9 +1508,9 @@ class Unparser {
      * This class is an iterator over the set infinite, but we wait until it is
      * used before instantiating the underlying iterator.
      */
-    private Iterator<RDFNode> allInfiniteLeft() {
-        return new LateBindingIterator<RDFNode>() {
-            @Override public Iterator<RDFNode> create() {
+    private Iterator<Resource> allInfiniteLeft() {
+        return new LateBindingIterator<Resource>() {
+            @Override public Iterator<Resource> create() {
                 return infinite.iterator();
             }
         };
@@ -1519,12 +1519,13 @@ class Unparser {
     private Iterator<Resource> pleasingTypeIterator() {
         if (pleasingTypes == null)
             return NullIterator.instance();
-        Map<Resource, Set> buckets = new HashMap<Resource, Set>();
-        Set bucketArray[] = new Set[pleasingTypes.length];
+        Map<Resource, Set<Resource>> buckets = new HashMap<Resource, Set<Resource>>();
+        @SuppressWarnings("unchecked")
+        Set<Resource> bucketArray[] = new Set[pleasingTypes.length] ;// new Set<Resource>[pleasingTypes.length];
         // Set up buckets and bucketArray. Each is a collection
         // of the same buckets, one ordered, the other hashed.
         for (int i = 0; i < pleasingTypes.length; i++) {
-            bucketArray[i] = new HashSet();
+            bucketArray[i] = new HashSet<Resource>();
             buckets.put(pleasingTypes[i], bucketArray[i]);
         }
 
@@ -1552,11 +1553,14 @@ class Unparser {
         // Now all the pleasing resources are in the buckets.
         // Add all their iterators togethor:
 
-        return new IteratorIterator(new Map1Iterator(new Map1() {
-            public Object map1(Object bkt) {
-                return ((Set) bkt).iterator();
-            }
-        }, new ArrayIterator(bucketArray)));
+        Map1<Set<Resource>, Iterator<Resource>> mapper = new Map1<Set<Resource>, Iterator<Resource>>() {
+
+            public Iterator<Resource> map1(Set<Resource> bkt)
+            {
+                return bkt.iterator() ;
+            }} ;
+        
+        return new IteratorIterator<Resource>(new Map1Iterator<Set<Resource>, Iterator<Resource>>(mapper, new ArrayIterator<Set<Resource>>(bucketArray)));
 
     }
 
@@ -1621,10 +1625,9 @@ class Unparser {
         };
         // non-anonymous resources that are the object of more than one
         // triple that are in infinite cycles.
-        Iterator<Resource> firstChoiceCyclic = new FilterIterator(new Filter() {
+        Iterator<Resource> firstChoiceCyclic = new FilterIterator<Resource>(new Filter<Resource>() {
             @Override
-            public boolean accept(Object o) {
-                Resource r = (Resource) o;
+            public boolean accept(Resource r) {
                 codeCoverage[4]++;
                 if (r.isAnon())
                     return false;
@@ -1635,51 +1638,51 @@ class Unparser {
             }
         }, this.allInfiniteLeft());
         // any non genuinely anonymous resources that are in infinite cycles
-        Iterator nonAnonInfinite = new FilterIterator(new Filter() {
+        Iterator<Resource> nonAnonInfinite = new FilterIterator<Resource>(new Filter<Resource>() {
             @Override
-            public boolean accept(Object o) {
+            public boolean accept(Resource r) {
                 codeCoverage[5]++;
-                Resource r = (Resource) o;
                 return !isGenuineAnon(r);
             }
         }, allInfiniteLeft());
         // any other resource in an infinite cyle
-        Iterator inf = allInfiniteLeft();
-        Iterator anotherFake = new NullIterator() {
+        Iterator<Resource> inf = allInfiniteLeft();
+        Iterator<Resource> anotherFake = new NullIterator<Resource>() {
             @Override
             public boolean hasNext() {
                 avoidExplicitReification = false;
                 return false;
             }
         };
-        Iterator reifications = new FilterIterator(new Filter() {
+        Iterator<Resource> reifications = new FilterIterator<Resource>(new Filter<Resource>() {
             @Override
-            public boolean accept(Object o) {
+            public boolean accept(Resource r) {
                 codeCoverage[6]++;
-                return res2statement.containsKey(o);
+                return res2statement.containsKey(r);
             }
         }, allInfiniteLeft());
         // any other resource.
-        Iterator backStop = modelListSubjects();
+        Iterator<Resource> backStop = modelListSubjects();
 
-        Iterator all[] = new Iterator[] { currentFile, pleasing,
-                fakeStopPleasing, nonObjects, fakeLazyEvaluator,
-                firstChoiceCyclic, nonAnonInfinite, inf, anotherFake,
-                reifications, new NullIterator() {
-                    @Override
-                    public boolean hasNext() {
-                        if (modelListSubjects().hasNext())
-                            codeCoverage[7]++;
-                        return false;
-                    }
-                }, backStop };
-        Iterator allAsOne = new IteratorIterator(new ArrayIterator(all));
+        @SuppressWarnings("unchecked")
+        Iterator<Resource> all[] = new Iterator[] { currentFile, pleasing,
+                        fakeStopPleasing, nonObjects, fakeLazyEvaluator,
+                        firstChoiceCyclic, nonAnonInfinite, inf, anotherFake,
+                        reifications, new NullIterator<Resource>() {
+                            @Override
+                            public boolean hasNext() {
+                                if (modelListSubjects().hasNext())
+                                    codeCoverage[7]++;
+                                return false;
+                            }
+                        }, backStop };
+        Iterator<Resource> allAsOne = new IteratorIterator<Resource>(new ArrayIterator<Iterator<Resource>>(all));
 
         // Filter for those that still have something to list.
-        return new FilterIterator(new Filter() {
+        return new FilterIterator<Resource>(new Filter<Resource>() {
             @Override
-            public boolean accept(Object o) {
-                return hasProperties((Resource) o);
+            public boolean accept(Resource r) {
+                return hasProperties(r);
             }
         }, allAsOne);
     }
