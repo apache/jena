@@ -54,7 +54,6 @@ public class PlainGraphMem extends SmallGraphMem
     @Override
     public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
     {
-        @SuppressWarnings("unchecked")
         Iterator<Triple> iter = triples.iterator() ;
         return 
             SimpleEventManager.notifyingRemove( this, iter ) 
