@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: GuardArranger.java,v 1.6 2009-03-17 11:01:52 chris-dollin Exp $
+    $Id: GuardArranger.java,v 1.7 2009-03-17 13:54:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -38,8 +38,8 @@ public class GuardArranger
     protected Set<String> [] makeBoundVariables( Triple [] triples )
         {
         int length = triples.length;
-        Set<String> [] result = new Set[length];
-        Set prev = CollectionFactory.createHashedSet();
+        @SuppressWarnings("unchecked")  Set<String> [] result = new Set[length];
+        Set<String> prev = CollectionFactory.createHashedSet();
         for (int i = 0; i < length; i += 1) 
             prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
         return result;
