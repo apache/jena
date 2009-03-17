@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestModelBulkUpdate.java,v 1.15 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -35,10 +35,10 @@ public class TestModelBulkUpdate extends ModelTestBase
             assertTrue( "it should be here", m.contains( statements[i] ) );
         }
     
-    public void testContains( Model m, List statements )
+    public void testContains( Model m, List<Statement> statements )
         {
         for (int i = 0; i < statements.size(); i += 1)
-            assertTrue( "it should be here", m.contains( (Statement) statements.get(i) ) );
+            assertTrue( "it should be here", m.contains( statements.get(i) ) );
         }
         
     public void testOmits( Model m, Statement [] statements )
@@ -47,16 +47,16 @@ public class TestModelBulkUpdate extends ModelTestBase
             assertFalse( "it should not be here", m.contains( statements[i] ) );
         }
 
-    public void testOmits( Model m, List statements )
+    public void testOmits( Model m, List<Statement> statements )
         {
         for (int i = 0; i < statements.size(); i += 1)
-            assertFalse( "it should not be here", m.contains( (Statement) statements.get(i) ) );
+            assertFalse( "it should not be here", m.contains( statements.get(i) ) );
         }
                 
     public void testMBU( Model m )
         {
         Statement [] sArray = statements( m, "moon orbits earth; earth orbits sun" );
-        List sList = Arrays.asList( statements( m, "I drink tea; you drink coffee" ) );
+        List<Statement> sList = Arrays.asList( statements( m, "I drink tea; you drink coffee" ) );
         m.add( sArray );
         testContains( m, sArray );
         m.add( sList );

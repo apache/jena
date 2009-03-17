@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.14 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestRDFNodes.java,v 1.15 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -27,7 +27,7 @@ public class TestRDFNodes extends ModelTestBase
         
     public void testRDFVisitor()
         {
-        final List history = new ArrayList();
+        final List<String> history = new ArrayList<String>();
         Model m = ModelFactory.createDefaultModel();
         final RDFNode S = m.createResource();
         final RDFNode P = m.createProperty( "eh:PP" );

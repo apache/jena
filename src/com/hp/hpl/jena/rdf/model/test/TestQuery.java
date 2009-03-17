@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery.java,v 1.16 2008-12-28 19:31:52 andy_seaborne Exp $
+  $Id: TestQuery.java,v 1.17 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -77,7 +77,7 @@ public class TestQuery extends ModelTestBase
         { 
         Model m = modelWithStatements( "a R b; b S c; a R p; p T d" );
         Model q = modelWithStatements( "jqv:x R jqv:y; jqv:y S jqv:z" );
-        ExtendedIterator it = ModelQueryUtil.queryBindingsWith( m, q, resources( q, "jqv:x jqv:z") );
+        ExtendedIterator<List<? extends RDFNode>> it = ModelQueryUtil.queryBindingsWith( m, q, resources( q, "jqv:x jqv:z") );
         assertTrue( it.hasNext() );
         assertEquals( Arrays.asList( resources( m, "a c b" ) ), it.next() );
         assertFalse( it.hasNext() );

@@ -1,12 +1,10 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralsInModel.java,v 1.6 2008-12-28 19:31:52 andy_seaborne Exp $
+ 	$Id: TestLiteralsInModel.java,v 1.7 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
-
-import java.util.Date;
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -66,13 +64,14 @@ public class TestLiteralsInModel extends ModelTestBase
         assertTrue( m.containsLiteral( X, P, 99 ) );
         }
     
-    public void testAddWithAnObject()
-        {
-        Object z = new Date();
-        m.addLiteral( X, P, z );
-        assertTrue( m.contains( X, P, m.createTypedLiteral( z ) ) );
-        assertTrue( m.containsLiteral( X, P, z ) );
-        }
+// that version of addLiteral is deprecated; test removed.
+//    public void testAddWithAnObject()
+//        {
+//        Object z = new Date();
+//        m.addLiteral( X, P, z );
+//        assertTrue( m.contains( X, P, m.createTypedLiteral( z ) ) );
+//        assertTrue( m.containsLiteral( X, P, z ) );
+//        }
     }
 
 

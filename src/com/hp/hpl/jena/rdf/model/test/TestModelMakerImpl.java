@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.32 2009-01-26 15:24:35 andy_seaborne Exp $
+  $Id: TestModelMakerImpl.java,v 1.33 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -120,15 +120,15 @@ public class TestModelMakerImpl extends ModelTestBase
         assertTrue( maker.getGraphMaker() == graphMaker );
         }
 
-    private void checkHistory( List expected )
+    private void checkHistory( List<String> expected )
         { assertEquals( expected, history() ); }
 
-    private List history()
+    private List<String> history()
         { return ((MockGraphMaker) maker.getGraphMaker()).history; }
 
     static class MockGraphMaker implements GraphMaker
         {
-        List history = new ArrayList();
+        List<String> history = new ArrayList<String>();
         Graph graph;
 
         public MockGraphMaker( Graph graph )
@@ -210,7 +210,7 @@ public class TestModelMakerImpl extends ModelTestBase
             history.add( "close()" );
             }
 
-        public ExtendedIterator listGraphs()
+        public ExtendedIterator<String> listGraphs()
             {
             history.add( "listModels()" );
             return NullIterator.instance();

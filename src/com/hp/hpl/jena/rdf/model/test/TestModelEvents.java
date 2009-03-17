@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelEvents.java,v 1.23 2009-01-16 17:23:50 andy_seaborne Exp $
+  $Id: TestModelEvents.java,v 1.24 2009-03-17 10:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -28,8 +28,7 @@ public class TestModelEvents extends ModelTestBase
     protected Model model;
     protected RecordingModelListener SL;
     
-    @Override
-    public void setUp()
+    @Override public void setUp()
         { 
         model = ModelFactory.createDefaultModel(); 
         SL = new RecordingModelListener();
@@ -113,7 +112,7 @@ public class TestModelEvents extends ModelTestBase
     public void testAddStatementList()
         {
         model.register( SL );
-        List L = Arrays.asList( statements( model, "b I g; m U g" ) );
+        List<Statement> L = Arrays.asList( statements( model, "b I g; m U g" ) );
         model.add( L );
         SL.assertHas( new Object[] {"addList", L} );
         }
@@ -121,7 +120,7 @@ public class TestModelEvents extends ModelTestBase
     public void testDeleteStatementList()
         {
         model.register( SL );
-        List L = Arrays.asList( statements( model, "b I g; m U g" ) );
+        List<Statement> L = Arrays.asList( statements( model, "b I g; m U g" ) );
         model.remove( L );
         SL.assertHas( new Object[] {"removeList", L} );
         }
@@ -226,11 +225,11 @@ public class TestModelEvents extends ModelTestBase
     */
     public static class WatchStatementListener extends StatementListener
         {
-        List statements = new ArrayList();
+        List<Statement> statements = new ArrayList<Statement>();
         String addOrRem = "<unset>";
         
-        public List contents()
-            { try { return statements; } finally { statements = new ArrayList(); } }
+        public List<Statement> contents()
+            { try { return statements; } finally { statements = new ArrayList<Statement>(); } }
         
         public String getAddOrRem()
             { return addOrRem; }
@@ -244,21 +243,21 @@ public class TestModelEvents extends ModelTestBase
             { statements.add( s ); addOrRem = "rem"; }
         }
         
-    public void another( Map m, Object x )
+    public void another( Map<Object, Integer> m, Object x )
         {
-        Integer n = (Integer) m.get( x );
+        Integer n = m.get( x );
         if (n == null) n = new Integer(0);
         m.put( x, new Integer( n.intValue() + 1 ) ); 
         }
     
-    public Map asBag( List l )
+    public Map<Object, Integer> asBag( List<Statement> l )
         {
-        Map result = new HashMap();
+        Map<Object, Integer> result = new HashMap<Object, Integer>();
         for (int i = 0; i < l.size(); i += 1) another( result, l.get(i) );
         return result;    
         }       
         
-    public void assertSameBag( List wanted, List got )
+    public void assertSameBag( List<Statement> wanted, List<Statement> got )
         { assertEquals( asBag( wanted ), asBag( got ) ); }
         
     public void testGot( WatchStatementListener sl, String how, String template )
@@ -315,7 +314,7 @@ public class TestModelEvents extends ModelTestBase
         private Object comparable( Object x )
             {
             if (x instanceof Statement []) return Arrays.asList( (Statement []) x );
-            if (x instanceof Iterator) return iteratorToList( (Iterator) x );
+            if (x instanceof Iterator) return iteratorToList( (Iterator<?>) x );
             return x;
             }    
             
@@ -337,10 +336,10 @@ public class TestModelEvents extends ModelTestBase
         model.remove( s2 );
         ll.recent( "rem", s2 );
     /* */
-        List sList = Arrays.asList( statements( model, "gg HH ii; jj KK ll" ) );
+        List<Statement> sList = Arrays.asList( statements( model, "gg HH ii; jj KK ll" ) );
         model.add( sList );
         ll.recent( "add", sList );
-        List sList2 = Arrays.asList( statements( model, "mm NN oo; pp QQ rr; ss TT uu" ) );
+        List<Statement> sList2 = Arrays.asList( statements( model, "mm NN oo; pp QQ rr; ss TT uu" ) );
         model.remove( sList2 );
         ll.recent( "rem", sList2 );
     /* */
