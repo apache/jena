@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- 	All rights reserved - see end of file.
- 	$Id: TestReasonerFactoryAssembler.java,v 1.12 2009-01-27 10:01:16 chris-dollin Exp $
+     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+     All rights reserved - see end of file.
+     $Id: TestReasonerFactoryAssembler.java,v 1.13 2009-03-17 11:05:24 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 
@@ -35,7 +34,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory" );
         assertInstanceOf( GenericRuleReasonerFactory.class, ASSEMBLER.open( root ) );
         }
-    
+
     public void testStandardReasonerURLs()
         {
         testReasonerURL( GenericRuleReasonerFactory.class, GenericRuleReasonerFactory.URI );
@@ -43,18 +42,17 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         testReasonerURL( RDFSRuleReasonerFactory.class, RDFSRuleReasonerFactory.URI );
         testReasonerURL( OWLFBRuleReasonerFactory.class, OWLFBRuleReasonerFactory.URI );
         testReasonerURL( DAMLMicroReasonerFactory.class, DAMLMicroReasonerFactory.URI );
-        testReasonerURL( DIGReasonerFactory.class, DIGReasonerFactory.URI );
         testReasonerURL( OWLMicroReasonerFactory.class, OWLMicroReasonerFactory.URI );
         testReasonerURL( OWLMiniReasonerFactory.class, OWLMiniReasonerFactory.URI );
         }
-    
+
     public void testBadReasonerURLFails()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL" );
-        try 
-            { ASSEMBLER.open( root ); 
+        try
+            { ASSEMBLER.open( root );
             fail( "should detected unknown reasoner" ); }
-        catch (UnknownReasonerException e) 
+        catch (UnknownReasonerException e)
             { assertEquals( resource( "bad:URL" ), e.getURL() ); }
         }
 
@@ -62,18 +60,18 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         {
         public Reasoner create( Resource configuration )
             { return null; }
-    
+
         public Model getCapabilities()
             { return null; }
-    
+
         public String getURI()
             { return null; }
         }
-    
+
     public static class MockFactory extends MockBase implements ReasonerFactory
-        {        
+        {
         public static final MockFactory instance = new MockFactory();
-        
+
         public static ReasonerFactory theInstance() { return instance; }
         }
 
@@ -81,7 +79,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:noSuchClass";
         Resource root = resourceInModel( description );
-        try 
+        try
             { ASSEMBLER.open( root ); fail( "should trap missing class noSuchClass" ); }
         catch (CannotLoadClassException e)
             { assertEquals( "noSuchClass", e.getClassName() ); }
@@ -91,16 +89,16 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:java.util.ArrayList";
         Resource root = resourceInModel( description );
-        try 
+        try
             { ASSEMBLER.open( root ); fail( "should trap non-ReasonerFactory ArrayList" ); }
         catch (NotExpectedTypeException e)
-            { 
+            {
             assertEquals( root, e.getRoot() );
-            assertEquals( ReasonerFactory.class, e.getExpectedType() ); 
+            assertEquals( ReasonerFactory.class, e.getExpectedType() );
             assertEquals( ArrayList.class, e.getActualType() );
             }
         }
-    
+
     public void testReasonerClassUsesTheInstance()
         {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
@@ -108,7 +106,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         Resource root = resourceInModel( description + MockName );
         assertEquals( MockFactory.instance, ASSEMBLER.open( root ) );
         }
-    
+
     public void testReasonerClassInstantiatesIfNoInstance()
         {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
@@ -117,32 +115,32 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         assertInstanceOf( MockBase.class, ASSEMBLER.open( root ) );
         assertNotSame( MockFactory.instance, ASSEMBLER.open( root ) );
         }
-    
+
     public void testMultipleURLsFails()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL; x ja:reasonerURL another:bad/URL" );
-        try 
-            { ASSEMBLER.open( root ); 
+        try
+            { ASSEMBLER.open( root );
             fail( "should detected multiple reasoner URLs" ); }
-        catch (NotUniqueException e) 
-            { assertEquals( JA.reasonerURL, e.getProperty() ); 
+        catch (NotUniqueException e)
+            { assertEquals( JA.reasonerURL, e.getProperty() );
             assertEquals( root, e.getRoot() ); }
         }
-    
+
     public void testOnlyGenericReasonerCanHaveRules()
         {
         String url = TransitiveReasonerFactory.URI;
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:rule '[->(a\\sP\\sb)]'; x ja:reasonerURL " + url );
         String ruleStringA = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]";
         final RuleSet rules = RuleSet.create( ruleStringA );
-        try 
+        try
             { ASSEMBLER.open( new FixedObjectAssembler( rules ), root );
             fail( "only GenericRuleReasoners can have attached rules" ); }
         catch (CannotHaveRulesException e )
             {
             }
         }
-    
+
     public void testSchema()
         {
         Model schema = model( "P rdf:type owl:ObjectProperty" );
@@ -152,26 +150,26 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         Reasoner r = rf.create( null );
         assertIsomorphic( schema.getGraph(), ((FBRuleReasoner) r).getBoundSchema() );
         }
-    
+
     public void testSingleRules()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:rules S" );
         String ruleStringA = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]";
         final RuleSet rules = RuleSet.create( ruleStringA );
-        Assembler mock = new AssemblerBase() 
+        Assembler mock = new AssemblerBase()
             {
             @Override
             public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 assertEquals( root, resource( "S" ) );
-                return rules; 
+                return rules;
                 }
             };
         ReasonerFactory r = (ReasonerFactory) ASSEMBLER.open( mock, root );
         GenericRuleReasoner grr = (GenericRuleReasoner) r.create( null );
         assertEquals( new HashSet<Rule>( rules.getRules() ), new HashSet<Rule>( grr.getRules() ) );
         }
-    
+
     public void testMultipleRules()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:rules S; x ja:rules T" );
@@ -179,7 +177,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         String ruleStringB = "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]";
         final RuleSet rulesA = RuleSet.create( ruleStringA );
         final RuleSet rulesB = RuleSet.create( ruleStringB );
-        Assembler mock = new AssemblerBase() 
+        Assembler mock = new AssemblerBase()
             {
             @Override
             public Object open( Assembler a, Resource root, Mode irrelevant )
@@ -196,7 +194,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         wanted.addAll( rulesB.getRules() );
         assertEquals( wanted, new HashSet<Rule>( grr.getRules() ) );
         }
-    
+
     protected void testReasonerURL( Class<?> wanted, String string )
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL " + string );

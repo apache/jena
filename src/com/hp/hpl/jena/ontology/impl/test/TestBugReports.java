@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.100 $
+ * Revision           $Revision: 1.101 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:40:07 $
+ * Last modified on   $Date: 2009-03-17 11:05:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -41,7 +41,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
@@ -1300,39 +1299,6 @@ public class TestBugReports
         assertEquals( "should be one individual", 1, s.size() );
         assertTrue( s.contains( i ));
     }
-
-    /**
-     * Bug report by James Tizard - failure in listIndividuals with DIGexception causes
-     * blocked thread
-     */
-    public void test_jt_01() {
-        // set up a configuration resource to connect to the reasoner
-        // on port 2004 on the local system
-        Model cModel = ModelFactory.createDefaultModel();
-        Resource conf = cModel.createResource();
-        conf.addProperty( ReasonerVocabulary.EXT_REASONER_URL, cModel.createResource( "http://localhost:2004" ) );
-
-        // create the reasoner factory and the reasoner
-        DIGReasonerFactory drf = (DIGReasonerFactory) ReasonerRegistry.theRegistry()
-                .getFactory( DIGReasonerFactory.URI );
-        DIGReasoner r = (DIGReasoner) drf.create( conf );
-
-        // now make a model
-        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
-        spec.setReasoner( r );
-        OntModel m = ModelFactory.createOntologyModel( spec, null );
-
-        boolean ex = false;
-        try {
-            Iterator<Individual> i = m.listIndividuals(); // if this throws a DIG exception
-            System.out.println( i.hasNext() ); // then this doesn't return
-        }
-        catch (DIGWrappedException e) {
-            ex = true;
-        }
-        assertTrue( "Should have seen a dig wrapped exception for connection fail", ex );
-    }
-
 
     /**
      * Bug report by David Bigwood - listDeclaredProps(false) fails when props
