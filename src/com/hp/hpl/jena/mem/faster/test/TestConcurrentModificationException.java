@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConcurrentModificationException.java,v 1.10 2009-01-16 17:24:00 andy_seaborne Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.11 2009-03-17 11:01:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public abstract class TestConcurrentModificationException extends ModelTestBase
     {
@@ -37,8 +38,7 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         public TestArrayBunchCME(String name)
             { super( name ); }
 
-        @Override
-        public TripleBunch getBunch()
+        @Override public TripleBunch getBunch()
             { return new ArrayBunch(); }
         }
     
@@ -47,8 +47,7 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         public TestSetBunchCME(String name)
             { super( name ); }
 
-        @Override
-        public TripleBunch getBunch()
+        @Override public TripleBunch getBunch()
             { return new SetBunch( new ArrayBunch() ); }
         }
     
@@ -67,7 +66,7 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         TripleBunch b = getBunch();
         b.add( Triple.create( "a P b" ) );
         b.add( Triple.create( "c Q d" ) );
-        Iterator it = b.iterator();
+        ExtendedIterator<Triple> it = b.iterator();
         it.next();
         b.add( Triple.create( "change its state" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
@@ -79,7 +78,7 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         TripleBunch b = getBunch();
         b.add( Triple.create( "a P b" ) );
         b.add( Triple.create( "c Q d" ) );
-        Iterator it = b.iterator();
+        ExtendedIterator<Triple> it = b.iterator();
         it.next();
         b.remove( Triple.create( "a P b" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }

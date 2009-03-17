@@ -1,12 +1,10 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.22 2009-01-16 17:24:00 andy_seaborne Exp $
+ 	$Id: GraphMemFaster.java,v 1.23 2009-03-17 11:01:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
-
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Reifier.Util;
@@ -24,35 +22,28 @@ public class GraphMemFaster extends GraphMemBase
     public GraphMemFaster( ReificationStyle style )
         { super( style ); }
 
-    @Override
-    protected TripleStore createTripleStore()
+    @Override protected TripleStore createTripleStore()
         { return new FasterTripleStore( this ); }
 
-    @Override
-    protected void destroy()
+    @Override protected void destroy()
         { store.close(); }
 
-    @Override
-    public void performAdd( Triple t )
+    @Override public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) store.add( t ); }
 
-    @Override
-    public void performDelete( Triple t )
+    @Override public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) store.delete( t ); }
 
-    @Override
-    public int graphBaseSize()  
+    @Override public int graphBaseSize()  
         { return store.size(); }
     
-    @Override
-    public QueryHandler queryHandler()
+    @Override public QueryHandler queryHandler()
         { 
         if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
         return queryHandler;
         }
 
-    @Override
-    protected GraphStatisticsHandler createStatisticsHandler()
+    @Override protected GraphStatisticsHandler createStatisticsHandler()
         { return new GraphMemFasterStatisticsHandler( (FasterTripleStore) store, getReifier() ); }
     
     /**
@@ -146,8 +137,7 @@ public class GraphMemFaster extends GraphMemBase
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
      */
-    @Override
-    public ExtendedIterator graphBaseFind( TripleMatch m ) 
+    @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
 
     public Applyer createApplyer( ProcessedTriple pt )
@@ -172,15 +162,14 @@ public class GraphMemFaster extends GraphMemBase
         {
         return new Applyer() 
             {
-            @Override
-            public void applyToTriples( Domain d, Matcher m, StageElement next )
+            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 plain.applyToTriples( d, m, next );
                 Triple tm = new Triple
                     ( pt.S.finder( d ), pt.P.finder( d ), pt.O.finder( d ) );
-                Iterator it = reifier.findExposed( tm );
+                ExtendedIterator<Triple> it = reifier.findExposed( tm );
                 while (it.hasNext())
-                    if (m.match( d, (Triple) it.next() )) next.run( d );
+                    if (m.match( d, it.next() )) next.run( d );
                 }
             };
         }
@@ -190,15 +179,13 @@ public class GraphMemFaster extends GraphMemBase
          happens to be concrete, then we hand responsibility over to the store.
          Otherwise we use the default implementation.
     */
-    @Override
-    public boolean graphBaseContains( Triple t )
+    @Override public boolean graphBaseContains( Triple t )
         { return t.isConcrete() ? store.contains( t ) : super.graphBaseContains( t ); }
     
     /**
         Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
-    @Override
-    public void clear()
+    @Override public void clear()
         { 
         store.clear(); 
         ((SimpleReifier) getReifier()).clear();

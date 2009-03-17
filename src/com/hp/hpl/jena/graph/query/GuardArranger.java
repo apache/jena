@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: GuardArranger.java,v 1.5 2008-12-28 19:32:10 andy_seaborne Exp $
+    $Id: GuardArranger.java,v 1.6 2009-03-17 11:01:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 */
 public class GuardArranger
     {
-    protected Set [] boundVariables;
+    protected Set<String> [] boundVariables;
     protected int size;
     
     public GuardArranger( Triple [] triples )
@@ -35,10 +35,10 @@ public class GuardArranger
         The i'th element of the answer is the set of all variables that have been 
         matched when the i'th triple has been matched.
     */
-    protected Set [] makeBoundVariables( Triple [] triples )
+    protected Set<String> [] makeBoundVariables( Triple [] triples )
         {
         int length = triples.length;
-        Set [] result = new Set[length];
+        Set<String> [] result = new Set[length];
         Set prev = CollectionFactory.createHashedSet();
         for (int i = 0; i < length; i += 1) 
             prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
@@ -65,9 +65,9 @@ public class GuardArranger
         {        
         ValuatorSet [] result = new ValuatorSet [length];
         for (int i = 0; i < length; i += 1) result[i] = new ValuatorSet();
-        Iterator it = constraints.iterator();
+        Iterator<Expression> it = constraints.iterator();
         while (it.hasNext())
-            plantWhereFullyBound( (Expression) it.next(), it, map, result );
+            plantWhereFullyBound( it.next(), it, map, result );
         return result;
         }
     
@@ -76,7 +76,7 @@ public class GuardArranger
         to the appropriate expression set, and remove it from the original via the
         iterator.
     */
-    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ValuatorSet [] es )
+    protected void plantWhereFullyBound( Expression e, Iterator<Expression> it, Mapping map, ValuatorSet [] es )
         {
         for (int i = 0; i < boundVariables.length; i += 1)
             if (canEval( e, i )) 
