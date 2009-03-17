@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.9 2009-01-16 17:23:57 andy_seaborne Exp $
+ 	$Id: TestHashCommon.java,v 1.10 2009-03-17 10:48:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -111,7 +111,7 @@ public class TestHashCommon extends ModelTestBase
     public void testKeyIterator()
         {
         ProbeHashCommon h = probeWith( "0:0:X" );
-        Set elements = h.keyIterator().toSet();
+        Set<?> elements = h.keyIterator().toSet();
         assertEquals( itemSet( "0:X" ), elements );
         }
 
@@ -151,15 +151,15 @@ public class TestHashCommon extends ModelTestBase
         return result;
         }
     
-    protected Set itemSet( String items )
+    protected Set<Item> itemSet( String items )
         {
-        Set result = new HashSet();
+        Set<Item> result = new HashSet<Item>();
         StringTokenizer st = new StringTokenizer( items );
         while (st.hasMoreTokens()) addItem( result, st.nextToken() );
         return result;
         }
 
-    private void addItem( Set result, String item )
+    private void addItem( Set<Item> result, String item )
         {
         StringTokenizer itemElements = new StringTokenizer( item, ":" );
         int hash = Integer.parseInt( itemElements.nextToken() );

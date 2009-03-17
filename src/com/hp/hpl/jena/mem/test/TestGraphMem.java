@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.24 2009-01-16 17:23:57 andy_seaborne Exp $
+  $Id: TestGraphMem.java,v 1.25 2009-03-17 10:48:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -24,8 +24,7 @@ public class TestGraphMem extends AbstractTestGraphMem
     public static TestSuite suite()
         { return new TestSuite( TestGraphMem.class ); }
         
-    @Override
-    public Graph getGraph()
+    @Override public Graph getGraph()
         { return Factory.createGraphMem(); }
         
     public void testRemoveAllDoesntUseFind()
@@ -36,11 +35,10 @@ public class TestGraphMem extends AbstractTestGraphMem
         assertEquals( 0, g.size() );
         }
     
-    @Override
-    public void testSizeAfterRemove() 
+    @Override public void testSizeAfterRemove() 
         {
         Graph g = getGraphWith( "x p y" );
-        ExtendedIterator it = g.find( triple( "x ?? ??" ) );
+        ExtendedIterator<Triple> it = g.find( triple( "x ?? ??" ) );
         it.removeNext();
         assertEquals( 0, g.size() );        
         }
@@ -57,8 +55,7 @@ public class TestGraphMem extends AbstractTestGraphMem
     
     protected final class GraphMemWithoutFind extends GraphMem
         {
-        @Override
-        public ExtendedIterator graphBaseFind( TripleMatch t )
+        @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )
             { throw new JenaException( "find is Not Allowed" ); }
         }
     }

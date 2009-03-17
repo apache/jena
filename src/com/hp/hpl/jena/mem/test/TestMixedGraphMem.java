@@ -1,7 +1,7 @@
 /*
   (c) (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMixedGraphMem.java,v 1.10 2009-01-16 17:23:57 andy_seaborne Exp $
+  $Id: TestMixedGraphMem.java,v 1.11 2009-03-17 10:48:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -12,7 +12,6 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.mem.MixedGraphMem;
 
 
 /**
@@ -26,13 +25,12 @@ public class TestMixedGraphMem extends TestGraphMem
     public static TestSuite suite()
         { return new TestSuite( TestMixedGraphMem.class ); }
         
-    @Override
-    public Graph getGraph()
+    @Override public Graph getGraph()
         { return new MixedGraphMem(); }
     
     public void testRepeatedAddSuppressesPredicateAndObject()
         {
-        final List history = new ArrayList();
+        final List<Node> history = new ArrayList<Node>();
         MixedGraphMemStore t = new MixedGraphMemStore( getGraph() )
             {
             @Override
@@ -48,13 +46,13 @@ public class TestMixedGraphMem extends TestGraphMem
         assertEquals( nodeList( "s P o s" ), history );
         }
     
-    @Override
-    public void testUnnecessaryMatches() { 
+    @Override public void testUnnecessaryMatches() { 
         /* test not appropriate for subclass */ 
         }
+    
     public void testRemoveAbsentSuppressesPredicateAndObject()
         {
-        final List history = new ArrayList();
+        final List<Node> history = new ArrayList<Node>();
         MixedGraphMemStore t = new MixedGraphMemStore( getGraph() )
             {
             @Override

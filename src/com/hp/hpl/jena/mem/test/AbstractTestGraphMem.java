@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AbstractTestGraphMem.java,v 1.4 2009-01-16 17:23:57 andy_seaborne Exp $
+ 	$Id: AbstractTestGraphMem.java,v 1.5 2009-03-17 10:48:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -29,7 +29,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
     public void testBrokenIndexes()
         {
         Graph g = getGraphWith( "x R y; x S z" );
-        ExtendedIterator it = g.find( Node.ANY, Node.ANY, Node.ANY );
+        ExtendedIterator<Triple> it = g.find( Node.ANY, Node.ANY, Node.ANY );
         it.removeNext(); it.removeNext();
         assertFalse( g.find( node( "x" ), Node.ANY, Node.ANY ).hasNext() );
         assertFalse( g.find( Node.ANY, node( "R" ), Node.ANY ).hasNext() );
@@ -39,7 +39,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
     public void testBrokenSubject()
         {
         Graph g = getGraphWith( "x brokenSubject y" );
-        ExtendedIterator it = g.find( node( "x" ), Node.ANY, Node.ANY );
+        ExtendedIterator<Triple> it = g.find( node( "x" ), Node.ANY, Node.ANY );
         it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
@@ -47,7 +47,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
     public void testBrokenPredicate()
         {
         Graph g = getGraphWith( "x brokenPredicate y" );
-        ExtendedIterator it = g.find( Node.ANY, node( "brokenPredicate"), Node.ANY );
+        ExtendedIterator<Triple> it = g.find( Node.ANY, node( "brokenPredicate"), Node.ANY );
         it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
@@ -55,7 +55,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
     public void testBrokenObject()
         {
         Graph g = getGraphWith( "x brokenObject y" );
-        ExtendedIterator it = g.find( Node.ANY, Node.ANY, node( "y" ) );
+        ExtendedIterator<Triple> it = g.find( Node.ANY, Node.ANY, node( "y" ) );
         it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
@@ -63,7 +63,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
     public void testSizeAfterRemove() 
         {
         Graph g = getGraphWith( "x p y" );
-        ExtendedIterator it = g.find( triple( "x ?? ??" ) );
+        ExtendedIterator<Triple> it = g.find( triple( "x ?? ??" ) );
         it.removeNext();
         assertEquals( 0, g.size() );        
         }
@@ -86,7 +86,7 @@ public class AbstractTestGraphMem extends AbstractTestGraph
         exhaust( g.find( Node.ANY, Node.ANY, special ) );
     }
     
-    protected void exhaust( Iterator it )
+    protected void exhaust( Iterator<?> it )
         { while (it.hasNext()) it.next(); }
     }
 
