@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.16 2009-01-26 10:28:22 chris-dollin Exp $
+ * $Id: LPBRuleEngine.java,v 1.17 2009-03-18 09:23:07 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-01-26 10:28:22 $
+ * @version $Revision: 1.17 $ on $Date: 2009-03-18 09:23:07 $
  */
 public class LPBRuleEngine {
     
@@ -246,7 +246,7 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
-    public synchronized Generator generatorFor(TriplePattern goal, List clauses) {
+    public synchronized Generator generatorFor(TriplePattern goal, List<RuleClauseCode> clauses) {
         Generator generator = tabledGoals.get(goal);
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, clauses, false);
@@ -360,7 +360,7 @@ public class LPBRuleEngine {
      * if false profiling will stop all current data lost.
      */
     public void resetProfile(boolean enable) {
-        profile = enable ? new HashMap() : null;
+        profile = enable ? new HashMap<String, Count>() : null;
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEQueue.java,v 1.13 2009-03-12 21:49:47 andy_seaborne Exp $
+ * $Id: RETEQueue.java,v 1.14 2009-03-18 09:23:07 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * against.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-03-12 21:49:47 $
+ * @version $Revision: 1.14 $ on $Date: 2009-03-18 09:23:07 $
  */
 public class RETEQueue implements RETESinkNode, RETESourceNode {
     
@@ -49,11 +49,11 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
      * to a sibling and a continuation node.
      * @param A List of variable indices which should match between the two inputs
      */
-    public RETEQueue(List matchIndexList) {
+    public RETEQueue(List<? extends Byte> matchIndexList) {
         int len = matchIndexList.size();
         matchIndices = new byte[len];
         for (int i = 0; i < len; i++) {
-            matchIndices[i] = (byte) ((Number)matchIndexList.get(i)).intValue();
+            matchIndices[i] = matchIndexList.get(i).byteValue();
         }
     }
     
