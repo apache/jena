@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.30 2009-03-17 10:28:56 chris-dollin Exp $
+ * $Id: TransitiveGraphCache.java,v 1.31 2009-03-18 10:55:07 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -76,10 +76,10 @@ public class TransitiveGraphCache implements Finder {
      * Inner class used to represent vistors than can be applied to each
      * node in a graph walk. 
      */
-    static interface Visitor {
+    static interface Visitor<Alpha, Beta> {
         // The visitor must not delete and pred entries to avoid CME
         // If this is needed return a non-null result which is a list of pred nodes to kill
-    	List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object arg2);
+    	List<GraphNode> visit(GraphNode node, GraphNode processing, Alpha arg1, Beta arg2);
     }
     
 	/**
@@ -144,7 +144,7 @@ public class TransitiveGraphCache implements Finder {
 		/**
 		 * Visit each predecessor of this node applying the given visitor.
 		 */
-		public void visitPredecessors(Visitor visitor, Object arg1, Object arg2) {
+		public <Alpha, Beta> void visitPredecessors(Visitor<Alpha, Beta> visitor, Alpha arg1, Beta arg2) {
             List<GraphNode> kill = visitor.visit(this, null, arg1, arg2);
             if (kill != null)  pred.removeAll(kill);
 			doVisitPredecessors(visitor, arg1, arg2, new HashSet<GraphNode>());
@@ -154,7 +154,7 @@ public class TransitiveGraphCache implements Finder {
 		 * Visit each predecessor of this node applying the given visitor.
          * Breadth first.
 		 */
-		private void doVisitPredecessors(Visitor visitor, Object arg1, Object arg2, Set<GraphNode> seen) {
+		private <Alpha, Beta> void doVisitPredecessors(Visitor<Alpha, Beta> visitor, Alpha arg1, Beta arg2, Set<GraphNode> seen) {
 			if (seen.add(this)) {
                 Collection<GraphNode> allKill = null;
                 for (Iterator<GraphNode> i = pred.iterator(); i.hasNext(); ) {
@@ -226,11 +226,10 @@ public class TransitiveGraphCache implements Finder {
 		public void propagateAdd(GraphNode target) {
             Set<GraphNode> sc = new HashSet<GraphNode>(target.succClosed);
             sc.add(target); 
-			visitPredecessors(new Visitor() {
-				public List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object target) {
-					Set sc = (Set)arg1;
+			visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>() {
+				public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, GraphNode target) {
 					// Add closure
-					node.succClosed.addAll(sc);
+					node.succClosed.addAll( sc );
 					// Scan for redundant links
                     List<GraphNode> kill = null;
 					for (Iterator<GraphNode> i = node.succ.iterator(); i.hasNext();) {
@@ -259,9 +258,8 @@ public class TransitiveGraphCache implements Finder {
 			Set<GraphNode> visited = new HashSet<GraphNode>();
 			visited.add(this);
 			// Scan predecessors not including ourselves
-			doVisitPredecessors(new Visitor() {
-				public List<GraphNode> visit(GraphNode node, GraphNode processing, Object arg1, Object arg2) {
-					Set sc = (Set)arg1;
+			doVisitPredecessors(new Visitor<Set<GraphNode>, Object>() {
+				public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, Object ignored ) {
 					// Add closure
 					node.succClosed.addAll(sc);
 					// Scan for redundant links
@@ -313,7 +311,7 @@ public class TransitiveGraphCache implements Finder {
             }
             
             // Find all predecessor nodes and relink link them to point to us
-            Set done = new HashSet();
+            Set<GraphNode> done = new HashSet<GraphNode>();
             Set<GraphNode> newAliases = new HashSet<GraphNode>();
             for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
             	GraphNode m = i.next();
@@ -340,18 +338,17 @@ public class TransitiveGraphCache implements Finder {
          * new lead node. Trace out all predecessors to this node and relocate
          * them to point to the new lead node.
          */
-        private void relocateAllRefTo(GraphNode lead, Set done) {
-            visitPredecessors(new Visitor(){
-                public List<GraphNode> visit(GraphNode node, GraphNode processing, Object done, Object leadIn) {
-                    if (((Set<GraphNode>)done).add(node)) {
-                        GraphNode lead = (GraphNode)leadIn;
-                        Set members = (Set)lead.aliases;
+        private void relocateAllRefTo(GraphNode lead, Set<GraphNode> done) {
+            visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>(){
+                public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> done, GraphNode leadIn) {
+                    if (done.add( node )) {
+                        Set members = (Set)leadIn.aliases;
                         int before = node.succ.size();
                         node.succ.removeAll(members);
                         node.succClosed.removeAll(members);
-                        node.succClosed.add(lead);
+                        node.succClosed.add(leadIn);
                         if (node.succ.size() != before) {
-                            node.succ.add(lead);
+                            node.succ.add(leadIn);
                         }
                     }
                     return null;
@@ -731,9 +728,9 @@ public class TransitiveGraphCache implements Finder {
             // First find all the members of the new component
             members = new HashSet<GraphNode>();
             members.add(endN);
-            startN.visitPredecessors(new Visitor() {
-                public List<GraphNode> visit(GraphNode node, GraphNode processing, Object members, Object endN) {
-                    if (((GraphNode)endN).pathTo(node)) ((Set<GraphNode>)members).add(node);
+            startN.visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>() {
+                public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> members, GraphNode endN) {
+                    if (endN.pathTo(node)) members.add( node );
                     return null;
                 } }, members, endN);
             // Then create the SCC
@@ -887,11 +884,10 @@ public class TransitiveGraphCache implements Finder {
      * @return returns true if new information has been cached
      */
     public boolean cacheAll(Finder graph, Node predicate) {
-        ExtendedIterator it = graph.find(new TriplePattern(null, predicate, null));
+        ExtendedIterator<Triple> it = graph.find(new TriplePattern(null, predicate, null));
         boolean foundsome = it.hasNext();
         while (it.hasNext()) {
-            Triple triple = (Triple) it.next();
-            addRelation(triple);
+            addRelation(it.next());
         }
         it.close();
         return foundsome;
