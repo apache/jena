@@ -1,17 +1,17 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.16 2009-01-16 17:23:50 andy_seaborne Exp $
+    $Id: HashedBunchMap.java,v 1.17 2009-03-18 10:11:03 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.*;
 
 /**
     An implementation of BunchMap that does open-addressed hashing.
     @author kers
 */
-public class HashedBunchMap extends HashCommon implements BunchMap
+public class HashedBunchMap extends HashCommon<Object> implements BunchMap
     {
     protected TripleBunch [] values;
     
@@ -82,16 +82,14 @@ public class HashedBunchMap extends HashCommon implements BunchMap
         Called by HashCommon when a key is removed: remove
         associated element of the <code>values</code> array.
     */
-    @Override
-    protected void removeAssociatedValues( int here )
+    @Override protected void removeAssociatedValues( int here )
         { values[here] = null; }
     
     /**
         Called by HashCommon when a key is moved: move the
         associated element of the <code>values</code> array.
     */
-    @Override
-    protected void moveAssociatedValues( int here, int scan )
+    @Override protected void moveAssociatedValues( int here, int scan )
         { values[here] = values[scan]; }
     }
 

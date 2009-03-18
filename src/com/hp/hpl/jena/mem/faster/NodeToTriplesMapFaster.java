@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.32 2009-01-26 15:24:31 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.33 2009-03-18 10:11:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -25,8 +25,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         be the index node of the triple. Answer <code>true</code> iff the triple
         was not previously in the set, ie, it really truly has been added. 
     */
-    @Override
-    public boolean add( Triple t ) 
+    @Override public boolean add( Triple t ) 
        {
        Object o = getIndexField( t );
        TripleBunch s = bunchMap.get( o );
@@ -47,8 +46,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
         triple was previously in the set, ie, it really truly has been removed. 
     */
-    @Override
-    public boolean remove( Triple t )
+    @Override public boolean remove( Triple t )
        { 
        Object o = getIndexField( t );
        TripleBunch s = bunchMap.get( o );
@@ -67,12 +65,11 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
     */
-    @Override
-    public Iterator iterator( Object o, HashCommon.NotifyEmpty container ) 
+    @Override public Iterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container ) 
        {
        // System.err.println( ">> BOINK" ); // if (true) throw new JenaException( "BOINK" );
        TripleBunch s = bunchMap.get( o );
-       return s == null ? NullIterator.instance() : s.iterator( container );
+       return s == null ? NullIterator.<Triple>instance() : s.iterator( container );
        }
     
     public class NotifyMe implements HashCommon.NotifyEmpty
@@ -90,15 +87,13 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     /**
         Answer true iff this NTM contains the concrete triple <code>t</code>.
     */
-    @Override
-    public boolean contains( Triple t )
+    @Override public boolean contains( Triple t )
        { 
        TripleBunch s = bunchMap.get( getIndexField( t ) );
        return s == null ? false :  s.contains( t );
        }    
     
-    @Override
-    public boolean containsBySameValueAs( Triple t )
+    @Override public boolean containsBySameValueAs( Triple t )
        { 
        TripleBunch s = bunchMap.get( getIndexField( t ) );
        return s == null ? false :  s.containsBySameValueAs( t );
@@ -109,14 +104,13 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         <code>pattern</code>. The index field of this NTM is guaranteed
         concrete in the pattern.
     */
-    @Override
-    public ExtendedIterator iterator( Node index, Node n2, Node n3 )
+    @Override public ExtendedIterator<Triple> iterator( Node index, Node n2, Node n3 )
        {
        Object indexValue = index.getIndexingValue();
        TripleBunch s = bunchMap.get( indexValue );
 //       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
        return s == null
-           ? NullIterator.instance()
+           ? NullIterator.<Triple>instance()
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
                .filterKeep( s.iterator( new NotifyMe( indexValue ) ) )
            ;
@@ -146,8 +140,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             {
             final MatchOrBind x = MatchOrBind.createSP( pt );
             
-            @Override
-            public void applyToTriples( Domain d, Matcher m, StageElement next )
+            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 TripleBunch c = bunchMap.get( pt.O.finder( d ).getIndexingValue() );
                 if (c != null) c.app( d, next, x.reset( d ) );
@@ -161,8 +154,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             {
             final MatchOrBind x = MatchOrBind.createPO( pt );
             
-            @Override
-            public void applyToTriples( Domain d, Matcher m, StageElement next )
+            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 TripleBunch c = bunchMap.get( pt.S.finder( d ) );
                 if (c != null) c.app( d, next, x.reset( d ) );
@@ -181,8 +173,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
                 {
                 final MatchOrBind x = MatchOrBind.createPO( Q );
                 
-                @Override
-                public void applyToTriples( Domain d, Matcher m, StageElement next )
+                @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
                     { ss.app( d, next, x.reset( d ) ); }
                 };
             }
@@ -195,8 +186,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
      Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
-    @Override
-    public Iterator iteratorForIndexed( Object y )
+    @Override public Iterator<Triple> iteratorForIndexed( Object y )
         { return get( y ).iterator();  }
     }
 

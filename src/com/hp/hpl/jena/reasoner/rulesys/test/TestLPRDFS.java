@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestLPRDFS.java,v 1.11 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: TestLPRDFS.java,v 1.12 2009-03-18 10:11:05 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.*;
  *  Test an FB hyrid using the emerging LP engine on the basic RDFS tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2009-03-12 21:49:37 $
+ * @version $Revision: 1.12 $ on $Date: 2009-03-18 10:11:05 $
  */
 public class TestLPRDFS extends TestCase {
     
@@ -158,7 +158,7 @@ public class TestLPRDFS extends TestCase {
     /**
      * Return the RDFS rule set, loading it in if necessary
      */
-    public static List loadRules() {
+    public static List<Rule> loadRules() {
         if (ruleSet == null) ruleSet = FBRuleReasoner.loadRules( RULE_FILE );
         return ruleSet;
     }
