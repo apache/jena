@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.29 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: WebOntTestHarness.java,v 1.30 2009-03-18 10:00:13 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2009-03-12 21:49:37 $
+ * @version $Revision: 1.30 $ on $Date: 2009-03-18 10:00:13 $
  */
 public class WebOntTestHarness {
 
@@ -465,7 +465,7 @@ public class WebOntTestHarness {
     public boolean testEntailment(Graph conclusions, Graph result) {
         QueryHandler qh = result.queryHandler();
         Query query = WGReasonerTester.graphToQuery(conclusions);
-        Iterator i = qh.prepareBindings(query, new Node[] {}).executeBindings();
+        Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
         return i.hasNext();
     }
     
@@ -503,12 +503,12 @@ public class WebOntTestHarness {
         // Rewrite queries of the form (X intersectionOf Y) to the form
         //   (X equivalentClass ?CC) (?CC intersectionOf Y)
         StmtIterator ii = conclusions.listStatements(null, OWL.intersectionOf, (RDFNode)null);
-        List intersections = new ArrayList();
+        List<Statement> intersections = new ArrayList<Statement>();
         while (ii.hasNext()) { 
-            intersections.add(ii.next());
+            intersections.add(ii.nextStatement());
         }
-        for (Iterator i = intersections.iterator(); i.hasNext(); ) {
-            Statement is = (Statement)i.next();
+        for (Iterator<Statement> i = intersections.iterator(); i.hasNext(); ) {
+            Statement is = i.next();
             // Declare in the premises that such an intersection exists
             Resource comp = premises.createResource()
                    .addProperty(RDF.type, OWL.Class)
