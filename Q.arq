@@ -1,8 +1,3 @@
-PREFIX afn: <http://jena.hpl.hp.com/function#>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT
-?a
-{ 
-  ?s ?p ?o .
-  LET (?a := afn:namespace(?p))
-}
+SELECT DISTINCT ?member { ?list rdf:rest*/rdf:first ?member }
