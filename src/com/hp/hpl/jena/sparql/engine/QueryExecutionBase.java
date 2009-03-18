@@ -330,7 +330,10 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     
-    protected QuerySolution getInputBindings() { return initialBinding ; }
+    //protected QuerySolution getInputBindings() { return initialBinding ; }
+
+    public void setInitialBindings(ResultSet table)
+    { throw new UnsupportedOperationException("setInitialBindings(ResultSet)") ; }
 }
 
 /*

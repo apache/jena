@@ -200,6 +200,12 @@ public class QueryExecutionFactory
         return create(makeQuery(queryStr, lang), model) ;
     }
 
+    /** Create a QueryExecution to execute over the Model.
+     * 
+     * @param query         Query string
+     * @param initialBinding    Any initial binding of variables      
+     * @return QueryExecution
+     */
     static public QueryExecution create(Query query, QuerySolution initialBinding)
     {
         checkArg(query) ;
@@ -290,7 +296,8 @@ public class QueryExecutionFactory
     {
         checkArg(query) ;
         QueryExecution qe = make(query, dataset) ;
-        qe.setInitialBinding(initialBinding) ;
+        if ( initialBinding != null )
+            qe.setInitialBinding(initialBinding) ;
         return qe ;
     }
 

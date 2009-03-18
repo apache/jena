@@ -28,6 +28,12 @@ public interface QueryExecution
      */
     public void setInitialBinding(QuerySolution binding) ;
 
+//    /** Set a table of initial associations of variables and values.
+//     * May not be supported by all QueryExecution implementations.
+//     * @param binding
+//     */
+//    public void setInitialBindings(ResultSet table) ;
+    
     /**
      * The dataset agisnt which the query will execute.
      * May be null, implying it is expected that the query itself

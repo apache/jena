@@ -59,6 +59,9 @@ public class QueryEngineHTTP implements QueryExecution
     public void setInitialBinding(QuerySolution binding)
     { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
     
+    public void setInitialBindings(ResultSet table)
+    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
+    
     /**  @param defaultGraphURIs The defaultGraphURIs to set. */
     public void setDefaultGraphURIs(List<String> defaultGraphURIs)
     {
