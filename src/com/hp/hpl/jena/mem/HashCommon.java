@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.17 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: HashCommon.java,v 1.18 2009-03-18 09:46:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.*;
     hashing and growth sizes.
     @author kers
 */
-public abstract class HashCommon
+public abstract class HashCommon<Key>
     {
     /**
         Jeremy suggests, from his experiments, that load factors more than
@@ -31,7 +31,7 @@ public abstract class HashCommon
         for triple sets and for node->bunch maps, it has to be an Object array; we
         take the casting hit.
      */
-    protected Object [] keys;
+    protected Key [] keys;
     
     /**
         The capacity (length) of the key array.
@@ -62,7 +62,8 @@ public abstract class HashCommon
     */
     protected HashCommon( int initialCapacity )
         {
-        keys = new Object[capacity = initialCapacity];
+        @SuppressWarnings("unchecked") Key [] keyArray = (Key []) new Object[capacity = initialCapacity];
+        keys = keyArray;
         threshold = (int) (capacity * loadFactor);
         }
 
@@ -202,10 +203,10 @@ public abstract class HashCommon
         top of the table to the bottom because of Iterator::remove. removeFrom
         returns such a moved key as its result, and null otherwise.
     */
-    protected Object removeFrom( int here )
+    protected Key removeFrom( int here )
         {
         final int original = here;
-        Object wrappedAround = null;
+        Key wrappedAround = null;
         size -= 1;
         while (true)
             {
@@ -248,15 +249,15 @@ public abstract class HashCommon
             }
         }
 
-    public ExtendedIterator keyIterator()
+    public ExtendedIterator<Key> keyIterator()
         { return keyIterator( NotifyEmpty.ignore ); }
     
-    public ExtendedIterator keyIterator( final NotifyEmpty container )
+    public ExtendedIterator<Key> keyIterator( final NotifyEmpty container )
         {
         showkeys();
-        final List movedKeys = new ArrayList();
-        ExtendedIterator basic = new BasicKeyIterator( changes, container, movedKeys );
-        ExtendedIterator leftovers = new MovedKeysIterator( changes, container, movedKeys );
+        final List<Key> movedKeys = new ArrayList<Key>();
+        ExtendedIterator<Key> basic = new BasicKeyIterator( changes, container, movedKeys );
+        ExtendedIterator<Key> leftovers = new MovedKeysIterator( changes, container, movedKeys );
         return basic.andThen( leftovers );
         }
     
@@ -268,41 +269,38 @@ public abstract class HashCommon
         Note that the list supplied on construction will be empty: it is filled before
         the first call to <code>hasNext()</code>.
     */
-    protected final class MovedKeysIterator extends NiceIterator
+    protected final class MovedKeysIterator extends NiceIterator<Key>
         {
-        private final List keys;
+        private final List<Key> movedKeys;
 
         protected int index = 0;
         final int initialChanges;
         final NotifyEmpty container;
 
-        protected MovedKeysIterator( int initialChanges, NotifyEmpty container, List keys )
+        protected MovedKeysIterator( int initialChanges, NotifyEmpty container, List<Key> keys )
             { 
-            this.keys = keys; 
+            this.movedKeys = keys; 
             this.initialChanges = initialChanges; 
             this.container = container;
             }
 
-        @Override
-        public boolean hasNext()
+        @Override public boolean hasNext()
             { 
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            return index < keys.size(); 
+            return index < movedKeys.size(); 
             }
 
-        @Override
-        public Object next()
+        @Override public Key next()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "" );
-            return keys.get( index++ );
+            return movedKeys.get( index++ );
             }
 
-        @Override
-        public void remove()
+        @Override public void remove()
             { 
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            HashCommon.this.remove( keys.get( index - 1 ) ); 
+            HashCommon.this.remove( movedKeys.get( index - 1 ) ); 
             if (size == 0) container.emptied();
             }
         }
@@ -313,44 +311,41 @@ public abstract class HashCommon
         index, that key value is added to the <code>movedKeys</code>
         list supplied to the constructor.
     */
-    protected final class BasicKeyIterator extends NiceIterator
+    protected final class BasicKeyIterator extends NiceIterator<Key>
         {
-        protected final List movedKeys;
+        protected final List<Key> movedKeys;
 
         int index = 0;
         final int initialChanges;
         final NotifyEmpty container;
 
-        protected BasicKeyIterator( int initialChanges, NotifyEmpty container, List movedKeys )
+        protected BasicKeyIterator( int initialChanges, NotifyEmpty container, List<Key> movedKeys )
             { 
             this.movedKeys = movedKeys; 
             this.initialChanges = initialChanges;  
             this.container = container;
             }
 
-        @Override
-        public boolean hasNext()
+        @Override public boolean hasNext()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             while (index < capacity && keys[index] == null) index += 1;
             return index < capacity;
             }
 
-        @Override
-        public Object next()
+        @Override public Key next()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "HashCommon keys" );
             return keys[index++];
             }
 
-        @Override
-        public void remove()
+        @Override public void remove()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             // System.err.println( ">> keyIterator::remove, size := " + size +
             // ", removing " + keys[index + 1] );
-            Object moved = removeFrom( index - 1 );
+            Key moved = removeFrom( index - 1 );
             if (moved != null) movedKeys.add( moved );
             if (size == 0) container.emptied();
             if (size < 0) throw new BrokenException( "BROKEN" );
