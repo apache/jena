@@ -1,7 +1,7 @@
 /* (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
      [See end of file]
 
-     $Id: NullIterator.java,v 1.15 2009-01-29 08:54:35 chris-dollin Exp $
+     $Id: NullIterator.java,v 1.16 2009-03-18 12:29:25 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -17,7 +17,8 @@ public class NullIterator<T> extends NiceIterator<T>
     public static <T> NullIterator<T>  instance() 
         { return new NullIterator<T>(); }
     
-    @Override public <X extends T>ExtendedIterator<T> andThen( Iterator<X> it )
+    @SuppressWarnings("unchecked")
+    @Override public <X extends T> ExtendedIterator<T> andThen( Iterator<X> it )
         { 
         return it instanceof ExtendedIterator 
             ? (ExtendedIterator<T>) it 
