@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.29 2009-01-26 10:28:24 chris-dollin Exp $
+ * $Id: OWLWGTester.java,v 1.30 2009-03-18 10:36:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2009-01-26 10:28:24 $
+ * @version $Revision: 1.30 $ on $Date: 2009-03-18 10:36:36 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -251,7 +251,7 @@ public class OWLWGTester {
     private boolean testConclusions(Graph conclusions, Graph result) {
         QueryHandler qh = result.queryHandler();
         Query query = WGReasonerTester.graphToQuery(conclusions);
-        Iterator i = qh.prepareBindings(query, new Node[] {}).executeBindings();
+        Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
         return i.hasNext();
     }
     

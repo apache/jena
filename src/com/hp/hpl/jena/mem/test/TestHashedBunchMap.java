@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashedBunchMap.java,v 1.6 2008-12-28 19:32:24 andy_seaborne Exp $
+ 	$Id: TestHashedBunchMap.java,v 1.7 2009-03-18 10:36:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -16,7 +16,7 @@ public class TestHashedBunchMap extends ModelTestBase
     
     public void testSize()
         {
-        HashCommon b = new HashedBunchMap();
+        HashCommon<Object> b = new HashedBunchMap();
         }
 
     public void testClearSetsSizeToZero()

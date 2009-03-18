@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ObjectIterator.java,v 1.7 2009-03-16 15:45:28 chris-dollin Exp $
+ 	$Id: ObjectIterator.java,v 1.8 2009-03-18 10:36:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -23,12 +23,12 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 */
 public abstract class ObjectIterator extends NiceIterator<Node>
     {
-    public ObjectIterator( Iterator domain )
+    public ObjectIterator( Iterator<?> domain )
         { this.domain = domain; }
 
     protected abstract Iterator<Triple> iteratorFor( Object y );
 
-    final Iterator domain;
+    final Iterator<?> domain;
     
     final Set<Node> seen = CollectionFactory.createHashedSet();
     

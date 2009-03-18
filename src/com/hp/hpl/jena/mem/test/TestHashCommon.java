@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.10 2009-03-17 10:48:06 chris-dollin Exp $
+ 	$Id: TestHashCommon.java,v 1.11 2009-03-18 10:36:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -20,7 +20,7 @@ public class TestHashCommon extends ModelTestBase
     public TestHashCommon( String name )
         { super( name ); }
     
-    static class ProbeHashCommon extends HashCommon
+    static class ProbeHashCommon extends HashCommon<Object>
         {
         protected ProbeHashCommon( int initialCapacity )
             { super( initialCapacity ); }

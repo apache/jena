@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.17 2009-01-16 17:23:58 andy_seaborne Exp $
+ * $Id: TestTrialOWLRules.java,v 1.18 2009-03-18 10:36:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -16,18 +16,16 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 import java.io.IOException;
-import java.util.*;
 
 /**
  * Test suite to test experimental versions of the OWL reasoner, not 
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2009-01-16 17:23:58 $
+ * @version $Revision: 1.18 $ on $Date: 2009-03-18 10:36:36 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -186,7 +184,7 @@ public class TestTrialOWLRules extends TestCase {
         InfModel conclusions = ModelFactory.createInfModel(reasoner, premises);
         
         System.out.println("Premises = ");
-        for (Iterator i = premises.listStatements(); i.hasNext(); ) {
+        for (StmtIterator i = premises.listStatements(); i.hasNext(); ) {
             System.out.println(" - " + i.next());
         }
         
@@ -197,7 +195,7 @@ public class TestTrialOWLRules extends TestCase {
         Resource v = (Resource)i.getRequiredProperty(p).getObject();
         System.out.println("Value of i.p = " + v);
         System.out.println("Types of v are: ");
-        for (Iterator it2 = conclusions.listStatements(v, RDF.type, (RDFNode)null); it2.hasNext(); ) {
+        for (StmtIterator it2 = conclusions.listStatements(v, RDF.type, (RDFNode)null); it2.hasNext(); ) {
             System.out.println(" - " + it2.next());
         }
 //        System.out.println("Things of type r are: ");
