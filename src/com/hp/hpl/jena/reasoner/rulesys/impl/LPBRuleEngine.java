@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.18 2009-03-18 12:26:10 chris-dollin Exp $
+ * $Id: LPBRuleEngine.java,v 1.19 2009-03-18 13:32:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2009-03-18 12:26:10 $
+ * @version $Revision: 1.19 $ on $Date: 2009-03-18 13:32:36 $
  */
 public class LPBRuleEngine {
     
@@ -288,9 +288,9 @@ public class LPBRuleEngine {
      */
     public synchronized void pump(LPInterpreterContext gen) {
 //        System.out.println("Pump agenda on engine " + this + ", size = " + agenda.size());
-        Collection<LPInterpreterContext> batch = null;
+        Collection<Generator> batch = null;
         if (CYCLES_BETWEEN_COMPLETION_CHECK > 0) {
-            batch = new ArrayList<LPInterpreterContext>(CYCLES_BETWEEN_COMPLETION_CHECK);
+            batch = new ArrayList<Generator>(CYCLES_BETWEEN_COMPLETION_CHECK);
         }
         int count = 0; 
         while(!gen.isReady()) {
@@ -326,14 +326,14 @@ public class LPBRuleEngine {
      * Check all known interpeter contexts to see if any are complete.
      */
     public void checkForCompletions() {
-        ArrayList<LPInterpreterContext> contexts = new ArrayList<LPInterpreterContext>(activeInterpreters.size());
+        List<Generator> contexts = new ArrayList<Generator>(activeInterpreters.size());
         for (Iterator<LPInterpreter> i = activeInterpreters.iterator(); i.hasNext(); ) {
-            LPInterpreter interpreter = i.next();
-            if (interpreter.getContext() instanceof Generator) {
-                contexts.add(interpreter.getContext());     
+            LPInterpreterContext context = i.next().getContext();
+            if (context instanceof Generator) {
+                contexts.add( (Generator) context);     
             }
         }
-        Generator.checkForCompletions(contexts);
+        Generator.checkForCompletions( contexts );
     }
     
 //  =======================================================================

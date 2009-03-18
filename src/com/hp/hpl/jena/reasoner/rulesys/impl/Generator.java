@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Generator.java,v 1.13 2009-03-12 21:49:47 andy_seaborne Exp $
+ * $Id: Generator.java,v 1.14 2009-03-18 13:32:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-03-12 21:49:47 $
+ * @version $Revision: 1.14 $ on $Date: 2009-03-18 13:32:36 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -285,11 +285,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Check for deadlocked states across a collection of generators which have
      * been run.
      */
-    public static void checkForCompletions(Collection completions) {
+    public static void checkForCompletions(Collection<? extends Generator> completions) {
         HashSet<Generator> visited = new HashSet<Generator>();
         boolean atLeastOneZombie = false;
-        for (Iterator i = completions.iterator(); i.hasNext(); ) {
-            Generator g = (Generator)i.next();
+        for (Iterator<? extends Generator> i = completions.iterator(); i.hasNext(); ) {
+            Generator g = i.next();
             if (g.runCompletionCheck(visited) != LFlag.LIVE) {
                 atLeastOneZombie = true;
             }
