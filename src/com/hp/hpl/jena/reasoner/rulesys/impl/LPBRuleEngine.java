@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.17 2009-03-18 09:23:07 chris-dollin Exp $
+ * $Id: LPBRuleEngine.java,v 1.18 2009-03-18 12:26:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2009-03-18 09:23:07 $
+ * @version $Revision: 1.18 $ on $Date: 2009-03-18 12:26:10 $
  */
 public class LPBRuleEngine {
     
@@ -383,7 +383,7 @@ public class LPBRuleEngine {
     /**
      * Record count of number of rule invocations, used in profile structure only.
      */
-    static class Count implements Comparable {
+    static class Count implements Comparable<Count> {
         protected int count = 0;
         protected RuleClauseCode clause;
 
@@ -404,9 +404,8 @@ public class LPBRuleEngine {
         }
         
         /** Ordering */
-        public int compareTo(Object other) {
-            Count otherCount = (Count) other;
-            return (count < otherCount.count) ? -1 : ( (count == otherCount.count) ? 0 : +1);
+        public int compareTo(Count other) {
+            return (count < other.count) ? -1 : ( (count == other.count) ? 0 : +1);
         }
         
         /** Printable form */
