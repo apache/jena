@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.31 2008-12-28 19:32:01 andy_seaborne Exp $
+ * $Id: RETEEngine.java,v 1.32 2009-03-18 08:39:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
@@ -26,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2008-12-28 19:32:01 $
+ * @version $Revision: 1.32 $ on $Date: 2009-03-18 08:39:10 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -34,22 +35,22 @@ public class RETEEngine implements FRuleEngineI {
     protected ForwardRuleInfGraphI infGraph;
     
     /** Set of rules being used */
-    protected List rules;
+    protected List<Rule> rules;
     
     /** Map from predicate node to clause processor, Node_ANY is used for wildcard predicates */
-    protected OneToManyMap clauseIndex;
+    protected OneToManyMap<Node, RETENode> clauseIndex;
     
     /** Queue of newly added triples waiting to be processed */
-    protected List addsPending = new ArrayList();
+    protected List<Triple> addsPending = new ArrayList<Triple>();
     
     /** Queue of newly deleted triples waiting to be processed */
-    protected List deletesPending = new ArrayList();
+    protected List<Triple> deletesPending = new ArrayList<Triple>();
     
     /** The conflict set of rules waiting to fire */
     protected RETEConflictSet conflictSet;
     
     /** List of predicates used in rules to assist in fast data loading */
-    protected HashSet predicatesUsed;
+    protected HashSet<Node> predicatesUsed;
     
     /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
     protected boolean wildcardRule;
@@ -77,13 +78,13 @@ public class RETEEngine implements FRuleEngineI {
      * holds the deductions graph and source data.
      * @param rules the rule set to be processed
      */
-    public RETEEngine(ForwardRuleInfGraphI parent, List rules) {
+    public RETEEngine(ForwardRuleInfGraphI parent, List<Rule> rules) {
         infGraph = parent;
         this.rules = rules;
         // Check if this is a monotonic rule set
         isMonotonic = true;
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if ( ! r.isMonotonic() ) {
                 isMonotonic = false;
                 break;
@@ -132,14 +133,14 @@ public class RETEEngine implements FRuleEngineI {
         if (infGraph.getRawGraph() != null) {
             // Insert the data
             if (wildcardRule) {
-                for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
-                    addTriple((Triple)i.next(), false);
+                for (Iterator<Triple> i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
+                    addTriple( i.next(), false );
                 }
             } else {
-                for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
-                    Node predicate = (Node)p.next();
-                    for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
-                        Triple t = (Triple)i.next();
+                for (Iterator<Node> p = predicatesUsed.iterator(); p.hasNext(); ) {
+                    Node predicate = p.next();
+                    for (Iterator<Triple> i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
+                        Triple t = i.next();
                         addTriple(t, false);
                     }
                 }
@@ -212,11 +213,11 @@ public class RETEEngine implements FRuleEngineI {
         
         // Clone the RETE network to this engine
         RETERuleContext context = new RETERuleContext(infGraph, this);
-        Map netCopy = new HashMap();
-        clauseIndex = new OneToManyMap();
-        for (Iterator i = rs.clauseIndex.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry)i.next();
-            clauseIndex.put(entry.getKey(), ((RETENode)entry.getValue()).clone(netCopy, context));
+        Map<RETENode, RETENode> netCopy = new HashMap<RETENode, RETENode>();
+        clauseIndex = new OneToManyMap<Node, RETENode>();
+        for (Iterator<Map.Entry<Node, RETENode>> i = rs.clauseIndex.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry<Node, RETENode> entry = i.next();
+            clauseIndex.put( entry.getKey(), entry.getValue().clone( netCopy, context ) );
         }
     }
     
@@ -235,13 +236,13 @@ public class RETEEngine implements FRuleEngineI {
      * @param rules the list of Rule objects
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
-    public void compile(List rules, boolean ignoreBrules) {
-        clauseIndex = new OneToManyMap();
-        predicatesUsed = new HashSet();
+    public void compile(List<Rule> rules, boolean ignoreBrules) {
+        clauseIndex = new OneToManyMap<Node, RETENode>();
+        predicatesUsed = new HashSet<Node>();
         wildcardRule = false;
             
-        for (Iterator it = rules.iterator(); it.hasNext(); ) {
-            Rule rule = (Rule)it.next();
+        for (Iterator<Rule> it = rules.iterator(); it.hasNext(); ) {
+            Rule rule = it.next();
             if (ignoreBrules && rule.isBackward()) continue;
             
             int numVars = rule.getNumVars();
@@ -252,7 +253,7 @@ public class RETEEngine implements FRuleEngineI {
                 Object clause = rule.getBodyElement(i);
                 if (clause instanceof TriplePattern) {
                     // Create the filter node for this pattern
-                    ArrayList clauseVars = new ArrayList(numVars);
+                    ArrayList<Node> clauseVars = new ArrayList<Node>(numVars);
                     RETEClauseFilter clauseNode = RETEClauseFilter.compile((TriplePattern)clause, numVars, clauseVars);
                     Node predicate = ((TriplePattern)clause).getPredicate();
                     if (predicate.isVariable()) {
@@ -266,8 +267,8 @@ public class RETEEngine implements FRuleEngineI {
                     }
                 
                     // Create list of variables which should be cross matched between the earlier clauses and this one
-                    ArrayList matchIndices = new ArrayList(numVars);
-                    for (Iterator iv = clauseVars.iterator(); iv.hasNext(); ) {
+                    ArrayList<Byte> matchIndices = new ArrayList<Byte>(numVars);
+                    for (Iterator<Node> iv = clauseVars.iterator(); iv.hasNext(); ) {
                         int varIndex = ((Node_RuleVariable)iv.next()).getIndex();
                         if (seenVar[varIndex]) matchIndices.add(new Byte((byte)varIndex));
                         seenVar[varIndex] = true;
@@ -366,7 +367,7 @@ public class RETEEngine implements FRuleEngineI {
     protected synchronized Triple nextAddTriple() {
         int size = addsPending.size(); 
         if (size > 0) {
-            return (Triple)addsPending.remove(size - 1);
+            return addsPending.remove(size - 1);
         }
         return null;
     }
@@ -378,7 +379,7 @@ public class RETEEngine implements FRuleEngineI {
     protected synchronized Triple nextDeleteTriple() {
         int size = deletesPending.size(); 
         if (size > 0) {
-            return (Triple)deletesPending.remove(size - 1);
+            return deletesPending.remove(size - 1);
         }
         return null;
     }
@@ -412,9 +413,9 @@ public class RETEEngine implements FRuleEngineI {
         if (infGraph.shouldTrace()) {
             logger.debug((isAdd ? "Inserting" : "Deleting") + " triple: " + PrintUtil.print(t));
         }
-        Iterator i1 = clauseIndex.getAll(t.getPredicate());
-        Iterator i2 = clauseIndex.getAll(Node.ANY);
-        Iterator i = new ConcatenatedIterator(i1, i2);
+        Iterator<RETENode> i1 = clauseIndex.getAll(t.getPredicate());
+        Iterator<RETENode> i2 = clauseIndex.getAll(Node.ANY);
+        Iterator<RETENode> i = new ConcatenatedIterator<RETENode>(i1, i2);
         while (i.hasNext()) {
             RETEClauseFilter cf = (RETEClauseFilter) i.next();
             // firedRules guard in here?
@@ -428,9 +429,9 @@ public class RETEEngine implements FRuleEngineI {
      * because the tester is in another package.
      */
     public void testTripleInsert(Triple t) {
-        Iterator i1 = clauseIndex.getAll(t.getPredicate());
-        Iterator i2 = clauseIndex.getAll(Node.ANY);
-        Iterator i = new ConcatenatedIterator(i1, i2);
+        Iterator<RETENode> i1 = clauseIndex.getAll(t.getPredicate());
+        Iterator<RETENode> i2 = clauseIndex.getAll(Node.ANY);
+        Iterator<RETENode> i = new ConcatenatedIterator<RETENode>(i1, i2);
         while (i.hasNext()) {
             RETEClauseFilter cf = (RETEClauseFilter) i.next();
             cf.fire(t, true);
@@ -441,8 +442,8 @@ public class RETEEngine implements FRuleEngineI {
      * Scan the rules for any axioms and insert those
      */
     protected void findAndProcessAxioms() {
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (r.isAxiom()) {
                 // An axiom
                 RETERuleContext context = new RETERuleContext(infGraph, this);
@@ -471,8 +472,8 @@ public class RETEEngine implements FRuleEngineI {
      */
     protected void findAndProcessActions() {
         RETERuleContext tempContext = new RETERuleContext(infGraph, this);
-        for (Iterator i = rules.iterator(); i.hasNext(); ) {
-            Rule r = (Rule)i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+            Rule r = i.next();
             if (r.bodyLength() == 0) {
                 for (int j = 0; j < r.headLength(); j++) {
                     Object head = r.getHeadElement(j);
@@ -526,10 +527,10 @@ public class RETEEngine implements FRuleEngineI {
     public static class RuleStore {
     
         /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
-        protected OneToManyMap clauseIndex;
+        protected OneToManyMap<Node, RETENode> clauseIndex;
     
         /** List of predicates used in rules to assist in fast data loading */
-        protected HashSet predicatesUsed;
+        protected HashSet<Node> predicatesUsed;
     
         /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
         protected boolean wildcardRule;
@@ -538,7 +539,7 @@ public class RETEEngine implements FRuleEngineI {
         protected boolean isMonotonic = true;
         
         /** Constructor */
-        RuleStore(OneToManyMap clauseIndex, HashSet predicatesUsed, boolean wildcardRule, boolean isMonotonic) {
+        RuleStore(OneToManyMap<Node, RETENode> clauseIndex, HashSet<Node> predicatesUsed, boolean wildcardRule, boolean isMonotonic) {
             this.clauseIndex = clauseIndex;
             this.predicatesUsed = predicatesUsed;
             this.wildcardRule = wildcardRule;
