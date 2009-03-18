@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.21 2009-03-18 09:23:07 chris-dollin Exp $
+ * $Id: LPInterpreter.java,v 1.22 2009-03-18 15:53:52 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2009-03-18 09:23:07 $
+ * @version $Revision: 1.22 $ on $Date: 2009-03-18 15:53:52 $
  */
 public class LPInterpreter {
 
@@ -537,7 +537,7 @@ public class LPInterpreter {
                         case RuleClauseCode.LAST_CALL_PREDICATE:
                             // TODO: improved implementation of last call case
                         case RuleClauseCode.CALL_PREDICATE:
-                            List<RuleClauseCode> clauses = (List)args[ac++];
+                            List<RuleClauseCode> clauses = (List<RuleClauseCode>)args[ac++];
                             // Check if this call is now grounded
                             boolean groundCall = isGrounded(argVars[0]) && isGrounded(argVars[1]) && isGrounded(argVars[2]);
                             setupClauseCall(pc, ac, clauses, groundCall);
