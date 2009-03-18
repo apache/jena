@@ -21,9 +21,9 @@ public class ArrayUtils
         return (T[])Array.newInstance(cls, n) ;
 //        @SuppressWarnings("unchecked")
 //        T[] array = (T[])new Object[n] ;
-        // or is T known 
-        // @SuppressWarnings("unchecked")
-        //    Set<Type> x[] = new Set[length] ;
+// or is T known 
+//        @SuppressWarnings("unchecked")
+//        Set<Type> x[] = new Set[length] ;
 //        return array ;
     }
     
