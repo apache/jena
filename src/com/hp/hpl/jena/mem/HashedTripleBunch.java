@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.21 2009-01-27 15:32:17 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.22 2009-03-19 15:09:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
-public class HashedTripleBunch extends HashCommon implements TripleBunch
+public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     {    
     public HashedTripleBunch( TripleBunch b )
         {
@@ -68,14 +68,14 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         Object [] newKeys = keys = new Triple[capacity];
         for (int i = 0; i < oldCapacity; i += 1)
             {
-            Object t = oldContents[i];
+            Triple t = (Triple) oldContents[i];
             if (t != null) newKeys[findSlot( t )] = t;
             }
         }
     
-    public void remove( Triple t )
+    @Override public void remove( Triple t )
         {
-        removeFrom( ~findSlot( t ) );
+        super.remove( t );
         changes += 1;
         }
     

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.25 2009-03-17 15:30:10 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.26 2009-03-19 15:09:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -60,10 +60,10 @@ public abstract class NodeToTriplesMapBase
     public abstract boolean containsBySameValueAs( Triple t );
 
     /**
-        The nodes which appear in the index position of the stored triples; useful
+        The values (usually nodes) which appear in the index position of the stored triples; useful
         for eg listSubjects().
     */
-    public final Iterator<Node> domain()
+    public final Iterator<Object> domain()
         { return bunchMap.keyIterator(); }
 
     protected final Object getIndexField( Triple t )
@@ -97,7 +97,7 @@ public abstract class NodeToTriplesMapBase
     */
     public ExtendedIterator<Triple> iterateAll()
         {
-        final Iterator<Node> nodes = domain();
+        final Iterator<Object> nodes = domain();
         // System.err.println( "*>> NTM:iterateAll: nodes = " + IteratorCollection.iteratorToList( domain() ) );
         return new NiceIterator<Triple>() 
             {

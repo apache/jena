@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.18 2009-03-18 09:46:13 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.19 2009-03-19 15:09:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -31,7 +31,7 @@ public abstract class HashCommon<Key>
         for triple sets and for node->bunch maps, it has to be an Object array; we
         take the casting hit.
      */
-    protected Key [] keys;
+    protected Object [] keys;
     
     /**
         The capacity (length) of the key array.
@@ -62,8 +62,7 @@ public abstract class HashCommon<Key>
     */
     protected HashCommon( int initialCapacity )
         {
-        @SuppressWarnings("unchecked") Key [] keyArray = (Key []) new Object[capacity = initialCapacity];
-        keys = keyArray;
+        keys = new Object[capacity = initialCapacity];
         threshold = (int) (capacity * loadFactor);
         }
 
@@ -140,7 +139,7 @@ public abstract class HashCommon<Key>
         negative values imply present, positive absent, and there's no confusion
         around 0.
     */
-    protected final int findSlot( Object key )
+    protected final int findSlot( Key key )
         {
         int index = initialIndexFor( key );
         while (true)
@@ -155,11 +154,14 @@ public abstract class HashCommon<Key>
     /**
         Remove the object <code>key</code> from this hash's keys if it
         is present (if it's absent, do nothing). If a key is removed, the
-        <code>removeAssociatedValues</code> will be removed. If a key
+        <code>removeAssociatedValues</code> will be invoked. If a key
         is moved, the <code>moveAssociatedValues</code> method will
         be called.
     */
-    public void remove( Object key )
+    public void remove( Key key )
+        { primitiveRemove( key ); }
+
+    private void primitiveRemove( Key key )
         {
         int slot = findSlot( key );
         if (slot < 0) removeFrom( ~slot );
@@ -227,7 +229,7 @@ public abstract class HashCommon<Key>
                     if (here <= original && scan > original) 
                         {
                         // System.err.println( "]] recording wrapped " );
-                        wrappedAround = keys[scan];
+                        wrappedAround = (Key) keys[scan];
                         }
                     keys[here] = keys[scan];
                     moveAssociatedValues( here, scan );
@@ -286,7 +288,7 @@ public abstract class HashCommon<Key>
 
         @Override public boolean hasNext()
             { 
-            if (changes > initialChanges) throw new ConcurrentModificationException();
+            if (changes > initialChanges) throw new ConcurrentModificationException( "changes " + changes + " > initialChanges " + initialChanges );
             return index < movedKeys.size(); 
             }
 
@@ -300,7 +302,7 @@ public abstract class HashCommon<Key>
         @Override public void remove()
             { 
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            HashCommon.this.remove( movedKeys.get( index - 1 ) ); 
+            primitiveRemove( movedKeys.get( index - 1 ) ); 
             if (size == 0) container.emptied();
             }
         }
@@ -337,7 +339,7 @@ public abstract class HashCommon<Key>
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "HashCommon keys" );
-            return keys[index++];
+            return (Key) keys[index++];
             }
 
         @Override public void remove()

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: BunchMap.java,v 1.10 2009-01-08 14:56:41 andy_seaborne Exp $
+    $Id: BunchMap.java,v 1.11 2009-03-19 15:09:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -47,7 +47,7 @@ public interface BunchMap
     /**
         Answer an iterator over all the keys in this map.
     */
-    public ExtendedIterator keyIterator();
+    public ExtendedIterator<Object> keyIterator();
     }
 
 /*
