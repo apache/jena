@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.core;
 
 public interface Closeable
 {
+    // Like java.io.Closeable - without the IOException. 
     public void close() ;
 }
 
