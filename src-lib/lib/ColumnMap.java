@@ -12,9 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 
 
-import com.hp.hpl.jena.tdb.TDBException;
-
-
 /** General descriptor of a reorderring (mapping) of columns in tuples to columns in indexes, 
  * for example, from triples to triple index order. 
  * @author Andy Seaborne
@@ -163,7 +160,7 @@ public class ColumnMap
     static <T> int[] compileMapping(List<T> domain, List<T>range)
     {
         if ( domain.size() != range.size() )
-            throw new TDBException("Bad mapping: lengths not the same: "+domain+" -> "+range) ; 
+            throw new AtlasException("Bad mapping: lengths not the same: "+domain+" -> "+range) ; 
         
         int[] cols = new int[domain.size()] ;
         boolean[] mapped = new boolean[domain.size()] ;
@@ -174,9 +171,9 @@ public class ColumnMap
             T input = domain.get(i) ;
             int j = range.indexOf(input) ;
             if ( j < 0 )
-                throw new TDBException("Bad mapping: missing mapping: "+domain+" -> "+range) ;
+                throw new AtlasException("Bad mapping: missing mapping: "+domain+" -> "+range) ;
             if ( mapped[j] )
-                throw new TDBException("Bad mapping: duplicate: "+domain+" -> "+range) ;
+                throw new AtlasException("Bad mapping: duplicate: "+domain+" -> "+range) ;
             cols[i] = j ;
             mapped[j] = true ;
         }

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 
-import com.hp.hpl.jena.tdb.TDBException;
+import lib.AtlasException;
 
 /** Buffering writer (and own methods which do not throw checked exceptions).
  *  Only support UTF-8. 
@@ -163,7 +163,7 @@ public final class BufferingWriter extends Writer
     }
     
     private static void exception(IOException ex)
-    { throw new TDBException(ex) ; }
+    { throw new AtlasException(ex) ; }
 
     // ---- Writer
     

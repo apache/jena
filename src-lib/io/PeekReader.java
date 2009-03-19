@@ -6,20 +6,17 @@
 
 package io;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.CharsetDecoder;
 
+import lib.AtlasException;
 import lib.Chars;
 import logging.Log;
 
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.shared.JenaException;
 
 /** Parsing-centric reader.
  *  <p>Faster than using BufferedReader, sometimes a lot faster when
@@ -129,7 +126,7 @@ public final class PeekReader extends Reader
     }
     
     public static void exception(IOException ex)
-    { throw new TDBException(ex) ; }
+    { throw new AtlasException(ex) ; }
 
     public static PeekReader makeUTF8(InputStream in) 
     {
