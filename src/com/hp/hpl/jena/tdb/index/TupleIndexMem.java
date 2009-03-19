@@ -115,10 +115,14 @@ public class TupleIndexMem implements TupleIndex
     @Override
     public int weight(Tuple<NodeId> pattern)
     {
-        if ( undef(pattern.get(0)) ) return 0 ;
-        if ( undef(pattern.get(1)) ) return 1 ;
-        if ( undef(pattern.get(2)) ) return 2 ;
-        return 3 ;
+        for ( int i = 0 ; i < tupleLength ; i++ )
+        {
+            NodeId X = colMap.fetchSlot(i, pattern) ;
+            if ( X == NodeId.NodeIdAny || X == null )
+                // End of fixed terms
+                return i ;
+        }
+        return tupleLength ;
     }
 
     private boolean undef(NodeId x)
