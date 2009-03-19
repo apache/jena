@@ -1,12 +1,12 @@
 /*
 (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: rdfparse.java,v 1.5 2008-12-28 19:32:23 andy_seaborne Exp $
+$Id: rdfparse.java,v 1.6 2009-03-19 09:24:05 chris-dollin Exp $
 */
 
 package jena.test;
 
-import junit.swingui.TestRunner;
+//import junit.swingui.TestRunner;
 
 import com.hp.hpl.jena.rdf.arp.test.ARPTests;
 import com.hp.hpl.jena.shared.Command;
@@ -20,7 +20,7 @@ public class rdfparse implements Command
     
     public Object execute()
         { ARPTests.internet = internetTest;
-        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});
+//        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});
         return null; }
     }
 

@@ -77,6 +77,12 @@ class GraphNode {
             ? new ConcatenatedIterator<GraphNode>( base, ((Set<GraphNode>) aliases).iterator() )
             : base;
         }
+
+    private void setLeadNode( GraphNode n )
+        { this.aliases = n; }
+
+    private void setComponents( Set<GraphNode> newAliases )
+        { this.aliases = newAliases; }
     
     /**
      * Full dump for debugging
@@ -292,18 +298,18 @@ class GraphNode {
         for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
         	addAliases( newAliases, i.next() );
         }
-        this.aliases = newAliases;
+        setComponents( newAliases );
         for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
             GraphNode n = i.next();
             if (n != this) {
                 pred.addAll(n.pred);
                 n.relocateAllRefTo(this, done);
-                n.aliases = this;
+                n.setLeadNode( this );
             }
         }
         pred.removeAll(members);
     }
-	
+
     /**
      * This node is being absorbed into an SCC with the given node as the
      * new lead node. Trace out all predecessors to this node and relocate
@@ -353,21 +359,12 @@ class GraphNode {
         for (Iterator<GraphNode> i = successors.iterator(); i.hasNext(); ) {
             GraphNode s = i.next();
             result.add(new Triple(base, tgc.closedPredicate, s.rdfNode));
-            Object a = s.aliases;
-            addSuccessors( base, tgc, result, a );
+            addSuccessors( base, tgc, result, s.aliases );
         }
         addSuccessors( base, tgc, result, aliases );
         return result;
     }
 
-//    private void FIDDLEWITH( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result, Object a )
-//        {
-//        if (a instanceof Set) {
-//            for (Iterator<GraphNode> j = ((Set)a).iterator(); j.hasNext(); ) {
-//                result.add(new Triple(base, tgc.closedPredicate, j.next().rdfNode));
-//            }
-//        }
-//        }
     
     /**
      * Return an iterator over all of the triples representing incoming links to this node.
