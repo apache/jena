@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.32 2009-03-18 15:54:12 chris-dollin Exp $
+ * $Id: TransitiveGraphCache.java,v 1.33 2009-03-19 10:57:29 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -132,7 +132,7 @@ public class TransitiveGraphCache implements Finder {
             this.root = rdfNode;
             this.predicate = predicate;
             this.iterator = node.pred.iterator();
-            aliasIterator = node.aliasIterator();
+            aliasIterator = node.siblingIterator();
             next = new Triple(root, predicate, root);   // implicit reflexive case 
         }
         
@@ -168,7 +168,7 @@ public class TransitiveGraphCache implements Finder {
                     if (isDeep)
                         pushStack(nextNode);
                     next =  new Triple(nextNode.rdfNode, predicate, root);
-                    aliasIterator = nextNode.aliasIterator();
+                    aliasIterator = nextNode.siblingIterator();
                 } else { 
                     // Already visited this junction, skip it
                     walkOne();
@@ -277,7 +277,7 @@ public class TransitiveGraphCache implements Finder {
                 while (succIt.hasNext()) {
                     succ = succIt.next();
                     if (succ == node) continue; // Skip accidental reflexive cases, already done
-                    aliasesIt = succ.aliasIterator();
+                    aliasesIt = succ.siblingIterator();
                     next = new Triple(nodeN, predicate, succ.rdfNode);
                     return;
                 }
@@ -289,7 +289,7 @@ public class TransitiveGraphCache implements Finder {
                 nodeN = node.rdfNode;
                 GraphNode lead = node.leadNode();
                 succIt = (closed ? lead.succClosed : lead.succ).iterator();
-                succIt = lead.concatenateAliases( succIt );
+                succIt = lead.concatenateSiblings( succIt );
                 next = new Triple(nodeN, predicate, nodeN); // Implicit reflexive case
             } else {
                 next = null; // End of walk

@@ -27,15 +27,16 @@ class GraphNode {
 	/** An optional cache of the triples that represent succClosed */
 	protected List<Triple> succClosedTriples;
 	
-	/** Null for simple nodes. For the lead node in a SCC will be a list
-	 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
-	private Aliases aliases = new Aliases();
+	/** 
+	     Plain Siblings for simple nodes. For the lead node in a SCC will be a Leader
+	     with components containing all the nodes in the SCC. For non-lead nodes 
+	     it will be a Subordinate referring to the lead node. 
+	*/
+	private Siblings siblings = new Siblings();
 	
-	static class Aliases
-	    {
-//	    Object oldStxate;
-	    
-	    Set<GraphNode> aliasSet() 
+	static class Siblings
+	    {	    
+	    Set<GraphNode> members() 
 	        { throw new BrokenException( "cannot ask for components of a raw GraphNode" ); }
 	    
 	    void addInto( Set<GraphNode> nodes, GraphNode m )
@@ -44,8 +45,10 @@ class GraphNode {
 	    void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result )
 	        {}
 	    
-	    Iterator<GraphNode> aliasIterator()
-	        { return NullIterator.instance(); } 
+	    static final NullIterator<GraphNode> noMembers = NullIterator.instance();
+	    
+	    Iterator<GraphNode> siblingIterator()
+	        { return noMembers; } 
 	    
 	    GraphNode leadNode( GraphNode unlessSpecified )
 	        { return unlessSpecified; }
@@ -54,17 +57,14 @@ class GraphNode {
 	        { return ""; }
 	    }
 	
-	static class LeadAliases extends Aliases
+	static class Leader extends Siblings
 	    {
 	    final Set<GraphNode> components;
 	    
-	    LeadAliases( Set<GraphNode> components ) 
-	        { 
-//	        this.oldState = components; 
-	        this.components = components; 
-	        }
+	    Leader( Set<GraphNode> components ) 
+	        { this.components = components; }
 	    
-        @Override Set<GraphNode> aliasSet() 
+        @Override Set<GraphNode> members() 
             { return components; }
         
         @Override void addInto( Set<GraphNode> nodes, GraphNode ignored )
@@ -78,24 +78,21 @@ class GraphNode {
                 }
             }
         
-        @Override Iterator<GraphNode> aliasIterator()
+        @Override Iterator<GraphNode> siblingIterator()
             { return components.iterator(); }
         
         @Override String dump()
             { return " SCC=" + dumpSet( components ) +", "; }
 	    }
 	
-	static class FollAliases extends Aliases
+	static class Subordinate extends Siblings
 	    {
 	    final GraphNode leader;
 	    
-	    FollAliases( GraphNode n ) 
-	        { 
-//	        this.oldState = n; 
-	        leader = n; 
-	        }
+	    Subordinate( GraphNode n ) 
+	        { leader = n; }
 	    
-        @Override Set<GraphNode> aliasSet() 
+        @Override Set<GraphNode> members() 
             { throw new BrokenException( "cannot ask for components of a raw GraphNode" ); }
         
         @Override GraphNode leadNode( GraphNode unlessSpecified )
@@ -106,52 +103,38 @@ class GraphNode {
 	    }
 	
 	// should only be called on a lead node
-	private Set<GraphNode> aliasSet()
-	    { return aliases.aliasSet(); }
+	private Set<GraphNode> siblings()
+	    { return siblings.members(); }
 
-    private void addAliases( Set<GraphNode> newAliases, GraphNode m )
-        { m.aliases.addInto( newAliases, m ); }
+    private void addSiblings( Set<GraphNode> target, GraphNode m )
+        { m.siblings.addInto( target, m ); }
 
-    private void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result, Aliases a )
-        {
-        a.addSuccessors( base, tgc, result );
-        }       
-    
     /**
      * Return the lead node in the strongly connected component containing this node.
      * It will be the node itself if it is a singleton or the lead node. 
      */
     public GraphNode leadNode() 
-        { return aliases.leadNode( this ); }
+        { return siblings.leadNode( this ); }
     
-    public Iterator<GraphNode> aliasIterator()
-        { return aliases.aliasIterator(); }
+    public Iterator<GraphNode> siblingIterator()
+        { return siblings.siblingIterator(); }
     
-    public Iterator<GraphNode> concatenateAliases( Iterator<GraphNode> base )
-        { return new ConcatenatedIterator<GraphNode>( base, aliases.aliasIterator() ); }
+    public Iterator<GraphNode> concatenateSiblings( Iterator<GraphNode> base )
+        { return new ConcatenatedIterator<GraphNode>( base, siblings.siblingIterator() ); }
 
-    private void setLeadNode( GraphNode n )
-        { this.aliases = new FollAliases( n ); }
+    private void becomeSubordinateOf( GraphNode leader )
+        { this.siblings = new Subordinate( leader ); }
 
-    private void setComponents( Set<GraphNode> newAliases )
-        { this.aliases = new LeadAliases( newAliases ); }
+    private void becomeLeaderOf( Set<GraphNode> newSiblings )
+        { this.siblings = new Leader( newSiblings ); }
     
     /**
      * Full dump for debugging
      */
     public String dump() {
-//        String result = rdfNode.getLocalName();
-//        result = result + aliases.dump();
-//        if (aliases.oldState != null) {
-//            if (aliases.oldState instanceof GraphNode) {
-//                result = result + " leader=" + aliases + ", ";
-//            } else {
-//                result = result + " SCC=" + dumpSet((Set<GraphNode>)aliases.oldState) +", ";
-//            }
-//        }
         return 
             rdfNode.getLocalName()
-            + aliases.dump()
+            + siblings.dump()
             + " succ=" + dumpSet( succ ) 
             + ", succClose=" + dumpSet( succClosed ) 
             + ", pred=" + dumpSet( pred )
@@ -355,15 +338,15 @@ class GraphNode {
         Set<GraphNode> done = new HashSet<GraphNode>();
         Set<GraphNode> newAliases = new HashSet<GraphNode>();
         for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
-        	addAliases( newAliases, i.next() );
+        	addSiblings( newAliases, i.next() );
         }
-        setComponents( newAliases );
+        becomeLeaderOf( newAliases );
         for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
             GraphNode n = i.next();
             if (n != this) {
                 pred.addAll(n.pred);
                 n.relocateAllRefTo(this, done);
-                n.setLeadNode( this );
+                n.becomeSubordinateOf( this );
             }
         }
         pred.removeAll(members);
@@ -378,7 +361,7 @@ class GraphNode {
         visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>(){
             public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> done, GraphNode leadIn) {
                 if (done.add( node )) {
-                    Set<GraphNode> members = leadIn.aliasSet();
+                    Set<GraphNode> members = leadIn.siblings();
                     int before = node.succ.size();
                     node.succ.removeAll(members);
                     node.succClosed.removeAll(members);
@@ -418,9 +401,9 @@ class GraphNode {
         for (Iterator<GraphNode> i = successors.iterator(); i.hasNext(); ) {
             GraphNode s = i.next();
             result.add(new Triple(base, tgc.closedPredicate, s.rdfNode));
-            addSuccessors( base, tgc, result, s.aliases );
+            s.siblings.addSuccessors( base, tgc, result );
         }
-        addSuccessors( base, tgc, result, aliases );
+        siblings.addSuccessors( base, tgc, result );
         return result;
     }
 
