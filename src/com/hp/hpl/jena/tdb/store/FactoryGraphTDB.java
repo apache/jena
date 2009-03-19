@@ -32,6 +32,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexBuilder;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
@@ -151,17 +152,33 @@ public class FactoryGraphTDB
 
     
     // ---- Process
-    public static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
-                                       Location location, String primary, String...descs)
+    public static TupleIndex[] indexes(final IndexBuilder indexBuilder, RecordFactory recordFactory, 
+                                       final Location location, String primary, String...descs)
     {
+        // Collect things need to build tuple indexes.
+        TupleIndexBuilder b = new TupleIndexBuilder()
+        {
+            @Override
+            public TupleIndex create(String primary, String desc, RecordFactory recordFactory)
+            {
+                return createTupleIndex(indexBuilder, recordFactory, location, primary, desc) ;
+            }
+        } ;
+        
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         int i = 0 ;
         for ( String desc : descs )
         {
-            indexes[i] = createTupleIndex(indexBuilder, recordFactory, location, primary, desc) ;
+            indexes[i] = b.create(primary, desc, recordFactory) ;
             i++ ;
         }
         return indexes ;
+    }
+    
+    public static TupleIndex indexes(TupleIndexBuilder indexBuilder, RecordFactory recordFactory, 
+                                       String primary, String desc)
+    {
+        return indexBuilder.create(primary, desc, recordFactory) ;
     }
     
     /** Testing */

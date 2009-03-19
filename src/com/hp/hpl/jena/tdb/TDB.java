@@ -156,6 +156,9 @@ public class TDB
         String bulkLoaderClass = NTriplesReader2.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
+        // The Jena 2.5.X N3 reader has problems with very long object lists.
+        // Treat N3 as Turtle.
+        RDFReaderFImpl.setBaseReaderClassName("N3", com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName()) ;
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;

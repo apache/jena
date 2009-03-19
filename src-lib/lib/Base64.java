@@ -580,7 +580,7 @@ public class Base64
         {
             // ObjectOutputStream -> (GZIP) -> Base64 -> ByteArrayOutputStream
             baos  = new java.io.ByteArrayOutputStream();
-            b64os = new Base64.OutputStream( baos, ENCODE | options );
+            b64os = new Base64.Base64OutputStream( baos, ENCODE | options );
     
             // GZip?
             if( gzip == GZIP )
@@ -709,14 +709,14 @@ public class Base64
         {
             java.io.ByteArrayOutputStream  baos  = null;
             java.util.zip.GZIPOutputStream gzos  = null;
-            Base64.OutputStream            b64os = null;
+            Base64.Base64OutputStream            b64os = null;
             
     
             try
             {
                 // GZip -> Base64 -> ByteArray
                 baos = new java.io.ByteArrayOutputStream();
-                b64os = new Base64.OutputStream( baos, ENCODE | options );
+                b64os = new Base64.Base64OutputStream( baos, ENCODE | options );
                 gzos  = new java.util.zip.GZIPOutputStream( b64os ); 
             
                 gzos.write( source, off, len );
@@ -1100,10 +1100,10 @@ public class Base64
     public static boolean encodeToFile( byte[] dataToEncode, String filename )
     {
         boolean success = false;
-        Base64.OutputStream bos = null;
+        Base64.Base64OutputStream bos = null;
         try
         {
-            bos = new Base64.OutputStream( 
+            bos = new Base64.Base64OutputStream( 
                       new java.io.FileOutputStream( filename ), Base64.ENCODE );
             bos.write( dataToEncode );
             success = true;
@@ -1134,10 +1134,10 @@ public class Base64
     public static boolean decodeToFile( String dataToDecode, String filename )
     {
         boolean success = false;
-        Base64.OutputStream bos = null;
+        Base64.Base64OutputStream bos = null;
         try
         {
-                bos = new Base64.OutputStream( 
+                bos = new Base64.Base64OutputStream( 
                           new java.io.FileOutputStream( filename ), Base64.DECODE );
                 bos.write( dataToDecode.getBytes( PREFERRED_ENCODING ) );
                 success = true;
@@ -1169,7 +1169,7 @@ public class Base64
     public static byte[] decodeFromFile( String filename )
     {
         byte[] decodedData = null;
-        Base64.InputStream bis = null;
+        Base64.Base64InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1187,7 +1187,7 @@ public class Base64
             buffer = new byte[ (int)file.length() ];
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( file ) ), Base64.DECODE );
             
@@ -1226,7 +1226,7 @@ public class Base64
     public static String encodeFromFile( String filename )
     {
         String encodedData = null;
-        Base64.InputStream bis = null;
+        Base64.Base64InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1236,7 +1236,7 @@ public class Base64
             int numBytes = 0;
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( file ) ), Base64.ENCODE );
             
@@ -1277,7 +1277,7 @@ public class Base64
         java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            in  = new Base64.InputStream( 
+            in  = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( infile ) ), 
                       Base64.ENCODE );
@@ -1314,7 +1314,7 @@ public class Base64
         java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            in  = new Base64.InputStream( 
+            in  = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( infile ) ), 
                       Base64.DECODE );
@@ -1341,14 +1341,14 @@ public class Base64
     
     
     /**
-     * A {@link Base64.InputStream} will read data from another
+     * A {@link Base64.Base64InputStream} will read data from another
      * <tt>java.io.InputStream</tt>, given in the constructor,
      * and encode/decode to/from Base64 notation on the fly.
      *
      * @see Base64
      * @since 1.3
      */
-    public static class InputStream extends java.io.FilterInputStream
+    public static class Base64InputStream extends java.io.FilterInputStream
     {
         private boolean encode;         // Encoding or decoding
         private int     position;       // Current position in the buffer
@@ -1363,19 +1363,19 @@ public class Base64
         
         
         /**
-         * Constructs a {@link Base64.InputStream} in DECODE mode.
+         * Constructs a {@link Base64.Base64InputStream} in DECODE mode.
          *
          * @param in the <tt>java.io.InputStream</tt> from which to read data.
          * @since 1.3
          */
-        public InputStream( java.io.InputStream in )
+        public Base64InputStream( java.io.InputStream in )
         {   
             this( in, DECODE );
         }   // end constructor
         
         
         /**
-         * Constructs a {@link Base64.InputStream} in
+         * Constructs a {@link Base64.Base64InputStream} in
          * either ENCODE or DECODE mode.
          * <p>
          * Valid options:<pre>
@@ -1395,7 +1395,7 @@ public class Base64
          * @see Base64#DONT_BREAK_LINES
          * @since 2.0
          */
-        public InputStream( java.io.InputStream in, int options )
+        public Base64InputStream( java.io.InputStream in, int options )
         {   
             super( in );
             this.breakLines   = (options & DONT_BREAK_LINES) != DONT_BREAK_LINES;
@@ -1576,17 +1576,18 @@ public class Base64
     
     /* ********  I N N E R   C L A S S   O U T P U T S T R E A M  ******** */
     
+    // Names changed to remove from autocomplete of "InputStream..." etc  
     
     
     /**
-     * A {@link Base64.OutputStream} will write data to another
+     * A {@link Base64.Base64OutputStream} will write data to another
      * <tt>java.io.OutputStream</tt>, given in the constructor,
      * and encode/decode to/from Base64 notation on the fly.
      *
      * @see Base64
      * @since 1.3
      */
-    public static class OutputStream extends java.io.FilterOutputStream
+    public static class Base64OutputStream extends java.io.FilterOutputStream
     {
         private boolean encode;
         private int     position;
@@ -1601,19 +1602,19 @@ public class Base64
         private byte[]  decodabet;      // Local copies to avoid extra method calls
         
         /**
-         * Constructs a {@link Base64.OutputStream} in ENCODE mode.
+         * Constructs a {@link Base64.Base64OutputStream} in ENCODE mode.
          *
          * @param out the <tt>java.io.OutputStream</tt> to which data will be written.
          * @since 1.3
          */
-        public OutputStream( java.io.OutputStream out )
+        public Base64OutputStream( java.io.OutputStream out )
         {   
             this( out, ENCODE );
         }   // end constructor
         
         
         /**
-         * Constructs a {@link Base64.OutputStream} in
+         * Constructs a {@link Base64.Base64OutputStream} in
          * either ENCODE or DECODE mode.
          * <p>
          * Valid options:<pre>
@@ -1632,7 +1633,7 @@ public class Base64
          * @see Base64#DONT_BREAK_LINES
          * @since 1.3
          */
-        public OutputStream( java.io.OutputStream out, int options )
+        public Base64OutputStream( java.io.OutputStream out, int options )
         {   
             super( out );
             this.breakLines   = (options & DONT_BREAK_LINES) != DONT_BREAK_LINES;
