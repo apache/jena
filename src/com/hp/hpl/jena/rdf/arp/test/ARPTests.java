@@ -92,7 +92,6 @@ public class ARPTests extends java.lang.Object {
             } else {
             pw.println("TestSuite "+name + " = new TestSuite(\""+ts.getName()+"\");");
             }
-            @SuppressWarnings("unchecked")
             Enumeration<Test> ee = ts.tests();
             while ( ee.hasMoreElements() ) {
                 Test tt = ee.nextElement();
