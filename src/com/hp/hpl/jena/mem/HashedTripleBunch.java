@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.22 2009-03-19 15:09:09 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.23 2009-03-19 15:17:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -20,6 +20,9 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
         for (Iterator<Triple> it = b.iterator(); it.hasNext();) add( it.next() );        
         changes = 0;
         }
+
+    @Override protected Triple[] newKeyArray( int size )
+        { return new Triple[size]; }
 
     public boolean contains( Triple t )
         { return findSlot( t ) < 0; }    

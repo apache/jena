@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.11 2009-03-18 10:36:35 chris-dollin Exp $
+ 	$Id: TestHashCommon.java,v 1.12 2009-03-19 15:17:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -28,8 +28,7 @@ public class TestHashCommon extends ModelTestBase
         protected void set( int index, Item object )
             { keys[index] = object; }
         
-        @Override
-        public Object removeFrom( int here )
+        @Override public Object removeFrom( int here )
             { return super.removeFrom( here ); }
         
         public int top()
@@ -41,9 +40,11 @@ public class TestHashCommon extends ModelTestBase
         /*
             Leaving the hashcode alone makes testing simpler. 
         */
-        @Override
-        protected int improveHashCode( int hashCode )
-            { return hashCode; }   
+        @Override protected int improveHashCode( int hashCode )
+            { return hashCode; }
+
+        @Override protected Object[] newKeyArray( int size )
+            { return new Object[size]; }   
         }
     
     static class Item
@@ -53,15 +54,12 @@ public class TestHashCommon extends ModelTestBase
         
         public Item( int n, String s ) { this.n = n; this.s = s; }
         
-        @Override
-        public int hashCode() { return n; }
+        @Override public int hashCode() { return n; }
         
-        @Override
-        public boolean equals( Object other )
+        @Override public boolean equals( Object other )
             { return other instanceof Item && s.equals( ((Item) other).s ); }
         
-        @Override
-        public String toString()
+        @Override public String toString()
             { return s + "#" + n; }
         }    
 

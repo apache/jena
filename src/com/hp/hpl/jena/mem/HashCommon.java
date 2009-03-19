@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.19 2009-03-19 15:09:09 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.20 2009-03-19 15:17:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -31,7 +31,7 @@ public abstract class HashCommon<Key>
         for triple sets and for node->bunch maps, it has to be an Object array; we
         take the casting hit.
      */
-    protected Object [] keys;
+    protected Key [] keys;
     
     /**
         The capacity (length) of the key array.
@@ -62,9 +62,14 @@ public abstract class HashCommon<Key>
     */
     protected HashCommon( int initialCapacity )
         {
-        keys = new Object[capacity = initialCapacity];
+        keys = newKeyArray( capacity = initialCapacity );
         threshold = (int) (capacity * loadFactor);
         }
+    
+    /**
+        Subclasses must implement to answer a new Key[size] array.
+    */
+    protected abstract Key[] newKeyArray( int size );
 
     /**
         A hashed structure may become empty as a side-effect of a .remove on one
@@ -144,7 +149,7 @@ public abstract class HashCommon<Key>
         int index = initialIndexFor( key );
         while (true)
             {
-            Object current = keys[index];
+            Key current = keys[index];
             if (current == null) return index; 
             if (key.equals( current )) return ~index;
             if (--index < 0) index += capacity;
@@ -229,7 +234,7 @@ public abstract class HashCommon<Key>
                     if (here <= original && scan > original) 
                         {
                         // System.err.println( "]] recording wrapped " );
-                        wrappedAround = (Key) keys[scan];
+                        wrappedAround = keys[scan];
                         }
                     keys[here] = keys[scan];
                     moveAssociatedValues( here, scan );
@@ -339,7 +344,7 @@ public abstract class HashCommon<Key>
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "HashCommon keys" );
-            return (Key) keys[index++];
+            return keys[index++];
             }
 
         @Override public void remove()

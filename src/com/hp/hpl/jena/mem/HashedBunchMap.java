@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.17 2009-03-18 10:11:03 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.18 2009-03-19 15:17:37 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -20,6 +20,9 @@ public class HashedBunchMap extends HashCommon<Object> implements BunchMap
         super( 10 );
         values = new TripleBunch[capacity];
         }
+
+    @Override protected Object[] newKeyArray( int size )
+        { return new Object[size]; }
     
     /**
         Clear this map: all entries are removed. The keys <i>and value</i> array 
@@ -60,7 +63,7 @@ public class HashedBunchMap extends HashCommon<Object> implements BunchMap
         TripleBunch [] oldValues = values;
         final int oldCapacity = capacity;
         growCapacityAndThreshold();
-        keys = new Object[capacity];
+        keys = newKeyArray( capacity );
         values = new TripleBunch[capacity];
         for (int i = 0; i < oldCapacity; i += 1)
             {
