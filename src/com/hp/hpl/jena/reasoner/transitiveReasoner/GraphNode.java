@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache.*;
+import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -28,75 +29,133 @@ class GraphNode {
 	
 	/** Null for simple nodes. For the lead node in a SCC will be a list
 	 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
-	private Object aliases;
+	private Aliases aliases = new Aliases();
+	
+	static class Aliases
+	    {
+//	    Object oldStxate;
+	    
+	    Set<GraphNode> aliasSet() 
+	        { throw new BrokenException( "cannot ask for components of a raw GraphNode" ); }
+	    
+	    void addInto( Set<GraphNode> nodes, GraphNode m )
+	        { nodes.add( m ); }
+	    
+	    void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result )
+	        {}
+	    
+	    Iterator<GraphNode> aliasIterator()
+	        { return NullIterator.instance(); } 
+	    
+	    GraphNode leadNode( GraphNode unlessSpecified )
+	        { return unlessSpecified; }
+	    
+	    String dump()
+	        { return ""; }
+	    }
+	
+	static class LeadAliases extends Aliases
+	    {
+	    final Set<GraphNode> components;
+	    
+	    LeadAliases( Set<GraphNode> components ) 
+	        { 
+//	        this.oldState = components; 
+	        this.components = components; 
+	        }
+	    
+        @Override Set<GraphNode> aliasSet() 
+            { return components; }
+        
+        @Override void addInto( Set<GraphNode> nodes, GraphNode ignored )
+            { nodes.addAll( components ); }
+        
+        @Override void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result )
+            {
+            for (Iterator<GraphNode> j = components.iterator(); j.hasNext(); ) 
+                {
+                result.add( new Triple(base, tgc.closedPredicate, j.next().rdfNode) );
+                }
+            }
+        
+        @Override Iterator<GraphNode> aliasIterator()
+            { return components.iterator(); }
+        
+        @Override String dump()
+            { return " SCC=" + dumpSet( components ) +", "; }
+	    }
+	
+	static class FollAliases extends Aliases
+	    {
+	    final GraphNode leader;
+	    
+	    FollAliases( GraphNode n ) 
+	        { 
+//	        this.oldState = n; 
+	        leader = n; 
+	        }
+	    
+        @Override Set<GraphNode> aliasSet() 
+            { throw new BrokenException( "cannot ask for components of a raw GraphNode" ); }
+        
+        @Override GraphNode leadNode( GraphNode unlessSpecified )
+            { return leader.leadNode(); }
+        
+        @Override String dump()
+            { return " leader=" + leader + ", "; }
+	    }
 	
 	// should only be called on a lead node
 	private Set<GraphNode> aliasSet()
-	    { return (Set<GraphNode>) aliases; }
+	    { return aliases.aliasSet(); }
 
     private void addAliases( Set<GraphNode> newAliases, GraphNode m )
-        {
-        if (m.aliases instanceof Set) {
-            newAliases.addAll((Set<GraphNode>)m.aliases);
-        } else {
-            newAliases.add(m);
-        }
-        }
+        { m.aliases.addInto( newAliases, m ); }
 
-    private void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result, Object a )
+    private void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result, Aliases a )
         {
-        if (a instanceof Set) 
-            {
-            for (Iterator<GraphNode> j = ((Set)a).iterator(); j.hasNext(); ) 
-                {
-                result.add(new Triple(base, tgc.closedPredicate, j.next().rdfNode));
-                }
-            }
+        a.addSuccessors( base, tgc, result );
         }       
     
     /**
      * Return the lead node in the strongly connected component containing this node.
      * It will be the node itself if it is a singleton or the lead node. 
      */
-    public GraphNode leadNode() {
-        if (aliases != null && aliases instanceof GraphNode) {
-            return ((GraphNode)aliases).leadNode();
-        } else {
-            return this;
-        }
-    }
+    public GraphNode leadNode() 
+        { return aliases.leadNode( this ); }
     
     public Iterator<GraphNode> aliasIterator()
-        {
-        return aliases instanceof Set ? ((Set<GraphNode>) aliases).iterator() : null;
-        }
+        { return aliases.aliasIterator(); }
     
     public Iterator<GraphNode> concatenateAliases( Iterator<GraphNode> base )
-        {
-        return aliases instanceof Set 
-            ? new ConcatenatedIterator<GraphNode>( base, ((Set<GraphNode>) aliases).iterator() )
-            : base;
-        }
+        { return new ConcatenatedIterator<GraphNode>( base, aliases.aliasIterator() ); }
 
     private void setLeadNode( GraphNode n )
-        { this.aliases = n; }
+        { this.aliases = new FollAliases( n ); }
 
     private void setComponents( Set<GraphNode> newAliases )
-        { this.aliases = newAliases; }
+        { this.aliases = new LeadAliases( newAliases ); }
     
     /**
      * Full dump for debugging
      */
     public String dump() {
-        String result = rdfNode.getLocalName();
-        if (aliases != null) {
-            if (aliases instanceof GraphNode) {
-                result = result + " leader=" + aliases + ", ";
-            } else {
-                result = result + " SCC=" + dumpSet((Set<GraphNode>)aliases) +", ";
-            }
-        }
-        return result + " succ=" + dumpSet(succ) + ", succClose=" + dumpSet(succClosed) + ", pred=" + dumpSet(pred);
+//        String result = rdfNode.getLocalName();
+//        result = result + aliases.dump();
+//        if (aliases.oldState != null) {
+//            if (aliases.oldState instanceof GraphNode) {
+//                result = result + " leader=" + aliases + ", ";
+//            } else {
+//                result = result + " SCC=" + dumpSet((Set<GraphNode>)aliases.oldState) +", ";
+//            }
+//        }
+        return 
+            rdfNode.getLocalName()
+            + aliases.dump()
+            + " succ=" + dumpSet( succ ) 
+            + ", succClose=" + dumpSet( succClosed ) 
+            + ", pred=" + dumpSet( pred )
+            ;
     }
 
     /**
@@ -384,7 +443,7 @@ class GraphNode {
     /**
      * Dump a set to a string for debug.
      */
-    private String dumpSet(Set<GraphNode> s) {
+    private static String dumpSet(Set<GraphNode> s) {
     	StringBuffer sb = new StringBuffer();
     	sb.append("{");
     	boolean started = false;
