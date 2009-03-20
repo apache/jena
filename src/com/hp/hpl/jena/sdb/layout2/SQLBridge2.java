@@ -77,9 +77,14 @@ public class SQLBridge2 extends SQLBridgeBase
             
             // Need to allocate aliases because otherwise we need to access
             // "table.column" as a label and "." is illegal in a label
-            
+
+            // Call overrideable helper method for lex column (Oracle)
             String vLex = SQLUtils.gen(sqlVarName,"lex") ;
-            SqlColumn cLex = new SqlColumn(table, "lex") ;
+            SqlColumn cLex = getLexSqlColumn(table);
+
+            // Call overridable helper method for lex column (Oracle)
+            String vLexNChar = SQLUtils.gen(sqlVarName,"lexNChar") ;
+            SqlColumn cLexNChar = getLexNCharSqlColumn(table);
     
             String vDatatype = SQLUtils.gen(sqlVarName,"datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
@@ -91,6 +96,10 @@ public class SQLBridge2 extends SQLBridgeBase
             SqlColumn cType = new SqlColumn(table, "type") ;
     
             addProject(cLex, vLex) ;
+            // Oracle NCLOB support
+            if (cLexNChar != null) {
+                addProject(cLexNChar, vLexNChar);
+            }
             addProject(cDatatype, vDatatype) ;
             addProject(cLang, vLang) ;
             addProject(cType, vType) ;
@@ -99,6 +108,29 @@ public class SQLBridge2 extends SQLBridgeBase
         }
         setAnnotation() ; 
     }
+    
+    /**
+     * Intended to be overridden by an Oracle-specific impl to handle nclob selection. 
+     * @see SQLBridge2Oracle
+     * @param table
+     * @author skagels
+     * 
+     */
+    protected SqlColumn getLexSqlColumn(SqlTable table) {
+        return new SqlColumn(table, "lex") ;
+    }
+    
+    /**
+     * Intended to be overridden by an Oracle-specific impl to handle nclob
+     * alternate selection
+     * @see SQLBridge2Oracle
+     * @param table
+     * @return
+     */
+    protected SqlColumn getLexNCharSqlColumn(SqlTable table) {
+        return null;
+    }
+    
     
     private SqlNode insertValueGetter(SDBRequest request, SqlNode sqlNode, Var var)
     {

@@ -6,6 +6,11 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
+==== SDB v1.3
+
++ Added improvement for Oracle to avoid blob handling over JDBC for lexical forms <= 2000.
+  Thansk to Metatomix (Scott Kagels) for the patches. 
+
 ==== SDB v1.2
 
 + Must use ARQ 2.6 (changes to quad support in preparation for optimization and path support)

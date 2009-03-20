@@ -4,29 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
-import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2Oracle;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import java.util.List;
 
-public class StoreTriplesNodesHashOracle extends StoreBaseHash
-{
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sparql.core.Var;
 
-    public StoreTriplesNodesHashOracle(SDBConnection connection, StoreDesc desc)
-    {
-        super(connection, desc,
-              new FmtLayout2HashOracle(connection) ,
-              new LoaderTuplesNodes(connection, TupleLoaderHashOracle.class),
-              new QueryCompilerFactoryHash(), 
-              new SQLBridgeFactory2Oracle(),
-              new GenerateSQLOracle()) ;
-        
-        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
+public class SQLBridgeFactory2Oracle extends SQLBridgeFactory2 {
+    
+    public  SQLBridgeFactory2Oracle() { }
+    
+    @Override
+    public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
+    {   
+        return new SQLBridge2Oracle(request, sqlNode, projectVars) ;
     }
 }
+
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
