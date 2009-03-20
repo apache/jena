@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.16 2009-03-18 12:22:46 chris-dollin Exp $
+ * $Id: RuleClauseCode.java,v 1.17 2009-03-20 10:31:37 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-03-18 12:22:46 $
+ * @version $Revision: 1.17 $ on $Date: 2009-03-20 10:31:37 $
  */
 public class RuleClauseCode {
     
@@ -514,10 +514,21 @@ public class RuleClauseCode {
                             code[p++] = CALL_PREDICATE;
                         }
                     }
-                    args.add(predicateCode);
+                    args.add( new RuleClauseCodeList( predicateCode ) );
                 }
             }
         }
+        
+        /**
+            Wrapper class with reified 
+         	@author kers
+         */
+        public static class RuleClauseCodeList 
+            {
+            private final List<RuleClauseCode> list;
+            public RuleClauseCodeList( List<RuleClauseCode> list ) { this.list = list; }
+            List<RuleClauseCode> getList()  { return list; }
+            }
         
         /**
          * Emit code a single body put operation.

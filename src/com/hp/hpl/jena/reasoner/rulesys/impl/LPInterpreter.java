@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.22 2009-03-18 15:53:52 chris-dollin Exp $
+ * $Id: LPInterpreter.java,v 1.23 2009-03-20 10:31:37 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.RuleClauseCode.CompileState.RuleClauseCodeList;
 import com.hp.hpl.jena.util.PrintUtil;
 
 import java.util.*;
@@ -24,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2009-03-18 15:53:52 $
+ * @version $Revision: 1.23 $ on $Date: 2009-03-20 10:31:37 $
  */
 public class LPInterpreter {
 
@@ -537,7 +538,7 @@ public class LPInterpreter {
                         case RuleClauseCode.LAST_CALL_PREDICATE:
                             // TODO: improved implementation of last call case
                         case RuleClauseCode.CALL_PREDICATE:
-                            List<RuleClauseCode> clauses = (List<RuleClauseCode>)args[ac++];
+                            List<RuleClauseCode> clauses = ((RuleClauseCodeList) args[ac++]).getList();
                             // Check if this call is now grounded
                             boolean groundCall = isGrounded(argVars[0]) && isGrounded(argVars[1]) && isGrounded(argVars[2]);
                             setupClauseCall(pc, ac, clauses, groundCall);
@@ -547,7 +548,7 @@ public class LPInterpreter {
                         case RuleClauseCode.CALL_PREDICATE_INDEX:
                             // This code path is experimental, don't yet know if it has enough 
                             // performance benefit to justify the cost of maintaining it.
-                            clauses = (List<RuleClauseCode>) args[ac++];
+                            clauses = ((RuleClauseCodeList) args[ac++]).getList();
                             // Check if we can futher index the clauses
                             if (!argVars[2].isVariable()) {
                                 clauses = engine.getRuleStore().codeFor(
