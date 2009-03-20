@@ -7,7 +7,6 @@ package lib ;
 
 public interface Pool<T>
 {
-
     public abstract void put(T item) ;
 
     /** Get an item from the pool - return null if the pool is empty */
