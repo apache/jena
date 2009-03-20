@@ -3,6 +3,4 @@ PREFIX : <http://example/>
 SELECT *
 {
     ?s :p ?v .
-    ?s <http://jena.hpl.hp.com/ARQ/property#textMatch>  "foo" .
-    ?s :q ?v .
 }
