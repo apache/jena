@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-03-17 09:10:05 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-03-20 16:18:18 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.21 2009-03-17 09:10:05 chris-dollin Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.22 2009-03-20 16:18:18 andy_seaborne Exp $
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {
@@ -280,7 +280,13 @@ public class OneToManyMap<From, To> implements Map<From, To>
         for (Iterator<? extends From> i = m.keySet().iterator(); i.hasNext(); ) {
             From key = i.next();
             if (many) {
-                for (Iterator<? extends To> j = ((OneToManyMap<? extends From, ? extends To>) m).getAll( key ); j.hasNext(); ) {
+                // Bizare way to write it but this way makes all compilers happy.
+                OneToManyMap<?,?> Z =  (OneToManyMap<?,?>)m ;
+                @SuppressWarnings("unchecked")
+                OneToManyMap<? extends From, ? extends To> X = (OneToManyMap<? extends From, ? extends To>) Z ;
+                Iterator<? extends To> j = X.getAll( key ) ;
+                
+                for (; j.hasNext(); ) {
                     put( key, j.next() );
                 }
             }

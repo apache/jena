@@ -159,6 +159,7 @@
        target="${java.target}">
       <classpath refid="classpath" />
       <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
     <copy todir="${classes.dir}" file="${bldsrc.dir}/log4j.properties"/>
   </target>

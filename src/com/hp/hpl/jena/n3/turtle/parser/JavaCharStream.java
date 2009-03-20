@@ -352,7 +352,6 @@ public class JavaCharStream
 
   @Deprecated
   /**
-   * @deprecated
    * @see #getEndColumn
    */
   public int getColumn() {
@@ -361,7 +360,6 @@ public class JavaCharStream
 
   @Deprecated
   /**
-   * @deprecated
    * @see #getEndLine
    */
   public int getLine() {
