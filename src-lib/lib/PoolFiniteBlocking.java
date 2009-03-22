@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import com.hp.hpl.jena.sparql.ARQException;
 
-/** Finite capacity pool */ 
+/** Finite capacity pool - capacity is fixed at create time */ 
 public class PoolFiniteBlocking<T> implements Pool<T>
 {
     BlockingDeque<T> pool  ;

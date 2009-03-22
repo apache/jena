@@ -9,7 +9,10 @@ package lib;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-/** A Pool of objects */ 
+/** A Pool of objects. Base implements a non-blocking pool (returns null on no entry)
+ * with infinite upper bound.  Set effective size by creating the right number of
+ * entries when created.
+ */ 
 public class PoolBase<T> implements Pool<T>
 {
     // For convenience we operate a LIFO policy.
