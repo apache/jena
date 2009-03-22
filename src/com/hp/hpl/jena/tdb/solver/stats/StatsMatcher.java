@@ -361,13 +361,16 @@ public final class StatsMatcher
         return match(pTriple.subject, pTriple.predicate, pTriple.object) ;
     }
     
-    /** Return the matching weight for the first triple match found, else apply default value */
+    /** Return the matching weight for the first triple match found, 
+     * else apply default value for fixed, unknnown predciate,
+     * else return NOMATCH
+     */
     public double match(Item subj, Item pred, Item obj)
     {
         double m = matchWorker(subj, pred, obj) ;
-//        if ( m == NOMATCH )
-//            m = DefaultMatch ;
-//        System.out.println("("+subj+" "+pred+" "+obj+") => "+m) ;
+        if ( m == NOMATCH && pred.isNodeURI() )
+            m = DefaultMatch ;
+        //System.out.println("("+subj+" "+pred+" "+obj+") => "+m) ;
         return m ;
     }
     
