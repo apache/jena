@@ -38,6 +38,8 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class StatsCollector
 {
+    private static Item ZERO = Item.createNode(NodeFactory.intToNode(0)) ;
+    
     public static class StatsGraph extends GraphBase
     {
         // Connect to StatsWriter.
@@ -151,15 +153,18 @@ public class StatsCollector
 
 //        System.out.println("Nodes") ;
         
-        Item meta = createTagged("meta") ;
+        Item meta = createTagged(StatsMatcher.META) ;
         addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
         if ( count >= 0 )
-            addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
+            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactory.intToNode((int)count)) ;
         statsList.add(meta) ;
         
         for ( Entry<Node, Integer> entry : predicates.entrySet() )
             addPair(statsList, entry.getKey(), NodeFactory.intToNode(entry.getValue())) ;
+        
+        // Add a default rule.
+        addPair(statsList, StatsMatcher.DEFAULT, ZERO) ;
         
         return stats ;
     }

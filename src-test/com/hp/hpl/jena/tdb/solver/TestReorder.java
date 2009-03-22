@@ -133,7 +133,7 @@ public class TestReorder extends BaseTest
     
     @Test public void match_22()
     {
-        StatsMatcher matcher = matcher("(:p 11) ") ;
+        StatsMatcher matcher = matcher("(:p 11)") ;
         Triple t = triple("(:x :p 1913)") ;
         double d = matcher.match(t) ;
         assertEquals(1, d, 0) ;
@@ -141,7 +141,7 @@ public class TestReorder extends BaseTest
 
     @Test public void match_23()
     {
-        StatsMatcher matcher = matcher("(:p 11) ") ;
+        StatsMatcher matcher = matcher("(:p 11)") ;
         Triple t = triple("(:x ?p 1913)") ; // No match.
         double d = matcher.match(t) ;
         assertEquals(-1, d, 0) ;
@@ -149,10 +149,10 @@ public class TestReorder extends BaseTest
 
     @Test public void match_24()
     {
-        StatsMatcher matcher = matcher("(:p 11) (TERM 11)") ;
+        StatsMatcher matcher = matcher("(:p 11) (TERM 12)") ;
         Triple t = triple("(?x :q ?v)") ;
         double d = matcher.match(t) ;
-        assertEquals(11, d, 0) ;
+        assertEquals(12, d, 0) ;
     }
     
     // Bounds abbreviation rules.
@@ -162,7 +162,7 @@ public class TestReorder extends BaseTest
         StatsMatcher matcher = matcher("(:p 3) (TERM 1)") ;
         Triple t = triple("(:x :p ?v)") ;
         double d = matcher.match(t) ;
-        assertEquals(2, d, 0) ;
+        assertEquals(3, d, 0) ;
     }
 
     // Bounds abbreviation rules.

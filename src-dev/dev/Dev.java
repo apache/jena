@@ -9,7 +9,13 @@ package dev;
 public class Dev
 {
     // StatsMatcher - 
-    //   Default no hit mode --> first match vs best match. 
+    //   Default no hit mode --> first match vs best match.
+    
+    // No matches:
+    //   ?s ?p ?o => lots
+    //   Unknown predicate => zero. 
+    
+    
     //   See TestReorder.match_25
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?

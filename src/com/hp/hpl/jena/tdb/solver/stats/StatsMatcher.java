@@ -61,9 +61,11 @@ import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 public final class StatsMatcher
 {
     private static Logger log = LoggerFactory.getLogger(StatsMatcher.class) ; 
-    public static final String STATS     = "stats" ; 
-    public static final String META      = "meta" ; 
-    public static final String COUNT     = "count" ;
+    public static final String STATS    = "stats" ; 
+    public static final String META     = "meta" ; 
+    public static final String COUNT    = "count" ;
+    public static final Item DEFAULT    = Item.createSymbol("default") ;
+    private static double NOMATCH       = -1 ;
     
     static public class Pattern implements Printable
     {
@@ -105,7 +107,7 @@ public final class StatsMatcher
 
     private static class Match
     {
-        double weight = -1 ;
+        double weight = NOMATCH ;
         int exactMatches = 0 ;
         int termMatches = 0 ;
         int varMatches = 0 ;
@@ -115,7 +117,10 @@ public final class StatsMatcher
     // General structure
     List<Pattern> patterns = new ArrayList<Pattern>() ;
     // Map keyed by P for faster lookup (if no P available, we'll use the full list).  
-    Map<Item, List<Pattern>> _patterns = new HashMap<Item,  List<Pattern>>() ;
+    Map<Item, List<Pattern>> mapPatterns = new HashMap<Item,  List<Pattern>>() ;
+    
+    // Default behaviour
+    double DefaultMatch = NOMATCH ;
     
     long count = -1 ;
     
@@ -156,7 +161,7 @@ public final class StatsMatcher
             list = list.cdr();      // Move list on
 
             // Get count.
-            Item x = Item.find(elt1.getList(), "count") ;
+            Item x = Item.find(elt1.getList(), COUNT) ;
             if ( x != null )
                 count = x.getList().get(1).asInteger() ;
         }
@@ -179,15 +184,32 @@ public final class StatsMatcher
             Node n = pat.getNode() ;
             if (!n.isURI())
             {
-                log.warn("Not a prdciate URI: " + pat.toString()) ;
+                log.warn("Not a preicate URI: " + pat.toString()) ;
                 return ;
             }
             addAbbreviation(elt) ;
         } 
         else if (pat.isSymbol())
         {
-            // (TERM weight)
-            addAbbreviation(elt) ;
+            if ( pat.equals(DEFAULT) )
+            {
+                double d = elt.getList().get(1).getDouble() ;
+                DefaultMatch = d ;
+                return ;
+            }
+            
+            if ( pat.equals(BNODE) || pat.equals(LITERAL) )
+            {
+                log.warn("Not a match for a predicate URI: " + pat.toString()) ;
+                return ;
+            }
+            if ( pat.equals(TERM) || pat.equals(VAR) || pat.equals(ANY) )
+                addAbbreviation(elt) ;
+            else
+            {
+                log.warn("Not understood: " + pat) ;
+                return ;
+            }
         } 
         else if (pat.isList() && pat.getList().size() == 3)
         {
@@ -281,11 +303,11 @@ public final class StatsMatcher
         
         patterns.add(pattern) ;
         
-        List<Pattern> entry = _patterns.get(pattern.predItem) ;
+        List<Pattern> entry = mapPatterns.get(pattern.predItem) ;
         if ( entry == null )
         {
             entry = new ArrayList<Pattern>() ;
-            _patterns.put(pattern.predItem, entry ) ;
+            mapPatterns.put(pattern.predItem, entry ) ;
         }
         entry.add(pattern) ;
     }
@@ -339,9 +361,17 @@ public final class StatsMatcher
         return match(pTriple.subject, pTriple.predicate, pTriple.object) ;
     }
     
-    /** Return the matching weight for the first triple match found, else -1 for no match */
-    
+    /** Return the matching weight for the first triple match found, else apply default value */
     public double match(Item subj, Item pred, Item obj)
+    {
+        double m = matchWorker(subj, pred, obj) ;
+//        if ( m == NOMATCH )
+//            m = DefaultMatch ;
+//        System.out.println("("+subj+" "+pred+" "+obj+") => "+m) ;
+        return m ;
+    }
+    
+    private double matchWorker(Item subj, Item pred, Item obj)
     {
         if ( isSet(subj) && isSet(pred) && isSet(obj) )
             // A set of triples ...
@@ -353,7 +383,7 @@ public final class StatsMatcher
         
         if ( pred.isNodeURI() )
         {
-            double w = -1 ;
+            double w = NOMATCH ;
             w = search(pred, subj, pred, obj, w) ;
             w = search(TERM, subj, pred, obj, w) ;  //?? 
             w = search(ANY, subj, pred, obj, w) ;   //??
@@ -362,7 +392,7 @@ public final class StatsMatcher
         
         if ( pred.isVar() )
         {
-            double w = -1 ;
+            double w = NOMATCH ;
             w = search(VAR, subj, pred, obj, w) ;
             w = search(ANY, subj, pred, obj, w) ;
             return w ;
@@ -370,7 +400,7 @@ public final class StatsMatcher
         
         if ( pred.equals(TERM) )
         {
-            double w = -1 ;
+            double w = NOMATCH ;
             w = search(TERM, subj, pred, obj, w) ;
             w = search(ANY, subj, pred, obj, w) ;
             return w ;
@@ -381,7 +411,7 @@ public final class StatsMatcher
             throw new TDBException("Predicate is ANY") ;
             
             //double w = matchLinear(patterns, subj, pred, obj) ;
-//            double w = -1 ;
+//            double w = NOMATCH ;
 //            w = search(VAR, subj, pred, obj, w) ;
 //            w = search(ANY, subj, pred, obj, w) ;
 //            return w ;
@@ -395,18 +425,18 @@ public final class StatsMatcher
 
     private double search(Item key, Item subj, Item pred, Item obj, double oldMin)
     {
-        List<Pattern> entry = _patterns.get(key) ;
+        List<Pattern> entry = mapPatterns.get(key) ;
         if ( entry == null )
             return oldMin ;
         double w = matchLinear(entry, subj, pred, obj) ;
         return minPos(w, oldMin) ;
     }
     
-    //Minimum respecting -1 for "not known"
+    //Minimum respecting NOMATCH for "not known"
     private static double minPos(double x, double y)
     {
-        if ( x == -1.0 ) return y ;
-        if ( y == -1.0 ) return x ;
+        if ( x == NOMATCH ) return y ;
+        if ( y == NOMATCH ) return x ;
         return Math.min(x, y) ;
     }
     
@@ -424,7 +454,7 @@ public final class StatsMatcher
             // First match.
             return pattern.weight ;
         }
-        return -1 ;
+        return NOMATCH ;
     }
     
     private static boolean matchNode(Item node, Item item, Match details)
