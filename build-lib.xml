@@ -97,7 +97,7 @@
   <property name="javadoc.title"          value="${Name}"/>
   <property name="javadoc.window.title"   value="${Name}-${versio-major}.${version-minor} Javadoc"/>
 
-  <property name="build.metadata.file"          value="unset"/>
+  <!-- <property name="build.metadata.file"          value="unset"/> Set by system -->
   <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
   <property name="build.metadata.file.src"      value="${src.dir}/${build.metadata.file}"/>
 
