@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.26 2009-03-19 15:09:09 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.27 2009-03-23 14:35:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -98,14 +98,11 @@ public abstract class NodeToTriplesMapBase
     public ExtendedIterator<Triple> iterateAll()
         {
         final Iterator<Object> nodes = domain();
-        // System.err.println( "*>> NTM:iterateAll: nodes = " + IteratorCollection.iteratorToList( domain() ) );
         return new NiceIterator<Triple>() 
             {
             private Iterator<Triple> current = NullIterator.instance();
             private NotifyMe emptier = new NotifyMe();
             
-            // private Object cn = "(none)";
-
             @Override public Triple next()
                 {
                 if (hasNext() == false) noElements( "NodeToTriples iterator" );
@@ -115,10 +112,7 @@ public abstract class NodeToTriplesMapBase
             class NotifyMe implements HashCommon.NotifyEmpty
                 {
                 public void emptied()
-                    { 
-                    // System.err.println( ">> exhausted iterator for " + cn ); 
-                    nodes.remove();
-                    }
+                    { nodes.remove(); }
                 }
             
             @Override public boolean hasNext()
@@ -128,14 +122,11 @@ public abstract class NodeToTriplesMapBase
                     if (current.hasNext()) return true;
                     if (nodes.hasNext() == false) return false;
                     Object next = nodes.next();
-                    // cn = next;
-                    // System.err.println( ">----> NTM:iterateAll:hasNext: node " + next );
-                    current = iterator( next, emptier );
+                    current = NodeToTriplesMapBase.this.iterator( next, emptier );
                     }
                 }
 
-            @Override
-            public void remove()
+            @Override public void remove()
                 { current.remove(); }
             };
         }
