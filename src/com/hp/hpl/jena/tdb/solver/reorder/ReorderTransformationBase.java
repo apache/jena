@@ -44,7 +44,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
             return ReorderLib.identityProc() ;
         
         @SuppressWarnings("unchecked")
-        List<Triple> triples = pattern.getList() ; ;
+        List<Triple> triples = pattern.getList() ;
 
         // Could merge into the conversion step to do the rewrite WRT a Binding.
         // Or done here as a second pass mutate of PatternTriples

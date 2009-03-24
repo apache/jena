@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-/** Utilities used within the TDB BGP solver */
+/** Utilities used within the TDB BGP solver : local TDB store */
 public class SolverLib
 {
     private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 

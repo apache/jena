@@ -24,7 +24,7 @@ public class StageGeneratorDirectTDB implements StageGenerator
     }
     
     @Override
-    public QueryIterator execute(final BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
