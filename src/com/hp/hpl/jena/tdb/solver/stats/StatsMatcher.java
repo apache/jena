@@ -64,7 +64,7 @@ public final class StatsMatcher
     public static final String STATS    = "stats" ; 
     public static final String META     = "meta" ; 
     public static final String COUNT    = "count" ;
-    public static final Item DEFAULT    = Item.createSymbol("default") ;
+    public static final Item OTHER      = Item.createSymbol("other") ;
     private static double NOMATCH       = -1 ;
     
     static public class Pattern implements Printable
@@ -191,7 +191,7 @@ public final class StatsMatcher
         } 
         else if (pat.isSymbol())
         {
-            if ( pat.equals(DEFAULT) )
+            if ( pat.equals(OTHER) )
             {
                 double d = elt.getList().get(1).getDouble() ;
                 DefaultMatch = d ;

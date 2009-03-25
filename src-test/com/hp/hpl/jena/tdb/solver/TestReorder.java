@@ -159,7 +159,7 @@ public class TestReorder extends BaseTest
     @Test 
     public void match_25()
     {
-        StatsMatcher matcher = matcher("(:p 3) (default 1)") ;
+        StatsMatcher matcher = matcher("(:p 3) (other 1)") ;
         Triple t = triple("(?x :p ?v)") ;
         double d = matcher.match(t) ;
         assertEquals(3, d, 0) ;
@@ -168,7 +168,7 @@ public class TestReorder extends BaseTest
     @Test 
     public void match_26()
     {
-        StatsMatcher matcher = matcher("(:pp 3) (default 1)") ;
+        StatsMatcher matcher = matcher("(:pp 3) (other 1)") ;
         Triple t = triple("(:x :p ?v)") ;
         double d = matcher.match(t) ;
         assertEquals(1, d, 0) ;

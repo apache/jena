@@ -164,7 +164,7 @@ public class StatsCollector
             addPair(statsList, entry.getKey(), NodeFactory.intToNode(entry.getValue())) ;
         
         // Add a default rule.
-        addPair(statsList, StatsMatcher.DEFAULT, ZERO) ;
+        addPair(statsList, StatsMatcher.OTHER, ZERO) ;
         
         return stats ;
     }
