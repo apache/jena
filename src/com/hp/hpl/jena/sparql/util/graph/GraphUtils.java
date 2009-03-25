@@ -86,16 +86,16 @@ public class GraphUtils
         return values;
     }
     
-    public static List<RDFNode> multiValueResource(Resource r, Property p)
+    public static List<Resource> multiValueResource(Resource r, Property p)
     {
         List<RDFNode> nodes = multiValue(r, p) ;
-        List<RDFNode> values = new ArrayList<RDFNode>() ;
+        List<Resource> values = new ArrayList<Resource>() ;
     
         for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
         {
             RDFNode n = iter.next();
             if ( n.isResource() )
-                values.add(n) ;
+                values.add((Resource)n) ;
         }
         return values ;
     }
