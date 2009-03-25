@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.44 2009-01-16 18:24:39 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.45 2009-03-25 09:24:52 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -69,7 +69,7 @@ public class FileManager
     List<Locator> handlers = new ArrayList<Locator>() ;
     LocationMapper mapper = null ;
     boolean cacheModelLoads = false ;
-    ModelCache modelCache = null ;
+    Map<String, Model> modelCache = null ;
     
     /** Get the global file manager.
      * @return the global file manager
@@ -189,7 +189,7 @@ public class FileManager
     public void resetCache()
     {
         if ( modelCache != null )
-            modelCache.reset() ;
+            modelCache.clear() ;
     }
     
     /** Change the state of model cache : does not clear the cache */ 
@@ -198,7 +198,7 @@ public class FileManager
     {
         cacheModelLoads = state ;
         if ( cacheModelLoads && modelCache == null )
-            modelCache = new ModelCache() ; 
+            modelCache = new HashMap<String, Model>() ;
     }
     
     /** return whether caching is on of off */
@@ -216,7 +216,7 @@ public class FileManager
     { 
         if ( ! getCachingModels() )
             return false ; 
-        return modelCache.contains(filenameOrURI) ;
+        return modelCache.containsKey(filenameOrURI) ;
     }
     
     public void addCacheModel(String uri, Model m)
@@ -287,7 +287,7 @@ public class FileManager
     private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
     {
         // Better: if ( hasCachedModel(filenameOrURI) ) return getFromCache(filenameOrURI) ;  
-        if ( modelCache != null && modelCache.contains(filenameOrURI) )
+        if ( modelCache != null && modelCache.containsKey(filenameOrURI) )
         {
             if ( log.isDebugEnabled() )
                 log.debug("Model cache hit: "+filenameOrURI) ;
@@ -516,9 +516,8 @@ public class FileManager
     
     public TypedStream openNoMapOrNull(String filenameOrURI)
     {
-        for ( Iterator<Locator> iter = handlers.iterator() ; iter.hasNext() ; )
+        for (Locator loc : handlers)
         {
-            Locator loc = iter.next() ;
             TypedStream in = loc.open(filenameOrURI) ;
             if ( in != null )
             {
@@ -530,42 +529,6 @@ public class FileManager
         return null; 
     }
 }
-
-
-class ModelCache
-{
-    Map<String, Model> modelCache = new HashMap<String, Model>() ;
-    ModelCache() {}
-    
-    /** Reset the model cache */
-    public void reset()
-    {
-        if ( modelCache != null )
-        {
-//            for ( Iterator iter = modelCache.keySet().iterator() ; iter.hasNext() ; )
-//            {
-//                String name = (String)iter.next() ;
-//                Model m = (Model)modelCache.get(name) ;
-//                if ( m != null )
-//                    m.close() ;
-//            }
-            modelCache.clear() ;
-        }
-    }
-    
-    public Model get(String filenameOrURI)
-    { return modelCache.get(filenameOrURI) ; }
-    
-    public boolean contains(String filenameOrURI)
-    { return modelCache.containsKey(filenameOrURI) ; }
-    
-    public void put(String uri, Model m)
-    { modelCache.put(uri, m) ; }
-
-    public void remove(String uri)
-    { modelCache.remove(uri) ; }
-}
-
 
 /*
  *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
