@@ -1,5 +1,8 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="build">
 
+  <!-- Configuration as a propertied file ? -->
+  <!-- <property file="tdb-build.properties"/> -->
+
   <!-- ========================================== -->
   <!-- ==== Configuration  -->
   <property name="Name"                   value="TDB"/>
