@@ -51,7 +51,7 @@ public class StringExprCompiler implements ConditionCompiler
         
         if ( ( rMap = equalsString1.match(expr) ) != null )
         {
-            Var var = rMap.get("a1").getNodeVar().asVar() ;
+            Var var = rMap.get("a1").getExprVar().asVar() ;
             String str = rMap.get("a2").getConstant().getString() ;
             return new StringEqualsSqlGen(expr, equalsString1, true) ;
         }
@@ -86,7 +86,7 @@ class StringEqualsSqlGen extends SDBConstraint
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
           //log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-        Var var = rMap.get("a1").getNodeVar().asVar() ;
+        Var var = rMap.get("a1").getExprVar().asVar() ;
         String str = rMap.get("a2").getConstant().getString() ;
         
         if ( ! scope.hasColumnForVar(var) )

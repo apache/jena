@@ -65,9 +65,7 @@ public class QueryTestSDB extends EarlTestCase
         
         currentTestName = getName() ;
         
-        @SuppressWarnings("unchecked")
         final List<String> filenamesDft = item.getDefaultGraphURIs() ;
-        @SuppressWarnings("unchecked")
         final List<String> filenamesNamed = item.getNamedGraphURIs() ;
         
         try {

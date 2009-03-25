@@ -98,7 +98,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
             else
             {
                 // All variables.
-                @SuppressWarnings("unchecked")
                 Collection<Var> tmp = OpVars.patternVars(opSQL.getOriginal()) ;
                 projectVars = new ArrayList<Var>(tmp) ;
             }

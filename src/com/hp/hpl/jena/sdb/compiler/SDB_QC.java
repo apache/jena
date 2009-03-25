@@ -89,13 +89,12 @@ public class SDB_QC
      * If we don't do sorting in-DB, then we need the ORDER BY variables as well. 
      * @param query
      */
-    @SuppressWarnings("unchecked")
     public static List<Var> queryOutVars(Query query)
     {
         // If part query, need all variables. 
         
         // Project variables
-        List<Var> vars = toList(map((List<String>)query.getResultVars(), StringToVar)) ;
+        List<Var> vars = toList(map(query.getResultVars(), StringToVar)) ;
         
         if ( vars.size() == 0 )
             // SELECT * {}

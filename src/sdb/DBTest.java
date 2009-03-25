@@ -47,7 +47,6 @@ public class DBTest extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-        @SuppressWarnings("unchecked")
         List<String> args = getPositional() ;
         setParams(args) ;
     }

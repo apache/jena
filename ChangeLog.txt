@@ -8,8 +8,10 @@ Documentation:
 
 ==== SDB v1.3
 
++ Upgraded to Jena 2.6.0 and ARQ 2.7.0 
+  Older versions of these jars will not work.
 + Added improvement for Oracle to avoid blob handling over JDBC for lexical forms <= 2000.
-  Thansk to Metatomix (Scott Kagels) for the patches. 
+  Thanks to Metatomix (Scott Kagels) for the patches. 
 
 ==== SDB v1.2
 

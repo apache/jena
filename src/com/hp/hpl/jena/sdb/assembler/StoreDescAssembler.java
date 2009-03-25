@@ -44,8 +44,7 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
         String dbType = chooseDBType(root, sdbConnDesc) ;
         
         // Features
-        @SuppressWarnings("unchecked")
-        List<Resource> x = GraphUtils.multiValue(root, AssemblerVocab.featureProperty) ;
+        List<Resource> x = GraphUtils.multiValueResource(root, AssemblerVocab.featureProperty) ;
         FeatureSet fSet = new FeatureSet() ;
         for ( Resource r : x )
         {

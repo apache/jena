@@ -103,7 +103,6 @@ class MatchVisitor implements ExprVisitor
         
         if ( uri != null && cMap != null && cMap.containsKey(uri) )
         {
-            @SuppressWarnings("unchecked")
             List<Expr> args = patExpr.getArgs() ;
             if( ! cMap.get(uri).match(uri, args, rMap) )
                 throw new NoExprMatch("Function callout rejected match") ;

@@ -28,7 +28,6 @@ public class ModData extends ModBase
     }
 
     
-    @SuppressWarnings("unchecked")
     public void processArgs(CmdArgModule cmdLine)
     {
         filesToLoad = cmdLine.getValues(argDeclLoad) ;

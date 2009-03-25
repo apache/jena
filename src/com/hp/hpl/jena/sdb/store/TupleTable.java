@@ -113,7 +113,7 @@ public class TupleTable
     public void dump()
     {
         QueryIterator qIter = iterator() ;
-        ResultSetFormatter.out(ResultSetFactory.create(qIter, vars)) ;
+        ResultSetFormatter.out(ResultSetFactory.create(qIter, Var.varNames(vars))) ;
 
     }
 

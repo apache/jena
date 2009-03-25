@@ -62,7 +62,6 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
         for ( Node v : variables )
             indexes.put(v, (idx++) ) ;
 
-        @SuppressWarnings("unchecked")
         List<Triple> pattern = q.getPattern() ;
         for ( Triple t : pattern )
             bgp.add(t) ;
@@ -75,9 +74,8 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
     {
         // Iterator of domain objects
         
-        public ExtendedIterator executeBindings()
+        public ExtendedIterator<Domain> executeBindings()
         {
-            @SuppressWarnings("unchecked")
             Set<Var> vars = OpVars.allVars(op) ;
             Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
             QueryIterator qIter = plan.iterator() ;
@@ -98,8 +96,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     return d ;
                 }
             };
-            @SuppressWarnings("unchecked")
-            Iterator it = Stream.map(qIter, b2d) ;
+            Iterator<Domain> it = Stream.map(qIter, b2d) ;
             return WrappedIterator.create(it) ;
         }
     }

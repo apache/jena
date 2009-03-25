@@ -21,10 +21,10 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "PGSQL/Simple" ;
 ##         sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
-
-      [ rdfs:label "MySQL/Simple" ;
-        sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
-
+## 
+##       [ rdfs:label "MySQL/Simple" ;
+##         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
+## 
 ##       [ rdfs:label "OracleXE/Simple" ;
 ##         sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
 ## 

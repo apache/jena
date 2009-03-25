@@ -39,10 +39,10 @@ public class sdbRDFSexpand
     static Item make(String tag, Node property, Graph graph)
     {
         TransGraphNode tg = new TransGraphNode() ;
-        ExtendedIterator iter = graph.find(null, property, null) ;
+        ExtendedIterator<Triple> iter = graph.find(null, property, null) ;
         for ( ; iter.hasNext() ; )
         {
-            Triple t = (Triple)iter.next() ;
+            Triple t = iter.next() ;
             tg.add(t.getSubject(), t.getObject()) ;
         }
         tg.expandReflexive() ;

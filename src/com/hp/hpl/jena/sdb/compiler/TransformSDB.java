@@ -195,7 +195,6 @@ public class TransformSDB extends TransformCopy
         if ( false ) return super.transform(opProject, subOp) ;
         
         // Need to not do bridge elsewhere.
-        @SuppressWarnings("unchecked")
         List<Var> vars = opProject.getVars() ;
         return doBridge(request, (OpSQL)subOp, vars, opProject) ;
     }
@@ -261,7 +260,6 @@ public class TransformSDB extends TransformCopy
 
         SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
         
-        @SuppressWarnings("unchecked")
         List<Var> pv = opProject.getVars() ;
         
         // Do as (slice X)
@@ -281,7 +279,6 @@ public class TransformSDB extends TransformCopy
             return null ;
         
         ExprList exprs = opFilter.getExprs() ;
-        @SuppressWarnings("unchecked")
         List<Expr> x = exprs.getList() ;
         for ( Expr  expr : x )
         {
@@ -295,7 +292,6 @@ public class TransformSDB extends TransformCopy
 
     private Set<Var> getVarsInFilter(Expr expr)
     {
-        @SuppressWarnings("unchecked")
         Set<Var> vars = expr.getVarsMentioned() ;
         return vars ;
     }

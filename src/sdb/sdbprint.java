@@ -77,7 +77,6 @@ public class sdbprint extends CmdArgsDB
             storeDesc.setLayout(layoutDefault) ;
         
         printSQL = contains(argDeclPrintSQL) ;
-        @SuppressWarnings("unchecked")
         List<String> strList = getValues(argDeclPrint) ;
         for ( String arg : strList )
         {

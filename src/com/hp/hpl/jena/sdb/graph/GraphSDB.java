@@ -145,7 +145,7 @@ public class GraphSDB extends GraphBase implements Graph
     }
 
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         // Fake a query.
         SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
@@ -206,7 +206,7 @@ public class GraphSDB extends GraphBase implements Graph
         return resultTriple ;
     }
 
-    class GraphIterator extends NiceIterator
+    class GraphIterator extends NiceIterator<Triple>
     {
         QueryIterator qIter ; 
         Triple current = null ;

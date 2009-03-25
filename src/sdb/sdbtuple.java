@@ -87,11 +87,9 @@ public class sdbtuple extends CmdArgsDB
         if ( !contains(argDeclCmdTable) && getNumPositional() == 0 )
             cmdError("No tables specified", true) ;
         
-        @SuppressWarnings("unchecked")
         List<String>x = getPositional() ;
         tables.addAll(x) ;
         
-        @SuppressWarnings("unchecked")
         List<String>y = getValues(argDeclCmdTable) ;
         tables.addAll(y) ;
         

@@ -31,7 +31,6 @@ public class ModLogSQL extends ModBase
 
     public void processArgs(CmdArgModule cmdLine)
     {
-        @SuppressWarnings("unchecked")
         List<String> vals = cmdLine.getValues(argDeclLogSQL) ;
         for ( String v : vals )
         {
