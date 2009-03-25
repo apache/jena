@@ -161,22 +161,29 @@ public class WriterOp
             if ( opBGP.getPattern().size() == 1 )
             {
                 start(opBGP, NoNL) ;
-                write(opBGP.getPattern()) ;
+                write(opBGP.getPattern(), true) ;
                 finish(opBGP) ;
                 return ;
             }
             
             start(opBGP, NL) ;
-            write(opBGP.getPattern()) ;
+            write(opBGP.getPattern(), false) ;
             finish(opBGP) ;
         }
         
-        private void write(BasicPattern pattern)
+        private void write(BasicPattern pattern, boolean oneLine)
         {
+            boolean first = true ;
             for ( Triple t : pattern )
             {
                formatTriple(t) ;
-               out.println() ;
+               if ( oneLine )
+               {
+                   if ( ! first ) out.print(" ") ;
+               }
+               else
+                   out.println() ;
+               first = false ;
             }
         }
         
