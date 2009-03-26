@@ -58,6 +58,7 @@ public class SQLBridge2Oracle extends SQLBridge2 {
         } ;
     }
     
+    @Override
     protected String getLexFromResultSet(ResultSet rs, String codename) 
     throws SQLException
     {

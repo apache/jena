@@ -78,12 +78,12 @@ public class SQLBridge2 extends SQLBridgeBase
             // Need to allocate aliases because otherwise we need to access
             // "table.column" as a label and "." is illegal in a label
 
-            // Call overrideable helper method for lex column (Oracle)
             String vLex = SQLUtils.gen(sqlVarName,"lex") ;
+            // Call overrideable helper method for lex column (Oracle)
             SqlColumn cLex = getLexSqlColumn(table);
 
-            // Call overridable helper method for lex column (Oracle)
             String vLexNChar = SQLUtils.gen(sqlVarName,"lexNChar") ;
+            // Call overrideable helper method for lex column (Oracle)
             SqlColumn cLexNChar = getLexNCharSqlColumn(table);
     
             String vDatatype = SQLUtils.gen(sqlVarName,"datatype") ;
@@ -172,6 +172,11 @@ public class SQLBridge2 extends SQLBridgeBase
     {
         Binding b = new BindingMap(parent) ;
         ResultSet rs = rsHolder.get() ;
+        
+        // Destructive.
+        // try { RS.printResultSet(rs) ; } catch (SQLException ex) { System.out.println(ex) ; }
+        
+        
         for ( Var v : super.getProject() )
         {
             if ( ! v.isNamedVar() )
@@ -189,28 +194,12 @@ public class SQLBridge2 extends SQLBridgeBase
                 if ( rs.wasNull() )
                     continue ;
 
-                // Oracle: may be null (empty string).
-                // Oracle 9i issue: It might be that .getString does not work on CLOBs.
-                // A fix would be to look at the metadata.
-                
                 String lexColName = SQLUtils.gen(codename,"lex") ;
-                
-//                int lexCol = rs.findColumn(lexColName) ;
-//                getColumnTypeName//
-//                if ( rs.getMetaData().getColumnType(lexCol) == java.sql.Types.CLOB )
-//                {}
-                
-                String lex = rs.getString(lexColName) ;
+                // Get lexical - overriden by Oracle-specific code.
+                String lex = getLexFromResultSet(rs, codename);
+//                String lex = rs.getString(lexColName) ;
                 if ( lex == null )
                     lex = "" ;
-
-                // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
-                // try {
-                //     String $ = new String(bytes, "UTF-8") ;
-                //     log.info("lex bytes : "+$+"("+$.length()+")") ;
-                // } catch (Exception ex) {}
-                // Same as rs.wasNull() for things that can return Java nulls.
-
                 String datatype = rs.getString(SQLUtils.gen(codename,"datatype")) ;
                 String lang     = rs.getString(SQLUtils.gen(codename,"lang")) ;
                 ValueType vType = ValueType.lookup(type) ;
@@ -223,6 +212,16 @@ public class SQLBridge2 extends SQLBridgeBase
         }
         return b ;
     }
+    
+    protected String getLexFromResultSet(ResultSet rs, String codename) 
+    throws SQLException
+    {
+        String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;
+        if ( lex == null )
+            lex = "" ;
+        return lex;
+    }
+    
     
 
     private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
