@@ -15,11 +15,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** Abstract class that sorts out input sterams, readers and base URIs, to call a
+/** Abstract class that sorts out input streams, readers and base URIs, to call a
  * single worker function with model, UTF8 reader and visated base  
  *   
  * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.4 2008-12-28 19:31:52 andy_seaborne Exp $
+ * @version 	$Id: JenaReaderBase.java,v 1.5 2009-03-26 09:54:41 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader
