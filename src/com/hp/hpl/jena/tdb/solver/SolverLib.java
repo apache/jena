@@ -67,6 +67,13 @@ public class SolverLib
         return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, execCxt) ;
     }
     
+    public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
+    { return Iter.map(iterBindings, convFromBinding(nodeTable)) ; }
+    
+    public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
+    { return Iter.map(iterBindingIds, convToBinding(nodeTable)) ; }
+
+    
     // The worker.  Callers choose the NodeTupleTable.  
     //     graphNode maybe Node.ANY, meaning we should make triples unique.
 
