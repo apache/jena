@@ -30,7 +30,10 @@ do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
   cp -u lib/arq-extra.jar ../$d/lib
-  # cp -u lib/arq-sse.jar ../$d/lib
+
+  # And Jena
+  cp -u lib/jena.jar ../$d/lib
+  cp -u lib/jenatest.jar ../$d/lib
   done
 
 ## Keep the JARs around for Eclipse libraries
@@ -51,5 +54,7 @@ for d in  $SRCDIRS
 do
   echo "Moving arq-src.zip to project $d"
   cp -u arq-src.zip ../$d
+  # And Jena
+  cp -u jena-src.zip ../$d
   done
 rm -f arq-src.zip
