@@ -9,7 +9,7 @@ package dev;
 public class Dev
 {
     
-    //   TransformEqualityFilter ==> disjunctions as well.
+    // TransformEqualityFilter ==> disjunctions as well.
     // Amalgamation: BGPs,Quads, Sequences.
     // E_Exists(Op).
 
