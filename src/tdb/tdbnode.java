@@ -36,7 +36,6 @@ public class tdbnode extends CmdTDB
         return getCommandName()+" NodeId ..." ;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {

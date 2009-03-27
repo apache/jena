@@ -98,7 +98,6 @@ public class TestDatasetTDB extends BaseTest
         // Graphs only exists if they have a triple in them
         assertFalse(ds.containsNamedModel(graphName)) ;
         
-        @SuppressWarnings("unchecked")
         Iterator<String> iter = ds.listNames() ;
         assertFalse(iter.hasNext()) ;
         
@@ -115,7 +114,6 @@ public class TestDatasetTDB extends BaseTest
         g2.add(triple) ;
         
         assertTrue(ds.containsNamedModel(graphName)) ;
-        @SuppressWarnings("unchecked")
         Iterator<String> iter = ds.listNames() ;
         List<String> x = Iter.toList(iter) ;
         List<String> y = Arrays.asList(graphName) ;

@@ -80,10 +80,8 @@ public class SolverLib
     private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode,
                                          BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked")
         List<Triple> triples = pattern.getList() ;
         
-        @SuppressWarnings("unchecked")
         Iterator<Binding> iter = input ;
         boolean anyGraph = (Node.ANY.equals(graphNode)) ;
         
@@ -153,7 +151,6 @@ public class SolverLib
     {
         return new Transform<Binding, BindingNodeId>()
         {
-            @SuppressWarnings("unchecked")
             @Override
             public BindingNodeId convert(Binding binding)
             {
@@ -177,7 +174,6 @@ public class SolverLib
     }
 
     /** Turn a BasicPattern into an abbreviated string for debugging */  
-    @SuppressWarnings("unchecked")
     public static String strPattern(BasicPattern pattern)
     {
         List<Triple> triples = pattern.getList() ;

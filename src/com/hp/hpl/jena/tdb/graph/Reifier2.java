@@ -76,12 +76,12 @@ public class Reifier2 implements Reifier
     }
     
     @Override
-    public ExtendedIterator allNodes()
+    public ExtendedIterator<Node> allNodes()
     {
         return allNodes(null) ;
     }
 
-    private static class MapperToNode extends NiceIterator
+    private static class MapperToNode extends NiceIterator<Node>
     {
         private final QueryIterator iter ;
         private Var var ;
@@ -97,7 +97,7 @@ public class Reifier2 implements Reifier
     }
 
     @Override
-    public ExtendedIterator allNodes(Triple triple)
+    public ExtendedIterator<Node> allNodes(Triple triple)
     {
         QueryIterator qIter = nodesReifTriple(null, triple) ;
         return new MapperToNode(qIter, reifNodeVar) ;
@@ -139,7 +139,7 @@ public class Reifier2 implements Reifier
     public void close()
     {}
 
-    private static class MapperToTriple extends NiceIterator
+    private static class MapperToTriple extends NiceIterator<Triple>
     {
         private final QueryIterator iter ;
         MapperToTriple(QueryIterator iter) { this.iter = iter  ; }
@@ -156,7 +156,7 @@ public class Reifier2 implements Reifier
     }
     
     @Override
-    public ExtendedIterator find(TripleMatch match)
+    public ExtendedIterator<Triple> find(TripleMatch match)
     {
         return graph.find(match) ; 
 //        QueryIterator qIter = nodesReifTriple(null, match) ; 
@@ -165,10 +165,10 @@ public class Reifier2 implements Reifier
     }
 
     @Override
-    public ExtendedIterator findEither(TripleMatch match, boolean showHidden)
+    public ExtendedIterator<Triple> findEither(TripleMatch match, boolean showHidden)
     {
         if ( showHidden )
-            return new NullIterator() ;
+            return NullIterator.instance() ;
         else
             return graph.find(match) ;
     }
@@ -185,13 +185,11 @@ public class Reifier2 implements Reifier
         }} ; 
 
     @Override
-    public ExtendedIterator findExposed(TripleMatch match)
+    public ExtendedIterator<Triple> findExposed(TripleMatch match)
     {
-        ExtendedIterator it = graph.find(match) ;
-        @SuppressWarnings("unchecked")
-        Iterator<Triple> it2 = it ;
-        it2 = Iter.filter(it2, filterReif) ;
-        return WrappedIterator.create(it2) ;
+        Iterator<Triple> it = graph.find(match) ;
+        it = Iter.filter(it, filterReif) ;
+        return WrappedIterator.create(it) ;
     }
 
     @Override
@@ -295,9 +293,9 @@ public class Reifier2 implements Reifier
 
     private void triplesToZap(Collection<Triple> acc, Node s, Node p , Node o)
     {
-        ExtendedIterator iter = graph.find(s,p,o) ;
+        ExtendedIterator<Triple> iter = graph.find(s,p,o) ;
         while(iter.hasNext())
-            acc.add((Triple)iter.next()) ;
+            acc.add(iter.next()) ;
     }
     
     @Override
@@ -328,9 +326,9 @@ public class Reifier2 implements Reifier
 
     private Node getNode(Node S, Node P)
     {
-        ExtendedIterator it = graph.find(S,P, Node.ANY) ;
+        ExtendedIterator<Triple> it = graph.find(S,P, Node.ANY) ;
         if ( ! it.hasNext() ) return null ;
-        Triple t = (Triple)it.next() ;
+        Triple t = it.next() ;
         it.close() ;
         return t.getObject() ;
     }

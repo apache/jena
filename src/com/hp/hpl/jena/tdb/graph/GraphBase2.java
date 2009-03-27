@@ -223,7 +223,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            the appending of reification quadlets; instead they must implement
            graphBaseFind(TripleMatch).
      */
-    public final ExtendedIterator find( TripleMatch m )
+    public final ExtendedIterator<Triple> find( TripleMatch m )
     { 
         checkOpen(); 
         //return reifierTriples( m ) .andThen( graphBaseFind( m ) );
@@ -236,21 +236,21 @@ public abstract class GraphBase2 implements GraphWithPerform
           implementation for <code>find(TripleMatch)</code>.
      */
 
-    protected abstract ExtendedIterator graphBaseFind( TripleMatch m );
+    protected abstract ExtendedIterator<Triple> graphBaseFind( TripleMatch m );
 
-    public ExtendedIterator forTestingOnly_graphBaseFind( TripleMatch tm )
+    public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( TripleMatch tm )
     { return graphBaseFind( tm ); }
 
     /**
 
      */
-    public final ExtendedIterator find(Node s, Node p, Node o)
+    public final ExtendedIterator<Triple> find(Node s, Node p, Node o)
     {
         checkOpen() ;
         return graphBaseFind(s, p, o) ;
     }
 
-    protected ExtendedIterator graphBaseFind( Node s, Node p, Node o )
+    protected ExtendedIterator<Triple> graphBaseFind( Node s, Node p, Node o )
     { return find( Triple.createMatch( s, p, o ) ); }
 
     /**
@@ -302,7 +302,7 @@ public abstract class GraphBase2 implements GraphWithPerform
      */
     final protected boolean containsByFind( Triple t )
     {
-        ClosableIterator it = find( t );
+        ClosableIterator<Triple> it = find( t );
         try { return it.hasNext(); } finally { it.close(); }
     }
 
@@ -379,7 +379,7 @@ public abstract class GraphBase2 implements GraphWithPerform
      */
     protected int graphBaseSize()
     {
-        ExtendedIterator it = GraphUtil.findAll( this );
+        ExtendedIterator<Triple> it = GraphUtil.findAll( this );
         try 
         {
             int tripleCount = 0;

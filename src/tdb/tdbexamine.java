@@ -34,7 +34,6 @@ public class tdbexamine extends CmdTDB
     }
 
     
-    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {

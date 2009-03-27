@@ -17,10 +17,8 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
@@ -91,7 +89,6 @@ public class tdbconfig extends CmdSub
             {
                 System.out.println("Graph: "+gn) ;
                 PrefixMapping pmap = prefixes.getPrefixMapping(gn) ;
-                @SuppressWarnings("unchecked")
                 Map<String, String> x = pmap.getNsPrefixMap() ;
                 for ( String k : x.keySet() )
                     System.out.printf("  %-10s %s\n", k+":", x.get(k)) ;
@@ -178,7 +175,6 @@ public class tdbconfig extends CmdSub
             return "tdbconfig nodes" ;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected void exec()
         {

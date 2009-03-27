@@ -77,11 +77,11 @@ public class GraphTriplesTDB extends GraphTDBBase
     }
     
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
-            return new com.hp.hpl.jena.util.iterator.NullIterator() ;
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
         return new MapperIteratorTriples(iter) ;
     }
 

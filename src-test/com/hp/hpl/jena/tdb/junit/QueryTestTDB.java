@@ -51,7 +51,6 @@ public class QueryTestTDB extends EarlTestCase
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
-    @SuppressWarnings("unchecked")
     public QueryTestTDB(String testName, EarlReport report, TestItem item, TDBFactory.ImplFactory factory)
     {
         this(testName, report, item.getURI(), 

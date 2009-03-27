@@ -16,7 +16,7 @@ public final class SinkGraph extends GraphBase
 {
 
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         return null ;
     }

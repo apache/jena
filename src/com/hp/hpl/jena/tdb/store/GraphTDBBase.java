@@ -62,7 +62,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     // Convert from Iterator<Triple> to ExtendedIterator
-    static class MapperIteratorTriples extends NiceIterator
+    static class MapperIteratorTriples extends NiceIterator<Triple>
     {
         private final Iterator<Triple> iter ;
         MapperIteratorTriples(Iterator<Triple> iter) { this.iter = iter ; }
@@ -72,7 +72,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     // Convert from Iterator<Quad> to ExtendedIterator
-    static class MapperIteratorQuads extends NiceIterator
+    static class MapperIteratorQuads extends NiceIterator<Triple>
     {
         private final Iterator<Quad> iter ;
         private final Node graphNode ;

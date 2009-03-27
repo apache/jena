@@ -30,19 +30,19 @@ public class QueryHandlerTDB extends SimpleQueryHandler implements QueryHandler
     }
 
     @Override
-    public ExtendedIterator subjectsFor(Node p, Node o)
+    public ExtendedIterator<Node> subjectsFor(Node p, Node o)
     {
         return super.subjectsFor(p, o) ;
     }
 
     @Override
-    public ExtendedIterator predicatesFor(Node s, Node o)
+    public ExtendedIterator<Node> predicatesFor(Node s, Node o)
     {
         return super.predicatesFor(s, o) ;
     }
 
     @Override
-    public ExtendedIterator objectsFor(Node s, Node p)
+    public ExtendedIterator<Node> objectsFor(Node s, Node p)
     {
         return super.objectsFor(s, p) ;
     }

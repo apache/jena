@@ -75,7 +75,6 @@ public class Scope
         public void visit(OpSequence opSeq)
         {
             // Need to modify each sub op becase a sequence puts earlier ops in scope of later ones.
-            @SuppressWarnings("unchecked")
             Iterator<Op> seq = opSeq.iterator() ;
             for ( ; seq.hasNext() ; )
             {
@@ -140,7 +139,6 @@ public class Scope
             // Restrict to in project AND actually mentioned.
             //Set<Var> x = defined.get(opProject.getSubOp()) ;
             
-            @SuppressWarnings("unchecked")
             List<Var> vars = opProject.getVars() ;
             Set<Var> z = new HashSet<Var>(vars) ;      // The new set
             z.retainAll(vars) ;
@@ -149,24 +147,22 @@ public class Scope
 
         // ---- Base elements
 
-        @SuppressWarnings("unchecked")
         @Override
         public void visit(OpBGP opBGP)
         {
             Set<Var> acc = new HashSet<Var>() ;
             //for ( Triple t : opBGP.getPattern() )
-            for ( Triple t : (List<Triple>)opBGP.getPattern().getList()  )
+            for ( Triple t : opBGP.getPattern().getList()  )
                 addVarsFromTriple(acc, t) ;
             defined.put(opBGP, acc) ;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public void visit(OpQuadPattern opQuad)
         {
             Set<Var> acc = new HashSet<Var>() ;
             //for ( Quad q : opQuad.getQuads() )
-            for ( Quad q : (List<Quad>)opQuad.getQuads()  )
+            for ( Quad q : opQuad.getQuads()  )
                 addVarsFromQuad(acc, q) ;
             defined.put(opQuad, acc) ;
         }

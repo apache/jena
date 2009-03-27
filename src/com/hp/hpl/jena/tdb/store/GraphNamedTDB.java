@@ -99,11 +99,11 @@ public class GraphNamedTDB extends GraphTDBBase
     }
     
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         Iterator<Quad> iter = dataset.getQuadTable().find(graphNode, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
-            return new com.hp.hpl.jena.util.iterator.NullIterator() ;
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
         
         return new MapperIteratorQuads(graphNode, iter) ;
     }

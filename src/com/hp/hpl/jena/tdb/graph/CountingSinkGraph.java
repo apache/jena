@@ -16,7 +16,7 @@ public class CountingSinkGraph extends GraphBase
 {
     public long count = 0 ;
     @Override
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         return null ;
     }

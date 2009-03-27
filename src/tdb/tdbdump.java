@@ -6,8 +6,6 @@
 
 package tdb;
 
-import java.util.List;
-
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
@@ -104,11 +102,10 @@ public class tdbdump extends CmdSub
             return "tdbdump index INDEX" ;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected void exec()
         {
-            for ( String fn: (List<String>)super.getPositional() )
+            for ( String fn: super.getPositional() )
             {
                 execOne(fn) ;
             }

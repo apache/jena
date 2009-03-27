@@ -48,7 +48,7 @@ public class StatsCollector
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(10000) ;
         
         @Override
-        protected ExtendedIterator graphBaseFind(TripleMatch m)
+        protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
         {
             return null ;
         }
@@ -81,7 +81,6 @@ public class StatsCollector
     {
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         long count = 0 ;
-        @SuppressWarnings("unchecked")
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {

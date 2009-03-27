@@ -62,7 +62,6 @@ public class tdbcheck extends CmdARQ
         return getCommandName()+" FILE ..." ;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {
