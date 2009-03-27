@@ -1,9 +1,7 @@
 ChangeLog for TDB
 =================
 
-==== 0.8.0
-
-+ Upgrade to Java5 version of ARQ.
+==== 0.7.3
 
 + Execution logging now catches all execution paths
 
