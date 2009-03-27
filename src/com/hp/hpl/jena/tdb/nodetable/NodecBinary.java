@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.nodetable;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class NodecBinary implements Nodec
 {
@@ -20,11 +21,11 @@ public class NodecBinary implements Nodec
     private static byte codeLiteralDT   = 5 ;
     
     @Override
-    public void encode(Node node, ByteBuffer bb, int idx)
+    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap)
     {}
 
     @Override
-    public Node decode(ByteBuffer bb, int idx)
+    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap)
     {
         return null ;
     }

@@ -9,15 +9,16 @@ package com.hp.hpl.jena.tdb.nodetable;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 /** Encode/decode for Nodes into bytes */
 public interface Nodec
 {
     /** Encode the node into the byte buffer, starting at the given offset. */ 
-    public void encode(Node node, ByteBuffer bb, int idx) ;
+    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap) ;
     
     /** Decode the node from the byte buffer, starting at the given offset. */
-    public Node decode(ByteBuffer bb, int idx) ; 
+    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap) ; 
     
     /** Simple encoder/decoder for nodes that uses the SSE string encoding.
      */

@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-
 import iterator.Iter;
 import iterator.Transform;
 
@@ -16,21 +15,22 @@ import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
-import lib.Bytes;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
+import lib.Bytes;
+import lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.Nodec;
+import com.hp.hpl.jena.tdb.nodetable.NodecSSE;
 import com.hp.hpl.jena.tdb.store.Hash;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeType;
@@ -38,16 +38,28 @@ import com.hp.hpl.jena.tdb.store.NodeType;
 public class NodeLib
 {
     // ---- Node <->String
-
+    
+    Nodec nodec = new NodecSSE() ;
+    
+    
+    // Charcters in IRIs that are illegal and cause SSE problems, but we wish to keep.
+    final private static char MarkerChar = '_' ;
+    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
+    
     public static String encode(Node node)  { return encode(node, null) ; }
 
     public static String encode(Node node, PrefixMapping pmap)
     {
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeLabel() ;
-        if ( node.isURI() && node.getURI().indexOf(' ') >= 0 )
+        if ( node.isURI() ) 
+        {
             // Pesky spaces
-            throw new TDBException("Space found in URI: "+node) ;
+            //throw new TDBException("Space found in URI: "+node) ;
+            String x = StrUtils.encode(node.getURI(), '_', invalidIRIChars) ;
+            if ( x != node.getURI() )
+                node = Node.createURI(x) ; 
+        }
         
         return FmtUtils.stringForNode(node, pmap) ;
     }
@@ -63,7 +75,14 @@ public class NodeLib
         }
         
         try {
-            return SSE.parseNode(s, pmap) ;
+            Node n = SSE.parseNode(s, pmap) ;
+            if ( n.isURI() )
+            {
+                String x = StrUtils.decode(n.getURI(), MarkerChar) ;
+                if ( x != n.getURI() )
+                    n = Node.createURI(x) ;
+            }
+            return n ;
         } catch (SSEParseException ex)
         {
             ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;

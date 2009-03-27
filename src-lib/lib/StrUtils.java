@@ -176,7 +176,7 @@ public class StrUtils
     // and then the hexadecimal representation of the character.  
     // Only characters 0-255 can be encoded.
     
-    final static char[] hexDigits = {
+    final private static char[] hexDigits = {
             '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
             '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
     //         , 'g' , 'h' ,
@@ -190,7 +190,7 @@ public class StrUtils
      * @param str       String to encode
      * @param marker    Marker character
      * @param escapees  Characters to encode (must include the marker)
-     * @return          Encoded string
+     * @return          Encoded string (returns input object if no change)
      */
     public static String encode(String str, char marker, char[] escapees)
     {
@@ -239,13 +239,6 @@ public class StrUtils
         return buff.toString();
     }
 
-//    static private byte hexEncode(int i) {
-//        if (i<10)
-//            return (byte) ('0' + i);
-//        else
-//            return (byte)('A' + i - 10);
-//    }
-
     // Encoding is table-driven but for decode, we use code.
     static private int hexDecode(char ch) {
         if (ch >= '0' && ch <= '9' )
@@ -261,7 +254,7 @@ public class StrUtils
      * 
      * @param str       String to decode
      * @param marker    The marker charcater
-     * @return          Decoded string
+     * @return          Decoded string (returns input object on no change)
      */
     public static String decode(String str, char marker)
     {

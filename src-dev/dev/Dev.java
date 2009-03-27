@@ -8,10 +8,6 @@ package dev;
 
 public class Dev
 {
-    // StatsMatcher - 
-    //   Default no hit mode --> first match vs best match.
-    //   Document
-    
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
      

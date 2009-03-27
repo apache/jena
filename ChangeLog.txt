@@ -3,7 +3,8 @@ ChangeLog for TDB
 
 ==== 0.8.0
 
-+ Upgrade to Java5 version of ARQ.
++ Upgrade to Java5 version of ARQ and Jena
++ Cope with spaces in URIs (not recommended)
 
 ==== 0.7.3
 

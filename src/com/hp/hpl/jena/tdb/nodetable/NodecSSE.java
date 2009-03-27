@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.nodetable;
 import java.nio.ByteBuffer;
 
 import lib.Bytes;
+import lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -26,18 +27,29 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class NodecSSE implements Nodec
 {
+    private static boolean SafeChars = false ;
+    // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
+    final private static char MarkerChar = '_' ;
+    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
+    
     public NodecSSE() {}
     
     @Override
-    public void encode(Node node, ByteBuffer bb, int idx)
+    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap)
     {
-        //SSE.write(node) + bNodes.
-        // Node -> String
+        if ( node.isURI() ) 
+        {
+            // Pesky spaces etc
+            String x = StrUtils.encode(node.getURI(), MarkerChar, invalidIRIChars) ;
+            if ( x != node.getURI() )
+                node = Node.createURI(x) ; 
+        }
+        
         String str ;
         if ( node.isBlank() )
             str = "_:"+node.getBlankNodeLabel() ;
         else 
-            str = FmtUtils.stringForNode(node, (PrefixMapping)null) ;
+            str = FmtUtils.stringForNode(node, pmap) ;
         if ( idx != 0 )
         {
             bb.position(idx) ;
@@ -52,7 +64,7 @@ public class NodecSSE implements Nodec
     }
 
     @Override
-    public Node decode(ByteBuffer bb, int idx)
+    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap)
     {
         // XXX Length issues
         int x = bb.getInt(idx) ;
@@ -62,7 +74,14 @@ public class NodecSSE implements Nodec
         // Bytes -> String 
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
-        return SSE.parseNode(str) ;
+        Node n = SSE.parseNode(str, pmap) ;
+        if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
+        {
+            String uri = StrUtils.decode(n.getURI(), '_') ;
+            if ( uri != n.getURI() )
+                n = Node.createURI(uri) ;
+        }
+        return n ;
     }
 
 }

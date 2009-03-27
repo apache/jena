@@ -66,7 +66,7 @@ public class Run
 //        TDB.setExecutionLogging(true) ;
 //        test() ; System.out.flush(); System.exit(0) ;
 //        
-        tdbquery("-v", "--tdb=tdb.ttl", "--file=Q.rq") ; 
+        tdbquery("-v", "--tdb=tdb.ttl", "SELECT * { ?s ?p ?o }") ; //"--file=Q.rq") ; 
         
 //        Location loc = Location.dirname("DB/SPO") ;
 //        //new File("DB/SPO").get
