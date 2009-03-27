@@ -121,11 +121,11 @@ public class WriterOp
             out.ensureStartOfLine() ;
 
             printOp(op.getRight()) ;
-
-            out.ensureStartOfLine() ;
-
             if ( exprs != null )
+            { 
+                out.ensureStartOfLine() ;
                 WriterExpr.output(out, exprs, sContext) ;
+            }
             finish(op) ;
         }
 

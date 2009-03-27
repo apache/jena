@@ -14,6 +14,7 @@ public class Dev
     // E_Exists(Op).
 
     // === Integrate optimization from TDB
+    // New optimizer architecture & StageGeneratorGeneric
     // Interaction of filter placement  
     // TDB StageGeneratorGeneric, TDB solver.reorder, solver.stats
     // Extend to quads.  Triple=>quad 

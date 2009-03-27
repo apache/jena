@@ -98,7 +98,8 @@ public class Optimize implements Rewrite
         op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark
-        op = OpLabel.create("Transformed", op) ;
+        if ( false )
+            op = OpLabel.create("Transformed", op) ;
         return op ;
     }
 
