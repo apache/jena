@@ -12,14 +12,7 @@ public class Dev
     //   createBlockMgr - tie to metadata?
      
     // NodeLib.encode/decode ==> swap to a Nodec
-    // '_' => '_5F' and ' ' => _20
-    // Any code for this already?  ARQ escape code?  
-    //   FmtUtils.stringEsc does \ escaping.
-    //   util.Convert calls URLEncoder
-    //   ** FileUtils.encodeFileName
-    //   com.hp.hpl.jena.util.URIRef
-    //     Consolidate in TDB:StrUtils.
-    
+
     // ==== Next
     // Quad pattern execution/optimization with filters (done for default graph).
     // File metafiles. FileSets
