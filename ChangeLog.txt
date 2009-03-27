@@ -1,12 +1,16 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.0
+
++ Upgrade to Java5 version of ARQ.
+
 ==== 0.7.3
 
 + Execution logging now catches all execution paths
 
 + Metadata files attached to database files.  
-  New files wil appear in the database directory.
+  New files will appear in the database directory.
 
 + "tdbtest" renamed "tdbverify".  New "tdbtest" runs an individual test 
    manifest (similar to ARQ and SDB). 
