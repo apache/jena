@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.66 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.67 2009-03-27 16:15:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.66 $ on $Date: 2009-03-12 21:49:37 $
+ * @version $Revision: 1.67 $ on $Date: 2009-03-27 16:15:26 $
  */
 public class TestBugs extends TestCase {
 
@@ -1048,14 +1048,18 @@ public class TestBugs extends TestCase {
      * fiddling with manifest files and declarative test specifications
      */
     public void testRDFSSimple() {
+        doTestRDFSSimple(ReasonerVocabulary.RDFS_DEFAULT);
+        doTestRDFSSimple(ReasonerVocabulary.RDFS_SIMPLE);
+    }
+    
+    private void doTestRDFSSimple(String level) {
         Model model = ModelFactory.createDefaultModel();
         String NS = "http://jena.hpl.hp.com/example#";
         Property prop = model.createProperty(NS + "prop");
         model.add(prop, RDF.type, RDF.Property);
         
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
-        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
-                ReasonerVocabulary.RDFS_SIMPLE);
+        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, level); 
         InfModel im = ModelFactory.createInfModel(reasoner, model);
         assertTrue( im.contains(prop, RDFS.subPropertyOf, prop) );
     }
