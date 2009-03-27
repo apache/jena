@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 {
     private final NodeTupleTable nodeTupleTable ;
-    private final Tuple<Node> tuple ;
+    private final Tuple<Node> patternTuple ;
 
     private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
@@ -40,33 +40,43 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     {
         super(input) ;
         this.nodeTupleTable = nodeTupleTable ; 
-        this.tuple = tuple ;
+        this.patternTuple = tuple ;
         this.execCxt = execCxt ;
         this.anyGraphs = anyGraphs ; 
     }
 
-    @Override
-    protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
+    /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodesIds and Variables. 
+     *  A variable in the pattern is replaced by its binding or null in the Nodeids.
+     *  A variable that is not bound by the binding is placed in the var array.
+     */
+    public static void prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
     {
-        NodeId ids[] = new NodeId[tuple.size()] ;
-        // Variables for this tuple after subsitution
-        final Var[] var = new Var[tuple.size()] ;
-
         // Process the Node to NodeId conversion ourselves because
         // we wish to abort if an unknown node is seen.
-        for ( int i = 0 ; i < tuple.size() ; i++ )
+        for ( int i = 0 ; i < patternTuple.size() ; i++ )
         {
-            Node n = tuple.get(i) ;
+            Node n = patternTuple.get(i) ;
             // Substitution and turning into NodeIds
             // Variables unsubstituted are null NodeIds
-            NodeId nId = idFor(nodeTupleTable.getNodeTable(), input, n) ;
+            NodeId nId = idFor(nodeTable, input, n) ;
             if ( nId == NodeId.NodeDoesNotExist )
                 new NullIterator<BindingNodeId>() ;
             ids[i] = nId ;
             if ( nId == null )
                 var[i] = asVar(n) ;
         }
+    }
+    
+    @Override
+    protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
+    {
+        // ---- Convert to NodeIds 
+        NodeId ids[] = new NodeId[patternTuple.size()] ;
+        // Variables for this tuple after subsitution
+        final Var[] var = new Var[patternTuple.size()] ;
 
+        prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
+        
         // Go directly to the tuple table
         Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
         
