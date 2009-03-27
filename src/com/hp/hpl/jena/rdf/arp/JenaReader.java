@@ -313,7 +313,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">
      * <td><CODE>embedding</CODE></td>
-     * <td>{@link ARP#setEmbedding}</td>
+     * <td>{@link ARPOptions#setEmbedding}</td>
      * <td>String or Boolean</td>
      * <td><CODE>true</CODE> or <CODE>false</CODE></td>
      * </tr>

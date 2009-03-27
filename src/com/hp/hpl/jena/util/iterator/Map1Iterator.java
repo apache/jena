@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Map1Iterator.java,v 1.13 2009-01-26 08:37:09 chris-dollin Exp $
+  $Id: Map1Iterator.java,v 1.14 2009-03-27 15:55:06 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -12,7 +12,7 @@ import java.util.Iterator;
     An iterator that consumes an underlying iterator and maps its results before
     delivering them; supports remove if the underlying iterator does.
     @author jjc + kers
-    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2009-01-26 08:37:09 $'
+    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2009-03-27 15:55:06 $'
 */
 
 public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>
@@ -22,8 +22,8 @@ public class Map1Iterator<From, To> extends NiceIterator<To> implements Closable
 	
         /**
          * Construct a list of the converted.
-         * @param m The conversion to apply.
-         * @param it the iterator of elements to convert
+         * @param map The conversion to apply.
+         * @param base the iterator of elements to convert
          */
 	public Map1Iterator( Map1<From, To> map, Iterator<From> base ) 
         {

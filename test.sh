@@ -8,7 +8,6 @@ LIBS="$(cat<<EOF
 arq.jar
 arq-extra.jar
 commons-logging-1.1.1.jar
-concurrent.jar
 icu4j_3_4.jar
 jena.jar
 json.jar
