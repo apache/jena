@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
@@ -75,6 +76,9 @@ public class Optimize implements Rewrite
             op = apply("Simplify", new TransformSimplify(), op) ;
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
+
+        // Prepare expressions.
+        OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         
         // Need to allow subsystems to play with this list.
         
@@ -91,11 +95,8 @@ public class Optimize implements Rewrite
             // This can be done too early (breaks up BGPs).
             op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
-        if ( TransformJoinStrategy.enabled )
-            op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
-        
-        if ( TransformPathFlattern.enabled )
-            op = apply("Path flattening", new TransformPathFlattern(), op) ;
+        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
+        op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark
         op = OpLabel.create("Transformed", op) ;
         return op ;

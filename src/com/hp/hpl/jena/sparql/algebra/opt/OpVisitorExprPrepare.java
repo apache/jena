@@ -1,47 +1,42 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.core.PathBlock;
-import com.hp.hpl.jena.sparql.path.PathCompiler;
-import com.hp.hpl.jena.sparql.path.PathLib;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.util.Context;
 
-public class TransformPathFlattern extends TransformCopy
+public class OpVisitorExprPrepare extends OpVisitorBase
 {
-    // This also turns off path flattening in the algebra generator.
-    // Note that the algebra generator always truns paths of exactly one predicate to triples.
-    
-//    public static boolean enabled = true ;
-    
-    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
-    private PathCompiler pathCompiler ;
+    final private Context context ;
 
-    public TransformPathFlattern() { this(new PathCompiler()) ; }
-    
-    public TransformPathFlattern(PathCompiler pathCompiler)
-    {
-        this.pathCompiler = pathCompiler ;
-    }
+    public OpVisitorExprPrepare(Context context)
+    { this.context = context ; }
     
     @Override
-    public Op transform(OpPath opPath)
+    public void visit(OpFilter opFilter)
     {
-        // Flatten down to triples where possible.
-        PathBlock pattern = pathCompiler.reduce(opPath.getTriplePath()) ;
-        // Any generated paths of exactly one to triple; convert to Op.
-        return PathLib.pathToTriples(pattern) ;
+        opFilter.getExprs().prepareExprs(context) ;
+    }
+    
+    // Assignment
+    // ProcEval
+    
+    @Override
+    public void visit(OpLeftJoin opLeftJoin)
+    {
+        if ( opLeftJoin.getExprs() != null )
+            opLeftJoin.getExprs().prepareExprs(context) ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

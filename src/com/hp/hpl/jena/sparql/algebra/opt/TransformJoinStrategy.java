@@ -11,14 +11,11 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
-import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.Context;
 
 /** Choose join strategy */ 
 public class TransformJoinStrategy extends TransformCopy
 {
-    public static boolean enabled = false ;
-    
     private final Context context ;
 
     // OpSequence - linear join
@@ -47,10 +44,6 @@ public class TransformJoinStrategy extends TransformCopy
     @Override
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
     { 
-      ExprList exprs = opLeftJoin.getExprs() ;
-      if ( exprs != null )
-          exprs.prepareExprs(context) ;
-
       // Test whether we can do an indexed substitute into the right if possible.
       boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
       
@@ -63,13 +56,12 @@ public class TransformJoinStrategy extends TransformCopy
           
           Op opLeft = opLeftJoin.getLeft() ;
           Op opRight = opLeftJoin.getRight() ;
-          if (exprs != null )
-              opRight = OpFilter.filter(exprs, opRight) ;
+          if (opLeftJoin.getExprs() != null )
+              opRight = OpFilter.filter(opLeftJoin.getExprs(), opRight) ;
           return new OpConditional(opLeft, opRight) ;
       }
 
       // Not index-able.
-      // Do it by sub-evaluation of left and right then left join.
       return opLeftJoin ;
     }
 }

@@ -9,9 +9,6 @@ package dev;
 public class Dev
 {
     
-    // *** Linearization as a transform.
-    //   TransformJoinStrategy - done, testing?
-    //   TransformPathFlattening - done, testing?
     //   TransformEqualityFilter ==> disjunctions as well.
     // Amalgamation: BGPs,Quads, Sequences.
     // E_Exists(Op).

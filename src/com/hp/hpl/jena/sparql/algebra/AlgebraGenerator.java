@@ -14,9 +14,11 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformPathFlattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify;
-import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.PathBlock;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -330,11 +332,6 @@ public class AlgebraGenerator
         if ( pathBlock.size() == 0 )
             return OpTable.unit() ;
 
-        if ( ! TransformPathFlattern.enabled )
-            // Flatten down to triples where possible.
-            // Else do in the optimizerrewrite suite.
-            pathBlock = pathCompiler.reduce(pathBlock) ;
-        
         // Always turns the most basic paths to triples.
         return PathLib.pathToTriples(pathBlock) ;
     }
