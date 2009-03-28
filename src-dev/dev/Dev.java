@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // Optimizer xfer
+    // Move TDB optimization framework to ARQ
     
     // TransformEqualityFilter ==> disjunctions as well.
     // Amalgamation: BGPs,Quads, Sequences.
