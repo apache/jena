@@ -9,7 +9,6 @@ package com.hp.hpl.jena.query;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -206,8 +205,6 @@ public class ARQ
             return ;
         initialized = true ;
         globalContext = defaultSettings() ;
-        // Markus Stocker 08/06/2007
-        Optimizer.enable() ;
     }
     
     /** Used by Jena assemblers for registration */ 

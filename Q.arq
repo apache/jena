@@ -1,3 +1,4 @@
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT DISTINCT ?member { ?list rdf:rest*/rdf:first ?member }
+SELECT DISTINCT ?member 
+{ ?list rdf:rest*/rdf:first ?member }
