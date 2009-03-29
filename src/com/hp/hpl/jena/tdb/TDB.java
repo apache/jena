@@ -21,9 +21,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
@@ -32,11 +30,9 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-
 
 public class TDB
 {
@@ -167,10 +163,6 @@ public class TDB
     {
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-        
-        if ( orig instanceof StageGenBasicPattern || orig instanceof StageGenOptimizedBasicPattern )
-            // ARQ base.  Cause chaos by using the new version.
-            orig = new StageGeneratorGeneric() ;
         
         // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used. This means that datasets of mixed graph
