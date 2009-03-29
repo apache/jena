@@ -13,9 +13,7 @@ public class Dev
     // Metadata
     // Build process
     
-    // To org.slf4j logging.
-    //   Jars.  ivy.xml.  POM.
-    // Inc. SDB.
+    // SDB - logging, extra jars.
     // atlas.
     
     // Explain.

@@ -7,6 +7,7 @@ ChangeLog for ARQ
 + Clearing up.
     junit used is now v4.5
     internal logging API is SLF4J (Jena uses Apache Commons Logging)
+    Jars needed:  slf4j-api-1.5.6.jar and (for log4j) slf4j-log4j12-1.5.6.jar
     
 + Optimizer framework rewritten (inc support for hooks used by TDB).
   New general purpose StateGenerator and memory-graphs statistics    
