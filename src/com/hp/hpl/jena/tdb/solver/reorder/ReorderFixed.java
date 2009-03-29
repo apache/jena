@@ -10,6 +10,7 @@ import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
 
 import com.hp.hpl.jena.sparql.sse.Item;
+
 import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher.Pattern;

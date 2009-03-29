@@ -157,10 +157,10 @@ public class StageGeneratorGeneric implements StageGenerator
         // Guesses at the selectivity of fixed, but unknown, values.
         // Choose these for large graphs because bad guesses don't harm small graphs.  
         
-        final long TERM_S ;
+        final long TERM_S ;         // Used for S ? ? if no stats
         final long TERM_TYPE ;
-        final long TERM_P ;
-        final long TERM_O ;
+        final long TERM_P ;         // Used for ? P ? if no stats
+        final long TERM_O ;         // Used for ? ? O if no stats
         final long N ;
         
         private GraphStatisticsHandler stats ;
@@ -173,7 +173,7 @@ public class StageGeneratorGeneric implements StageGenerator
             TERM_S = 10 ;       // Wild guess: "An average subject has 10 properties".
             TERM_P = N/10 ;     // Wild guess: "An average vocabulary has 10 properties"
             TERM_O = 20 ;       // Wild guess: "An average object is in 20 triples".
-            TERM_TYPE = N/10 ;  // Wild guess: "An average class has in 1/10 of the resources."
+            TERM_TYPE = N/10 ;  // Wild guess: "An average class has 1/10 of the resources."
         }
         
         @Override

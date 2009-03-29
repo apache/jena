@@ -6,19 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.ANY;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.BNODE;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.LITERAL;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.URI;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAny;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyBNode;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyLiteral;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyTerm;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyURI;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyVar;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isSet;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -26,12 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
 import lib.NotImplemented;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -42,6 +30,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
+
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
