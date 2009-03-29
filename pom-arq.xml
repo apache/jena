@@ -50,6 +50,12 @@
     </dependency>
 
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+    </dependency>
+
+    <dependency>
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
 
@@ -63,7 +69,26 @@
       <version>3.0.0</version>
 
     </dependency>
-	
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+
+    <!-- And a choice of logging implementation ... -->
+    <!--
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    -->
+
+    <!-- slf4j-log4j12 depends on log4j 1.2.13 -->
+    <!-- log4j 1.2.15 brings in dependences for 
+	 inaccessible things and causes warnings
+	 -->	
+
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>json-jena</artifactId>

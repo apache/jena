@@ -27,7 +27,7 @@ public class Dev
     // ----
     
     // Library
-    // TEMP : dump necessary copies inm c.h.h.h.j.sparql.lib until whole hting is sorted out.
+    // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.
     //   Combine StringUtils and StrUtils.
     //   Remove any copies (SDB)
 
