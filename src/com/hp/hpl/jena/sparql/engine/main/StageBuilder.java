@@ -54,6 +54,18 @@ public class StageBuilder
         return qIter ;
     }
     
+    // -------- Initialize
+    
+    public static void init()
+    {
+        StageGenerator gen = getGenerator(ARQ.getContext()) ;
+        if ( gen == null )
+        {
+            gen = standardGenerator() ;
+            setGenerator(ARQ.getContext(), gen) ;
+        }
+    }
+    
     // -------- Manage StageGenerator registration
     
     public static void setGenerator(Context context, StageGenerator builder)
@@ -70,13 +82,7 @@ public class StageBuilder
     
     public static StageGenerator getGenerator()
     {
-        StageGenerator gen = getGenerator(ARQ.getContext()) ;
-        if ( gen == null )
-        {
-            gen = standardGenerator() ;
-            setGenerator(ARQ.getContext(), gen) ;
-        }
-        return gen ;
+        return getGenerator(ARQ.getContext()) ;
     }
     
     public static StageGenerator standardGenerator()
