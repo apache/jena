@@ -1,0 +1,366 @@
+/*
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package atlas.io;
+
+import java.io.*;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.CharsetDecoder;
+
+import atlas.lib.AtlasException;
+import atlas.lib.Chars;
+import atlas.logging.Log;
+
+
+import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.shared.JenaException;
+
+/** Parsing-centric reader.
+ *  <p>Faster than using BufferedReader, sometimes a lot faster when
+ *  tokenizing is the critical performance point.
+ *  </p>
+ *  <p>Supports a line and column
+ *  count. Initially, line = 1, col = 1.  Columns go 1..N
+ *  </p>
+ *  This class is not thread safe.
+ * @see BufferingWriter
+ */ 
+
+
+public final class PeekReader extends Reader
+{
+    // Does buffering here instead of using a BufferedReader help?
+    // YES.  A lot (Java6).
+    
+    // Possibly because BufferedReader internally are synchronized, possibly
+    // because this is so stripped down the JIT does a better job.
+    // **** read(char[]) is a loop of single char operations.
+    
+    private static final int CB_SIZE       = 16 * 1024 ;
+    private static final int PUSHBACK_SIZE = 10 ; 
+    static final byte CHAR0 = (char)0 ;
+    static final int  EOF = -1 ;
+    static final int  UNSET = -2 ;
+    
+    private final char[] chars ;            // CharBuffer?
+    
+    private char[] pushbackChars ;
+    private int idxPushback ;
+    
+    private int buffLen ;
+    private int idx ;
+
+    private int currChar = UNSET ;
+
+    private Source source;
+    private long posn ;
+    
+    public static final int INIT_LINE = 1 ;
+    public static final int INIT_COL = 1 ;
+    
+    private long colNum ;
+    private long lineNum ;
+    
+    // Local adapter/encapsulation
+    private interface Source
+    { 
+        int fill(char[] array) ;
+        void close() ; 
+    }
+    
+    static final class SourceReader implements Source
+    {
+        final Reader reader ;
+        SourceReader(Reader r) { reader = r ; }
+        
+        @Override
+        public void close()
+        { 
+            try { reader.close() ; } catch (IOException ex) { exception(ex) ; } 
+        }
+        
+        @Override
+        public int fill(char[] array)
+        {
+            try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+        }
+    }
+    
+    static final class SourceChannel implements Source
+    {
+        final ReadableByteChannel channel ;
+        CharsetDecoder decoder = Chars.createDecoder() ;
+        SourceChannel(ReadableByteChannel r) { channel = r ; }
+        
+        @Override
+        public void close()
+        { 
+            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
+        }
+        
+        @Override
+        public int fill(char[] array)
+        {
+            // Encoding foo.
+//             Bytes
+//             
+//            ByteBuffer b = ByteBuffer.wrap(null) ;
+//            
+//            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+            return -1 ;
+        }
+    }
+    
+    public static PeekReader make(Reader r)
+    {
+        // StringReader special?
+        if ( r instanceof PeekReader )
+            return (PeekReader)r ;
+        if ( r instanceof BufferedReader )
+            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
+            
+        return new PeekReader(new SourceReader(r)) ;
+    }
+    
+    public static void exception(IOException ex)
+    { throw new AtlasException(ex) ; }
+
+    public static PeekReader makeUTF8(InputStream in) 
+    {
+        Reader r = FileUtils.asUTF8(in) ;
+        return make(r) ;
+    }
+    
+    private PeekReader(Source in)
+    {
+        this(in, CB_SIZE, PUSHBACK_SIZE) ;
+    }
+    
+    /** Testing */
+    public static PeekReader make(String x)         { return make(x, CB_SIZE) ; }
+    static PeekReader make(String x, int buffSize)
+    { return new PeekReader(new SourceReader(new StringReader(x)), buffSize, PUSHBACK_SIZE) ; }
+    
+    private PeekReader(Source in, int buffSize, int pushBackSize)
+    {
+        this.chars = new char[buffSize];
+        this.buffLen = 0 ;
+        this.idx = 0 ; 
+        
+        this.pushbackChars = new char[pushBackSize] ; 
+        this.idxPushback = -1 ;
+        
+        this.source = in;
+        this.colNum = INIT_COL ;
+        this.lineNum = INIT_LINE ;
+        this.posn = 0 ;
+        
+        // We start at charcater "-1", i.e. just before thr file starts.
+        // Advance always so that the peek character is valid (is character 0) 
+        // Returns the character before the file starts (i.e. UNSET).
+        
+        //OPPS - means we read char.
+//        oneChar() ;    
+//        if ( currChar == UNSET )
+//            setCurrChar(EOF) ;
+    }
+
+    public long getLineNum()            { return lineNum; }
+
+    public long getColNum()             { return colNum; }
+
+    public long getPosition()           { return posn; }
+
+    //---- Do not access currChar except with peekChar/setCurrChar.
+    public int peekChar()
+    { 
+        // If not started ... delayed initialization.
+        if ( currChar == UNSET )
+            init() ;
+        return currChar ;
+    }
+    
+    // And the correct way to read the currChar is to call peekChar.
+    private void setCurrChar(int ch)
+    {
+        currChar = ch ;
+    }
+    
+    public int readChar()               { return oneChar() ; }
+    
+    /** push back a character : does not alter underlying position, line or column counts*/  
+    public void pushbackChar(int ch)    { unreadChar(ch) ; }
+    
+    // Reader operations
+    @Override
+    public void close() throws IOException
+    {
+        source.close() ;
+    }
+
+    @Override
+    public int read() throws IOException
+    {
+        if ( eof() )
+            return EOF ;
+        int x = readChar() ;
+        return x ;
+    }
+    
+    @Override
+    public int read(char[] cbuf, int off, int len) throws IOException
+    {
+        if ( eof() )
+            return EOF ;
+        // Note - need to preserve line count, so single char ops are reasonably efficient.
+        for ( int i = 0 ; i < len ; i++ )
+        {
+            int ch = readChar() ;
+            if ( ch == EOF )
+                return (i==0)? EOF : i ;
+            cbuf[i+off] = (char)ch ;
+        }
+        return len ;
+    }
+
+    public final boolean eof()   { return peekChar() == EOF ; }
+
+    // ----------------
+    // The methods below are the only ones to manipulate the character buffers.
+    // Other methods may read the state of variables.
+    
+    private void unreadChar(int ch)
+    {
+        // The push back buffer is in the order where [0] is the oldest.
+        // Does not alter the line number, column number or position count. 
+        
+        if ( idxPushback >= pushbackChars.length )
+        {
+            // Enlarge pushback buffer.
+            char[] pushbackChars2 = new char[pushbackChars.length*2] ;
+            System.arraycopy(pushbackChars2, 0, pushbackChars2, 0, pushbackChars.length) ;
+            pushbackChars = pushbackChars2 ;
+            //throw new JenaException("Pushback buffer overflow") ;
+        }
+        if ( ch == EOF || ch == UNSET )
+            throw new JenaException("Illegal character to push back: "+ch) ;
+        
+        idxPushback++ ;
+        pushbackChars[idxPushback] = (char)ch ;
+        setCurrChar(ch) ;
+    }
+    
+    private void init()
+    {
+        fillAndAdvance() ; 
+        if ( currChar == UNSET )
+            setCurrChar(EOF) ;
+    }
+
+    // Ensure the buffer is not empty, or boolean eof is set
+    private void fillAndAdvance()
+    {
+        if ( idx >= buffLen )
+            // Points outsize the array.  Refill it 
+            fillArray() ;
+        
+        // Advance one character.
+        if ( buffLen >= 0 )
+        {
+            // Advance the lookahead character
+            setCurrChar(chars[idx]) ;
+            idx++ ;
+        }  
+        else
+            // Buffer empty, end of stream.
+            setCurrChar(EOF) ;
+    }
+
+    private int fillArray()
+    {
+        int x = source.fill(chars) ;
+        idx = 0 ;
+        buffLen = x ;   // Maybe -1
+        return x ;
+    }
+    
+    // Invariants.
+    // currChar is either chars[idx-1] or pushbackChars[idxPushback]
+    private int oneChar()
+    {
+        int ch = peekChar() ;
+        if ( ch == EOF )
+            return EOF ;
+        
+        if ( idxPushback >= 0 )
+        {
+            replayPushback() ;
+            return ch ;
+        }
+
+        fillAndAdvance() ;
+        posn++ ;
+        
+        if (ch == '\n')
+        {
+            lineNum++;
+            colNum = INIT_COL ;
+        } 
+        else
+            colNum++;
+        return ch ;
+    }
+
+    private void replayPushback()
+    {
+        idxPushback-- ;
+        if ( idxPushback >=0 )
+        {
+            char ch2 = pushbackChars[idxPushback] ;
+            setCurrChar(ch2) ;
+            return ;
+        }
+        
+        // Push back buffer empty.
+        // Next char is from chars[] which must have yielded a
+        // characater and idx >= 1 or the stream was zero chars (idx <= 0)
+        int nextCurrChar = EOF ;
+        
+        if ( idx-1 >= 0 )
+            // Had been a read.
+            nextCurrChar = chars[idx-1] ;
+        setCurrChar(nextCurrChar) ;
+    }
+}
+
+
+/*
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
