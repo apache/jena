@@ -6,7 +6,6 @@
 
 package tdb;
 
-import io.IndentedWriter;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
+import atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.sse.Item;

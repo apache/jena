@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.index.btree;
 
+import atlas.test.BaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;

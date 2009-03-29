@@ -8,7 +8,8 @@ package tdb;
 
 import java.io.PrintStream;
 
-import junit.TextListener2;
+import atlas.junit.TextListener2;
+
 import junit.framework.TestSuite;
 
 import org.junit.runner.JUnitCore;

@@ -6,15 +6,18 @@
 
 package test;
 
-import static lib.RandomLib.random;
-import static test.Gen.permute;
-import static test.Gen.rand;
-import static test.Gen.strings;
+import static atlas.lib.RandomLib.random;
+import static atlas.test.Gen.permute;
+import static atlas.test.Gen.rand;
+import static atlas.test.Gen.strings;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import atlas.test.ExecGenerator;
+import atlas.test.RepeatExecution;
 
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.index.ext.ExtHashTestBase;
@@ -22,7 +25,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 import tdb.Cmd;
-import test.RepeatExecution;
 
 public abstract class ExtHashRun
 {

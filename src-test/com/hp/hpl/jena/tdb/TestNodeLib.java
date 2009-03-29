@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.tdb;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.*;
+import atlas.junit.TestBase;
 
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-import junit.TestBase;
 import org.junit.Test;
 
 public class TestNodeLib extends TestBase

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import lib.BitsLong;
+import atlas.lib.BitsLong;
 
 public class IntegerNode
 {

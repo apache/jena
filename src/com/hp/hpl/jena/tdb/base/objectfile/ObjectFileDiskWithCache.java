@@ -11,8 +11,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.Bytes;
-import lib.Pair;
+import atlas.lib.Bytes;
+import atlas.lib.Pair;
+
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.block.BlockException;

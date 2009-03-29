@@ -8,6 +8,8 @@ package test;
 
 import java.util.List;
 
+import atlas.test.ExecGenerator;
+
 import org.apache.log4j.Level;
 import tdb.Cmd;
 

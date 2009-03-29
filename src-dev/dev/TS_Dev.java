@@ -6,7 +6,7 @@
 
 package dev;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;

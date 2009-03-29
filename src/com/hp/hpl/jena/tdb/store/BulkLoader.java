@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import lib.ArrayUtils;
-import lib.MapUtils;
-import lib.Tuple;
+import atlas.lib.ArrayUtils;
+import atlas.lib.MapUtils;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

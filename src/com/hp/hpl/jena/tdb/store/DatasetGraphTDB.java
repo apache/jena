@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.Iterator;
 
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;

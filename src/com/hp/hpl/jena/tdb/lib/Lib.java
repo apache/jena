@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import iterator.Iter;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+import atlas.iterator.Iter;
 
 public class Lib
 {

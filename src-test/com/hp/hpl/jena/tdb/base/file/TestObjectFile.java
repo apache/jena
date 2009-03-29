@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import static lib.FileOps.clearDirectory;
+import static atlas.lib.FileOps.clearDirectory;
+import atlas.test.BaseTest;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;

@@ -6,14 +6,17 @@
 
 package test;
 
-import static test.Gen.permute;
-import static test.Gen.rand;
-import static test.Gen.strings;
+import static atlas.test.Gen.permute;
+import static atlas.test.Gen.rand;
+import static atlas.test.Gen.strings;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import atlas.test.ExecGenerator;
+import atlas.test.RepeatExecution;
 
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexMaker;

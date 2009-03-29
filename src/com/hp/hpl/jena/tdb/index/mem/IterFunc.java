@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.tdb.index.mem;
 
-import iterator.IteratorConcat;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import iterator.NullIterator;
+import atlas.iterator.IteratorConcat;
+import atlas.iterator.NullIterator;
+import atlas.lib.DS;
 
-import lib.DS;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
+import static atlas.lib.Lib.decodeIndex;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
-import static lib.Lib.decodeIndex;
 import static java.lang.String.format;
-import io.IndentedWriter;
 
 import java.nio.ByteBuffer;
+
+import atlas.io.IndentedWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

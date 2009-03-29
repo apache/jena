@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import lib.StrUtils;
+import atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;

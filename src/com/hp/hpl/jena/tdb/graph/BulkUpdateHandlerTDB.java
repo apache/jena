@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Iterator;
 
-import lib.Tuple;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.GraphEvents;

@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
-import lib.Sink;
+import atlas.event.Event;
+import atlas.event.EventListener;
+import atlas.event.EventManager;
+import atlas.lib.Sink;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 
-import event.Event;
-import event.EventListener;
-import event.EventManager;
 
 public abstract class SinkToGraph<T> implements Sink<T>
 {

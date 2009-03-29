@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import logging.Log;
+import atlas.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

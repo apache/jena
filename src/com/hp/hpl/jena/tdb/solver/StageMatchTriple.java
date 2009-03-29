@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import iterator.Iter;
-import iterator.NullIterator;
-import iterator.RepeatApplyIterator;
-import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
 
-import lib.Action;
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.iterator.NullIterator;
+import atlas.iterator.RepeatApplyIterator;
+import atlas.iterator.Transform;
+import atlas.lib.Action;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 

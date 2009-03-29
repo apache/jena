@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import lib.FileOps;
+import atlas.lib.FileOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

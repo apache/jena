@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import iterator.Iter;
 
 import java.util.Iterator;
 import java.util.Set;
 
-import lib.ColumnMap;
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.lib.ColumnMap;
+import atlas.lib.Tuple;
+import atlas.test.BaseTest;
+
 import org.junit.Test;
 import tdb.Cmd;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;

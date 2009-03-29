@@ -10,9 +10,10 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
 import static java.lang.String.format;
 
-import iterator.Iter;
 
 import java.util.Iterator;
+
+import atlas.iterator.Iter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

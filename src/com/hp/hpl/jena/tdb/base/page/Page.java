@@ -8,7 +8,8 @@ package com.hp.hpl.jena.tdb.base.page;
 
 import java.nio.ByteBuffer;
 
-import io.Printable;
+import atlas.io.Printable;
+
 
 /** Abstract of a bytebuffer, a block type, an id and a count */
 public interface Page extends Printable

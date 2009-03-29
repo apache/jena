@@ -8,13 +8,13 @@ package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.index.IndexTestLib.*;
+import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
 import org.junit.After;
 import org.junit.Test;
-import test.BaseTest;
 
 //import com.hp.hpl.jena.tdb.base.record.RecordLib;
 

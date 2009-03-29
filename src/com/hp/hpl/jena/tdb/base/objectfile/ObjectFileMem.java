@@ -10,9 +10,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import atlas.lib.Bytes;
+
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-import lib.Bytes;
 
 /** A file for writing serialized objects to
  *  The file is currently "read/append"

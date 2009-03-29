@@ -9,7 +9,8 @@ package dev.opt;
 //import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import java.util.*;
 
-import lib.SetUtils;
+import atlas.lib.SetUtils;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

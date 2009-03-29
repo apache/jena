@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import atlas.test.BaseTest;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -16,7 +17,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
-import test.BaseTest;
 
 public class TestBulkUpdateTDB extends BaseTest
 {

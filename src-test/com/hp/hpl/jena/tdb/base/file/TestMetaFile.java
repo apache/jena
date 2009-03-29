@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.File;
 
+import atlas.test.BaseTest;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 

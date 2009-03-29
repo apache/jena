@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import iterator.NullIterator;
-import iterator.SingletonIterator;
 
 import java.util.Iterator;
 
-import lib.ColumnMap;
-import lib.InternalError;
-import lib.Tuple;
+import atlas.iterator.NullIterator;
+import atlas.iterator.SingletonIterator;
+import atlas.lib.ColumnMap;
+import atlas.lib.InternalErrorException;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.tdb.index.mem.Index;
 import com.hp.hpl.jena.tdb.index.mem.Index3;
@@ -81,7 +82,7 @@ public class TupleIndexMem implements TupleIndex
             x3 = null ;
         
         if ( x1 == null )
-            throw new InternalError("TupleIndexMem.find: no first index") ;
+            throw new InternalErrorException("TupleIndexMem.find: no first index") ;
         
         if ( x2 == null )
         {

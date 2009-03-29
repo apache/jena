@@ -29,7 +29,6 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
-import io.PeekReader;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -39,12 +38,13 @@ import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import lib.CacheSetLRU;
-import lib.InternalError;
-import lib.SinkNull;
-import lib.Sink;
-import lib.Tuple;
-import logging.Log;
+import atlas.event.Event;
+import atlas.event.EventManager;
+import atlas.event.EventType;
+import atlas.io.PeekReader;
+import atlas.lib.*;
+import atlas.logging.Log;
+
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -59,9 +59,6 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.SyntaxError;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-import event.Event;
-import event.EventManager;
-import event.EventType;
 
 /** A fast tuple-of-nodes reader (currently, triples only)
  */
@@ -172,7 +169,7 @@ public final class NodeTupleReader
                 } catch (InterruptedException ex)
                 {
                     ex.printStackTrace();
-                    throw new InternalError("NodeTupleReader: InterruptedException") ;
+                    throw new InternalErrorException("NodeTupleReader: InterruptedException") ;
                 }
             }
              
@@ -210,7 +207,7 @@ public final class NodeTupleReader
         } catch (InterruptedException ex)
         {
             ex.printStackTrace();
-            throw new InternalError("NodeTupleReader: InterruptedException") ;
+            throw new InternalErrorException("NodeTupleReader: InterruptedException") ;
         }
     }
 

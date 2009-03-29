@@ -19,13 +19,13 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 
-import lib.ColumnMap;
-import lib.SinkCounting;
-import lib.Tuple;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
+import atlas.lib.ColumnMap;
+import atlas.lib.SinkCounting;
+import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;

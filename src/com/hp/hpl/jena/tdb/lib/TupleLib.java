@@ -7,14 +7,15 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.Iterator;
 
-import lib.Bytes;
-import lib.ColumnMap;
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Bytes;
+import atlas.lib.ColumnMap;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

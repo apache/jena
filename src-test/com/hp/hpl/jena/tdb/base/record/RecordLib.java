@@ -6,17 +6,18 @@
 
 package com.hp.hpl.jena.tdb.base.record;
 
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Bytes;
+
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
-import lib.Bytes;
 
 
 /** Record support operations (mainly for testing using ints) */

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

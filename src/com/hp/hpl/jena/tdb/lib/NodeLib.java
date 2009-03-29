@@ -7,8 +7,6 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-import iterator.Iter;
-import iterator.Transform;
 
 import java.io.UnsupportedEncodingException;
 import java.security.DigestException;
@@ -16,8 +14,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 
-import lib.Bytes;
-import lib.StrUtils;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Bytes;
+import atlas.lib.StrUtils;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;

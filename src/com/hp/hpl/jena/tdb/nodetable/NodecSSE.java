@@ -8,8 +8,9 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.nio.ByteBuffer;
 
-import lib.Bytes;
-import lib.StrUtils;
+import atlas.lib.Bytes;
+import atlas.lib.StrUtils;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;

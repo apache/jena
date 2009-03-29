@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
-import lib.StrUtils;
+import atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.BasicPattern;

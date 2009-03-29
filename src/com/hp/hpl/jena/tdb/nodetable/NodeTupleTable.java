@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 import static java.lang.String.format;
-import iterator.NullIterator;
 
 import java.util.Iterator;
 
-import lib.Tuple;
+import atlas.iterator.NullIterator;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 

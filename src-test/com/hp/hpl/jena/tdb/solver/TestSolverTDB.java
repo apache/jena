@@ -6,19 +6,20 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import iterator.Iter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import atlas.iterator.Iter;
+import atlas.junit.TestBase;
+import atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
-import junit.TestBase;
-import lib.StrUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

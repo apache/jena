@@ -6,8 +6,8 @@
 
 package dev;
 
+import static atlas.test.Gen.strings;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
-import static test.Gen.strings;
 import org.apache.log4j.Level;
 
 import com.hp.hpl.jena.graph.Node;

@@ -10,7 +10,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import lib.DS;
+import atlas.lib.DS;
+
 
 
 public final class Index<K, V> 

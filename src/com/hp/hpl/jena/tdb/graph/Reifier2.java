@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import iterator.Filter;
-import iterator.Iter;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import atlas.iterator.Filter;
+import atlas.iterator.Iter;
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;

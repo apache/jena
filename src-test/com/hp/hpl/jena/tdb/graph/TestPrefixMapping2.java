@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import atlas.test.BaseTest;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 

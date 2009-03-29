@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.TextListener2;
 import junit.framework.TestCase;
-import lib.FileOps;
-import lib.cache.CacheNG;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import arq.cmd.CmdUtils;
+import atlas.junit.TextListener2;
+import atlas.lib.FileOps;
+import atlas.lib.cache.CacheNG;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;

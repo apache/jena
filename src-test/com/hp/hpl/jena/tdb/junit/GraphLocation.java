@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import iterator.Iter;
 
 import java.util.Iterator;
 import java.util.List;
 
-import lib.FileOps;
+import atlas.iterator.Iter;
+import atlas.lib.FileOps;
+
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

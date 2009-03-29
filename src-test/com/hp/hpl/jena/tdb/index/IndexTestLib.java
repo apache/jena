@@ -6,26 +6,27 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import static atlas.lib.ListUtils.asList;
+import static atlas.lib.ListUtils.unique;
+import static atlas.lib.RandomLib.random;
+import static atlas.test.Gen.permute;
+import static atlas.test.Gen.rand;
+import static atlas.test.Gen.strings;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
 import static java.lang.String.format;
-import static lib.ListUtils.asList;
-import static lib.ListUtils.unique;
-import static lib.RandomLib.random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static test.Gen.permute;
-import static test.Gen.rand;
-import static test.Gen.strings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
+
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;

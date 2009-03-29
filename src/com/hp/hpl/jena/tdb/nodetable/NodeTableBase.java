@@ -9,9 +9,9 @@ package com.hp.hpl.jena.tdb.nodetable;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash;
-import lib.Cache;
-import lib.CacheFactory;
-import lib.CacheSetLRU;
+import atlas.lib.Cache;
+import atlas.lib.CacheFactory;
+import atlas.lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
 

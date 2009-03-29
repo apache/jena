@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import iterator.Iter;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import atlas.iterator.Iter;
+import atlas.test.BaseTest;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

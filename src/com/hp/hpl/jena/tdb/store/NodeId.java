@@ -9,8 +9,9 @@ package com.hp.hpl.jena.tdb.store;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 
-import lib.BitsLong;
-import lib.Bytes;
+import atlas.lib.BitsLong;
+import atlas.lib.Bytes;
+
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;

@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.index.mem;
 
-import iterator.IteratorConcat;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import lib.DS;
+import atlas.iterator.IteratorConcat;
+import atlas.lib.DS;
+
 
 public class IndexMultiValue<K, V>
 {

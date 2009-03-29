@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.base.buffer;
 
 import java.nio.ByteBuffer;
 
+import atlas.test.BaseTest;
+
 import com.hp.hpl.jena.tdb.base.buffer.BufferException;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -15,7 +17,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import test.BaseTest;
 
 public class TestPtrBuffer extends BaseTest
 {

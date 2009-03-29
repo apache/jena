@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Graph;

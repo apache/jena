@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.solver;
 import java.util.HashMap;
 import java.util.Map;
 
-import lib.Map2;
+import atlas.lib.Map2;
+
 
 import com.hp.hpl.jena.sparql.core.Var;
 

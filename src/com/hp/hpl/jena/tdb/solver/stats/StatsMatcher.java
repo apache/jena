@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lib.NotImplemented;
+import atlas.lib.NotImplemented;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

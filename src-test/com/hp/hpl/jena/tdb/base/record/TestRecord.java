@@ -8,11 +8,11 @@ package com.hp.hpl.jena.tdb.base.record;
 
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.recordToInt;
+import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 import org.junit.Test;
-import test.BaseTest;
 
 public class TestRecord extends BaseTest
 {

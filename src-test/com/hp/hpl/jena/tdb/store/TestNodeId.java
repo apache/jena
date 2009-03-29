@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
 import org.junit.Test;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;

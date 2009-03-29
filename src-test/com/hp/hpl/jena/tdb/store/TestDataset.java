@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import atlas.test.BaseTest;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import junit.TestBase;
+import atlas.junit.TestBase;
 import org.junit.Test;
 
 public class TestStringAbbrev extends TestBase

@@ -11,10 +11,11 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import atlas.lib.BitsInt;
+import atlas.lib.BitsLong;
+
 import com.hp.hpl.jena.tdb.TDBException;
 
-import lib.BitsInt;
-import lib.BitsLong;
 
 public class DateTimeNode
 {

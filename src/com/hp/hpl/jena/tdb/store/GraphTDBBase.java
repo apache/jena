@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import iterator.Iter;
 
 import java.util.Iterator;
+
+import atlas.iterator.Iter;
 
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 

@@ -7,16 +7,17 @@
 package com.hp.hpl.jena.tdb.index.ext;
 
 import static java.lang.String.format;
-import io.IndentedLineBuffer;
-import io.IndentedWriter;
 
 import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import lib.BitsLong;
-import lib.Bytes;
+import atlas.io.IndentedLineBuffer;
+import atlas.io.IndentedWriter;
+import atlas.lib.BitsLong;
+import atlas.lib.Bytes;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

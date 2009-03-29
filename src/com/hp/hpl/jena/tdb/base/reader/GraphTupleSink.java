@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.reader;
 
-import lib.Sink;
-import lib.Tuple;
+import atlas.lib.Sink;
+import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -24,7 +24,7 @@ final class GraphTupleSink extends SinkToGraph<Tuple<Node>> implements Sink<Tupl
     public void send(Tuple<Node> tuple)
     {
         if ( tuple.size() != 3 ) 
-            throw new lib.InternalError("Tuple not of length 3 for a triple") ;
+            throw new atlas.lib.InternalErrorException("Tuple not of length 3 for a triple") ;
         Triple t = new Triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
         graph.add(t) ;
     }

@@ -8,13 +8,14 @@ package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import static java.lang.String.format;
-import iterator.*;
 
 import java.util.Iterator;
 
-import lib.Bytes;
-import lib.ColumnMap;
-import lib.Tuple;
+import atlas.iterator.*;
+import atlas.lib.Bytes;
+import atlas.lib.ColumnMap;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;

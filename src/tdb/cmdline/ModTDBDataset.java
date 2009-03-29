@@ -9,12 +9,12 @@ package tdb.cmdline;
 import java.util.ArrayList;
 import java.util.List;
 
-import logging.Log;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModDataset;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;

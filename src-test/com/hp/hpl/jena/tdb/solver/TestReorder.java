@@ -9,8 +9,8 @@ package com.hp.hpl.jena.tdb.solver;
 import static com.hp.hpl.jena.tdb.solver.TestSolverLib.bgp;
 import static com.hp.hpl.jena.tdb.solver.TestSolverLib.matcher;
 import static com.hp.hpl.jena.tdb.solver.TestSolverLib.triple;
+import atlas.test.BaseTest;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;

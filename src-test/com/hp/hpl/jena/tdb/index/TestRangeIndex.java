@@ -15,9 +15,10 @@ import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
 
 import java.util.List;
 
+import atlas.test.BaseTest;
+
 import org.junit.After;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 

@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import atlas.test.BaseTest;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

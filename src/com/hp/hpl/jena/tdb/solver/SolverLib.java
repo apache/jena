@@ -7,13 +7,14 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
 
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

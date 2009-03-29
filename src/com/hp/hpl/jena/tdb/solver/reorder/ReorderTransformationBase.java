@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
+import static atlas.iterator.Iter.map;
+import static atlas.iterator.Iter.toList;
 import static com.hp.hpl.jena.tdb.TDB.logExec;
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
-import static iterator.Iter.map;
-import static iterator.Iter.toList;
-import iterator.AccString;
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lib.StrUtils;
+import atlas.iterator.AccString;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.StrUtils;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

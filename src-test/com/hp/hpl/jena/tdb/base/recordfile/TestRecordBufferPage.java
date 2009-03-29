@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
+import atlas.test.BaseTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;

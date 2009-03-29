@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb;
 
-import iterator.TS_Iterator;
-import lib.TS_Lib;
+import atlas.iterator.TS_Iterator;
+import atlas.lib.TS_Lib;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;

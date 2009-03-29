@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import lib.ColumnMap;
-import lib.Tuple;
+import atlas.lib.ColumnMap;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;

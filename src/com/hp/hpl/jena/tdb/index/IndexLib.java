@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import iterator.Iter;
-import iterator.Transform;
 
 import java.util.Iterator;
 
-import lib.Tuple;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Tuple;
+
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.lib.NodeLib;

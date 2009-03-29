@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import io.IndentedWriter;
 
 import java.nio.ByteBuffer;
+
+import atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.page.Page;

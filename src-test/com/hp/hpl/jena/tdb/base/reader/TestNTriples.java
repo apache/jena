@@ -8,10 +8,11 @@ package com.hp.hpl.jena.tdb.base.reader;
 
 import java.io.StringReader;
 
-import lib.Tuple;
+import atlas.lib.Tuple;
+import atlas.test.BaseTest;
+
 
 import org.junit.Test;
-import test.BaseTest;
 
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;

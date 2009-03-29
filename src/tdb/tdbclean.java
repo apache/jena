@@ -6,9 +6,9 @@
 
 package tdb;
 
-import lib.FileOps;
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
+import atlas.lib.FileOps;
 
 public class tdbclean extends CmdTDB
 {

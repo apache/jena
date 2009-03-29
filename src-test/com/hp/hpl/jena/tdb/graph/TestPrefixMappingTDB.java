@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import lib.FileOps;
+import atlas.lib.FileOps;
 import org.junit.Test;
 
 import com.hp.hpl.jena.shared.PrefixMapping;

@@ -12,11 +12,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.SinkNull;
-import lib.Tuple;
 
 import arq.cmd.CmdUtils;
 import arq.cmdline.CmdARQ;
+import atlas.lib.SinkNull;
+import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;

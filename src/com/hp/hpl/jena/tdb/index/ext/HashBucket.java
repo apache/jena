@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index.ext;
 
-import static lib.Lib.decodeIndex;
+import static atlas.lib.Lib.decodeIndex;
 
 import java.nio.ByteBuffer;
 

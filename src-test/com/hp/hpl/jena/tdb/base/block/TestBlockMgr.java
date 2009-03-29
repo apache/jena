@@ -8,11 +8,12 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
 
+import atlas.test.BaseTest;
+
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 
 import org.junit.Test;
-import test.BaseTest;
 
 public class TestBlockMgr extends BaseTest
 {

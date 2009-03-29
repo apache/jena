@@ -16,7 +16,7 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-import lib.ColumnMap;
+import atlas.lib.ColumnMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

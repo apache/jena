@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
+import static atlas.lib.Lib.encodeIndex;
 import static java.lang.String.format;
-import static lib.Lib.encodeIndex;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
