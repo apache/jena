@@ -10,10 +10,8 @@ public class Dev
 {
     // To ARQ:
     //   NodeConst
-    //   c.h.h.j.tdb.lib.Lib
     //   Atlas? Iterator.
     //   Explain, and explain logger.
-    // 
     
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
