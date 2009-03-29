@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -30,7 +30,7 @@ import static com.hp.hpl.jena.sparql.util.StringUtils.printAbbrev;
 public abstract class ReorderTransformationBase implements ReorderTransformation
 {
     protected static final boolean DEBUG = false ;  
-    static public final Log log = LogFactory.getLog(ReorderTransformationBase.class) ;
+    static public final Logger log = LoggerFactory.getLogger(ReorderTransformationBase.class) ;
     
     //@Override // Java5-ism
     public BasicPattern reorder(BasicPattern pattern)

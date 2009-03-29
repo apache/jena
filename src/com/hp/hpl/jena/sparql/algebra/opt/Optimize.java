@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.query.ARQ;
 
 public class Optimize implements Rewrite
 {
-    static private Log log = LogFactory.getLog(Optimize.class) ;
+    static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
     // Optimize at query execution time.
 
     // A small (one slot) registry to allow plugging in an alternative optimizer

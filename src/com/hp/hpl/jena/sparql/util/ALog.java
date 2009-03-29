@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /** Convenience logging when it's just the odd log message.  Classes don't need to import
  *  the logging system, or have excessive pirvate static loggers for non-performance
@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class ALog
 {
+    // See also atlas.lib.Log....
     static public void info(Object caller, String msg)
     {
         info(caller.getClass(), msg) ;
@@ -22,7 +23,7 @@ public class ALog
 
     static public void info(Class<?> cls, String msg)
     {
-        LogFactory.getLog(cls).info(msg) ;
+        LoggerFactory.getLogger(cls).info(msg) ;
     }
 
     static public void info(Object caller, String msg, Throwable th)
@@ -32,7 +33,7 @@ public class ALog
 
     static public void info(Class<?> cls, String msg, Throwable th)
     {
-        LogFactory.getLog(cls).warn(msg, th) ;
+        LoggerFactory.getLogger(cls).warn(msg, th) ;
     }
 
     static public void warn(Object caller, String msg)
@@ -42,7 +43,7 @@ public class ALog
 
     static public void warn(Class<?> cls, String msg)
     {
-        LogFactory.getLog(cls).warn(msg) ;
+        LoggerFactory.getLogger(cls).warn(msg) ;
     }
 
     static public void warn(Object caller, String msg, Throwable th)
@@ -52,7 +53,7 @@ public class ALog
 
     static public void warn(Class<?> cls, String msg, Throwable th)
     {
-        LogFactory.getLog(cls).warn(msg, th) ;
+        LoggerFactory.getLogger(cls).warn(msg, th) ;
     }
 
     static public void fatal(Object caller, String msg)
@@ -62,7 +63,7 @@ public class ALog
 
     static public void fatal(Class<?> cls, String msg)
     {
-        LogFactory.getLog(cls).fatal(msg) ;
+        LoggerFactory.getLogger(cls).error(msg) ;
     }
 
     static public void fatal(Object caller, String msg, Throwable th)
@@ -72,7 +73,7 @@ public class ALog
 
     static public void fatal(Class<?> cls, String msg, Throwable th)
     {
-        LogFactory.getLog(cls).fatal(msg, th) ;
+        LoggerFactory.getLogger(cls).error(msg, th) ;
     }
     
     /** Turn on a logger (all levels). 

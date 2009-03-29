@@ -9,8 +9,8 @@ package dev.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 
 public class GraphSPARQL extends GraphBase implements Graph
 {
-    private static Log log = LogFactory.getLog(GraphSPARQL.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphSPARQL.class) ;
 
     private DatasetGraph dataset ;
     private QueryEngineFactory factory ;

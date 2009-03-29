@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -20,13 +20,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 public class QueryIteratorLogging extends QueryIteratorWrapper
 {
-    private Log log = null ;  
+    private Logger log = null ;  
     private boolean logging = true ;        // Fine grain control of logging.
 
     public QueryIteratorLogging(QueryIterator input)
     {
         super(input) ;
-        log = LogFactory.getLog(input.getClass()) ;
+        log = LoggerFactory.getLogger(input.getClass()) ;
     }
     
     @Override

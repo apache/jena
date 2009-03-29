@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class Explain
 {
-    static public final Log    logExec    = LogFactory.getLog("com.hp.hpl.jena.tdb.exec") ;
+    static public final Logger    logExec    = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
     static public boolean      explaining = false ;
     public static final Symbol symLogExec = ARQConstants.allocSymbol("logExec") ;
     

@@ -11,8 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 public class PathEval
 {
-    static private Log log = LogFactory.getLog(PathEval.class) ; 
+    static private Logger log = LoggerFactory.getLogger(PathEval.class) ; 
     
     static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {

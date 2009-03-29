@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public final class StatsMatcher
 {
-    private static Log log = LogFactory.getLog(StatsMatcher.class) ; 
+    private static Logger log = LoggerFactory.getLogger(StatsMatcher.class) ; 
     public static final String STATS    = "stats" ; 
     public static final String META     = "meta" ; 
     public static final String COUNT    = "count" ;

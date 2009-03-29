@@ -4,6 +4,13 @@ ChangeLog for ARQ
 
 ==== ARQ 2.7
 
++ Clearing up.
+    junit used is now v4.5
+    internal logging API is SLF4J (Jena uses Apache Commons Logging)
+    
++ Optimizer framework rewritten (inc support for hooks used by TDB).
+  New general purpose StateGenerator and memory-graphs statistics    
+
 + Fix parsing of very large INSERT DATA requests (stack could overflow).
 
 + The IndexBuilder constructors taking a directory name as a string would 

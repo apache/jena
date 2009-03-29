@@ -6,8 +6,8 @@
 
 package dev.graph;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class GraphSPARQLService extends GraphBase implements Graph
 {
-    private static Log log = LogFactory.getLog(GraphSPARQLService.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphSPARQLService.class) ;
 
     private String serviceURI ;
     private String graphIRI = null ;

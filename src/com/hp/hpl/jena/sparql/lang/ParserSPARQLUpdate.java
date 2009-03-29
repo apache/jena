@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -44,7 +44,7 @@ public class ParserSPARQLUpdate
     public UpdateRequest parse(UpdateRequest update, Reader r)
     {
         if ( r instanceof FileReader )
-            LogFactory.getLog(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
+            LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
         return _parse(update, r) ;
     }
     
