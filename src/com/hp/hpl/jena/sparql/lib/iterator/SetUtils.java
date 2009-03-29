@@ -1,47 +1,56 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public class SetUtils
 {
-    boolean bool = false ;
+     // Set specific operations
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
+    {
+        Set<T> results = new HashSet<T>(setLeft) ;
+        results.retainAll(setRight) ;
+        return results ;
+    }
 
-    @Override
-    public boolean isBoolean()  { return true ; }
+    public static <T> boolean intersectionP(Set<? extends T> s1, Set<? extends T> s2)
+    {
+        for( T elt : s1 )
+        {
+            if ( s2.contains(elt) ) 
+                return true ;
+        }
+        return false ;
+    }
 
-    @Override
-    public boolean getBoolean() { return bool ; }
+    public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2)
+    {
+        Set<T> s3 = new HashSet<T>(s1) ;
+        s3.addAll(s2) ;
+        return s3 ;
+    }
 
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    /** Return is s1 \ s2 */
+
+    public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2)
+    {
+        Set<T> s3 = new HashSet<T>(s1) ;
+        s3.removeAll(s2) ;
+        return s3 ;
+    }
 }
 
+
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

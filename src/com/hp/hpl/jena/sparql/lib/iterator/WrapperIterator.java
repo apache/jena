@@ -1,47 +1,40 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public class WrapperIterator<T> implements Iterator<T>
 {
-    boolean bool = false ;
-    
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    private final Iterator<T> iter ;
 
-    @Override
-    public boolean isBoolean()  { return true ; }
+    public WrapperIterator(Iterator<T> iter) { this.iter = iter ; }
+    
+    //@Override
+    public boolean hasNext()
+    {
+        return iter.hasNext() ;
+    }
 
-    @Override
-    public boolean getBoolean() { return bool ; }
+    //@Override
+    public T next()
+    {
+        return iter.next() ;
+    }
 
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    //@Override
+    public void remove()
+    { iter.remove() ; }
+
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

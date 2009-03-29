@@ -1,47 +1,37 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.lib.Action;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-
-public class NodeValueBoolean extends NodeValue
+public class ActionPrint <T extends Printable> implements Action<T> 
 {
-    boolean bool = false ;
+    private boolean first = true ;
+    private IndentedWriter out ;
+    private String sep ; 
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
-
-    @Override
-    public boolean isBoolean()  { return true ; }
-
-    @Override
-    public boolean getBoolean() { return bool ; }
-
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
+    public ActionPrint(IndentedWriter out, String sep) { this.out = out ; this.sep = sep ; }
+    public ActionPrint(IndentedWriter out) { this(out, " ") ; }
     
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
-}
+    public void apply(Printable item)
+    {
+        if ( ! first && sep != null )
+            out.print(sep) ;
+        first = false ;
+        item.output(out) ;
+    }
+} 
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

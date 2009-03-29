@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.*;
@@ -93,11 +94,8 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
     
-    public static final Node nodeIntZERO = Node.createLiteral("0", null, XSDDatatype.XSDinteger) ;
-    public static final NodeValue nvZERO = NodeValue.makeNode(nodeIntZERO) ;
-    
-    public static final Node nodeIntONE = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
-    public static final NodeValue nvONE = NodeValue.makeNode(nodeIntONE) ;
+    public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
+    public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     
     // Use NodeValue.toNode(NodeValue) 
 //    public static Node asNode(NodeValue nv)

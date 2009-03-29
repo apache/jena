@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -43,7 +45,7 @@ public class AggCountDistinct implements AggregateFactory
         }
         
         @Override
-        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; }
+        public Node getValueEmpty()     { return NodeConst.nodeZero ; }
 
         public boolean equalsAsExpr(Aggregator other)
         {

@@ -1,47 +1,56 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.engine.optimizer;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintUtils;
+import com.hp.hpl.jena.sparql.util.Printable;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public class Pattern implements Printable
 {
-    boolean bool = false ;
+    Item subjItem ;
+    Item predItem ;
+    Item objItem ;
+    double weight ; 
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
-
-    @Override
-    public boolean isBoolean()  { return true ; }
-
-    @Override
-    public boolean getBoolean() { return bool ; }
-
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
+    public Pattern(double w, Item subj, Item pred, Item obj)
+    {
+        weight = w ;
+        subjItem = subj ;
+        predItem = pred ;
+        objItem = obj ;
+    }        
     
     @Override
     public String toString()
-    { return bool ? "true" : "false" ; }
+    {
+        //return "("+subjItem+" "+predItem+" "+objItem+") ==> "+weight ;
+        return PrintUtils.toString(this) ;
+    }
     
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void output(IndentedWriter out)
+    {
+        out.print("(") ;
+        out.print("(") ;
+        out.print(subjItem.toString()) ;
+        out.print(" ") ;
+        out.print(predItem.toString()) ;
+        out.print(" ") ;
+        out.print(objItem.toString()) ;
+        out.print(")") ;
+        out.print(" ") ;
+        out.print(weight) ;
+        out.print(")") ;
+    }
 }
-
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

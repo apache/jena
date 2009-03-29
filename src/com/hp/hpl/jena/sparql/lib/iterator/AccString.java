@@ -1,47 +1,57 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public class AccString<T> implements Accumulate<T, String>
 {
-    boolean bool = false ;
-    
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    StringBuilder buffer = null ;
+    private String sep ;
+    private boolean first = true ;
 
-    @Override
-    public boolean isBoolean()  { return true ; }
+    // Fresh StringBuilder
+    public AccString(String sep) { this.sep = sep ; }
+    public AccString() { this(" ") ; }
 
-    @Override
-    public boolean getBoolean() { return bool ; }
+    public void accumulate(T item)
+    { 
+        if ( ! first )
+            buffer.append(sep) ;
+        if ( item != null )
+            buffer.append(toString(item)) ;
+        else
+            buffer.append("<null>") ;
+        first = false ;
+    }
 
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
+    /** Make into a string */
+    protected String toString(T item)
+    {
+        return item.toString() ; 
+    }
     
-    @Override
-    public String asString() { return toString() ; }
+    public String get()
+    {
+        return buffer.toString() ;
+    }
+
+    public void start()
+    { 
+        // Resets on each use.
+        buffer = new StringBuilder() ; 
+        first = true ;
+    }
     
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
-}
+    public void finish() {}
+
+} 
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

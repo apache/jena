@@ -24,11 +24,12 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * to solve the pattern based on whether it is a databse or a memory graph. 
  */
 
-public class StageGenBasicPattern implements StageGenerator
+// NO LONGER USED.
+class StageGenBasicPattern implements StageGenerator
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
     
-    public StageGenBasicPattern() {}
+    private StageGenBasicPattern() {}
     
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,

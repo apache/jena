@@ -1,47 +1,31 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public final class ReorderWeighted extends ReorderTransformationBase
 {
-    boolean bool = false ;
+    private StatsMatcher stats ;
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
-
-    @Override
-    public boolean isBoolean()  { return true ; }
-
-    @Override
-    public boolean getBoolean() { return bool ; }
-
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
+    public ReorderWeighted(StatsMatcher stats)
+    {
+        this.stats = stats ;
+    }
     
     @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    protected double weight(PatternTriple pTriple)
+    {
+        return stats.match(pTriple) ;
+    }
 }
-
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

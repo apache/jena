@@ -81,7 +81,7 @@ public class StageBuilder
     
     public static StageGenerator standardGenerator()
     {
-        return new StageGenBasicPattern() ;
+        return new StageGeneratorGeneric() ;
     }
     
     private static StageGenerator chooseStageGenerator(Context context)

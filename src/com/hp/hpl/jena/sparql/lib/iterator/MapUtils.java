@@ -1,47 +1,30 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Map;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
 
-
-public class NodeValueBoolean extends NodeValue
+public class MapUtils
 {
-    boolean bool = false ;
+     // Map specific operations
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
-
-    @Override
-    public boolean isBoolean()  { return true ; }
-
-    @Override
-    public boolean getBoolean() { return bool ; }
-
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action)
+    {
+        for ( Map.Entry<K,V> entry : map.entrySet() )
+            action.apply(entry.getKey(), entry.getValue()) ;
+    }
 }
 
+
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

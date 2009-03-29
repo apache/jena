@@ -8,17 +8,34 @@ package dev;
 
 public class Dev
 {
-    // Optimizer xfer
-    // Move TDB optimization framework to ARQ
+    // ==== ARQ
+    // Tidy up.
     
-    // TransformEqualityFilter ==> disjunctions as well.
+    // To org.slf4j logging.
+    //   Jars.  ivy.xml.  POM.
+    // Inc. SDB.
+    
+    // Explain.
+    //   Sort out TDB explain and logging.
+    
+    // ----
+    
+    // Library
+    // TEMP : dump necessary copies inm c.h.h.h.j.sparql.lib until whole hting is sorted out.
+    //   Combine StringUtils and StrUtils.
+    //   Remove any copies (SDB)
+
+    // NodeFactory == SSE => Merge
+    // Systematic execution logging.
+
+    // ----
+    
     // Amalgamation: BGPs,Quads, Sequences.
     // E_Exists(Op).
 
-    // === Integrate optimization from TDB
-    // New optimizer architecture & StageGeneratorGeneric
+    // === Optimization
+    // TransformEqualityFilter ==> disjunctions as well.
     // Interaction of filter placement  
-    // TDB StageGeneratorGeneric, TDB solver.reorder, solver.stats
     // Extend to quads.  Triple=>quad 
     
     // Better "what's happening"

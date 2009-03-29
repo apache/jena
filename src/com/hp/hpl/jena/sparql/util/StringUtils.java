@@ -13,9 +13,11 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 
 
 public class StringUtils
@@ -124,11 +126,22 @@ public class StringUtils
         return str1.indexOf(str2) >= 0 ;
     }
     
-//    public static String replace(String string, String target, String replacement)
-//    {
-//        // Java 1.5: str.replace(target, replacment)
-//        return 
-//    }
+    private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
+    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
+    public static String printAbbrev(Object obj)
+    {
+        if ( obj==null )
+            return "<null>" ;
+        String x = obj.toString() ;
+        return p.matcher(x).replaceAll("::$1") ;
+    }
+    
+    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
+    public static <T> String printAbbrevList(List<T> objs)
+    {
+        String x = Iter.asString(objs, "\n") ;
+        return printAbbrev(x) ;
+    }
 }
 
 /*

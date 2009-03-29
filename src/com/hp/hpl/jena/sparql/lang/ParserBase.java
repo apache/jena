@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -39,18 +40,19 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
 {
-    protected final Node XSD_TRUE   = Node.createLiteral("true", null, XSDDatatype.XSDboolean) ;
-    protected final Node XSD_FALSE  = Node.createLiteral("false", null, XSDDatatype.XSDboolean) ;
+    // NodeConst
+    protected final Node XSD_TRUE       = NodeConst.nodeTrue ;
+    protected final Node XSD_FALSE      = NodeConst.nodeFalse ; 
     
-    protected final Node nRDFtype       = RDF.type.asNode() ;
+    protected final Node nRDFtype       = NodeConst.nodeRDFType ;
     
-    protected final Node nRDFnil        = RDF.nil.asNode() ;
-    protected final Node nRDFfirst      = RDF.first.asNode() ;
-    protected final Node nRDFrest       = RDF.rest.asNode() ;
+    protected final Node nRDFnil        = NodeConst.nodeNil ;
+    protected final Node nRDFfirst      = NodeConst.nodeFirst ;
+    protected final Node nRDFrest       = NodeConst.nodeRest ;
     
-    protected final Node nRDFsubject    = RDF.subject.asNode() ;
-    protected final Node nRDFpredicate  = RDF.predicate.asNode() ;
-    protected final Node nRDFobject     = RDF.object.asNode() ;
+    protected final Node nRDFsubject    = RDF.Nodes.subject ;
+    protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
+    protected final Node nRDFobject     = RDF.Nodes.object ;
     
     // ----
     protected boolean inConstructTemplate = false ;

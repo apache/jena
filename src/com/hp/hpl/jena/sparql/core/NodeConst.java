@@ -1,47 +1,36 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.core;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+public class NodeConst
 {
-    boolean bool = false ;
+    public static final Node nodeTrue       = Node.createLiteral("true", null,  XSDDatatype.XSDboolean) ; 
+    public static final Node nodeFalse      = Node.createLiteral("false", null,  XSDDatatype.XSDboolean) ; 
+    public static final Node nodeZero       = Node.createLiteral("0", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeOne        = Node.createLiteral("1", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeTwo        = Node.createLiteral("2", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeMinusOne   = Node.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
-
-    @Override
-    public boolean isBoolean()  { return true ; }
-
-    @Override
-    public boolean getBoolean() { return bool ; }
-
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
+    public static final Node nodeRDFType    = RDF.Nodes.type ;
+    public static final Node nodeFirst      = RDF.Nodes.first ;
+    public static final Node nodeRest       = RDF.Nodes.rest ;
+    public static final Node nodeNil        = RDF.Nodes.nil ;
     
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

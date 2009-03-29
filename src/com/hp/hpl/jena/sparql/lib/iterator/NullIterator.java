@@ -1,47 +1,40 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-
-public class NodeValueBoolean extends NodeValue
+/** Null Iterator - also guaranteed sharable and immutable */
+public class NullIterator<T> implements Iterator<T>, Iterable<T>
 {
-    boolean bool = false ;
-    
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    public boolean hasNext()
+    {
+        return false ;
+    }
 
-    @Override
-    public boolean isBoolean()  { return true ; }
+    public T next()
+    {
+        throw new NoSuchElementException("NullIterator.next") ;
+    }
 
-    @Override
-    public boolean getBoolean() { return bool ; }
+    public void remove()
+    { throw new NoSuchElementException("NullIterator.remove") ;}
 
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public Iterator<T> iterator()
+    {
+        return this ;
+    }
+
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

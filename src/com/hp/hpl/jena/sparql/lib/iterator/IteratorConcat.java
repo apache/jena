@@ -1,47 +1,67 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.lib.DS;
 
 
-public class NodeValueBoolean extends NodeValue
+/** Iterator of Iterators */
+
+public class IteratorConcat<T> implements Iterator<T>
 {
-    boolean bool = false ;
+    private List<Iterator<T>> iterators = DS.list(); 
+    int idx = -1 ;
+    private Iterator<T> current = null ;
+    boolean finished = false ;
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    public void add(Iterator<T> iter) { iterators.add(iter) ; }
+    
+    //@Override
+    public boolean hasNext()
+    {
+        if ( finished )
+            return false ;
 
-    @Override
-    public boolean isBoolean()  { return true ; }
+        if ( current != null && current.hasNext() )
+            return true ;
+        
+        while ( idx < iterators.size()-1 )
+        {
+            idx++ ;
+            current = iterators.get(idx) ;
+            if ( current.hasNext() )
+                return true ;
+            // Nothing here - move on.
+            current = null ;
+        }
+        // idx has run off the end.
+        return false ;
+    }
 
-    @Override
-    public boolean getBoolean() { return bool ; }
+    //@Override
+    public T next()
+    {
+        if ( ! hasNext() ) throw new NoSuchElementException() ; 
+        return current.next();
+    }
 
-    @Override
-    protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
-    
-    @Override
-    public String asString() { return toString() ; }
-    
-    @Override
-    public String toString()
-    { return bool ? "true" : "false" ; }
-    
-    @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    //@Override
+    public void remove()
+    { throw new UnsupportedOperationException() ; }
+
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
