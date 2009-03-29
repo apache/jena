@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // Update SDB on ARQ update
+    //   StageGenerator, Logging.
+
+    
 	// MySQL cusors: jdbc:mysql://127.0.0.1/rdswip?useCursorFetch=true&defaultFetchSize=8192&profileSQL=false&enableQueryTimeouts=false&netTimeoutForStreamingResults=0 
 
     // src-test not in distro.  Does it matter?
