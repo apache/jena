@@ -55,7 +55,7 @@ public class SystemTDB
     public static final int LenIndexQuadRecord      = 4 * NodeId.SIZE ;
     
     /** Size, in bytes, of a Node hash. */
-    public static final int LenNodeHash             = SizeOfLong ;
+    public static final int LenNodeHash             = 128/8 ; //SizeOfLong ;
 
     // ---- Symbols and similar
     
