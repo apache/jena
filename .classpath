@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/stax-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
