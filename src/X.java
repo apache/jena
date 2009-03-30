@@ -4,34 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
-
-import junit.framework.TestSuite;
-
-public class TestPackage extends TestSuite
+public class X
 {
 
-    static public TestSuite suite()
+    public static void main(String[] args)
     {
-        return new TestPackage() ;
-        
+        args = new String[]{"com.hp.hpl.jena.test.TestPackage"} ;
+        junit.textui.TestRunner.main(args) ;
     }
-    
-    private TestPackage()
-    {
-        super("ARP") ;
-        addTest( com.hp.hpl.jena.rdf.arp.test.TestARPMain.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.MoreTests.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.states.test.TestARPStates.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.URITests.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.TaintingTests.suite());
-        addTest( com.hp.hpl.jena.rdf.arp.test.SAX2RDFTest.suite());
-    }
-    
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
+
 }
 
 /*

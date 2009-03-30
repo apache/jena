@@ -11,6 +11,8 @@ Release Notes
 Jar changes:
    o Removed antlr-2.7.5.jar (no longer used)
    o Removed concurrent.jar (no longer used)
+   o Removed xml-apis.jar (no longer used)
+   o junit.jar upgraded to junit-4.5.jar
 
 Deprecation clearance.
    Methods, classes and statics marked deprecated in previous releases have been largely removed.
