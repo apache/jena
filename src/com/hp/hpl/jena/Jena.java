@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Aug-2003
  * Filename           $RCSfile: Jena.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-12-28 19:32:39 $
+ * Last modified on   $Date: 2009-03-30 16:51:45 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -33,7 +33,7 @@ package com.hp.hpl.jena;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Version @version@, CVS $Id: Jena.java,v 1.9 2008-12-28 19:32:39 andy_seaborne Exp $
+ * @version Version @version@, CVS $Id: Jena.java,v 1.10 2009-03-30 16:51:45 andy_seaborne Exp $
  */
 public interface Jena
 {
@@ -53,11 +53,14 @@ public interface Jena
     /** The full name of the current Jena version */    
     public static final String VERSION = "@version@";
     
-    /** The major version number for this release of Jena (ie '2' for Jena 2.0) */
+    /** The major version number for this release of Jena (ie '2' for Jena 2.6.0) */
     public static final String MAJOR_VERSION = "@version-major@";
     
-    /** The minor version number for this release of Jena (ie '0' for Jena 2.0) */
+    /** The minor version number for this release of Jena (ie '6' for Jena 2.6.0) */
     public static final String MINOR_VERSION = "@version-minor@";
+    
+    /** The minor version number for this release of Jena (ie '0' for Jena 2.6.0) */
+    public static final String REVISION_VERSION = "@version-revision@";
     
     /** The version status for this release of Jena (eg '-beta1' or the empty string) */
     public static final String VERSION_STATUS = "@version-status@";
