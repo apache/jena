@@ -13,6 +13,10 @@ public class Dev
     //   Atlas? Iterator.
     //   Explain, and explain logger.
     
+    // Use ARQ features
+    //   Reordering.
+    //   Explain.
+    
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
      

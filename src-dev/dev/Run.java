@@ -15,6 +15,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+import tdb.tdbclean;
 import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
 import atlas.lib.FileOps;
@@ -22,6 +23,9 @@ import atlas.lib.cache.CacheNG;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
@@ -59,6 +63,24 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        if ( false )
+        {
+            tdbclean.main("DB") ;
+            //tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ;
+            Model m = TDBFactory.createModel("DB") ;
+            FileManager.get().readModel(m, "D.ttl") ;
+            m.write(System.out, "TTL") ;
+            m.close();
+        }
+        
+        if ( true )
+        {
+            System.out.println("----") ;
+            Model m = TDBFactory.createModel("DB") ;
+            m.write(System.out, "TTL") ;
+        }
+        System.exit(0) ;
+        
         //tdbtest("testing/UnionGraph/manifest.ttl") ;
         
         //Log.enable(TDB.logExec.getName()) ;
