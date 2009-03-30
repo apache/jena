@@ -14,7 +14,7 @@ public class Dev
     //   Explain, and explain logger.
     
     // Use ARQ features
-    //   Reordering.
+    //   com.hp.hpl.jena.sparql.engine.optimizer
     //   Explain.
     
     // Location+String => Filesets
