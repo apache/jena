@@ -20,6 +20,9 @@ ChangeLog for ARQ
 
 + Uses the Java5 version of Jena2. 
 
++ Property function afp:versionARQ does not now split version numbers into major and minor parts
+  ARQ has a 3-part version number now.
+
 ==== ARQ 2.6
 
 + Added .close() to Dataset and GraphStore for those implementations that

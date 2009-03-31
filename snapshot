@@ -1,6 +1,9 @@
 #!/bin/bash
 
 MODULE="$@"
+DEFAULT="TDB SDB Joseki3"
+DEFAULT="TDB"
+
 
 for m in $MODULE
 do
@@ -17,29 +20,34 @@ then
     LIBDIRS="$MODULE"
     SRCDIRS="$MODULE"
 else
-    LIBDIRS="${LIBDIR:-TDB SDB Joseki3}"
-    SRCDIRS="${SRCDIR:-TDB SDB Joseki3}"
+    LIBDIRS="${LIBDIR:-$DEFAULT}"
+    SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-rm -f lib/arq.jar lib/arq-extra.jar
-ant jar
+# arq-extra is currently out-of-action.
+ant clean build
+
+# Remove version numbers
+for jar in build/arq*.jar
+do
+  J2="$(perl -e '$_=$ARGV[0] ; s/(arq.*)-\d.\d.\d.*.jar/$1.jar/ ; print "$_\n" ' $jar)"
+  mv $jar $J2
+  echo "mv $jar $J2"
+  done
 
 
 for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
-  cp -u lib/arq.jar ../$d/lib
-  cp -u lib/arq-extra.jar ../$d/lib
-
+  cp -u build/arq*.jar ../$d/lib
+  ## Fix up 
+  chmod u+rw ../$d/lib/arq*jar
   # And Jena
   cp -u lib/jena.jar ../$d/lib
   cp -u lib/jenatest.jar ../$d/lib
   done
 
-## Keep the JARs around for Eclipse libraries
-## rm -f lib/arq.jar
-## rm -f lib/arq-extra.jar
-## rm -f lib/arq-sse.jar
+## Source code.
 
 rm -f arq-src.zip
 
