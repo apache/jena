@@ -11,8 +11,10 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
+import com.hp.hpl.jena.sparql.lib.Metadata;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
+
 
 /** ARQ - miscellaneous settings
  * 
@@ -204,6 +206,7 @@ public class ARQ
     { 
         if ( initialized )
             return ;
+        Metadata.setMetadata("com/hp/hpl/jena/sparql/arq-properties.xml") ;
         initialized = true ;
         globalContext = defaultSettings() ;
         StageBuilder.init() ;
@@ -241,28 +244,25 @@ public class ARQ
     // ----------------------------------
     
     /** The root package name for ARQ */   
-    public static final String PATH = "com.hp.hpl.jena.query";
+    public static final String PATH = "com.hp.hpl.jena.sparql";
    
     /** The product name */   
-    public static final String NAME = "@name@";
-   
-    /** The ARQ web site : see also http://jena.sourceforge.net*/   
-    public static final String WEBSITE = "@website@";
+    public static final String NAME = "ARQ";
    
     /** The full name of the current ARQ version */   
-    public static final String VERSION = "@version@";
+    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
    
-    /** The major version number for this release of ARQ (ie '2' for ARQ 2.0) */
-    public static final String MAJOR_VERSION = "@version-major@";
-   
-    /** The minor version number for this release of ARQ (ie '0' for ARQ 2.0) */
-    public static final String MINOR_VERSION = "@version-minor@";
-   
-    /** The version status for this release of ARQ (eg '-beta1' or the empty string) */
-    public static final String VERSION_STATUS = "@version-status@";
+//    /** The major version number for this release of ARQ (ie '2' for ARQ 2.0) */
+//    public static final String MAJOR_VERSION = "@version-major@";
+//   
+//    /** The minor version number for this release of ARQ (ie '0' for ARQ 2.0) */
+//    public static final String MINOR_VERSION = "@version-minor@";
+//   
+//    /** The version status for this release of ARQ (eg '-beta1' or the empty string) */
+//    public static final String VERSION_STATUS = "@version-status@";
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = "@build-time@";
+    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 

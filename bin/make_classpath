@@ -48,7 +48,7 @@ for jar in "$LIBDIR"/*.jar
 done
 
 # Prepend any classes/ directory
-for dir in "$CPDIR1" "$CPDIR2"
+for dir in "$CPDIR2" "$CPDIR1"
 do
   if [ -e "$dir" ]
       then

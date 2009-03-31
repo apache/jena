@@ -22,6 +22,7 @@ public abstract class CmdARQ extends CmdGeneral
         ModSymbol.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqNS) ;
         addModule(modSymbol) ;
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ;
+        super.modVersion.addClass(ARQ.class) ;
     }
     
     @Override

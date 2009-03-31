@@ -7,7 +7,7 @@
 package arq.cmdline;
 
 import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.sparql.util.Version;
 
 public class ModVersion implements ArgModuleGeneral
@@ -22,7 +22,6 @@ public class ModVersion implements ArgModuleGeneral
     {
         this.printAndExit = printAndExit ;
         versionMgr.addClass(Jena.class) ;
-        versionMgr.addClass(ARQ.class) ;
     }
     
     public void addClass(Class<?> c) { versionMgr.addClass(c) ; }

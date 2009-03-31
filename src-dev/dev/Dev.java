@@ -10,8 +10,12 @@ public class Dev
 {
     // ==== ARQ
     // Tidy up.
-    // Metadata
-    // Build process
+    // -- Build process
+    //   Currently only one jar - arq.jar
+    //     arq and arq-extra
+    //   Testing - need TS_* files.
+    //   Examples are in the test suite.
+    //   Distribution building.
     
     // SDB - logging, extra jars.
     // atlas.

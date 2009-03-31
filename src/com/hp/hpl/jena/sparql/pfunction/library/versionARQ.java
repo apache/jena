@@ -6,10 +6,8 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.List;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -21,18 +19,18 @@ import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
 import com.hp.hpl.jena.sparql.util.IterLib;
 
+import com.hp.hpl.jena.query.ARQ;
+
 public class versionARQ extends PropertyFunctionEval
 {
-    static String versionStr =  ARQ.MAJOR_VERSION+"."+ARQ.MINOR_VERSION ;
-    static Node version = NodeValue.makeString(versionStr).asNode() ;
+    static String versionStr = ARQ.VERSION ;    // X.Y.Z
     
-    static Node versionMajor = NodeValue.makeString(ARQ.MAJOR_VERSION).asNode() ;
-    static Node versionMinor = NodeValue.makeString(ARQ.MINOR_VERSION).asNode() ;
+    static Node version = NodeValue.makeString(versionStr).asNode() ;
     
     static Node arq = Node.createURI(ARQ.arqIRI) ;
     
     public versionARQ()
-    { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_EITHER) ; }
+    { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_SINGLE) ; }
     
     @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
@@ -44,29 +42,12 @@ public class versionARQ extends PropertyFunctionEval
         if ( ! isSameOrVar(subj, arq) ) IterLib.noResults(execCxt) ;
         if ( subj.isVariable() )
             b.add(Var.alloc(subj), arq) ;
-        
-        if ( ! object.isList() )
-        {
-            Node obj = object.getArg() ;
-            
-            if ( ! isSameOrVar(obj, version) ) IterLib.noResults(execCxt) ;
-            if ( obj.isVariable() )
-                b.add(Var.alloc(obj), version) ;
-        }
-        else // List - of two?
-        {
-            List<Node> x = object.getArgList() ;
-            if ( x.size() != 2)
-                return IterLib.noResults(execCxt) ;
-            Node major = object.getArg(0) ;
-            Node minor = object.getArg(1) ;
-            if ( ! isSameOrVar(major, versionMajor) ) IterLib.noResults(execCxt) ;
-            if ( major.isVariable() )
-                b.add(Var.alloc(major), versionMajor) ;
-            if ( ! isSameOrVar(minor, versionMinor) ) IterLib.noResults(execCxt) ;
-            if ( major.isVariable() )
-                b.add(Var.alloc(minor), versionMinor) ;
-        }
+
+        Node obj = object.getArg() ;
+
+        if ( ! isSameOrVar(obj, version) ) IterLib.noResults(execCxt) ;
+        if ( obj.isVariable() )
+            b.add(Var.alloc(obj), version) ;
         
         return IterLib.result(b, execCxt) ;
     }
