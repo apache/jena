@@ -149,6 +149,26 @@ public class ResultSetFormatter
         }
     }
 
+    /** Return a string that has the result set serilized as a text table
+     * 
+     * @param qresults  result set
+     * @param prologue  Prologue, used to abbreviate IRIs
+
+     * @return  string
+     */
+    
+    public static String asText(ResultSet qresults, Prologue prologue)
+    {
+        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
+        out(arr, qresults, prologue) ;
+        try { return new String(arr.toByteArray(), "UTF-8") ; }
+        catch (UnsupportedEncodingException e)
+        {
+            ALog.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
+            return null ;
+        }
+    }
+
     // ----------------------------------------------------------------
     // Do nothing formatting
     
@@ -243,7 +263,7 @@ public class ResultSetFormatter
         return rOut.asRDF(model, booleanResult) ;
     }
     
-    /** Output a ResultSetin some format.
+    /** Output a ResultSet in some format.
      * 
      * @param resultSet Result set
      * @param rFmt      A format to encode the result set in
@@ -252,7 +272,7 @@ public class ResultSetFormatter
     static public void output(ResultSet resultSet, ResultSetFormat rFmt)
     { output(System.out, resultSet, rFmt) ; }
 
-    /** Output a ResultSetin some format.
+    /** Output a ResultSet in some format.
      *  To get detailed control over each format, call the appropropiate operation directly. 
      * 
      * @param outStream Output
