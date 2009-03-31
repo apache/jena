@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.lib.Metadata;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
@@ -31,7 +32,6 @@ import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.sys.Metadata;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TDB
@@ -135,6 +135,8 @@ public class TDB
             return ;
         initialized = true ;
 
+        Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
+        
         //TDB.getContext().set(??,??) ;
         
         // TDB uses a custom OpCompiler.

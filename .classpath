@@ -18,10 +18,9 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
-	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.5.jar" sourcepath="src-other/junit-4.5-src.jar"/>
+	<classpathentry kind="lib" path="lib/arq.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
