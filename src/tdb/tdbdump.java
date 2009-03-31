@@ -12,7 +12,9 @@ import tdb.cmdline.ModFormat;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
@@ -90,7 +92,7 @@ public class tdbdump extends CmdSub
         
         private void execOne(String fn)
         {
-            FileSet fileset = new FileSet("DB", "SPO") ;
+            FileSet fileset = new FileSet(fn, "SPO") ;
             RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, FactoryGraphTDB.indexRecordTripleFactory) ;
             for ( Record r : rIndex )
             {
@@ -115,10 +117,25 @@ public class tdbdump extends CmdSub
         @Override
         protected void exec()
         {
+            for ( String fn: super.getPositional() )
+            {
+                execOne(fn) ;
+            }
         }
+        
+        static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
+            @Override
+            public void handle(long fileIdx, String str)
+            {
+                System.out.printf("0x%08X : %s\n", fileIdx, str) ;
+            }
+        } ;
         
         private void execOne(String fn)
         {
+            // Open the node file
+            ObjectFileDiskDirect f = (ObjectFileDiskDirect)FileFactory.createObjectFileDisk(fn) ;
+            f.dump(handler) ;
         }
     }
 }

@@ -30,7 +30,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class ObjectFileDiskWithCache extends FileBase implements ObjectFile 
 {
-    // Not used - this is not faster.  It is more complicated. 
+    // NOT USED - this is not faster.  It is more complicated. 
     
     /* No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations need to be thread safe.  
@@ -254,7 +254,6 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
             fileIdx = fileIdx + bb.limit() + 4 ; 
         }
     }
-    
     
     // URI compression can be effective but literals are more of a problem.  More variety. 
     public final static boolean compression = false ; 

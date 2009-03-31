@@ -13,7 +13,6 @@ import java.util.List;
 
 import atlas.lib.Bytes;
 
-
 import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
@@ -147,7 +146,12 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         return strings ;
     }
     
-    public void dump()
+    // ---- Dump
+    public void dump() { dump(handler) ; }
+
+    public interface DumpHandler { void handle(long fileIdx, String str) ; }  
+    
+    public void dump(DumpHandler handler)
     {
         try { out.seek(0) ; } 
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
@@ -157,11 +161,20 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         {
             ByteBuffer bb = readBytes(fileIdx) ;
             String str = Bytes.fromByteBuffer(bb) ;
-            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
-            fileIdx = fileIdx + bb.limit() + 4 ; 
+            handler.handle(fileIdx, str) ;
+            fileIdx = fileIdx + bb.limit() + 4 ;
         }
     }
     
+    static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
+        @Override
+        public void handle(long fileIdx, String str)
+        {
+            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
+        }
+    } ;
+    // ----
+ 
     
     // URI compression can be effective but literals are more of a problem.  More variety. 
     public final static boolean compression = false ; 
