@@ -12,6 +12,15 @@ import java.nio.charset.CharsetEncoder;
 
 public class Chars
 {
+    final public static char[] hexDigits = {
+        '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
+        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
+//         , 'g' , 'h' ,
+//        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+//        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+//        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
+        };
+    
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
     

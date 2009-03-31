@@ -18,6 +18,7 @@ import org.junit.runner.Result;
 import tdb.tdbclean;
 import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
+import atlas.lib.Bytes;
 import atlas.lib.FileOps;
 import atlas.lib.cache.CacheNG;
 
@@ -63,7 +64,14 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        if ( false )
+        byte b[] = new byte[16] ;
+        Bytes.setLong(0x1203456, b) ;
+        Bytes.setLong(0x1203456, b, 8) ;
+        System.out.println(Bytes.asHex(b)) ;
+        System.exit(0) ;
+        
+        
+        if ( true )
         {
             tdbclean.main("DB") ;
             //tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ;
@@ -71,9 +79,10 @@ public class Run
             FileManager.get().readModel(m, "D.ttl") ;
             m.write(System.out, "TTL") ;
             m.close();
+            m.close();
         }
         
-        if ( true )
+        if ( false )
         {
             System.out.println("----") ;
             Model m = TDBFactory.createModel("DB") ;

@@ -176,15 +176,6 @@ public class StrUtils
     // and then the hexadecimal representation of the character.  
     // Only characters 0-255 can be encoded.
     
-    final private static char[] hexDigits = {
-            '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
-            '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
-    //         , 'g' , 'h' ,
-    //        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
-    //        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
-    //        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-            };
-
     /** Encode a string using hex values e.g. %20
      * 
      * @param str       String to encode
@@ -228,8 +219,8 @@ public class StrUtils
                     buff.append(marker) ;
                     int lo = ch & 0xF ;
                     int hi = ch >> 4 ;
-                    buff.append(hexDigits[hi]) ;                
-                    buff.append(hexDigits[lo]) ; 
+                    buff.append(Chars.hexDigits[hi]) ;                
+                    buff.append(Chars.hexDigits[lo]) ; 
                     break ; // Out of escapees loop.
                 }
             }

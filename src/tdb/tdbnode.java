@@ -10,11 +10,15 @@ import java.util.Iterator;
 
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
+import atlas.lib.Bytes;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.Hash;
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class tdbnode extends CmdTDB
 {
@@ -55,7 +59,12 @@ public class tdbnode extends CmdTDB
                 long x = Long.parseLong(id) ;
                 NodeId nodeId = new NodeId(x) ;
                 Node n = nodeTable.getNodeForNodeId(nodeId) ;
-                System.out.printf("%s [%d] => %s\n", id, x, n) ;
+                //System.out.printf("%s [%d] => %s\n", id, x, n) ;
+
+                Hash h = new Hash(SystemTDB.LenNodeHash) ;
+                NodeLib.setHash(h, n) ;
+                String str = Bytes.asHex(h.getBytes()) ;
+                System.out.printf("%s %08d 0x%s # %s\n", id, x, str, n) ;
             } catch (Exception ex)
             {
                 System.out.println("Failed to decode: "+id) ;

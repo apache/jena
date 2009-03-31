@@ -6,6 +6,7 @@
 
 package atlas.lib;
 
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -190,7 +191,7 @@ public class Bytes
         }
     }
     
-    /** Rerurn the string for some UTF-8 bytes */
+    /** Return the string for some UTF-8 bytes */
     public static String bytes2string(byte[] x)
     {
         try
@@ -264,6 +265,26 @@ public class Bytes
         {
             throw new InternalErrorException("Bytes:fromByteBuffer: character encoding error in buffer") ; 
         }
+    }
+
+    /** Return a hex string representing the bytes, zero padded to length of byte array. */
+    public static String asHex(byte[] bytes)
+    {
+        return asHex(bytes, 0, bytes.length) ; 
+    }
+    
+    public static String asHex(byte[] bytes, int start, int finish)
+    {
+        StringWriter sw = new StringWriter() ;
+        for ( int i = start ; i < finish ; i++ )
+        {
+            byte b = bytes[i] ;
+            int hi = b >> 4 ;
+            int lo = b & 0xF ;
+            sw.append(Chars.hexDigits[hi]) ;
+            sw.append(Chars.hexDigits[lo]) ;
+        }
+        return sw.toString() ;
     }
 }
 
