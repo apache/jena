@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.7
 
++ New build system.
+
 + Clearing up.
     junit used is now v4.5
     internal logging API is SLF4J (Jena uses Apache Commons Logging)
