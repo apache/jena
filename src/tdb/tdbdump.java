@@ -28,44 +28,21 @@ public class tdbdump extends CmdSub
         new tdbdump(argv).exec() ;
     }
 
-//    protected tdbdump(String[] argv)
-//    {
-//        super(argv) ;
-//        super.addModule(modFormat) ;
-//    }
-//
-//    @Override
-//    protected String getSummary()
-//    {
-//        return Utils.className(this)+" --desc=DIR [--format=FORMAT]" ;
-//    }
-//
-//    @Override
-//    protected String getCommandName()
-//    {
-//        return "tdbdump" ;
-//    }
-//
-//    @Override
-//    protected void exec()
-//    {
-//        Model model = getModel() ;
-//        String format = modFormat.getFormat("N3-TRIPLES") ;
-//        model.write(System.out, format) ;
-//    }
+    static final String CMD_DATA =      "data" ; 
+    static final String CMD_INDEX =     "index" ; 
+    static final String CMD_NODES =     "nodes" ;
+    
+    protected tdbdump(String...argv)
+    {
+        super(argv) ;
+        super.addSubCommand(CMD_INDEX, new Exec()
+        { @Override public void exec(String[] argv) { new SubIndex(argv).mainRun() ; } }) ;
+        super.addSubCommand(CMD_DATA, new Exec()
+        { @Override public void exec(String[] argv) { new SubData(argv).mainRun() ; } }) ;
+        super.addSubCommand(CMD_NODES, new Exec()
+        { @Override public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
+    }
 
-        static final String CMD_DATA =     "data" ; 
-        static final String CMD_INDEX =     "index" ; 
-        
-        protected tdbdump(String...argv)
-        {
-            super(argv) ;
-            super.addSubCommand(CMD_INDEX, new Exec()
-            { @Override public void exec(String[] argv) { new SubIndex(argv).mainRun() ; } }) ;
-            super.addSubCommand(CMD_DATA, new Exec()
-            { @Override public void exec(String[] argv) { new SubData(argv).mainRun() ; } }) ;
-        }
-        
 
     class SubData extends CmdTDB
     {
@@ -119,6 +96,29 @@ public class tdbdump extends CmdSub
             {
                 System.out.println(r.toString()) ;
             }
+        }
+    }
+    
+    static class SubNodes extends CmdTDB
+    {
+        protected SubNodes(String[] argv)
+        {
+            super(argv) ;
+        }
+
+        @Override
+        protected String getSummary()
+        {
+            return "tdbdump nodes INDEX" ;
+        }
+
+        @Override
+        protected void exec()
+        {
+        }
+        
+        private void execOne(String fn)
+        {
         }
     }
 }
