@@ -28,8 +28,8 @@
   <target name="copy-dist" depends="clean,copy-init,jar,javadoc,test">
 
     <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-      <fileset dir="${build.dir}" includes="${jarfile}"/>
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${name}*.jar"/>
+      <fileset dir="${build.dir}" includes="${name}*.jar"/>
     </copy>
 
     <!-- Source code -->

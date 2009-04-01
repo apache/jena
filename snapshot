@@ -24,15 +24,13 @@ else
     SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-# arq-extra is currently out-of-action.
-ant clean build
+ant build
 
 # Remove version numbers
 for jar in build/arq*.jar
 do
   J2="$(perl -e '$_=$ARGV[0] ; s/(arq.*)-\d.\d.\d.*.jar/$1.jar/ ; print "$_\n" ' $jar)"
   mv $jar $J2
-  echo "mv $jar $J2"
   done
 
 
@@ -46,6 +44,8 @@ do
   cp -u lib/jena.jar ../$d/lib
   cp -u lib/jenatest.jar ../$d/lib
   done
+
+## rm build/arq*.jar
 
 ## Source code.
 
@@ -65,4 +65,5 @@ do
   # And Jena
   cp -u jena-src.zip ../$d
   done
+
 rm -f arq-src.zip

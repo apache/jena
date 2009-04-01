@@ -28,6 +28,7 @@ public class QueryIterPeek extends QueryIter1
         super(iterator, cxt) ;
     }
 
+    /** Returns the next binding without moving on.  Returns "null" for no such element. */
     public Binding peek() 
     {
         if ( closed ) return null ;
