@@ -26,6 +26,34 @@
   
   <target name="main" depends="jar"/>
 
+  <!--=============================================-->
+  <!-- Two jars -->
+  
+  <property name="jarfile"         value="${name}-${version}.jar"/>
+  <property name="jarfile.extra"   value="${name}-extra-${version}.jar"/>
+  <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
+  <property name="extra.classes" 
+      	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
+  <!-- Override -->    	        
+  <target name="package.jar" depends="compile,make-jar-core,make-jar-extra"/>
+    
+  <target name="make-jar-core" depends="compile">
+     <!-- Core jar -->
+     <delete file="${build.dir}/${jarfile}"/>
+     <jar destfile="${build.dir}/${jarfile}" index="yes">
+        <fileset dir="${build.classes.dir}" excludes="${extra.classes}"/>
+     </jar>
+   </target>
+        
+   <!-- Tests and examples jar -->
+   <target name="make-jar-extra" depends="compile">
+       <delete file="${build.dir}/${jarfile.extra}"/>
+      <jar destfile="${build.dir}/${jarfile.extra}" index="yes">
+         <fileset dir="${build.classes.dir}" includes="${extra.classes}"/>
+      </jar>
+  </target>
+  <!--=============================================-->
+
   <!-- Sources as a path -->
   <property name="src.dir"                value="src"/>
   <property name="src.test.dir"           value="src-test"/>
