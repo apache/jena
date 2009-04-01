@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import atlas.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
@@ -131,6 +132,9 @@ public class OpExecutorTDB extends OpExecutor
                                                       Node gn, BasicPattern bgp,
                                                       ExprList exprs, ExecutionContext execCxt)
     {
+        if ( ! input.hasNext() )
+            return input ;
+        
         // ---- Default graph in storage
         boolean isDefaultGraph = false ;
         
@@ -273,11 +277,14 @@ public class OpExecutorTDB extends OpExecutor
             // transform is applied to the unsubstituted pattern (which will be
             // substituted as part of evaluation.
             
+            if ( ! peek.hasNext() )
+                throw new ARQInternalErrorException("Peek iterator is already empty") ;
+ 
             BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
             // Calculate the reordering based on the substituted pattern.
             ReorderProc proc = transform.reorderIndexes(pattern2) ;
             // Then reorder original patten
-            pattern = proc.reorder(pattern) ; 
+            pattern = proc.reorder(pattern) ;
         }
         return pattern ;
     }

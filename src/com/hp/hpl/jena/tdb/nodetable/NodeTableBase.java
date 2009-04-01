@@ -243,10 +243,17 @@ public class NodeTableBase implements NodeTable
     @Override
     public synchronized void close()
     {
+        // Close once.  This may be shared (e.g. triples table and quads table). 
         if ( nodeHashToId != null )
+        {
             nodeHashToId.close() ;
+            nodeHashToId = null ;
+        }
         if ( getObjects() != null )
-            getObjects().close() ; 
+        {
+            getObjects().close() ;
+            objects = null ;
+        }
     }
 
     @Override

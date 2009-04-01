@@ -64,6 +64,11 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        //tdb.tdbclean.main("DB") ;
+        //tdbloader("--set=tdb:fileMode=mapped", "--tdb=tdb.ttl", "--graph=http://example/D", "D.rdf") ;
+        tdbquery(/*"--set=tdb:fileMode=mapped",*/ "--set=tdb:unionDefaultGraph=true", "--tdb=tdb.ttl", "--query=Q.rq") ;
+        System.exit(0) ;
+        
         byte b[] = new byte[16] ;
         Bytes.setLong(0x1203456, b) ;
         Bytes.setLong(0x1203456, b, 8) ;

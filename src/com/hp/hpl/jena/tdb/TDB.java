@@ -185,7 +185,7 @@ public class TDB
     public static final String NAME = "TDB" ;
     
     /** The full name of the current TDB version */   
-    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
+    public static final String VERSION = Metadata.get(PATH+".version", "DEV") ;
 //   
 //    /** The major version number for this release of TDB (ie '2' for TDB 2.0) */
 //    public static final String MAJOR_VERSION = "@version-major@";
