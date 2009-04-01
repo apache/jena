@@ -134,7 +134,7 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
-
+    
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
         
         //TDB.getContext().set(??,??) ;
@@ -160,7 +160,7 @@ public class TDB
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
     }
-    
+
     private static void wireIntoExecution()
     {
         // Globally change the stage generator to intercept BGP on TDB
@@ -176,7 +176,8 @@ public class TDB
         QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
     
-    // ---- Static constandts read by modVersion 
+    // ---- Static constants read by modVersion
+    // ---- Must be after initialization.
     /** The root package name for TDB */   
     public static final String PATH = "com.hp.hpl.jena.tdb";
 
@@ -198,6 +199,17 @@ public class TDB
 //   
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
+    
+    // Final initialization 
+    static {
+        initlization2() ;
+    }
+
+    private static void initlization2()
+    {
+        //TDB.logInfo.info("TDB: "+TDB.VERSION) ;
+    }
+
 }
 
 /*
