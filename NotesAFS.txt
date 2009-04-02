@@ -1,0 +1,56 @@
+=== JFlex
+
+Build:
+
+Run
+   PatternCompiler.main (writes host.jflex)
+then run
+   AbsLexer.main, 
+then refresh in Eclipse.
+
+See AFS_Build
+(JFlex 1.4.3)
+  PatternCompiler.main(args) ;
+  AbsLexer.main(args) ;
+  // Now refresh and rebuild.
+  // Need to edit result to remove "private" from yytext in each subparser
+
+/*
+host => (@{regname})
+regname => ((@{label}\\.)*@{label}\\.?)
+label => (@{labelPrefix}(@{labelInside}@{labelPostfix})?)
+labelInside => (@{labelSingleDashInside}?)
+labelPrefix => (@{labelChar})
+labelChar => (@{unreservedDNSLabel})
+unreservedDNSLabel => (@{letterDigit}|_)
+letterDigit => ([a-z0-9])
+labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
+labelPostfix => (@{labelChar})
+*/
+
+--------------
+
+[[
+RFC 1123, sec 2.1
+
+      The syntax of a legal Internet host name was specified in RFC-952
+      [DNS:4].  One aspect of host name syntax is hereby changed: the
+      restriction on the first character is relaxed to allow either a
+      letter or a digit.  Host software MUST support this more liberal
+      syntax.
+]]
+
+I can't find an updated official grammar and I only came across by googling
+to get the authoritive text to show it was illegal.  I happened on a nice
+web page of DNS standards which mentioned it.
+
+RFC 3986, sec 3.2.2, talks about the ambiguity.
+
+The 1123 text isn't entirely clear - does it mean the first char of the
+whole DNS host name or every component?
+
+So a host of "1752" is now legal (albeit silly and unlikely to work very well).
+-----------------
+IP_V4_OCTET_RANGE
+IP_V4_HAS_FOUR_COMPONENTS 
+are no longer MUST
