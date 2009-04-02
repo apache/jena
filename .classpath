@@ -6,6 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
-	<classpathentry kind="lib" path="lib-build/JFlex.jar"/>
+	<classpathentry kind="lib" path="lib-build/JFlex-1.4.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
