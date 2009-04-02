@@ -110,6 +110,30 @@
    <echo>${fileset.src}</echo>
 -->
 
+  <!-- ============================== -->
+  <!-- Modified publication -->
+
+  <macrodef name="arq-publish-one"> 
+    <attribute name="ivyfile"/>
+    <!-- <element name="some-tasks" optional="yes"/> -->
+    <sequential>
+      <ivy:resolve file="@{ivyfile}"/>
+      <!-- test version : dev-resolver -->
+      <ivy:publish conf="main" 
+		 resolver="dev-resolver"
+		 overwrite="true">
+	<artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+    </ivy:publish>
+    </sequential>
+  </macrodef>
+
+  <target name="arq-publish-dev"  depends="ivy-init,artifacts,publish-check" description="Publish ARQ">
+    <arq-publish-one ivyfile="ivy.xml"/>
+    <arq-publish-one ivyfile="ivy-extra.xml"/>
+  </target>
+
+  <!-- ============================== -->
+
   <import file="build-lib.xml"/>
   <import file="build-dist.xml"/>
 

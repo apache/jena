@@ -306,7 +306,7 @@
   
   <target name="publish-test" description="Build and publish this version (locally, for testing)"
             depends="clean-once,artifacts,test,ivy-publish-dev">
-    </target>
+  </target>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
