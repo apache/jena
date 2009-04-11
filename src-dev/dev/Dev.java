@@ -8,6 +8,11 @@ package dev;
 
 public class Dev
 {
+    // tdbrestore
+    // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
+    // See IndexFactoryBPlusTree.createRangeIndex
+    // See BPlusTreeParams.readMeta
+    
     // To ARQ:
     //   NodeConst
     //   Atlas? Iterator.
@@ -40,7 +45,7 @@ public class Dev
     //   Generalise quads to be quads, not (node, bgp).
 
     //   Quad loader; dataset merge.
-    //   Generalised the pattern stuff in teh optimizer?
+    //   Generalised the pattern stuff in the optimizer?
     //   Dataset management??
     //   Tidy OpExecutorTDB.execute(quads)
     

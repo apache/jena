@@ -78,15 +78,16 @@ public class FileOps
     }
     
     /** Split a file name into path, basename and extension.  Nulls returned if don't make sense. */
-    public static Tuple<String> split(String filename)
+    public static Tuple<String> splitDirBaseExt(String filename)
     {
         String path = null ;
         String basename = filename ;
         String ext = null ;
         
-        // split on '/'?
-        
         int j = filename.lastIndexOf('/') ;
+        if ( j < 0 )
+            j = filename.lastIndexOf('\\') ;
+
         if ( j >= 0 )
         {
             path = filename.substring(0, j) ;
@@ -102,6 +103,24 @@ public class FileOps
         }
         
         return Tuple.create(path, basename, ext) ;
+    }
+    
+    /** Split a file name into path and filename.  Nulls returned if don't make sense. */
+    public static Tuple<String> splitDirFile(String filename)
+    {
+        String path = null ;
+        String fn = filename ;
+        
+        int j = filename.lastIndexOf('/') ;
+        if ( j < 0 )
+            j = filename.lastIndexOf('\\') ;
+        
+        if ( j >= 0 )
+        {
+            path = filename.substring(0, j) ;
+            fn = filename.substring(j+1) ;
+        }
+        return Tuple.create(path, fn) ;
     }
     
 //    public static String getExt(String filename)

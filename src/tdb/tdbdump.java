@@ -92,7 +92,18 @@ public class tdbdump extends CmdSub
         
         private void execOne(String fn)
         {
-            FileSet fileset = new FileSet(fn, "SPO") ;
+            FileSet fileset = new FileSet(fn) ;
+            // Depends on the index type
+            // Triple indexes :     FactoryGraphTDB.indexRecordTripleFactory
+            // Node index :         FactoryGraphTDB.nodeRecordFactory ; 
+            // Quad indexes :       FactoryGraphTDB.indexRecordQuadFactory ;
+            // Look in the fileset metadata.
+            
+            if ( fileset.existsMetaData() )
+            {
+               //fileset.getPropertyAsInteger(key) ;
+            }
+            
             RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, FactoryGraphTDB.indexRecordTripleFactory) ;
             for ( Record r : rIndex )
             {

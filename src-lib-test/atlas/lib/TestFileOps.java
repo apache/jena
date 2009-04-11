@@ -26,7 +26,7 @@ public class TestFileOps extends BaseTest
 
     static void test(String fn, String path, String basename, String ext)
     {
-        Tuple<String> t = FileOps.split(fn) ;
+        Tuple<String> t = FileOps.splitDirBaseExt(fn) ;
         assertEquals(path, t.get(0)) ;
         assertEquals(basename, t.get(1)) ;
         assertEquals(ext, t.get(2)) ;

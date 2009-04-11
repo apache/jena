@@ -47,6 +47,9 @@ public class Names
     public static final String optStats             = "stats.opt";
     public static final String optDefault           = "fixed.opt";      // Currently, it's just the presence of this file that matters.
     public static final String optNone              = "none.opt"; 
+    
+    // ---- Names for Java properties in metadata files 
+    
 }
 
 /*

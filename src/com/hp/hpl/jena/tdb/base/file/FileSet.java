@@ -10,6 +10,9 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.Properties;
 
+import atlas.lib.FileOps;
+import atlas.lib.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,17 +50,33 @@ public class FileSet
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(String directory, String basename)
     {
-        this(new Location(directory), basename) ;
+        init(new Location(directory), basename) ;
+    }
+    
+    /** Create a FileSet given Location (directory) and name within the directory */  
+    public FileSet(String filename)
+    {
+        Tuple<String> t = FileOps.splitDirFile(filename) ;
+        String dir = t.get(0) ;
+        String fn = t.get(1) ;
+        if ( dir == null )
+            dir = "." ;
+        init(new Location(dir), fn) ;
     }
     
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(Location directory, String basename)
     {
+        init(directory, basename) ;
+    }
+    
+    private void init(Location directory, String basename)
+    {
         this.location = directory ;
         this.basename = basename ;
         this.metaFilename = location.absolute(basename, Names.metaData) ;
         this.properties = new Properties() ;
-        loadProperties() ;
+        loadProperties() ; 
     }
     
     private FileSet() {}
