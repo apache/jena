@@ -123,6 +123,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     final public void close()
     {
+        prefixes.close();
         tripleTable.close();
         super.close() ;
     }
