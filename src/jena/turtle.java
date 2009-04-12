@@ -28,7 +28,7 @@ public class turtle
         for ( int i = 0 ; i < args.length ; i++ )
         {
             String fn = args[i] ;
-            parse(fn, "http://base/") ;
+            parse("http://base/", fn) ;
         }
     }        
 
