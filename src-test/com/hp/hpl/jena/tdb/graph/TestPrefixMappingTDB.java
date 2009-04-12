@@ -6,13 +6,20 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import atlas.lib.FileOps;
-import org.junit.Test;
+import java.util.Map;
 
+import org.junit.Test;
+import atlas.lib.FileOps;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
 {
@@ -58,8 +65,40 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         // This fails when run in the complete test suite, but not run individually. 
         prefixes = DatasetPrefixes.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
+        prefixes.close();
     }
+    
+    @Test public void persistent2()
+    {
+        // Test case from Holger Knublauch
+        if ( false )
+        {
+            //TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
+            TDB.getContext().set(SystemTDB.symFileMode, "direct") ;
+        }
+        String DB = ConfigTest.getTestingDir() ;
+        FileOps.clearDirectory(DB) ;
+        {
+            // Create new DB (assuming it's empty now)
+            Graph graph = TDBFactory.createGraph(DB);
+            PrefixMapping pm = graph.getPrefixMapping();
+            pm.setNsPrefix("test", "http://test");
+            graph.close();
+        }
 
+        {
+            // Reconnect to the same DB
+            Graph graph = TDBFactory.createGraph(DB);
+            PrefixMapping pm = graph.getPrefixMapping();
+            Map<String, String> map = pm.getNsPrefixMap();
+            assertEquals(1, map.size()) ;
+            //System.out.println("Size: " + map.size());
+            String ns = pm.getNsPrefixURI("test");
+            //System.out.println("Namespace: " + ns);
+            assertEquals("http://test", ns) ;
+            graph.close();
+        }
+    }
 }
 
 /*
