@@ -5,16 +5,18 @@
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: JenaUUID.java,v 1.5 2009-01-16 17:23:59 andy_seaborne Exp $
+ * @version  $Id: JenaUUID.java,v 1.6 2009-04-13 16:03:17 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
 package com.hp.hpl.jena.shared.uuid;
 
+import java.util.UUID;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// TODO
+// TO DO
 // + Comments and renaming.
 // ? Move to/from string code here (string <=> pair of longs).
 //   OK but unparse code makes explicit what goes where in the structures
@@ -61,7 +63,13 @@ public abstract class JenaUUID
     /** Format as a URN - that is urn:uuid:ABCD */
     public String asURN()    { return "urn:uuid:"+toString() ; }
 
-	// ----------------------------------------------------		
+	/** Return a {@link java.util.UUID} for this Jena-generated UUID */  
+    public UUID asUUID()
+    {
+        return new UUID(getMostSignificantBits(), getLeastSignificantBits()) ;
+    }
+
+    // ----------------------------------------------------		
 	// Factory
     
     static UUIDFactory factory = new UUID_V1_Gen() ;
@@ -77,7 +85,7 @@ public abstract class JenaUUID
     public static String strNil()     { return UUID_nil.getNilString() ; }
     public boolean isNil()            { return this.equals(nil()) ; } // Or this == UUID_nil.nil because it's a singleton.
 
-    /** Recreate a UUID from string*/
+    /** Recreate a UUID from string */
     public static JenaUUID parse(String s)
     {
     	if ( s.equals(strNil()) )
@@ -125,7 +133,7 @@ public abstract class JenaUUID
                 log.warn(s+" : Oh look! An NCS UUID ID.  Call the museum.") ;
                 break ;
             case Var_DCE: // DCE - should have been caught earlier.
-                log.warn(s+" : Oh look! A DCE UUID ID - but we shodul have already handled this") ;
+                log.warn(s+" : Oh look! A DCE UUID ID - but we should have already handled this") ;
                 break ;
             case Var_MS_GUID:
                 log.warn(s+" : Microsoft UUID ID.") ;
