@@ -7,8 +7,11 @@
 package com.hp.hpl.jena.iri.impl;
 
 import java.io.IOException;
+import java.util.Iterator;
 
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.Violation;
 
 
 /** Driver for the build process */
@@ -17,8 +20,15 @@ public class AFS_Build
     static public void main(String args[]) throws IOException
     {
         String s = "http://123.18/foo" ;
-        IRIFactory.iriImplementation().construct(s) ;
+        IRI iri = IRIFactory.iriImplementation().create(s) ;
+        for ( Iterator<Violation> iter = iri.violations(true) ; iter.hasNext() ; )
+        {
+            Violation v = iter.next();
+            System.out.println(v.getShortMessage()) ;
+        }
+        System.out.println(iri) ;
         
+        System.exit(0) ;
         
 //        PatternCompiler.main(args) ;
 //        AbsLexer.main(args) ;
