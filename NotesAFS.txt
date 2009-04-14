@@ -1,3 +1,6 @@
+== Fix for numeric host names. 
+        See patternCompiler.ipV4Address (line 293)
+
 === JFlex
 
 Build:
