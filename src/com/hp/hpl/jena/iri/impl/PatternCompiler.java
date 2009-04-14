@@ -478,17 +478,18 @@ static VarPattern unreservedDNSLabel[] = {
         out.write(name.substring(1));
         out.write("\n%%\n");
         int exc1[]=
-        new int[]{DOUBLE_DASH_IN_REG_NAME,NOT_DNS_NAME};
+            new int[]{DOUBLE_DASH_IN_REG_NAME,NOT_DNS_NAME};
         int empty[]= new int[0];
         int sub1[] = new int[]{ACE_PREFIX};
-//        int sub2[] = new int[]{DOUBLE_DASH_IN_REG_NAME,ACE_PREFIX};
+        //        int sub2[] = new int[]{DOUBLE_DASH_IN_REG_NAME,ACE_PREFIX};
         int sub4[] = new int[]{DOUBLE_DASH_IN_REG_NAME};
         int sub3[] = new int[]{NOT_DNS_NAME};
+        
         new ExpandAndOutput(exc1,empty,true).expand("@{" + name + "}");
-     //   new ExpandAndOutput(empty,sub2,true).expand("@{" + name + "}");
+        //   new ExpandAndOutput(empty,sub2,true).expand("@{" + name + "}");
         new ExpandAndOutput(sub1,sub4,true).expand("@{" + name + "}");
         new ExpandAndOutput(empty,sub3,true).expand("@{" + name + "}");
-        
+
         out.write("\n");
         System.out.println(name + ": " + count + " expansions");
         out.close();

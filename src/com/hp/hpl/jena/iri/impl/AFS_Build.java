@@ -19,21 +19,31 @@ public class AFS_Build
 {
     static public void main(String args[]) throws IOException
     {
-        String s = "http://123.18/foo" ;
+        checkOne("http://123.18.56/foo") ;
+        checkOne("http://123.18/foo") ;
+        checkOne("http://123/foo") ;
+        checkOne("http://123.18.56.19/foo") ;
+        System.exit(0) ;
+        
+        // See patternCompiler.ipV4Address (line 293) and ViolationCodes.
+        
+        PatternCompiler.main(args) ;
+        AbsLexer.main(args) ;
+        // Now refresh and rebuild.
+        // Need to edit result to remove "private" from yytext in each subparser
+    }
+    
+    static void checkOne(String s)
+    {
         IRI iri = IRIFactory.iriImplementation().create(s) ;
+        System.out.println(">> "+iri) ;
         for ( Iterator<Violation> iter = iri.violations(true) ; iter.hasNext() ; )
         {
             Violation v = iter.next();
             System.out.println(v.getShortMessage()) ;
         }
-        System.out.println(iri) ;
-        
-        System.exit(0) ;
-        
-//        PatternCompiler.main(args) ;
-//        AbsLexer.main(args) ;
-//        // Now refresh and rebuild.
-//        // Need to edit result to remove "private" from yytext in each subparser
+        System.out.println("<< "+iri) ;
+        System.out.println() ;
     }
 }
 
