@@ -186,13 +186,13 @@ public class tdbcheck extends CmdARQ
 
         final private void checkURI(Node node)
         {
+            // This code and the riot checking code need merging.
             boolean includeWarnings = true ;
             IRI iri = iriFactory.create(node.getURI()); // always works
             if (iri.hasViolation(includeWarnings))
             {
-                @SuppressWarnings("unchecked")
                 Iterator<Violation> it = iri.violations(includeWarnings);
-                // Deemphasise some wanrings.
+                // Deemphasise some warnings.
                 Violation vError = null ;
                 Violation vWarning = null ;
                 Violation vSub = null ;
@@ -205,7 +205,7 @@ public class tdbcheck extends CmdARQ
                         continue ;
                     }
                     
-                    // Supress the importance of these.
+                    // Surpress the importance of these.
                     if ( code == Violation.LOWERCASE_PREFERRED ||
                          code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
                     {
