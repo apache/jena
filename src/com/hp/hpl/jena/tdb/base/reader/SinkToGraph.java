@@ -31,17 +31,19 @@ public abstract class SinkToGraph<T> implements Sink<T>
             public void event(Object dest, Event event)
             {
                 graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
-            }} ;
+            }
+        } ;
 
-            el2 = new EventListener(){
-                @Override
-                public void event(Object dest, Event event)
-                {
-                    graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
-                }} ;
+        el2 = new EventListener(){
+            @Override
+            public void event(Object dest, Event event)
+            {
+                graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
+            }
+        } ;
 
-                EventManager.register(this, NodeTupleReader.startRead, el1) ;
-                EventManager.register(this, NodeTupleReader.finishRead, el2) ;
+        EventManager.register(this, NodeTupleReader.startRead, el1) ;
+        EventManager.register(this, NodeTupleReader.finishRead, el2) ;
 
     }
 
