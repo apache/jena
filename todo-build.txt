@@ -1,0 +1,50 @@
+Build two jars
+   <target name="package.jar" depends="compile" >
+
+Two publications.
+
+ivy-arq.xml
+ivy-arq-extra.xml
+
+#include for ivy files?
+
+
+
+  <property name="jarfile"         value="${name}.jar"/>
+  <property name="jarfile.extra"   value="${name}-extra.jar"/>
+
+   <property name="extra.classes" 
+	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
+
+  <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
+
+  <target name="make-jar-core" depends="compile">
+    <!-- Core jar -->
+    <jar destfile="${lib.dir}/${jarfile}" index="yes">
+      <fileset dir="${classes.build.dir}" excludes="${extra.classes}"/>
+    </jar>
+  </target>
+  
+  <!-- Tests and examples jar -->
+  <target name="make-jar-extra" depends="compile">
+    <jar destfile="${lib.dir}/${jarfile.extra}" index="yes">
+      <fileset dir="${classes.build.dir}" includes="${extra.classes}"/>
+    </jar>
+  </target>
+-------------------
+ <macrodef name="arq-publish-one"> 
+    <attribute name="ivyfile"/>
+    <!-- <element name="some-tasks" optional="yes"/> -->
+    <sequential>
+      <ivy:resolve file="@{ivyfile}"/>
+      <ivy:publish conf="main" 
+		 resolver="dev-resolver" 
+		 overwrite="true">
+	<artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+    </ivy:publish>
+    </sequential>
+  </macrodef>
+
+  <target name="arq-publish" depends="artifacts" description="Publish!">
+    <arq-publish-one ivyfile="ivy-extra.xml"/>
+  </target>
