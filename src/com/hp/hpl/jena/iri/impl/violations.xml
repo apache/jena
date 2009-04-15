@@ -1050,6 +1050,8 @@ h16         = 1*4HEXDIG
 	    <bad>ldap://[2001:dB8::7]/c=GB?objectClass?one</bad>
     </violation>
 
+    <!--
+      RFC 1123 sec 2.1 chnages this.
     <violation>
 	    <name>IP_V4_HAS_FOUR_COMPONENTS</name>
 	    <description>
@@ -1069,6 +1071,8 @@ h16         = 1*4HEXDIG
 	    <bad>ldap://30.55.102/c=GB?objectClass?one</bad>
 	    <bad>ldap://20.20.20.20.20/c=GB?objectClass?one</bad>
     </violation>
+    -->
+
     <violation>
 	    <name>IP_V4_OCTET_RANGE</name>
 	    <description>

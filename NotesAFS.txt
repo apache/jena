@@ -1,15 +1,21 @@
-== Fix for numeric host names. 
-        See patternCompiler.ipV4Address (line 293)
+===
+Changes for RFC 1123 sec 2.1
+violations.xml: comment out IP_V4_HAS_FOUR_COMPONENTS
+PattenCompiler: remove entry using IP_V4_HAS_FOUR_COMPONENTS in for ipV4Address[]
 
 === JFlex
 
 Build:
 
-Run
-   PatternCompiler.main (writes host.jflex)
-then run
-   AbsLexer.main, 
+1/ BuildViolationCodes.main(args) (violations.xml => Java code)
+
+2/ PatternCompiler.main (writes host.jflex)
+
+3/ AbsLexer.main (writes other jflex files
+
 then refresh in Eclipse.
+
+Edit to remove errors and warnings.
 
 See AFS_Build
 (JFlex 1.4.3)

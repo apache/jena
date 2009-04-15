@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.iri.impl;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.iri.IRI;
@@ -17,18 +16,22 @@ import com.hp.hpl.jena.iri.Violation;
 /** Driver for the build process */
 public class AFS_Build
 {
-    static public void main(String args[]) throws IOException
+    static public void main(String args[]) throws Exception
     {
         checkOne("http://123.18.56/foo") ;
         checkOne("http://123.18/foo") ;
         checkOne("http://123/foo") ;
         checkOne("http://123.18.56.19/foo") ;
         System.exit(0) ;
+
+        // violation.xml ==> ViolationCodes
+        BuildViolationCodes.main(args) ;
         
-        // See patternCompiler.ipV4Address (line 293) and ViolationCodes.
-        
+        // host.jflex
         PatternCompiler.main(args) ;
+        // Other jflex files
         AbsLexer.main(args) ;
+        
         // Now refresh and rebuild.
         // Need to edit result to remove "private" from yytext in each subparser
     }

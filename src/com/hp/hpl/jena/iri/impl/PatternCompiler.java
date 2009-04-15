@@ -290,7 +290,8 @@ public class PatternCompiler implements ViolationCodes {
     static VarPattern ipV4Address[] = {
             new VarPattern("(@{decOctet}\\.){3}@{decOctet}"),
             new VarPattern("([0-9]+\\.){3}[0-9]+", IP_V4_OCTET_RANGE),
-            new VarPattern("[0-9\\.]+\\.[0-9\\.]+", IP_V4_HAS_FOUR_COMPONENTS), 
+            // RFC 1123 sec 2.1 modified the rules for host names to make just digits legal as a DNS name.
+            //new VarPattern("[0-9\\.]+\\.[0-9\\.]+", IP_V4_HAS_FOUR_COMPONENTS), 
             };
 
     static VarPattern decOctet[] = { new VarPattern(

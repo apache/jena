@@ -260,18 +260,6 @@ public class TestMoreExamples extends TestCase implements
 //        r2.addTest(new TestMoreExamples("testDummy"));
         return r2;
     }
-    
-    static public void main(String args[]) throws IOException, ParserConfigurationException, SAXException{
-//        try {
-////            load();
-//        } catch (SAXParseException e) {
-//            System.err.println(e.getLineNumber());
-//            System.err.println(e.toString());
-//            System.err.println(e.getMessage());
-//            
-//        } 
-    }
-    
 }
 
 /*

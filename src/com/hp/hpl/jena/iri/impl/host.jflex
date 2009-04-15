@@ -122,24 +122,13 @@ host => (@{ipLiteral})
 ipLiteral => (\\[@{ipV6Address}\\])
 ipV6Address => (((@{h16}:){6}@{ls32}|::(@{h16}:){5}@{ls32}|@{h16}?::(@{h16}:){4}@{ls32}|((@{h16}:){0,1}@{h16})?::(@{h16}:){3}@{ls32}|((@{h16}:){0,2}@{h16})?::(@{h16}:){2}@{ls32}|((@{h16}:){0,3}@{h16})?::(@{h16}:){1}@{ls32}|((@{h16}:){0,4}@{h16})?::@{ls32}|((@{h16}:){0,5}@{h16})?::@{h16}|((@{h16}:){0,6}@{h16})?::))
 h16 => (@{lowerHexDig}{1,4})
-lowerHexDig => ([0-9a-f])
-ls32 => ((@{h16}:@{h16}|@{ipV4Address}))
-ipV4Address => ([0-9\\.]+\\.[0-9\\.]+)
-*/
-((\[((((([0-9a-f]){1,4}):){6}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|::((([0-9a-f]){1,4}):){5}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(([0-9a-f]){1,4})?::((([0-9a-f]){1,4}):){4}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9a-f]){1,4}):){0,1}(([0-9a-f]){1,4}))?::((([0-9a-f]){1,4}):){3}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9a-f]){1,4}):){0,2}(([0-9a-f]){1,4}))?::((([0-9a-f]){1,4}):){2}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9a-f]){1,4}):){0,3}(([0-9a-f]){1,4}))?::((([0-9a-f]){1,4}):){1}(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9a-f]){1,4}):){0,4}(([0-9a-f]){1,4}))?::(((([0-9a-f]){1,4}):(([0-9a-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9a-f]){1,4}):){0,5}(([0-9a-f]){1,4}))?::(([0-9a-f]){1,4})|(((([0-9a-f]){1,4}):){0,6}(([0-9a-f]){1,4}))?::))\])) {
-rule(5); error(IP_V4_HAS_FOUR_COMPONENTS);}
-/*
-host => (@{ipLiteral})
-ipLiteral => (\\[@{ipV6Address}\\])
-ipV6Address => (((@{h16}:){6}@{ls32}|::(@{h16}:){5}@{ls32}|@{h16}?::(@{h16}:){4}@{ls32}|((@{h16}:){0,1}@{h16})?::(@{h16}:){3}@{ls32}|((@{h16}:){0,2}@{h16})?::(@{h16}:){2}@{ls32}|((@{h16}:){0,3}@{h16})?::(@{h16}:){1}@{ls32}|((@{h16}:){0,4}@{h16})?::@{ls32}|((@{h16}:){0,5}@{h16})?::@{h16}|((@{h16}:){0,6}@{h16})?::))
-h16 => (@{lowerHexDig}{1,4})
 lowerHexDig => ([0-9A-Fa-f])
 ls32 => ((@{h16}:@{h16}|@{ipV4Address}))
 ipV4Address => ((@{decOctet}\\.){3}@{decOctet})
 decOctet => (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))
 */
 ((\[((((([0-9A-Fa-f]){1,4}):){6}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|::((([0-9A-Fa-f]){1,4}):){5}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(([0-9A-Fa-f]){1,4})?::((([0-9A-Fa-f]){1,4}):){4}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(((([0-9A-Fa-f]){1,4}):){0,1}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){3}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(((([0-9A-Fa-f]){1,4}):){0,2}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){2}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(((([0-9A-Fa-f]){1,4}):){0,3}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){1}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(((([0-9A-Fa-f]){1,4}):){0,4}(([0-9A-Fa-f]){1,4}))?::(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))))|(((([0-9A-Fa-f]){1,4}):){0,5}(([0-9A-Fa-f]){1,4}))?::(([0-9A-Fa-f]){1,4})|(((([0-9A-Fa-f]){1,4}):){0,6}(([0-9A-Fa-f]){1,4}))?::))\])) {
-rule(6); error(IPv6ADDRESS_SHOULD_BE_LOWERCASE);}
+rule(5); error(IPv6ADDRESS_SHOULD_BE_LOWERCASE);}
 /*
 host => (@{ipLiteral})
 ipLiteral => (\\[@{ipV6Address}\\])
@@ -150,43 +139,26 @@ ls32 => ((@{h16}:@{h16}|@{ipV4Address}))
 ipV4Address => (([0-9]+\\.){3}[0-9]+)
 */
 ((\[((((([0-9A-Fa-f]){1,4}):){6}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|::((([0-9A-Fa-f]){1,4}):){5}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(([0-9A-Fa-f]){1,4})?::((([0-9A-Fa-f]){1,4}):){4}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(((([0-9A-Fa-f]){1,4}):){0,1}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){3}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(((([0-9A-Fa-f]){1,4}):){0,2}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){2}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(((([0-9A-Fa-f]){1,4}):){0,3}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){1}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(((([0-9A-Fa-f]){1,4}):){0,4}(([0-9A-Fa-f]){1,4}))?::(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|(([0-9]+\.){3}[0-9]+)))|(((([0-9A-Fa-f]){1,4}):){0,5}(([0-9A-Fa-f]){1,4}))?::(([0-9A-Fa-f]){1,4})|(((([0-9A-Fa-f]){1,4}):){0,6}(([0-9A-Fa-f]){1,4}))?::))\])) {
-rule(7); error(IPv6ADDRESS_SHOULD_BE_LOWERCASE);error(IP_V4_OCTET_RANGE);}
-/*
-host => (@{ipLiteral})
-ipLiteral => (\\[@{ipV6Address}\\])
-ipV6Address => (((@{h16}:){6}@{ls32}|::(@{h16}:){5}@{ls32}|@{h16}?::(@{h16}:){4}@{ls32}|((@{h16}:){0,1}@{h16})?::(@{h16}:){3}@{ls32}|((@{h16}:){0,2}@{h16})?::(@{h16}:){2}@{ls32}|((@{h16}:){0,3}@{h16})?::(@{h16}:){1}@{ls32}|((@{h16}:){0,4}@{h16})?::@{ls32}|((@{h16}:){0,5}@{h16})?::@{h16}|((@{h16}:){0,6}@{h16})?::))
-h16 => (@{lowerHexDig}{1,4})
-lowerHexDig => ([0-9A-Fa-f])
-ls32 => ((@{h16}:@{h16}|@{ipV4Address}))
-ipV4Address => ([0-9\\.]+\\.[0-9\\.]+)
-*/
-((\[((((([0-9A-Fa-f]){1,4}):){6}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|::((([0-9A-Fa-f]){1,4}):){5}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(([0-9A-Fa-f]){1,4})?::((([0-9A-Fa-f]){1,4}):){4}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9A-Fa-f]){1,4}):){0,1}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){3}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9A-Fa-f]){1,4}):){0,2}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){2}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9A-Fa-f]){1,4}):){0,3}(([0-9A-Fa-f]){1,4}))?::((([0-9A-Fa-f]){1,4}):){1}(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9A-Fa-f]){1,4}):){0,4}(([0-9A-Fa-f]){1,4}))?::(((([0-9A-Fa-f]){1,4}):(([0-9A-Fa-f]){1,4})|([0-9\.]+\.[0-9\.]+)))|(((([0-9A-Fa-f]){1,4}):){0,5}(([0-9A-Fa-f]){1,4}))?::(([0-9A-Fa-f]){1,4})|(((([0-9A-Fa-f]){1,4}):){0,6}(([0-9A-Fa-f]){1,4}))?::))\])) {
-rule(8); error(IPv6ADDRESS_SHOULD_BE_LOWERCASE);error(IP_V4_HAS_FOUR_COMPONENTS);}
+rule(6); error(IPv6ADDRESS_SHOULD_BE_LOWERCASE);error(IP_V4_OCTET_RANGE);}
 /*
 host => (@{ipLiteral})
 ipLiteral => (\\[[^]*)
 */
 ((\[[^]*)) {
-rule(9); error(IP_V6_OR_FUTURE_ADDRESS_SYNTAX);}
+rule(7); error(IP_V6_OR_FUTURE_ADDRESS_SYNTAX);}
 /*
 host => (@{ipV4Address})
 ipV4Address => ((@{decOctet}\\.){3}@{decOctet})
 decOctet => (([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))
 */
 ((((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\.){3}(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])))) {
-rule(10); }
+rule(8); }
 /*
 host => (@{ipV4Address})
 ipV4Address => (([0-9]+\\.){3}[0-9]+)
 */
 ((([0-9]+\.){3}[0-9]+)) {
-rule(11); error(IP_V4_OCTET_RANGE);}
-/*
-host => (@{ipV4Address})
-ipV4Address => ([0-9\\.]+\\.[0-9\\.]+)
-*/
-(([0-9\.]+\.[0-9\.]+)) {
-rule(12); error(IP_V4_HAS_FOUR_COMPONENTS);}
+rule(9); error(IP_V4_OCTET_RANGE);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -200,7 +172,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.?)) {
-rule(13); }
+rule(10); }
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -214,7 +186,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(14); error(DNS_LABEL_DASH_START_OR_END);}
+rule(11); error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -228,7 +200,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(15); error(LOWERCASE_PREFERRED);}
+rule(12); error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -242,7 +214,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(16); error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(13); error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -256,7 +228,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(17); error(NON_URI_CHARACTER);}
+rule(14); error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -270,7 +242,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(18); error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(15); error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -284,7 +256,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(19); error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(16); error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -298,7 +270,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(20); error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(17); error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -312,7 +284,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.)*((-|((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.?)) {
-rule(21); error(DNS_LABEL_DASH_START_OR_END);}
+rule(18); error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -326,7 +298,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.)*((-|((([a-z0-9])|_)))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(22); error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
+rule(19); error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -340,7 +312,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.)*((-|((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(23); error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
+rule(20); error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -354,7 +326,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.)*((-|((([a-zA-Z0-9])|_)))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(24); error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(21); error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -368,7 +340,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(25); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
+rule(22); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -382,7 +354,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-z0-9])|[_\x80-\uFFFF])))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(26); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(23); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -396,7 +368,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(27); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(24); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -410,7 +382,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(28); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(25); error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -425,7 +397,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|_))|(([a-z0-9]){2}--))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_))|(([a-z0-9]){2}--))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.?)) {
-rule(29); error(ACE_PREFIX);}
+rule(26); error(ACE_PREFIX);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -440,7 +412,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|_))|(([a-z0-9]){2}--))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_))|(([a-z0-9]){2}--))((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(30); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);}
+rule(27); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -455,7 +427,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(31); error(ACE_PREFIX);error(LOWERCASE_PREFERRED);}
+rule(28); error(ACE_PREFIX);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -470,7 +442,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(32); error(ACE_PREFIX);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(29); error(ACE_PREFIX);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -485,7 +457,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(33); error(ACE_PREFIX);error(NON_URI_CHARACTER);}
+rule(30); error(ACE_PREFIX);error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -500,7 +472,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--))((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(34); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(31); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -515,7 +487,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(35); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(32); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -530,7 +502,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--))((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(36); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(33); error(ACE_PREFIX);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -545,7 +517,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|_))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(((([a-z0-9])|_))))?)\.?)) {
-rule(37); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);}
+rule(34); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -560,7 +532,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|_))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|_))+-)*((([a-z0-9])|_))+)?)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(38); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
+rule(35); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -575,7 +547,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(39); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
+rule(36); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -590,7 +562,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|_))+-)*((([a-zA-Z0-9])|_))+)?)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(40); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(37); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -605,7 +577,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(41); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
+rule(38); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -620,7 +592,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF]))|(([a-z0-9]){2}--)|-)((((((([a-z0-9])|[_\x80-\uFFFF]))+-)*((([a-z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(42); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(39); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -635,7 +607,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(43); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(40); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -650,7 +622,7 @@ labelSingleDashInside => ((@{labelChar}+-)*@{labelChar}+)
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|(([a-zA-Z0-9]){2}--)|-)((((((([a-zA-Z0-9])|[_\x80-\uFFFF]))+-)*((([a-zA-Z0-9])|[_\x80-\uFFFF]))+)?)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(44); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(41); error(ACE_PREFIX);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -663,7 +635,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(((([a-z0-9])|_))))?)\.?)) {
-rule(45); error(DOUBLE_DASH_IN_REG_NAME);}
+rule(42); error(DOUBLE_DASH_IN_REG_NAME);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -676,7 +648,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(-|((([a-z0-9])|_))))?)\.)*((((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(46); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);}
+rule(43); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -689,7 +661,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(47); error(DOUBLE_DASH_IN_REG_NAME);error(LOWERCASE_PREFERRED);}
+rule(44); error(DOUBLE_DASH_IN_REG_NAME);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -702,7 +674,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(-|((([a-zA-Z0-9])|_))))?)\.)*((((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(48); error(DOUBLE_DASH_IN_REG_NAME);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(45); error(DOUBLE_DASH_IN_REG_NAME);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -715,7 +687,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(49); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);}
+rule(46); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -728,7 +700,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(50); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(47); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -741,7 +713,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(51); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(48); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -754,7 +726,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(52); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(49); error(DOUBLE_DASH_IN_REG_NAME);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -767,7 +739,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(((([a-z0-9])|_))))?)\.)*((-|((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(((([a-z0-9])|_))))?)\.?)) {
-rule(53); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);}
+rule(50); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -780,7 +752,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(-|((([a-z0-9])|_))))?)\.)*((-|((([a-z0-9])|_)))(((((([a-z0-9])|_))|-)*)(-|((([a-z0-9])|_))))?)\.?)) {
-rule(54); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
+rule(51); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -793,7 +765,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(((([a-zA-Z0-9])|_))))?)\.)*((-|((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(55); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
+rule(52); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -806,7 +778,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(-|((([a-zA-Z0-9])|_))))?)\.)*((-|((([a-zA-Z0-9])|_)))(((((([a-zA-Z0-9])|_))|-)*)(-|((([a-zA-Z0-9])|_))))?)\.?)) {
-rule(56); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(53); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -819,7 +791,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(57); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
+rule(54); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -832,7 +804,7 @@ letterDigit => ([a-z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-z0-9])|[_\x80-\uFFFF])))(((((([a-z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(58); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
+rule(55); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -845,7 +817,7 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(59); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
+rule(56); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);}
 /*
 host => (@{regname})
 regname => ((@{label}\\.)*@{label}\\.?)
@@ -858,11 +830,11 @@ letterDigit => ([a-zA-Z0-9])
 labelPostfix => (-|@{labelChar})
 */
 (((((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.)*((-|((([a-zA-Z0-9])|[_\x80-\uFFFF])))(((((([a-zA-Z0-9])|[_\x80-\uFFFF]))|-)*)(-|((([a-zA-Z0-9])|[_\x80-\uFFFF]))))?)\.?)) {
-rule(60); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
+rule(57); error(DOUBLE_DASH_IN_REG_NAME);error(DNS_LABEL_DASH_START_OR_END);error(NON_URI_CHARACTER);error(LOWERCASE_PREFERRED);error(DNS_LABEL_DASH_START_OR_END);}
 /*
 host => (@{regname})
 regname => ([^]*)
 */
 (([^]*)) {
-rule(61); error(NOT_DNS_NAME);}
+rule(58); error(NOT_DNS_NAME);}
 

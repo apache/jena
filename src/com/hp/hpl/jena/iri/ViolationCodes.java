@@ -3,7 +3,7 @@
     
     
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
  /*
@@ -4071,65 +4071,6 @@ This class is not part of the API.
             );
     
             new ViolationCodeInfo(
-                IP_V4_HAS_FOUR_COMPONENTS,
-                "IP_V4_HAS_FOUR_COMPONENTS",
-                "A host entry is entirely numeric but does not have four components like an IP version 4 address.",
-                "<p>A host entry is entirely numeric but does not have four components like an IP version 4 address.</p>",
-                0,
-                new InSpec[]{
-                  
-       new FromSpec_iri(
-                "URI", 
-                -1,
-                "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2",
-                "A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of *four decimal numbers* in the range 0 to 255, separated by \".\"),",
-                "<p>A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of"+
-     " <em>four decimal numbers</em> "+
-     "in the range 0 to 255, separated by \".\"),</p>"
-            ),
-    
-            new FromAlso(
-                "IRI",
-                "http://www.apps.ietf.org/rfc/rfc3987.html"
-            ),
-    
-            new FromAlso(
-                "RDF",
-                "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref"
-            ),
-    
-            new FromAlso(
-                "XML",
-                "http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid"
-            ),
-    
-            new FromAlso(
-                "XLink",
-                "http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators"
-            ),
-    
-            new FromAlso(
-                "Schema",
-                "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI"
-            ),
-    
-                },
-                new String[]{
-                  
-      "ldap://30.55.102/c=GB?objectClass?one",
-    
-      "ldap://20.20.20.20.20/c=GB?objectClass?one",
-    
-                },
-                
-                new String[]{
-                  
-                },
-                
-                false
-            );
-    
-            new ViolationCodeInfo(
                 IP_V4_OCTET_RANGE,
                 "IP_V4_OCTET_RANGE",
                 "A host entry consists of four numbers, but they are not in the range 0-255, or have leading zeros.",
@@ -6697,49 +6638,6 @@ h16         = 1*4HEXDIG
         
     
 /**
-		    A host entry is entirely numeric but does not have
-		    four components like an IP version 4 address.
-	    
-     <p>This is specified in <a href="#ref-URI">
-     [URI]</a>.</p>
-     <dl>
-     
-     <dt>
-     
-       see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
-     </dt>
-     <dd>
-     
-			    A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of 
-     <em>four decimal numbers</em>
-     in the range 0 to 255, separated by "."),
-		    
-     </dd>
-    
-     </dl>
-     
-    
-          <p>This violates the following specifications:
-          <a href="#ref-URI">[URI]</a>, <a href="#ref-IRI">[IRI]</a>, <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
-          </p>
-       
-         <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
-       
-        <p>The following are examples of IRIs that have this violation:</p>
-        <ul>
-       
-     <li>&lt;<code>ldap://30.55.102/c=GB?objectClass?one</code>></li>
-    
-     <li>&lt;<code>ldap://20.20.20.20.20/c=GB?objectClass?one</code>></li>
-    
-        </ul>
-       
-*/
-        int IP_V4_HAS_FOUR_COMPONENTS = 27;
-        
-    
-/**
 		    A host entry consists of four numbers,
 		    but they are not in the range 0-255, or have leading zeros.
 	    
@@ -6804,7 +6702,7 @@ dec-octet   = DIGIT                 ; 0-9
         </ul>
        
 */
-        int IP_V4_OCTET_RANGE = 28;
+        int IP_V4_OCTET_RANGE = 27;
         
     
 /**
@@ -6852,7 +6750,7 @@ dec-octet   = DIGIT                 ; 0-9
         </ul>
        
 */
-        int NOT_DNS_NAME = 29;
+        int NOT_DNS_NAME = 28;
         
     
 /**
@@ -6900,7 +6798,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int USE_PUNYCODE_NOT_PERCENTS = 30;
+        int USE_PUNYCODE_NOT_PERCENTS = 29;
         
     
 /**
@@ -6948,7 +6846,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int ILLEGAL_PERCENT_ENCODING = 31;
+        int ILLEGAL_PERCENT_ENCODING = 30;
         
     
 /**
@@ -6956,7 +6854,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
     but is used to trigger more expensive processing.
     
 */
-        int ACE_PREFIX = 32;
+        int ACE_PREFIX = 31;
         
     
 /**
@@ -6974,7 +6872,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int LONE_SURROGATE = 33;
+        int LONE_SURROGATE = 32;
         
     
 /**
@@ -7026,7 +6924,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int DNS_LABEL_DASH_START_OR_END = 34;
+        int DNS_LABEL_DASH_START_OR_END = 33;
         
     
 /**
@@ -7087,7 +6985,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int BAD_IDN_UNASSIGNED_CHARS = 35;
+        int BAD_IDN_UNASSIGNED_CHARS = 34;
         
     
 /**
@@ -7151,7 +7049,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         </ul>
        
 */
-        int BAD_IDN = 36;
+        int BAD_IDN = 35;
         
     
 /**
@@ -7205,7 +7103,7 @@ Applications may choose to ignore or reject such data when it is received as par
         </ul>
        
 */
-        int HAS_PASSWORD = 37;
+        int HAS_PASSWORD = 36;
         
     
 /**
@@ -7261,7 +7159,7 @@ strong visual look-alikes. Because of the likelihood of transcription errors, th
          <p>Unimplemented.</p>
        
 */
-        int DISCOURAGED_IRI_CHARACTER = 38;
+        int DISCOURAGED_IRI_CHARACTER = 37;
         
     
 /**
@@ -7310,37 +7208,37 @@ A component using right-to-left characters SHOULD start and end
          <p>Unimplemented.</p>
        
 */
-        int BAD_BIDI_SUBCOMPONENT = 39;
+        int BAD_BIDI_SUBCOMPONENT = 38;
         
     
 /**
        // TODO complete entry for DNS_LENGTH_LIMIT
 */
-        int DNS_LENGTH_LIMIT = 40;
+        int DNS_LENGTH_LIMIT = 39;
         
     
 /**
        // TODO complete entry for DNS_LABEL_LENGTH_LIMIT
 */
-        int DNS_LABEL_LENGTH_LIMIT = 41;
+        int DNS_LABEL_LENGTH_LIMIT = 40;
         
     
 /**
        // TODO complete entry for NOT_UTF8_ESCAPE
 */
-        int NOT_UTF8_ESCAPE = 42;
+        int NOT_UTF8_ESCAPE = 41;
         
     
 /**
        // TODO complete entry for NOT_UTF8_ESCAPE_IN_HOST
 */
-        int NOT_UTF8_ESCAPE_IN_HOST = 43;
+        int NOT_UTF8_ESCAPE_IN_HOST = 42;
         
     
 /**
        // TODO complete entry for BAD_DOT_IN_IDN
 */
-        int BAD_DOT_IN_IDN = 44;
+        int BAD_DOT_IN_IDN = 43;
         
     
 /**
@@ -7416,7 +7314,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         </ul>
        
 */
-        int UNREGISTERED_IANA_SCHEME = 45;
+        int UNREGISTERED_IANA_SCHEME = 44;
         
     
 /**
@@ -7470,7 +7368,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         </ul>
        
 */
-        int UNREGISTERED_NONIETF_SCHEME_TREE = 46;
+        int UNREGISTERED_NONIETF_SCHEME_TREE = 45;
         
     
 /**
@@ -7513,7 +7411,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>Unimplemented.</p>
        
 */
-        int NOT_NFC = 47;
+        int NOT_NFC = 46;
         
     
 /**
@@ -7557,7 +7455,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>Unimplemented.</p>
        
 */
-        int NOT_NFKC = 48;
+        int NOT_NFKC = 47;
         
     
 /**TODO
@@ -7568,7 +7466,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int DEPRECATED_UNICODE_CHARACTER = 49;
+        int DEPRECATED_UNICODE_CHARACTER = 48;
         
     
 /**TODO
@@ -7579,7 +7477,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int UNDEFINED_UNICODE_CHARACTER = 50;
+        int UNDEFINED_UNICODE_CHARACTER = 49;
         
     
 /**TODO
@@ -7590,7 +7488,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int PRIVATE_USE_CHARACTER = 51;
+        int PRIVATE_USE_CHARACTER = 50;
         
     
 /**TODO
@@ -7601,7 +7499,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int UNICODE_CONTROL_CHARACTER = 52;
+        int UNICODE_CONTROL_CHARACTER = 51;
         
     
 /**The character code is not assigned in the version of Unicode implemented here.
@@ -7618,7 +7516,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      </p>
     
 */
-        int UNASSIGNED_UNICODE_CHARACTER = 53;
+        int UNASSIGNED_UNICODE_CHARACTER = 52;
         
     
 /**
@@ -7626,7 +7524,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
     but is used to trigger more expensive processing.
     
 */
-        int MAYBE_NOT_NFC = 54;
+        int MAYBE_NOT_NFC = 53;
         
     
 /**
@@ -7634,7 +7532,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
     but is used to trigger more expensive processing.
     
 */
-        int MAYBE_NOT_NFKC = 55;
+        int MAYBE_NOT_NFKC = 54;
         
     
 /**TODO
@@ -7645,7 +7543,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int UNICODE_WHITESPACE = 56;
+        int UNICODE_WHITESPACE = 55;
         
     
 /**TODO
@@ -7656,7 +7554,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int COMPATIBILITY_CHARACTER = 57;
+        int COMPATIBILITY_CHARACTER = 56;
         
     
 /**A component that is required by the scheme is missing.
@@ -7665,7 +7563,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int REQUIRED_COMPONENT_MISSING = 58;
+        int REQUIRED_COMPONENT_MISSING = 57;
         
     
 /**A component that is prohibited by the scheme is present.
@@ -7674,7 +7572,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int PROHIBITED_COMPONENT_PRESENT = 59;
+        int PROHIBITED_COMPONENT_PRESENT = 58;
         
     
 /**Some part of the scheme specific syntax requires lowercase.
@@ -7683,7 +7581,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int SCHEME_REQUIRES_LOWERCASE = 60;
+        int SCHEME_REQUIRES_LOWERCASE = 59;
         
     
 /**Some part of the scheme specific syntax prefers lowercase.
@@ -7696,7 +7594,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      </p>
     
 */
-        int SCHEME_PREFERS_LOWERCASE = 61;
+        int SCHEME_PREFERS_LOWERCASE = 60;
         
     
 /**The scheme specific syntax rules are violared.
@@ -7705,13 +7603,13 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
        
 */
-        int SCHEME_PATTERN_MATCH_FAILED = 62;
+        int SCHEME_PATTERN_MATCH_FAILED = 61;
         
     
 /**
        // TODO complete entry for QUERY_IN_LEGACY_SCHEME
 */
-        int QUERY_IN_LEGACY_SCHEME = 63;
+        int QUERY_IN_LEGACY_SCHEME = 62;
         
     
 
@@ -7721,7 +7619,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
 
 
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
