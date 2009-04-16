@@ -54,7 +54,7 @@ CONSTRUCT query.</p>
 WHERE
 { 
    ?x :lengthInInches ?inch .
-   LET ( ?cm = ?inches/2.54 )
+   LET ( ?cm := ?inches/2.54 )
 } </pre>
 <h2>Use with !BOUND</h2>
 <p>The OPTIONAL/!BOUND/FILTER idiom for performing limited negation of a pattern 
@@ -65,7 +65,7 @@ the OPTIONAL pattern.</p>
 <p>Example: ?x with no &quot;:p 1&quot; triple:</p>
 <pre class="box">{
   ?x a :FOO .
-  OPTIONAL { ?x :p 1 . LET (?z = true) } 
+  OPTIONAL { ?x :p 1 . LET (?z := true) } 
   FILTER ( !BOUND(?z) )
 }</pre>
 <p>&nbsp;</p>
