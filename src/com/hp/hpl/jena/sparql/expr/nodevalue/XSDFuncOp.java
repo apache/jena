@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
  */
 public class XSDFuncOp
 {
+    private XSDFuncOp() {}
+    
     // The choice of "24" is arbitrary but more than 18 as required by F&O 
     private static final int DIVIDE_PRECISION = 24 ;
     // --------------------------------

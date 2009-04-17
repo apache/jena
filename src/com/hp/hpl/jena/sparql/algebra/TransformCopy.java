@@ -96,12 +96,6 @@ public class TransformCopy implements Transform
         }
         return true ;
     }
-    private Op xform(OpModifier op, Op subOp)
-    { 
-        if ( ! alwaysCopy && op.getSubOp() == subOp )
-            return op ;
-        return op.copy(subOp) ;
-    }
 }
 
 /*
