@@ -276,6 +276,9 @@ public class NodeId
         }
     }
     
+    public static final boolean isAny(NodeId nodeId) { return nodeId == NodeIdAny || nodeId == null ; }
+    public static final boolean doesNotExist(NodeId nodeId) { return nodeId == NodeDoesNotExist ; }
+    
     //public reset(long value) { this.value = value ; }
 }
 

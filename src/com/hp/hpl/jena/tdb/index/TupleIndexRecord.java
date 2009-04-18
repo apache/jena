@@ -122,7 +122,7 @@ public class TupleIndexRecord implements TupleIndex
         for ( int i = 0 ; i < pattern.size() ; i++ )
         {
             NodeId X = pattern.get(i) ;
-            if ( X == NodeId.NodeIdAny )
+            if ( NodeId.isAny(X) )
                 X = null ;
             
             if ( X != null )
@@ -214,7 +214,7 @@ public class TupleIndexRecord implements TupleIndex
                 {
                     NodeId n = pattern.get(i) ;
                     // The pattern must be null/Any or match the tuple being tested.
-                    if ( n != null && n != NodeId.NodeIdAny )
+                    if ( ! NodeId.isAny(n) )
                         if ( ! item.get(i).equals(pattern.get(i)) ) 
                             return false ;
                 }
@@ -238,7 +238,7 @@ public class TupleIndexRecord implements TupleIndex
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
             NodeId X = colMap.fetchSlot(i, pattern) ;
-            if ( X == NodeId.NodeIdAny || X == null )
+            if ( NodeId.isAny(X) )
                 // End of fixed terms
                 return i ;
         }

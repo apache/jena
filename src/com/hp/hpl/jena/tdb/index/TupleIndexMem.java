@@ -64,21 +64,21 @@ public class TupleIndexMem implements TupleIndex
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
         NodeId x1 = colMap.mapSlot(0, pattern) ;
-        if ( x1 == NodeId.NodeDoesNotExist )
+        if ( NodeId.doesNotExist(x1) )
             return new NullIterator<Tuple<NodeId>>() ;
-        if ( x1 == NodeId.NodeIdAny )
+        if ( undef(x1) )
             x1 = null ;
         
         NodeId x2 = colMap.mapSlot(1, pattern) ;
-        if ( x2 == NodeId.NodeDoesNotExist )
+        if ( NodeId.doesNotExist(x2) )
             return new NullIterator<Tuple<NodeId>>() ;
-        if ( x2 == NodeId.NodeIdAny )
+        if (undef(x2) )
             x2 = null ;
 
         NodeId x3 = colMap.mapSlot(2, pattern) ;
-        if ( x3 == NodeId.NodeDoesNotExist )
+        if ( NodeId.doesNotExist(x3) )
             return new NullIterator<Tuple<NodeId>>() ;
-        if ( x3 == NodeId.NodeIdAny )
+        if ( undef(x3) )
             x3 = null ;
         
         if ( x1 == null )
@@ -119,7 +119,7 @@ public class TupleIndexMem implements TupleIndex
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
             NodeId X = colMap.fetchSlot(i, pattern) ;
-            if ( X == NodeId.NodeIdAny || X == null )
+            if ( undef(X) )
                 // End of fixed terms
                 return i ;
         }
@@ -127,7 +127,7 @@ public class TupleIndexMem implements TupleIndex
     }
 
     private boolean undef(NodeId x)
-    { return x == null || x == NodeId.NodeIdAny ; }
+    { return NodeId.isAny(x) ; }
     
     @Override
     public boolean isEmpty()

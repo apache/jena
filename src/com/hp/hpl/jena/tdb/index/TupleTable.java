@@ -113,7 +113,7 @@ public class TupleTable implements Sync, Closeable
         for ( int i = 0 ; i < tupleLen ; i++ )
         {
             NodeId x = pattern.get(i) ;
-            if ( x != NodeId.NodeIdAny && x != null )
+            if ( ! NodeId.isAny(x) )
                 numSlots++ ;
         }
 

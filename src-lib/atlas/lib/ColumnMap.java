@@ -77,6 +77,10 @@ public class ColumnMap
         }
     }
     
+    /** Length of mapping */
+    
+    public int length() { return fetchOrder.length ; }
+    
     /** Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
     public <T> T fetchSlot(int idx, Tuple<T> tuple)
     { 

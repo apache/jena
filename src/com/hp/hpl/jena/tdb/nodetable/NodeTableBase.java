@@ -83,9 +83,9 @@ public class NodeTableBase implements NodeTable
     
     private Node _retrieveNodeByNodeId(NodeId id)
     {
-        if ( id == NodeId.NodeDoesNotExist )
+        if ( NodeId.doesNotExist(id) )
             return null ;
-        if ( id == NodeId.NodeIdAny )
+        if ( NodeId.isAny(id) )
             return null ;
         
         // Inline?
@@ -199,7 +199,7 @@ public class NodeTableBase implements NodeTable
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
         // This must be specially handled later if the node is added. 
-        if ( id == NodeId.NodeDoesNotExist )
+        if ( NodeId.doesNotExist(id) )
         {
             notPresent.add(node) ;
             return ;

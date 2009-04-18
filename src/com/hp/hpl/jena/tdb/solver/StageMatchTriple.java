@@ -60,7 +60,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             // Substitution and turning into NodeIds
             // Variables unsubstituted are null NodeIds
             NodeId nId = idFor(nodeTable, input, n) ;
-            if ( nId == NodeId.NodeDoesNotExist )
+            if ( NodeId.doesNotExist(nId) )
                 new NullIterator<BindingNodeId>() ;
             ids[i] = nId ;
             if ( nId == null )

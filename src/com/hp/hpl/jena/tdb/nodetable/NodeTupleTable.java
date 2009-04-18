@@ -62,7 +62,7 @@ public class NodeTupleTable implements Sync, Closeable
         for ( int i = 0 ; i < nodes.length ; i++ )
         {
             NodeId id = idForNode(nodes[i]) ;
-            if ( id == NodeId.NodeDoesNotExist )
+            if ( NodeId.doesNotExist(id) )
                 return false ;
             n[i] = id ;
         }
@@ -89,7 +89,7 @@ public class NodeTupleTable implements Sync, Closeable
         for ( int i = 0 ; i < nodes.length ; i++ )
         {
             NodeId id = idForNode(nodes[i]) ;
-            if ( id == NodeId.NodeDoesNotExist )
+            if ( NodeId.doesNotExist(id) )
                 return null ;
             n[i] = id ;
         }
