@@ -1,5 +1,5 @@
 #!/bin/perl
-# find src -name \*java | xargs -n 1 perl -i.bak SCRIPT
+# find src -name .svn -prune -o -name \*java -print | xargs -n 1 perl -i.bak SCRIPT
 
 undef $/ ;
 $_ = <> ;
@@ -8,7 +8,6 @@ s/import org.apache.commons.logging.LogFactory\s*;/import org.slf4j.LoggerFactor
 
 s/ Log / Logger / ;
 s/LogFactory.getLog/LoggerFactory.getLogger/ ;
-
-# .fatal => .error
+s/.fatal/.error/ ;
 
 print $_ ;
