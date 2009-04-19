@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class SQLBridge2 extends SQLBridgeBase 
 {
-    private static Log log = LogFactory.getLog(SQLBridge2.class) ;
+    private static Logger log = LoggerFactory.getLogger(SQLBridge2.class) ;
     
     // Result nodes tables 
     private static final String NodeBase = AliasesSql.NodesResultAliasBase ;
@@ -172,11 +172,6 @@ public class SQLBridge2 extends SQLBridgeBase
     {
         Binding b = new BindingMap(parent) ;
         ResultSet rs = rsHolder.get() ;
-        
-        // Destructive.
-        // try { RS.printResultSet(rs) ; } catch (SQLException ex) { System.out.println(ex) ; }
-        
-        
         for ( Var v : super.getProject() )
         {
             if ( ! v.isNamedVar() )
