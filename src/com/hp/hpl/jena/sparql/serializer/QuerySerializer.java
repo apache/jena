@@ -32,23 +32,6 @@ public class QuerySerializer implements QueryVisitor
     protected FmtExpr fmtExpr ;
     protected IndentedWriter out = null ;
 
-//    protected QuerySerializer(IndentedWriter _out, SerializationContext context)
-//    {
-//        out = _out ;
-//    
-//        SerializationContext cxtElt = new SerializationContext(context) ;
-//        cxtElt.getBNodeMap().setBNodesAsFakeURIs(ARQ.enableConstantBNodeLabels) ;
-//        fmtElement = new FmtElementARQ(out, cxtElt) ;
-//
-//        
-//        SerializationContext cxtTmp = new SerializationContext(context) ;
-//        cxtTmp.getBNodeMap().setBNodesAsFakeURIs(false) ;
-//        fmtTemplate = new FmtTemplateARQ(out, cxtTmp) ;
-//        
-//        fmtExpr = new FmtExprARQ(out, cxtElt) ;
-//    }
-
-    
     QuerySerializer(OutputStream _out,
                     FormatterElement   formatterElement, 
                     FmtExpr            formatterExpr,
