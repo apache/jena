@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.test.junit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sdb.Store;
@@ -35,7 +35,7 @@ public class QueryTestSDB extends EarlTestCase
     StoreDesc storeDesc ;
     Store store = null ;
     TestItem item ;
-    private static Log log = LogFactory.getLog(QueryTestSDB.class) ; 
+    private static Logger log = LoggerFactory.getLogger(QueryTestSDB.class) ; 
     
     public QueryTestSDB(StoreDesc desc, String testName, EarlReport report, TestItem item)
     {
