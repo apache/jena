@@ -17,8 +17,7 @@ public class Dev
     //   Examples are in the test suite.
     //   Distribution building.
     
-    // SDB - logging, extra jars.
-    // atlas.
+    // atlas
     
     // Explain.
     //   Sort out TDB explain and logging.
