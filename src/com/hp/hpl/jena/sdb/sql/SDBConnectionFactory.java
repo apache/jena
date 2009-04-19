@@ -11,8 +11,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 
 public class SDBConnectionFactory
 {
-    private static Log log = LogFactory.getLog(SDBConnectionFactory.class) ;
+    private static Logger log = LoggerFactory.getLogger(SDBConnectionFactory.class) ;
     public static SDBConnection create(SDBConnectionDesc desc){ return worker(desc) ; }
 
     public static SDBConnection create(String configFile)

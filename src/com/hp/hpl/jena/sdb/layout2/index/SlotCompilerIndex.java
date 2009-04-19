@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class SlotCompilerIndex extends SlotCompiler2
 {
-    private static Log log = LogFactory.getLog(SlotCompilerIndex.class) ;
+    private static Logger log = LoggerFactory.getLogger(SlotCompilerIndex.class) ;
     
     private static final String NodeConstBase = AliasesSql.NodesConstantAliasBase ;
     
@@ -145,7 +145,7 @@ public class SlotCompilerIndex extends SlotCompiler2
             vars.add(Var.alloc(node)) ;
             return ;
         }
-        log.fatal("Unknown Node type: "+node) ;
+        log.error("Unknown Node type: "+node) ;
         throw new SDBException("Unknown Node type: "+node) ;
     }
 }

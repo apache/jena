@@ -13,8 +13,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.Access;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 public class JDBC
 {
-    private static Log log = LogFactory.getLog(JDBC.class) ; 
+    private static Logger log = LoggerFactory.getLogger(JDBC.class) ; 
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
 

@@ -48,7 +48,7 @@ public class RS
 //                rs.close() ;
 //        } catch (SQLException ex)
 //        {
-//            LogFactory.getLog(RS.class).warn("Problems closing result set : "+ex.getMessage()) ;
+//            LoggerFactory.getLogger(RS.class).warn("Problems closing result set : "+ex.getMessage()) ;
 //        }
 //        
 //    }

@@ -12,7 +12,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /** General purpose SQL-related manipulation */
 
@@ -63,7 +63,7 @@ public class FunctionsSQL
             return timestamp.toString() ;
         } catch (DatatypeConfigurationException e)
         {
-            LogFactory.getLog(SQLUtils.class).warn("Failed to convert "+lex, e) ;
+            LoggerFactory.getLogger(SQLUtils.class).warn("Failed to convert "+lex, e) ;
             return "0000-00-00 00:00:00" ;
         }
     }

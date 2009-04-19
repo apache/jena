@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderHashOracle extends TupleLoaderHashBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderHashOracle.class);
+	private static Logger log = LoggerFactory.getLogger(TupleLoaderHashOracle.class);
 	
 	public TupleLoaderHashOracle(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

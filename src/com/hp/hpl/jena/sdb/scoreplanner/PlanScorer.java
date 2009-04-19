@@ -15,8 +15,8 @@ class PlanScorer {}
 //import java.util.List;
 //import java.util.Map;
 //
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 //
 //import com.hp.hpl.jena.graph.Node;
 //import com.hp.hpl.jena.graph.Triple;
@@ -26,7 +26,7 @@ class PlanScorer {}
 //
 //class PlanScorer
 //{
-//	final static Log log = LogFactory.getLog(PlanScorer.class);
+//	final static Logger log = LoggerFactory.getLogger(PlanScorer.class);
 //	
 //	final static String ns = "http://jena.hpl.hp.com/schemas/sdbscore#";
 //	final static Property s = ResourceFactory.createProperty(ns + "s");

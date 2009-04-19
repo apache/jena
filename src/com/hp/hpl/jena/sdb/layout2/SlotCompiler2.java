@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public abstract class SlotCompiler2 extends SlotCompiler
 {
-    private static Log log = LogFactory.getLog(SlotCompiler2.class) ;
+    private static Logger log = LoggerFactory.getLogger(SlotCompiler2.class) ;
 
     public SlotCompiler2(SDBRequest request)
     { super(request) ; }

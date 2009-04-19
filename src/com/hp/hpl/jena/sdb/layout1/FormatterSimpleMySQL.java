@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FormatterSimpleMySQL extends FormatterSimple
 {
-    private static Log log = LogFactory.getLog(FormatterSimpleMySQL.class) ;
+    private static Logger log = LoggerFactory.getLogger(FormatterSimpleMySQL.class) ;
     private MySQLEngineType engineType ;
     
     // MySQL keys are limited to 765 bytes, and a key is S/P/O
@@ -34,7 +34,7 @@ public class FormatterSimpleMySQL extends FormatterSimple
         engineType = tableType ;
         if ( engineType == null )
         {
-            log.fatal("Engine type is null") ;
+            log.error("Engine type is null") ;
             throw new SDBException("Engine type is null") ;
         }
     }

@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 public class FmtLayout2HashHSQL extends FmtLayout2
 {
-    static private Log log = LogFactory.getLog(FmtLayout2HashHSQL.class) ;
+    static private Logger log = LoggerFactory.getLogger(FmtLayout2HashHSQL.class) ;
     private MySQLEngineType engineType ;
     
     public FmtLayout2HashHSQL(SDBConnection connection)

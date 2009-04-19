@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.layout2.expr.StringExprCompiler;
 
 class ConditionCompiler2 implements ConditionCompiler
 {
-    private static Log log = LogFactory.getLog(ConditionCompiler2.class) ;
+    private static Logger log = LoggerFactory.getLogger(ConditionCompiler2.class) ;
     
     public ConditionCompiler2() {}
     

@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderHashDerby extends TupleLoaderHashBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderHashDerby.class);
+	private static Logger log = LoggerFactory.getLogger(TupleLoaderHashDerby.class);
 	
 	public TupleLoaderHashDerby(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

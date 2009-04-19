@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class QueryEngineSDB extends QueryEngineBase
 {
-    private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
+    private static Logger log = LoggerFactory.getLogger(QueryEngineSDB.class) ; 
     private Store store ;
     private SDBRequest request = null ;
     private Op originalOp = null ;

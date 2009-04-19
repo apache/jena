@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderIndexOracle.class);
+	private static Logger log = LoggerFactory.getLogger(TupleLoaderIndexOracle.class);
 	
 	public TupleLoaderIndexOracle(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

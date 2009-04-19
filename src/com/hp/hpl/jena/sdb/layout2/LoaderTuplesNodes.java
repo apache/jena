@@ -13,8 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -32,7 +32,7 @@ public class LoaderTuplesNodes
     extends SDBConnectionHolder
     implements StoreLoaderPlus
 {
-    private static Log log = LogFactory.getLog(LoaderTuplesNodes.class);
+    private static Logger log = LoggerFactory.getLogger(LoaderTuplesNodes.class);
     //private static final String classShortName = Utils.classShortName(LoaderTriplesNodes.class)  ;
     
     // Delayed initialization until first bulk load.

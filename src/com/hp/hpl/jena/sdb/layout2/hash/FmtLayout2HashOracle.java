@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FmtLayout2HashOracle extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
+    //static private Logger log = LoggerFactory.getLogger(FmtLayout2Derby.class) ;
     
     public FmtLayout2HashOracle(SDBConnection connection)
     { 

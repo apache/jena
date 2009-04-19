@@ -18,8 +18,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.shared.Command;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
 
 public class SDBConnection
 {
-    static private Log log = LogFactory.getLog(SDBConnection.class) ;
+    static private Logger log = LoggerFactory.getLogger(SDBConnection.class) ;
     static private Generator gen = Gensym.create("connection-") ;
 
     private Connection sqlConnection = null ;
@@ -318,7 +318,7 @@ public class SDBConnection
         this.jdbcURL = jdbcURL ;
     }
 
-    static Log sqlLog = log ; // LogFactory.getLog("SQL") ; // Remember to turn on in log4j.properties.
+    static Logger sqlLog = log ; // LogFactory.getLog("SQL") ; // Remember to turn on in log4j.properties.
     
     private void exception(String who, SQLException ex, String sqlString)
     {

@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.graph;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.shared.JenaException;
 
 public class TransactionHandlerSDB implements TransactionHandler
 {
-    static private Log log = LogFactory.getLog(TransactionHandlerSDB.class) ;
+    static private Logger log = LoggerFactory.getLogger(TransactionHandlerSDB.class) ;
 
     Connection sqlConnection ;
     boolean inTransaction ;

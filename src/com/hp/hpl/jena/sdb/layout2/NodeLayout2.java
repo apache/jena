@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -48,7 +48,7 @@ public class NodeLayout2
             String tmp = "Too long ("+length+"/"+lex.length()+"): "+lex.substring(0,20)+"..." ;
             if ( logPrefix != null )
                 tmp = logPrefix+": "+tmp ;
-            LogFactory.getLog(NodeLayout2.class).warn(tmp) ;
+            LoggerFactory.getLogger(NodeLayout2.class).warn(tmp) ;
             lex = lex.substring(0, length) ;
         }
         return lex ;

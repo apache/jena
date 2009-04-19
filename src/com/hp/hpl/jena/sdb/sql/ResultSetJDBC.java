@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /* Indirect for possible statement management later.
  * Currectly, one statement - one result set so close both together. 
@@ -22,7 +22,7 @@ import java.sql.Statement;
 
 public class ResultSetJDBC
 {
-    //static private Log log = LogFactory.getLog(ResultSetJDBC.class) ;
+    //static private Logger log = LoggerFactory.getLogger(ResultSetJDBC.class) ;
     
     private Statement statement ;
     private ResultSet resultSet ;

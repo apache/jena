@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FmtLayout2HashMySQL extends FmtLayout2
 {
-    static private Log log = LogFactory.getLog(FmtLayout2HashMySQL.class) ;
+    static private Logger log = LoggerFactory.getLogger(FmtLayout2HashMySQL.class) ;
     protected MySQLEngineType engineType ;
     
     public FmtLayout2HashMySQL(SDBConnection connection, MySQLEngineType tableType)
@@ -35,7 +35,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
         engineType = tableType ;
         if ( engineType == null )
         {
-            log.fatal("Engine type is null") ;
+            log.error("Engine type is null") ;
             throw new SDBException("Engine type is null") ;
         }
     }

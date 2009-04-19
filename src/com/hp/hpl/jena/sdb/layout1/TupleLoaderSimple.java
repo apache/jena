@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
 
 public class TupleLoaderSimple extends TupleLoaderOne
 {
-    private static Log log = LogFactory.getLog(TupleLoaderSimple.class);
+    private static Logger log = LoggerFactory.getLogger(TupleLoaderSimple.class);
     private EncoderDecoder codec ;
     
     public TupleLoaderSimple(SDBConnection connection, TableDesc tableDesc, EncoderDecoder codec)

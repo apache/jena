@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.iterator.Transform;
 
 public class ScopeRename implements Scope
 {
-    private static Log log = LogFactory.getLog(ScopeRename.class) ; 
+    private static Logger log = LoggerFactory.getLogger(ScopeRename.class) ; 
     private Scope scope ;
     private Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
 

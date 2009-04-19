@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 public class FormatterSimplePGSQL extends FormatterSimple 
 {
-    private static Log log = LogFactory.getLog(FormatterSimplePGSQL.class) ;
+    private static Logger log = LoggerFactory.getLogger(FormatterSimplePGSQL.class) ;
     
     private static final String colDecl = "VARCHAR("+UriWidth+") NOT NULL" ;
     

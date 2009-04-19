@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderIndexDB2 extends TupleLoaderIndexBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderIndexDB2.class);
+	private static Logger log = LoggerFactory.getLogger(TupleLoaderIndexDB2.class);
 	
 	public TupleLoaderIndexDB2(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

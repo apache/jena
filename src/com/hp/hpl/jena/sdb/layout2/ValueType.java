@@ -140,7 +140,7 @@ public enum ValueType implements Named
         if ( type == VAR.getTypeId() )        return VAR ;
         if ( type == OTHER.getTypeId() )      return OTHER ;
         
-//        LogFactory.getLog(ValueType.class).warn("Seen an unrecognized type") ;
+//        LoggerFactory.getLogger(ValueType.class).warn("Seen an unrecognized type") ;
 //        return UNKNOWN ; 
         throw new SDBException("Unknown type ("+type+")") ;
     }

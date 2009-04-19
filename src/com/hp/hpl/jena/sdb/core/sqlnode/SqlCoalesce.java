@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 
@@ -40,7 +40,7 @@ public class SqlCoalesce extends SqlNodeBase1
         // as a sanity check. Remove the test when the new situation arises 
         // as this class then needs to be checked. 
         if ( ! join.isLeftJoin() )
-            LogFactory.getLog(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
+            LoggerFactory.getLogger(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
         
         return new SqlCoalesce(request, alias, join, coalesceVars) ;
     }
@@ -88,7 +88,7 @@ public class SqlCoalesce extends SqlNodeBase1
         {
             if ( coalesceVars.contains(v) )
             {
-                LogFactory.getLog(SqlCoalesce.class).warn("Variable in coalesce and non-coalesce sets: "+v) ;
+                LoggerFactory.getLogger(SqlCoalesce.class).warn("Variable in coalesce and non-coalesce sets: "+v) ;
                 continue ;
             }
             String sqlColName = request.genId(AliasBase) ;

@@ -11,8 +11,8 @@ import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
 
 public class TupleLoaderOneIndex extends TupleLoaderOne
 {
-    private static Log log = LogFactory.getLog(TupleLoaderOneIndex.class);
+    private static Logger log = LoggerFactory.getLogger(TupleLoaderOneIndex.class);
 
     public TupleLoaderOneIndex(SDBConnection connection)
     { super(connection) ; }

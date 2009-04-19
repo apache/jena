@@ -8,14 +8,14 @@ package com.hp.hpl.jena.sdb.shared;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
 public class Env
 {
-    private static Log log = LogFactory.getLog(Env.class) ;
+    private static Logger log = LoggerFactory.getLogger(Env.class) ;
     private static final String SDBROOT = "SDBROOT" ; 
     public static String sysBase = null ;
     private static FileManager fileManager = null ; 

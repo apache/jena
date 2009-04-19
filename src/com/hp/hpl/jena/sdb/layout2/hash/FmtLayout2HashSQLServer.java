@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FmtLayout2HashSQLServer extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FormatterTriplesNodesSQLServer.class) ;
+    //static private Logger log = LoggerFactory.getLogger(FormatterTriplesNodesSQLServer.class) ;
     
     public FmtLayout2HashSQLServer(SDBConnection connection)
     { 

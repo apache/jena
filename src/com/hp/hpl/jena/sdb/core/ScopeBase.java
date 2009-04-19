@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -79,7 +79,7 @@ public class ScopeBase implements Scope
         // Only check the frame.
         if ( frame.containsKey(var) )
         {
-            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+findScopeForVar(var)) ;
+            LoggerFactory.getLogger(Scope.class).warn("Already has an alias: "+var+" => "+findScopeForVar(var)) ;
             return ;
         }
         frame.put(var, column) ;

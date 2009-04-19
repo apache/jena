@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 public class FormatterSimpleSQLServer extends FormatterSimple 
 {
-    private static Log log = LogFactory.getLog(FormatterSimpleSQLServer.class) ;
+    private static Logger log = LoggerFactory.getLogger(FormatterSimpleSQLServer.class) ;
     
     private static final String colDecl = "NVARCHAR("+UriWidth+") NOT NULL" ;
     

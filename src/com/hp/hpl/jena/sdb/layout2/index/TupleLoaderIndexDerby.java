@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderIndexDerby extends TupleLoaderIndexBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderIndexDerby.class);
+	private static Logger log = LoggerFactory.getLogger(TupleLoaderIndexDerby.class);
 	
 	public TupleLoaderIndexDerby(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

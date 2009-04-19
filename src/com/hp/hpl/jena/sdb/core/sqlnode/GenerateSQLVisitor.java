@@ -12,8 +12,8 @@ import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Annotations;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class GenerateSQLVisitor implements SqlNodeVisitor
 {
     // Annotate should ensureEndofLine ?
-    private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
+    private static Logger log = LoggerFactory.getLogger(GenerateSQLVisitor.class) ;
     
     protected IndentedWriter out ;
     int levelSelectBlock = 0 ;
@@ -231,7 +231,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 newCond_c.add(e) ;
         }
         if ( newCond_ab.size()+newCond_c.size() != conditions.size() )
-            log.fatal(String.format("Conditions mismatch: (%d,%d,%d)",
+            log.error(String.format("Conditions mismatch: (%d,%d,%d)",
                                     newCond_ab.size(), newCond_c.size(), conditions.size())) ;
 
 

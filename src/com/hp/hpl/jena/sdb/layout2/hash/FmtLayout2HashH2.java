@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FmtLayout2HashH2 extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FormatterTriplesNodesH2.class) ;
+    //static private Logger log = LoggerFactory.getLogger(FormatterTriplesNodesH2.class) ;
     
     public FmtLayout2HashH2(SDBConnection connection)
     { 

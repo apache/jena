@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FormatterSimpleHSQL extends FormatterSimple 
 {
-    private static Log log = LogFactory.getLog(FormatterSimpleHSQL.class) ;
+    private static Logger log = LoggerFactory.getLogger(FormatterSimpleHSQL.class) ;
     
     private static final String colDecl = "VARCHAR" ;
     

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -32,7 +32,7 @@ public abstract class SqlJoin extends SqlNodeBase2
             case INNER: return new SqlJoinInner(left, right) ;
             case LEFT: return new SqlJoinLeftOuter(left, right) ;
         }
-        LogFactory.getLog(SqlJoin.class).warn("Unknown join type: "+joinType.printName()) ;
+        LoggerFactory.getLogger(SqlJoin.class).warn("Unknown join type: "+joinType.printName()) ;
         return null ;
     }
 

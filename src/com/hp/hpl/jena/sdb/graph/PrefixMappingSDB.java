@@ -13,8 +13,8 @@ import static java.lang.String.format;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public class PrefixMappingSDB extends PrefixMappingImpl
 {
-    static private Log log = LogFactory.getLog(PrefixMappingSDB.class) ;
+    static private Logger log = LoggerFactory.getLogger(PrefixMappingSDB.class) ;
     
     static public final String prefixTableName  = "Prefixes" ;
     static public final int    prefixColWidth   = 50 ;  // Minimum

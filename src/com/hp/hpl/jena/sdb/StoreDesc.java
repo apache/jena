@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.store.LayoutType;
 
 public class StoreDesc
 {
-    private static Log log = LogFactory.getLog(StoreDesc.class) ;
+    private static Logger log = LoggerFactory.getLogger(StoreDesc.class) ;
     
     public SDBConnectionDesc connDesc   = null ;
     private DatabaseType dbType         = null ;
