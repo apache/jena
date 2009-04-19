@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class GraphSDB extends GraphBase implements Graph
 {
-    private static Log log = LogFactory.getLog(GraphSDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphSDB.class) ;
 
     protected PrefixMapping pmap = null ;
     protected Store store = null ;
