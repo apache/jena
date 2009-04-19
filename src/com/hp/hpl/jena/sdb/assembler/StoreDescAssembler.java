@@ -8,12 +8,14 @@ package com.hp.hpl.jena.sdb.assembler;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
@@ -30,7 +32,7 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
 {
     static { SDB.init() ; }
     
-    private static Log log = LogFactory.getLog(StoreDescAssembler.class) ;
+    private static Logger log = LoggerFactory.getLogger(StoreDescAssembler.class) ;
     
     @Override
     public StoreDesc open(Assembler a, Resource root, Mode mode)

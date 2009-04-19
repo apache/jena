@@ -62,8 +62,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
         for ( Node v : variables )
             indexes.put(v, (idx++) ) ;
 
-        List<Triple> pattern = q.getPattern() ;
-        for ( Triple t : pattern )
+        for ( Triple t : q.getPattern() )
             bgp.add(t) ;
         
         op = new OpQuadPattern(graphNode, bgp) ;
