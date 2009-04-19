@@ -38,9 +38,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     public QuadBlock(OpQuadPattern quadPattern)
     {
         super() ;
-        // Needs two steps to allow the @SuppressWarnings on a statement.
-        List<Quad> q = quadPattern.getQuads() ;
-        this.addAll(q) ;
+        this.addAll(quadPattern.getQuads()) ;
         graphNode = quadPattern.getGraphNode() ;
     }
 

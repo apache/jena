@@ -13,8 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class SDB_QC
 {
-    private static Log log = LogFactory.getLog(SDB_QC.class) ;
+    private static Logger log = LoggerFactory.getLogger(SDB_QC.class) ;
     
     public static boolean fetchPrint = false ;
     public static boolean PrintSQL = false ;
@@ -65,7 +65,7 @@ public class SDB_QC
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )
-                    log.fatal("Null bridge") ;
+                    log.error("Null bridge") ;
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally {
                 // ResultSet closed inside assembleResults or by the iterator returned.
@@ -98,7 +98,7 @@ public class SDB_QC
         
         if ( vars.size() == 0 )
             // SELECT * {}
-            LogFactory.getLog(SDB_QC.class).warn("No project variables") ;
+            LoggerFactory.getLogger(SDB_QC.class).warn("No project variables") ;
         
         // Add the ORDER BY variables
         List<SortCondition> orderConditions = query.getOrderBy() ;

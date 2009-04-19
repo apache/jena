@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class PatternTable extends TableDesc
 {
-    private static Log log = LogFactory.getLog(PatternTable.class) ;
+    private static Logger log = LoggerFactory.getLogger(PatternTable.class) ;
     
     static final String subjColName = "subject" ;
     
@@ -116,7 +116,7 @@ public class PatternTable extends TableDesc
             SqlExprList conditions = new SqlExprList() ;
             
             if ( ! Quad.isDefaultGraphNode(graphNode) )
-                log.fatal("Not the default graph in SqlStagePTable.build") ;
+                log.error("Not the default graph in SqlStagePTable.build") ;
             if ( false )
                 slotCompiler.processSlot(request, sqlTable, conditions, graphNode, subjColName) ;
             slotCompiler.processSlot(request, sqlTable, conditions, subject, subjColName) ;

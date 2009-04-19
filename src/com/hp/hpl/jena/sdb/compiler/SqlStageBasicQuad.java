@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class SqlStageBasicQuad implements SqlStage
 {
-    private static Log log = LogFactory.getLog(SqlStageBasicQuad.class) ;
+    private static Logger log = LoggerFactory.getLogger(SqlStageBasicQuad.class) ;
     private Quad quad ;
 
     public SqlStageBasicQuad(Quad quad)

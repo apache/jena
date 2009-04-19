@@ -14,8 +14,8 @@ import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 public class TransformSDB extends TransformCopy
 {
-    private static Log log = LogFactory.getLog(TransformSDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(TransformSDB.class) ;
     private SDBRequest request ;
     private QuadBlockCompiler quadBlockCompiler ;
     //private boolean doLeftJoin = true ;
@@ -146,7 +146,7 @@ public class TransformSDB extends TransformCopy
     public Op transform(OpTable opTable)
     {
         if ( ! opTable.isJoinIdentity())
-            log.fatal("OpTable : Not join identity") ;
+            log.error("OpTable : Not join identity") ;
         //return new OpSQL(null, opUnit, request) ;
         return super.transform(opTable) ;
     }
