@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.sdb.sql.*;
 
 public class StoreConfig extends SDBConnectionHolder
 {
-    private static Log log = LogFactory.getLog(StoreConfig.class) ;
+    private static Logger log = LoggerFactory.getLogger(StoreConfig.class) ;
     private static final String serializationFormat = FileUtils.langNTriple ;
     
     public static final String defaultTag = "config" ;

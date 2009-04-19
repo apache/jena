@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.SymbolRegistry;
@@ -44,7 +44,7 @@ public class DatabaseType extends Symbol implements Named
         if ( databaseTypeName.startsWith("oracle:") )
             return Oracle ;
 
-        LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
+        LoggerFactory.getLogger(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
     }
     

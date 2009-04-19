@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.expr;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -97,7 +97,7 @@ class RegexSqlGen extends SDBConstraint
         
         if ( ! scope.hasColumnForVar(var) )
         {
-            LogFactory.getLog(this.getClass()).fatal("Variable '"+var+"' not in scope") ;
+            LoggerFactory.getLogger(this.getClass()).error("Variable '"+var+"' not in scope") ;
             return null ;
         }
           

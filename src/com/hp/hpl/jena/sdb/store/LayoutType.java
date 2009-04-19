@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.SymbolRegistry;
@@ -34,7 +34,7 @@ public class LayoutType extends Symbol implements Named
         if ( t != null )
             return t ;
 
-        LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
+        LoggerFactory.getLogger(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
         throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
     }
     

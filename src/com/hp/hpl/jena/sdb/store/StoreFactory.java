@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public class StoreFactory
 {
-    private static Log log = LogFactory.getLog(StoreFactory.class) ;
+    private static Logger log = LoggerFactory.getLogger(StoreFactory.class) ;
     
     static { SDB.init() ; } 
 

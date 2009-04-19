@@ -13,8 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public abstract class TupleLoaderOne extends TupleLoaderBase
 {
-    private static Log log = LogFactory.getLog(TupleLoaderOne.class);
+    private static Logger log = LoggerFactory.getLogger(TupleLoaderOne.class);
     
     public TupleLoaderOne(SDBConnection connection)
     {

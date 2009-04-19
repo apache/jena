@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.util.*;
 
@@ -23,7 +23,7 @@ public class Feature extends PrintableBase implements Named, Printable
 
     Name name ;
     Object value ;
-    private Log log = LogFactory.getLog(Feature.class) ;
+    private Logger log = LoggerFactory.getLogger(Feature.class) ;
     
     private Feature(Name name) { this.name = name ; }
     
