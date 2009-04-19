@@ -8,12 +8,12 @@ package sdb;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class sdbscript
 {
-    private static Log log = LogFactory.getLog(sdbscript.class) ;
+    private static Logger log = LoggerFactory.getLogger(sdbscript.class) ;
     
     public static void main(String... a)
     {
@@ -29,7 +29,7 @@ public class sdbscript
         try { cmd = Class.forName(className) ; }
         catch (ClassNotFoundException ex)
         {
-            log.fatal(String.format("Class not found: %s", className)) ;
+            log.error(String.format("Class not found: %s", className)) ;
             return  ; 
         }
 
@@ -37,7 +37,7 @@ public class sdbscript
         try { method = cmd.getMethod(methodName, new Class[]{args.getClass()}) ; }
         catch (NoSuchMethodException ex)
         {
-            log.fatal(String.format("Class '%s' found but not the method '%s'",
+            log.error(String.format("Class '%s' found but not the method '%s'",
                                     className, methodName)) ;
             return ;
         }
@@ -47,7 +47,7 @@ public class sdbscript
             method.invoke(null, (Object)args) ;
         } catch (Exception ex)
         {
-            log.fatal(String.format("Exception invoking '%s.%s'",  className, methodName), ex) ;
+            log.error(String.format("Exception invoking '%s.%s'",  className, methodName), ex) ;
             return ;
         }
     }
