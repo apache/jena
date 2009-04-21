@@ -61,6 +61,8 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        opExtension() ; System.exit(0) ;
+        
         queryEquality() ;
         
         execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
@@ -232,12 +234,15 @@ public class Run
                 return new OpExtTest(argList) ;
             }
 
-            public String getSubTab() { return "ABC" ; }
+            public String getTagName() { return "ABC" ; }
         }) ;
         
-        Op op = SSE.parseOp("(ext ABC 123 667)") ;
-        System.out.println(op); 
-        
+        Op op1 = SSE.parseOp("(ext ABC 123 667)") ;
+        System.out.println(op1); 
+
+        Op op2 = SSE.parseOp("(ABC 123 667)") ;
+        System.out.println(op2); 
+
         System.out.println("----") ; System.exit(0) ; 
     }
 
@@ -246,7 +251,7 @@ public class Run
         private ItemList argList ;
     
         public OpExtTest(ItemList argList)
-        { this.argList = argList ; }
+        { super("TAG") ; this.argList = argList ; }
     
         @Override
         public Op effectiveOp()
@@ -266,9 +271,6 @@ public class Run
             if ( ! ( other instanceof OpExtTest) ) return false ;
             return argList.equals(((OpExtTest)other).argList) ;
         }
-    
-        @Override
-        public String getSubTag() { return "TAG" ; }
     
         @Override
         public void outputArgs(IndentedWriter out, SerializationContext sCxt)

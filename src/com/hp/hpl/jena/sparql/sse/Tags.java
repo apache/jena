@@ -75,7 +75,9 @@ public class Tags
     public static final String tagPathAlt       = "alt" ;
     public static final String tagPathMod       = "mod" ;
     public static final String tagPathReverse   = "reverse" ;
-    
+
+    // Not used - nowadays extensions are not explicitly flagged in the algebra.
+    // But needed to override existing operations.
     public static final String tagExt           = "ext" ;
     
     // Expressions

@@ -11,8 +11,8 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public interface ExtBuilder
 {
-    /** Subtag */
-    public String getSubTab() ;
+    /** Name of operators created by this ExtBuilder */
+    public String getTagName() ;
     /** The remaining arguments */
     public OpExt make(ItemList argList) ;
 }

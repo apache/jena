@@ -57,45 +57,51 @@ public class BuilderOp
 
     public BuilderOp()
     {
-        dispatch.put(Tags.tagBGP,           buildBGP) ;
-        dispatch.put(Tags.tagQuadPattern,   buildQuadPattern) ;
-        dispatch.put(Tags.tagTriple,        buildTriple) ;
-        dispatch.put(Tags.tagTriplePath,    buildTriplePath) ;
-        dispatch.put(Tags.tagFilter,        buildFilter) ;
-        dispatch.put(Tags.tagGraph,         buildGraph) ;
-        dispatch.put(Tags.tagService,       buildService) ;
-        dispatch.put(Tags.tagProc,          buildProcedure) ;
-        dispatch.put(Tags.tagPropFunc,      buildPropertyFunction) ;
-        dispatch.put(Tags.tagJoin,          buildJoin) ;
-        dispatch.put(Tags.tagSequence,      buildSequence) ;
-        dispatch.put(Tags.tagLeftJoin,      buildLeftJoin) ;
-        dispatch.put(Tags.tagDiff,          buildDiff) ;
-        dispatch.put(Tags.tagUnion,         buildUnion) ;
-        dispatch.put(Tags.tagConditional,   buildConditional) ;
+        addBuild(Tags.tagBGP,           buildBGP) ;
+        addBuild(Tags.tagQuadPattern,   buildQuadPattern) ;
+        addBuild(Tags.tagTriple,        buildTriple) ;
+        addBuild(Tags.tagTriplePath,    buildTriplePath) ;
+        addBuild(Tags.tagFilter,        buildFilter) ;
+        addBuild(Tags.tagGraph,         buildGraph) ;
+        addBuild(Tags.tagService,       buildService) ;
+        addBuild(Tags.tagProc,          buildProcedure) ;
+        addBuild(Tags.tagPropFunc,      buildPropertyFunction) ;
+        addBuild(Tags.tagJoin,          buildJoin) ;
+        addBuild(Tags.tagSequence,      buildSequence) ;
+        addBuild(Tags.tagLeftJoin,      buildLeftJoin) ;
+        addBuild(Tags.tagDiff,          buildDiff) ;
+        addBuild(Tags.tagUnion,         buildUnion) ;
+        addBuild(Tags.tagConditional,   buildConditional) ;
 
-        dispatch.put(Tags.tagToList,        buildToList) ;
-        dispatch.put(Tags.tagGroupBy,       buildGroupBy) ;
-        dispatch.put(Tags.tagOrderBy,       buildOrderBy) ;
-        dispatch.put(Tags.tagProject,       buildProject) ;
-        dispatch.put(Tags.tagDistinct,      buildDistinct) ;
-        dispatch.put(Tags.tagReduced,       buildReduced) ;
-        dispatch.put(Tags.tagAssign,        buildAssign) ;
-        dispatch.put(Tags.symAssign,        buildAssign) ;
-        dispatch.put(Tags.tagSlice,         buildSlice) ;
+        addBuild(Tags.tagToList,        buildToList) ;
+        addBuild(Tags.tagGroupBy,       buildGroupBy) ;
+        addBuild(Tags.tagOrderBy,       buildOrderBy) ;
+        addBuild(Tags.tagProject,       buildProject) ;
+        addBuild(Tags.tagDistinct,      buildDistinct) ;
+        addBuild(Tags.tagReduced,       buildReduced) ;
+        addBuild(Tags.tagAssign,        buildAssign) ;
+        addBuild(Tags.symAssign,        buildAssign) ;
+        addBuild(Tags.tagSlice,         buildSlice) ;
 
-        dispatch.put(Tags.tagTable,         buildTable) ;
-        dispatch.put(Tags.tagNull,          buildNull) ;
-        dispatch.put(Tags.tagLabel,         buildLabel) ;
+        addBuild(Tags.tagTable,         buildTable) ;
+        addBuild(Tags.tagNull,          buildNull) ;
+        addBuild(Tags.tagLabel,         buildLabel) ;
     }
 
+    
     public static void add(String tag, Build builder)
     {
-        builderOp.dispatch.put(tag, builder) ;
+        builderOp.addBuild(tag, builder) ;
     }
 
-    public static void remove(String tag, Build builder)
+    public static void remove(String tag)
     {
-        builderOp.dispatch.remove(tag) ;
+        builderOp.removeBuild(tag) ;
+    }
+    
+    public static boolean contains(String tag)
+    {
+        return builderOp.containsBuild(tag) ;
     }
     
     // The main recursive build operation.
@@ -162,6 +168,24 @@ public class BuilderOp
         return build(list.get(idx).getList()) ;
     }
 
+    // <<<< ---- Coordinate these 
+    // Lowercase on insertion?
+    protected void addBuild(String tag, Build builder)
+    {
+        dispatch.put(tag, builder) ;
+    }
+    
+    protected void removeBuild(String tag)
+    {
+        dispatch.remove(tag) ;
+    }
+    
+    protected boolean containsBuild(String tag)
+    {
+        return findBuild(tag) != null ;
+        
+    }
+
     protected Build findBuild(String str)
     {
         for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
@@ -173,6 +197,8 @@ public class BuilderOp
         return null ;
     }
 
+    // >>>> ----
+    
     static public interface Build { Op make(ItemList list) ; }
 
     // Not static.  The initialization through the singleton would not work

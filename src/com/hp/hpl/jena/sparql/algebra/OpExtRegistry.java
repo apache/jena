@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -17,14 +18,21 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 /** Manage extension algebra operations */
 public class OpExtRegistry
 {
+    // Known extensions.
     static Map<String, ExtBuilder> extensions = new HashMap<String, ExtBuilder>() ;
-    // Wire in.
-    static { BuilderOp.add(Tags.tagExt, new BuildExt()) ; }
+    
+    // Wire in (ext NAME ...) form
+    static { BuilderOp.add(Tags.tagExt, new BuildExtExt()) ; }
     
     public static void register(ExtBuilder builder)
     {
-        extensions.put(builder.getSubTab(), builder) ;
+        extensions.put(builder.getTagName(), builder) ;
+
+        if ( BuilderOp.contains(builder.getTagName()) )
+            throw new ARQException("Tag '"+builder.getTagName()+"' already defined") ;
+        BuilderOp.add(builder.getTagName(), new BuildExt2()) ;
     }
+    
     
     public static void unregister(String subtag)
     {
@@ -32,8 +40,9 @@ public class OpExtRegistry
     }
     
     public static ExtBuilder builder(String tag) { return extensions.get(tag) ; }
-    
-    static public class BuildExt implements BuilderOp.Build 
+
+    // (ext NAME ...) form
+    static public class BuildExtExt implements BuilderOp.Build 
     { 
         public Op make(ItemList list)
         {
@@ -42,6 +51,18 @@ public class OpExtRegistry
             ExtBuilder b = builder(subtag) ;
             list = list.sublist(2) ;
             OpExt ext = b.make(list) ;  // Arguments 2 onwards
+            return ext ;
+        }
+    }
+    
+    static public class BuildExt2 implements BuilderOp.Build 
+    { 
+        public Op make(ItemList list)
+        {
+            String subtag = list.get(0).getSymbol() ;
+            ExtBuilder b = builder(subtag) ;
+            list = list.sublist(1) ;
+            OpExt ext = b.make(list) ;  // Argument 1 onwards
             return ext ;
         }
     }

@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.sse.writers.WriterLib;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -21,6 +20,10 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  */
 public abstract class OpExt extends OpBase
 { 
+    protected final String tag ;
+    
+    public OpExt(String name) { tag = name ; }
+    
     /** Return an op that will used by query processing algorithms such as 
      *  optimization.  This method returns a non-extension Op expression that
      *  is the equivalent SPARQL expression.  For example, this is the Op replaced
@@ -33,7 +36,7 @@ public abstract class OpExt extends OpBase
      */
     public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
     
-    public final String getName() { return Tags.tagExt ; }
+    public final String getName() { return tag ; }
     
     public final void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
@@ -42,17 +45,17 @@ public abstract class OpExt extends OpBase
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;
-        WriterLib.start(out, Tags.tagExt, WriterLib.NoNL) ;
-        out.print(getSubTag()) ;
-        out.print(" ") ;
+        WriterLib.start(out, tag, WriterLib.NoNL) ;
+//        out.print(getSubTag()) ;
+//        out.print(" ") ;
         outputArgs(out, sCxt) ;
-        WriterLib.finish(out, Tags.tagExt) ;
+        WriterLib.finish(out, tag) ;
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }
     
-    /** Return the sub tag - must match the builder */ 
-    public abstract String getSubTag() ;
+//    /** Return the sub tag - must match the builder */ 
+//    public abstract String getSubTag() ;
 
     /** Output the arguments in legal SSE format. Multiple items, whitespace separated */ 
     public abstract void outputArgs(IndentedWriter out, SerializationContext sCxt) ;

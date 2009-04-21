@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpFetch extends OpExt
 {
+    private static final String TagFetch = "fetch" ; 
     // ----------------
     private static boolean enabled = false ;
     public static void enable()
@@ -40,14 +41,18 @@ public class OpFetch extends OpExt
         
         OpExtRegistry.register(new ExtBuilder() {
             public OpExt make(ItemList argList) { return new OpFetch(argList.get(0).getNode()) ; }
-            public String getSubTab()           { return "fetch" ; }
+            public String getTagName()           { return TagFetch ; }
         }) ;
     }
     // ----------------
     
     private Node node ;
 
-    public OpFetch(Node node) { this.node = node ; }
+    public OpFetch(Node node)
+    {
+        super(TagFetch) ;
+        this.node = node ;
+    }
 
     @Override
     public Op effectiveOp()
@@ -94,9 +99,6 @@ public class OpFetch extends OpExt
     }
 
     @Override
-    public String getSubTag() { return "fetch" ; }
-
-    @Override
     public void outputArgs(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(FmtUtils.stringForNode(node, sCxt)) ;
@@ -105,7 +107,7 @@ public class OpFetch extends OpExt
     @Override
     public int hashCode()
     {
-        return "fetch".hashCode() ^ node.hashCode() ;
+        return TagFetch.hashCode() ^ node.hashCode() ;
     }
 
 }
