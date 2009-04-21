@@ -189,7 +189,7 @@
     </copy>
   </target>
 
-  <target name="jar" depends="package.jar" description="Incrementally compiel and build the jar"/>
+  <target name="jar" depends="package.jar" description="Incrementally compile and build the jar"/>
   <!-- <target name="build" depends="_jar,src-zip,javadoc-zip" /> -->
     
   <target name="build" depends="clean,package.jar,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
