@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.sse.writers.WriterLib;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -45,11 +46,24 @@ public abstract class OpExt extends OpBase
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;
-        WriterLib.start(out, tag, WriterLib.NoNL) ;
-//        out.print(getSubTag()) ;
-//        out.print(" ") ;
-        outputArgs(out, sCxt) ;
-        WriterLib.finish(out, tag) ;
+        
+        if ( false )
+        {
+            // Write in (ext NAME ...) form.
+            WriterLib.start(out, Tags.tagExt, WriterLib.NoNL) ;
+            out.print(getName()) ;
+            out.print(" ") ;
+            outputArgs(out, sCxt) ;
+            WriterLib.finish(out, Tags.tagExt) ;
+        }
+        else
+        {
+         // Write in (NAME ...) form.
+            WriterLib.start(out, tag, WriterLib.NoNL) ;
+            outputArgs(out, sCxt) ;
+            WriterLib.finish(out, tag) ;
+        }
+        
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }
