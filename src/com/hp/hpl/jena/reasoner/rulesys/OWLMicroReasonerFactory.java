@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasonerFactory.java,v 1.12 2008-12-28 19:32:09 andy_seaborne Exp $
+ * $Id: OWLMicroReasonerFactory.java,v 1.13 2009-04-22 18:18:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2008-12-28 19:32:09 $
+ * @version $Revision: 1.13 $ on $Date: 2009-04-22 18:18:18 $
  */
 public class OWLMicroReasonerFactory implements ReasonerFactory {
     
@@ -90,6 +90,7 @@ public class OWLMicroReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf.toString() ) // TODO -- typing
                 .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf.toString() ) // TODO -- typing
                 // TODO - add OWL elements supported
+                .addProperty(ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.ObjectProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.DatatypeProperty)
                 .addProperty(ReasonerVocabulary.supportsP, OWL.FunctionalProperty )
