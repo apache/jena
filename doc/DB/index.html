@@ -13,10 +13,25 @@
 
 
 
-<h1>Jena2 Database Interface - Release Notes</h1>
+<h1>Jena2 Database Interface</h1>
 
 
 
+<p>&nbsp;</p>
+<p>This document refers to the database subsystem that ships with Jena for 
+compatibility reasons.</p>
+<p>All new development should carried out with either
+<a href="http://jena.sf.net/SDB">SDB</a> or <a href="http://jena.sf.net/TDB">TDB</a>.</p>
+<p><a href="http://jena.sf.net/SDB">SDB</a> is a system that uses relational 
+databases for storage of RDF and OWL.&nbsp; It supports many open source and 
+commercial databases including MySQL, PostgreSQL, Oracle 11g, Microsoft SQL 
+server and IBM DB2. It scales to 100 million triples.</p>
+<p><a href="http://jena.sf.net/TDB">TDB</a> is a non-transactional, faster 
+database solution for use by a single system.&nbsp; It scales beyond a billion 
+triples.</p>
+<p>Both these storage subsystems are supported by
+<a href="http://www.joseki.org/">Joseki</a>.</p><hr>
+<p>&nbsp;</p>
 <p>Jena provides persistent storage of RDF data in relational databases. The 
 same interfaces such as <code>Model</code>, <code>Resource</code> and <code>
 Query</code>, are used to access and manipulate persistently stored RDF. The 
