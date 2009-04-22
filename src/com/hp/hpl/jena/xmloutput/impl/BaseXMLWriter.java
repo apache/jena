@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.70 2009-01-24 19:14:33 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.71 2009-04-22 20:11:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.70 $' Date='$Date: 2009-01-24 19:14:33 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.71 $' Date='$Date: 2009-04-22 20:11:50 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -767,7 +767,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             
             if (iri.hasViolation(false) ) 
             throw new BadURIException( "Only well-formed absolute URIrefs can be included in RDF/XML output: "
-                     + ((Violation)iri.violations(false).next()).getShortMessage()); 
+                     + (iri.violations(false).next()).getShortMessage()); 
         }
              
             

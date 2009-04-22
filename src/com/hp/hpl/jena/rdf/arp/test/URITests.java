@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000-2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.17 2008-12-28 19:32:02 andy_seaborne Exp $
+ *  $Id: URITests.java,v 1.18 2009-04-22 20:11:49 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -52,7 +52,7 @@ public class URITests
 		    IRI ref =
             factory.create(uri);
             if (ok && ref.hasViolation(false)) {
-                Violation v = (Violation)ref.violations(false).next();
+                Violation v = ref.violations(false).next();
                 fail("<" + uri + "> is expected to be a URI, but: "+v.getLongMessage());
             }
 			assertEquals("<" + uri + "> is"+(ok?" ":" not ")+"a URI", ok, !ref.hasViolation(false));

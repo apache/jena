@@ -136,9 +136,6 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
     protected static void checkURI(XMLHandler forErrors, Taint taintMe, IRI rslt)
             throws SAXParseException {
         if (rslt.hasViolation(false)) {
-
-            
-            @SuppressWarnings("unchecked")
             Iterator<Violation> it = rslt.violations(false);
             while (it.hasNext()) {
                 Violation irie = it.next();
