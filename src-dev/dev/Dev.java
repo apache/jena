@@ -8,20 +8,26 @@ package dev;
 
 public class Dev
 {
+    // == 0.8.0
+    // Metafile for directory.
+    //   Mandatory
+    //   TDBFactory - cache graphs - graph.close is return to cache (and sync) 
+    
     // tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
-    // Metafile for directory.
+    // ** 
     //   "This is format Z"
     
     // Graph by name graph from TDB database.
     // Tricky because of non-shared TDB engine => shared/cached engines.
     
+
+    
     // To ARQ:
     //   NodeConst
     //   Atlas? Iterator.
-    //   Riot
     //   Explain, and explain logger.
     
     // Use ARQ features
@@ -63,14 +69,11 @@ public class Dev
     
     // ---- Documentation
     //  Concurrency policy
+    //  Change assembler page to emphasise creating a dataset.
     
-    // ---- Indexing and block managers
-    // Ideally, B+Tree should be able to have different orders in leaves and branches.
-
-    // Generic TupleIndex<T extends Something> for NodeId or Node
-    //   e.g. Need mapper from T to TupleIndexRecord to abstract. 
-    
+    // ---- BlockMgrs
     // Consistency - do not manage in block managers except where MRSW not safe.
+    // TupleTable.size - at least an isEmpty 
     // ==> Reopenable
     // ==> .release(id)
     // ==> Accurate size (?? meaningful beyond isEmpty/notEmpty?)
@@ -83,17 +86,8 @@ public class Dev
     //   Dataset is cloned on a Joseki/SPARQL/update operation
     //   Need ARQ change + TDB to provide a GraphStore.
     
-    // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
-    
     // ---- Misc
     // Inlines => Inline56, Inline64
-
-    // ---- BlockMgrs
-    // Reopenable BlockMgrs (and the object file?) 
-    //   Needed?  SPO close followed by linear scans only.
-    //   Reopen the whole graph (??)
-    // TupleTable.size - at least an isEmpty 
-    //   Not just an empty block manager.
 
     // ---- Materialized views
     // Key->Action paradigm

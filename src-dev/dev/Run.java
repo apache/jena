@@ -8,9 +8,7 @@ package dev;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,21 +18,17 @@ import org.junit.runner.Result;
 import tdb.tdbclean;
 import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
-import atlas.lib.Bytes;
-import atlas.lib.FileOps;
-import atlas.lib.cache.CacheNG;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.rdf.model.Model;
 
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.InstallationTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
@@ -46,11 +40,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.store.*;
 
 public class Run
 {
@@ -67,23 +57,6 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        InputStream input = new FileInputStream("testing/manifest.ttl") ;
-        JenaReaderTurtle2.parse(input) ;
-        System.out.println("Finished") ;
-        System.exit(0) ;
-        
-        //tdb.tdbclean.main("DB") ;
-        //tdbloader("--set=tdb:fileMode=mapped", "--tdb=tdb.ttl", "--graph=http://example/D", "D.rdf") ;
-        tdbquery(/*"--set=tdb:fileMode=mapped",*/ "--set=tdb:unionDefaultGraph=true", "--tdb=tdb.ttl", "--query=Q.rq") ;
-        System.exit(0) ;
-        
-        byte b[] = new byte[16] ;
-        Bytes.setLong(0x1203456, b) ;
-        Bytes.setLong(0x1203456, b, 8) ;
-        System.out.println(Bytes.asHex(b)) ;
-        System.exit(0) ;
-        
-        
         if ( true )
         {
             tdbclean.main("DB") ;
@@ -103,25 +76,11 @@ public class Run
         }
         System.exit(0) ;
         
-        //tdbtest("testing/UnionGraph/manifest.ttl") ;
-        
-        //Log.enable(TDB.logExec.getName()) ;
-        //Log.enable("com.hp.hpl.jena.tdb.exec") ;
-//        TDB.setExecutionLogging(true) ;
-//        test() ; System.out.flush(); System.exit(0) ;
-//        
-        tdbquery("-v", "--tdb=tdb.ttl", "SELECT * { ?s ?p ?o }") ; //"--file=Q.rq") ; 
-        
-//        Location loc = Location.dirname("DB/SPO") ;
-//        //new File("DB/SPO").get
-//        System.out.println("Loc = "+loc) ;
-//        System.exit(0) ;
-//        tdb.tdbdump.main("index","DB/SPO") ; System.exit(0) ;
+        // Directory metadata files.
 
         FileSet fileSet = new FileSet(new Location("DB"), "SPO") ;
         System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
         System.out.println("Exists? "+fileSet.exists("idn")) ;
-        
         fileSet.setProperty("item1", "snork") ;
         fileSet.flush() ;
         System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
@@ -138,50 +97,6 @@ public class Run
         System.exit(0) ;
     }
     
-    private static void reification()
-    {
-        FileOps.clearDirectory("DB") ;
-        divider() ;
-        Model m = ModelFactory.createDefaultModel(ReificationStyle.Standard) ;
-        
-        m = TDBFactory.createModel("DB") ;
-        
-        m.setNsPrefixes(PrefixMapping.Standard) ;
-        
-        Resource r1 = m.createResource("http://example/r1") ;
-        Resource r2 = m.createResource("http://example/r2") ;
-        Property p1 = m.createProperty("http://example/p1") ;
-        Property p2 = m.createProperty("http://example/p2") ;
-        Literal lit1 = m.createLiteral("ABC") ;
-        Literal lit2 = m.createLiteral("XYZ") ;
-        
-        Statement stmt1 = m.createStatement(r1, p1, lit1) ;
-        Statement stmt2 = m.createStatement(r1, p2, lit2) ;
-        ReifiedStatement rs1 = m.createReifiedStatement(stmt1) ;
-        ReifiedStatement rs2 = m.createReifiedStatement(stmt2) ;
-        
-        Resource r = m.getAnyReifiedStatement(stmt2) ;
-        System.out.println("r = "+r) ;
-        
-        RSIterator rsIter = m.listReifiedStatements() ;
-        while(rsIter.hasNext())
-        {
-            ReifiedStatement rs = rsIter.nextRS() ;
-            System.out.println(rs) ;
-        }
-        
-        divider() ;
-        m.write(System.out, "TTL") ;
-        m.close();
-        divider() ;
-        m = TDBFactory.createModel("DB") ;
-        m.setNsPrefixes(PrefixMapping.Standard) ;
-        m.write(System.out, "TTL") ;
-        divider() ;
-        
-        System.exit(0) ;
-    }
-
     private static GraphTDB setup()
     {
         // Setup a graph - for experimental alternatives.
@@ -216,23 +131,6 @@ public class Run
         System.exit(0) ;
     }
     
-    private static void cache2()
-    {
-        CacheNG<Integer, String> pool = new CacheNG<Integer, String>(2) ;
-        pool.putObject(1, "X1") ;
-        pool.putObject(2, "X2") ;
-        pool.putObject(3, "X3") ;
-        
-        System.out.println(pool.contains(1)) ;
-        System.out.println(pool.contains(2)) ;
-        
-        System.out.println(pool.getObject(3)) ;
-        System.out.println(pool.getObject(3)) ;
-        System.out.println(pool.getObject(3, true)) ;
-        
-        
-        System.exit(0) ;
-    }
     private static void query(String str, Dataset dataset)
     {
         query(str, dataset, null) ;
@@ -257,16 +155,6 @@ public class Run
         qexec.close() ;
     }
     
-    /*
-    rdf:type   mfx:TestQuery ; 
-    mf:action
-       [ qt:query  <merge-1.rq> ;
-         qt:data <data-dft.ttl> ;
-         qt:graphData <data-1.ttl> ;
-         qt:graphData <data-2.ttl> ;
-       ] ;
-    mf:result <merge-1-results.srx>
-    */
     private static void test()
     {
         String testNum = "2" ;
@@ -284,6 +172,8 @@ public class Run
         Result result = runner.run(t) ;
         InstallationTest.afterClass() ;
     }
+    
+    
     
     private static void tdbquery(String... args)
     {
