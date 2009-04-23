@@ -13,6 +13,12 @@ public class Dev
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
     
+    // Metafile for directory.
+    // This is format Z.
+    
+    // Graph by name graph from TDB database.
+    // Tricky because of non-shared TDB engine => shared/cached engines.
+    
     // To ARQ:
     //   NodeConst
     //   Atlas? Iterator.
