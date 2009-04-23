@@ -12,9 +12,8 @@ public class Dev
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
-    
     // Metafile for directory.
-    // This is format Z.
+    //   "This is format Z"
     
     // Graph by name graph from TDB database.
     // Tricky because of non-shared TDB engine => shared/cached engines.
@@ -22,6 +21,7 @@ public class Dev
     // To ARQ:
     //   NodeConst
     //   Atlas? Iterator.
+    //   Riot
     //   Explain, and explain logger.
     
     // Use ARQ features
@@ -33,13 +33,12 @@ public class Dev
      
     // NodeLib.encode/decode ==> swap to a Nodec
 
-    // ==== Next
+    // ==== Execution
     // Quad pattern execution/optimization with filters (done for default graph).
     // File metafiles. FileSets
     //    Reopenable files.
     //      Alterntaive length hash codes.
     //      Record lengths
-    //      
     //    Node file stats
     
     // ==== Tools
@@ -87,16 +86,8 @@ public class Dev
     // TDBFactory - cache graphs - graph.close is return to cache (and sync) 
     
     // ---- Misc
-    // OpIndex(?) - generative stream of possibilities.
-    // { ?s :p ?x . ?s :q ?w } specials?  "OpAllProperties"
     // Inlines => Inline56, Inline64
 
-    // ---- Tuple reader tests
-    // [incremental]
-    // Checking, N-ary and non-RDF. BRT.
-    // Prefix mapping?  Migrate to a dump format.
-    // Byte version.
-    
     // ---- BlockMgrs
     // Reopenable BlockMgrs (and the object file?) 
     //   Needed?  SPO close followed by linear scans only.
@@ -112,9 +103,4 @@ public class Dev
     //   ** (script) to work on gzip files
     // ---- 32 bit mode.
     // ARC (Adaptive Replacement Cache) Cache Scheme
-
-    //   TransformCopy 
-    //      - maybe Transform should be "Op transform(OpABC)"
-    //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
-
 }
