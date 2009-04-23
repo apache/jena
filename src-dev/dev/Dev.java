@@ -23,7 +23,7 @@ public class Dev
     // Graph by name graph from TDB database.
     // Tricky because of non-shared TDB engine => shared/cached engines.
     
-
+    // ** Checking logging and use {}
     
     // To ARQ:
     //   NodeConst
