@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:38:51 $
+ * Last modified on   $Date: 2009-04-23 08:45:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.33 2009-03-13 15:38:51 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.34 2009-04-23 08:45:06 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -277,15 +277,23 @@ public interface OntClass
 
     /**
      * <p>Answer a class that is equivalent to this class. If there is
-     * more than one such class, an arbitrary selection is made.</p>
+     * more than one such class, an arbitrary selection is made.
+     * See {@link #listEquivalentClasses()} for a note on equivalent classes
+     * when using a reasoner.
+     * </p>
      * @return A class equivalent to this class
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     public OntClass getEquivalentClass();
 
     /**
-     * <p>Answer an iterator over all of the classes that are declared to be equivalent classes to
-     * this class. Each element of the iterator will be an {@link OntClass}.</p>
+     * <p>Answer an iterator over all of the classes that are known to be equivalent to
+     * this class. Equivalence may be asserted in the model (using, for example,
+     * <code>owl:equivalentClass</code>, or may be inferred by the reasoner attached to the
+     * model. <strong>Note</strong> that the OWL semantics entails that every class is
+     * equivalent to itself, so when using a reasoning model clients should expect that
+     * this class will appear as a member of its own equivalent classes.</p><p>
+     * Each element of the returned iterator will be an {@link OntClass}.</p>
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
