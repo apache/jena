@@ -8,7 +8,9 @@ package dev;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import atlas.lib.cache.CacheNG;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -64,6 +67,11 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        InputStream input = new FileInputStream("testing/manifest.ttl") ;
+        JenaReaderTurtle2.parse(input) ;
+        System.out.println("Finished") ;
+        System.exit(0) ;
+        
         //tdb.tdbclean.main("DB") ;
         //tdbloader("--set=tdb:fileMode=mapped", "--tdb=tdb.ttl", "--graph=http://example/D", "D.rdf") ;
         tdbquery(/*"--set=tdb:fileMode=mapped",*/ "--set=tdb:unionDefaultGraph=true", "--tdb=tdb.ttl", "--query=Q.rq") ;

@@ -10,14 +10,11 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-
-import com.hp.hpl.jena.graph.Node;
 
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
@@ -27,16 +24,20 @@ import atlas.lib.ColumnMap;
 import atlas.lib.SinkCounting;
 import atlas.lib.Tuple;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.riot.IRIResolver;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
-
+import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
-import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.CountingSinkGraph;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
@@ -45,7 +46,12 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.BulkLoader;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -147,19 +153,25 @@ public class tdbperf extends CmdSub
             SinkCounting<Tuple<Node>> sink = new SinkCounting<Tuple<Node>>()  ;
             Timer timer = new Timer() ;
             timer.startTimer() ;
+            
+            CountingSinkGraph g = new CountingSinkGraph() ;
+            Model model = ModelFactory.createModelForGraph(g) ;
 
             List<String> files = Arrays.asList(args) ;
             for ( String fn : files )
             {
                 InputStream in = null ;
+                String base ;
                 if ( fn.equals("-") || fn.equals("--") )
                 {
                     System.out.println("Parse: stdin") ;
                     in = System.in ;
+                    base = null ;
                 }
                 else
                 {
                     System.out.println("Parse: "+fn) ;
+                    base = IRIResolver.resolveFileURL(fn) ;
                     try { in = new FileInputStream(fn) ; } 
                     catch (FileNotFoundException ex)
                     {
@@ -167,13 +179,8 @@ public class tdbperf extends CmdSub
                         break ;
                     }
                 }
-                NodeTupleReader.read(sink, in, fn) ;
+                model.read(in, base) ;
                 
-//                try { 
-//                    String $ = FileUtils.readWholeFileAsUTF8(fn) ;
-//                    NodeTupleReader.read(sink, $, fn) ;                    
-//                } catch (IOException ex) { ex.printStackTrace(); break ; }
-
                 long x = timer.readTimer() ;
             }
             long x = timer.endTimer() ;
@@ -188,6 +195,11 @@ public class tdbperf extends CmdSub
             System.exit(0) ;
         }
             
+    }
+    
+    static class SinkCountingGraph extends GraphSink
+    {
+        
     }
     
     // Subcommand : help

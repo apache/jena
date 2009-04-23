@@ -17,6 +17,8 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
+import com.hp.hpl.jena.riot.JenaReaderNTriples2;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.QC;
@@ -26,7 +28,6 @@ import com.hp.hpl.jena.sparql.lib.Metadata;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
@@ -149,13 +150,21 @@ public class TDB
         
         wireIntoExecution() ;
         
-        // Override N-TRIPLES
-        String bulkLoaderClass = NTriplesReader2.class.getName() ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
-        // The Jena 2.5.X N3 reader has problems with very long object lists.
-        // Treat N3 as Turtle.
-        RDFReaderFImpl.setBaseReaderClassName("N3", com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName()) ;
+        // Override N-TRIPLES and Turtle with faster implementations.
+        String readerNT = JenaReaderNTriples2.class.getName() ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", readerNT) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", readerNT) ;
+        
+        String readerTTL = JenaReaderTurtle2.class.getName() ;
+        RDFReaderFImpl.setBaseReaderClassName("N3", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("TURTLE", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL", readerTTL) ;
+        
+//        
+//        // The Jena 2.5.X N3 reader has problems with very long object lists.
+//        // Treat N3 as Turtle.
+//        RDFReaderFImpl.setBaseReaderClassName("N3", com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName()) ;
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;

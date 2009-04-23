@@ -6,47 +6,31 @@
 
 package tdb;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.List;
-
 
 import arq.cmd.CmdUtils;
 import arq.cmdline.CmdARQ;
-import atlas.lib.SinkNull;
-import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink;
-
-import com.hp.hpl.jena.tdb.base.reader.NTriplesReader2;
-import com.hp.hpl.jena.tdb.base.reader.NodeTupleReader;
-
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
 
 /** Check an N-Triples file (or any other syntax). */
 public class tdbcheck extends CmdARQ
 {
     static public void main(String... argv)
     { 
+        TDB.init(); // Includes reorganising the Jena readers.
         CmdUtils.setLog4j() ;
-        // Override N-TRIPLES
-        String bulkLoaderClass = NTriplesReader2.class.getName() ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
         // Checking done in graph.
         new tdbcheck(argv).mainRun() ;
     }
@@ -79,10 +63,9 @@ public class tdbcheck extends CmdARQ
 
     private void execOne(String f)
     {
-        Graph g = new GraphSinkCheck() ;
+        // Black hole for triples.
+        Graph g = new GraphSink() ;
         Model model = ModelFactory.createModelForGraph(g) ;
-        
-        NodeTupleReader.CheckingIRIs = true ;
         
         if ( f != null )
         {
@@ -94,138 +77,39 @@ public class tdbcheck extends CmdARQ
         {
             //model.read(System.in, null, "N-TRIPLES") ;
             // MUST BE N-TRIPLES
-            NodeTupleReader.CheckingNTriples = true ;
-            NodeTupleReader.CheckingIRIs = true ;
             boolean forceISO8859 = false ;
+            Reader r = null ;
+            
             if ( forceISO8859 )
-                forceISO8859() ;
-
-            SinkNull<Tuple<Node>> x = SinkNull.create() ;
-            NodeTupleReader.read(x, System.in, null) ;
+                r = readerISO8859(System.in) ;
+            else
+                r= FileUtils.asUTF8(System.in) ;
+            
+            model.read(System.in, null, "N-TRIPLES") ;
         }
     }
 
-    private void forceISO8859()
+    private Reader readerISO8859(InputStream inputStream)
     {
-        // Force to ISO-8859-1
-        Reader r = null ;
         try
         {
             //java.io canonical name: ISO8859_1 
             //java.nio canonical name: ISO-8859-1 
-            r = new InputStreamReader(System.in, "ISO-8859-1") ;
+            return new InputStreamReader(inputStream, "ISO-8859-1") ;
         } catch (UnsupportedEncodingException ex)
         {
             ex.printStackTrace();
-            return ;
+            return null ;
         }
-
-        NodeTupleReader.read(new SinkNull<Tuple<Node>>(), r, null) ;
     }
-
+    
     @Override
     protected String getCommandName()
     {
         return Utils.className(this) ;
     }
 
-    // Inherit from this to get performAdd checks 
-    static class GraphSinkCheck extends GraphSink
-    {
-        @Override
-        public void performAdd( Triple t )
-        {
-            check(t.getSubject()) ;
-            check(t.getPredicate()) ;
-            check(t.getObject()) ;
-        }
-        static IRIFactory iriFactory = IRIFactory.semanticWebImplementation();
-
-        final private void check(Node node)
-        {
-            if ( node.isURI() ) checkURI(node) ;
-            else if ( node.isBlank() ) checkBlank(node) ;
-            else if ( node.isLiteral() ) checkLiteral(node) ;
-            else if ( node.isVariable() ) checkVar(node) ;
-        }
-        
-        final private void checkVar(Node node)
-        {}
-
-        final private void checkLiteral(Node node)
-        {
-            LiteralLabel lit = node.getLiteral() ;
-            
-            // Datatype check (and plain literals are always well formed)
-            if ( lit.getDatatype() != null && ! lit.isWellFormed() )
-                throw new JenaException("Lexical not valid for datatype: "+node) ;
-            
-//            // Not well formed.
-//            if ( lit.getDatatype() != null )
-//            {
-//                if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
-//                    throw new JenaException("Lexical not valid for datatype: "+node) ;
-//            }
-            
-            if (lit.language() != null )
-            {
-                // Not a pefect test.
-                String lang = lit.language() ;
-                if ( lang.length() > 0 && ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
-                    throw new JenaException("Language not valid: "+node) ;
-            }
-        }
-
-        final private void checkBlank(Node node)
-        {
-            String x =  node.getBlankNodeLabel() ;
-            if ( x.indexOf(' ') >= 0 )
-                throw new JenaException("Illegal blank node label (contains a space): "+node) ;
-        }
-
-
-        final private void checkURI(Node node)
-        {
-            // This code and the riot checking code need merging.
-            boolean includeWarnings = true ;
-            IRI iri = iriFactory.create(node.getURI()); // always works
-            if (iri.hasViolation(includeWarnings))
-            {
-                Iterator<Violation> it = iri.violations(includeWarnings);
-                // Deemphasise some warnings.
-                Violation vError = null ;
-                Violation vWarning = null ;
-                Violation vSub = null ;
-                while (it.hasNext()) {
-                    Violation v2 = it.next();
-                    int code = v2.getViolationCode() ;
-                    if ( v2.isError() )
-                    {
-                        vError = v2 ;
-                        continue ;
-                    }
-                    
-                    // Surpress the importance of these.
-                    if ( code == Violation.LOWERCASE_PREFERRED ||
-                         code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
-                    {
-                        if ( vSub == null )
-                            vSub = v2 ;
-                        continue ;
-                    }
-                    vWarning = v2 ;
-                    break ;
-                }
-                if ( vError != null )
-                    throw new JenaException(vError.getShortMessage()) ;
-                if ( vWarning != null )
-                    throw new JenaException(vWarning.getShortMessage()) ;
-                if ( vSub != null )
-                    throw new JenaException(vSub.getShortMessage()) ;
-                }
-            }
-        }
-    }
+}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

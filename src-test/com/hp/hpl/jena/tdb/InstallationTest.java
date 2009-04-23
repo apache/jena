@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.hp.hpl.jena.riot.TS_Riot;
 import com.hp.hpl.jena.tdb.base.TS_Base;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
@@ -30,22 +31,14 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TS_Lib.class
-    , TS_Iterator.class
 
-    //--------
+    TS_Lib.class
+    , TS_Iterator.class
+    , TS_Riot.class
+
     , TS_Base.class
-//    , TS_Block.class
-//    , TS_File.class
-//    , TS_Loader.class
-//    , TS_Record.class
-//    , TS_RecordFile.class
-    //--------
-    
     , TS_Index.class
-    
     , TS_Store.class     // The main storage implementation.  Slow tests.
-    
     , TS_Solver.class
     , TS_Sys.class
     , TS_Graph.class

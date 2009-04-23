@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.InstallationTest;
 } )
 
 public class TS_Main
-{} 
+{ }
 
 
 

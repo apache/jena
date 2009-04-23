@@ -1,0 +1,11 @@
+TurtleStd/test-28.ttl is broken.
+
+It looses the precision.
+test-28.out has corrected answers.
+
+TurtleStd/test-29.ttl has a silly URI contains 
+\t, \r, \n, \\, bad % and [] which are
+illegal and contradicts the resolve URI references rule.
+Also has a bad fragment and bad query.
+
+# Tests fixed.

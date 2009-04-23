@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.base;
 
 import com.hp.hpl.jena.tdb.base.block.TS_Block;
 import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.reader.TS_Loader;
 import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
 
@@ -20,7 +19,6 @@ import org.junit.runners.Suite;
       TS_Block.class
     , TS_File.class
     // No TS_Buffer - called from TS_Record
-    , TS_Loader.class
     , TS_Record.class
     , TS_RecordFile.class
 })

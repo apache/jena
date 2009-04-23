@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector.StatsGraph;
 
 public class GraphFactory
@@ -15,9 +17,9 @@ public class GraphFactory
         return new StatsGraph() ;
     }
     
-    public static SinkGraph sinkGraph()
+    public static Graph sinkGraph()
     {
-        return new SinkGraph() ;
+        return new GraphSink() ;
     }
 }
 
