@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.118 $
+ * Revision           $Revision: 1.119 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:40:07 $
+ * Last modified on   $Date: 2009-04-23 13:52:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -55,7 +55,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.118 2009-03-13 15:40:07 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.119 2009-04-23 13:52:22 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -411,14 +411,13 @@ public class OntModelImpl extends ModelCom implements OntModel
 
     /**
      * <p>
-     * Answer an iterator that ranges over the individual resources in this model, i&#046;e&#046;
-     * the resources with <code>rdf:type</code> corresponding to a class defined
-     * in the ontology.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
+     * Answer an iterator over the individuals in this model. Where possible, an individual
+     * is defined as an instance of the <em>top</em> class in an ontology, i.e. <code>owl:Thing</code>
+     * or <code>daml:Thing</code>. However, since this test relies on the presence of an inference
+     * capability, and is not defined in cases where there is no <em>top</em> class (such as RDFS),
+     * a secondary heuristic is used when needed: an individual is an instance of a class defined
+     * in the ontology (i.e. it is a resource with an <code>rdf:type</code>, where the
+     * <code>rdf:type</code> of that resource is a class or restriction in the ontology.
      * </p>
      *
      * @return An iterator over Individuals.
@@ -433,24 +432,22 @@ public class OntModelImpl extends ModelCom implements OntModel
                                                         .getReasonerCapabilities()
                                                         .contains( null, ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP );
         }
+
         if (!supportsIndAsThing || (getProfile().THING() == null) || getProfile().CLASS().equals( RDFS.Class )) {
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
 
-            // we have to build the query plans dynamically - these were done once-only in pre-Jena-2.5,
-            // but this can interfere with some optimisations
-            ExtendedIterator<Individual> indivI = queryFor( queryXTypeOfType( getProfile().CLASS() ), null, Individual.class );
-
-            if (getProfile().RESTRICTION() != null) {
-                // and things whose rdf:type is Restriction
-                indivI = indivI.andThen( queryFor( queryXTypeOfType( getProfile().RESTRICTION() ), null, Individual.class ) );
+            // it's tricky to make this efficient and cover all possible cases. I've changed the code to
+            // make use of the isIndividual() test on OntResource, at the expense of some redundant queries
+            // to the model, which could become expensive in the case of a DB model - ijd Apr-23-09
+            Set<Individual> results = new HashSet<Individual>();
+            for (Iterator<Statement> i = listStatements( null, RDF.type, (RDFNode) null); i.hasNext(); ) {
+                OntResource r = i.next().getSubject().as( OntResource.class );
+                if (r.isIndividual()) {
+                    results.add( r.as( Individual.class ) );
+                }
             }
 
-            // we also must pick resources that simply have rdf:type owl:Thing, since some individuals are asserted that way
-            if (getProfile().THING() != null) {
-                indivI = indivI.andThen( findByTypeAs( getProfile().THING(), Individual.class ) );
-            }
-
-            return UniqueExtendedIterator.create( indivI );
+            return WrappedIterator.create( results.iterator() );
         }
         else {
             // we have inference, so we pick the nodes that are of type Thing

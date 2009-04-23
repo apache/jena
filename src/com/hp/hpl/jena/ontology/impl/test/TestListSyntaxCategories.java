@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-01-26 10:28:24 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-04-23 13:52:43 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.33 2009-01-26 10:28:24 chris-dollin Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.34 2009-04-23 13:52:43 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -295,6 +295,99 @@ public class TestListSyntaxCategories
                 Model mVocab = ModelFactory.createDefaultModel();
                 Resource cA = mVocab.createResource( "http://jena.hpl.hp.com/testing/ontology#A");
                 return m.listIndividuals( cA );
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals negative case 1",  null,  OntModelSpec.OWL_MEM,  0,
+                new String[] {} )
+        {
+            @Override
+            protected void addAxioms( OntModel m ) {
+                // A0 should not an individual
+                m.add( m.createResource( NS + "A0"), RDF.type, OWL.Class );
+            }
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals negative case 2",  null,  OntModelSpec.OWL_MEM_MICRO_RULE_INF,  0,
+                new String[] {} )
+        {
+            @Override
+            protected void addAxioms( OntModel m ) {
+                // A0 should not an individual
+                m.add( m.createResource( NS + "A0"), RDF.type, OWL.Class );
+            }
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals negative case 3",  null,  OntModelSpec.OWL_MEM,  0,
+                new String[] {} )
+        {
+            @Override
+            protected void addAxioms( OntModel m ) {
+                // A0 should not an individual, even though we have materialised some of the entailment triples
+                Resource a0 = m.createResource( NS + "A0");
+                m.add( a0, RDF.type, OWL.Class );
+                m.add( OWL.Class, RDF.type, OWL.Class );
+            }
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals negative case 4",  null,  OntModelSpec.OWL_MEM,  0,
+                new String[] {} )
+        {
+            @Override
+            protected void addAxioms( OntModel m ) {
+                // A0 should not an individual, even though we have materialised some of the entailment triples
+                Resource a0 = m.createResource( NS + "A0");
+                m.add( a0, RDF.type, OWL.Class );
+                m.add( OWL.Class, RDF.type, RDFS.Class );
+            }
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals - punning",  null,  OntModelSpec.OWL_MEM,  1,
+                new String[] {NS + "A0"} )
+        {
+            @Override
+            protected void addAxioms( OntModel m ) {
+                // A0 should be an individual, since we are punning
+                Resource a0 = m.createResource( NS + "A0");
+                Resource a1 = m.createResource( NS + "A1");
+                m.add( a0, RDF.type, OWL.Class );
+                m.add( a1, RDF.type, OWL.Class );
+                m.add( a0, RDF.type, a1 );
+            }
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
             }
             @Override
             public boolean test( Resource r ) {
@@ -800,6 +893,9 @@ public class TestListSyntaxCategories
                 m.read( m_fileName );
             }
 
+            // hook to add extra axioms
+            addAxioms( m );
+
             boolean exOccurred = false;
             Iterator<? extends Resource> i = null;
             try {
@@ -881,6 +977,11 @@ public class TestListSyntaxCategories
             else {
                 return null;
             }
+        }
+
+        /** Add extra axioms hook */
+        protected void addAxioms( OntModel m ) {
+            // default is no-op
         }
     }
 }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:40:08 $
+ * Last modified on   $Date: 2009-04-23 13:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.19 2009-03-13 15:40:08 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.20 2009-04-23 13:52:43 ian_dickinson Exp $
  */
 public abstract class OntTestBase
     extends TestSuite
@@ -115,26 +115,27 @@ public abstract class OntTestBase
             throws Exception
         {
             // we don't want inferencing for these unit tests
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null ), m_inOWL );
+            runTest( getOntModel( OntModelSpec.OWL_MEM ), m_inOWL );
 
             m_owlLiteLang = true;
 
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null ), m_inOWLLite );
+            runTest( getOntModel( OntModelSpec.OWL_LITE_MEM ), m_inOWLLite );
 
             // now DAML
             m_owlLang = false;
             m_owlLiteLang = false;
             m_damlLang = true;
 
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
+            runTest( getOntModel( OntModelSpec.DAML_MEM ), m_inDAML );
 
             // now RDFS
 
             m_rdfsLang = true;
             m_damlLang = false;
-            runTest( ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM, null ), m_inRDFS);
+            runTest( getOntModel( OntModelSpec.RDFS_MEM ), m_inRDFS);
         }
 
+        /** Test execution worker */
         protected void runTest( OntModel m, boolean inModel )
             throws Exception
         {
@@ -175,6 +176,18 @@ public abstract class OntTestBase
                 found = i.next().equals( target ) || found;
             }
             return found;
+        }
+
+        /** Create the model, and call the model add axioms hook before returning */
+        protected OntModel getOntModel( OntModelSpec spec ) {
+            OntModel m = ModelFactory.createOntologyModel( spec );
+            addAxioms( m );
+            return m;
+        }
+
+        /** Add setup axioms to a new empty OntModel */
+        protected void addAxioms( OntModel m ) {
+            // default is no-op
         }
     }
 }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.72 $
+ * Revision           $Revision: 1.73 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:40:05 $
+ * Last modified on   $Date: 2009-04-23 13:52:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.72 2009-03-13 15:40:05 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.73 2009-04-23 13:52:22 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1176,6 +1176,15 @@ public class OntResourceImpl
                             // the resource has rdf:type owl:Thing (or equivalent)
                             return true;
                         }
+
+                        // if the type itself is OWL.Class or similar, we should ignore it ... this may
+                        // arise in cases where the user has materialised results of inference and is then
+                        // accessing them from a plain model
+                        if (rType.equals( getProfile().CLASS() )) {
+                            continue;
+                        }
+
+                        // otherwise, we check to see if the given type is known to be a class
                         for (j = rType.listProperties( RDF.type ); j.hasNext(); ) {
                             if (j.nextStatement().getResource().equals( getProfile().CLASS() )) {
                                 // we have found an rdf:type of the subject that is an owl, rdfs or daml Class
