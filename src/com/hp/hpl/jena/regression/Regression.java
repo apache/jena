@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.47 2009-01-22 15:10:36 chris-dollin Exp $
+    $Id: Regression.java,v 1.48 2009-04-23 08:47:29 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2009-01-22 15:10:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2009-04-23 08:47:29 $'
  */
 public class Regression extends Object {
 
@@ -4843,7 +4843,7 @@ public class Regression extends Object {
             { return o instanceof LitTestObj && content == ((LitTestObj)o).content; }
     }
 
-    public static class LitTestObjF implements ObjectF {
+    @Deprecated public static class LitTestObjF implements ObjectF {
         public Object createObject(String s) {
             return new LitTestObj(s);
         }
@@ -4880,5 +4880,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.47 2009-01-22 15:10:36 chris-dollin Exp $
+ * $Id: Regression.java,v 1.48 2009-04-23 08:47:29 chris-dollin Exp $
  */

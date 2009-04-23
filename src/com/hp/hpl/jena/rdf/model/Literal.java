@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2009-01-16 15:12:49 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $ $Date: 2009-04-23 08:47:29 $
  */
 public interface Literal extends RDFNode {
     
@@ -200,7 +200,7 @@ public interface Literal extends RDFNode {
      */
     // @TODO is this the right approach, could reparse the lexical form 
     //       using the factory even for typed literals
-    public Object getObject(ObjectF f) ;
+    @Deprecated public Object getObject(ObjectF f) ;
     
     /** 
          If a language is defined for this literal return it

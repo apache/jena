@@ -43,7 +43,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2009-01-19 12:07:12 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2009-04-23 08:47:29 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
@@ -212,7 +212,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         return asNode().getLiteralLexicalForm();
     }
     
-    public Object getObject(ObjectF f)  {
+    @Deprecated public Object getObject(ObjectF f)  {
         if (isPlainLiteral()) {
             try {
                 return f.createObject(getString());

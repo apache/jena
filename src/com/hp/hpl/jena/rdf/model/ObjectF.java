@@ -38,9 +38,9 @@ package com.hp.hpl.jena.rdf.model;
  *   object can be used to construct an instance of an appropriate
  *   class from a string.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2008-12-28 19:31:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2009-04-23 08:47:29 $'
  */
-public interface ObjectF {
+@Deprecated public interface ObjectF {
     /** Create an instance of an object.
      * @param s The String used to initialise the state of the object.
      * @throws Exception may throw any exception.

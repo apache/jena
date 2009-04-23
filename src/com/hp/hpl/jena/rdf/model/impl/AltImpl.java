@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2009-01-27 14:32:45 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2009-04-23 08:47:29 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -135,7 +135,7 @@ public class AltImpl extends ContainerImpl implements Alt {
     	return needDefaultStatement().getResource();
     }
     
-    public Object getDefaultObject(ObjectF f)    {
+    @Deprecated public Object getDefaultObject(ObjectF f)    {
      	return needDefaultStatement().getObject( f );
     }
     
