@@ -6,7 +6,8 @@ Release Notes
 
 ** Codebase converted to Java 5
 
-   o Exceptions AlreadyExistsException, DoesNotExistException and RulesetNotFoundException no longer inherit via RDFRDBException
+   o Exceptions AlreadyExistsException, DoesNotExistException and 
+     RulesetNotFoundException no longer inherit via RDFRDBException
 
 Jar changes:
    o Removed antlr-2.7.5.jar (no longer used)
@@ -16,6 +17,12 @@ Jar changes:
 
 Deprecation clearance.
    Methods, classes and statics marked deprecated in previous releases have been largely removed.
+
+ObjectF deprecations
+  The interface ObjectF and the methods that use it have been deprecated.
+  They are hangovers from before the time RDF acquired typed literals;
+  nobody should be using them any more. They will be removed in the next
+  Jena release.
 
 Reasoners:
    o Extended validity checking for OWL configurations to include
