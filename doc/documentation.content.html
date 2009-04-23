@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: documentation.content.html,v 1.37 2009-04-22 20:00:30 andy_seaborne Exp $ -->
+<!-- $Id: documentation.content.html,v 1.38 2009-04-23 08:31:00 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena Semantic Web Framework - Documentation Overview</title>
@@ -45,11 +45,13 @@ Jena Documentation
 
 <h2>Persistence Subsystems for Jena</h2>
 <p>There are two subsystems for persisting RDF and OWL data,
-<a href="http://jena.sf.net/SDB">SDB</a> or <a href="http://jena.sf.net/TDB">TDB</a>. 
-These are separate downloads. </p>
+<a href="http://jena.sf.net/TDB">TDB</a> or <a href="http://jena.sf.net/SDB">SDB</a>. </p>
+<p><a href="http://jena.sf.net/TDB">TDB</a> is non-transactional, custom store.
+<a href="http://jena.sf.net/SDB">SDB</a> runs backed by a relational database. 
+TDB is faster and simpler to setup.</p>
 <ul>
-	<li><a href="http://jena.hpl.hp.com/wiki/TDB">SDB documentation</a></li>
 	<li><a href="http://jena.hpl.hp.com/wiki/SDB">TDB documentation</a></li>
+	<li><a href="http://jena.hpl.hp.com/wiki/TDB">SDB documentation</a></li>
 </ul>
 <p>The original RDB system is still shipped with Jena for legacy applications. 
 It is deprecated for new development.</p>
