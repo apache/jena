@@ -6,7 +6,7 @@ Release Notes
 
 ** Codebase converted to Java 5
 
-   o Exceptions AlreadyExistsException, DoesNotExistException and 
+   o Exceptions AlreadyExistsException, DoesNotExistException and
      RulesetNotFoundException no longer inherit via RDFRDBException
 
 Jar changes:
@@ -53,6 +53,9 @@ Ontology API:
    o Removed support for no-longer-supported OWL syntax checker.
    o Removed previously-deprecated namespace management methods from OntDocumentManager.
      Namespaces should be managed via the PrefixMapping API.
+   o Unified code for checking individuals in OntResource.isIndividual() and
+     OntModel.listIndividuals(), and updated the check to account for some user-reported
+     edge cases.
 
 ==== Jena 2.5.7
 
