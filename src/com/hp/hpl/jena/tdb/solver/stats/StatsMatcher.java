@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import atlas.lib.NotImplemented;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.NotImplemented;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 
 /** Stats format:<pre>(stats

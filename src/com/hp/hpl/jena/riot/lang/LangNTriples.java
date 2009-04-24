@@ -6,29 +6,21 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.iterator.PeekIterator;
-
 import java.util.Iterator;
-
-import atlas.lib.Sink;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.event.Event;
+import atlas.event.EventManager;
+import atlas.iterator.PeekIterator;
+import atlas.lib.Sink;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.riot.Checker;
-import com.hp.hpl.jena.riot.ErrorHandler;
-import com.hp.hpl.jena.riot.ErrorHandlerLogger;
-import com.hp.hpl.jena.riot.ParseException;
-import com.hp.hpl.jena.riot.RIOT;
+import com.hp.hpl.jena.riot.*;
 import com.hp.hpl.jena.riot.tokens.Token;
 import com.hp.hpl.jena.riot.tokens.TokenType;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
-
-
-import atlas.event.Event;
-import atlas.event.EventManager;
 
 /** N-Triples parser, with both push and pull interfaces.
  * <ul>

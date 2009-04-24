@@ -12,13 +12,13 @@ import java.nio.ByteBuffer;
 import atlas.lib.BitsLong;
 import atlas.lib.Bytes;
 
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
+import com.hp.hpl.jena.sparql.core.NodeConst;
+
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 final

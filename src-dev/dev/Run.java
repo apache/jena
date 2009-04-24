@@ -57,6 +57,9 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        FileSet fs = new FileSet(".", ".") ;
+        System.exit(0) ;
+        
         if ( true )
         {
             tdbclean.main("DB") ;

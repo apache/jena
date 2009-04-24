@@ -6,6 +6,7 @@ ChangeLog for TDB
 + Upgrade to Java5 version of ARQ and Jena
 + Copes with spaces in URIs (strongly not recommended)
 + Internal general purpose library code all moved under package "atlas"
++ Faster Turtle reader (combined unpinning with N-Triples bulkreader).  
 
 ==== 0.7.3
 

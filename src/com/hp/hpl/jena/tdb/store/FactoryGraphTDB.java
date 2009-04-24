@@ -196,6 +196,7 @@ public class FactoryGraphTDB
     }
 
     // ---- All creation happens here
+    // Metadata for location.
     
     private static GraphTriplesTDB _createGraph(IndexBuilder indexBuilder, Location location)
     {

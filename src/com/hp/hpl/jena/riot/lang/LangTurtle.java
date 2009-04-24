@@ -17,17 +17,12 @@ import atlas.lib.Sink;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.iri.IRI;
-
-import com.hp.hpl.jena.riot.Checker;
-import com.hp.hpl.jena.riot.IRIResolver;
-import com.hp.hpl.jena.riot.ParseException;
-import com.hp.hpl.jena.riot.PrefixMap;
-import com.hp.hpl.jena.riot.Prologue;
-import com.hp.hpl.jena.riot.RIOT;
+import com.hp.hpl.jena.riot.*;
 import com.hp.hpl.jena.riot.tokens.Token;
 import com.hp.hpl.jena.riot.tokens.TokenType;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.tdb.lib.NodeConst;
+
+import com.hp.hpl.jena.sparql.core.NodeConst;
 
 public class LangTurtle
 {

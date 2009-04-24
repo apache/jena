@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.lib.Sink;
 import org.slf4j.Logger;
+import atlas.lib.Sink;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

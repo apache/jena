@@ -38,7 +38,7 @@ public class TDBFactory
 
     static ImplFactory factory = null ;
 
-    // Standard implementation factory
+    // Standard implementation factory: change graph creation to dataset?
     public final static ImplFactory stdFactory = new ImplFactory()
     {
         @Override
@@ -140,13 +140,14 @@ public class TDBFactory
 
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)
-    { return new DatasetImpl(factory.createDatasetGraph(location)) ; }
+    { return new DatasetImpl(_createDatasetGraph(location)) ; }
     
     /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
     public static Dataset createDataset()
-    { return new DatasetImpl(factory.createDatasetGraph()) ; }
+    { return new DatasetImpl(_createDatasetGraph()) ; }
 
-    // Point at which actual graphs are made.
+    // ---- Point at which actual graphs are made.
+    // Cache?
     
     private static Graph _createGraph()
     { return factory.createGraph() ; }
@@ -157,6 +158,14 @@ public class TDBFactory
         return factory.createGraph(loc) ;
     }
 
+    private static DatasetGraph _createDatasetGraph()
+    { return factory.createDatasetGraph() ; }
+
+    private static DatasetGraph _createDatasetGraph(Location loc)
+    { return factory.createDatasetGraph(loc) ; }
+    
+    // ---- 
+    
     /** Set the implementation factory.  Not normally needed - only systems that wish
      * to create usually combinations of indexes and ndoe tables need to use this call.
      * A detailed knowledge of how TDB works, and internal assumptions, is needed to
