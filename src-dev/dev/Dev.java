@@ -24,11 +24,7 @@ public class Dev
     // To ARQ:
     //   NodeConst
     //   Atlas? Iterator.
-    //   Explain, and explain logger.
-    
-    // Use ARQ features
-    //   com.hp.hpl.jena.sparql.engine.optimizer
-    //   Explain.
+    //   Explain, and explain logger (from ARQ?)
     
     // Location+String => Filesets
     //   createBlockMgr - tie to metadata?
