@@ -9,21 +9,17 @@ package dev;
 public class Dev
 {
     // == 0.8.0
-    // Metafile for directory.
-    //   Mandatory
+    //   Metafile for directory.
     //   TDBFactory - cache graphs - graph.close is return to cache (and sync) 
+
     
     // tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
-    // ** 
-    //   "This is format Z"
     
     // Graph by name graph from TDB database.
     // Tricky because of non-shared TDB engine => shared/cached engines.
-    
-    // ** Checking logging and use {}
     
     // To ARQ:
     //   NodeConst
