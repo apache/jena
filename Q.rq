@@ -3,6 +3,5 @@ PREFIX : <http://example/>
 SELECT *
 {
     ?a :foo ?b .
-    OPTIONAL { {?a :bar ?c FILTER (?b = 6)} }
-    #    ?a :baz ?d 
+    OPTIONAL { ?a :bar ?c }
 }

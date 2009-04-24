@@ -4,9 +4,10 @@ S=":"
 if [ "$OSTYPE" == "cygwin" ]; then S=";"; fi
 
 LIBS="$(cat<<EOF
-arq.jar
-arq-extra.jar
-commons-logging-1.1.1.jar
+../build/arq.jar
+../build/arq-extra.jar
+slf4j-api-1.5.6.jar
+slf4j-log4j12-1.5.6.jar
 icu4j_3_4.jar
 jena.jar
 json.jar
