@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.35 2009-01-17 14:40:18 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.36 2009-04-24 12:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -20,8 +20,8 @@ package com.hp.hpl.jena.db.test;
  * @version 0.1
 */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.DB;
 
 public class TestConnection extends TestCase {
     
-    protected static Log logger = LogFactory.getLog( TestConnection.class );
+    protected static Logger logger = LoggerFactory.getLogger( TestConnection.class );
 	
 	String DefModel = GraphRDB.DEFAULT;    
         

@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.49 2009-02-28 20:10:34 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.50 2009-04-24 12:52:48 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -21,8 +21,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class MoreTests extends TestCase implements RDFErrorHandler,
 		ARPErrorNumbers {
-	static private Log logger = LogFactory.getLog(MoreTests.class);
+	static private Logger logger = LoggerFactory.getLogger(MoreTests.class);
 
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Plus");

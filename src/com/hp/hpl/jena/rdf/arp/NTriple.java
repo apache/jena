@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.27 2009-01-16 16:16:44 andy_seaborne Exp $
+ * * $Id: NTriple.java,v 1.28 2009-04-24 12:52:48 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -75,7 +75,7 @@ import org.xml.sax.SAXParseException;
  * </dd><dt>
  * -u     </dt><dd>   Allow unqualified attributes (defaults to warning).
  * </dd><dt>
- * -f    </dt><dd>    All errors are fatal - report first one only.
+ * -f    </dt><dd>    All errors are.error - report first one only.
  * </dd><dt>
  * -n    </dt><dd>    Show line numbers of each triple.
  * </dd><dt>
@@ -192,7 +192,7 @@ public class NTriple implements ARPErrorNumbers {
 	 * Options:
 	 *  -x   Lax, Warnings suppressed
 	 *  -s   Strict, Warnings are errors
-	 *  -f   All errors are fatal.
+	 *  -f   All errors are.error.
 	 *  -u   Suppress unqualified attribute warnings
 	 *  -t   Error checking only, no n-triple output
 	 *  -b:  set xml:base (same for all files?)
@@ -228,7 +228,7 @@ public class NTriple implements ARPErrorNumbers {
 		System.err.println(
 			"    -u        Allow unqualified attributes (defaults to warning).");
 		System.err.println(
-			"    -f        All errors are fatal - report first one only.");
+			"    -f        All errors are.error - report first one only.");
 		System.err.println("    -b url    Sets XML Base to the absolute url.");
 		System.err.println("    -e NNN[,NNN...]");
 		System.err.println(

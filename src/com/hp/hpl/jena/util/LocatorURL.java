@@ -9,19 +9,22 @@ package com.hp.hpl.jena.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.* ;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
-import org.apache.commons.logging.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.20 2009-01-16 17:23:56 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.21 2009-04-24 12:52:49 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
 {
-    static Log log = LogFactory.getLog(LocatorURL.class) ;
+    static Logger log = LoggerFactory.getLogger(LocatorURL.class) ;
     static final String acceptHeader = "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
     
     static final String[] schemeNames = { "http:" , "https:" } ;    // Must be lower case and include the ":"

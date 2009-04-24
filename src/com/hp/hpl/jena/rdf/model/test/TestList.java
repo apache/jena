@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-17 10:28:38 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-04-24 12:51:52 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -26,8 +26,8 @@ package com.hp.hpl.jena.rdf.model.test;
 ///////////////
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.*;
 
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.20 2009-03-17 10:28:38 chris-dollin Exp $
+ * @version CVS $Id: TestList.java,v 1.21 2009-04-24 12:51:52 andy_seaborne Exp $
  */
 public class TestList
     extends TestCase
@@ -118,7 +118,7 @@ public class TestList
 
     /** Test that an iterator delivers the expected values */
     protected static void iteratorTest( Iterator<?> i, Object[] expected ) {
-        Log logger = LogFactory.getLog( TestList.class );
+        Logger logger = LoggerFactory.getLogger( TestList.class );
         List<Object> expList = new ArrayList<Object>();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );

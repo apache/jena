@@ -2,29 +2,57 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.71 2009-04-22 20:11:50 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.72 2009-04-24 12:52:51 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import java.io.*;
-import java.util.*;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.*;
 import org.apache.xerces.util.XMLChar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.iri.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.NsIterator;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.BadBooleanException;
+import com.hp.hpl.jena.shared.BadURIException;
+import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.InvalidPropertyURIException;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.CharEncoding;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.vocabulary.RSS;
+import com.hp.hpl.jena.vocabulary.VCARD;
 import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
 
 /** 
@@ -47,7 +75,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.71 $' Date='$Date: 2009-04-22 20:11:50 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.72 $' Date='$Date: 2009-04-24 12:52:51 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -58,7 +86,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         setupMaps();
     }
     
-	private static Log xlogger = LogFactory.getLog( BaseXMLWriter.class );
+	private static Logger xlogger = LoggerFactory.getLogger( BaseXMLWriter.class );
     
     protected static SimpleLogger logger = new SimpleLogger() {
       	public void warn(String s) {
@@ -397,7 +425,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             case END :
                 return prefix + ":" + local;
             case FAST :
-              //  logger.fatal("Unreachable code - reached.");
+              //  logger.error("Unreachable code - reached.");
                 throw new BrokenException( "cookup reached final FAST" );
             }
         }

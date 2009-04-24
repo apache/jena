@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import java.net.* ;
 import java.io.* ;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.FileUtils;
  * single worker function with model, UTF8 reader and visated base  
  *   
  * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.5 2009-03-26 09:54:41 andy_seaborne Exp $
+ * @version 	$Id: JenaReaderBase.java,v 1.6 2009-04-24 12:52:49 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader
@@ -45,7 +45,7 @@ public abstract class JenaReaderBase implements RDFReader
                read(model, new InputStreamReader(conn.getInputStream(), FileUtils.encodingUTF8), url);
         	else
             {
-                LogFactory.getLog(this.getClass()).warn("URL content is not UTF-8") ;
+                LoggerFactory.getLogger(this.getClass()).warn("URL content is not UTF-8") ;
                 read(model, new InputStreamReader(conn.getInputStream(),encoding), url);
             }
         }
@@ -86,7 +86,7 @@ public abstract class JenaReaderBase implements RDFReader
         {
             FileReader f = (FileReader)r ;
             if ( f.getEncoding().equalsIgnoreCase(FileUtils.encodingUTF8) )
-                LogFactory.getLog(this.getClass()).warn("FileReader is not UTF-8") ;
+                LoggerFactory.getLogger(this.getClass()).warn("FileReader is not UTF-8") ;
         }
     }
 

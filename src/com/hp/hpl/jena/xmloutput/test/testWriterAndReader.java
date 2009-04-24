@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.47 2009-01-16 18:24:40 andy_seaborne Exp $
+    $Id: testWriterAndReader.java,v 1.48 2009-04-24 12:52:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -14,8 +14,8 @@ import java.util.Vector;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2009-01-16 18:24:40 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2009-04-24 12:52:48 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -48,7 +48,7 @@ public class testWriterAndReader
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
-  protected static Log logger = LogFactory.getLog( testWriterAndReader.class );
+  protected static Logger logger = LoggerFactory.getLogger( testWriterAndReader.class );
     
 	final String lang;
    
@@ -453,5 +453,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.47 2009-01-16 18:24:40 andy_seaborne Exp $
+ * $Id: testWriterAndReader.java,v 1.48 2009-04-24 12:52:48 andy_seaborne Exp $
  */

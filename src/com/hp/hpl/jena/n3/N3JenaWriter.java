@@ -29,14 +29,14 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.34 2009-01-16 16:16:44 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.35 2009-04-24 12:52:49 andy_seaborne Exp $
  */
 
 
 
 public class N3JenaWriter implements RDFWriter
 {
-    //static Log logger = LogFactory.getLog(N3JenaWriter.class) ;
+    //static Logger logger = LoggerFactory.getLogger(N3JenaWriter.class) ;
     static public boolean DEBUG = false ;
     
     // Note: properties are URIs, not java convention package/class names.

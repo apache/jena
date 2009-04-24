@@ -18,8 +18,8 @@ import com.hp.hpl.jena.db.RDFRDBException;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //=======================================================================
 /**
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.33 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.34 $ on $Date: 2009-04-24 12:52:50 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -47,7 +47,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	//=======================================================================
 	// Internal variables
     
-    private static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
+    private static Logger logger = LoggerFactory.getLogger( PSet_ReifStore_RDB.class );
     
 	//=======================================================================
 	// Constructors and accessors

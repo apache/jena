@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.8 2009-03-12 21:49:47 andy_seaborne Exp $
+ * $Id: RETEConflictSet.java,v 1.9 2009-04-24 12:52:48 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.ReasonerException;
@@ -37,11 +37,11 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 
 public class RETEConflictSet {
-    protected static Log logger = LogFactory.getLog(FRuleEngine.class);
+    protected static Logger logger = LoggerFactory.getLogger(FRuleEngine.class);
 
     /** the execution context for this conflict set */
     protected RETERuleContext gcontext;

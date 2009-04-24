@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.75 2009-01-27 07:57:36 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.76 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,8 +29,8 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An inference graph that uses a mixture of forward and backward
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.75 $ on $Date: 2009-01-27 07:57:36 $
+ * @version $Revision: 1.76 $ on $Date: 2009-04-24 12:52:49 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -87,7 +87,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /** Flag to request datatype range validation be included in the validation step */
     protected boolean requestDatatypeRangeValidation = false;
     
-    static Log logger = LogFactory.getLog(FBRuleInfGraph.class);
+    static Logger logger = LoggerFactory.getLogger(FBRuleInfGraph.class);
 
 //  =======================================================================
 //  Constructors

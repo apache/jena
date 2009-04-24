@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.19 2009-03-18 13:32:36 chris-dollin Exp $
+ * $Id: LPBRuleEngine.java,v 1.20 2009-04-24 12:52:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -14,8 +14,8 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.iterator.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2009-03-18 13:32:36 $
+ * @version $Revision: 1.20 $ on $Date: 2009-04-24 12:52:48 $
  */
 public class LPBRuleEngine {
     
@@ -64,7 +64,7 @@ public class LPBRuleEngine {
      *  If set to 0 then checks will be done in the generator each time. */
     public static final int CYCLES_BETWEEN_COMPLETION_CHECK = 3;
     
-    static Log logger = LogFactory.getLog(LPBRuleEngine.class);
+    static Logger logger = LoggerFactory.getLogger(LPBRuleEngine.class);
     
 //  =======================================================================
 //  Constructors

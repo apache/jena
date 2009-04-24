@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.32 2009-03-18 08:39:10 chris-dollin Exp $
+ * $Id: RETEEngine.java,v 1.33 2009-04-24 12:52:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,15 +19,15 @@ import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A RETE version of the the forward rule system engine. It neeeds to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2009-03-18 08:39:10 $
+ * @version $Revision: 1.33 $ on $Date: 2009-04-24 12:52:48 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -67,7 +67,7 @@ public class RETEEngine implements FRuleEngineI {
     /** True if all the rules are monotonic, so we short circuit the conflict set processing */
     boolean isMonotonic = true;
     
-    protected static Log logger = LogFactory.getLog(FRuleEngine.class);
+    protected static Logger logger = LoggerFactory.getLogger(FRuleEngine.class);
     
 //  =======================================================================
 //  Constructors

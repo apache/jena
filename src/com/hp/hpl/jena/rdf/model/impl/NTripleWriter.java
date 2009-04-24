@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.23 2009-01-16 17:23:48 andy_seaborne Exp $
+ * $Id: NTripleWriter.java,v 1.24 2009-04-24 12:52:47 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -35,19 +35,19 @@ import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2009-01-16 17:23:48 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2009-04-24 12:52:47 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
-    protected static Log logger = LogFactory.getLog( NTripleWriter.class );
+    protected static Logger logger = LoggerFactory.getLogger( NTripleWriter.class );
     
     public NTripleWriter() {
     }

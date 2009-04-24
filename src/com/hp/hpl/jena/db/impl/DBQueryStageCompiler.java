@@ -5,16 +5,20 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.Element;
+import com.hp.hpl.jena.graph.query.Expression;
+import com.hp.hpl.jena.graph.query.ExpressionSet;
+import com.hp.hpl.jena.graph.query.Fixed;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.RDF;
-
-import java.util.*;
-
-import org.apache.commons.logging.*;
 
 /**
 	@author kers
@@ -25,7 +29,7 @@ import org.apache.commons.logging.*;
 */
 public final class DBQueryStageCompiler
     {
-    protected static Log logger = LogFactory.getLog( DBQueryStageCompiler.class );
+    protected static Logger logger = LoggerFactory.getLogger( DBQueryStageCompiler.class );
     
     public DBQueryStageCompiler()
         {}

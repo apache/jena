@@ -15,8 +15,8 @@ import java.io.Writer;
 
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.arp.test.MoreTests;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  */
 public class TestMacEncodings  extends ModelTestBase
 {
-	private static Log logger = LogFactory.getLog( TestMacEncodings.class );
+	private static Logger logger = LoggerFactory.getLogger( TestMacEncodings.class );
 
 	public TestMacEncodings( String name )
 		{ super( name ); }

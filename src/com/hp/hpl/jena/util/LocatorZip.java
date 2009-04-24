@@ -6,21 +6,26 @@
 
 package com.hp.hpl.jena.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.shared.JenaException;
-import java.io.* ;
-import java.util.zip.* ;
-import org.apache.commons.logging.*;
 
 /** Location files in a zip file
  *  
  * @author Andy Seaborne
- * @version $Id: LocatorZip.java,v 1.8 2008-12-28 19:32:09 andy_seaborne Exp $
+ * @version $Id: LocatorZip.java,v 1.9 2009-04-24 12:52:49 andy_seaborne Exp $
  */
  
 
 class LocatorZip implements Locator
 {
-    static Log log = LogFactory.getLog(LocatorZip.class) ;
+    static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;
     String zipFileName = null ; 
     ZipFile zipFile = null ;
     

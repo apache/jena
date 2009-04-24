@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.119 $
+ * Revision           $Revision: 1.120 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-04-23 13:52:22 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:50 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,8 +27,8 @@ package com.hp.hpl.jena.ontology.impl;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
 import com.hp.hpl.jena.enhanced.EnhNode;
@@ -55,7 +55,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.119 2009-04-23 13:52:22 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.120 2009-04-24 12:52:50 andy_seaborne Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -72,7 +72,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     // Static variables
     //////////////////////////////////
 
-    static private Log s_log = LogFactory.getLog( OntModelImpl.class );
+    static private Logger s_log = LoggerFactory.getLogger( OntModelImpl.class );
 
     /** Found from {@link owlSyntaxCheckerClassName}, must implement
      * {@link OWLSyntaxChecker}. */

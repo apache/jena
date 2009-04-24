@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-17 10:28:56 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2009-04-24 12:52:47 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -34,8 +34,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.23 2009-03-17 10:28:56 chris-dollin Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.24 2009-04-24 12:52:47 andy_seaborne Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -110,7 +110,7 @@ public class RDFListImpl
     /** Flag to indicate whether we are checking for valid lists during list operations. Default false. */
     protected static boolean s_checkValid = false;
     
-    private static final Log log = LogFactory.getLog( RDFListImpl.class );
+    private static final Logger log = LoggerFactory.getLogger( RDFListImpl.class );
     
 
     // Instance variables

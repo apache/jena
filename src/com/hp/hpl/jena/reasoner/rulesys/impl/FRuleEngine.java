@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.30 2009-03-12 21:49:47 andy_seaborne Exp $
+ * $Id: FRuleEngine.java,v 1.31 2009-04-24 12:52:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,15 +20,15 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The processing engine for forward production rules. It neeeds to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2009-03-12 21:49:47 $
+ * @version $Revision: 1.31 $ on $Date: 2009-04-24 12:52:48 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -62,7 +62,7 @@ public class FRuleEngine implements FRuleEngineI {
     /** True if we have processed the axioms in the rule set */
     boolean processedAxioms = false;
     
-    protected static Log logger = LogFactory.getLog(FRuleEngine.class);
+    protected static Logger logger = LoggerFactory.getLogger(FRuleEngine.class);
     
 //  =======================================================================
 //  Constructors

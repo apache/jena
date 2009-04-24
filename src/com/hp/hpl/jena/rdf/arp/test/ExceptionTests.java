@@ -2,7 +2,7 @@
  *  (c)     Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: ExceptionTests.java,v 1.11 2008-12-28 19:32:03 andy_seaborne Exp $
+ *  $Id: ExceptionTests.java,v 1.12 2009-04-24 12:52:48 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -102,7 +102,7 @@ public class ExceptionTests
 		catch (JenaException e){
 			System.err.println(e.getMessage());
 			e.printStackTrace();
-			  fail("Demoted fatal error threw an exception");
+			  fail("Demoted.error error threw an exception");
 		}
 		finally {
 			RDFDefaultErrorHandler.silent = false;			

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.65 2009-01-26 15:24:27 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.66 2009-04-24 12:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -18,8 +18,8 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //=======================================================================
 /**
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.65 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.66 $ on $Date: 2009-04-24 12:52:50 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -98,7 +98,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		m_driver = driver;
 	}
 
-    private static Log logger = LogFactory.getLog(PSet_TripleStore_RDB.class);
+    private static Logger logger = LoggerFactory.getLogger(PSet_TripleStore_RDB.class);
     
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}

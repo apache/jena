@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.60 $
+ * Revision           $Revision: 1.61 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 10:12:46 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:50 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,7 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.ontology.*;
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.60 2009-03-13 10:12:46 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.61 2009-04-24 12:52:50 andy_seaborne Exp $
  */
 public class schemagen {
     // Constants
@@ -1315,7 +1315,7 @@ public class schemagen {
                 comment.append( ((Literal) n).getLexicalForm().trim() );
             }
             else {
-                LogFactory.getLog( getClass() ).debug( "Not a literal: " + n );
+                LoggerFactory.getLogger( getClass() ).debug( "Not a literal: " + n );
             }
         }
 

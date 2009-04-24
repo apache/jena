@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 10:25:35 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:51 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 import jena.schemagen;
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.13 2009-03-13 10:25:35 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.14 2009-04-24 12:52:51 andy_seaborne Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -62,7 +62,7 @@ public class Test_schemagen
     // Static variables
     //////////////////////////////////
 
-    private static Log log = LogFactory.getLog( Test_schemagen.class );
+    private static Logger log = LoggerFactory.getLogger( Test_schemagen.class );
 
     // Instance variables
     //////////////////////////////////

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.28 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: TestRDFSRules.java,v 1.29 2009-04-24 12:52:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,19 +21,19 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
 import java.util.Iterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.28 $ on $Date: 2009-03-12 21:49:37 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.29 $ on $Date: 2009-04-24 12:52:47 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
     
-    protected static Log logger = LogFactory.getLog(TestRDFSRules.class);
+    protected static Logger logger = LoggerFactory.getLogger(TestRDFSRules.class);
     
     /**
      * Boilerplate for junit

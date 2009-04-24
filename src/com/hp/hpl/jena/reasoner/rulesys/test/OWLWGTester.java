@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.30 2009-03-18 10:36:36 chris-dollin Exp $
+ * $Id: OWLWGTester.java,v 1.31 2009-04-24 12:52:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,8 +21,8 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -38,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2009-03-18 10:36:36 $
+ * @version $Revision: 1.31 $ on $Date: 2009-04-24 12:52:47 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -86,7 +86,7 @@ public class OWLWGTester {
     /** The total number of tests run */
     protected static int numTests = 0;
     
-    protected static Log logger = LogFactory.getLog(OWLWGTester.class);
+    protected static Logger logger = LoggerFactory.getLogger(OWLWGTester.class);
     
     // Static initializer for the predicates
     static {

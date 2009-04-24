@@ -9,7 +9,7 @@ package com.hp.hpl.jena.util.junit;
 import java.util.Iterator;
 
 import junit.framework.*;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
@@ -35,7 +35,7 @@ public abstract class TestFactoryManifest implements ManifestItemHandler
             m = new Manifest(filename) ;
         } catch (JenaException ex)
         { 
-            LogFactory.getLog(TestFactoryManifest.class).warn("Failed to load: "+filename+"\n"+ex.getMessage(), ex) ;
+            LoggerFactory.getLogger(TestFactoryManifest.class).warn("Failed to load: "+filename+"\n"+ex.getMessage(), ex) ;
             ts1.setName("BROKEN") ;
             return ts1 ;
         }

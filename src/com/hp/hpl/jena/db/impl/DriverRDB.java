@@ -25,8 +25,8 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.DB;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xerces.util.XMLChar;
 
 //=======================================================================
@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.77 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.78 $ on $Date: 2009-04-24 12:52:50 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -219,7 +219,7 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Database layout version */
    protected String LAYOUT_VERSION = "2.0";
    
-   protected static Log logger = LogFactory.getLog( DriverRDB.class );
+   protected static Logger logger = LoggerFactory.getLogger( DriverRDB.class );
     
 // =======================================================================
 //	Instance variables
@@ -2195,7 +2195,7 @@ public abstract class DriverRDB implements IRDBDriver {
                             { ex.printStackTrace(); }
                         break;
                     default:
-                        logger.fatal("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2)) ;
+                        logger.error("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2)) ;
                         throw new RDFRDBException("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2));
                 }
 			}

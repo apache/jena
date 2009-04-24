@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.68 $
+ * Revision           $Revision: 1.69 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 10:43:21 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:48 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,8 +27,8 @@ package com.hp.hpl.jena.ontology;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.*;
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.68 2009-03-13 10:43:21 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.69 2009-04-24 12:52:48 andy_seaborne Exp $
  */
 public class OntDocumentManager
 {
@@ -116,8 +116,8 @@ public class OntDocumentManager
     /** Default document manager instance */
     private static OntDocumentManager s_instance = null;
 
-    /** Log for this class */
-    private static Log log = LogFactory.getLog( OntDocumentManager.class );
+    /** Logger for this class */
+    private static Logger log = LoggerFactory.getLogger( OntDocumentManager.class );
 
 
     // Instance variables

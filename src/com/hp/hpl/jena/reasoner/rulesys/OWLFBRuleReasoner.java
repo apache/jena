@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.23 2009-03-03 18:32:39 andy_seaborne Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.24 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.OWLRuleTranslationHook;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2009-03-03 18:32:39 $
+ * @version $Revision: 1.24 $ on $Date: 2009-04-24 12:52:49 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -35,7 +35,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
     /** The precomputed axiom closure and compiled rule set */
     protected static FBRuleInfGraph staticPreload; 
     
-    protected static Log logger = LogFactory.getLog(OWLFBRuleReasoner.class);
+    protected static Logger logger = LoggerFactory.getLogger(OWLFBRuleReasoner.class);
     
     /**
      * Constructor

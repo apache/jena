@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.n3.IRIResolver; 
 import com.hp.hpl.jena.rdf.model.*;
@@ -27,13 +27,13 @@ import com.hp.hpl.jena.vocabulary.TestManifestX;
  * A test manifest for a single manifest file.
  * 
  * @author Andy Seaborne
- * @version $Id: Manifest.java,v 1.5 2009-01-26 15:24:28 andy_seaborne Exp $
+ * @version $Id: Manifest.java,v 1.6 2009-04-24 12:52:53 andy_seaborne Exp $
  */
 
 public class Manifest
 {
     // This class does not know about JUnit.
-    private static Log log = LogFactory.getLog(Manifest.class) ;
+    private static Logger log = LoggerFactory.getLogger(Manifest.class) ;
     Model manifest ;
     String manifestName ;
     String filename ;

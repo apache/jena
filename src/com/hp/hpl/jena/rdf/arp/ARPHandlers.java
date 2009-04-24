@@ -128,7 +128,7 @@ public class ARPHandlers {
      * <p>
      * See the ARP documentation for ErrorHandler for details of the
      * ErrorHandler semantics (in particular how to upgrade a warning to an
-     * error, and an error to a fatalError).
+     * error, and an error to a.errorError).
      * </p>
      * <p>
      * The Xerces/SAX documentation for ErrorHandler is available on the web.

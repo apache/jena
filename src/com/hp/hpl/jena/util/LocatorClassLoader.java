@@ -7,14 +7,14 @@
 package com.hp.hpl.jena.util;
 
 import java.io.InputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 public class LocatorClassLoader  implements Locator
 {
-    static Log log = LogFactory.getLog(LocatorClassLoader.class) ;
+    static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;
 
     ClassLoader classLoader = null ;
     public LocatorClassLoader(ClassLoader _classLoader)

@@ -9,7 +9,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.shared.JenaException;
@@ -35,7 +35,7 @@ public class FileUtils
             utf8 = Charset.forName(encodingUTF8) ;
         } catch (Throwable ex)
         {
-            LogFactory.getLog(FileUtils.class).warn("Failed to get charset for UTF-8") ;
+            LoggerFactory.getLogger(FileUtils.class).warn("Failed to get charset for UTF-8") ;
         }
     }
     

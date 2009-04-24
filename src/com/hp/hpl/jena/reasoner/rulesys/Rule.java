@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.56 2009-03-16 14:00:11 chris-dollin Exp $
+ * $Id: Rule.java,v 1.57 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -75,7 +75,7 @@ import com.hp.hpl.jena.util.Tokenizer;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.56 $ on $Date: 2009-03-16 14:00:11 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.57 $ on $Date: 2009-04-24 12:52:49 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -100,7 +100,7 @@ public class Rule implements ClauseEntry {
     /** Flags whether the rule is monotonic */
     protected boolean isMonotonic = true;
     
-    static Log logger = LogFactory.getLog(Rule.class);
+    static Logger logger = LoggerFactory.getLogger(Rule.class);
     
     /**
      * Constructor
@@ -942,7 +942,7 @@ public class Rule implements ClauseEntry {
                 List<Node> args = parseNodeList();
                 Functor clause = new Functor(name, args, BuiltinRegistry.theRegistry);
                 if (clause.getImplementor() == null) {
-                    // Not a fatal error becase later processing can add this
+                    // Not a.error error becase later processing can add this
                     // implementation to the registry
                     logger.warn("Rule references unimplemented functor: " + name);
                 }

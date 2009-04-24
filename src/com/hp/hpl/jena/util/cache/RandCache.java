@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,7 +29,7 @@ public class RandCache implements Cache, CacheControl {
     HashMap<Object, Object> map;
     Collection<Object> collection;
 
-    protected static Log logger = LogFactory.getLog(RandCache.class);
+    protected static Logger logger = LoggerFactory.getLogger(RandCache.class);
     
     long gets = 0;
     long puts = 0;
@@ -174,5 +174,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.13 2009-01-29 08:54:44 chris-dollin Exp $
+ * $Id: RandCache.java,v 1.14 2009-04-24 12:52:51 andy_seaborne Exp $
  */

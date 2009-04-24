@@ -14,8 +14,8 @@ import java.util.Vector;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.regression.testReaderInterface;
  */
 public class SAX2RDFTest extends TestCase {
 
-	protected static Log logger = LogFactory.getLog( testReaderInterface.class );
+	protected static Logger logger = LoggerFactory.getLogger( testReaderInterface.class );
     
 	static final boolean is1_4_1 =
 		System.getProperty("java.version").startsWith("1.4.1");
@@ -1142,7 +1142,7 @@ public class SAX2RDFTest extends TestCase {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#fatalError(java.lang.Exception)
+		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler.errorError(java.lang.Exception)
 		 */
 		public void fatalError(Exception e) {
 			s("F", e);

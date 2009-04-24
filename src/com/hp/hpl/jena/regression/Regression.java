@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.48 2009-04-23 08:47:29 chris-dollin Exp $
+    $Id: Regression.java,v 1.49 2009-04-24 12:52:49 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -16,14 +16,14 @@ import com.hp.hpl.jena.graph.*;
 import java.net.*;
 import java.io.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A common set of regression tests. [Now being factored out into the
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2009-04-23 08:47:29 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date: 2009-04-24 12:52:49 $'
  */
 public class Regression extends Object {
 
@@ -33,7 +33,7 @@ public class Regression extends Object {
         (new Regression()).test(m1, m2, m3, m4);
     }
 
-    protected static Log logger = LogFactory.getLog( Regression.class );
+    protected static Logger logger = LoggerFactory.getLogger( Regression.class );
 
     /** Run the whole batch of common tests on a model implementation
      * @param m an instance of the model to be tested
@@ -4880,5 +4880,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.48 2009-04-23 08:47:29 chris-dollin Exp $
+ * $Id: Regression.java,v 1.49 2009-04-24 12:52:49 andy_seaborne Exp $
  */

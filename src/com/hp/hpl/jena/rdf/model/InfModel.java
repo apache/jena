@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModel.java,v 1.16 2009-01-28 14:37:08 chris-dollin Exp $
+ * $Id: InfModel.java,v 1.17 2009-04-24 12:52:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model;
 
@@ -34,7 +34,7 @@ import java.util.Iterator;
  * and Derivations are not yet stable.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2009-01-28 14:37:08 $
+ * @version $Revision: 1.17 $ on $Date: 2009-04-24 12:52:47 $
  */
 public interface InfModel extends Model {
 
@@ -81,7 +81,7 @@ public interface InfModel extends Model {
      * the validity of the bound instance data against the bound
      * schema data. 
      * <p>Logically inconsistent models will be indicated by a ValidityReport which
-     * reports isValid() as false. Additional non-fatal problems, such as uninstantiatable classes,
+     * reports isValid() as false. Additional non.error problems, such as uninstantiatable classes,
      * may be reported as warnings.
      * @return a ValidityReport structure
      */

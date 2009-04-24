@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.15 2009-01-26 15:24:28 andy_seaborne Exp $
+  $Id: TestReifierCompareToMem.java,v 1.16 2009-04-24 12:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -29,8 +29,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestReifierCompareToMem extends TestCase
     {    
@@ -41,7 +41,7 @@ public class TestReifierCompareToMem extends TestCase
     public static TestSuite suite()
         { return new TestSuite( TestReifierCompareToMem.class ); }   
      
-     protected static Log logger = LogFactory.getLog( TestReifierCompareToMem.class );
+     protected static Logger logger = LoggerFactory.getLogger( TestReifierCompareToMem.class );
 
     Model modelrdb = null;    
     Model modelmem = null;

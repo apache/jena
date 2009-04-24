@@ -15,8 +15,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Node;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.17 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.18 $ on $Date: 2009-04-24 12:52:50 $
 */
 public class ResultSetReifIterator extends ResultSetIterator<Triple> {
 
@@ -77,7 +77,7 @@ public class ResultSetReifIterator extends ResultSetIterator<Triple> {
 	protected int m_nextFrag;
 
 
-    static protected Log logger = LogFactory.getLog( ResultSetReifIterator.class );
+    static protected Logger logger = LoggerFactory.getLogger( ResultSetReifIterator.class );
     
 	// Constructor
 	public ResultSetReifIterator(IPSet p, boolean getTriples, IDBID graphID) {

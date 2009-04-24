@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.51 2009-03-17 17:14:41 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.52 2009-04-24 12:52:51 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -69,20 +69,25 @@ package com.hp.hpl.jena.xmloutput.impl;
 import java.io.PrintWriter;
 import java.util.*;
 
-import org.apache.commons.logging.*;
 import org.apache.xerces.util.XMLChar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
+import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PropertyNotFoundException;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.52 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -92,7 +97,7 @@ class Unparser {
     static private Property DESCRIPTION = new PropertyImpl(RDF.getURI(),
             "Description");
 
-    static protected Log logger = LogFactory.getLog(Unparser.class);
+    static protected Logger logger = LoggerFactory.getLogger(Unparser.class);
 
     /**
      * Creates an Unparser for the specified model. The localName is the URI

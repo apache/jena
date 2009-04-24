@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: rdfparse.java,v 1.12 2009-03-16 16:02:27 chris-dollin Exp $
+  $Id: rdfparse.java,v 1.13 2009-04-24 12:52:50 andy_seaborne Exp $
 */
 
 package jena;
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.Command;
  * </dd><dt>
  * -u     </dt><dd>   Allow unqualified attributes (defaults to warning).
  * </dd><dt>
- * -f    </dt><dd>    All errors are fatal - report first one only.
+ * -f    </dt><dd>    All errors are.error - report first one only.
  * </dd><dt>
  * -b url </dt><dd>   Sets XML Base to the absolute url.
  * </dd><dt>

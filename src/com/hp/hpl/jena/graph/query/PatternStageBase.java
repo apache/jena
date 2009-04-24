@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.21 2009-01-27 19:48:59 andy_seaborne Exp $
+    $Id: PatternStageBase.java,v 1.22 2009-04-24 12:52:49 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.graph.Graph;
@@ -47,7 +47,7 @@ public abstract class PatternStageBase extends Stage
         this.guards = new GuardArranger( triples ).makeGuards( map, constraints );
         }
 
-    static Log log = LogFactory.getLog( PatternStageBase.class );
+    static Logger log = LoggerFactory.getLogger( PatternStageBase.class );
     
     protected void run( Pipe source, Pipe sink, StageElement se )
         {

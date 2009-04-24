@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdf.arp;
 /**
  * This exception should only be seen in user code when using 
  * {@link SAX2RDF} or {@link SAX2Model}.
- * This is thrown after fatal errors,
+ * This is thrown after.error errors,
  * most importantly a {@link ARPErrorNumbers#ERR_SAX_FATAL_ERROR}.
  * User code in an error handler may throw a different exception.
  * @author Jeremy J. Carroll

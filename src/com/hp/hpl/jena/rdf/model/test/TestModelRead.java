@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.15 2009-01-13 14:06:00 chris-dollin Exp $
+  $Id: TestModelRead.java,v 1.16 2009-04-24 12:51:52 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -10,8 +10,8 @@ import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.rdf.model.*;
@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
  */
 public class TestModelRead extends ModelTestBase
     {
-    protected static Log logger = LogFactory.getLog( TestModelRead.class );
+    protected static Logger logger = LoggerFactory.getLogger( TestModelRead.class );
 
     public TestModelRead( String name )
         { super( name ); }

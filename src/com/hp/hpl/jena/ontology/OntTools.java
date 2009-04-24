@@ -47,7 +47,7 @@ public class OntTools
     // Static variables
     //////////////////////////////////
 
-//    static private Log log = LogFactory.getLog( OntTools.class );
+//    static private Logger log = LoggerFactory.getLogger( OntTools.class );
 
     // Instance variables
     //////////////////////////////////

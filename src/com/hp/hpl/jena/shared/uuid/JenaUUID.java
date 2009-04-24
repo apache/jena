@@ -5,7 +5,7 @@
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: JenaUUID.java,v 1.6 2009-04-13 16:03:17 andy_seaborne Exp $
+ * @version  $Id: JenaUUID.java,v 1.7 2009-04-24 12:52:47 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
@@ -13,8 +13,8 @@ package com.hp.hpl.jena.shared.uuid;
 
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TO DO
 // + Comments and renaming.
@@ -121,11 +121,11 @@ public abstract class JenaUUID
                 case UUID_V1.version: return  UUID_V1_Gen.parse$(s) ;
                 case UUID_V4.version: return  UUID_V4_Gen.parse$(s) ;
             }
-            LogFactory.getLog(JenaUUID.class).warn(s+" : Unsupported version: "+version) ;
+            LoggerFactory.getLogger(JenaUUID.class).warn(s+" : Unsupported version: "+version) ;
             throw new UnsupportedOperationException("String specifies unsupported UUID version: "+version) ;
         }
         
-        Log log = LogFactory.getLog(JenaUUID.class) ;
+        Logger log = LoggerFactory.getLogger(JenaUUID.class) ;
         
         switch (variant)
         {

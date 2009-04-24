@@ -5,8 +5,8 @@
  */
 
 package jena;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import jena.cmdline.ArgDecl;
@@ -26,7 +26,7 @@ public class dbquery extends DBcmd
     // TODO Rewrite to use assemblers (and merge with arq.query?)
     // Make DBcmd public -- actually, make an extension of CmdLineArgs that adds and handles the extra stuff.
     // Execute an ARQ query against an old-style Jena database
-    static private Log log = LogFactory.getLog( dbquery.class );
+    static private Logger log = LoggerFactory.getLogger( dbquery.class );
 
     public static final String[] usage =
         new String[] {

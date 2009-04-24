@@ -225,7 +225,7 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 			throws SAXException {
 		if (depth <= 0) {
 			// Does not return.
-			fatalError(new SAXParseException("Unmatched end tag: " + qName,
+		    fatalError(new SAXParseException("Unmatched end tag: " + qName,
 					getLocator()));
 		}
 		super.endElement(namespaceURI, localName, qName);
@@ -267,7 +267,7 @@ public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+	 * @see org.xml.sax.ErrorHandler.errorError(org.xml.sax.SAXParseException)
 	 */
 	@Override
     public void fatalError(SAXParseException exception) throws SAXException {

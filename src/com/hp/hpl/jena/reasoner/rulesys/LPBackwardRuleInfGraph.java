@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.17 2009-01-27 07:57:36 chris-dollin Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.18 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,15 +18,15 @@ import java.util.*;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Inference graph for accessing the LP version of the backward chaining
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2009-01-27 07:57:36 $
+ * @version $Revision: 1.18 $ on $Date: 2009-04-24 12:52:49 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -51,7 +51,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
         
-    static Log logger = LogFactory.getLog(LPBackwardRuleInfGraph.class);
+    static Logger logger = LoggerFactory.getLogger(LPBackwardRuleInfGraph.class);
     
 //  =======================================================================
 //   Core methods

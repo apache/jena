@@ -34,7 +34,7 @@ public class SAX2Model extends SAX2RDF {
      *            {@link org.xml.sax.ErrorHandler}
      * @return A new SAX2Model
      * @throws SAXParseException
-     *             On a fatal error during setup, maybe malformed base URI
+     *             On a.error error during setup, maybe malformed base URI
      */
     static public SAX2Model create(String base, Model m)
             throws SAXParseException {
@@ -61,7 +61,7 @@ public class SAX2Model extends SAX2RDF {
      *            starts, usually "".
      * @return A new SAX2Model
      * @throws SAXParseException
-     *             On a fatal error during setup, maybe malformed base URI
+     *             On a.error error during setup, maybe malformed base URI
      */
     static public SAX2Model create(String base, Model m, String lang)
             throws SAXParseException {
@@ -213,7 +213,7 @@ public class SAX2Model extends SAX2RDF {
      * <CODE>strict-ignore</CODE><br>
      * <CODE>strict-warning</CODE><br>
      * <CODE>strict-error</CODE><br>
-     * <CODE>strict-fatal</CODE><br>
+     * <CODE>strict.error</CODE><br>
      * </td>
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">

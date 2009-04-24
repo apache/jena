@@ -5,24 +5,26 @@
 
 package com.hp.hpl.jena.util;
 
-import org.apache.commons.logging.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.JenaException;
 
 /** A set of static convenience methods for getting models
  *  The loader will guess the language/type of the model using
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.30 2009-01-16 17:23:56 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.31 2009-04-24 12:52:49 andy_seaborne Exp $
  */
 
 public class ModelLoader
 {
-    static Log log = LogFactory.getLog(ModelLoader.class)  ;
+    static Logger log = LoggerFactory.getLogger(ModelLoader.class)  ;
     
     /** @deprecated Use FileUtils.FileUtils.langXML */
     @Deprecated
@@ -99,7 +101,7 @@ public class ModelLoader
         if ( lang.equals(FileUtils.langBDB) )
         {
         	// @@ temporarily not supported        	
-            LogFactory.getLog(ModelLoader.class).fatal("Failed to open Berkeley database") ;
+            LoggerFactory.getLogger(ModelLoader.class).error("Failed to open Berkeley database") ;
             return null ;
 /*
             // URL had better be a file!
@@ -175,7 +177,7 @@ public class ModelLoader
         }
         catch (Exception e)
         {
-            LogFactory.getLog(ModelLoader.class).warn("No such data source: "+urlStr);
+            LoggerFactory.getLogger(ModelLoader.class).warn("No such data source: "+urlStr);
             return null ;
         }
     }
@@ -207,7 +209,7 @@ public class ModelLoader
             return ModelRDB.open(conn, modelName) ;
         } catch (JenaException rdfEx)
         {
-            LogFactory.getLog(ModelLoader.class).error("Failed to open SQL database: ModelLoader.connectToDB", rdfEx) ;
+            LoggerFactory.getLogger(ModelLoader.class).error("Failed to open SQL database: ModelLoader.connectToDB", rdfEx) ;
             throw rdfEx ;
         }
     }

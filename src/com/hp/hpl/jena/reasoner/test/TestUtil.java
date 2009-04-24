@@ -5,14 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.22 2009-03-17 10:28:56 chris-dollin Exp $
+ * $Id: TestUtil.java,v 1.23 2009-04-24 12:52:50 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import junit.framework.*;
 import java.util.Iterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2009-03-17 10:28:56 $
+ * @version $Revision: 1.23 $ on $Date: 2009-04-24 12:52:50 $
  */
 public class TestUtil {
     
@@ -45,7 +45,7 @@ public class TestUtil {
      * and don't check these resources against the expected <code>vals</code>.
      */
     public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals, int countAnon ) {
-        Log logger = LogFactory.getLog( testCase.getClass() );
+        Logger logger = LoggerFactory.getLogger( testCase.getClass() );
         
         boolean[] found = new boolean[vals.length];
         int anonFound = 0;

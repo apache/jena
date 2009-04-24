@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.39 2009-02-28 18:09:55 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.40 2009-04-24 12:52:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -374,7 +374,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
 
     final static String errorLevelName[] =
-        new String[] { "warning", "error", "fatal error" };
+        new String[] { "warning", "error", "fatal" };
         
     interface Act {
         void act(Resource r) ;
@@ -669,7 +669,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                                 getName().charAt("rdf-nnn/67_".length()))
                                 != -1) {
                         // ignore
-                        //  System.err.println("Last message probably reflects a benign race condition on ARP teardown after fatal error that can be ignored.");
+                        //  System.err.println("Last message probably reflects a benign race condition on ARP teardown after.error error that can be ignored.");
                         //  System.err.println("It is known to happen with tests rdf-nnn/67_[1234] and ERR_SYNTAX_ERROR.");
 
                     } else {

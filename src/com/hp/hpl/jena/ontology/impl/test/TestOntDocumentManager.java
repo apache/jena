@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:40:07 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:51 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,8 +27,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 import java.io.StringReader;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.*;
 
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.34 2009-03-13 15:40:07 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.35 2009-04-24 12:52:51 andy_seaborne Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -61,8 +61,8 @@ public class TestOntDocumentManager
     // Static variables
     //////////////////////////////////
 
-    /** Log for this class */
-    private static Log log = LogFactory.getLog( TestOntDocumentManager.class );
+    /** Logger for this class */
+    private static Logger log = LoggerFactory.getLogger( TestOntDocumentManager.class );
 
     public static final Integer cnt( int x ) {return new Integer(x);}
 

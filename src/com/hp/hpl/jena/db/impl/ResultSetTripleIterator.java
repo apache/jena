@@ -16,15 +16,15 @@ import java.sql.*;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //=======================================================================
 /**
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.16 $ on $Date: 2009-01-26 15:24:27 $
+* @version $Revision: 1.17 $ on $Date: 2009-04-24 12:52:50 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator<Triple> {
 
@@ -46,7 +46,7 @@ public class ResultSetTripleIterator extends ResultSetIterator<Triple> {
     /** HasType flag if iterating over reified statements */
     protected boolean m_hasType;
 
-    static private Log logger = LogFactory.getLog( ResultSetTripleIterator.class );
+    static private Logger logger = LoggerFactory.getLogger( ResultSetTripleIterator.class );
     
 	// Constructor
 	public ResultSetTripleIterator(IPSet p, IDBID graphID) {

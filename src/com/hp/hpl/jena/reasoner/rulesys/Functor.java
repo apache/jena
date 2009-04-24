@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.27 2009-01-26 10:28:21 chris-dollin Exp $
+ * $Id: Functor.java,v 1.28 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,8 +13,8 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.datatypes.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2009-01-26 10:28:21 $
+ * @version $Revision: 1.28 $ on $Date: 2009-04-24 12:52:49 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -50,7 +50,7 @@ public class Functor implements ClauseEntry {
                 }
             };
     
-    protected static Log logger = LogFactory.getLog(Functor.class);
+    protected static Logger logger = LoggerFactory.getLogger(Functor.class);
     
     /**
      * Constructor. 

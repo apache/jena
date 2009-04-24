@@ -11,8 +11,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXParseException;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.JenaException;
  */
 public class DOM2Model extends SAX2Model {
 	
-	 static Log logger = LogFactory.getLog(DOM2Model.class) ;
+	 static Logger logger = LoggerFactory.getLogger(DOM2Model.class) ;
 	   
     /**
      * Create a new DOM2Model.

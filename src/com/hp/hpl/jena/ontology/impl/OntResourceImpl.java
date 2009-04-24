@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.73 $
+ * Revision           $Revision: 1.74 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-04-23 13:52:22 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-04-24 12:52:50 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,8 +38,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.73 2009-04-23 13:52:22 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.74 2009-04-24 12:52:50 andy_seaborne Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -93,7 +93,7 @@ public class OntResourceImpl
         }
     };
 
-    private static final Log log = LogFactory.getLog( OntResourceImpl.class );
+    private static final Logger log = LoggerFactory.getLogger( OntResourceImpl.class );
 
     // Instance variables
     //////////////////////////////////

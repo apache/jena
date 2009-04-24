@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.28 2009-03-12 21:49:37 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.29 2009-04-24 12:52:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,8 +26,8 @@ import junit.framework.TestSuite;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -36,11 +36,11 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2009-03-12 21:49:37 $
+ * @version $Revision: 1.29 $ on $Date: 2009-04-24 12:52:47 $
  */
 public class TestGenericRules extends TestCase {
     
-    protected static Log logger = LogFactory.getLog(TestFBRules.class);
+    protected static Logger logger = LoggerFactory.getLogger(TestFBRules.class);
 
     // Useful constants
     Node p = Node.createURI("p");

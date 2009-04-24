@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.35 2009-01-16 17:23:49 andy_seaborne Exp $
+   $Id: ARPErrorNumbers.java,v 1.36 2009-04-24 12:52:48 andy_seaborne Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -57,7 +57,7 @@ public interface ARPErrorNumbers {
      * The precise definition of 'associated with' is deliberately 
      * undefined, and may change in future releases.
      * 
-     * When the file includes fatal error conditions the parsing is aborted immediately after such an error.
+     * When the file includes.error error conditions the parsing is aborted immediately after such an error.
 Otherwise, it is possible to see all the triples, including those involving resources and literals associated with any condition, by ensuring that the error mode of every error code is WARNING or IGNORE. (i.e. ARP optionally permits all errors to be downgraded to warnings, or to be ignored).
 In this case, the precise rules which ARP uses to generate triples for ill-formed input are not defined by any standard and are subject to change with future releases.
 For input involving no errors, ARP creates triples in accordance with the RDF/XML Syntax Revised Recommendation. 
@@ -547,9 +547,9 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     @Deprecated
     public int ERR_UNABLE_TO_RECOVER = 300;
 
-    /**   The SAX Parser generated a fatal error. 
+    /**   The SAX Parser generated a.error error. 
      * Resetting this mode is not supported. 
-     * Treated as a fatal error in both
+     * Treated as a.error error in both
      * default and strict modes. (E301) */
     public int ERR_SAX_FATAL_ERROR = 301;
     

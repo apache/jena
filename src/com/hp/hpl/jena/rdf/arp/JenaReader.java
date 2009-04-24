@@ -308,7 +308,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * <CODE>strict-ignore</CODE><br>
      * <CODE>strict-warning</CODE><br>
      * <CODE>strict-error</CODE><br>
-     * <CODE>strict-fatal</CODE><br>
+     * <CODE>strict.error</CODE><br>
      * </td>
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">
@@ -418,9 +418,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Supported properties: 
      * error-mode (String) default, lax, strict,
-     * strict-ignore, strict-warning, strict-error, strict-fatal <br/> 
+     * strict-ignore, strict-warning, strict-error, strict.error <br/> 
      * embedding (String/Boolean) true, false<br/>
-     * ERR_* (String/Integer) em_warning, em_fatal, em_ignore, em_error<br/>
+     * ERR_* (String/Integer) em_warning, em.error, em_ignore, em_error<br/>
      * IGN_* ditto<br/>
      * WARN_* ditto<br/>
      * iri-rules (String), "Jena", "IRI", "strict", "lax"
@@ -468,7 +468,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             }
             eh.error(new IllegalArgumentException(
                                                   "Property \"ERROR-MODE\" takes the following values: "
-                                                  + "\"default\", \"lax\", \"strict\", \"strict-ignore\", \"strict-warning\", \"strict-error\", \"strict-fatal\".")) ;
+                                                  + "\"default\", \"lax\", \"strict\", \"strict-ignore\", \"strict-warning\", \"strict-error\", \"strict.error\".")) ;
             return null;
         }
         if (str.equals("EMBEDDING")) {

@@ -93,7 +93,7 @@ public class ARPOptions implements ARPErrorNumbers {
      * <dt>{@link ARPErrorNumbers#EM_ERROR}</dt>
      * <dd>Invoke ErrorHandler.error() for this condition. Do not produce triples.</dd>
      * <dt>{@link ARPErrorNumbers#EM_FATAL}</dt>
-     * <dd>Aborts parse and invokes ErrorHandler.fatalError() for this condition.
+     * <dd>Aborts parse and invokes ErrorHandler.errorError() for this condition.
      * Do not produce triples.
      * In unusual situations, a few further warnings and errors may be reported.
      * </dd>

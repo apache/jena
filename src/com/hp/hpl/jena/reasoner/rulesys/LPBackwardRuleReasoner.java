@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleReasoner.java,v 1.13 2009-03-03 18:32:39 andy_seaborne Exp $
+ * $Id: LPBackwardRuleReasoner.java,v 1.14 2009-04-24 12:52:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-03-03 18:32:39 $
+ * @version $Revision: 1.14 $ on $Date: 2009-04-24 12:52:49 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -184,7 +184,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
     
     /**
      * Set the state of the trace flag. If set to true then rule firings
-     * are logged out to the Log at "INFO" level.
+     * are logged out to the Logger at "INFO" level.
      */
     public void setTraceOn(boolean state) {
         traceOn = state;
