@@ -71,7 +71,7 @@ public class SqlCoalesce extends SqlNodeBase1
 
         // In layout1, NodeScope is the same as IdScope
 //        if ( join.getNodeScope().getVars().size() != 0 )
-//            LogFactory.getLog(SqlCoalesce.class).warn("NodeScope is not empty") ;
+//            LoggerFactory.getLogger(SqlCoalesce.class).warn("NodeScope is not empty") ;
         
         for ( Var v : coalesceVars )
         {

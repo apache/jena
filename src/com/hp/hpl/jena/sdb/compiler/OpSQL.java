@@ -30,6 +30,7 @@ public class OpSQL extends OpExt
     
     public OpSQL(SqlNode sqlNode, Op original, SDBRequest request)
     {
+        super("SQL") ;
         // Trouble is, we may have to throw the SqlNode away because of substitution.  What a waste!
         this.request = request ;
         this.sqlNode = sqlNode ;
@@ -108,12 +109,6 @@ public class OpSQL extends OpExt
     public SQLBridge getBridge()            { return bridge ; }
 
     public void setBridge(SQLBridge bridge) { this.bridge = bridge ; }
-
-    @Override
-    public String getSubTag()
-    {
-        return "SQL" ;
-    }
 
     @Override
     public void outputArgs(IndentedWriter out, SerializationContext sCxt)

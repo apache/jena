@@ -144,7 +144,7 @@ public class StoreConfig extends SDBConnectionHolder
         if ( storage != null )
             return ;
         
-//        LogFactory.getLog(this.getClass()).warn("TESTING: config storage reset") ;
+//        LoggerFactory.getLogger(this.getClass()).warn("TESTING: config storage reset") ;
 //        storage.reset() ;
     }
     

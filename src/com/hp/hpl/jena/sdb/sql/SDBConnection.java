@@ -318,7 +318,7 @@ public class SDBConnection
         this.jdbcURL = jdbcURL ;
     }
 
-    static Logger sqlLog = log ; // LogFactory.getLog("SQL") ; // Remember to turn on in log4j.properties.
+    static Logger sqlLog = log ; // LoggerFactory.getLogger("SQL") ; // Remember to turn on in log4j.properties.
     
     private void exception(String who, SQLException ex, String sqlString)
     {

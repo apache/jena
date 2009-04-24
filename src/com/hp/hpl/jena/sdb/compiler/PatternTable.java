@@ -138,7 +138,7 @@ public class PatternTable extends TableDesc
                     {
                         // Liberal
                         continue ;
-                        //log.fatal("Can't find quad in SqlStagePTable.build") ;
+                        //log.error("Can't find quad in SqlStagePTable.build") ;
                         //throw new SDBException("SqlStagePTable.build") ;
                     }
                     
