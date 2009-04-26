@@ -6,7 +6,6 @@
 
 package atlas.lib;
 
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -43,7 +42,14 @@ public class Bytes
         // Comes out hight to low : 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 
     }
     
-    
+    final public static byte[] hexDigits = {
+        '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,
+        '9' , 'A' , 'B' , 'C' , 'D' , 'E' , 'F' 
+//         , 'g' , 'h' ,
+//        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
+//        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
+//        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
+        };
     
     /** Get an int from a byte array (network order)
      * @param b Byte Array
@@ -275,7 +281,7 @@ public class Bytes
     
     public static String asHex(byte[] bytes, int start, int finish)
     {
-        StringWriter sw = new StringWriter() ;
+        StringBuilder sw = new StringBuilder() ;
         for ( int i = start ; i < finish ; i++ )
         {
             byte b = bytes[i] ;

@@ -10,6 +10,7 @@ public class Dev
 {
     // == 0.8.0
     //   Metafile for directory.
+    //   New and reattach
     //   TDBFactory - cache graphs - graph.close is return to cache (and sync) 
 
     
@@ -22,7 +23,6 @@ public class Dev
     // Tricky because of non-shared TDB engine => shared/cached engines.
     
     // To ARQ:
-    //   NodeConst
     //   Atlas? Iterator.
     //   Explain, and explain logger (from ARQ?)
     
@@ -30,6 +30,8 @@ public class Dev
     //   createBlockMgr - tie to metadata?
      
     // NodeLib.encode/decode ==> swap to a Nodec
+
+    // Version of BufferingWriter that works on OutputStreams.
 
     // ==== Execution
     // Quad pattern execution/optimization with filters (done for default graph).
@@ -54,7 +56,7 @@ public class Dev
     
     // ---- Optimizer
     //   Relationship of filter placement and OpExecutor and StageGenerators.
-    //   The disjunction/UNION rewrite
+    //   The disjunction/UNION rewrite (ARQ)
     
     // ---- Graph
     // listSubjects via QueryHandlerTDB (make a range query)

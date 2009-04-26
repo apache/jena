@@ -23,8 +23,9 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 
-/** Buffering writer (and own methods which do not throw checked exceptions).
- *  Only support UTF-8. 
+/** A buffering writer, send output to a channel (WrityeablByteChannel)
+ *  (and own methods which do not throw checked exceptions).
+ *  Only supports UTF-8. 
  *  <p>
  *  The java.io classes have hidden synchronization so in some very critical
  *  situations, this can be expensive (such situations are not common).
@@ -40,7 +41,7 @@ public final class BufferingWriter extends Writer
 {
     private static Logger log = LoggerFactory.getLogger(BufferingWriter.class) ;
     
-    // ComOpposite of PeekReader. 
+    // Opposite of PeekReader. 
     // As usualy, the java.io classes have hidden synchronization
     // so in some very critical situations, this can be expensive.
     // Also, this class generalises the notion of destination via the Sink
@@ -65,13 +66,13 @@ public final class BufferingWriter extends Writer
     private Sink<ByteBuffer> out ;
     private char[] oneChar = new char[1] ;
 
-    /** Convenience factor operation to output to a WritableByteChannel */
+    /** Convenience operation to output to a WritableByteChannel */
     public static BufferingWriter create(WritableByteChannel out)
     {
         return create(out, SIZE) ;
     }
     
-    /** Convenience factor operation to output to a WritableByteChannel */
+    /** Convenience operation to output to a WritableByteChannel */
     public static BufferingWriter create(WritableByteChannel out, int size)
     {
         return new BufferingWriter(new SinkChannel(out), size, size/2) ;

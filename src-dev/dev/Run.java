@@ -34,6 +34,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -41,6 +42,8 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.*;
+
+import dump.DumpIndex;
 
 public class Run
 {
@@ -57,6 +60,13 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        {
+            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
+            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
+            DumpIndex.dump(System.out, index) ;
+            System.out.flush();
+            System.exit(0) ;
+        }
         FileSet fs = new FileSet(".", ".") ;
         System.exit(0) ;
         

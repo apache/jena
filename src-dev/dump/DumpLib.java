@@ -1,18 +1,52 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package atlas.io;
+package dump;
 
-public class InputOutput
+import atlas.lib.Bytes;
+
+import com.hp.hpl.jena.tdb.base.record.Record;
+
+public class DumpLib
 {
+    static int outputBytes(Record record, byte[] bytes)
+    {
+        return outputBytes(record, bytes, 0) ;
+    }
+    
+    /** Record to bytes (for output) */
+    static int outputBytes(Record record, byte[] bytes, int idx)
+    {
+        idx = toByteBufferAsHex(record.getKey(), idx, bytes) ;
+        
+        if ( record.getValue() != null )
+        {
+            bytes[idx++] = ' ' ;
+            idx = toByteBufferAsHex(record.getValue(), idx, bytes) ;
+        }
 
+        bytes[idx++] = '\n' ;
+        return idx ;
+    }
+
+    private static int toByteBufferAsHex(byte[] input, int idx, byte[] output)
+    {
+        for ( byte b : input )
+        {
+            int hi = b >> 4 ;
+            int lo = b & 0xF ;
+            output[idx++] = Bytes.hexDigits[hi] ;
+            output[idx++] = Bytes.hexDigits[lo] ;
+        }
+        return idx ;
+    }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
