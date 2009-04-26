@@ -621,7 +621,6 @@ public class Query extends Prologue implements Cloneable
         visitor.finishVisit(this) ;
     }
 
-    // With Java 1.5, this can be returns Query.
     @Override
     public Object clone() { return cloneQuery() ; }
     
