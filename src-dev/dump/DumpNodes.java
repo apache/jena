@@ -6,9 +6,15 @@
 
 package dump;
 
+import java.io.OutputStream;
+
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
+
 public class DumpNodes
 {
-
+    public static void dump(OutputStream w, ObjectFileDiskDirect f)
+    {
+    }
 }
 
 /*
