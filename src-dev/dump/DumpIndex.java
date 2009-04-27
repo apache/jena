@@ -7,11 +7,19 @@
 package dump;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 
+import atlas.io.PeekReader;
+import atlas.lib.Bytes;
 import atlas.lib.InternalErrorException;
 
+import com.hp.hpl.jena.riot.tokens.Token;
+import com.hp.hpl.jena.riot.tokens.TokenType;
+import com.hp.hpl.jena.riot.tokens.Tokenizer;
+import com.hp.hpl.jena.riot.tokens.TokenizerText;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -22,14 +30,23 @@ public class DumpIndex
     {
         try
         {
+            // index.getName() ;
+            // Output name.
+            // Output sizes 
             RecordFactory f = index.getRecordFactory() ;
             
-            // Buffer one line. 2 bytes per byte of record (hex) + a space (if value) + a newline.
+            // Buffer one line.
+            // 0x
+            // 2 bytes per byte of key
+            // If value, space 0x and 2 bytes per byte of value
+            // space
+            // DOT
+            // newline
             int size ;
             if ( f.hasValue() )
-                size = 2*f.recordLength()+2 ;
+                size = 2*f.recordLength()+8 ;
             else
-                size = 2*f.keyLength()+1 ;
+                size = 2*f.keyLength()+5 ;
             byte[] bytes = new byte[size] ;
             
             Iterator<Record> iter = index.iterator() ;
@@ -43,6 +60,61 @@ public class DumpIndex
         {
             throw new InternalErrorException("IOException", ex) ;
         }
+    }
+    
+    public static void reload(InputStream in, Index index)
+    {
+        RecordFactory f = index.getRecordFactory() ;
+        PeekReader pr = PeekReader.makeUTF8(in) ;
+        Tokenizer tokenizer = new TokenizerText(pr) ;
+        // Read name
+        // Read sizes 
+        // How do we tell whether it's "key" or "key,value"?
+        while ( tokenizer.hasNext() )
+        {
+            // --TokenInputStream.
+            Token t1 = tokenizer.next() ;
+            
+            System.out.println("In:   "+t1.getImage()) ;
+            
+            byte[] key = hexTokenToBytes(t1) ;
+            
+            Token t2 = tokenizer.next() ;
+            byte[] value = null ;
+            if ( ! t2.hasType(TokenType.DOT) )
+            {
+                value = hexTokenToBytes(t2) ;
+                t2 = tokenizer.next() ;
+            }
+            
+            if ( ! t2.hasType(TokenType.DOT) )
+            {
+                throw new TDBException("Bad index dump file: "+t2) ;
+            }
+            
+            Record r = f.create(key, value) ;
+            System.out.println("Record: "+r) ;
+        }
+    }
+
+    private static byte[] hexTokenToBytes(Token token)
+    {
+        String string = token.getImage() ;
+        int N = string.length() ;
+        int x = (N-2)/2 ;
+
+        byte[] b = new byte[x] ;
+        int idx = 0 ;
+        // Read two chars per cycle, skipping 0x
+        for(int i = 2 ; i < N ; )
+        {
+            char c1 = string.charAt(i++) ;
+            char c2 = string.charAt(i++) ;
+            int hi = Bytes.hexCharToInt(c1) ;
+            int lo = Bytes.hexCharToInt(c2) ;
+            b[idx++] = (byte)(hi<<4|lo) ;
+        }
+        return b ;
     }
 }
 

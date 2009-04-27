@@ -8,6 +8,8 @@ package dev;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +65,16 @@ public class Run
         {
             FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
             Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
-            DumpIndex.dump(System.out, index) ;
+            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+            
+            DumpIndex.dump(out, index) ;
+            
+            String x = new String(out.toByteArray()) ;
+            System.out.println(x) ;
+            
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
+            DumpIndex.reload(in, index) ;
+            
             System.out.flush();
             System.exit(0) ;
         }

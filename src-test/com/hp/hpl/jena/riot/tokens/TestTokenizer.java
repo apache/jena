@@ -653,7 +653,6 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_num14()
     {
-        // Not a number.
         Tokenizer tokenizer = tokenizer(".1") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
@@ -664,12 +663,21 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_num15()
     {
-        // Not a number.
         Tokenizer tokenizer = tokenizer(".1e0") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertEquals(TokenType.DOUBLE, token.getType()) ;
         assertEquals(".1e0", token.getImage()) ;
+    }
+
+    @Test
+    public void tokenUnit_num16()
+    {
+        Tokenizer tokenizer = tokenizer("000A     .") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.INTEGER, token.getType()) ;
+        assertEquals("000A", token.getImage()) ;
     }
 
     @Test
@@ -958,6 +966,16 @@ public class TestTokenizer extends BaseTest
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    @Test
+    public void tokenWord_01()
+    {
+        Tokenizer tokenizer = tokenizer("abc") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.KEYWORD, token.getType()) ;
+    }
+    
     // Multiple terms
 
     @Test
