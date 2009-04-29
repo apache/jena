@@ -51,6 +51,30 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
+        {
+            Store store = SDBFactory.connectStore("sdb.ttl") ;
+
+            // Update.
+
+            Model model = SDBFactory.connectNamedModel(store, "modelName");
+            model.removeAll() ;
+
+
+            //        // This is only to create the store and the connection, is executed once
+            //        StoreDesc storeDescription = new StoreDesc(layout, db_type);
+            //        SDBConnection connection = new SDBConnection(jdbc_url, user, password);
+            //        store = SDBFactory.connectStore(connection, storeDescription);
+            //
+            //        // This is executed for each ontology
+            //        Model model = SDBFactory.connectNamedModel(store, modelName);
+            //        // Model read operations.
+
+
+            Dataset dataset = SDBFactory.connectDataset(store);
+            Iterator<String> modelNameIterator = dataset.listNames();
+
+            System.exit(0) ;
+        }
 //        sdb.sdbtest.main("--sdb=sdb.ttl", "testing/manifest-sdb.ttl") ;
 //        System.exit(0) ;
         
