@@ -25,7 +25,7 @@ public class TextFormatter extends Formatter
             
         // %tT (%5$tT) is %5$tH:%5$tM:%5$tS
         // %tF is 2008-11-22 "%tY-%tm-%td"
-        return String.format("AFS:: %2$-10s %3$-5s %5$tT :: %6$s\n", 
+        return String.format("%5$tT %3$-5s %2$-10s :: %6$s\n", 
                              loggerName,                        // 1
                              loggerNameShort,                   // 2
                              record.getLevel(),                 // 3
