@@ -29,7 +29,7 @@ public class update extends CmdUpdate
     List<String> requestFiles = null ;
     boolean dump = false ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     { new update(argv).mainRun() ; }
     
     protected update(String[] argv)

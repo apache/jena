@@ -6,14 +6,18 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 
-public class BindingProject extends BindingBase
+public class  BindingProject extends BindingBase
 {
+    // The vars actually in this binding : intersection of projectVars and binding.vars() ; 
+    List<Var> actualVars = null ;
     Binding binding ;
     Collection<Var> projectionVars ; 
 
@@ -38,7 +42,6 @@ public class BindingProject extends BindingBase
         // In the projection set and the underlying
         // binding (OPTIONAL means it may not be in this binding) 
         return projectionVars.contains(var) && binding.contains(var) ;
-        //return projectionVars.contains(var) ; 
     }
 
     @Override
@@ -52,7 +55,19 @@ public class BindingProject extends BindingBase
     @Override
     protected Iterator<Var> vars1()
     {
-        return projectionVars.iterator() ;
+        // Delayed creation, then cached.
+        if ( actualVars == null )
+        {
+            actualVars = new ArrayList<Var>() ;
+            for ( Var v : projectionVars )
+            {
+                if ( binding.contains(v) )
+                    actualVars.add(v) ;
+            }
+        }
+        return actualVars.iterator() ;
+//        // ?? Intersect with binding.vars()
+//        return projectionVars.iterator() ;
     }
 
     @Override

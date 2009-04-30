@@ -42,7 +42,7 @@ public class qparse extends CmdARQ
     boolean printPlan = false ;
     boolean printOpt = false ;
     
-    public static void main(String [] argv)
+    public static void main(String... argv)
     {
         new qparse(argv).mainRun() ;
     }

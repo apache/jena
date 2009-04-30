@@ -43,7 +43,7 @@ public class qexpr
     // TODO Convert to extends CmdArgModule 
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         try {
             main2(argv) ;
@@ -58,7 +58,7 @@ public class qexpr
         
     }
     
-    public static void execAndReturn(String [] argv)
+    public static void execAndReturn(String... argv)
     {
         try {
             main2(argv) ;
@@ -72,7 +72,7 @@ public class qexpr
         }
     }
         
-    public static void main2(String [] argv)
+    public static void main2(String... argv)
     {
         
         CmdLineArgs cl = new CmdLineArgs(argv) ;

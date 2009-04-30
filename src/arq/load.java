@@ -34,7 +34,7 @@ public class load extends CmdUpdate
     List<String> loadFiles = null ;
     boolean dump = false ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     { new load(argv).mainRun() ; }
     
     protected load(String[] argv)

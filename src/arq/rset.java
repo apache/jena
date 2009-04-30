@@ -22,7 +22,7 @@ public class rset extends CmdARQ
     static String usage = rset.class.getName()+
             " [--in syntax] [--out syntax] [--file FILE | FILE ]" ; 
 
-    public static void main(String [] argv)
+    public static void main(String... argv)
     {
         new rset(argv).mainRun() ;
     }

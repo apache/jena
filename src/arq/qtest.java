@@ -68,7 +68,7 @@ public class qtest extends CmdARQ
     protected String testfileAbs = null;
     protected boolean createEarlReport = false;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         try {
             new qtest(argv).mainRun() ;

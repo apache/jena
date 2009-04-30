@@ -29,7 +29,7 @@ public class sse extends CmdARQ_SSE
     private boolean         structural  = true ;
     private boolean         lineNumbers = false ;
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new sse(argv).mainRun() ;
     }

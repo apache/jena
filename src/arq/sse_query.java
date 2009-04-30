@@ -44,7 +44,7 @@ public class sse_query extends CmdARQ
     boolean printOp      = false ;
     boolean printPlan    = false ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new sse_query(argv).mainRun() ;
     }

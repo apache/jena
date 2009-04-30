@@ -15,7 +15,7 @@ import java.util.* ;
 
 public class rdql
 {
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         List<String> a = new ArrayList<String>() ;
         for ( int i = 0 ; i < argv.length ; i++ ) a.add(argv[i]) ;

@@ -27,7 +27,7 @@ public class remote extends CmdARQ
     protected ModDatasetGeneral modDesc =   new ModDatasetGeneral() ;
     protected ModResultsOut modResults =    new ModResultsOut() ;
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new remote(argv).mainRun() ;
     }

@@ -10,7 +10,7 @@ import arq.cmdline.ModVersion;
 
 public class version
 {
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new ModVersion(false).printVersionAndExit() ;
     }

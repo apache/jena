@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class sse_exec extends CmdARQ_SSE
 {
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new sse_exec(argv).mainRun() ;
     }

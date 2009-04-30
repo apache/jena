@@ -33,7 +33,7 @@ public class query extends CmdARQ
     protected ModResultsOut modResults =  new ModResultsOut() ;
     protected ModEngine     modEngine =   new ModEngine() ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new query(argv).mainRun() ;
     }
