@@ -673,11 +673,15 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_num16()
     {
+        // This is not a hex number.
         Tokenizer tokenizer = tokenizer("000A     .") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertEquals(TokenType.INTEGER, token.getType()) ;
-        assertEquals("000A", token.getImage()) ;
+        assertEquals("000", token.getImage()) ;
+        Token token2 = tokenizer.next() ;
+        assertEquals(TokenType.KEYWORD, token2.getType()) ;
+        assertEquals("A", token2.getImage()) ;
     }
 
     @Test

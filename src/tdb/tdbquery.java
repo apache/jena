@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.TDB;
 public class tdbquery extends arq.query
 {
     // Inherits from arq.query so is not a CmdTDB.  Mixins for Java!
-    public static void main(String [] argv)
+    public static void main(String...argv)
     {
         new tdbquery(argv).mainRun() ;
     }

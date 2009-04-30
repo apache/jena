@@ -165,6 +165,11 @@ public class SolverLib
                 {
                     Var v = vars.next() ;
                     Node n = binding.get(v) ;  
+                    if ( n == null )
+                        // Variable mentioned in the binding but not actually defined.
+                        // Can occur with BindingProject
+                        continue ;
+                    
                     // Rely on the node table cache. 
                     NodeId id = nodeTable.getNodeIdForNode(n) ;
                     b.put(v, id) ;

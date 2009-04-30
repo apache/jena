@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class tdbexamine extends CmdTDB
 {
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new tdbexamine(argv).mainRun() ;
     }

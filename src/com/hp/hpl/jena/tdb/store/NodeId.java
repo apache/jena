@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import com.hp.hpl.jena.sparql.core.NodeConst;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -149,6 +150,12 @@ public class NodeId
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
     {
+        if ( node == null )
+        {
+            ALog.warn(NodeId.class, "Null node: "+node) ;
+            return null ;
+        }
+        
         if ( ! node.isLiteral() ) return null ;
         if ( node.getLiteralDatatype() == null ) return null ;
         
