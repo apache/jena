@@ -233,7 +233,7 @@ public class AlgebraGenerator
                 continue ;
             }
             
-            // TIDY UP
+            // TIDY UP - grr this is duplication.
             // Can't mix ElementTriplesBlock and ElementPathBlock (which subsumes ElementTriplesBlock)
             if ( elt instanceof ElementPathBlock )
             {
