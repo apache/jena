@@ -58,7 +58,7 @@ public class TestEsc extends TestCase
     private void execTestFail(String input)
     {
         try {
-            String s = ParserBase.testUnescapeStr(input) ;
+            String s = ParserBase.unescapeStr(input) ;
             fail("Unescaping succeeded on "+input) ;
         } catch (QueryParseException ex)
         {
@@ -69,7 +69,7 @@ public class TestEsc extends TestCase
     
     private void execTest(String input, String outcome)
     {
-        String result = ParserBase.testUnescapeStr(input) ;
+        String result = ParserBase.unescapeStr(input) ;
         assertEquals("Unescaped string does not match ("+input+")", outcome, result) ;
     }
 

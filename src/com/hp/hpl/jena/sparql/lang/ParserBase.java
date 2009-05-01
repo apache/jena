@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
+/** Base class for RDf related parsers */ 
 public class ParserBase
 {
     // NodeConst
@@ -165,17 +166,20 @@ public class ParserBase
         return valDouble ; 
     }
     
-    protected String stripQuotes(String s)
+    /** Remove first and last characters (e.g. ' or "") from a string */
+    protected static String stripQuotes(String s)
     {
         return s.substring(1,s.length()-1)  ;
     }
     
-    protected String stripQuotes3(String s)
+    /** Remove first 3 and last 3 characters (e.g. ''' or """) from a string */ 
+    protected static String stripQuotes3(String s)
     {
         return s.substring(3,s.length()-3)  ;
     }
 
-    protected String stripChars(String s, int n)
+    /** remove the first n charcacters from the string*/ 
+    public static String stripChars(String s, int n)
     {
         return s.substring(n, s.length())  ;
     }
@@ -360,11 +364,6 @@ public class ParserBase
     
     // Testing interface
     
-    public static String testUnescapeStr(String s)
-    {
-        return new ParserBase().unescapeStr(s) ;
-    }
-    
     // SPARQL/Update 
     protected Graph convertTemplateToTriples(Template template, int line, int col)
     {
@@ -376,7 +375,7 @@ public class ParserBase
         return g ;
     }
     
-    protected String unescapeStr(String s)
+    public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
 
 //    public static String unescapeCodePoint(String s)
@@ -386,11 +385,11 @@ public class ParserBase
 //    { return unescape(s, '\\', true, line, column) ; }
 
     
-    protected String unescapeStr(String s, int line, int column)
+    public static String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
     
     // Worker function
-    private String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
+    public static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
     {
         int i = s.indexOf(escape) ;
         
@@ -488,12 +487,12 @@ public class ParserBase
     }
 
     // Line and column that started the escape
-    private int hex(String s, int i, int len, int line, int column)
+    public static int hex(String s, int i, int len, int line, int column)
     {
-        if ( i+len >= s.length() )
-        {
-            
-        }
+//        if ( i+len >= s.length() )
+//        {
+//            
+//        }
         int x = 0 ;
         for ( int j = i ; j < i+len ; j++ )
         {
