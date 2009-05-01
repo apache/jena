@@ -195,6 +195,7 @@ public class AlgebraGenerator
     {
         List<Element> groupElts = new ArrayList<Element>() ;
         BasicPattern prev = null ;
+        PathBlock prev2 = null ;
         
         for (Element elt : groupElt.getElements() )
         {
@@ -206,33 +207,56 @@ public class AlgebraGenerator
                 continue ;
             }
             
-            if ( ! ( elt instanceof ElementTriplesBlock ) )
+            if ( elt instanceof ElementTriplesBlock )
             {
-                prev = null ;
-                groupElts.add(elt) ;
-                continue ;
-            }
+                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
+
+                if ( prev2 != null )
+                    throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 1)") ;
                 
-            // It's an ElementTriplesBlock
-            ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
+                if ( prev != null )
+                {
+                    // Previous was an ElementTriplesBlock.
+                    // Merge because they were adjacent in a group
+                    // in syntax, so it must have been BGP, Filter, BGP.
+                    // Or someone constructed a non-serializable query. 
+                    prev.addAll(etb.getPattern()) ;
+                    continue ;
+                }
+                // New BGP.
+                // Copy - so that any later mergings do not change the original query. 
 
-            if ( prev != null )
-            {
-                // Previous was an ElementTriplesBlock.
-                // Merge because they were adjacent in a group
-                // in syntax, so it must have been BGP, Filter, BGP.
-                // Or someone constructed a non-serializable query. 
-                prev.addAll(etb.getPattern()) ;
+                ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
+                etb2.getPattern().addAll(etb.getPattern()) ;
+                prev = etb2.getPattern() ;
+                groupElts.add(etb2) ;
                 continue ;
             }
-
-            // New BGP.
-            // Copy - so that any later mergings do not change the original query. 
-
-            ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
-            etb2.getPattern().addAll(etb.getPattern()) ;
-            prev = etb2.getPattern() ;
-            groupElts.add(etb2) ;
+            
+            // TIDY UP
+            // Can't mix ElementTriplesBlock and ElementPathBlock (which subsumes ElementTriplesBlock)
+            if ( elt instanceof ElementPathBlock )
+            {
+                if ( prev != null )
+                    throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 2)") ;
+                
+                ElementPathBlock epb = (ElementPathBlock)elt ;
+                if ( prev2 != null )
+                {
+                    prev2.addAll(epb.getPattern()) ;
+                    continue ;
+                }
+                
+                ElementPathBlock epb2 = new ElementPathBlock() ;
+                epb2.getPattern().addAll(epb.getPattern()) ;
+                prev2 = epb2.getPattern() ;
+                groupElts.add(epb2) ;
+                continue ;
+            }
+            
+            // Anything else.
+            prev = null ;
+            groupElts.add(elt) ;
         }
         return groupElts ;
     }
@@ -243,14 +267,14 @@ public class AlgebraGenerator
         if ( elt instanceof ElementTriplesBlock )
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-            Op op =  compileBasicPattern(etb.getPattern()) ;
+            Op op = compileBasicPattern(etb.getPattern()) ;
             return join(current, op) ;
         }
         
         if ( elt instanceof ElementPathBlock )
         {
             ElementPathBlock epb = (ElementPathBlock)elt ;
-            Op op =  compilePathBlock(epb.getPattern()) ;
+            Op op = compilePathBlock(epb.getPattern()) ;
             return join(current, op) ;
         }
         

@@ -438,6 +438,8 @@ public class FmtUtils
     
     static boolean applyUnicodeEscapes = false ;
     
+    // Take unescape code from ParserBase.
+    
     // take a string and make it safe for writing.
     public static String stringEsc(String s)
     { return stringEsc( s, true ) ; }

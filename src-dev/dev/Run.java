@@ -61,16 +61,17 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
-        Query query = QueryFactory.create("SELECT * FROM <http://example> {}") ;
-        System.out.println(query) ;
-        query.getGraphURIs().clear();
-        Query query2 = QueryFactory.create("SELECT * {}") ;
+        {
+            System.out.println("**** Extended") ;
+            String []a = { "--file=Q.arq", "--print=op" } ; //, "--opt", "--print=plan"} ;
+            arq.qparse.main(a) ;
+        }
+        {
+            System.out.println("**** Standard") ;
+            String []a = { "--file=Q.rq", "--print=op" } ; //, "--opt", "--print=plan"} ;
+            arq.qparse.main(a) ;
+        }
         
-        
-        
-        System.out.println(query) ;
-        System.out.println(query2) ;
-        System.out.println(query2.equals(query)) ;
         System.exit(0) ;
         
         opExtension() ; System.exit(0) ;

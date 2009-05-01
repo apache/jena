@@ -10,6 +10,11 @@ public class Dev
 {
     // ==== ARQ
     // Tidy up.
+    
+    // ParserLIB
+    //  StrUtils from TDB + StringUtils from ARQ
+    // Esacpe and encoding in StrUtils. 
+    
     // -- Build process
     //   Currently only one jar - arq.jar
     //     arq and arq-extra
