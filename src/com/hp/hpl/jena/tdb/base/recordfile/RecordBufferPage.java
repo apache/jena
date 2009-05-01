@@ -43,8 +43,8 @@ public class RecordBufferPage extends RecordBufferPageBase
     
     
     /*public*/ RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
-                            RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
-                            int count)
+                                RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
+                                int count)
     {
         super(id, FIELD_LENGTH, byteBuffer, factory, count) ;
         this.pageMgr = recordBufferPageMgr ; 

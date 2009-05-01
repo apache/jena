@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 /** Manager for a block that is all records.  
- *  This must be compatible with B+Tree records nodes and hashbuckets. 
+ *  This must be compatible with B+Tree records nodes and with hash buckets. 
  * @author Andy Seaborne
  * @version $Id$
  */
