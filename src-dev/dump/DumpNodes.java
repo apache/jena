@@ -8,12 +8,26 @@ package dump;
 
 import java.io.OutputStream;
 
+import atlas.lib.StrUtils;
+
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect.DumpHandler;
 
 public class DumpNodes
 {
     public static void dump(OutputStream w, ObjectFileDiskDirect f)
     {
+        DumpHandler dh = new DumpHandler()
+        { 
+            @Override
+            public void handle(long fileIdx, String str)
+            {
+                // Escape strings.
+                StrUtils.escapeString(str) ;
+                System.out.printf("0x%08X \'%s\'\n", fileIdx, str) ;
+            }
+        } ;
+        f.dump(dh) ;
     }
 }
 

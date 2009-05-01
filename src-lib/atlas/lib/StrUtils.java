@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.hp.hpl.jena.n3.turtle.ParserBase;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 
 public class StrUtils
 {
@@ -274,6 +277,17 @@ public class StrUtils
         }
         return buff.toString() ; 
     }
+    
+    public static String escapeString(String x)
+    {
+        return FmtUtils.stringEsc(x ) ;
+    }
+    
+    public static String unescapeString(String x)
+    {
+        return ParserBase.unescapeStr(x) ;
+    }
+
 }
 
 /*
