@@ -288,6 +288,11 @@ public final class BPTreeNode extends BPTreePage
     
     @Override
     public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
+    
+    /** Do not use without great care */
+    public RecordBuffer getRecordBuffer()       { return records ; }
+    /** Do not use without great care */
+    public PtrBuffer getPtrBuffer()       { return ptrs ; }
 
     @Override
     public int getId()                      { return id ; }

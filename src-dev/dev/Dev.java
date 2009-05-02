@@ -10,6 +10,7 @@ public class Dev
 {
     // == 0.8.0
     //   Metafile for directory.
+    //   Metafiles and opening indexes
     //   New and reattach
     //   TDBFactory - cache graphs - graph.close is return to cache (and sync) 
 

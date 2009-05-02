@@ -49,7 +49,6 @@ public final class BPTreeNodeMgr
         int recId = bpTree.getRecordsMgr().allocateId() ;
         BPTreePage page = bpTree.getRecordsMgr().create(recId) ;
         page.put();
-
         
         BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
         // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
@@ -79,6 +78,7 @@ public final class BPTreeNodeMgr
     { 
         int id = blockMgr.allocateId() ;
         ByteBuffer bb = blockMgr.allocateBuffer(id) ;
+        //bb.clear();
         BPTreeNode n = converter.createFromByteBuffer(bb, BPTREE_BRANCH) ;
         n.setId(id) ;
         n.isLeaf = false ;
@@ -236,13 +236,13 @@ public final class BPTreeNodeMgr
 
         int header = BPlusTreeParams.BlockHeaderSize ;
         int rStart = header ;
-        int pStart =  header+recBuffLen ;
+        int pStart = header+recBuffLen ;
 
         // Find the number of pointers.
         int numPtrs = -1 ;
         
         // The root can have count zero - which means one pointer always.
-        // Junk only when creating the root the first time.
+        // Junk when creating a new new node.
         if ( n.getCount() < 0 )
         {
             numPtrs = 0 ;

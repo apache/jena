@@ -75,8 +75,6 @@ public class DumpIndex
             // --TokenInputStream.
             Token t1 = tokenizer.next() ;
             
-            System.out.println("In:   "+t1.getImage()) ;
-            
             byte[] key = hexTokenToBytes(t1) ;
             
             Token t2 = tokenizer.next() ;
@@ -92,8 +90,11 @@ public class DumpIndex
                 throw new TDBException("Bad index dump file: "+t2) ;
             }
             
-            Record r = f.create(key, value) ;
-            System.out.println("Record: "+r) ;
+            Record record = f.create(key, value) ;
+            // BAD WAY TO DO IT.
+            // Because we know it's sorted.  Use the BPT rewriter when ready.
+            // But, hey, this is functionally correct.
+            index.add(record) ;
         }
     }
 

@@ -147,6 +147,12 @@ public class FileSet
         return f.exists() && f.isFile() ;
     }
     
+    @Override
+    public String toString()
+    {
+        return "FileSet:"+filename(null) ;
+    }
+    
     public boolean isMem()
     {
         return location.isMem() ;

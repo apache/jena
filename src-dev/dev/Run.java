@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -21,22 +22,18 @@ import tdb.tdbclean;
 import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
 
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.InstallationTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
+import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
@@ -44,7 +41,12 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.util.FileManager;
 
 import dump.DumpIndex;
 import dump.DumpNodes;
@@ -66,6 +68,7 @@ public class Run
     {
         Location location = new Location("DB") ;
         
+        if ( false )
         {
             ObjectFileDiskDirect f = new ObjectFileDiskDirect(location.getPath("nodes.dat")) ;
             DumpNodes.dump(System.out, f) ;
@@ -73,16 +76,36 @@ public class Run
             System.exit(0) ;
         }
         
+        if ( true )
         {
-            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
-            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
+//            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
+//            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
+            
+            // Better index factory operations.
+            // Metafiles remove the need for record facories other than first use.Node  
+            
+            //Index creations?
+          FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "node2id") ;
+          Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.nodeRecordFactory) ;
+          
+          boolean b = index.isEmpty() ;
+          
             ByteArrayOutputStream out = new ByteArrayOutputStream() ;
             DumpIndex.dump(out, index) ;
             String x = new String(out.toByteArray()) ;
             System.out.println(x) ;
             
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-            DumpIndex.reload(in, index) ;
+            Index index2 = IndexBuilder.createIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
+            DumpIndex.reload(in, index2) ;
+            // Compare indexes.
+            for ( Iterator<Record> iter2 = index2.iterator() ; iter2.hasNext() ; )
+            {
+                Record r2 = iter2.next() ;
+                System.out.println(r2) ;
+            }
+            System.out.println() ;
+            DumpIndex.dump(out, index2) ;
             
             System.out.flush();
             System.exit(0) ;

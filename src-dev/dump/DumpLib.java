@@ -40,7 +40,7 @@ public class DumpLib
         output[idx++] = 'x' ;
         for ( byte b : input )
         {
-            int hi = b >> 4 ;
+            int hi = (0xFF & b) >> 4 ;
             int lo = b & 0xF ;
             output[idx++] = Bytes.hexDigits[hi] ;
             output[idx++] = Bytes.hexDigits[lo] ;
