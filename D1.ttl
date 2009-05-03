@@ -1,4 +1,0 @@
-@prefix   :         <http://example/d1/> .
-@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
-
-:z :lang "xyz" .

@@ -27,6 +27,10 @@ public class Chars
     public static final char CH_LPAREN       = '(' ;
     public static final char CH_RPAREN       = ')' ;
 
+    public static final char CH_LT           = '<' ;
+    public static final char CH_GT           = '>' ;
+    public static final char CH_UNDERSCORE   = '_' ;
+
     public static final char CH_QUOTE1       = '\'' ;
     public static final char CH_QUOTE2       = '"' ;
 

@@ -22,7 +22,12 @@ public enum TokenType
     KEYWORD, CNTRL, VAR, HEX,
     
     // Syntax
-    DOT, COMMA, SEMICOLON, DIRECTIVE,
+    // COLON is only visible if prefix names are not being processed.
+    DOT, COMMA, SEMICOLON, COLON, DIRECTIVE,
+    // LT, GT, LE, GE are only visible if IRI processing is not enabled.
+    LT, GT, LE, GE,
+    // UNDERSCORE is only visible if BNode processing is not enabled.
+    UNDERSCORE, 
     LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET,
     EOF
 }

@@ -77,7 +77,7 @@ public class TokenizerText implements Tokenizer
                 return ;
     
             ch = reader.peekChar() ;
-            if ( ch == '#' )
+            if ( ch == CH_HASH )
             {
                 reader.readChar() ;
                 // Comment.  Skip to NL
@@ -104,10 +104,10 @@ public class TokenizerText implements Tokenizer
         int ch = reader.peekChar() ;
 
         // ---- IRI
-        if ( ch == '<' )
+        if ( ch == CH_LT )
         {
             reader.readChar() ;
-            token.setImage(allBetween('<','>', false, false)) ;
+            token.setImage(allBetween(CH_LT, CH_GT, false, false)) ;
             token.setType(TokenType.IRI) ;
             if ( Checking ) checkURI(token.getImage()) ;
             return token ;
@@ -171,41 +171,6 @@ public class TokenizerText implements Tokenizer
                 token = mainToken ;
                 token.setSubToken(subToken) ;
                 token.setType(TokenType.LITERAL_DT) ;
-                
-                
-//                // URI vs prefixed name.
-//                if ( reader.peekChar() == '<')
-//                {
-//                    reader.readChar() ;
-//                    token.setImage2(allBetween('<','>', false, false)) ;
-//                    token.setType(TokenType.LITERAL_DT) ;
-//                }
-//                else
-//                {
-//                    // HACK
-//                    // Factor out readPrefixName.
-//                    System.err.println("Not finished: qname for DT URI: "+token) ;
-//                    exception("Not finished: qname for DT URI: "+token) ;
-//                    
-//                    
-//                    String lexical = token.getImage() ;
-//                    // Alters token.
-//                    readPrefixedNameOrKeyWord(token) ;
-//                    // But now has three parts (lexical, prefix, localname)
-//                    if ( token.hasType(TokenType.KEYWORD) )
-//                        exception("Broken prefixed name: "+token.getImage()) ;
-//                    if ( ! token.hasType(TokenType.PREFIXED_NAME) )
-//                        exception("Internal error") ;
-//                    
-//                    String x = token.getImage()+":"+token.getImage2() ;
-//                    token.setImage(lexical) ;
-//                    token.setImage2(x) ;
-//                    token.setType(TokenType.LITERAL_DT) ;
-//                    
-//                    System.err.println("Not finished: qname for DT URI: "+token) ;
-//                    exception("Not finished: qname for DT URI: "+token) ;
-//                    
-//                }
                 if ( Checking ) checkLiteralDT(token.getImage(), subToken) ;
             }
             else
@@ -216,7 +181,7 @@ public class TokenizerText implements Tokenizer
             return token ;
         }
 
-        if ( ch == '_' )        // Blank node :label must be at least one char
+        if ( ch == CH_UNDERSCORE )        // Blank node :label must be at least one char
         {
             expect("_:") ;
             token.setImage(blankNodeLabel()) ;
@@ -273,6 +238,7 @@ public class TokenizerText implements Tokenizer
                 token.setType(TokenType.DOT) ;
                 return token ;
                 
+            
             case CH_SEMICOLON:  reader.readChar() ; token.setType(TokenType.SEMICOLON) ; return token ;
             case CH_COMMA:      reader.readChar() ; token.setType(TokenType.COMMA) ;     return token ;
             case CH_LBRACE:     reader.readChar() ; token.setType(TokenType.LBRACE) ;    return token ;
@@ -281,6 +247,13 @@ public class TokenizerText implements Tokenizer
             case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    return token ;
             case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  return token ;
             case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  return token ;
+
+            // Specials (if processing off)
+            //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
+            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; return token ;
+            case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; return token ;
+            case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; return token ;
+            // GE, LE
         }
         
         if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
