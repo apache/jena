@@ -10,6 +10,7 @@ public class Dev
 {
     // ==== ARQ
     // Tidy up.
+    // Initial binding "bug" - just substitute one and for all?
     
     // ParserLIB
     //  StrUtils from TDB + StringUtils from ARQ
