@@ -221,6 +221,11 @@ public class TestTurtleInternal extends BaseTest
 	@Test public void turtle_124() { parse("\u03B1:subj a:prop '\u03B1'.") ; }
 	@Test public void turtle_125() { parse("a:subj-\u03B1 a:prop '\u03B1'.") ; }
 
+	@Test public void turtle_150() { parse("<x> a <y> . ") ; }
+	@Test public void turtle_151() { parse("[ a <y> ] . ") ; }
+    @Test public void turtle_152() { parse("[ a <y> ; a <z> ] . ") ; }
+    @Test public void turtle_153() { parse("[ a <z>, <z1> ] . ") ; }
+    
 	public static void parse(String testString)
 	{
 	    // Need to access the prefix mapping.

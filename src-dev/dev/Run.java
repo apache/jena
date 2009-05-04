@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -66,6 +67,15 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        if ( true )
+        {
+            TDB.init();
+            FileManager.get().loadModel("D.ttl").write(System.out, "TTL") ;
+            System.out.println("====") ;
+            System.exit(0) ;
+        }
+        
+        
         Location location = new Location("DB") ;
         
         if ( false )

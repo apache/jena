@@ -23,6 +23,7 @@ import com.hp.hpl.jena.riot.tokens.TokenType;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 
 import com.hp.hpl.jena.sparql.core.NodeConst;
+import com.hp.hpl.jena.vocabulary.OWL;
 
 public class LangTurtle
 {
@@ -273,6 +274,9 @@ public class LangTurtle
         objectList(subject, predicate) ;
     }
     
+    static private Node nodeSameAs = OWL.sameAs.asNode() ; 
+    static private Node nodeLogImplies = Node.createURI("http://www.w3.org/2000/10/swap/log#implies") ;
+    
     /** Get predicate - maybe null for "illegal" */
     private Node predicate()
     {
@@ -282,7 +286,7 @@ public class LangTurtle
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
             if ( !strict && image.equals(KW_SAME_AS) )
-                return NodeConst.nodeRDFType ;
+                return nodeSameAs ;
             if ( !strict && image.equals(KW_LOG_IMPLIES) )
                 return NodeConst.nodeRDFType ;
             exception("Unrecognized: "+image) ;
@@ -397,10 +401,10 @@ public class LangTurtle
         move() ;        // Skip [
         Node subject = Node.createAnon() ;
 
-        if ( token().isNode() )           // Generous.
+        if ( peekPredicate() )
             predicateObjectList(subject) ;
-      
-        expect("Triples not terminated by ]", RBRACKET) ;
+
+        expect("Triples not terminated properly in []-list", RBRACKET) ;
         // Exit: after the ]
         return subject ;
     }
@@ -443,15 +447,7 @@ public class LangTurtle
             lastCell = nextCell ;
             
             emit(nextCell, NodeConst.nodeFirst, n) ;
-            
-//            // Link in
-//            Node next = Node.createAnon() ;
-//            // Fix up previous node.
-//            if ( current != null )
-//                emit(current, NodeConst.nodeRest, next) ;
-//            current = next ;
-//            emit(current, NodeConst.nodeFirst, n) ;
-            
+
             if ( ! moreTokens() )   // Error.
                 break ;
         }
