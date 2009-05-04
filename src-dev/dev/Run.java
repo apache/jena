@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -95,15 +96,11 @@ public class Run
         Model model = ModelFactory.createDefaultModel();
         //model.read("http://topbraid.org/examples/kennedys");
         model.read("file:D.rdf") ;
-        // Add ?this to SELECT?
-        // This is NOT join-sequenced.
-        // And if it were, then anythign after the expression is problem.
-        
         String query =
             "PREFIX rdfs: <" + RDFS.getURI() + "> \n" +
             "SELECT ?label\n" +
             "WHERE {\n" +
-            "    {} #?property a ?type .\n" +
+            "    { LET ( ?x := 3 ) } # ?property a ?type .\n" +
             //"    ?this rdfs:label ?label .\n" +
             "    {\n" +
             "        SELECT ?label WHERE { ?this rdfs:label ?label }\n" +
@@ -111,6 +108,7 @@ public class Run
             "}";
                 
         Query arqQuery = QueryFactory.create(query, Syntax.syntaxARQ);
+        //QueryEngineRef.register() ;
         QueryExecution qexec = QueryExecutionFactory.create(arqQuery, model);
         QuerySolutionMap bindings = new QuerySolutionMap();
         bindings.add("this", model.getResource("http://topbraid.org/examples/kennedys#Person"));

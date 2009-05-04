@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
@@ -38,6 +39,9 @@ public class QueryEngineMain extends QueryEngineBase
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
+//        if ( false && input.vars().hasNext() )
+//            op = Substitute.substitute(op, input) ;
+        
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
