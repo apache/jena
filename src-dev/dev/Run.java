@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -93,6 +94,8 @@ public class Run
 
     public static void report()
     {
+        QueryEngineMain.SUBSTITUE = false ;
+        
         Model model = ModelFactory.createDefaultModel();
         //model.read("http://topbraid.org/examples/kennedys");
         model.read("file:D.rdf") ;

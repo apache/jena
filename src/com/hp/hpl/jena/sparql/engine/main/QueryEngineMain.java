@@ -36,11 +36,14 @@ public class QueryEngineMain extends QueryEngineBase
         super(query, dataset, input, context) ;
     }
 
+    // TEMP
+    public static boolean SUBSTITUE = false ;
+    
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
-//        if ( false && input.vars().hasNext() )
-//            op = Substitute.substitute(op, input) ;
+        if ( SUBSTITUE && input.vars().hasNext() )
+            op = Substitute.substitute(op, input) ;
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
