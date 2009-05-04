@@ -133,6 +133,7 @@ public class sse_query extends CmdARQ
             return ;
         }
 
+        // Do not optimize.  Execute as-is.
         QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
 
         long time = modTime.endTimer() ;

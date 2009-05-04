@@ -11,14 +11,10 @@ import java.util.Iterator;
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
@@ -31,8 +27,12 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -46,6 +46,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 public class Run
@@ -61,6 +62,9 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        report() ; System.exit(0) ;
+        execQueryCode("D.ttl", "Q.arq") ; System.exit(0) ;
+        
         {
             System.out.println("**** Extended") ;
             String []a = { "--file=Q.arq", "--print=op" } ; //, "--opt", "--print=plan"} ;
@@ -73,16 +77,59 @@ public class Run
         }
         
         System.exit(0) ;
+
+        
+        
         
         opExtension() ; System.exit(0) ;
         
         queryEquality() ;
         
-        execQuery("D.ttl", "Q.arq") ; System.exit(1) ;
+        execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
         
         divider() ;
     }
 
+    public static void report()
+    {
+        Model model = ModelFactory.createDefaultModel();
+        //model.read("http://topbraid.org/examples/kennedys");
+        model.read("file:D.rdf") ;
+        // Add ?this to SELECT?
+        // This is NOT join-sequenced.
+        // And if it were, then anythign after the expression is problem.
+        
+        String query =
+            "PREFIX rdfs: <" + RDFS.getURI() + "> \n" +
+            "SELECT ?label\n" +
+            "WHERE {\n" +
+            "    {} #?property a ?type .\n" +
+            //"    ?this rdfs:label ?label .\n" +
+            "    {\n" +
+            "        SELECT ?label WHERE { ?this rdfs:label ?label }\n" +
+            "    } .\n" +
+            "}";
+                
+        Query arqQuery = QueryFactory.create(query, Syntax.syntaxARQ);
+        QueryExecution qexec = QueryExecutionFactory.create(arqQuery, model);
+        QuerySolutionMap bindings = new QuerySolutionMap();
+        bindings.add("this", model.getResource("http://topbraid.org/examples/kennedys#Person"));
+        qexec.setInitialBinding(bindings) ;
+        ResultSet rs = qexec.execSelect();
+        while(rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            System.out.println(" - " + sol);
+        }
+        System.out.println("-------") ;
+        
+        Op op = Algebra.compile(arqQuery) ;
+        System.out.println(op) ;
+        Binding b = new Binding1(null, Var.alloc("this"), Node.createURI("http://topbraid.org/examples/kennedys#Person")) ;
+        op = Substitute.substitute(op, b) ;
+        System.out.println(op) ;
+        
+    }
+    
     public static void check(Query query, boolean optimizeAlgebra)
     {
         Op op = Algebra.compile(query) ;
@@ -398,8 +445,8 @@ public class Run
         Query query = QueryFactory.read(queryfile) ;
         
         QuerySolutionMap initialBinding = new QuerySolutionMap();
-        initialBinding.add("s", model.createResource("http://example.org/x2")) ;
-        initialBinding.add("o", model.createResource("http://example.org/z")) ;
+        //initialBinding.add("s", model.createResource("http://example/x1")) ;
+        initialBinding.add("o", model.createResource("http://example/z")) ;
         
         QueryExecution qExec = QueryExecutionFactory.create(query, model, initialBinding) ;
         ResultSetFormatter.out(qExec.execSelect()) ;

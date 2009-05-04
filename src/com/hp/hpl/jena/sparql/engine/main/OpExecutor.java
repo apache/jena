@@ -17,10 +17,12 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.iterator.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
@@ -149,6 +151,21 @@ public class OpExecutor
 
     protected QueryIterator execute(OpJoin opJoin, QueryIterator input)
     {
+        // Need to clone input into left and right.
+        // Do by evaling for each input case, the left and right and concat'ing the results.
+
+        if ( false )
+        {
+            // If needed, applies to OpDiff and OpLeftJoin as well. 
+            List<Binding> a = all(input) ;
+            QueryIterator qIter1 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
+            QueryIterator qIter2 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
+            
+            QueryIterator left = executeOp(opJoin.getLeft(), qIter1) ;
+            QueryIterator right = executeOp(opJoin.getRight(), qIter2) ;
+            QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
+            return qIter ;
+        }
         QueryIterator left = executeOp(opJoin.getLeft(), input) ;
         QueryIterator right = executeOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
@@ -315,6 +332,7 @@ public class OpExecutor
 
     protected QueryIterator execute(OpProject opProject, QueryIterator input)
     {
+        // TODO If the input has any vars bound, ensure that project does not mask them
         QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
         qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
         return qIter ;
@@ -363,6 +381,27 @@ public class OpExecutor
 
     protected QueryIterator root()
     { return createRootQueryIterator(execCxt) ; }
+
+    // Use this to debug evaluation
+    // Example:
+    //    input = debug(input) ;
+    private QueryIterator debug(String marker, QueryIterator input)
+    {
+        List<Binding> x = all(input) ;
+        for ( Binding b : x )
+        {
+            System.out.print(marker) ;
+            System.out.print(": ") ;
+            System.out.println(b) ;
+        }
+        
+        return new QueryIterPlainWrapper(x.iterator(), execCxt) ;
+    }
+
+    private static List<Binding> all(QueryIterator input)
+    {
+        return Iter.toList(input) ;
+    }
 }
 
 /*

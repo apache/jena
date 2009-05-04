@@ -2,8 +2,5 @@ PREFIX : <http://example/>
 
 SELECT *
 {
-    ?a :foo ?b .
-    FILTER(?A)
-    ?b :bar ?c .
 
 }
