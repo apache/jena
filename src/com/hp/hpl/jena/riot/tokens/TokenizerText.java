@@ -20,6 +20,12 @@ import com.hp.hpl.jena.riot.ParseException;
 public class TokenizerText implements Tokenizer
 {
     // TODO Various allow/deny options
+    
+    // RDF mode:
+    //   Prefixes - yes and no.
+    //   IRIs
+    //   BNodes
+    
     // Space for CURIEs, stricter Turtle QNames, sane Turtle (i.e. leading digits in local part).
     public static final int CTRL_CHAR = CH_STAR ;
     
