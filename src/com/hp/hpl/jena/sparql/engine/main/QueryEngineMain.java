@@ -36,8 +36,8 @@ public class QueryEngineMain extends QueryEngineBase
         super(query, dataset, input, context) ;
     }
 
-    // TEMP
-    public static boolean SUBSTITUE = false ;
+    // This does initial bindings by substituting immediately, rather than flowing the binding only.
+    public static boolean SUBSTITUE = true ;
     
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
