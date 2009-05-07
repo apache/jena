@@ -54,7 +54,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.46 2009-04-24 12:52:49 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.47 2009-05-07 20:17:38 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -294,7 +294,7 @@ public class FileManager
                 log.debug("Model cache hit: "+filenameOrURI) ;
             return modelCache.get(filenameOrURI) ;
         }
-        
+
         Model m = ModelFactory.createDefaultModel() ;
         readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
         
@@ -354,14 +354,18 @@ public class FileManager
     
     private Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
     {
-        if ( baseURI == null )
-            baseURI = chooseBaseURI(filenameOrURI) ;
-
         // Doesn't call open() - we want to make the synatx guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
         if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
             log.debug("Map: "+filenameOrURI+" => "+mappedURI) ;
+
+        if ( syntax == null && baseURI == null && mappedURI.startsWith( "http:" ) )
+        {
+            // No syntax, no baseURI, HTTP URL ==> use content negotiation
+            model.read(mappedURI) ;
+            return model ;
+        }
         
         if ( syntax == null )
         {
@@ -371,6 +375,9 @@ public class FileManager
             if ( log.isDebugEnabled() ) 
                 log.debug("Syntax guess: "+syntax);
         }
+
+        if ( baseURI == null )
+            baseURI = chooseBaseURI(filenameOrURI) ;
 
         TypedStream in = openNoMapOrNull(mappedURI) ;
         if ( in == null )
@@ -384,8 +391,6 @@ public class FileManager
             // XXX
             //syntax
         }
-        
-        
         model.read(in.getInput(), baseURI, syntax) ;
         try { in.getInput().close(); } catch (IOException ex) {}
         return model ;
