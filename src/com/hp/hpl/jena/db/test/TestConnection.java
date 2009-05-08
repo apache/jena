@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.36 2009-04-24 12:52:50 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.37 2009-05-08 18:22:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -269,7 +269,7 @@ public class TestConnection extends TestCase {
 			m2.remove();
 			conn.close();
 			assertTrue("Successfully opened non-existent model", false);
-		} catch ( RDFRDBException e ) {
+		} catch ( DoesNotExistException e ) {
 			conn.close();
 		}   
 	}
@@ -282,7 +282,7 @@ public class TestConnection extends TestCase {
 			m2.remove();
 			conn.close();
 			assertTrue("Successfully opened unnamed non-existent model", false);
-		} catch ( RDFRDBException e ) {
+		} catch ( DoesNotExistException e ) {
 			conn.close();
 		}   
 	}
@@ -295,7 +295,7 @@ public class TestConnection extends TestCase {
 			m.remove(); m2.remove();
 			conn.close();
 			assertTrue("Successfully created pre-existing model", false);
-		} catch ( RDFRDBException e ) {
+		} catch ( AlreadyExistsException e ) {
 			m.remove();
 			conn.close();
 		}
