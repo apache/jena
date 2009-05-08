@@ -67,6 +67,21 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        Dataset dataset = TDBFactory.createDataset( "DB" );
+        //TDB.getContext().set(TDB.symUnionDefaultGraph, true);
+        
+        //Model testModel = dataset.getDefaultModel();
+        Model testModel = dataset.getNamedModel("http://example/") ;
+        
+        String queryString =  "SELECT * {?s ?p ?o}" ;
+        Query query = QueryFactory.create(queryString) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, testModel);
+        ResultSetFormatter.out(qexec.execSelect()) ;
+        qexec.close() ;
+        System.exit(0) ;
+
+        
+        
         if ( true )
         {
             TDB.init();
