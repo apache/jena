@@ -15,9 +15,9 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.47 $
+ * @version 	$Revision: 1.48 $
  */
-public class TestPackage extends TestSuite
+public class TestPackage extends TestCase
 {
 	
 	/*
@@ -75,32 +75,43 @@ public class TestPackage extends TestSuite
     // */      
 
     static public TestSuite suite() {
-        return new TestPackage();
+        TestSuite ts = new TestSuite() ;
+        try {
+            ts.setName("GraphRDB");
+            addTest(ts, "TestDriverMap", TestDriverMap.suite()) ;
+            addTest(ts, "TestConnection", TestConnection.suite()) ;
+            addTest(ts, "TestBasicOperations", TestBasicOperations.suite()) ;
+            addTest(ts, "TestSimpleSelector", TestSimpleSelector.suite()) ;
+            addTest(ts, "TestCompareToMem", TestCompareToMem.suite()) ;
+            addTest(ts, "TestGraphRDB", TestGraphRDB.suite()) ;
+            addTest(ts, "TestModelRDB", TestModelRDB.suite()) ;
+            addTest(ts, "TestGraphRDBMaker", TestGraphRDBMaker.suite()) ;
+            addTest(ts, "TestMultiModel", TestMultiModel.suite()) ;
+            addTest(ts, "TestNsPrefix", TestNsPrefix.suite()) ;
+            addTest(ts, "TestPrefixMapping", TestPrefixMapping.suite()) ;
+            addTest(ts, "TestTransactions", TestTransactions.suite()) ;
+            addTest(ts, "TestReifier", TestReifier.suite()) ;
+            addTest(ts, "TestReifierCompareToMem", TestReifierCompareToMem.suite()) ;
+            addTest(ts, "TestQueryRDB", TestQueryRDB.suite()) ;
+            addTest(ts, "TestQuery1", TestQuery1.suite()) ;
+            addTest(ts, "TestModelFactory", TestModelFactory.suite()) ;
+            ts.addTestSuite(TestRDBAssemblerContents.class) ;
+            return ts ;
+        }
+        catch (Error ex)
+        {
+            ex.printStackTrace(System.err) ;
+            return ts ; 
+        }
+    }
+
+    private static void addTest(TestSuite ts, String name, TestSuite tc) {
+        System.err.println("Add test -- "+name) ;
+        if ( name != null )
+            tc.setName(name);
+        ts.addTest(tc);
     }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("GraphRDB");
-        addTest( TestDriverMap.suite() );
-		addTest( "TestConnection", TestConnection.suite() );
-        addTest( "TestBasicOperations", TestBasicOperations.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-		addTest( "TestCompareToMem", TestCompareToMem.suite() );
-		addTest( "TestGraphRDB", TestGraphRDB.suite());
-		addTest( "TestModelRDB", TestModelRDB.suite());
-		addTest( "TestGraphRDBMaker", TestGraphRDBMaker.suite());
-		addTest( "TestMultiModel", TestMultiModel.suite());
-		addTest( "TestNsPrefix", TestNsPrefix.suite());
-		addTest( "TestPrefixMapping", TestPrefixMapping.suite());
-		addTest( "TestTransactions", TestTransactions.suite() );
-		addTest( "TestReifier", TestReifier.suite() );
-		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
-		addTest( "TestQueryRDB", TestQueryRDB.suite());
-		addTest( "TestQuery1", TestQuery1.suite());
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTestSuite( TestRDBAssemblerContents.class );
-        }
-
     public static class TestModelFactory extends TestCase
         {
         public TestModelFactory( String name ) { super( name ); }
@@ -112,12 +123,6 @@ public class TestPackage extends TestSuite
             assertTrue( ModelFactory.createModelRDBMaker( c ).createFreshModel() instanceof ModelRDB );
             }
         }
-    
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
 }
 
 /*
