@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TypeMapper.java,v 1.13 2009-05-08 14:09:36 der Exp $
+ * $Id: TypeMapper.java,v 1.14 2009-05-08 14:46:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2009-05-08 14:09:36 $
+ * @version $Revision: 1.14 $ on $Date: 2009-05-08 14:46:54 $
  */
 
 // Added extended set of class mappings and getTypeByClass
@@ -154,7 +154,7 @@ public class TypeMapper {
      * Look up a datatype suitable for representing instances of the
      * given Java class.
      *
-     * @param class a Java class to be represented
+     * @param clazz a Java class to be represented
      * @return a datatype whose value space matches the given java class
      */
     public RDFDatatype getTypeByClass(Class<?> clazz) {
