@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -117,6 +118,8 @@ public class OpExecutorTDB extends OpExecutor
 //        // Presumably the quad transform has been applied.
 //        if ( ! ( execCxt.getDataset() instanceof DatasetGraphTDB ) )
 //            return super.execute(quadPattern, input) ;
+        
+        DatasetGraph dg = execCxt.getDataset() ;
         
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         BasicPattern bgp = quadPattern.getBasicPattern() ;

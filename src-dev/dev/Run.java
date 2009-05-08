@@ -67,11 +67,19 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        Dataset dataset = TDBFactory.createDataset( "DB" );
-        //TDB.getContext().set(TDB.symUnionDefaultGraph, true);
+
+        // Problem 1: When symUnionDefaultGraph -> quads but not a DatasetGraphTDB but a DataSourceGraphImpl
+        // See OpExecutor.execute(OpQuadPattern) line 111
         
-        //Model testModel = dataset.getDefaultModel();
-        Model testModel = dataset.getNamedModel("http://example/") ;
+        // Problem 2: BGP on named model is not quads.
+        // See OpExecutor.execute(OpBGP) line ~335
+        
+        
+        Dataset dataset = TDBFactory.createDataset( "DB" );
+        TDB.getContext().set(TDB.symUnionDefaultGraph, true);
+        
+        Model testModel = dataset.getDefaultModel();
+        //Model testModel = dataset.getNamedModel("http://example/") ;
         
         String queryString =  "SELECT * {?s ?p ?o}" ;
         Query query = QueryFactory.create(queryString) ;
