@@ -60,7 +60,11 @@ Ontology API:
    o Unified code for checking individuals in OntResource.isIndividual() and
      OntModel.listIndividuals(), and updated the check to account for some user-reported
      edge cases.
-
+     
+Datatypes:
+   o Added a getTypeByClass call to TypeMapper and registered additional primitive types
+     based on suggestion and patch supplied by Thorsten Moeller. 
+     
 ==== Jena 2.5.7
 
 Database layer:

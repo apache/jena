@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.19 2009-01-17 14:40:17 andy_seaborne Exp $
+ * $Id: XSDDatatype.java,v 1.20 2009-05-08 14:09:37 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.io.Reader;
 import java.util.*;
 
@@ -40,7 +41,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2009-01-17 14:40:17 $
+ * @version $Revision: 1.20 $ on $Date: 2009-05-08 14:09:37 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -108,7 +109,7 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
     
     /** Datatype representing xsd:anyURI */
-    public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI");
+    public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);  
     
     /** Datatype representing xsd:token */
     public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
