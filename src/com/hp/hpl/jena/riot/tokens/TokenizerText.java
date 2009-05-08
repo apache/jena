@@ -239,7 +239,8 @@ public class TokenizerText implements Tokenizer
                 {
                     // Not a DOT after all.
                     reader.pushbackChar(CH_DOT) ;
-                    break ;
+                    readNumber() ;
+                    return token ;
                 }
                 token.setType(TokenType.DOT) ;
                 return token ;
@@ -261,6 +262,7 @@ public class TokenizerText implements Tokenizer
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; return token ;
             // GE, LE
         }
+        
         
         if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
         {
