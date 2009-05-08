@@ -28,12 +28,12 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
                 );
     }
     
-    @Override
+    //@Override
     public IRI construct(String s) throws IRIException {
       return throwAnyErrors(create(s));
     }
 
-    @Override
+    //@Override
     public IRI construct(IRI i) throws IRIException {
         return throwAnyErrors(create(i));
         

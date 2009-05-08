@@ -1,4 +1,13 @@
 ===
+
+Build
+
+--> maven
+--> For java 1.5, 
+  "(. set_java15 ; ant build)"
+
+
+===
 Changes for RFC 1123 sec 2.1
 violations.xml: comment out IP_V4_HAS_FOUR_COMPONENTS
 PattenCompiler: remove entry using IP_V4_HAS_FOUR_COMPONENTS in for ipV4Address[]
