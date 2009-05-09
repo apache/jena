@@ -19,7 +19,8 @@ public class Quad
     
     /** Name of the default for explict use in GRAPH */
     public static final Node defaultGraphIRI      =  Node.createURI("urn:x-arq:DefaultGraph") ;
-    /** Name of the merge of all named graphs */
+    
+    /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
     public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
 
     private final Node graph, subject, predicate, object ;
