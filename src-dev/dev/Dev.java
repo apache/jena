@@ -10,11 +10,8 @@ package dev;
 public class Dev
 {
     // ==== ARQ
-    // Tidy up.
-    // Initial binding "bug" - just substitute one and for all?
-    //    QueryEngineRef unaffected.
-    //    QueryEngineMain.eval(Op op, DatasetGraph dsg, Binding binding, Context context)
-    
+
+    // Tidy up
     // ParserLIB
     //  StrUtils from TDB + StringUtils from ARQ
     // Esacpe and encoding in StrUtils. 
