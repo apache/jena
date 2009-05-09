@@ -1,5 +1,18 @@
 @prefix : <http://example/> .
 
-:x :p <http://example/> .
+## # Default.
+## :g :label "Default" .
+## :x :p <http://example/> .
+## :x :p 1 .
+## :x :p 2 .
+
+## # Named - 1
+## :g :label "Graph-1" .
+## :x :p 1 .
+## :x1 :q :x .
+
+# Named - 1
+:g :label "Graph-2" .
 :x :p 1 .
-:x :p 2 .
+:x2 :q :x .
+:x2 :q :x1 .

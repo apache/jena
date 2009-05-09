@@ -28,7 +28,9 @@ public enum TokenType
     LT, GT, LE, GE,
     // UNDERSCORE is only visible if BNode processing is not enabled.
     UNDERSCORE, 
-    LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET,
+    LBRACE, RBRACE,     // {} 
+    LPAREN, RPAREN,     // ()
+    LBRACKET, RBRACKET, // []
     EOF
 }
 

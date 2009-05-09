@@ -30,11 +30,16 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
     private final ReorderTransformation reorderTransform  ;
     private final Location location ;
+    protected final DatasetGraphTDB dataset ;
+    protected final Node graphNode ;
 
 
-    public GraphTDBBase(ReorderTransformation transformation, Location location)
+    public GraphTDBBase(DatasetGraphTDB dataset, Node graphName, 
+                        ReorderTransformation transformation, Location location)
     { 
         super() ;
+        this.dataset = dataset ; 
+        this.graphNode = graphName ;
         this.reorderTransform = transformation ;
         this.location = location ;
     }
@@ -45,6 +50,12 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
     @Override
     public final Location getLocation()                         { return location ; }
+    
+    @Override
+    public final Node getGraphNode()                            { return graphNode ; }
+    
+    @Override
+    public final DatasetGraphTDB getDataset()                   { return dataset ; }
     
     @Override
     protected Reifier constructReifier()

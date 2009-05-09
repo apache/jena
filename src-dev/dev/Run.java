@@ -65,27 +65,39 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
+    
     public static void main(String ... args) throws IOException
     {
 
         // Problem 1: When symUnionDefaultGraph -> quads but not a DatasetGraphTDB but a DataSourceGraphImpl
         // See OpExecutor.execute(OpQuadPattern) line 111
+        // [DONE]
         
         // Problem 2: BGP on named model is not quads.
         // See OpExecutor.execute(OpBGP) line ~335
+        // Line 224 is the entry into the chained OpExecutorTDB.
         
-        
-        Dataset dataset = TDBFactory.createDataset( "DB" );
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
         
-        Model testModel = dataset.getDefaultModel();
-        //Model testModel = dataset.getNamedModel("http://example/") ;
-        
+        Dataset dataset = TDBFactory.createDataset( "DB" );
         String queryString =  "SELECT * {?s ?p ?o}" ;
-        Query query = QueryFactory.create(queryString) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, testModel);
-        ResultSetFormatter.out(qexec.execSelect()) ;
-        qexec.close() ;
+        
+        System.out.println("Default model") ;
+        query(queryString, dataset.getDefaultModel()) ;
+        // Separate dataset.getMergedNamedModels();
+
+        System.out.println("graph1") ;
+        query(queryString, dataset.getNamedModel("http://example/graph1")) ;
+        
+        System.out.println("union") ;
+        query(queryString, dataset.getNamedModel("urn:x-arq:UnionGraph")) ;
+        
+        System.out.println("named default") ;
+        query(queryString, dataset.getNamedModel("urn:x-arq:DefaultGraph")) ;
+        
+        System.out.println("generated default") ;
+        query(queryString, dataset.getNamedModel("urn:x-arq:DefaultGraphNode")) ;
+
         System.exit(0) ;
 
         
@@ -198,7 +210,7 @@ public class Run
         TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
         ReorderTransformation transform = ReorderLib.identity() ;
         DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
-        GraphTDB g = new GraphTriplesTDB(table, prefixes, transform, location) ;
+        GraphTDB g = new GraphTriplesTDB(null, table, prefixes, transform, location) ;
         return g ;
     }
 

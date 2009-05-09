@@ -204,7 +204,7 @@ public class FactoryGraphTDB
         TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;
         DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
-        return new GraphTriplesTDB(table, prefixes, transform, location) ;
+        return new GraphTriplesTDB(null, table, prefixes, transform, location) ;
     }
     
     /** Create or connect a TDB dataset (graph-level) */

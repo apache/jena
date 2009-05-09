@@ -8,6 +8,11 @@ package dev;
 
 public class Dev
 {
+    // Dataset and default graph:
+    // FactoryGraphTDB._createGraph passes null for dataset.
+    //   And make assembler GraphTDB and DatasetTDB share dataset code. 
+    // Migrate TestNamedGraphs
+    
     // == 0.8.0
     //   Metafile for directory.
     //   Metafiles and opening indexes

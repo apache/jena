@@ -36,19 +36,15 @@ public class GraphNamedTDB extends GraphTDBBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
-    private final DatasetGraphTDB dataset ;
     private final QuadTable quadTable ; 
-    private final Node graphNode ;
     private NodeId graphNodeId = null ;
 
     private final ReorderTransformation transform ;
 
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
     {
-        super(transform, dataset.getLocation()) ;
-        this.dataset = dataset ;
+        super(dataset, graphName, transform, dataset.getLocation()) ;
         this.quadTable = dataset.getQuadTable() ;
-        this.graphNode = graphName ;
         this.transform = transform ;
         
         if ( graphName == null )
@@ -119,10 +115,6 @@ public class GraphNamedTDB extends GraphTDBBase
         return iter ;
     }
     
-    /** Graph node */
-    public final Node getGraphNode()
-    { return graphNode ; }
-    
     /** Graph node as NodeId */
     public final NodeId getGraphNodeId()
     {
@@ -143,13 +135,12 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     public NodeTupleTable getNodeTupleTable()
     {
-        if ( graphNode == null )
+        // Concrete default graph.
+        if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
             return dataset.getDefaultTripleTableTable().getNodeTupleTable() ;
         return dataset.getQuadTable().getNodeTupleTable() ;
     }
 
-    public final DatasetGraphTDB   getDataset()                               { return dataset ; }
-    
     @Override
     final public void close()
     {

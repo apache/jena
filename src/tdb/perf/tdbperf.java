@@ -134,7 +134,9 @@ public class tdbperf extends CmdSub
             TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
             ReorderTransformation transform = ReorderLib.identity() ;
             DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
-            return new GraphTriplesTDB(table, prefixes, transform, location) ;
+            
+            // ??? null: see FactoryGraphTDB._createGraph
+            return new GraphTriplesTDB(null, table, prefixes, transform, location) ;
         } 
     }
     

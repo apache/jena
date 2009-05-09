@@ -28,6 +28,13 @@ public interface GraphTDB extends Graph, Closeable, Sync, Reorderable
      * null for a triple table based (e.g. the default graph of a dataset)
      */ 
     public Node getGraphNode() ;
+    
+    /** Return the TDB-backed daatset for this graph.
+     *  Maybe null - indicating it's a simple graph backed by TDB
+     *  (and also the concrete default graph) 
+     */
+    public DatasetGraphTDB getDataset() ;
+    
     public Location getLocation() ; 
     
 }

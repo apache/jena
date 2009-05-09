@@ -38,12 +38,13 @@ public class GraphTriplesTDB extends GraphTDBBase
     private final TripleTable tripleTable ;
     private final DatasetPrefixes prefixes ;
     
-    public GraphTriplesTDB(TripleTable tripleTable,
+    public GraphTriplesTDB(DatasetGraphTDB dataset,
+                           TripleTable tripleTable,
                            DatasetPrefixes prefixes,
                            ReorderTransformation reorderTransform,
                            Location location)
     {
-        super(reorderTransform, location) ;
+        super(dataset, null, reorderTransform, location) ;
         
         this.tripleTable = tripleTable ;
         this.prefixes = prefixes ;
@@ -111,9 +112,7 @@ public class GraphTriplesTDB extends GraphTDBBase
 
     @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
-    
-    public final Node getGraphNode()                    { return null ; }
-    
+   
     @Override
     protected PrefixMapping createPrefixMapping()
     {
