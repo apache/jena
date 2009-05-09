@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.graph;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +18,9 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TestNamedGraphs extends BaseTest
+/** Test API use of models */
+
+public class TestGraphs extends BaseTest
 {
     static final String graph1 = "http://example/g1" ;
     static final String graph2 = "http://example/g2" ;
