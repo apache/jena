@@ -206,7 +206,7 @@ public class BuilderGraph
     {
         Node g = null ;
         if ( list.get(0).equals(Item.defaultItem)) 
-            g = Quad.defaultGraphNode ;
+            g = Quad.defaultGraphNodeGenerated ;
         else
             g = BuilderNode.buildNode(list.get(0)) ;
         Node s = BuilderNode.buildNode(list.get(1)) ;

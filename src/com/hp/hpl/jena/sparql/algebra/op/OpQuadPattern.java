@@ -59,7 +59,7 @@ public class OpQuadPattern extends Op0
     public BasicPattern getBasicPattern()   { return triples ; }
     public boolean isEmpty()                { return triples.size() == 0 ; }
     
-    public boolean isDefaultGraph()         { return graphNode.equals(Quad.defaultGraphNode) ; }
+    public boolean isDefaultGraph()         { return Quad.isQuadDefaultGraphNode(graphNode) ; }
     
     public String getName()                 { return Tags.tagQuadPattern ; }
     @Override

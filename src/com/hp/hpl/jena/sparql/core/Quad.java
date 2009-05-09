@@ -11,8 +11,10 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
-    /** Name of the default graph as used in quad form of algebra */ 
-    public static final Node defaultGraphNode     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
+    /** Name of the default graph as used in quad form of algebra 
+     * (not for access the default graph by name - use Quad.defaultGraphIRI)
+     */ 
+    public static final Node defaultGraphNodeGenerated     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
     
     // These are convenience constants for other systems to give special
     // interpretation to these "named" graphs.  
@@ -48,10 +50,21 @@ public class Quad
     public Node getObject()     { return object ; }
     public Triple getTriple()   { return new Triple(subject, predicate, object) ; }
     
-    // See also OpQuadPattern
-    public static boolean isDefaultGraphNode(Node node) { return node.equals(defaultGraphNode) ; }
+    /** node used by the quad generator for the default graph */
+    public static boolean isQuadDefaultGraphNode(Node node)
+    {
+        // The node used by the quad generator for the default graph 
+        // Not the named graph 
+        return node.equals(defaultGraphNodeGenerated) ;
+    }
     
-    public boolean isDefaultGraph()         { return graph.equals(defaultGraphNode) ; }
+    /** Default graph (generated or explicitly named) */
+    public static boolean isDefaultGraph(Node node)
+    {
+        return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 
+    }
+    
+    public boolean isDefaultGraph()         { return graph.equals(defaultGraphNodeGenerated) ; }
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
     public boolean isUnionGraph()           { return graph.equals(unionGraph) ; }
     

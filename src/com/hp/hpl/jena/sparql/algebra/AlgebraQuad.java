@@ -33,7 +33,7 @@ public class AlgebraQuad extends TransformCopy
     public static Op quadize(Op op)
     {
         final Stack<Node> stack = new Stack<Node>() ;
-        stack.push(Quad.defaultGraphNode) ;             // Starting condition
+        stack.push(Quad.defaultGraphNodeGenerated) ;             // Starting condition
         
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
