@@ -15,7 +15,7 @@ public class query extends arq.query
 {
     protected ModDatasetStore modDatasetStore = new ModDatasetStore() ;
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
         new query(argv).mainRun() ;
     }
