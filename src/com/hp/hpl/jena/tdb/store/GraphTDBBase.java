@@ -9,18 +9,24 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import org.slf4j.Logger;
+
 import atlas.iterator.Iter;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.*;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** General operations for TDB graphs (free-satnding graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
@@ -57,11 +63,36 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     @Override
     public final DatasetGraphTDB getDataset()                   { return dataset ; }
     
+    
+    
+    protected void duplicate(Triple t)
+    {
+        if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && getLog().isInfoEnabled() )
+        {
+            String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
+            getLog().info("Duplicate: ("+$+")") ;
+        }
+    }
+
+    
+    protected static ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
+    {
+        // See also SolverLib.execute
+        Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iter == null )
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
+        return new MapperIteratorTriples(iter) ;
+    }
+    
+
+    
     @Override
     protected Reifier constructReifier()
     {
         return new Reifier2(this) ;
     }
+    
+    protected abstract Logger getLog() ;
     
     /** Iterator over something that, when counted, is the graph size. */
     protected abstract Iterator<?> countThis() ;
@@ -83,18 +114,19 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         @Override public void remove() { iter.remove(); }
     }
     
-    // Convert from Iterator<Quad> to ExtendedIterator
-    static class MapperIteratorQuads extends NiceIterator<Triple>
+    // Convert from Iterator<Quad> to Iterator<Triple>
+    static class ProjectQuadsToTriples implements Iterator<Triple>
     {
         private final Iterator<Quad> iter ;
         private final Node graphNode ;
-        MapperIteratorQuads(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
+        /** Project quads to triples - check the graphNode is as expected if not null */
+        ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
         @Override public boolean hasNext() { return iter.hasNext() ; } 
         @Override public Triple next()
         { 
             Quad q = iter.next();
-            if ( ! q.getGraph().equals(graphNode))
-                throw new InternalError("GraphNamed: Quads from unexpected graph") ;
+            if ( graphNode != null && ! q.getGraph().equals(graphNode))
+                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph") ;
             return q.getTriple() ;
         }
         @Override public void remove() { iter.remove(); }

@@ -45,8 +45,8 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
         defaultGraph = new GraphTriplesTDB(this, tripleTable, prefixes, transform, location) ;
     }
     
-    public QuadTable getQuadTable()                 { return quadTable ; }
-    public TripleTable getDefaultTripleTableTable() { return tripleTable ; } 
+    public QuadTable getQuadTable()         { return quadTable ; }
+    public TripleTable getTripleTable()     { return tripleTable ; } 
     
     @Override
     public boolean containsGraph(Node graphNode)

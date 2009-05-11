@@ -83,13 +83,12 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         
         // If we want to reduce to RDF semantics over quads,
         // we need to reduce the quads to unique triples. 
-        // We do that by overwring the graph slot with a fixed NodeId, then running
+        // We do that by having the graph slot as "any", then running
         // through a distinct-ifier. 
         // Assumes quads are GSPO - zaps the first slot.
         // Assumes that tuples are not shared.
         if ( anyGraphs )
         {
-            //iterMatches = Iter.map(iterMatches, projectToTriples) ;
             iterMatches = Iter.operate(iterMatches, quadsToTriples) ;
             iterMatches = Iter.distinct(iterMatches) ;  // WRT only three varying slots.
         }

@@ -6,35 +6,32 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.Iterator;
+import static com.hp.hpl.jena.sparql.core.Quad.isDefaultGraph;
+import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph;
 
-import atlas.lib.Tuple;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import atlas.iterator.Iter;
+import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase
 {
-    // TODO What if the name is one of the specials:
     /*
         Quad.unionGraph
         Quad.defaultGraphIRI
@@ -81,34 +78,54 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     public void performAdd( Triple t ) 
     { 
-        boolean changed = dataset.getQuadTable().add(graphNode, t) ;
+        if ( isQuadUnionGraph(graphNode) )
+            throw new TDBException("Can't add a triple to the RDF merge of all named graphs") ;
+        boolean changed ;
+        if ( isDefaultGraph(graphNode) )
+            changed = dataset.getTripleTable().add(t) ;
+            //throw new TDBException("Attempt to add a triple to the default graph via its named form");
+        else 
+            changed = dataset.getQuadTable().add(graphNode, t) ;
+        
         if ( ! changed )
             duplicate(t) ;
     }
 
-    private void duplicate(Triple t)
-    {
-        if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && log.isInfoEnabled() )
-        {
-            String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
-            log.info("Duplicate: ("+$+")") ;
-        }
-    }
-
+ 
     @Override
     public void performDelete( Triple t ) 
     { 
-        boolean changed = dataset.getQuadTable().delete(graphNode, t) ;
+        if ( isQuadUnionGraph(graphNode) )
+            throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
+        boolean changed ;
+        if ( isDefaultGraph(graphNode) )
+            changed = dataset.getTripleTable().delete(t) ;
+            //throw new TDBException("Attempt to delete a triple from the default graph via its named form"); 
+        else 
+            changed = dataset.getQuadTable().delete(graphNode, t) ;
     }
     
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
-        Iterator<Quad> iter = dataset.getQuadTable().find(graphNode, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( isDefaultGraph(graphNode) )
+            // Default graph.
+            return graphBaseFindWorker(getDataset().getTripleTable(), m) ;
+
+        Node gn = graphNode ;
+        if ( isQuadUnionGraph(graphNode) )
+            gn = Node.ANY ;
+        
+        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
         
-        return new MapperIteratorQuads(graphNode, iter) ;
+        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn) , iter) ;
+        
+        if ( gn == Node.ANY )
+            iterTriples = Iter.distinct(iterTriples) ;
+        return new MapperIteratorTriples(iterTriples) ;
+
     }
 
     @Override
@@ -139,11 +156,14 @@ public class GraphNamedTDB extends GraphTDBBase
     }
 
     @Override
+    protected final Logger getLog() { return log ; }
+    
+    @Override
     public NodeTupleTable getNodeTupleTable()
     {
         // Concrete default graph.
         if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
-            return dataset.getDefaultTripleTableTable().getNodeTupleTable() ;
+            return dataset.getTripleTable().getNodeTupleTable() ;
         return dataset.getQuadTable().getNodeTupleTable() ;
     }
 

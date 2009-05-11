@@ -8,15 +8,17 @@ package tdb;
 
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModTDBDataset;
+import arq.cmdline.ArgDecl;
 import arq.cmdline.ModDataset;
 
 import com.hp.hpl.jena.query.ARQ;
-
 import com.hp.hpl.jena.tdb.TDB;
 
 
 public class tdbquery extends arq.query
 {
+    private ArgDecl argExplain = new ArgDecl(ArgDecl.NoValue, "explain") ;
+
     // Inherits from arq.query so is not a CmdTDB.  Mixins for Java!
     public static void main(String...argv)
     {
@@ -28,6 +30,7 @@ public class tdbquery extends arq.query
         super(argv) ;
         // Because this inherits from an ARQ command
         CmdTDB.init() ;
+        super.add(argExplain) ;
         super.modVersion.addClass(TDB.class) ;
     }
 
@@ -37,6 +40,11 @@ public class tdbquery extends arq.query
         super.processModulesAndArgs() ;
         if ( isVerbose() )
             ARQ.getContext().setTrue(TDB.symLogExec) ;
+        if ( super.hasArg(argExplain) )
+        {
+            //Log.enable(TDB.logExec.getName(), "info") ;
+            TDB.setExecutionLogging(true) ;
+        }
     }
     
     @Override

@@ -8,27 +8,21 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
-import atlas.lib.Tuple;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that uses a triple table - free-standing graph or deafult graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
@@ -63,15 +57,6 @@ public class GraphTriplesTDB extends GraphTDBBase
             duplicate(t) ;
     }
 
-    private void duplicate(Triple t)
-    {
-        if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && log.isInfoEnabled() )
-        {
-            String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
-            log.info("Duplicate: ("+$+")") ;
-        }
-    }
-
     @Override
     public void performDelete( Triple t ) 
     { 
@@ -81,10 +66,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
-        Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
-        if ( iter == null )
-            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
-        return new MapperIteratorTriples(iter) ;
+        return graphBaseFindWorker(tripleTable, m) ;
     }
 
 //    @Override
@@ -97,6 +79,8 @@ public class GraphTriplesTDB extends GraphTDBBase
 //        return (int)tripleTable.size() ;
 //    }
         
+    @Override
+    protected final Logger getLog() { return log ; }
 
     @Override
     public Tuple<Node> asTuple(Triple triple)

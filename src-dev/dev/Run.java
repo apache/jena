@@ -78,9 +78,15 @@ public class Run
         // Line 224 is the entry into the chained OpExecutorTDB.
         
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
-        
+        //TDB.setExecutionLogging(true) ; 
         Dataset dataset = TDBFactory.createDataset( "DB" );
+        
+        // "SELECT * { GRAPH <urn:x-arq:UnionGraph> { ?s ?p ?o}}"
         String queryString =  "SELECT * {?s ?p ?o}" ;
+        
+        query(queryString, dataset) ;
+        System.exit(0) ;
+        
         
         System.out.println("Default model") ;
         query(queryString, dataset.getDefaultModel()) ;

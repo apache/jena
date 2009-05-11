@@ -31,8 +31,6 @@ public class Explain
 
     private static void _explain(String reason, String explanation)
     {
-        explanation = StrUtils.chop(explanation) ;
-        
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
         explanation = reason+"\n"+explanation ;
