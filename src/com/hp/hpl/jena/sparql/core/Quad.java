@@ -64,9 +64,16 @@ public class Quad
         return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 
     }
     
-    public boolean isDefaultGraph()         { return graph.equals(defaultGraphNodeGenerated) ; }
+    /** node used for the RDF merge of named graphs */
+    public static boolean isQuadUnionGraph(Node node)
+    {
+        return node.equals(unionGraph) ;
+    }
+
+    
+    public boolean isDefaultGraph()         { return isQuadDefaultGraphNode(graph) ; }
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
-    public boolean isUnionGraph()           { return graph.equals(unionGraph) ; }
+    public boolean isUnionGraph()           { return isQuadUnionGraph(graph) ; }
     
     @Override
     public int hashCode() 

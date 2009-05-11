@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class query extends CmdARQ
 {
-    ArgDecl argRepeat = new ArgDecl(ArgDecl.HasValue, "repeat") ;
+    private ArgDecl argRepeat = new ArgDecl(ArgDecl.HasValue, "repeat") ;
     protected int repeatCount = 1 ; 
     
     protected ModTime       modTime =     new ModTime() ;

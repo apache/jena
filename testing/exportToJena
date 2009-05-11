@@ -1,6 +1,6 @@
 #!/bin/bash
 
-D=$(find ARQ Optimizer Update LARQ ! -name . ! -name .. ! \( -name .svn -prune \) -type d)
+D=$(find ARQ  Update LARQ ! -name . ! -name .. ! \( -name .svn -prune \) -type d)
 
 MISSING=0
 for d in $D
