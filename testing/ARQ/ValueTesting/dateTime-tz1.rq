@@ -1,5 +1,5 @@
 # dateTime-tz1 - test equivilent decimal seconds representations
-# $Id: dateTime-tz1.rq,v 1.12 2009-01-16 17:01:58 andy_seaborne Exp $
+# $Id: dateTime-tz1.rq,v 1.13 2009-05-11 09:19:32 andy_seaborne Exp $
 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX t: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/dateTime.ttl#>

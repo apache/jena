@@ -40,7 +40,11 @@
     	<OpenWorld/manifest.ttl>
 
         <Function/manifest.ttl>
-## Property functions not covered by the reference query engine.
+
+## Property functions not full covered by the reference query engine.
+## because of order of execution (variables bound between different
+## operators - see testing/PropertyFunctions/splitIRI-09.rq
+
 ##        <PropertyFunctions/manifest.ttl>
         <TypePromotion/manifest.ttl>
 
@@ -57,9 +61,9 @@
 ## More property functions
 ##        <Examples/manifest.ttl>
 
-    ## Engines
-        <EngineRef/manifest.ttl>
-        <EngineMain/manifest.ttl>
+##     ## Engines
+##         <EngineRef/manifest.ttl>
+##         <EngineMain/manifest.ttl>
 
     ## ARQ extensions
         <Assign/manifest.ttl>
