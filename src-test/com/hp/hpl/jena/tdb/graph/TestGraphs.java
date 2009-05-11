@@ -6,10 +6,15 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import java.util.Iterator;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+import atlas.iterator.Iter;
 import atlas.test.BaseTest;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -85,11 +90,42 @@ public class TestGraphs extends BaseTest
     }
 
     
-    // Named model.
-//    Quad.unionGraph ;
-//    Quad.defaultGraphIRI ;
-//    Quad.defaultGraphNodeGenerated ;
-   
+    @Test public void graph_api1() 
+    {
+        int x = api(ds.getDefaultModel()) ;
+        assertEquals(1,x) ;
+    }
+    
+
+    @Test public void graph_api2() 
+    {
+        int x = api(ds.getNamedModel(graph1)) ;
+        assertEquals(2,x) ;
+    }
+
+    @Test public void graph_api3() 
+    {
+        int x = api(ds.getNamedModel(graph3)) ;
+        assertEquals(0,x) ;
+    }
+    
+    @Test public void graph_api4() 
+    {
+        int x = api(ds.getNamedModel(Quad.unionGraph.getURI())) ;
+        assertEquals(3,x) ;
+    }
+
+    @Test public void graph_api5() 
+    {
+        int x = api(ds.getNamedModel(Quad.defaultGraphIRI.getURI())) ;
+        assertEquals(1,x) ;
+    }
+
+    @Test public void graph_api6() 
+    {
+        int x = api(ds.getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
+        assertEquals(1,x) ;
+    }
     
     private int query(String str, Model model)
     {
@@ -98,6 +134,13 @@ public class TestGraphs extends BaseTest
         ResultSet rs = qexec.execSelect() ;
         int x = ResultSetFormatter.consume(rs) ;
         qexec.close() ;
+        return x ;
+    }
+    
+    private int api(Model model)
+    {
+        Iterator<Triple> iter = model.getGraph().find(Node.ANY, Node.ANY, Node.ANY) ;
+        int x = (int)Iter.count(iter) ;
         return x ;
     }
 }

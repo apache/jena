@@ -34,6 +34,12 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase
 {
+    // TODO What if the name is one of the specials:
+    /*
+        Quad.unionGraph
+        Quad.defaultGraphIRI
+        Quad.defaultGraphNodeGenerated
+    */
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
     private final QuadTable quadTable ; 
