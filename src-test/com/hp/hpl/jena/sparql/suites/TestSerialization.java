@@ -10,6 +10,9 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -170,6 +173,45 @@ public class TestSerialization extends TestCase
            false) ;
     }
     
+    public void testOpToSyntax_1()
+    {
+        testOpToSyntax("(bgp (triple ?s ?p ?o))", "SELECT * {?s ?p ?o}") ;
+    }
+    
+    public void testOpToSyntax_2()
+    {
+        testOpToSyntax("(bgp (triple ?s ?p ?o) (<urn:x> <urn:p> <urn:z>) )", 
+                       "SELECT * {?s ?p ?o . <urn:x> <urn:p> <urn:z> }") ;
+    }
+
+    public void testOpToSyntax_3()
+    {
+        testOpToSyntax("(table unit)", 
+                       "SELECT * {}") ;
+    }
+
+    public void testOpToSyntax_4()
+    {
+        testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)))",
+                       "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c }}") ;
+    }
+
+    public void testOpToSyntax_5()
+    {
+        testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)) (> ?z 5))",
+                       "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c FILTER(?z > 5) }}") ;
+    }
+
+    
+    private void testOpToSyntax(String opStr, String queryString)
+    {
+        Op op = SSE.parseOp(opStr) ;
+        Query queryConverted = OpAsQuery.asQuery(op) ;
+        
+        Query queryExpected = QueryFactory.create(queryString) ;
+        assertEquals(queryExpected, queryConverted) ;
+    }
+
     private  void test(String qs1, String qs2, boolean result)
     {
         Query q1 = null ;

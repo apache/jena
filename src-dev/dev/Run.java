@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
@@ -91,7 +92,36 @@ public class Run
         divider() ;
     }
 
+    private static void testOpToSyntax(String opStr, String queryString)
+    {
+        Op op = SSE.parseOp(opStr) ;
+        Query queryConverted = OpAsQuery.asQuery(op) ;
+        queryConverted.setResultVars() ;
+        
+        Query queryExpected = QueryFactory.create(queryString) ;
+        System.out.println(queryConverted) ;
+        System.out.println(queryExpected) ;
+        queryExpected.setResultVars() ;
+        
+        System.out.println( queryExpected.getQueryPattern().equals(queryConverted.getQueryPattern()))  ;
+        System.out.println( queryExpected.equals(queryConverted))  ;
+    }
+
     public static void report()
+    {
+        testOpToSyntax("(bgp (triple ?s ?p ?o))", "SELECT * {?s ?p ?o}") ;
+        
+        System.exit(0) ;
+        
+        Query query = QueryFactory.read("Q.rq") ;
+        System.out.println(query) ;
+        Op op = Algebra.compile(query) ;
+        Query query2 = OpAsQuery.asQuery(op) ;
+        System.out.println(query2) ;
+        System.exit(0) ;
+    }
+    
+    public static void report1()
     {
         QueryEngineMain.SUBSTITUE = false ;
         

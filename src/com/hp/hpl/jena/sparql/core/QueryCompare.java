@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 // Two queries comparison 
 
@@ -23,6 +22,9 @@ public class QueryCompare implements QueryVisitor
     public static boolean equals(Query query1, Query query2)
     {
         if ( query1 == query2 ) return true ;
+        
+        query1.setResultVars() ;
+        query2.setResultVars() ;
         QueryCompare visitor = new QueryCompare(query1) ;
         try {
             query2.visit(visitor) ;

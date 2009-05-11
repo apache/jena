@@ -141,12 +141,30 @@ public class OpAsQuery
             return ;
         }
 
+        private static boolean emptyGroup(Element element)
+        {
+            if ( ! ( element instanceof ElementGroup ) )
+                return false ;
+            ElementGroup eg = (ElementGroup)element ;
+            return eg.isEmpty() ;
+        }
+        
         public void visit(OpLeftJoin opLeftJoin)
         {
             Element eLeft = asElement(opLeftJoin.getLeft()) ;
-            Element eRight = asElementGroup(opLeftJoin.getRight()) ;
+            ElementGroup eRight = asElementGroup(opLeftJoin.getRight()) ;
+            
+            if ( opLeftJoin.getExprs() != null )
+            {
+                for ( Expr expr : opLeftJoin.getExprs() )
+                {
+                    ElementFilter f = new ElementFilter(expr) ;
+                    eRight.addElement(f) ;
+                }
+            }
             ElementGroup g = currentGroup() ;
-            g.addElement(eLeft) ;
+            if ( ! emptyGroup(eLeft) )
+                g.addElement(eLeft) ;
             ElementOptional opt = new ElementOptional(eRight) ;
             g.addElement(opt) ;
         }
@@ -215,7 +233,11 @@ public class OpAsQuery
         { throw new ARQNotImplemented("OpDatasetNames") ; }
 
         public void visit(OpTable opTable)
-        { throw new ARQNotImplemented("OpTable") ; }
+        { 
+            // This will go in a group so simply forget it. 
+            if ( opTable.isJoinIdentity() ) return ;
+            throw new ARQNotImplemented("OpTable") ;
+        }
 
         public void visit(OpExt opExt)
         { throw new ARQNotImplemented("OpExt") ; }

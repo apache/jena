@@ -688,10 +688,9 @@ public class Query extends Prologue implements Cloneable
     @Override
     public boolean equals(Object other)
     { 
-        if ( this == other ) return true ;
-
         if ( ! ( other instanceof Query ) )
             return false ;
+        if ( this == other ) return true ;
         return QueryCompare.equals(this, (Query)other) ;
     }
     
