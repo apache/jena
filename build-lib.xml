@@ -113,9 +113,11 @@
   
   <!-- See also ant task <pathconvert> -->
 
-  <path id="java.build.class.path">
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-  </path>
+  <target name="set-classpath">
+    <path id="java.build.class.path">
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+    </path>
+  </target>          
 
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
@@ -136,18 +138,6 @@
     <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
   </filterset>
   
-  <!--
-    <filterset id="filters.shared">
-    <filter token="Name"              value="${Name}" />
-    <filter token="website"           value="${web.site}" />
-    <filter token="version-major"     value="${version-major}" />
-    <filter token="version-minor"     value="${version-minor}" />
-    <filter token="version-status"    value="${version-status}" />
-    <filter token="version"           value="${version}" />
-    <filterset refid="filters.version"/>
-    </filterset>
-  -->
-
   <target name="javac-flags">
     <!-- Target - so can have different javac flags (properties are set once) -->
     <property name="java.debug"       value="true"/>
@@ -158,6 +148,8 @@
     <property name="java.source"      value="1.6"/>
     <property name="java.target"      value="1.6"/>
   </target>
+        
+  <target name="java-init" depends="javac-flags,set-classpath"/>
 
   <!-- ========================================== -->
   <!-- ==== Sources -->
@@ -165,7 +157,7 @@
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
 
-  <target name="compile" depends="javac-flags" description="Compile project">
+  <target name="compile" depends="java-init" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
     <javac destdir="${build.classes.dir}"
            debug="${java.debug}"
@@ -220,7 +212,7 @@
   <!-- ========================================== -->
   <!-- ==== Javadoc -->
 
-  <target name="javadoc" depends="javac-flags"
+  <target name="javadoc" depends="java-init"
           description="Make the javadoc"
           if="javadoc.packages">
     <delete  dir="${javadoc.dir}"/>
@@ -241,7 +233,7 @@
     </javadoc>
   </target>
 
-  <target name="javadoc-all" depends="javac-flags"
+  <target name="javadoc-all" depends="java-init"
           description="Make all the javadoc"
           if="javadoc.all.packages">
     <delete  dir="${javadoc.all.dir}"/>
