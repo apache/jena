@@ -188,30 +188,15 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! input.hasNext() )
             return input ;
         
-        // ---- Default graph in storage
-        boolean isDefaultGraph = false ;
-        
         // Graph names with special meaning:
         //   Quad.defaultGraphIRI -- the IRI used in GRAPH <> to mean the default graph.
-        //   Quad.defaultGraphNode -- the internal marker node used for the quad form of queries.
+        //   Quad.defaultGraphNodeGenerated -- the internal marker node used for the quad form of queries.
         //   Quad.unionGraph -- the IRI used in GRAPH <> to mean the union of named graphs
         // Also: isUnionDefaultGraph if implicit union of named graphs.
         
-        
-//        if ( gn.equals(Quad.defaultGraphIRI) )
-//            // Explicit GRAPH <urn:x-arq:DefaultGraph> {}
-//            isDefaultGraph = true ;
-//        
-//        if ( ! isUnionDefaultGraph && Quad.isDefaultGraphNode(gn) )
-
         if ( isDefaultGraphStorage(isUnionDefaultGraph, gn) ) 
-            // Not accessing the union of named graphs as the default graph
-            // and pattern is directed to the default graph.
-            isDefaultGraph = true ;
-
-        if ( isDefaultGraph )
         {
-            // Storage default graph. Either outside GRAPH (no implicit union)
+            // Storage concrete, default graph. Either outside GRAPH (no implicit union)
             // or using the "name" of the default graph
             return optimizeExecute(ds.getDefaultGraph(), input, bgp, exprs, execCxt) ;
         }
