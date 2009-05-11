@@ -109,16 +109,7 @@
   <!-- ========================================== -->
   <!-- ==== Setup  -->
 
-  <!-- This must be after IVY has done it's dependence stuff --> 
   
-  <!-- See also ant task <pathconvert> -->
-
-  <target name="set-classpath">
-    <path id="java.build.class.path">
-      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    </path>
-  </target>          
-
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
@@ -149,6 +140,13 @@
     <property name="java.target"      value="1.6"/>
   </target>
         
+  <target name="set-classpath">
+    <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
+    <path id="java.build.class.path">
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+    </path>
+  </target>          
+
   <target name="java-init" depends="javac-flags,set-classpath"/>
 
   <!-- ========================================== -->
