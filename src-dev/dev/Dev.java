@@ -15,7 +15,8 @@ public class Dev
     //   Metafile for directory.
     //   Metafiles and opening indexes
     //   New and reattach
-    //   TDBFactory - cache graphs - graph.close is return to cache (and sync) 
+    //   TDBFactory - cache graphs - graph.close is return to cache (and sync)
+    //   Update
 
     
     // tdbrestore
