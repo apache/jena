@@ -24,14 +24,14 @@ else
     SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-ant build
+ant clean build
 
-# Remove version numbers
-for jar in build/arq*.jar
-do
-  J2="$(perl -e '$_=$ARGV[0] ; s/(arq.*)-\d.\d.\d.*.jar/$1.jar/ ; print "$_\n" ' $jar)"
-  mv $jar $J2
-  done
+## # Remove version numbers
+## for jar in build/arq*.jar
+## do
+##   J2="$(perl -e '$_=$ARGV[0] ; s/(arq.*)-\d.\d.\d.*.jar/$1.jar/ ; print "$_\n" ' $jar)"
+##   mv $jar $J2
+##   done
 
 
 for d in $LIBDIRS

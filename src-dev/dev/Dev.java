@@ -10,9 +10,9 @@ package dev;
 public class Dev
 {
     // ==== ARQ
-    // TestSerialization: OpAsQuery tests.
     
-    // Tidy up
+    // -- Tidy up
+	// Build: "dev" and "main" ==> "main"
     // ParserLIB
     //  StrUtils from TDB + StringUtils from ARQ
     // Esacpe and encoding in StrUtils. 

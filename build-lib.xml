@@ -379,7 +379,7 @@
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
           description="Resolve and fetch dependences with Ivy">
     <!-- sync causes artefacts and versions no longer need to be deleted -->
-    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
+    <ivy:retrieve conf="main" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
     
     <!--
@@ -391,7 +391,7 @@
   <target name="ivy-resolve" depends="ivy-resolve-report"/>
 
   <target name="ivy-resolve-report" depends="ivy-init">
-    <ivy:resolve conf="dev"
+    <ivy:resolve conf="main"
                  haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>

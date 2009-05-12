@@ -1,4 +1,4 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="build">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="ARQ" default="build">
 
   <!-- Configuration as a propertied file ? -->
   <!-- <property file="tdb-build.properties"/> -->
@@ -30,27 +30,41 @@
   <!-- Two jars -->
   
   <property name="jarfile"         value="${name}-${version}.jar"/>
+  <property name="jarfile.lib"     value="${name}.jar"/>
+
   <property name="jarfile.extra"   value="${name}-extra-${version}.jar"/>
-  <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
+  <property name="jarfile.extra.lib"   value="${name}-extra.jar"/>
+
+  <property name="arq.path.impl"       value="com/hp/hpl/jena/sparql"/>
   <property name="extra.classes" 
       	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
+
   <!-- Override -->    	        
-  <target name="package.jar" depends="compile,make-jar-core,make-jar-extra"/>
-    
+  <target name="package.jar" depends="clean-jar,compile,make-jar-core,make-jar-extra">
+    <!-- And place in lib/ as unversioned files -->
+    <copy file="${build.dir}/${jarfile}" tofile="${lib.dir}/${jarfile.lib}"/>
+    <copy file="${build.dir}/${jarfile.extra}" tofile="${lib.dir}/${jarfile.extra.lib}"/>
+  </target>
+
+  <target name="clean-jar">
+    <delete file="${lib.dir}/${jarfile.lib}"/>
+    <delete file="${lib.dir}/${jarfile.extra.lib}"/>
+  </target>
+
   <target name="make-jar-core" depends="compile">
-     <!-- Core jar -->
-     <delete file="${build.dir}/${jarfile}"/>
-     <jar destfile="${build.dir}/${jarfile}" index="yes">
-        <fileset dir="${build.classes.dir}" excludes="${extra.classes}"/>
-     </jar>
-   </target>
-        
-   <!-- Tests and examples jar -->
-   <target name="make-jar-extra" depends="compile">
-       <delete file="${build.dir}/${jarfile.extra}"/>
-      <jar destfile="${build.dir}/${jarfile.extra}" index="yes">
-         <fileset dir="${build.classes.dir}" includes="${extra.classes}"/>
-      </jar>
+    <!-- Core jar -->
+    <delete file="${build.dir}/${jarfile}"/>
+    <jar destfile="${build.dir}/${jarfile}" index="yes">
+      <fileset dir="${build.classes.dir}" excludes="${extra.classes}"/>
+    </jar>
+  </target>
+   
+  <!-- Tests and examples jar -->
+  <target name="make-jar-extra" depends="compile">
+    <delete file="${build.dir}/${jarfile.extra}"/>
+    <jar destfile="${build.dir}/${jarfile.extra}" index="yes">
+      <fileset dir="${build.classes.dir}" includes="${extra.classes}"/>
+    </jar>
   </target>
   <!--=============================================-->
 
