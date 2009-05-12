@@ -12,6 +12,7 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /** Pluck data out of the ether - or failing that, read it from a properties file.
  *  Assumes the properties file is in the "right place" through configuration of
@@ -22,6 +23,8 @@ public class Metadata
 {
     static boolean initialized = false ; 
     static Properties properties = null ;
+    
+    private Metadata() {}
     
     static public void setMetadata(String resourceName)
     {
@@ -35,7 +38,18 @@ public class Metadata
         {
             initialized = true ;
             properties = new Properties() ;
-            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(resource) ;
+            
+            ClassLoader classLoader = SystemUtils.chooseClassLoader() ;
+            if (classLoader == null)
+                classLoader = Metadata.class.getClassLoader();
+
+            if ( classLoader == null )
+            {
+                ALog.fatal(Metadata.class, "No classloader") ;
+                return ;
+            }
+            
+            InputStream in = classLoader.getResourceAsStream(resource) ;
             if ( in == null )
                 //throw new TDBException("Failed to find the properties file") ;
                 return ;
