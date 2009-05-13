@@ -18,6 +18,9 @@ public class Dev
     //   TDBFactory - cache graphs - graph.close is return to cache (and sync)
     //   Update
 
+    // ==== Build
+    //   Multiple ivy modules
+    //  Use <ivy:configure file="myconffile.xml" /> (not ivy:setting)
     
     // tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
