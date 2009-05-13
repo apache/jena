@@ -22,13 +22,12 @@ public class Dev
     //   Multiple ivy modules
     //  Use <ivy:configure file="myconffile.xml" /> (not ivy:setting)
     
-    // tdbrestore
+    // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
-    
-    // Graph by name graph from TDB database.
-    // Tricky because of non-shared TDB engine => shared/cached engines.
+
+    // == Caching graphs in TDBFactory
     
     // To ARQ:
     //   Atlas? Iterator.
@@ -55,7 +54,7 @@ public class Dev
     
     // ---- Quads:
     //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
-    //   Generalise quads to be quads, not (node, bgp).
+    //   Generalise quads to be quads, not (node, bgp) ??
 
     //   Quad loader; dataset merge.
     //   Generalised the pattern stuff in the optimizer?
@@ -65,9 +64,6 @@ public class Dev
     // ---- Optimizer
     //   Relationship of filter placement and OpExecutor and StageGenerators.
     //   The disjunction/UNION rewrite (ARQ)
-    
-    // ---- Graph
-    // listSubjects via QueryHandlerTDB (make a range query)
     
     // ---- Documentation
     //  Concurrency policy
@@ -87,16 +83,15 @@ public class Dev
     // + SPARQL/Update
     //   Dataset is cloned on a Joseki/SPARQL/update operation
     //   Need ARQ change + TDB to provide a GraphStore.
+    // Optimizations
+    // Quad-based filter placement
     
     // ---- Misc
     // Inlines => Inline56, Inline64
 
-    // ---- Materialized views
-    // Key->Action paradigm
-    //   Simple pattern keys (property, 2P). 
-    
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
+
     // ---- 32 bit mode.
     // ARC (Adaptive Replacement Cache) Cache Scheme
 }
