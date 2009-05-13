@@ -367,12 +367,13 @@
   <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
-  <target name="ivy-init">
-    <ivy:settings />
-  </target>
-
   <!-- Convenience target -->
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
+  </target>
+
+  <target name="ivy-init">
+    <!-- <ivy:settings /> Process settings etc when first needed -->
+    <ivy:configure /> <!-- Process settings now  -->
   </target>
 
   <!-- DEVELOPMENT : lib2/ -->
@@ -399,6 +400,9 @@
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
+      
+    <fail message="ARQ: Does not work for multiple artifacts"/>
+      
     <ivy:deliver conf="main"/>
     <ivy:publish conf="main" 
                  resolver="${publish.resolver}" 
@@ -423,6 +427,7 @@
   <!-- DEVELOPMENT -->
   <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
+    <echo message="ARQ: Does not work for multiple artifacts"/>
     <ivy:publish conf="main" 
                  resolver="dev-resolver" 
                  overwrite="true"
