@@ -13,82 +13,53 @@ public class Dev
     
     // -- Tidy up
 	// Build: "dev" and "main" ==> "main"
-    // ParserLIB
-    //  StrUtils from TDB + StringUtils from ARQ
-    // Esacpe and encoding in StrUtils. 
+    // Two ivy modules.
     
     // -- Build process
     //   Currently only one jar - arq.jar
     //     arq and arq-extra
-    //   Testing - need TS_* files.
-    //   Examples are in the test suite.
-    //   Distribution building.
-    
-    // atlas
-    
+    //   Testing - need TS_* files and data.
     // Explain.
     //   Sort out TDB explain and logging.
-    
-    // Fix SDB on update
-    //   StageGenerator, Logging.
-    
-    // ----
     
     // Library
     // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.
     //   Combine StringUtils and StrUtils.
-    //   Remove any copies (SDB)
 
     // NodeFactory == SSE => Merge
     // Systematic execution logging.
 
-    // ----
-    
-    // Amalgamation: BGPs,Quads, Sequences.
     // E_Exists(Op).
 
     // === Optimization
+    // Amalgamation: BGPs,Quads, Sequences.
     // TransformEqualityFilter ==> disjunctions as well.
-    // Interaction of filter placement  
-    // Extend to quads.  Triple=>quad 
+    // Filter placement for quads **  
+    // Extend to quads.  Triple=>quad
+    // Assign squashing : assign as rename. (assign ((?x ?y)))
+    // Disjunction of equalities => union.
     
-    // Better "what's happening"
     // SPARQL/Update - Sort out GraphStores/Datasets
-    // (Jena) Cached IRI checking (minor)
     
-    // Initial bindings ==> Initial table.
+    // Initial bindings && Initial table.
     // Src for testing in download?
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
     //   which can be simplified to a sequence.
     //  Generate a sequence always? 
     
-    // ----
-    
-    // Document:
-    //   example: algebra transform (split MyQueryEngine) 
-    
     // ---- [quad paths]
     
     // ---- SPARQL/Update
     // GraphStoreFactory.create clones the dataset, so hiding changes to the dataset.
-    //   Check for already a GraphStore [DONE]
-    //   Sync, close on Datasets?  Model-level "ModelStore"
-    
     // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
     
-    // Disjunction of equalities => union.
 
-    // ---- Static scope analysis
-    // Full scope, parallel map(op => scope sets)
-    // Write tests
-    //   Break up VarFinder later.
-    
     // ---- OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
     
-    // Dev: escapes in Literals and symbols in SSE (ParseSSEBase)
-    // Need configurable escape processing.
+    // == SSE
+    // Dev: check escapes in Literals and symbols in SSE (ParseSSEBase)
 }
 
 /*
