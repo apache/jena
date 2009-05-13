@@ -10,6 +10,7 @@ public class Dev
 {
     // FactoryGraphTDB._createGraph passes null for dataset.
     //   And make assembler GraphTDB and DatasetTDB share dataset code. 
+    // Relayering for index interface
     
     // == 0.8.0
     //   Metafile for directory.
