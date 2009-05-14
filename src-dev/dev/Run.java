@@ -109,15 +109,13 @@ public class Run
 
     public static void report()
     {
-        testOpToSyntax("(bgp (triple ?s ?p ?o))", "SELECT * {?s ?p ?o}") ;
+        qparse("--file=Q.arq", "--opt") ; System.exit(0) ;
         
-        System.exit(0) ;
-        
-        Query query = QueryFactory.read("Q.rq") ;
-        System.out.println(query) ;
+        Query query = QueryFactory.read("Q.arq") ;
+        //System.out.println(query) ;
         Op op = Algebra.compile(query) ;
-        Query query2 = OpAsQuery.asQuery(op) ;
-        System.out.println(query2) ;
+        op = Algebra.optimize(op) ;
+        System.out.println(op) ;
         System.exit(0) ;
     }
     
@@ -384,18 +382,8 @@ public class Run
         }
     }
 
-
-    private static void runQParse()
+    private static void qparse(String  ... a)
     {
-        // "--engine=quad" "--opt"
-        String []a = { "--file=Q.rq", "--print=op" , "--opt" } ; //, "--print=plan"} ;
-        arq.qparse.main(a) ;
-        System.exit(0) ;
-    }
-    
-    private static void runQParseARQ()
-    {
-        String []a = { "--file=Q.arq", "--print=op" } ; //, "--opt", "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
