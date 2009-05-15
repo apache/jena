@@ -8,7 +8,7 @@ package dev;
 
 public class Dev
 {
-    // SPARQL/Update : Testing
+    // SPARQL/Update : ** Testing
     // DatasetGraphTDB is a GraphStore itself.
     // which confuses UpdateProcessorRegistry.get().find as that (default) recognizes GraphStoreBasic
     //  Need a TDB-specific thing.
