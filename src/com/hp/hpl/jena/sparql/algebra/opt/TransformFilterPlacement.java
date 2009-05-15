@@ -13,7 +13,6 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -46,6 +45,15 @@ public class TransformFilterPlacement extends TransformCopy
         return transformFilterBGP(exprs, new HashSet<Var>(), bgp) ;
     }
     
+    public static Op transform(ExprList exprs, Node graphNode, BasicPattern bgp)
+    {
+        if ( ! doFilterPlacement )
+            return OpFilter.filter(exprs, new OpQuadPattern(graphNode, bgp)) ;
+        
+        return transformFilterQuadPattern(exprs, new HashSet<Var>(), graphNode, bgp);
+    }
+    
+
     public TransformFilterPlacement()
     { }
     
@@ -143,29 +151,6 @@ public class TransformFilterPlacement extends TransformCopy
         return null ;
     }
     
-    /** Find the current OpQuadPattern, or return null. */ 
-    private static OpQuadPattern getQuads(Op op)
-    {
-        if ( op instanceof OpQuadPattern )
-            return (OpQuadPattern)op ;
-        
-        if ( op instanceof OpSequence )
-        {
-            // Is last in OpSequence an BGP?
-            OpSequence opSeq = (OpSequence)op ;
-            List<Op> x = opSeq.getElements() ;
-            if ( x.size() > 0 )
-            {                
-                Op opTop = x.get(x.size()-1) ;
-                if ( opTop instanceof OpQuadPattern )
-                    return (OpQuadPattern)opTop ;
-                // Drop through
-            }
-        }
-        // Can't find.
-        return null ;
-    }
-
     private static Op transformFilterQuadPattern(ExprList exprs, Set<Var> patternVarsScope, OpQuadPattern pattern)
     {
         return transformFilterQuadPattern(exprs, patternVarsScope, pattern.getGraphNode(), pattern.getBasicPattern()) ;
@@ -201,6 +186,29 @@ public class TransformFilterPlacement extends TransformCopy
         return op ;
     }
     
+    /** Find the current OpQuadPattern, or return null. */ 
+    private static OpQuadPattern getQuads(Op op)
+    {
+        if ( op instanceof OpQuadPattern )
+            return (OpQuadPattern)op ;
+        
+        if ( op instanceof OpSequence )
+        {
+            // Is last in OpSequence an BGP?
+            OpSequence opSeq = (OpSequence)op ;
+            List<Op> x = opSeq.getElements() ;
+            if ( x.size() > 0 )
+            {                
+                Op opTop = x.get(x.size()-1) ;
+                if ( opTop instanceof OpQuadPattern )
+                    return (OpQuadPattern)opTop ;
+                // Drop through
+            }
+        }
+        // Can't find.
+        return null ;
+    }
+
     private static Op transformFilterSequence(ExprList exprs, Set<Var> varScope, OpSequence opSequence)
     {
         List<Op> ops = opSequence.getElements() ;

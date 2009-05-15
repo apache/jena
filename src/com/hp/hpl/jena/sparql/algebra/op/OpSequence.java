@@ -42,6 +42,14 @@ public class OpSequence extends OpN
             opSequence.add(right) ;
             return opSequence ; 
         }
+//        if ( right instanceof OpSequence )
+//        {
+//            OpSequence opSequence = (OpSequence)right ;
+//            // Add front.
+//            opSequence.getElements().add(0, left) ;
+//            return opSequence ; 
+//        }
+        
         OpSequence stage = new OpSequence() ;
         stage.add(left) ;
         stage.add(right) ;
