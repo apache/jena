@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -32,6 +33,7 @@ public class TestGraphs extends BaseTest
     static final String graph3 = "http://example/g3" ;
     
     static Dataset ds ;
+    static Model calcUnion = ModelFactory.createDefaultModel() ;
     @BeforeClass public static void setupClass()
     {
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
@@ -48,6 +50,9 @@ public class TestGraphs extends BaseTest
         Model m2 = ds.getNamedModel(graph2) ;
         m2.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 2')")) ;
         m2.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
+        
+        calcUnion.add(m1) ;
+        calcUnion.add(m2) ;
     }
     
     String queryString =  "SELECT * {?s ?p ?o}" ;
@@ -75,6 +80,8 @@ public class TestGraphs extends BaseTest
     {
         int x = query(queryString, ds.getNamedModel(Quad.unionGraph.getURI())) ;
         assertEquals(3,x) ;
+        Model m = ds.getNamedModel(Quad.unionGraph.getURI()) ;
+        m.isIsomorphicWith(calcUnion) ;
     }
 
     @Test public void graph5() 
@@ -113,6 +120,8 @@ public class TestGraphs extends BaseTest
     {
         int x = api(ds.getNamedModel(Quad.unionGraph.getURI())) ;
         assertEquals(3,x) ;
+        Model m = ds.getNamedModel(Quad.unionGraph.getURI()) ;
+        m.isIsomorphicWith(calcUnion) ;
     }
 
     @Test public void graph_api5() 

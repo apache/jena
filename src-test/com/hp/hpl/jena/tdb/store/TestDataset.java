@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 
-/** Tests of datasets, prefixes, special URIs etc */
+/** Tests of datasets, prefixes, special URIs etc (see also {@link com.hp.hpl.jena.tdb.graph.TestGraphs} */
 public class TestDataset extends BaseTest
 {
     
