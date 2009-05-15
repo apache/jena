@@ -25,8 +25,6 @@ public interface BlockMgr extends Sync, Closeable
     
     /** Block size */
     public int blockSize() ;
-
-    
     
     // Renaming?
     // get->allocate

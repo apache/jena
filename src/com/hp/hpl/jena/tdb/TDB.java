@@ -77,22 +77,27 @@ public class TDB
      */
     public static void init() { }
     
-//    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
-//    public static void sync(Object object) { sync(object, true) ; }
-
-    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    /** Release any and all system resources held by TDB.
+     *  This does NOT close or release datasets or graphs held by client code. 
+     */
+    public static void closedown()
+    {
+        TDBFactory.clearDatasetCache() ;
+    }
+    
+    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
     public static void sync(Model model)
     {
         sync(model.getGraph()) ;
     }
     
-    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
     public static void sync(Graph graph)
     {
         sync(graph, true) ;
     }
 
-    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
     public static void sync(Dataset dataset)
     { 
         DatasetGraph ds = dataset.asDatasetGraph() ;

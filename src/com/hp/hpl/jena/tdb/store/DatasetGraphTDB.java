@@ -22,6 +22,7 @@ import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.Sync;
@@ -118,6 +119,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStor
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
+        TDBFactory.releaseDataset(this) ;
     }
 
     // --- GraphStore

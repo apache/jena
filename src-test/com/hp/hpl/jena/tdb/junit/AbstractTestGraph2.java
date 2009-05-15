@@ -41,6 +41,7 @@ public abstract class AbstractTestGraph2 extends TestBase
     {
         Graph g = emptyGraph() ;
         assertEquals(0, g.size()) ;
+        g.close();
     }
     
     @Test public void graph_add_01()
@@ -51,6 +52,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t)) ;
         assertTrue(g.contains(s1,p1,o1)) ;
+        g.close();
     }
     
     @Test public void graph_add_02()
@@ -63,6 +65,8 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t)) ;
         assertTrue(g.contains(s1,p1,o1)) ;
+        g.close();
+
     }
     
     @Test public void graph_add_03()
@@ -84,6 +88,8 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(t1)) ;
         assertTrue(g.contains(t2)) ;
         assertTrue(g.contains(ns1,np1,no1)) ;
+        g.close();
+
     }
 
     @Test public void graph_add_04()
@@ -101,6 +107,8 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(s1,p1,lit2)) ;
         Node o = makeNode("<lex>") ;
         assertFalse(g.contains(s1,p1,o)) ;
+        g.close();
+
     }        
         
     @Test public void graph_add_delete_01()

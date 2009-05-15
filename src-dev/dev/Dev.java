@@ -8,15 +8,18 @@ package dev;
 
 public class Dev
 {
-    // SPARQL/Update : ** Testing
+    // ****
+    // Testing: SPARQL/Update integration
+    //     TDBFactory caching
+    
+    // Closing a graph in a daatset - does it close the dataset?  No.
+    
     // Multiple routes to dataset - does it matter?
+    // 
 //    15:33:10 WARN  - exec                 :: No BGP optimizer
 //    15:33:10 WARN  - exec                 :: No BGP optimizer
 //    15:33:11 WARN  - exec                 :: No BGP optimizer
-    
-    // DatasetGraphTDB is a GraphStore itself.
-    // which confuses UpdateProcessorRegistry.get().find as that (default) recognizes GraphStoreBasic
-    //  Need a TDB-specific thing.
+    // TDBFactory caching - need to remove from cache on close.
     
     // FactoryGraphTDB._createGraph passes null for dataset.
     //   And make assembler GraphTDB and DatasetTDB share dataset code. 
