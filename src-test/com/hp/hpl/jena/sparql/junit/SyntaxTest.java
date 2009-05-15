@@ -72,7 +72,6 @@ public class SyntaxTest extends EarlTestCase
             
             if ( ! expectLegalSyntax )
                 fail("Expected parse failure") ;
-            
         }
         catch (QueryException qEx)
         {

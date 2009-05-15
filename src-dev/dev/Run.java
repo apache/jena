@@ -50,7 +50,6 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-
 public class Run
 {
     static String divider = "----------" ;
@@ -64,6 +63,13 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        Op op = SSE.readOp("Q.sse") ;
+        op = Algebra.optimize(op) ; 
+        System.out.print(op) ;
+        System.exit(0);
+        
+        
+        
         report() ; System.exit(0) ;
         execQueryCode("D.ttl", "Q.arq") ; System.exit(0) ;
         

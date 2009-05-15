@@ -8,11 +8,11 @@
     rdfs:label "Engine-Main" ;
     mf:entries
     ( 
-##       [  mf:name    "Filter placement in BGPs with property function" ;
-##          rdf:type   mfx:TestQuery ; 
-##          mf:action
-##             [ qt:query  <filter-1.rq> ;
-##               qt:data   <data-1.ttl> ] ;
-##         mf:result  <filter-1.srx>
-##       ]
+      [  mf:name    "Filter placement in BGPs with property function" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <filter-1.srx>
+      ]
     ).

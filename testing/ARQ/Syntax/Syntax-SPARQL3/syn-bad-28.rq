@@ -2,4 +2,4 @@
 # "longest token rule" means this isn't a "<" and "&&"
 PREFIX :   <http://example/ns#>
 SELECT * WHERE
-{ FILTER (?x<?a&&?b>?y)
+{ FILTER (?x<?a&&?b>?y) }

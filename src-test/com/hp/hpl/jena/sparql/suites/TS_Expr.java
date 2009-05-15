@@ -108,7 +108,6 @@ public class TS_Expr extends TestSuite
     {
         TestSuite ts = new TestSuite("Numeric Expressions") ; 
         // Unary operators
-        ts.addTest(new TestExprNumeric("3+-4", 3+-4)) ;
         // Not sure what's right here!
         //ts.addTest(new TestExprNumeric("3--4", 3-(-4))) ;
         //ts.addTest(new TestExprNumeric("3++4", 3+(+4))) ;
@@ -180,7 +179,6 @@ public class TS_Expr extends TestSuite
     static public TestSuite booleanExpr()
     {
         TestSuite ts = new TestSuite("Boolean Expressions") ; 
-        ts.addTest(new TestExprBoolean("2 < 3", true)) ;
         // Boolean expressions
         ts.addTest(new TestExprBoolean("2 < 3", 2 < 3)) ;
         ts.addTest(new TestExprBoolean("2 > 3", 2 > 3)) ;

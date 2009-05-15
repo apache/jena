@@ -2,7 +2,8 @@ PREFIX : <http://example/>
 
 SELECT *
 {
-  { } UNION {
-     OPTIONAL { ?s ?p ?o . FILTER(?z>3) }
-  }
+    ?s ?p ?o .
+    ?s ?p ?o1 .
+    FILTER (?o>5) .
+    GRAPH ?g { FILTER (?g != <http://example/>) ?s1 ?p1 ?o1 .  ?s1 ?p1 ?o2 . FILTER (?o1>5) . }
 }

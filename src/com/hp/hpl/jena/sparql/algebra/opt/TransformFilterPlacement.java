@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -18,6 +19,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -75,6 +77,9 @@ public class TransformFilterPlacement extends TransformCopy
         if ( x instanceof OpSequence )
             return transformFilterSequence(exprs, varsScope, (OpSequence)x) ;
         
+        if ( x instanceof OpQuadPattern )
+            return transformFilterQuadPattern(exprs, varsScope, (OpQuadPattern)x) ;
+        
         // Not special - advance the variable scope tracking. 
         OpVars.patternVars(x, varsScope) ;
         return x ;
@@ -109,6 +114,87 @@ public class TransformFilterPlacement extends TransformCopy
             // Update varaibles in scope.
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
             
+            // Attempt to place any filters
+            op = insertAnyFilter(exprs, patternVarsScope, op) ;
+        } 
+        return op ;
+    }
+    
+    /** Find the current OpBGP, or return null. */ 
+    private static OpBGP getBGP(Op op)
+    {
+        if ( op instanceof OpBGP )
+            return (OpBGP)op ;
+        
+        if ( op instanceof OpSequence )
+        {
+            // Is last in OpSequence an BGP?
+            OpSequence opSeq = (OpSequence)op ;
+            List<Op> x = opSeq.getElements() ;
+            if ( x.size() > 0 )
+            {                
+                Op opTop = x.get(x.size()-1) ;
+                if ( opTop instanceof OpBGP )
+                    return (OpBGP)opTop ;
+                // Drop through
+            }
+        }
+        // Can't find.
+        return null ;
+    }
+    
+    /** Find the current OpQuadPattern, or return null. */ 
+    private static OpQuadPattern getQuads(Op op)
+    {
+        if ( op instanceof OpQuadPattern )
+            return (OpQuadPattern)op ;
+        
+        if ( op instanceof OpSequence )
+        {
+            // Is last in OpSequence an BGP?
+            OpSequence opSeq = (OpSequence)op ;
+            List<Op> x = opSeq.getElements() ;
+            if ( x.size() > 0 )
+            {                
+                Op opTop = x.get(x.size()-1) ;
+                if ( opTop instanceof OpQuadPattern )
+                    return (OpQuadPattern)opTop ;
+                // Drop through
+            }
+        }
+        // Can't find.
+        return null ;
+    }
+
+    private static Op transformFilterQuadPattern(ExprList exprs, Set<Var> patternVarsScope, OpQuadPattern pattern)
+    {
+        return transformFilterQuadPattern(exprs, patternVarsScope, pattern.getGraphNode(), pattern.getBasicPattern()) ;
+    }
+    
+    private static Op transformFilterQuadPattern(ExprList exprs, Set<Var> patternVarsScope, Node graphNode, BasicPattern pattern) 
+    {
+        // Any filters that depend on no variables. 
+        Op op = insertAnyFilter(exprs, patternVarsScope, null) ;
+        // Any filters that depend on just the graph node.
+        if ( Var.isVar(graphNode) )
+        {
+            patternVarsScope.add(Var.alloc(graphNode)) ;
+            op = insertAnyFilter(exprs, patternVarsScope, op) ;
+        }
+        
+
+        for ( Triple triple : pattern )
+        {
+            OpQuadPattern opQuad = getQuads(op) ;
+            if ( opQuad == null )
+            {
+                opQuad = new OpQuadPattern(graphNode, new BasicPattern()) ;    
+                op = OpSequence.create(op, opQuad) ;
+            }
+            
+            opQuad.getBasicPattern().add(triple) ;
+            // Update varaibles in scope.
+            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
             // Attempt to place any filters
             op = insertAnyFilter(exprs, patternVarsScope, op) ;
         } 
@@ -156,29 +242,6 @@ public class TransformFilterPlacement extends TransformCopy
         return op ;
     }
     
-    /** Find the current OpBGP, or return null. */ 
-    private static OpBGP getBGP(Op op)
-    {
-        if ( op instanceof OpBGP )
-            return (OpBGP)op ;
-        
-        if ( op instanceof OpSequence )
-        {
-            // Is last in OpSequence an BGP?
-            OpSequence opSeq = (OpSequence)op ;
-            List<Op> x = opSeq.getElements() ;
-            if ( x.size() > 0 )
-            {                
-                Op opTop = x.get(x.size()-1) ;
-                if ( opTop instanceof OpBGP )
-                    return (OpBGP)opTop ;
-                // Drop through
-            }
-        }
-        // Can't find.
-        return null ;
-    }
-
     /** Place expressions around an Op */ 
     private static Op buildFilter(ExprList exprs, Op op)
     {

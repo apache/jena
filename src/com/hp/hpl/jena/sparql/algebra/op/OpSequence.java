@@ -42,7 +42,6 @@ public class OpSequence extends OpN
             opSequence.add(right) ;
             return opSequence ; 
         }
-        // Not a stage .. yet
         OpSequence stage = new OpSequence() ;
         stage.add(left) ;
         stage.add(right) ;

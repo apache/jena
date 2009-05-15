@@ -1,18 +1,13 @@
-(prefix ((: <http://example/>))
-  (join
-    (table (row (?o <http://example/z>)))
-    (sequence
-      (project (?s ?p)
-      (bgp (triple ?s ?p <http://example/z>)))
-    (bgp (triple ?s ?p <http://example/z>))
-    ))
-
-## 
-##     (join
-##       (table (row (?o <http://example/z>)))
-##       (join
-## 	(project (?s ?p)
-## 	  (bgp (triple ?s ?p <http://example/z>))
-## 	  )
-## 	(bgp (triple ?s ?p ?o))))
-##     )
+(base <file:///c:/home/afs/Projects/ARQ/>
+  (prefix ((: <http://example/>))
+    (filter (> ?o 5)
+      (join
+        (quadpattern
+          (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o)
+          (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o1)
+        )
+	(filter (exprlist (!= ?g :) (> ?o1 5))
+	  (quadpattern
+	    (quad ?g ?s1 ?p1 ?o1)
+	    (quad ?g ?s1 ?p1 ?o2)
+	    ))))))

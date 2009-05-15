@@ -90,12 +90,12 @@ public class Optimize implements Rewrite
         // or improve to place in a sequence. 
 
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
+        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
         if ( context.isTrueOrUndef(ARQ.filterPlacement) )
             // This can be done too early (breaks up BGPs).
             op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
-        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark
         if ( false )
