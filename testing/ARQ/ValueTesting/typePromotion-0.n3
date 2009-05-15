@@ -1,4 +1,4 @@
-# $Id: typePromotion-0.n3,v 1.13 2009-05-11 09:19:32 andy_seaborne Exp $
+# $Id: typePromotion-0.n3,v 1.14 2009-05-15 21:58:27 andy_seaborne Exp $
 
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

@@ -72,7 +72,7 @@ WHERE
 }
 EOF
 
-N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+N=$((N+1)) ; testGood $(fname "syn-" $N) <<EOF
 # Filter do not break up a BGP.
 PREFIX : <http://example.org/>
 SELECT *
@@ -81,8 +81,6 @@ WHERE
   _:a ?p ?v .  FILTER(true) . [] ?q _:a
 }
 EOF
-
-
 
 ## ==== Bad
 N=0

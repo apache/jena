@@ -1,5 +1,5 @@
 # Only extended types with identical lexical rep and datatypes can be = .
-# $Id: extendedType-eq-pass.rq,v 1.13 2009-05-11 09:19:32 andy_seaborne Exp $
+# $Id: extendedType-eq-pass.rq,v 1.14 2009-05-15 21:58:27 andy_seaborne Exp $
 
 PREFIX loc: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/extendedType-0#>
 PREFIX wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#>

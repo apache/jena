@@ -8,12 +8,12 @@
     rdfs:label "Engine-Ref" ;
     mf:entries
     ( 
-##       [  mf:name    "NAME" ;
-##          # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
-##          rdf:type   mfx:TestQuery ; 
-##          mf:action
-##             [ qt:query  <QUERY> ;
-##               qt:data   <DATA> ] ;
-##         mf:result  <RESULT>
-##       ]
+      [  mf:name    "Test (ref)" ;
+         # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <dummy.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <dummy.srj>
+      ]
     ).
