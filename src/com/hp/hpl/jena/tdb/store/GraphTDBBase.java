@@ -28,7 +28,7 @@ import com.hp.hpl.jena.tdb.graph.*;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** General operations for TDB graphs (free-satnding graph, default graph and named graphs) */
+/** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
     private final QueryHandlerTDB queryHandler = new QueryHandlerTDB(this) ;
@@ -38,7 +38,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final Location location ;
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
-
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName, 
                         ReorderTransformation transformation, Location location)

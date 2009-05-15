@@ -8,11 +8,18 @@ package dev;
 
 public class Dev
 {
-    // ****
+    // == 0.8.0
     // Testing: SPARQL/Update integration
     //     TDBFactory caching
     
-    // Closing a graph in a daatset - does it close the dataset?  No.
+    // 1 -- FactoryGraphTDB._createGraph passes null for dataset
+    //    Quadsless dataset?
+    // 2 -- graph.close() --> does nto close the datset (sync?)
+    // 3 -- caching and tests.
+    // 4 -- Dataset -> return to cache.
+    // 5 -- Update tests
+    
+    // Documentation?
     
     // Multiple routes to dataset - does it matter?
     // 
@@ -20,18 +27,15 @@ public class Dev
 //    15:33:10 WARN  - exec                 :: No BGP optimizer
 //    15:33:11 WARN  - exec                 :: No BGP optimizer
     // TDBFactory caching - need to remove from cache on close.
+
     
-    // FactoryGraphTDB._createGraph passes null for dataset.
-    //   And make assembler GraphTDB and DatasetTDB share dataset code. 
-    // Relayering for index interface
     
-    // == 0.8.0
+    // Metadata.
     //   Metafile for directory.
     //   Metafiles and opening indexes
     //   New and reattach
-    //   TDBFactory - cache graphs - graph.close is return to cache (and sync)
-    //   Update
-
+    // Relayering for index interface
+    
     // ==== Build
     //   Multiple ivy modules
     //  Use <ivy:configure file="myconffile.xml" /> (not ivy:setting)
@@ -41,15 +45,10 @@ public class Dev
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
 
-    // == Caching graphs in TDBFactory
-    
     // To ARQ:
     //   Atlas? Iterator.
     //   Explain, and explain logger (from ARQ?)
     
-    // Location+String => Filesets
-    //   createBlockMgr - tie to metadata?
-     
     // NodeLib.encode/decode ==> swap to a Nodec
 
     // Version of BufferingWriter that works on OutputStreams.
