@@ -9,6 +9,11 @@ package dev;
 public class Dev
 {
     // SPARQL/Update : ** Testing
+    // Multiple routes to dataset - does it matter?
+//    15:33:10 WARN  - exec                 :: No BGP optimizer
+//    15:33:10 WARN  - exec                 :: No BGP optimizer
+//    15:33:11 WARN  - exec                 :: No BGP optimizer
+    
     // DatasetGraphTDB is a GraphStore itself.
     // which confuses UpdateProcessorRegistry.get().find as that (default) recognizes GraphStoreBasic
     //  Need a TDB-specific thing.
