@@ -8,6 +8,11 @@ package dev;
 
 public class Dev
 {
+    // SPARQL/Update : Testing
+    // DatasetGraphTDB is a GraphStore itself.
+    // which confuses UpdateProcessorRegistry.get().find as that (default) recognizes GraphStoreBasic
+    //  Need a TDB-specific thing.
+    
     // FactoryGraphTDB._createGraph passes null for dataset.
     //   And make assembler GraphTDB and DatasetTDB share dataset code. 
     // Relayering for index interface

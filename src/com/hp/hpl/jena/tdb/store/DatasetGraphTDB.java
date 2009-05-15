@@ -14,17 +14,22 @@ import atlas.iterator.Transform;
 import atlas.lib.Tuple;
 
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.update.GraphStore;
 
-public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
+/** TDB Dataset, updatable with SPARQL/Update */
+public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStore
 {
     private final TripleTable tripleTable ;
     private final QuadTable quadTable ;
@@ -114,6 +119,36 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
         quadTable.close() ;
         prefixes.close();
     }
+
+    // --- GraphStore
+    @Override
+    public void startRequest()      {}
+
+    @Override
+    public void finishRequest()     { this.sync(true) ; } 
+
+    @Override
+    public Dataset toDataset()      { return new DatasetImpl(this) ; }
+
+    @Override
+    public void addGraph(Node graphName, Graph graph)
+    {
+        Graph g = getGraph(graphName) ;
+        g.getBulkUpdateHandler().add(graph) ;
+    }
+
+    @Override
+    public Graph removeGraph(Node graphName)
+    {
+        Graph g = getGraph(graphName) ;
+        g.getBulkUpdateHandler().removeAll() ;
+        // Return null (it's empty!)
+        return null ;
+    }
+
+    @Override
+    public void setDefaultGraph(Graph g)
+    { throw new UnsupportedOperationException("Can't set default graph via GraphSTore on a TDB-backed dataset") ; }  
 }
 
 /*

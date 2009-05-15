@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
@@ -145,6 +146,7 @@ public class TDB
         AssemblerUtils.init() ;     // ARQ initialization.
         VocabTDB.init();
         QueryEngineTDB.register() ;
+        UpdateProcessorTDB.register() ;
         
         TDB.getContext().set(ARQ.filterPlacement, false) ;
         
