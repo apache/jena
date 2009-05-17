@@ -24,8 +24,6 @@ public class Dev
     // Relayering for index interface
     
     // ==== Build
-    //   Multiple ivy modules
-    //  Use <ivy:configure file="myconffile.xml" /> (not ivy:setting)
     
     // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
