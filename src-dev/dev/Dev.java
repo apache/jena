@@ -12,6 +12,7 @@ public class Dev
     // ==== ARQ
     //   TransformFilterPlacement
     //   GraphStore API?
+    // DatasetImpl could be better (cache by graph name, not graph)
     
     // -- Tidy up
 	// Build: "dev" and "main" ==> "main"
