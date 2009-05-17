@@ -1,32 +1,52 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb;
 
+import org.junit.Test;
+import atlas.test.BaseTest;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNodeLib.class
-    , TestGraphBPlusTreeMem.class
-    , TestGraphBPlusTreeMem2.class
-    , TestGraphBTreeMem.class
-    , TestGraphBTreeMem2.class
-    , TestTDBFactory.class
-})
-
-public class TS_TDB
+public class TestTDBFactory extends BaseTest
 {
+    @Test public void factory1()
+    {
+        DatasetGraphTDB dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        assertSame(dg1, dg2) ;
+    }
+    
+    @Test public void factory2()
+    {
+        ImplFactory f = TDBFactory.getImplFactory() ;
+
+        TDBFactory.clearDatasetCache() ;
+        DatasetGraphTDB dg0 = TDBFactory.createDatasetGraph(Location.mem()) ;
+
+        // Uncached.
+        TDBFactory.setImplFactory(TDBFactory.uncachedFactory) ;
+        DatasetGraphTDB dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        assertNotSame(dg1, dg2) ;
+        
+        // Switch back to cached.
+        TDBFactory.setImplFactory(f) ;
+        DatasetGraphTDB dg3 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        assertNotSame(dg3, dg1) ;
+        assertNotSame(dg3, dg2) ;
+        assertSame(dg3, dg0) ;
+    }
 
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

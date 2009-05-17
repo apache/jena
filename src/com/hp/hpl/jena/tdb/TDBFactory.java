@@ -178,7 +178,10 @@ public class TDBFactory
      * create full functional TDB graphs or datasets.  Beware.   
      */
     public static void setImplFactory(ImplFactory f) { factory = f ; }
-
+    
+    /** Get the implementation factory. */
+    public static ImplFactory getImplFactory() { return factory ; }
+    
     // ---- Concrete
 
     public final static class ConcreteImplFactory implements ImplFactory
