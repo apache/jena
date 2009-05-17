@@ -41,9 +41,15 @@ public class TestDatasetTDB extends BaseTest
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDir()), TDBFactory.uncachedFactory) ;
+        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDir())) ;
     }
-        
+
+    @AfterClass public static void afterClass()
+    { 
+        graphLocation.release() ;
+        graphLocation.clearDirectory() ;
+    }
+    
     @Before public void before()
     {   
         graphLocation.clearDirectory() ; 
@@ -53,12 +59,6 @@ public class TestDatasetTDB extends BaseTest
     @After public void after()
     {   
         graphLocation.release() ;
-    }
-    
-    @AfterClass public static void afterClass()
-    { 
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
     }
     
     @Test public void dataset1()

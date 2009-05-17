@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import atlas.junit.TestBase;
 import org.junit.Test;
+import atlas.junit.TestBase;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -76,6 +76,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         Node ns1 = makeNode("<s>") ;
         Node np1 = makeNode("<p>") ;
         Node no1 = makeNode("<o>") ;
+        
         Node ns2 = makeNode("<s>") ;
         Node np2 = makeNode("<p>") ;
         Node no2 = makeNode("<o>") ;

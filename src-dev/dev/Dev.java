@@ -9,8 +9,12 @@ package dev;
 public class Dev
 {
     // == 0.8.0
+    // Documentation:
+    //   Dataset and graph caching.
     // Testing: SPARQL/Update integration
-    //     TDBFactory caching
+    //     TDBFactory caching / Graph close (default graph vs named graph).  
+    // Removed persistent cached tests (overkill!) when cachign testing in place.
+    // With joseki
     
     // 1 -- FactoryGraphTDB._createGraph passes null for dataset
     //    Quadsless dataset?
@@ -19,16 +23,11 @@ public class Dev
     // 4 -- Dataset -> return to cache.
     // 5 -- Update tests
     
-    // Documentation?
-    
     // Multiple routes to dataset - does it matter?
-    // 
-//    15:33:10 WARN  - exec                 :: No BGP optimizer
-//    15:33:10 WARN  - exec                 :: No BGP optimizer
-//    15:33:11 WARN  - exec                 :: No BGP optimizer
     // TDBFactory caching - need to remove from cache on close.
 
     
+    // Assmbler : one named graph from a dataset. 
     
     // Metadata.
     //   Metafile for directory.

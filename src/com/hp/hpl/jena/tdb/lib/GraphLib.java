@@ -1,65 +1,26 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+package com.hp.hpl.jena.tdb.lib;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.junit.GraphLocation;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-/** Programmatic tests on persistent graph */
-public class TestGraphTDB extends AbstractTestGraph2
+public class GraphLib
 {
-    static GraphLocation graphLocation = null ;
-    
-    @BeforeClass public static void beforeClass()
+    public static void dump(Graph graph)
     {
-        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDir())) ;
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-        graphLocation.createGraph() ;
-        graph = graphLocation.getGraph() ;
-    }
-    // ----------
-    
-    @AfterClass public static void afterClass()
-    { 
-        graphLocation.release() ;
-        graphLocation.clearDirectory() ;
-    }
-    
-
-    static Graph graph = null ;
-    @Before public void before()
-    { 
-        graph.getBulkUpdateHandler().removeAll() ;
-    }
-            
-            
-    @After public void after()   
-    { 
-        
-    }
-    
-    @Override
-    protected Graph emptyGraph()
-    {
-        return graph ;
+        Model m = ModelFactory.createModelForGraph(graph) ;
+        m.write(System.out, "TTL") ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

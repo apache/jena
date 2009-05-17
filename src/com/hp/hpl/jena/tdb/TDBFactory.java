@@ -9,19 +9,20 @@ package com.hp.hpl.jena.tdb;
 import java.util.HashMap;
 import java.util.Map;
 
-import atlas.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
@@ -30,27 +31,36 @@ public class TDBFactory
     public interface ImplFactory 
     {
         /** Make a memory implementation of a TDB graph (memory graphs are for testing, not efficiency) */
-        public Graph createGraph() ;
+        public GraphTDB createGraph() ;
         /** Make a TDB graph with persistent data at the location */
-        public Graph createGraph(Location loc) ;
+        public GraphTDB createGraph(Location loc) ;
         
-        public DatasetGraph createDatasetGraph() ;
-        public DatasetGraph createDatasetGraph(Location location) ;
+        public DatasetGraphTDB createDatasetGraph() ;
+        public DatasetGraphTDB createDatasetGraph(Location location) ;
     }
 
+    // ---- Implementation factories 
     // Standard implementation factory: change graph creation to dataset?
     public final static ImplFactory uncachedFactory = new ConcreteImplFactory() ;
+    
+    public final static ImplFactory cachedFactory = new CachingImplFactory(uncachedFactory) ;
+
     // Caching by location.
-    //public final static ImplFactory stdFactory = new CachingImplFactory(uncachedFactory) ;
-    public final static ImplFactory stdFactory = uncachedFactory ;
+    private static boolean CACHING = true ;
+    
+    public final static ImplFactory stdFactory = CACHING ? cachedFactory :
+                                                           uncachedFactory ;
 
     // Always in-memory implementation factory
     public final static ImplFactory memFactory = new MemoryImplFactory() ;
 
-    static ImplFactory factory = null ;
+    // ----
+    
+    // The one we are using.
+    private static ImplFactory factory = null ;
 
     static { 
-        TDB.init(); 
+        TDB.init() ; 
         setImplFactory(stdFactory) ;
     }
 
@@ -113,9 +123,7 @@ public class TDBFactory
     
     /** Create a TDB model backed by an in-memory block manager. For testing. */  
     public static Model createModel()
-    {
-        return ModelFactory.createModelForGraph(createGraph()) ;
-    }
+    { return ModelFactory.createModelForGraph(createGraph()) ; }
     
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     public static Graph createGraph()   { return _createGraph() ; }
@@ -132,6 +140,18 @@ public class TDBFactory
     public static Dataset createDataset()
     { return new DatasetImpl(_createDatasetGraph()) ; }
 
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraphTDB createDatasetGraph(String directory)
+    { return _createDatasetGraph(new Location(directory)) ; }
+    
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraphTDB createDatasetGraph(Location location)
+    { return _createDatasetGraph(location) ; }
+
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraphTDB createDatasetGraph()
+    { return _createDatasetGraph() ; }
+
     // ---- Point at which actual graphs are made.
     // Cache?
     
@@ -144,13 +164,13 @@ public class TDBFactory
         return factory.createGraph(loc) ;
     }
 
-    private static DatasetGraph _createDatasetGraph()
+    private static DatasetGraphTDB _createDatasetGraph()
     { return factory.createDatasetGraph() ; }
 
-    private static DatasetGraph _createDatasetGraph(Location loc)
+    private static DatasetGraphTDB _createDatasetGraph(Location loc)
     { return factory.createDatasetGraph(loc) ; }
     
-    // ---- 
+    // -------- Dataset and graph implementation factories. 
     
     /** Set the implementation factory.  Not normally needed - only systems that wish
      * to create unusually combinations of indexes and ndoe tables need to use this call.
@@ -159,22 +179,24 @@ public class TDBFactory
      */
     public static void setImplFactory(ImplFactory f) { factory = f ; }
 
+    // ---- Concrete
+
     public final static class ConcreteImplFactory implements ImplFactory
     {
         @Override
-        public Graph createGraph()
+        public GraphTDB createGraph()
         { return FactoryGraphTDB.createGraphMem() ; }
     
         @Override
-        public Graph createGraph(Location loc)      
+        public GraphTDB createGraph(Location loc)      
         { return FactoryGraphTDB.createGraph(loc) ; }
     
         @Override
-        public DatasetGraph createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location)
         { return FactoryGraphTDB.createDatasetGraph(location) ; }
     
         @Override
-        public DatasetGraph createDatasetGraph()
+        public DatasetGraphTDB createDatasetGraph()
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     }
 
@@ -182,77 +204,82 @@ public class TDBFactory
     
     public final static class CachingImplFactory implements ImplFactory
     {
+        private static Logger log = LoggerFactory.getLogger(CachingImplFactory.class) ;
         private ImplFactory factory1 ;
-        private Map<String, DatasetGraph> cache = new HashMap<String, DatasetGraph>() ;
+        private Map<String, DatasetGraphTDB> cache = new HashMap<String, DatasetGraphTDB>() ;
     
         public CachingImplFactory(ImplFactory factory)
         { this.factory1 = factory ; }
         
         // Uncached
         @Override
-        public Graph createGraph()                  { return factory1.createGraph() ; }
+        public GraphTDB createGraph()                  { return factory1.createGraph() ; }
         
         // Uncached
         @Override
-        public DatasetGraph createDatasetGraph()    { return factory1.createDatasetGraph() ; }
+        public DatasetGraphTDB createDatasetGraph()    { return factory1.createDatasetGraph() ; }
     
         @Override
-        public DatasetGraph createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location)
         {
             //if ( location.isMem() )
             // The named in-memory location.  This is caceable.
             
             String absPath = location.getDirectoryPath() ;
-            DatasetGraph dg = cache.get(absPath) ;
+            DatasetGraphTDB dg = cache.get(absPath) ;
             if ( dg == null )
             {
                 dg = factory1.createDatasetGraph(location) ;
-                System.out.println("Put:    "+absPath) ;
+                log.debug("Add to dataset cache: "+absPath) ;
                 cache.put(absPath, dg) ;
             }
             else
-                System.out.println("Reuse:  "+absPath) ;
+                log.debug("Reuse from dataset cache: "+absPath) ;
             return dg ;
         }
     
         @Override
-        public Graph createGraph(Location loc)
+        public GraphTDB createGraph(Location loc)
         {
             // Note - this equates a graph with the default graph of a dataset.  
-            return createDatasetGraph(loc).getDefaultGraph() ;
+            return createDatasetGraph(loc).getDefaultGraphTDB() ;
         }
     
         public void flush() { cache.clear() ; }
         public void release(Location location)
         {
-            if ( location == null || location.isMem() )
+            if ( location == null /*|| location.isMem()*/ )
                 return ;
             
-            String key = location.getDirectoryPath() ;
+            String absPath = location.getDirectoryPath() ;
             
-            if ( ! cache.containsKey(key) )
-                Log.info(TDBFactory.class, "Not a cached location: "+key) ;
-            System.out.println("Remove: "+key) ;
-            cache.remove(location.getDirectoryPath()) ;
+            if ( ! cache.containsKey(absPath) )
+                if ( ! absPath.equals(Location.pathnameMem) )
+                    // Don't worry if a dataset in-memory is cached or not.
+                    log.warn("Not a cached location: "+absPath) ;
+            log.debug("Remove from dataset cache: "+absPath) ;
+            cache.remove(absPath) ;
         }
     }
 
+    // ---- In-memory
+    
     public static class MemoryImplFactory implements ImplFactory
     {
         @Override
-        public Graph createGraph()
+        public GraphTDB createGraph()
         { return FactoryGraphTDB.createGraphMem() ; }
     
         @Override
-        public Graph createGraph(Location loc)      
+        public GraphTDB createGraph(Location loc)      
         { return FactoryGraphTDB.createGraphMem() ; }
     
         @Override
-        public DatasetGraph createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location)
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     
         @Override
-        public DatasetGraph createDatasetGraph()
+        public DatasetGraphTDB createDatasetGraph()
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     }
 }

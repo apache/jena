@@ -45,7 +45,7 @@ public class Location
 //        return loc ;
 //    }
     
-    static final String pathnameMem = "--mem--" ;
+    public static final String pathnameMem = "--mem--" ;
     String pathname ;
     
     static Location mem = new Location() ;

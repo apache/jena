@@ -13,12 +13,9 @@ import atlas.iterator.Iter;
 import atlas.iterator.Transform;
 import atlas.lib.Tuple;
 
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
@@ -30,16 +27,14 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.update.GraphStore;
 
 /** TDB Dataset, updatable with SPARQL/Update */
-public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStore
+public class DatasetGraphTDB extends DatasetGraphBase 
+                             implements DatasetGraph, Sync, Closeable, GraphStore
 {
-    private final TripleTable tripleTable ;
-    private final QuadTable quadTable ;
-
-    private final GraphTriplesTDB defaultGraph ;
-    private final DatasetPrefixes prefixes ; ;
-
-    private final Lock lock = new LockMRSW() ;
+    private TripleTable tripleTable ;
+    private QuadTable quadTable ;
+    private DatasetPrefixes prefixes ;
     private final ReorderTransformation transform ;
+    private final Location location ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixes prefixes, 
                            ReorderTransformation transform, Location location)
@@ -48,7 +43,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStor
         this.quadTable = quadTable ;
         this.transform = transform ;
         this.prefixes = prefixes ;
-        defaultGraph = new GraphTriplesTDB(this, tripleTable, prefixes, transform, location) ;
+        this.location = location ;
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
@@ -65,19 +60,26 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStor
     }
 
     @Override
-    public GraphTDB getDefaultGraph()
+    protected GraphTDB _createDefaultGraph()
     {
-        return defaultGraph ;
+        return new GraphTriplesTDB(this, tripleTable, prefixes, transform, location) ; 
+    }
+    
+    public GraphTDB getDefaultGraphTDB()
+    {
+        return (GraphTDB)getDefaultGraph() ;
+    }
+
+    public GraphTDB getGraphTDB(Node graphNode)
+    {
+        return (GraphTDB)getGraph(graphNode) ;
     }
 
     @Override
-    public GraphTDB getGraph(Node graphNode)
+    protected GraphTDB _createNamedGraph(Node graphNode)
     {
         return new GraphNamedTDB(this, graphNode, transform);
     }
-
-    @Override
-    public Lock getLock()   { return lock ; }
 
     public ReorderTransformation getTransform()     { return transform ; }
     
@@ -103,7 +105,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStor
     @Override
     public int size()                   { return (int)Iter.count(listGraphNodes()) ; }
     
-    public Location getLocation()       { return defaultGraph.getLocation() ; }
+    public Location getLocation()       { return location ; }
 
     @Override
     public void sync(boolean force)
@@ -114,11 +116,17 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable, GraphStor
     }
 
     @Override
-    public void close()
+    protected void _close()
     {
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
+        
+        // Which will cause reuse to throw exceptions early.
+        tripleTable = null ;
+        quadTable = null ;
+        prefixes = null ;
+        
         TDBFactory.releaseDataset(this) ;
     }
 

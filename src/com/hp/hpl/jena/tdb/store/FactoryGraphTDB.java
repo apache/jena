@@ -16,14 +16,13 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-import atlas.lib.ColumnMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.ColumnMap;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -121,19 +120,19 @@ public class FactoryGraphTDB
     
     
     /** Create or connect a TDB dataset */ 
-    public static DatasetGraph createDatasetGraph(Location location)
+    public static DatasetGraphTDB createDatasetGraph(Location location)
     {
         return createDatasetGraph(IndexBuilder.get(), location, tripleIndexes, quadIndexes) ;
     }
 
     /** Create or connect a TDB dataset in-memory - for testing */ 
-    public static DatasetGraph createDatasetGraphMem()
+    public static DatasetGraphTDB createDatasetGraphMem()
     {
         return createDatasetGraph(IndexBuilder.mem(), Location.mem(), tripleIndexes, quadIndexes) ;
     }
 
     /** Create or connect a TDB dataset (graph-level) */
-    public static DatasetGraph createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
+    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
     {
         return _createDatasetGraph(indexBuilder, location, graphDesc, quadDesc) ;
     }
@@ -208,7 +207,7 @@ public class FactoryGraphTDB
     }
     
     /** Create or connect a TDB dataset (graph-level) */
-    private static DatasetGraph _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
+    private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
     {
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;

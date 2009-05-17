@@ -169,15 +169,13 @@ public class GraphNamedTDB extends GraphTDBBase
 
     @Override
     final public void close()
-    {
-        dataset.close();
-        super.close() ;
+    { 
+        // Do nothing.  May be retuned via the dataset again later. 
     }
     
     @Override
     public void sync(boolean force)
     {
-        dataset.getPrefixes().sync(force) ;
         dataset.sync(force);
     }
 }

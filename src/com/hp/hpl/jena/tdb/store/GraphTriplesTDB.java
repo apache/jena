@@ -106,16 +106,26 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     final public void close()
     {
-        prefixes.close();
-        tripleTable.close();
-        super.close() ;
+        if ( dataset == null )
+        {
+            // Free standing graph.  Clear up.
+            prefixes.close();
+            tripleTable.close();
+            super.close() ;
+        }
+        // Else do nothing.
     }
     
     @Override
     public void sync(boolean force)
     {
-        prefixes.sync(force) ;
-        tripleTable.sync(force);
+        if ( dataset != null )
+            dataset.sync(force) ;
+        else
+        {
+            prefixes.sync(force) ;
+            tripleTable.sync(force);
+        }
     }
 }
 

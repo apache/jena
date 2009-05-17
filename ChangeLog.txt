@@ -3,10 +3,14 @@ ChangeLog for TDB
 
 ==== 0.8.0
 
+** The on-disk file format has changed : datasets must be reloaded **
+
+
++ A named graph of <urn:x-arq:UnionGraph  urn:x-arq:DefaultGraph
 + Upgrade to Java5 version of ARQ and Jena
 + Copes with spaces in URIs (strongly not recommended)
 + Internal general purpose (non-RDF) library code all moved under package "atlas"
-+ Faster Turtle reader (combined unpinning with N-Triples bulkreader).  
++ Faster Turtle reader (combined underpinning with N-Triples bulkreader).  
 
 ==== 0.7.3
 

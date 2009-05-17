@@ -13,7 +13,6 @@ import java.util.List;
 import atlas.iterator.Iter;
 import atlas.lib.FileOps;
 
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -22,7 +21,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
@@ -33,12 +31,10 @@ public class GraphLocation
     private Graph graph = null ;
     private Model model = null ;
     private DatasetGraphTDB dsg = null ;
-    private ImplFactory factory ;
     
-    public GraphLocation(Location loc, TDBFactory.ImplFactory factory)
+    public GraphLocation(Location loc)
     {
         this.loc = loc ;
-        this.factory = factory ; 
     }
     
     public void clearDirectory() { FileOps.clearDirectory(loc.getDirectoryPath()) ; }
@@ -57,7 +53,7 @@ public class GraphLocation
     {
         if ( dsg != null )
             throw new TDBTestException("dataset already in use") ;
-        dsg = (DatasetGraphTDB)factory.createDatasetGraph(loc) ;
+        dsg = TDBFactory.createDatasetGraph(loc) ;
         return new DatasetImpl(dsg) ;
     }
     
@@ -65,7 +61,7 @@ public class GraphLocation
     {
         if ( graph != null )
             throw new TDBTestException("Graph already in use") ;
-        graph = factory.createGraph(loc) ;
+        graph = TDBFactory.createGraph(loc) ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;
     }

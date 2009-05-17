@@ -134,7 +134,7 @@ public class OpExecutorTDB extends OpExecutor
             OpQuadPattern quadPattern = (OpQuadPattern)opFilter.getSubOp() ;
             if ( isDefaultGraphStorage(isUnionDefaultGraph, quadPattern.getGraphNode()) )
             {
-                return optimizeExecute(ds.getDefaultGraph(),
+                return optimizeExecute(ds.getDefaultGraphTDB(),
                                        input, quadPattern.getBasicPattern(), opFilter.getExprs(), execCxt) ;
             }
             // else drop through.
@@ -198,7 +198,7 @@ public class OpExecutorTDB extends OpExecutor
         {
             // Storage concrete, default graph. Either outside GRAPH (no implicit union)
             // or using the "name" of the default graph
-            return optimizeExecute(ds.getDefaultGraph(), input, bgp, exprs, execCxt) ;
+            return optimizeExecute(ds.getDefaultGraphTDB(), input, bgp, exprs, execCxt) ;
         }
         
         // ---- Union (RDF Merge) of named graphs
