@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.hp.hpl.jena</groupId>
-  <artifactId>arq</artifactId>
+  <artifactId>arq-extra</artifactId>
   <version>@VERSION@</version>
   <packaging>jar</packaging>
 

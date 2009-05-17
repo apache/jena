@@ -29,9 +29,11 @@
     <!-- Because Jena depends on ARQ, these can also be obtained via Jena
 	 For clarity on which ARQ really dependences, we list here
     -->
- 
-    <dependency org="com.hp.hpl.jena" name="jena" rev="2.5.7"/>
-    <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.5.7"/>
+
+    <!--
+    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
+    <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/>
+    -->
     <dependency org="com.hp.hpl.jena" name="json-jena" rev="1.0"/>
     <dependency org="org.apache.lucene" name="lucene-core" rev="2.3.1"/>
     <dependency org="stax" name="stax-api" rev="1.0"/>

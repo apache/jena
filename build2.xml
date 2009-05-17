@@ -1,0 +1,34 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib2">
+
+  <import file="build.xml"/>
+
+  <!-- Make artifacts -->
+  
+  <target name="ivy-publish-dev">
+    <publish-module ivy.file="ivy.xml" resolver="dev-resolver"/>
+    <publish-module ivy.file="ivy-extra.xml" resolver="dev-resolver"/>
+  </target>
+  
+  <target name="ivy-publish">
+      <publish-module ivy.file="ivy.xml"/>
+      <publish-module ivy.file="ivy-extra.xml"/>
+    </target>
+
+  <!-- Macros -->
+
+  <macrodef name="publish-module">
+   <attribute name="ivy.file"/>
+   <attribute name="resolver" default="dev-publish"/>
+   
+   <sequential>
+     <ivy:resolve file="@{ivy.file}"/>
+     <ivy:publish conf="main" 
+		  resolver="@{resolver}" 
+		  overwrite="true"
+		  forcedeliver="true">
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+     </ivy:publish>
+   </sequential>
+</macrodef>
+
+</project>
