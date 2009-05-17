@@ -5,11 +5,24 @@ ChangeLog for TDB
 
 ** The on-disk file format has changed : datasets must be reloaded **
 
++ TDBFactory now caches datatsets as they are created.  
+  Opening a dataset anywhere in the same JVM will return the same dataset.
+  Closing this dataset immediately releases resources and closes the dataset
+  everywhere in the JVM.   
+  
++ A named graph of <urn:x-arq:UnionGraph>  is the RDF merge of all named graphs in a dataset.
+  This is now supported as a graph name when accessing one graph in a dataset via the
+  programmtic API calls.  Update directly to the  union graph is not allowed; update of
+  any named graph wil be immediately visible in the union graph.
+  
++ A named graph of <urn:x-arq:DefaultGraph> is the same as the unnamed graph in a dataset. 
 
-+ A named graph of <urn:x-arq:UnionGraph  urn:x-arq:DefaultGraph
 + Upgrade to Java5 version of ARQ and Jena
+
 + Copes with spaces in URIs (strongly not recommended)
+
 + Internal general purpose (non-RDF) library code all moved under package "atlas"
+
 + Faster Turtle reader (combined underpinning with N-Triples bulkreader).  
 
 ==== 0.7.3

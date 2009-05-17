@@ -9,25 +9,13 @@ package dev;
 public class Dev
 {
     // == 0.8.0
-    // Documentation:
-    //   Dataset and graph caching.
-    // Testing: SPARQL/Update integration
-    //     TDBFactory caching / Graph close (default graph vs named graph).  
-    // Removed persistent cached tests (overkill!) when cachign testing in place.
-    // With joseki
     
-    // 1 -- FactoryGraphTDB._createGraph passes null for dataset
-    //    Quadsless dataset?
-    // 2 -- graph.close() --> does nto close the datset (sync?)
-    // 3 -- caching and tests.
-    // 4 -- Dataset -> return to cache.
-    // 5 -- Update tests
+    // ----
     
-    // Multiple routes to dataset - does it matter?
-    // TDBFactory caching - need to remove from cache on close.
-
+    // Variable value length blocks.
     
-    // Assmbler : one named graph from a dataset. 
+    // Misc:
+    //   FactoryGraphTDB._createGraph passes null for dataset
     
     // Metadata.
     //   Metafile for directory.

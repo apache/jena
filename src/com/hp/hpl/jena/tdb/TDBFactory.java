@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -111,6 +112,36 @@ public class TDBFactory
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
     }
 
+    /** Create a TDB model backed by an in-memory block manager. For testing. */  
+    public static Model createModel()
+    { return ModelFactory.createModelForGraph(createGraph()) ; }
+
+    
+    /** Create a TDB model for named model */  
+    public static Model createNamedModel(String name, String location)
+    { return createDataset(location).getNamedModel(name) ; }
+    
+    /** Create a TDB model for named model */  
+    public static Model createNamedModel(String name, Location location)
+    { return createDataset(location).getNamedModel(name) ; }
+
+    // Meaningless unless there is only one in-memeory dataset */
+//    /** Create a TDB model for named model for an in-memory */  
+//    public static Model createNamedModel(String name)
+//    { return createDataset().getNamedModel(name) ; }
+    
+    /** Create or connect to a TDB-backed dataset */ 
+    public static Dataset createDataset(String dir)
+    { return createDataset(new Location(dir)) ; }
+
+    /** Create or connect to a TDB-backed dataset */ 
+    public static Dataset createDataset(Location location)
+    { return new DatasetImpl(_createDatasetGraph(location)) ; }
+
+    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
+    public static Dataset createDataset()
+    { return new DatasetImpl(_createDatasetGraph()) ; }
+
     /** Create a graph, at the given location */
     public static Graph createGraph(Location loc)       { return _createGraph(loc) ; }
 
@@ -121,25 +152,22 @@ public class TDBFactory
         return createGraph(loc) ;
     }
     
-    /** Create a TDB model backed by an in-memory block manager. For testing. */  
-    public static Model createModel()
-    { return ModelFactory.createModelForGraph(createGraph()) ; }
-    
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     public static Graph createGraph()   { return _createGraph() ; }
-    
-    /** Create or connect to a TDB-backed dataset */ 
-    public static Dataset createDataset(String dir)
-    { return createDataset(new Location(dir)) ; }
 
-    /** Create or connect to a TDB-backed dataset */ 
-    public static Dataset createDataset(Location location)
-    { return new DatasetImpl(_createDatasetGraph(location)) ; }
+    /** Create a TDB graph for named graph */  
+    public static Graph createNamedGraph(String name, String location)
+    { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
     
-    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
-    public static Dataset createDataset()
-    { return new DatasetImpl(_createDatasetGraph()) ; }
+    /** Create a TDB graph for named graph */  
+    public static Graph createNamedGraph(String name, Location location)
+    { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
 
+    // Meaningless unless there is only one in-memeory dataset */
+//    /** Create a TDB model for named model for an in-memory */  
+//    public static Graph createNamedGraph(String name)
+//    { return createDataset().getNamedModel(name) ; }
+    
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraphTDB createDatasetGraph(String directory)
     { return _createDatasetGraph(new Location(directory)) ; }
@@ -191,12 +219,19 @@ public class TDBFactory
         { return FactoryGraphTDB.createGraphMem() ; }
     
         @Override
-        public GraphTDB createGraph(Location loc)      
-        { return FactoryGraphTDB.createGraph(loc) ; }
+        public GraphTDB createGraph(Location location)      
+        { 
+            if ( location.isMem() )
+                return createGraph() ;
+            return FactoryGraphTDB.createGraph(location) ; }
     
         @Override
         public DatasetGraphTDB createDatasetGraph(Location location)
-        { return FactoryGraphTDB.createDatasetGraph(location) ; }
+        { 
+            if ( location.isMem() )
+                return createDatasetGraph() ;
+            return FactoryGraphTDB.createDatasetGraph(location) ;
+        }
     
         @Override
         public DatasetGraphTDB createDatasetGraph()

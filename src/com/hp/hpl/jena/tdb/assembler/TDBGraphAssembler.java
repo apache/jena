@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pIndex;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -56,12 +56,22 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
+        
+        String graphName = null ;
+        if ( root.hasProperty(pGraphName) )
+            graphName = root.getProperty(pGraphName).getResource().getURI() ;
+        
+        
         if ( ! root.hasProperty(pIndex) )
+        {
+            if ( graphName != null )
+                return TDBFactory.createNamedModel(graphName, loc) ;
+        }
+        else
             // Make just using the location.
             return TDBFactory.createModel(loc) ;
-        
+            
         // ---- API ways
-        
         
         StmtIterator sIter = root.listProperties(pIndex) ;
         while(sIter.hasNext())

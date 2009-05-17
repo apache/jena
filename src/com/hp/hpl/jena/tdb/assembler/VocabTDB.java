@@ -30,6 +30,7 @@ public class VocabTDB
     public static final Property pLocation          = Vocab.property(NS, "location") ;
     
     public static final Property pIndex             = Vocab.property(NS, "index") ;
+    public static final Property pGraphName         = Vocab.property(NS, "graphName") ;
     public static final Property pNodes             = Vocab.property(NS, "nodes") ;
 
     // Indexes
