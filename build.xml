@@ -39,7 +39,8 @@
   <property name="extra.classes" 
       	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
 
-  <!-- Override -->    	        
+  <!-- Override -->
+  <!-- ?? What about the properties file -->
   <target name="package.jar" depends="clean-jar,compile,make-jar-core,make-jar-extra">
     <!-- And place in lib/ as unversioned files -->
     <copy file="${build.dir}/${jarfile}" tofile="${lib.dir}/${jarfile.lib}"/>
@@ -54,6 +55,7 @@
   <target name="make-jar-core" depends="compile">
     <!-- Core jar -->
     <delete file="${build.dir}/${jarfile}"/>
+    <antcall target="build-properties"/>
     <jar destfile="${build.dir}/${jarfile}" index="yes">
       <fileset dir="${build.classes.dir}" excludes="${extra.classes}"/>
     </jar>
@@ -115,36 +117,6 @@
     <!--<include name="${src.lib.dir}/**/*.java"/>-->
     <!--<include name="${src.lib.test.dir}/**/*.java"/>-->
   </fileset>
-
-<!--
-   <pathconvert pathsep="," property="fileset.src" refid="java.source.path">
-   All java files
-   </pathconvert>
-  
-   <echo>${fileset.src}</echo>
--->
-
-  <!-- ============================== -->
-  <!-- Modified publication -->
-
-  <macrodef name="arq-publish-one"> 
-    <attribute name="ivyfile"/>
-    <!-- <element name="some-tasks" optional="yes"/> -->
-    <sequential>
-      <ivy:resolve file="@{ivyfile}"/>
-      <!-- test version : dev-resolver -->
-      <ivy:publish conf="main" 
-		 resolver="dev-resolver"
-		 overwrite="true">
-	<artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-    </ivy:publish>
-    </sequential>
-  </macrodef>
-
-  <target name="arq-publish-dev"  depends="ivy-init,artifacts,publish-check" description="Publish ARQ">
-    <arq-publish-one ivyfile="ivy.xml"/>
-    <arq-publish-one ivyfile="ivy-extra.xml"/>
-  </target>
 
   <!-- ============================== -->
 

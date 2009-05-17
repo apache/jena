@@ -2,9 +2,25 @@
 
   <import file="build.xml"/>
 
-  <!-- Make artifacts -->
   
-  <target name="ivy-publish-dev">
+  
+  <!-- Make artifacts -->
+
+  <!-- Two jars -->
+  
+  <!-- do for both POMs -->
+  <target name="pom-artifact">
+     <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
+     <copy file="${pomfile.template}" tofile="${artifacts.dir}/${pomfile}">
+       <filterset>
+         <!-- <filterset refid="filters.shared"/> -->
+         <filter token="VERSION" value="${version}"/>
+       </filterset>
+     </copy>
+   </target>
+  
+  <!-- depends="ivy-init,artifacts,publish-check" description="Publish ARQ" -->
+  <target name="ivy-publish-dev" >
     <publish-module ivy.file="ivy.xml" resolver="dev-resolver"/>
     <publish-module ivy.file="ivy-extra.xml" resolver="dev-resolver"/>
   </target>
@@ -14,7 +30,7 @@
       <publish-module ivy.file="ivy-extra.xml"/>
     </target>
 
-  <!-- Macros -->
+  <!-- Macros (see also "arq-publish-one") -->
 
   <macrodef name="publish-module">
    <attribute name="ivy.file"/>

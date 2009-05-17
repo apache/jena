@@ -184,14 +184,13 @@
   <target name="build-properties" if="build.metadata.file">
     <!-- Delete any file compilation javac copied over -->
     <delete file="${build.metadata.file.dest}"/>
-    <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
+    <copy  file="${build.metadata.file.src}" tofile="${build.metadata.file.dest}">
       <filterset refid="filters.build.metadata"/>
     </copy>
   </target>
 
     <!-- Incremental compile and make the jar -->
   <target name="jar" depends="package.jar" description="Build the jar (incremental)"/>
-  <!-- <target name="build" depends="_jar,src-zip,javadoc-zip" /> -->
     
   <!-- Main target.  Build the jar from a clean state and wrap up the sources -->
   <target name="build" depends="clean,package.jar,src-zip" description="Build the jar, and snapshot the sources used"/>
