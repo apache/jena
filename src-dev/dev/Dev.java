@@ -14,6 +14,11 @@ public class Dev
     //   GraphStore API?
     // DatasetImpl could be better (cache by graph name, not graph)
     
+    // == Build
+    // Make artifacts then publish
+    // (pom and extra pom need rewrite rules).
+    // No sources or javadoc for arq-extra.
+    
     // -- Tidy up
 	// Build: "dev" and "main" ==> "main"
     // Two ivy modules.

@@ -18,11 +18,7 @@
 
   <publications>
     <artifact name="arq-extra" type="jar"/>
-    <!-- Need a second module to get the maven name right? -->
-    <!-- <artifact name="arq-extra" type="jar"/> -->
     <artifact name="arq-extra" type="xml" ext="pom"/>
-    <!-- <artifact name="arq-extra" mvn:classifier="sources" type="sources" ext="jar"/> -->
-    <!-- <artifact name="arq-extra" mvn:classifier="javadoc" type="javadoc" ext="jar"/> -->
   </publications>
 
   <dependencies>
@@ -30,14 +26,9 @@
 	 For clarity on which ARQ really dependences, we list here
     -->
 
-    <!--
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.7.0"/>
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
     <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/>
-    -->
-    <dependency org="com.hp.hpl.jena" name="json-jena" rev="1.0"/>
-    <dependency org="org.apache.lucene" name="lucene-core" rev="2.3.1"/>
-    <dependency org="stax" name="stax-api" rev="1.0"/>
-    <dependency org="woodstox" name="wstx-asl" rev="3.0.0"/>
   </dependencies>
 
 </ivy-module>

@@ -22,12 +22,6 @@
     <artifact name="arq" type="xml" ext="pom"/>
     <artifact name="arq" mvn:classifier="sources" type="sources" ext="jar"/>
     <artifact name="arq" mvn:classifier="javadoc" type="javadoc" ext="jar"/>
-
-    <!--
-      <artifact name="arq-extra" type="jar"/>
-      <artifact name="arq-extra" type="xml" ext="pom"/>
-    -->
-
   </publications>
 
   <dependencies>
@@ -35,10 +29,8 @@
 	 For clarity on which ARQ really dependences, we list here
     -->
 
-    <!-- TESTING - not deployed yet
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
     <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/>
-    -->
     <dependency org="com.hp.hpl.jena" name="json-jena" rev="1.0"/>
     <dependency org="org.apache.lucene" name="lucene-core" rev="2.3.1"/>
     <dependency org="stax" name="stax-api" rev="1.0"/>
