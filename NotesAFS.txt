@@ -2,7 +2,8 @@
 
 Build
 
---> maven
+--> maven deploy
+    Note pom.xml chooses the repo to deploy to.
 --> For java 1.5, 
   "(. set_java15 ; ant build)"
 

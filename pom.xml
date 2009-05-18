@@ -8,7 +8,7 @@
   <artifactId>iri</artifactId>
   <packaging>jar</packaging>
   <name>Jena IRI</name>
-  <version>0.6</version>
+  <version>0.7-SNAPSHOT</version>
   <description/>
   <url>http://jena.sf.net/iri</url>
 
@@ -126,6 +126,14 @@
       <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
       <layout>default</layout>
     </repository>
+    <!--
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena Repository</name>
+      <url>sftp://jena.hpl.hp.com/var/repo</url>
+      <layout>default</layout>
+    </repository>
+    -->
   </distributionManagement>
 
 </project>
