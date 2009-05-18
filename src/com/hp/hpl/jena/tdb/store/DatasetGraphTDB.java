@@ -158,7 +158,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     @Override
     public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("Can't set default graph via GraphSTore on a TDB-backed dataset") ; }  
+    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ; }  
 }
 
 /*

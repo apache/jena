@@ -59,11 +59,13 @@ public class TestDatasetTDB extends BaseTest
     @After public void after()
     {   
         graphLocation.release() ;
+        TDBFactory.clearDatasetCache() ;
     }
     
     @Test public void dataset1()
     {
         Dataset ds = graphLocation.getDataset() ;
+        assertTrue( ds.asDatasetGraph() instanceof DatasetGraphTDB ) ;
         assertTrue( ds.getDefaultModel().getGraph() instanceof GraphTriplesTDB ) ;
         assertTrue( ds.getNamedModel("http://example/").getGraph() instanceof GraphNamedTDB ) ;
     }
@@ -83,8 +85,12 @@ public class TestDatasetTDB extends BaseTest
     {
         Dataset ds = graphLocation.getDataset() ;
         Graph g1 = ds.getDefaultModel().getGraph() ;
-        Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
+        // Sometimes, under windows, deleting the files by 
+        // graphLocation.clearDirectory does not work.  
+        // Needed for safe tests on windows.
+        g1.getBulkUpdateHandler().removeAll() ;
         
+        Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
         g2.add(new Triple(n0,n1,n2) ) ;
         assertTrue(g2.contains(n0,n1,n2) ) ;
         assertFalse(g1.contains(n0,n1,n2) ) ;
@@ -94,6 +100,7 @@ public class TestDatasetTDB extends BaseTest
     {
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+        // In-memory
         Dataset ds = TDBFactory.createDataset() ;
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them

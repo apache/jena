@@ -95,7 +95,7 @@
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
-  <property name="javadoc.window.title"   value="${Name}-${versio-major}.${version-minor} Javadoc"/>
+  <property name="javadoc.window.title"   value="${Name}-${version-major}.${version-minor} Javadoc"/>
 
   <!-- <property name="build.metadata.file"          value="unset"/> Set by system -->
   <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
@@ -299,13 +299,18 @@
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
-  <target name="test" depends="junit" description="Run the test suite"/>
-  <target name="junit" depends="run-junit" description="Run the test suite">
+  <target name="test" 
+	  depends="junit" description="Run the test suite"/>
+
+  <target name="junit" 
+	  depends="run-junit,run-report" description="Run the test suite">
     <fail message="JUnit tests failed" if="junit.failed"/>
     <echo message="JUnit tests passed"/>
   </target>
 
-  <target name="report" depends="run-report" description="Run tests and generate reports">
+  <target name="report" 
+	  depends="run-junit,run-report" 
+	  description="Run tests and generate reports">
     <fail message="JUnit tests failed" if="junit.failed"/>
     <echo message="JUnit tests passed"/>
   </target>
@@ -319,7 +324,8 @@
     <mkdir dir="${reports.dir.xml}"/>
 
     <!-- Don't stop on failure - set a property instead -->
-    <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">
+    <junit fork="yes" printsummary="yes" 
+	   errorProperty="junit.failed" failureProperty="junit.failed">
       <!-- usefile="false"  type="plain"-->
       <!-- <formatter usefile="false" type="brief"/> -->
       <formatter type="xml" />
@@ -339,7 +345,7 @@
     </junit>
   </target>
 
-  <target name="run-report" depends="run-junit">
+  <target name="run-report" >
     <junitreport todir="./${reports.dir}">
       <fileset dir="./${reports.dir.xml}">
         <include name="**.xml"/>
