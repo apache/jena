@@ -68,7 +68,6 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
-
         Model m1 = TDBFactory.assembleModel("tdb2.ttl") ;
         m1.write(System.out, "TTL") ;
         System.exit(0) ;
