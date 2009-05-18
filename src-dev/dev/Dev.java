@@ -24,6 +24,10 @@ public class Dev
     // Relayering for index interface
     
     // ==== Build
+    // Copy with no sources, no javadoc for auxillary jars
+    // Confs - simplify "main"
+    // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
+    // Rename resolvers consistently in ivysettings.xml
     
     // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
