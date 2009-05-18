@@ -1,8 +1,9 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.7.1
 
-==== ARQ 2.7
+==== ARQ 2.7.0
 
 + New build system.
 
@@ -25,7 +26,7 @@ ChangeLog for ARQ
 + Property function afp:versionARQ does not now split version numbers into major and minor parts
   ARQ has a 3-part version number now.
 
-==== ARQ 2.6
+==== ARQ 2.6.0
 
 + Added .close() to Dataset and GraphStore for those implementations that
   need to make changes permanent or release system resources.  
