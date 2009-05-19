@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.58 2009-01-30 14:50:23 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.59 2009-05-19 21:17:25 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -286,7 +286,8 @@ public class ModelFactory extends ModelFactoryBase
      * Build an inferred model by attaching the given RDF model to the given reasoner.
      *
      * @param reasoner the reasoner to use to process the data
-     * @param model the Model containing both instance data and schema assertions to be inferenced over
+     * @param model the Model containing both instance data and schema assertions to be inferenced over, 
+     * any statements added to the InfModel will be added to this underlying data model.
      */
     public static InfModel createInfModel( Reasoner reasoner, Model model ) {
          InfGraph graph = reasoner.bind(model.getGraph());
@@ -301,7 +302,8 @@ public class ModelFactory extends ModelFactoryBase
      *
      * @param reasoner the reasoner to use to process the data
      * @param schema a Model containing RDFS schema data
-     * @param model a Model containing instance data assertions
+     * @param model a Model containing instance data assertions, any statements added to the InfModel
+     * will be added to this underlying data model.
      */
     public static InfModel createInfModel(Reasoner reasoner, Model schema, Model model) {
          InfGraph graph = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
