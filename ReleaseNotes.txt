@@ -2,6 +2,9 @@ Release Notes
 =============
 
 
+==== Jena 2.6.1
+
+
 ==== Jena 2.6.0
 
 ** Codebase converted to Java 5
