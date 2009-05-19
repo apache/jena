@@ -35,7 +35,7 @@ public class FileUtils
             utf8 = Charset.forName(encodingUTF8) ;
         } catch (Throwable ex)
         {
-            LoggerFactory.getLogger(FileUtils.class).warn("Failed to get charset for UTF-8") ;
+            LoggerFactory.getLogger(FileUtils.class).warn("Failed to get charset for UTF-8", ex) ;
         }
     }
     
