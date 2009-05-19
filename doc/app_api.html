@@ -192,7 +192,7 @@ namedGraphURIs.add("file:named-2.ttl") ;
 
 Query query = QueryFactory.create(queryString) ;
 
-<b>Dataset</b> <b>dataset</b> = <b>DatsetFactory.create</b>(dftGraphURI, namedGraphURIs) ;
+<b>Dataset</b> <b>dataset</b> = <b>DatasetFactory.create</b>(dftGraphURI, namedGraphURIs) ;
 QueryExecution qExec = QueryExecutionFactory.create(query, <b>dataset</b>) ;
 try { ... }
 finally { qExec.close() ; }</pre>
