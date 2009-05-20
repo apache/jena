@@ -63,6 +63,9 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        
+        execQuery("D.ttl", "Q.rq") ;
+        
         Op op = SSE.readOp("Q.sse") ;
         op = Algebra.optimize(op) ; 
         System.out.print(op) ;

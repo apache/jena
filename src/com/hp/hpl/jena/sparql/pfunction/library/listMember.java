@@ -45,8 +45,17 @@ public class listMember extends ListBase
             throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
     }
     
+    @Override
+    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object, ExecutionContext execCxt)
+    {
+        Node objectNode = object.getArg() ;
+        if ( object.isList() )
+            objectNode = RDF.nil.asNode() ;
+        return execOneList(binding, listNode, predicate, objectNode, execCxt) ;
+    }
+    
     //@Override
-    public QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt)
+    private QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt)
     {
         if ( Var.isVar(listNode) )
             throw new ExprEvalException("List : subject not a list or variable bound to a list") ;
@@ -71,14 +80,7 @@ public class listMember extends ListBase
         return new QueryIterYieldN(count, binding) ;
     }
 
-    @Override
-    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object, ExecutionContext execCxt)
-    {
-        Node objectNode = object.getArg() ;
-        if ( object.isList() )
-            objectNode = RDF.nil.asNode() ;
-        return execOneList(binding, listNode, predicate, objectNode, execCxt) ;
-    }
+
 }
 
 /*

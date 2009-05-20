@@ -3,6 +3,6 @@
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix :        <http://example/> .
 
-:x1 :p 1 .
-:x1 :p 2 .
-:x1 :p :z .
+:x1 :p ( 1 2 3 ) .
+:x2 :p ( 1  9 ) .
+:x3 :p (7 8) .

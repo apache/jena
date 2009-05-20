@@ -10,9 +10,9 @@ package dev;
 public class Dev
 {
     // ==== ARQ
+    //   list:member speed up
     //   TransformFilterPlacement
     //   GraphStore API?
-    // DatasetImpl could be better (cache by graph name, not graph)
     
     // == Build
     // Make artifacts then publish

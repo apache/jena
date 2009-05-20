@@ -32,6 +32,9 @@ public abstract class ListBase extends PropertyFunctionEval
         super(PropFuncArgType.PF_ARG_SINGLE, objFuncArgType) ;
     }
     
+    /** If the subject is a list (well, at least not an unbound variable), dispatch to execOneList
+     *  else find all lists and dispatch one at a time to execOneList.
+     */
     @Override
     final
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
