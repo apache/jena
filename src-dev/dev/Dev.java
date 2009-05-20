@@ -24,6 +24,7 @@ public class Dev
     // Relayering for index interface
     
     // ==== Build
+    // Refactor to improve "publish and release" (new targets?)
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
