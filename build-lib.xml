@@ -8,19 +8,15 @@
        Name
        name
        version
-       [or
-           version-major
-           version-minor
-           version-revision
-           version-status
-       ]
+       [or version-major-version-minor.version-revision[version-status]
+
        javadoc.packages       Package list (comma separated)  (Optional)
        javadoc.packages.all   Package list (comma separated)  (Optional)
        build.metadata.file    (Optional)
           The metadata file to add to the build (Java properties)
-
        Copyright.text
-       
+       publish.resolver
+         Ivy resolver to use for publication
        ++ Paths
        java.source.path
 
@@ -28,11 +24,14 @@
        fileset.src
  
        == Library of standard tasks
+       build      Build jar, run tests and snapshot sources
        clean      clean up
        clean-once clean up once - can depend on this repeatedly - will run first time only.
        compile    compile sources
-       jar        make jar 
+       jar        make jar
+       release    make a release
        publish    export to maven
+       test       Run the test suite
 
        == Assumes directory layout
        doc/
@@ -50,12 +49,6 @@
        == Other
        JUnit test suites look like TS_*
        
-  -->
-
-  <!--
-  	Main targets:
-  		build		Build jar and snapshot sources
-  		
   -->
   
   <!-- Set version from components (if not already set) -->
@@ -150,10 +143,7 @@
   <target name="java-init" depends="javac-flags,set-classpath"/>
 
   <!-- ========================================== -->
-  <!-- ==== Sources -->
-  
-  <!-- ========================================== -->
-  <!-- ==== Build and compile -->
+  <!-- ==== Build, compile, jar, javadoc -->
 
   <target name="compile" depends="java-init" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
@@ -179,34 +169,16 @@
     </copy>
   </target>
 
-  <target name="jar" depends="package.jar" description="Incrementally compile and build the jar"/>
-  <!-- <target name="build" depends="_jar,src-zip,javadoc-zip" /> -->
-    
-  <target name="build" depends="clean,package.jar,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
-  
-  <target name="package.jar" depends="compile" >
-    <delete file="${build.dir}/${jarfile}"/>
+  <target name="build.jar" depends="compile">
+    <delete file="${build.dir}/${jarfile}" failonerror="false"/>
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
     <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
     </jar>
+    <property name="built.jar" value="done"/>
   </target>
   
-  <!-- Zipped files -->
-  
-  <target name="src-zip" description="Create zip file of the sources">
-    <zip destfile="${build.dir}/${src.zipfile}">
-      <fileset refid="fileset.src"/>
-    </zip>
-  </target>
 
- <target name="javadoc-zip" depends="javadoc">
-    <jar destfile="${build.dir}/${javadoc.zipfile}" 
-         basedir="${javadoc.dir}"/>
-  </target>
-
-  
-  
   <!-- ========================================== -->
   <!-- ==== Javadoc -->
 
@@ -251,7 +223,32 @@
       <classpath refid="java.build.class.path"/>
     </javadoc>
   </target>
-  
+
+  <!-- ========================================== -->
+  <!-- ==== Basic tasks -->
+
+  <target name="jar" 
+	  depends="build.jar" 
+	  description="Compile and build the jar"
+	  unless="built.jar">
+  </target>
+
+  <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
+
+  <!-- ========================================== -->
+  <!-- ==== Zipping -->
+
+  <target name="src-zip" description="Create zip file of the sources">
+    <zip destfile="${build.dir}/${src.zipfile}">
+      <fileset refid="fileset.src"/>
+    </zip>
+  </target>
+
+ <target name="javadoc-zip" depends="javadoc">
+    <jar destfile="${build.dir}/${javadoc.zipfile}" 
+         basedir="${javadoc.dir}"/>
+  </target>  
+
   <!-- ========================================== -->
   <!-- ==== Artifacts -->       
   
@@ -293,14 +290,16 @@
   </target>
   
   <target name="publish-test" description="Build and publish this version (locally, for testing)"
-            depends="clean-once,artifacts,test,ivy-publish-dev">
-    </target>
+	  depends="clean-once,artifacts,test,ivy-publish-dev">
+  </target>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
-  <target name="test" 
-	  depends="junit" description="Run the test suite"/>
+  <target name="test" unless="test.run"
+	  depends="junit" description="Run the test suite">
+    <property name="test.run" value="done"/>
+  </target>
 
   <target name="junit" 
 	  depends="run-junit,run-report" description="Run the test suite">
@@ -457,9 +456,7 @@
           depends="clean-build-area,clean-reports">
   </target>
 
-  <target name="clean-once" unless="clean.run">
-    <antcall target="clean"/>
-    <!-- Not inside the "clean" as it's scoped -->
+  <target name="clean-once" depends="clean" unless="clean.run">
     <property name="clean.run" value="set"/>
   </target>
 
@@ -471,7 +468,7 @@
   </target>
   
   <target name="clean-build-area">
-    <delete dir="${build.dir}"/>
+    <delete quiet="true" dir="${build.dir}"/>
     <mkdir  dir="${build.dir}"/>
   </target>
 

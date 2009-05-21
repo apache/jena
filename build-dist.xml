@@ -25,7 +25,7 @@
     <mkdir dir="${dist.dir}/${lib.dir}"/>
   </target>
 
-  <target name="copy-dist" depends="clean,copy-init,jar,javadoc,test">
+  <target name="copy-dist" depends="copy-init,jar,javadoc,test">
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
       <fileset dir="${build.dir}" includes="${jarfile}"/>
@@ -80,6 +80,7 @@
   <!-- To calm error checking -->
   <target name="test"/>
   <target name="clean"/>
+  <target name="clean-once"/>
   <target name="artifacts"/>
   <target name="jar"/>
   <target name="javadoc"/>

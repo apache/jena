@@ -11,13 +11,13 @@
   <!-- Publishing resolvers -->
   <resolvers>
     <!-- File system - for testing - can publish wrong bytes! -->
-    <filesystem name="dev-resolver" >
+    <filesystem name="repo-local" >
        <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>
        <artifact pattern="${pub.dir.local}/[module]-[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </filesystem>
 
     <!-- User environment variables to find user/key -->
-    <sftp name="dev-publish" host="jena.hpl.hp.com" 
+    <sftp name="repo-publish" host="jena.hpl.hp.com" 
 	  user="${ivy.user}" keyFile="${ivy.keyfile}">
       <ivy      pattern="${sftp.root}/[module]/[revision]/ivy.xml"/>
       <artifact pattern="${sftp.root}/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
