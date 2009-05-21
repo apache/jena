@@ -60,44 +60,53 @@ HAVING (count(distinct *) &gt; 1)</pre>
       <tbody>
         <tr>
           <th style="text-align: left;" bgcolor="#C0C0C0" width=
-          "40%">
+          "25%">
           <p style="text-align: center">Aggregator</th>
 
-          <th bgcolor="#C0C0C0" width="60%">Description</th>
+          <th bgcolor="#C0C0C0" width="75%">Description</th>
         </tr>
 
         <tr>
           <td style="text-align: left;">
-          <p style="text-align: center"><code>count(*)</code></td>
+          <p><code>count(*)</code></td>
 
-          <td style="text-align: left;">
-          <p style="text-align: center">Count rows of each group element, or the 
+          <td>
+          <p style="text-align: left">Count rows of each group element, or the 
           whole result set if no <code>GROUP BY</code>.</td>
         </tr>
 		<tr>
           <td style="text-align: left;">
-          <p style="text-align: center"><code>count(distinct *)</code></td>
+          <p><code>count(distinct *)</code></td>
 
-          <td style="text-align: left;">
-          <p style="text-align: center">Count the distinct rows of each group 
+          <td>
+          <p style="text-align: left">Count the distinct rows of each group 
           element, or the whole result set if no <code>GROUP BY</code>.</td>
         </tr>
 		<tr>
           <td style="text-align: left;">
-          <p style="text-align: center"><code>count(?var)</code></td>
+          <p><code>count(?var)</code></td>
 
-          <td style="text-align: left;">
-          <p style="text-align: center">Count the number of times <code>?var</code> 
+          <td>
+          <p style="text-align: left">Count the number of times <code>?var</code> 
           is bound in a group.</td>
         </tr>
 
         <tr>
           <td style="text-align: left;">
-          <p style="text-align: center"><code>count(distinct ?var)</code></td>
+          <p><code>count(distinct ?var)</code></td>
+
+          <td>
+          <p style="text-align: left">Count the number of distinct values
+          <code>?var</code> is bound to in a group.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <p><code>sum(?x)</code></p></td>
 
           <td style="text-align: left;">
-          <p style="text-align: center">Count the number of distinct values
-          <code>?var</code> is bound to in a group.</td>
+          <p>Sum the variable over the group (non-numeric values 
+          and unbound values are ignored).</td>
         </tr>
 
       </tbody>
