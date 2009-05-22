@@ -162,7 +162,6 @@
   </target>
 
   <target name="build-properties" if="build.metadata.file">
-    <!-- Delete any file compilation javac copied over -->
     <delete file="${build.metadata.file.dest}"/>
     <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
       <filterset refid="filters.build.metadata"/>
@@ -173,9 +172,9 @@
     <delete file="${build.dir}/${jarfile}" failonerror="false"/>
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
-    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
+    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}" index="yes">
+      <!--<fileset file="${build.metadata.file.dest}"/>-->
     </jar>
-    <property name="built.jar" value="done"/>
   </target>
   
 
@@ -227,10 +226,14 @@
   <!-- ========================================== -->
   <!-- ==== Basic tasks -->
 
+  <!-- Not depends="build.jar" because that will always be run even if the body is "unless"'ed out -->
+
   <target name="jar" 
-	  depends="build.jar" 
 	  description="Compile and build the jar"
 	  unless="built.jar">
+    <antcall target="build.jar"/>
+    <property name="built.jar" value="done"/>
+
   </target>
 
   <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
@@ -297,7 +300,8 @@
   <!-- ==== JUnit and reporting -->
 
   <target name="test" unless="test.run"
-	  depends="junit" description="Run the test suite">
+	  description="Run the test suite">
+    <antcall target="junit"/>
     <property name="test.run" value="done"/>
   </target>
 
@@ -456,7 +460,8 @@
           depends="clean-build-area,clean-reports">
   </target>
 
-  <target name="clean-once" depends="clean" unless="clean.run">
+  <target name="clean-once" unless="clean.run">
+    <antcall target="clean"/>
     <property name="clean.run" value="set"/>
   </target>
 
