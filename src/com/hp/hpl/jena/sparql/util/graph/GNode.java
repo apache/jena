@@ -25,6 +25,8 @@ public class GNode
     public GNode(GNode other, Node node)
     { this.findable = other.findable ; this.node = node ; }
 
+    @Override
+    public String toString() { return "gnode:"+node ; }
 }
 
 /*

@@ -6,7 +6,12 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -22,6 +27,88 @@ public class GraphList
     public static GNode next(GNode gnode) { return new GNode(gnode, cdr(gnode)) ; }
     
     public static Node value(GNode gnode) { return car(gnode) ; }
+    
+    // ----
+    // Loops etc?
+    
+    // ----------------------
+    /** Starting at a list element, find the heads of lists it is in */
+    public static List<Node> listFromMember(GNode gnode)
+    {
+        List<Node> x = new ArrayList<Node>() ;
+        listFromMember(gnode, x) ;
+        return x ;
+    }
+    
+    public static void listFromMember(GNode gnode, final Collection<Node> acc)
+    {
+        // Get the list nodes for this value.
+        Set<GNode> lists = findCellsWithMember(gnode) ;
+        
+        for ( GNode gn : lists )
+        {
+            System.out.println("listFromMember: "+gn) ;
+            // For each, Reverse to the head
+            while( gn != null )
+            {
+                System.out.println(": "+gn) ;
+                GNode gn2 = previous(gn) ;
+                if ( gn2 == null )
+                {
+                    acc.add(gn.node) ;
+                    // Finish inner loop
+                    break ;
+                }
+                gn = gn2 ;
+            }
+        }
+    }
+    
+    private static Set<GNode> findCellsWithMember(GNode gnode)
+    {
+        Set<GNode> x = new HashSet<GNode>() ;
+        
+        Iterator<Triple> iter = gnode.findable.find(Node.ANY, CAR, gnode.node) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = iter.next() ;
+            x.add(new GNode(gnode, t.getSubject())) ;
+        }
+        NiceIterator.close(iter) ;
+        return x ;         
+    }
+
+    private static GNode previous(GNode gnode)
+    {
+        // reverse 
+        Node n = getNodeReverse(gnode, CDR) ;
+        if ( n == null )
+            return null ;
+        return new GNode(gnode, n) ;
+    }
+
+
+    private static Node getNodeReverse(GNode gnode, Node arc)
+    {
+        Triple t = getTripleReverse(gnode, arc) ;
+        if ( t == null )
+            return null ;
+        return t.getSubject() ;
+    }
+
+    private static Triple getTripleReverse(GNode gnode, Node arc)
+    {
+        Iterator<Triple> iter = gnode.findable.find(Node.ANY, arc, gnode.node) ;
+        if ( ! iter.hasNext() )
+            return null ;
+        Triple t = iter.next() ;
+        if ( iter.hasNext() )
+            ALog.warn(GraphList.class, "Unusual list: two arcs with same property ("+arc+")") ;
+        NiceIterator.close(iter) ;
+        return t ;    
+    }
+
+    // ---------------------------------------------
     
     public static List<Node> members(GNode gnode)
     {
@@ -239,7 +326,7 @@ public class GraphList
             return null ;
         return t.getObject() ;
     }
-    
+
     private static Triple getTriple(GNode gnode, Node arc)
     {
         if ( listEnd(gnode) )

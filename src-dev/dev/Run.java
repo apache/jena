@@ -7,14 +7,19 @@
 package dev;
 
 import java.util.Iterator;
+import java.util.List;
 
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
@@ -26,6 +31,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.core.Substitute;
@@ -47,6 +53,8 @@ import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.graph.GNode;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -63,6 +71,29 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        Model m = FileManager.get().loadModel("D.ttl") ;
+        //m.write(System.out, "N-TRIPLES") ;
+        
+        Graph g = m.getGraph() ;
+        GNode gnode = new GNode(g, NodeConst.nodeOne) ;
+        List<Node> x = GraphList.listFromMember(gnode) ;
+        System.out.println(x) ;
+        
+        // Get markers.
+        for ( Node n : x )
+        {
+            Resource r = m.createResource(new AnonId(n.getBlankNodeLabel())) ;
+            Iterator<Statement> i = m.listStatements(null, null, r) ;
+            for ( ; i.hasNext() ; )
+            {
+                Resource s = i.next().getSubject() ;
+                System.out.println(s) ;
+            }
+        }
+        
+        System.exit(0) ;
+        
+        
         
         execQuery("D.ttl", "Q.rq") ;
         
