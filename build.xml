@@ -1,8 +1,5 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="ARQ" default="build">
 
-  <!-- Configuration as a propertied file ? -->
-  <!-- <property file="tdb-build.properties"/> -->
-
   <!-- ========================================== -->
   <!-- ==== Configuration  -->
   <property name="Name"                   value="ARQ"/>
@@ -40,7 +37,6 @@
       	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
 
   <!-- Override -->
-  <!-- ?? What about the properties file -->
   <target name="package.jar" depends="clean-jar,compile,make-jar-core,make-jar-extra">
     <!-- And place in lib/ as unversioned files -->
     <copy file="${build.dir}/${jarfile}" tofile="${lib.dir}/${jarfile.lib}"/>

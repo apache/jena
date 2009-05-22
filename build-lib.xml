@@ -182,7 +182,6 @@
   </target>
 
   <target name="build-properties" if="build.metadata.file">
-    <!-- Delete any file compilation javac copied over -->
     <delete file="${build.metadata.file.dest}"/>
     <copy  file="${build.metadata.file.src}" tofile="${build.metadata.file.dest}">
       <filterset refid="filters.build.metadata"/>
