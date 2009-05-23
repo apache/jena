@@ -10,9 +10,7 @@ package dev;
 public class Dev
 {
     // ==== ARQ
-    //     Tidy GraphList
-    //     Tests for reverse membership.
-    //     Script test for reverse membership
+    // ----
     
     //   TransformFilterPlacement
     //   GraphStore API?
