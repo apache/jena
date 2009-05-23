@@ -26,7 +26,7 @@ public enum TokenType
     DOT, COMMA, SEMICOLON, COLON, DIRECTIVE,
     // LT, GT, LE, GE are only visible if IRI processing is not enabled.
     LT, GT, LE, GE,
-    // UNDERSCORE is only visible if BNode processing is not enabled.
+    // In RDF, UNDERSCORE is only visible if BNode processing is not enabled.
     UNDERSCORE, 
     LBRACE, RBRACE,     // {} 
     LPAREN, RPAREN,     // ()
