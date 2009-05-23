@@ -10,7 +10,7 @@ Documentation:
 
 + Upgraded to Jena 2.6.0 and ARQ 2.7.0 
     Older versions of these jars will not work.
-    antlr-2.7.5.jar and concurrent.jar removed
+    antlr-2.7.5.jar and concurrent.jar removed, looging no wslf4j
 + Added improvement for Oracle to avoid blob handling over JDBC for lexical forms <= 2000.
   Thanks to Metatomix (Scott Kagels) for the patches. 
 

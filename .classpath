@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
