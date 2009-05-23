@@ -9,7 +9,6 @@ package dev;
 public class Dev
 {
     // == 0.8.0
-    // tdbverify print "development" in release version
     
     // ----
     
