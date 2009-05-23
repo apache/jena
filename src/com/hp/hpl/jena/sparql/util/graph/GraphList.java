@@ -24,13 +24,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class GraphList
 {
-    public static GNode next(GNode gnode) { return new GNode(gnode, cdr(gnode)) ; }
-    
-    public static Node value(GNode gnode) { return car(gnode) ; }
-    
-    // ----
-    // Loops etc?
-    
     // ----------------------
     /** Starting at a list element, find the heads of lists it is in */
     public static List<Node> listFromMember(GNode gnode)
@@ -47,11 +40,9 @@ public class GraphList
         
         for ( GNode gn : lists )
         {
-            System.out.println("listFromMember: "+gn) ;
             // For each, Reverse to the head
             while( gn != null )
             {
-                System.out.println(": "+gn) ;
                 GNode gn2 = previous(gn) ;
                 if ( gn2 == null )
                 {
@@ -190,7 +181,6 @@ public class GraphList
     
     public static List<Integer> indexes(GNode gnode, Node value)
     {
-        
         List<Integer> x = new ArrayList<Integer>() ;
         
         if ( ! isListNode(gnode) )
@@ -210,9 +200,6 @@ public class GraphList
     
     public static void triples(GNode gnode, Collection<Triple> acc)
     {
-//        if ( ! isListNode(gnode) )
-//            return ;
-//        
         if ( listEnd(gnode) )
             return ;
         
@@ -284,32 +271,18 @@ public class GraphList
         return acc ;
     }
     
-    
-//  private static interface Action { public void action(GNode gnode) ; }
-//
-//  private static void apply(Action action, GNode gnode)
-//      {
-//          // Java does not require (or provide) tail recursion removal 
-//  //        if ( nil_p(node) )
-//  //            return ;
-//  //        action.action(gnode) ;
-//  //        node = next(gnode) ;
-//  //        apply(action, gnode) ;
-//          while ( ! nil_p(node) )
-//          {
-//              action.action(gnode) ;
-//              node = cdr(gnode) ;
-//          }
-//      }
-    
     private static final Node CAR = RDF.first.asNode() ;
     private static final Node CDR = RDF.rest.asNode() ;
     private static final Node NIL = RDF.nil.asNode() ;
 
+    private static GNode next(GNode gnode) { return new GNode(gnode, cdr(gnode)) ; }
+
+    private static Node value(GNode gnode) { return car(gnode) ; }
+
     public static boolean isListNode (GNode gnode)
     { return gnode.node.equals(NIL) || isCons(gnode) ; }
 
-    public static boolean isCons (GNode gnode)
+    private static boolean isCons (GNode gnode)
     { return gnode.findable.contains(gnode.node, CDR, null) ; }
     
     private static boolean listEnd (GNode gnode)

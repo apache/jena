@@ -6,12 +6,43 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 
 public abstract class ListBaseList extends ListBase
 {
     public ListBaseList()
     { super(PropFuncArgType.PF_ARG_LIST) ; }
+
+    @Override
+    final protected 
+    QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object,
+                              ExecutionContext execCxt)
+    {
+        return execOneList(binding, listNode, predicate, object.getArgList(), execCxt) ;
+    }
+
+    @Override
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object,
+                                            ExecutionContext execCxt)
+    { throw new ARQException("ListBaseList: wrong dispatch") ; }
+
+    @Override
+    protected abstract QueryIterator execObjectList(Binding binding, 
+                                                     Var listVar, Node predicate, List<Node> objectArgs,
+                                                     ExecutionContext execCxt) ;
+
+    protected abstract QueryIterator execOneList(Binding binding, 
+                                                 Node listNode, Node predicate, List<Node> argList,
+                                                 ExecutionContext execCxt) ;
 }
 
 /*

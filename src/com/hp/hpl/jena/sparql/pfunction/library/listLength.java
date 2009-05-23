@@ -60,6 +60,14 @@ public class listLength extends ListBase1
             return IterLib.result(binding, execCxt) ;
         return IterLib.noResults(execCxt) ;
     }
+
+    @Override
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node length,
+                                            ExecutionContext execCxt)
+    {
+        Graph graph = execCxt.getActiveGraph() ;
+        return length(binding, graph, listVar,  Var.alloc(length) , execCxt) ;
+    }
 }
 
 /*

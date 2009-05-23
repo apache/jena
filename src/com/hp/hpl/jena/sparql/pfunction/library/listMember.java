@@ -10,18 +10,16 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.util.graph.GNode;
 import com.hp.hpl.jena.sparql.util.graph.GraphList;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 
 /** List membership : property function implementation of list:member. 
@@ -29,13 +27,13 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author Andy Seaborne
  */ 
 
-public class listMember extends ListBase
+public class listMember extends ListBase1
 {
-    // ListBase because the RHS may be rdf:nil (a list).
-
+    // Does not work for   ... list:member ?x . 
+    // See old execOneList
     public listMember()
-    { super(PropFuncArgType.PF_ARG_EITHER) ; }
-
+    { super() ; }
+   
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
@@ -46,27 +44,30 @@ public class listMember extends ListBase
     }
     
     @Override
-    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object, ExecutionContext execCxt)
-    {
-        Node objectNode = object.getArg() ;
-        if ( object.isList() )
-            objectNode = RDF.nil.asNode() ;
-        return execOneList(binding, listNode, predicate, objectNode, execCxt) ;
-    }
-    
-    //@Override
-    private QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt)
+    protected QueryIterator execOneList(Binding binding, Node listNode, Node predicate, Node member, ExecutionContext execCxt)
     {
         if ( Var.isVar(listNode) )
-            throw new ExprEvalException("List : subject not a list or variable bound to a list") ;
+            throw new QueryExecException("List : subject not a list or variable bound to a list") ;
         // Case : arg 1 (the list) is bound and arg 2 not bound => generate possibilities
         // Case : arg 1 is bound and arg 2 is bound => test for membership.
 
         if ( Var.isVar(member) )
-            return members(binding,listNode,  Var.alloc(member) , execCxt) ;
+            return members(binding, listNode,  Var.alloc(member) , execCxt) ;
         else
             return verify(binding, listNode, member, execCxt) ;
     }
+
+    @Override
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object,
+                                            ExecutionContext execCxt)
+    {
+        // Given a concrete node, find lists it's in
+        GNode gnode = new GNode(execCxt.getActiveGraph(), object) ;
+        List<Node> lists = GraphList.listFromMember(gnode) ;
+        return new QueryIterExtendByVar(binding, listVar, lists.iterator(), execCxt) ;
+    }
+
+
 
     private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt)
     {
@@ -79,7 +80,6 @@ public class listMember extends ListBase
         int count = GraphList.occurs(new GNode(execCxt.getActiveGraph(), listNode), member) ;
         return new QueryIterYieldN(count, binding) ;
     }
-
 
 }
 

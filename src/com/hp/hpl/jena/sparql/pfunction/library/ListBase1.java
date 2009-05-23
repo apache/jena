@@ -6,13 +6,18 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 
+/** List operation - object can't be a list. */
 public abstract class ListBase1 extends ListBase
 {
     public ListBase1()
@@ -25,6 +30,18 @@ public abstract class ListBase1 extends ListBase
                               ExecutionContext execCxt)
     {
         return execOneList(binding, listNode, predicate, object.getArg(), execCxt) ; 
+    }
+
+    @Override
+    protected abstract QueryIterator execObjectBound(Binding binding, 
+                                                     Var listVar, Node predicate, Node object,
+                                                     ExecutionContext execCxt) ;
+
+    @Override
+    protected QueryIterator execObjectList(Binding binding, Var listVar, Node predicate, List<Node> objectArgs,
+                                            ExecutionContext execCxt)
+    {
+        throw new ARQException("List operation: Object list passed to single object node predicate: "+predicate) ;
     }
 
     protected abstract QueryIterator execOneList(Binding binding, 

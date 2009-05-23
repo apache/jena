@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -43,14 +44,17 @@ public class PropFuncArg extends PrintSerializableBase
             return ;
         }
         this.argList = argList ;
+        // If the list is zero length, it's rdf:nil.  Be careful!
+        if ( argList.isEmpty() )
+            this.arg = NodeConst.nodeNil ;
     }
         
-    public PropFuncArg(List<Node> argList)    { this.argList = argList ; }
-    public PropFuncArg(Node arg)        { this.arg = arg ; }
+    public PropFuncArg(List<Node> argList)  { this.argList = argList ; }
+    public PropFuncArg(Node arg)            { this.arg = arg ; }
     
-    public Node getArg()                { return arg ; }
-    public List<Node> getArgList()            { return argList ; }
-    public int  getArgListSize()        { return argList==null ? -1 : argList.size() ; }
+    public Node getArg()                    { return arg ; }
+    public List<Node> getArgList()          { return argList ; }
+    public int  getArgListSize()            { return argList==null ? -1 : argList.size() ; }
     public Node getArg(int index)
     {
         if ( argList == null ) return null ;
@@ -128,7 +132,7 @@ public class PropFuncArg extends PrintSerializableBase
     
     public PropFuncArg evalIfExists(Binding binding)
     {
-        if ( ! isList() )
+        if ( isNode() )
             return new PropFuncArg(evalIfExistsOneArg(binding, arg)) ;
         List<Node> newArgList = new ArrayList<Node>() ;
         for ( Iterator<Node> iter = argList.iterator() ; iter.hasNext() ; )

@@ -50,7 +50,11 @@ public abstract class PropertyFunctionBase implements PropertyFunction
 
         if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_SINGLE) )
             if ( argObject.isList() )
-                throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
+            {
+                if ( ! argObject.isNode() )
+                    // But allow rdf:nil.
+                    throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
+            }
         
         if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_LIST) )
             if ( ! argObject.isList() )

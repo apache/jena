@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -21,7 +23,7 @@ import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
 import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
-
+/** Base class for list realted operations */ 
 public abstract class ListBase extends PropertyFunctionEval
 {
     private PropFuncArgType objFuncArgType ;
@@ -33,20 +35,59 @@ public abstract class ListBase extends PropertyFunctionEval
     }
     
     /** If the subject is a list (well, at least not an unbound variable), dispatch to execOneList
-     *  else find all lists and dispatch one at a time to execOneList.
+     *  else dispatch to one of object a var, a list or a node.
      */
     @Override
     final
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         Node listNode = argSubject.getArg() ;
-        Graph graph = execCxt.getActiveGraph() ;
         if ( !Var.isVar(listNode) )
+            // Subject bound or constant
             return execOneList(binding, listNode, predicate, argObject, execCxt) ;
-        // Subject unbound. BFI.
+        
+        // Subject unbound.
         Var listVar = Var.alloc(listNode) ;
-        // Gulp.  Find all lists; work hard.
-        Set<Node> x = GraphList.findAllLists(graph) ;
+        return listUnboundSubject(binding, listVar, predicate, argObject, execCxt) ;
+    }
+    
+    
+    private QueryIterator listUnboundSubject(Binding binding, Var listVar, Node predicate, PropFuncArg argObject,
+                                             ExecutionContext execCxt)
+    {
+        // Object?
+        if ( argObject.isList() )
+        {
+            List<Node> objectArgs = argObject.getArgList() ;
+            return execObjectList(binding, listVar, predicate, objectArgs, execCxt) ;
+        }
+        Node obj = argObject.getArg() ;
+        if ( Var.isVar(obj))
+        {
+            Graph graph = execCxt.getActiveGraph() ;
+            Set<Node> x = GraphList.findAllLists(graph) ;
+            return allLists(binding, x, listVar, obj, argObject, execCxt) ;
+        }
+        
+//         {
+//            // Gulp.  Subject unbound.  Object unbound. BFI: Find all lists; work hard.
+//            Set<Node> x = GraphList.findAllLists(graph) ;
+//            QueryIterConcat qIter = new QueryIterConcat(execCxt) ;
+//            for ( Node n : x )
+//            {
+//                Binding b = new Binding1(binding, listVar, n) ;
+//                QueryIterator q = execOneList(b, n, predicate, argObject, execCxt) ;
+//                qIter.add(q) ;
+//            }
+//            return qIter ;
+//        }
+        // Subject unbound.  Object a bound node.
+        return execObjectBound(binding, listVar, predicate, obj, execCxt) ;
+    }
+
+    protected QueryIterator allLists(Binding binding, Collection<Node> x, Var listVar, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    {
+        // BFI: Find all lists; work hard.
         QueryIterConcat qIter = new QueryIterConcat(execCxt) ;
         for ( Node n : x )
         {
@@ -58,6 +99,31 @@ public abstract class ListBase extends PropertyFunctionEval
     }
     
     /**
+     * @param binding     current binding as input
+     * @param listVar     a variable.
+     * @param predicate   the predicate used to invoke this property function 
+     * @param object      the object of the property function 
+     * @param execCxt     Execution context
+     * @return QueryIterator    
+     */
+    protected abstract
+    QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object,
+                                          ExecutionContext execCxt) ;
+
+    /**
+     * @param binding     current binding as input
+     * @param listVar     a variable.
+     * @param predicate   the predicate used to invoke this property function 
+     * @param objectArgs  the object of the property function 
+     * @param execCxt     Execution context
+     * @return QueryIterator    
+     */
+    protected abstract
+    QueryIterator execObjectList(Binding binding, Var listVar, Node predicate, List<Node> objectArgs,
+                                          ExecutionContext execCxt) ;
+
+    /** Dispatch when the subject is a list - also used when subject and object all unbound
+     *  after finding all lists. 
      * @param binding     current binding as input
      * @param listNode    the list; maybe a variable.
      * @param predicate   the predicate used to invoke this property function 

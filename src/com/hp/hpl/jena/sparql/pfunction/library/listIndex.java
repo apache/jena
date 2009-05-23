@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -32,18 +33,39 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList;
 public class listIndex extends ListBaseList
 {
     @Override
-    public QueryIterator execOneList(Binding binding, 
-                                     Node listNode, Node predicate, PropFuncArg object,
-                                     ExecutionContext execCxt)
+    protected QueryIterator execObjectList(Binding binding, Var listVar, Node predicate, List<Node> objectArgs,
+                                            ExecutionContext execCxt)
+    {
+        // subject a variable.
+        
+        if ( objectArgs.size() != 2 )
+            throw new ExprEvalException("ListIndex : object not a list of length 2") ; 
+        Node indexNode = objectArgs.get(0) ;
+        Node memberNode = objectArgs.get(1) ;
+        
+        final Collection<Node> x ;
+        if ( ! Var.isVar(memberNode) )
+            // If memberNode is defined, find lists containing it.
+            x = GraphList.listFromMember(new GNode(execCxt.getActiveGraph(), memberNode)) ;
+        else    
+            // Hard. Subject unbound, no fixed member. Find every list and use BFI.
+            x = GraphList.findAllLists(execCxt.getActiveGraph()) ;
+        return super.allLists(binding, x, listVar, predicate, new PropFuncArg(objectArgs, null), execCxt) ;
+    }
+
+    @Override
+    protected QueryIterator execOneList(Binding binding, 
+                                        Node listNode, Node predicate, List<Node> objectArgs,
+                                        ExecutionContext execCxt)
     {
         if ( Var.isVar(listNode) )
             throw new ExprEvalException("ListIndex : subject not a list or variable bound to a list") ;
 
-        if ( object.getArgList().size() != 2 )
+        if ( objectArgs.size() != 2 )
             throw new ExprEvalException("ListIndex : object not a list of length 2") ;
 
-        Node indexNode = object.getArg(0) ;
-        Node memberNode = object.getArg(1) ;
+        Node indexNode = objectArgs.get(0) ;
+        Node memberNode = objectArgs.get(1) ;
         
         Graph graph = execCxt.getActiveGraph() ;
         

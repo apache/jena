@@ -1,7 +1,8 @@
 PREFIX : <http://example/>
 PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
 
-SELECT *
+SELECT ?x ?list
 {
     ?list list:member 1 .
+    ?x :p ?list .
 }

@@ -71,31 +71,34 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        //m.write(System.out, "N-TRIPLES") ;
-        
-        Graph g = m.getGraph() ;
-        GNode gnode = new GNode(g, NodeConst.nodeOne) ;
-        List<Node> x = GraphList.listFromMember(gnode) ;
-        System.out.println(x) ;
-        
-        // Get markers.
-        for ( Node n : x )
+        if ( false )
         {
-            Resource r = m.createResource(new AnonId(n.getBlankNodeLabel())) ;
-            Iterator<Statement> i = m.listStatements(null, null, r) ;
-            for ( ; i.hasNext() ; )
+            Model m = FileManager.get().loadModel("D.ttl") ;
+            //m.write(System.out, "N-TRIPLES") ;
+
+            Graph g = m.getGraph() ;
+            GNode gnode = new GNode(g, NodeConst.nodeOne) ;
+            List<Node> x = GraphList.listFromMember(gnode) ;
+            System.out.println(x) ;
+
+            // Get markers.
+            for ( Node n : x )
             {
-                Resource s = i.next().getSubject() ;
-                System.out.println(s) ;
+                Resource r = m.createResource(new AnonId(n.getBlankNodeLabel())) ;
+                Iterator<Statement> i = m.listStatements(null, null, r) ;
+                for ( ; i.hasNext() ; )
+                {
+                    Resource s = i.next().getSubject() ;
+                    System.out.println(s) ;
+                }
             }
+
+            System.exit(0) ;
         }
         
-        System.exit(0) ;
-        
-        
-        
-        execQuery("D.ttl", "Q.rq") ;
+        String dir = "testing/ARQ/EngineMain/" ;
+        execQuery(dir+"data-1.ttl", dir+"filter-1.rq") ; 
+        //execQuery("D.ttl", "Q.rq") ;
         
         Op op = SSE.readOp("Q.sse") ;
         op = Algebra.optimize(op) ; 
