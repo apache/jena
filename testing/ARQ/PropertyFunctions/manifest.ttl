@@ -41,6 +41,20 @@
         mf:result  <list-5.srx>
       ]
 
+      [  mf:name    "Property Function - list 6" ;
+         mf:action
+            [ qt:query  <list-6.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-6.srx>
+      ]
+
+      [  mf:name    "Property Function - list 7" ;
+         mf:action
+            [ qt:query  <list-7.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-7.srx>
+      ]
+
       [  mf:name    "Property Function - list length 1" ;
          mf:action
             [ qt:query  <list-length-1.rq> ;
@@ -96,11 +110,26 @@
               qt:data   <data-5.ttl> ] ;
         mf:result  <list-index-6.srx>
       ]
+
       [  mf:name    "Property Function - list index 7" ;
          mf:action
             [ qt:query  <list-index-7.rq> ;
               qt:data   <data-5.ttl> ] ;
         mf:result  <list-index-7.srx>
+      ]
+
+      [  mf:name    "Property Function - list index 8" ;
+         mf:action
+            [ qt:query  <list-index-8.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <list-index-8.srx>
+      ]
+
+      [  mf:name    "Property Function - list index 9" ;
+         mf:action
+            [ qt:query  <list-index-9.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <list-index-9.srx>
       ]
 
       [  mf:name    "Property Function - container 1" ;

@@ -1,0 +1,8 @@
+PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :      <http://example.org/>
+
+SELECT ?x ?i ?j
+{
+  { ?list list:index (?i "a") } UNION { ?list list:index (?j "b") }
+  { ?x :p ?list }
+}
