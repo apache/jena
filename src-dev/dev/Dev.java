@@ -13,6 +13,7 @@ public class Dev
     // ----
     
     // Variable value length blocks.
+    // Inline? Auxilliary file? (similar to current node table).
     
     // Misc:
     //   FactoryGraphTDB._createGraph passes null for dataset
