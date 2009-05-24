@@ -22,9 +22,9 @@
 ##     sdb:sdbType        "h2:file" ;
 ##     sdb:sdbName        "DB/H2" ;
 
-##      sdb:sdbHost        "localhost" ;
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/derby" ;
+     sdb:sdbHost        "localhost" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/derby" ;
 
 ##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
 ##     sdb:sdbType       "MySQL" ;
@@ -39,10 +39,10 @@
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "test2-hash" ;
 
-    sdb:sdbType        "oracle" ;
-    sdb:sdbHost        "localhost:1521" ;
-    sdb:sdbName        "XE" ;       # Oracle SID
-    sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
+##     sdb:sdbType        "oracle" ;
+##     sdb:sdbHost        "localhost:1521" ;
+##     sdb:sdbName        "XE" ;       # Oracle SID
+##     sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
 
 ##     # With OracleXE, it can be useful to use the user/password
 ##     # to give multiple stores in the same installation.
