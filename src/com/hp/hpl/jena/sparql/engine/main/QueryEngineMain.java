@@ -42,7 +42,7 @@ public class QueryEngineMain extends QueryEngineBase
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
-        if ( SUBSTITUE && input.vars().hasNext() )
+        if ( SUBSTITUE && ! input.isEmpty() )
             op = Substitute.substitute(op, input) ;
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
