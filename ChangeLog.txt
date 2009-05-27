@@ -8,6 +8,8 @@ Documentation:
 
 ==== SDB v1.3
 
++ Reification: Support for Reification style "standard" (only)
+
 + Upgraded to Jena 2.6.0 and ARQ 2.7.0 
     Older versions of these jars will not work.
     antlr-2.7.5.jar and concurrent.jar removed, looging no wslf4j
