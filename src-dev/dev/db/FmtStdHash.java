@@ -6,19 +6,18 @@
 
 package dev.db;
 
-import static com.hp.hpl.jena.sdb.iterator.Iter.iter;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import static dev.db.DBSyntax.col;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.iterator.Stream;
-import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 
 public class FmtStdHash extends StoreFormatterStd
 {
@@ -73,9 +72,7 @@ public class FmtStdHash extends StoreFormatterStd
         dropTable(tableDesc.getTableName()) ;
         try {
             
-            String cols = Stream.asString(
-                                iter(tableDesc.getColNames())
-                                .map(getColDeclTransform())) ;
+            String cols = Iter.iter(tableDesc.getColNames()).map(getColDeclTransform()).asString() ;
             cols = cols + SEP + syntax.primaryKey(tableDesc.getColNames()) ;
             String sql = String.format("CREATE TABLE %s (\n%s\n)", tableDesc.getTableName(), cols) ;
             connection().exec(sql) ;                

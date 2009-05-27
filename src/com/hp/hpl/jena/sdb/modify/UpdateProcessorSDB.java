@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sdb.modify;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;

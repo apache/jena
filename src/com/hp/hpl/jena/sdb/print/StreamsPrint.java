@@ -5,8 +5,10 @@
  */
 
 package com.hp.hpl.jena.sdb.print;
-import static com.hp.hpl.jena.sdb.iterator.Stream.* ;
 
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.apply;
+
+import com.hp.hpl.jena.sparql.lib.iterator.ActionPrint;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
@@ -23,20 +25,20 @@ public class StreamsPrint
     public static <T extends Printable> String printString(Iterable<? extends T> struct, String sep)
     {
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        apply(struct, new PrintAction<T>(b.getIndentedWriter(), sep)) ;
+        apply(struct, new ActionPrint<T>(b.getIndentedWriter(), sep)) ;
         return b.asString() ; 
     }
     
     public static <T extends Printable> void print(IndentedWriter out, Iterable<? extends T> struct)
     {
-        apply(struct, new PrintAction<T>(out)) ;
+        apply(struct, new ActionPrint<T>(out)) ;
     }
 
     public static <T extends Printable> void print(IndentedWriter out, 
                                                    Iterable<? extends T> struct,
                                                    String sep)
     {
-        apply(struct, new PrintAction<T>(out, sep)) ;
+        apply(struct, new ActionPrint<T>(out, sep)) ;
     }
 
 }

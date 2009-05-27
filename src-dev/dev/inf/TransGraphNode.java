@@ -11,7 +11,7 @@ import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkList;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkNode;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
@@ -24,7 +24,7 @@ class TransGraphNode extends TransGraph<Node>
         ItemList list = item.getList() ;
         list = list.cdr() ;
         
-        Iter<Item> xIter = Iter.convert(list.iterator()) ;
+        Iter<Item> xIter = Iter.iter(list.iterator()) ;
         
         for ( Item x : xIter)
         {

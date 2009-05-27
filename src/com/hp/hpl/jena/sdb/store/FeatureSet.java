@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sparql.util.PrintableBase;
-
-import com.hp.hpl.jena.sdb.iterator.Stream;
 
 /** A set of features (order retained */
 
@@ -49,7 +48,7 @@ public class FeatureSet extends PrintableBase implements Printable, Iterable<Fea
 
     public void output(IndentedWriter out)
     {
-        out.print(Stream.asString(features)) ;
+        out.print(Iter.asString(features)) ;
     }
 }
 

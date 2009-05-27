@@ -6,10 +6,8 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection;
-import static com.hp.hpl.jena.sdb.iterator.Stream.filter;
-import static com.hp.hpl.jena.sdb.iterator.Stream.map;
-import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
+import static com.hp.hpl.jena.sparql.lib.iterator.SetUtils.intersection;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.* ;
 
 import java.util.List;
 import java.util.Set;
@@ -25,6 +23,7 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -33,7 +32,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;

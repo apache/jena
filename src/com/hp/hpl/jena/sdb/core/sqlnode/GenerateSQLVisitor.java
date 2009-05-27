@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import static com.hp.hpl.jena.sdb.iterator.Stream.map;
-import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.map;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.toSet;
 
 import java.util.List;
 import java.util.Set;
@@ -21,10 +21,10 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 

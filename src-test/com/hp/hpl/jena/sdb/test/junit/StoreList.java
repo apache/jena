@@ -21,12 +21,12 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.iterator.Iter;
-import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.sdb.util.Vocab;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreList

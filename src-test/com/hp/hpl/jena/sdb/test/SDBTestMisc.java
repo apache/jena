@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import com.hp.hpl.jena.sdb.test.iterator.TestAlg;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 import com.hp.hpl.jena.sdb.test.misc.TestAssembler;
 import com.hp.hpl.jena.sdb.test.misc.TestExprMatch;
 import com.hp.hpl.jena.sdb.test.misc.TestPrefixMappingSDB;
 import com.hp.hpl.jena.sdb.test.misc.TestRegex;
 import com.hp.hpl.jena.sdb.test.misc.TestRegistry;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 // Collect the misc tests together.
 
@@ -24,7 +23,6 @@ import org.junit.runners.Suite;
     TestExprMatch.class,
     TestRegex.class,
     TestPrefixMappingSDB.class,
-    TestAlg.class,
     TestRegistry.class
 } )
 

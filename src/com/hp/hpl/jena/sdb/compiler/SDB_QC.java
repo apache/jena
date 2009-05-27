@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.iterator.Stream.map;
-import static com.hp.hpl.jena.sdb.iterator.Stream.toList;
-
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.* ;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -16,22 +14,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
-
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 
 public class SDB_QC
 {

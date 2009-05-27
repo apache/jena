@@ -13,10 +13,10 @@ import java.util.List;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.iterator.Iter;
-import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.test.SDBTestSetup;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 
 //@RunWith(Parameterized.class)
 public abstract class ParamAllStoreDesc

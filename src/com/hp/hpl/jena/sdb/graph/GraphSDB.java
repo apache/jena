@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
-import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB;
@@ -41,11 +40,10 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 
 
-public class GraphSDB extends GraphBase implements Graph
+public class GraphSDB extends GraphBase2 implements Graph
 {
     private static Logger log = LoggerFactory.getLogger(GraphSDB.class) ;
 
-    protected PrefixMapping pmap = null ;
     protected Store store = null ;
     
     // ARP buffers, which results in nested updates from our prespective
@@ -94,27 +92,25 @@ public class GraphSDB extends GraphBase implements Graph
     public SDBConnection getConnection() { return store.getConnection() ; }
     
     @Override
-    public PrefixMapping getPrefixMapping()
+    public PrefixMapping createPrefixMapping()
     { 
-        if ( pmap == null )
-            try {
-                String graphURI = null ;
-                if ( Quad.isQuadDefaultGraphNode(graphNode) )
-                    graphURI = "" ;
-                else if ( graphNode.isURI() )
-                    graphURI = graphNode.getURI() ; 
-                else
-                {
-                    log.warn("Not a URI for graph name") ;
-                    graphURI = graphNode.toString() ;
-                }
-                
-                pmap = new PrefixMappingSDB(graphURI, store.getConnection()) ;
-            } catch (Exception ex)
-            { log.warn("Failed to get prefixes: "+ex.getMessage()) ; }
-        return pmap ;
+        try {
+            String graphURI = null ;
+            if ( Quad.isQuadDefaultGraphNode(graphNode) )
+                graphURI = "" ;
+            else if ( graphNode.isURI() )
+                graphURI = graphNode.getURI() ; 
+            else
+            {
+                log.warn("Not a URI for graph name") ;
+                graphURI = graphNode.toString() ;
+            }
+
+            return new PrefixMappingSDB(graphURI, store.getConnection()) ;
+        } catch (Exception ex)
+        { log.warn("Failed to get prefixes: "+ex.getMessage()) ; return null ; }
     }
-    
+
     private Quad quad(TripleMatch m)
     {
         Node s = m.getMatchSubject() ;

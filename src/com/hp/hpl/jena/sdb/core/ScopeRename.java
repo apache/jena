@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.iterator.Transform;
 
 public class ScopeRename implements Scope
 {
