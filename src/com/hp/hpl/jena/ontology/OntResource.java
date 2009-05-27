@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.45 $
+ * Revision           $Revision: 1.46 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-13 15:38:51 $
+ * Last modified on   $Date: 2009-05-27 14:57:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.45 2009-03-13 15:38:51 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.46 2009-05-27 14:57:20 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -141,8 +141,8 @@ public interface OntResource
     public void setDifferentFrom( Resource res );
 
     /**
-     * <p>Add a resource that is declared to be equivalent to this resource.</p>
-     * @param res A resource that declared to be the same as this resource
+     * <p>Add a statement declaring that this resource is distinct from the given resource.</p>
+     * @param res A resource that declared to be distinct from this resource
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
     public void addDifferentFrom( Resource res );
