@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,6 +73,14 @@ public class BulkLoader
     {
         BulkLoader loader = new BulkLoader(graph, showProgress) ;
         loader.load(urls) ;
+    }
+    
+    public static void load(GraphTDB graph, String url, boolean showProgress)
+    {
+        List<String> list = new ArrayList<String>() ;
+        list.add(url) ;
+        BulkLoader loader = new BulkLoader(graph, showProgress) ;
+        loader.load(list) ;
     }
     
     public BulkLoader(GraphTDB graph, boolean showProgress)
@@ -238,10 +247,6 @@ public class BulkLoader
     /** Tick point for messages during secodnary index creation */
     public static long IndexTickPoint = 100000 ;
     
-    private static long quantum2 = 5*IndexTickPoint ;
-
-
-    
     private static long loadOne(Model model, String s, boolean showProgress)
     {
         GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
@@ -383,6 +388,7 @@ public class BulkLoader
 
     private void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, String label, boolean printTiming)
     {
+        long quantum2 = 5*IndexTickPoint ;
         Timer timer = new Timer() ;
         long cumulative = 0 ;
         long c = 0 ;

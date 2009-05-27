@@ -77,6 +77,15 @@ public class StrUtils extends StringUtils
         catch (UnsupportedEncodingException ex)
         { throw new InternalErrorException("UTF-8 not supported!") ; } 
     }
+
+    public static String fromUTF8bytes(byte[] bytes)
+    {
+        try { return new String(bytes, "UTF-8") ; }
+        catch (UnsupportedEncodingException ex)
+        { throw new InternalErrorException("UTF-8 not supported!") ; } 
+    }
+    
+
     
     // See FmtUtils.toString()
 //    public static String toString(Printable f)

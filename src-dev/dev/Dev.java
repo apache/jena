@@ -12,6 +12,9 @@ public class Dev
     
     // ----
     
+    // Clean up BPLustTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
+    // Ability to overwrite.
+    
     // Variable value length blocks.
     // Inline? Auxilliary file? (similar to current node table).
     
