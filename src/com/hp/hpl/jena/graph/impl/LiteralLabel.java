@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.39 2009-03-27 15:27:51 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.40 2009-05-28 09:35:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -319,19 +319,20 @@ final public class LiteralLabel {
     */
 	@Override
     public boolean equals(Object other) {
-            if (other == null || !(other instanceof LiteralLabel)) {
-            	return false;
-            }
-            LiteralLabel otherLiteral = (LiteralLabel) other;
-            boolean typeEqual =
-            	(dtype == null
-            		? otherLiteral.dtype == null
-            		: dtype.equals(otherLiteral.dtype));
-            boolean langEqual =
-                (dtype == null ? lang.equals(otherLiteral.lang) : true);
-            return typeEqual
-                && langEqual
-                && getLexicalForm().equals(otherLiteral.getLexicalForm());
+	    if ( this == other ) return true ;
+	    if (other == null || !(other instanceof LiteralLabel)) {
+	        return false;
+	    }
+	    LiteralLabel otherLiteral = (LiteralLabel) other;
+	    boolean typeEqual =
+	        (dtype == null
+	            ? otherLiteral.dtype == null
+	            : dtype.equals(otherLiteral.dtype));
+	    boolean langEqual =
+	        (dtype == null ? lang.equals(otherLiteral.lang) : true);
+	    return typeEqual
+	        && langEqual
+	        && getLexicalForm().equals(otherLiteral.getLexicalForm());
 	}
 
 	/** 

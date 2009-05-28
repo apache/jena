@@ -21,7 +21,10 @@ public class Node_ANY extends Node_Fluid
     /** Node_ANY's are only equal to other Node_ANY's */
     @Override
     public boolean equals( Object other )
-        { return other instanceof Node_ANY; }
+        {
+        if ( this == other ) return true ;
+        return other instanceof Node_ANY;
+        }
         
     @Override
     public Object visitWith( NodeVisitor v )

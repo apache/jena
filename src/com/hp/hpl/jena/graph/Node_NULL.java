@@ -22,7 +22,10 @@ public class Node_NULL extends Node_Concrete
     
     @Override
     public boolean equals( Object other )
-        { return other instanceof Node_NULL; }
+        {
+        if ( this == other ) return true ;
+        return other instanceof Node_NULL;
+        }
         
     @Override
     public Object visitWith( NodeVisitor v )

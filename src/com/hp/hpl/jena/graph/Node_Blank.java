@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Blank.java,v 1.13 2009-01-16 17:23:52 andy_seaborne Exp $
+  $Id: Node_Blank.java,v 1.14 2009-05-28 09:35:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -29,8 +29,10 @@ public class Node_Blank extends Node_Concrete
     
     @Override
     public boolean equals( Object other )
-        { return other instanceof Node_Blank && label.equals( ((Node_Blank) other).label ); }
-    }
+        {
+        if ( this == other ) return true ;
+        return other instanceof Node_Blank && label.equals( ((Node_Blank) other).label ); }
+        }
 
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
