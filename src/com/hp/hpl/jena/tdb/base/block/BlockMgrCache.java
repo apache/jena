@@ -166,6 +166,9 @@ public class BlockMgrCache extends BlockMgrWrapper
         else
             log("sync") ;
         syncFlush(force) ;
+        // Sync the wrapped object
+        super.sync(force) ;
+        
     }
     
     private void log(String fmt, Object... args)
