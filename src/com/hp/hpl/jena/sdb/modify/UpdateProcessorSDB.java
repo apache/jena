@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.modify;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
@@ -22,9 +23,9 @@ public class UpdateProcessorSDB implements UpdateProcessor
 {
     private UpdateRequest request ;
     private Binding inputBinding ;
-    private GraphStoreSDB graphStore ;
+    private DatasetStoreGraph graphStore ;
 
-    public UpdateProcessorSDB(GraphStoreSDB graphStore, UpdateRequest request, Binding inputBinding)
+    public UpdateProcessorSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding)
     {
         this.graphStore = graphStore ;
         this.request = request ;
@@ -47,12 +48,12 @@ public class UpdateProcessorSDB implements UpdateProcessor
         {
             public boolean accept(UpdateRequest request, GraphStore graphStore)
             {
-                return (graphStore instanceof GraphStoreSDB) ;
+                return (graphStore instanceof DatasetStoreGraph) ;
             }
         
             public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
             {
-                return new UpdateProcessorSDB((GraphStoreSDB)graphStore, request, inputBinding) ;
+                return new UpdateProcessorSDB((DatasetStoreGraph)graphStore, request, inputBinding) ;
             }
         } ;
     }

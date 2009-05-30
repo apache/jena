@@ -10,21 +10,18 @@ import java.sql.Connection;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.query.Dataset;
-
-import com.hp.hpl.jena.update.GraphStore;
-
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
-import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.update.GraphStore;
 
 /** Various operations to create or connect objects to do with SDB:
  *  SDBConnections, Stores, Models, Graphs.
@@ -183,7 +180,9 @@ public class SDBFactory
      * @return GraphStore
      */
     public static GraphStore connectGraphStore(Store store)
-    { return new GraphStoreSDB(store) ; }
+    { //return new GraphStoreSDB(store) ; }
+        return new DatasetStoreGraph(store) ; 
+    }
 
     /**
      * Connect to the store as a GraphStore.

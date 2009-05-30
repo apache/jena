@@ -6,8 +6,12 @@
 
 package com.hp.hpl.jena.sdb.modify;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
 import com.hp.hpl.jena.sparql.modify.op.UpdateClear;
@@ -18,12 +22,12 @@ import com.hp.hpl.jena.sparql.modify.op.UpdateExt;
 public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
 {
     Store store ;
-    GraphStoreSDB graphStoreSDB ;
+    DatasetStoreGraph graphStore ;
     
-    UpdateProcessorVisitorSDB(GraphStoreSDB graphStore, Binding inputBinding)
+    UpdateProcessorVisitorSDB(DatasetStoreGraph graphStore, Binding inputBinding)
     {
         super(graphStore, inputBinding) ;
-        graphStoreSDB = graphStore ;
+        this.graphStore = graphStore ;
     }
 
 //    @Override public void visit(UpdateModify modify) {}
@@ -41,15 +45,26 @@ public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
     @Override 
     public void visit(UpdateClear clear)
     {
-        graphStoreSDB.clear(clear.getGraphName()) ;
+        clearGraph(clear.getGraphName()) ;
     }
 
     @Override
     public void visit(UpdateDrop drop)
     { 
-        graphStoreSDB.clear(drop.getIRI()) ;
+        clearGraph(drop.getIRI()) ;
     }
 
+    private void clearGraph(Node n)
+    {
+        Graph g ;
+        if (n != null )
+            g = SDBFactory.connectNamedGraph(store, n) ;
+        else
+            g = SDBFactory.connectDefaultGraph(store) ;
+        // Delete all triples.
+        g.getBulkUpdateHandler().removeAll() ;
+    }
+    
     @Override
     public void visit(UpdateCreate create)
     { /* No-op in SDB (until a graph management module is written) */ }

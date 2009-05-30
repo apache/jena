@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
@@ -18,10 +19,13 @@ import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
+import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
+import com.hp.hpl.jena.update.GraphStore;
 
 /** A graph-level dataset for SDB - triggers SDB SQL processing when used in a query */
-public class DatasetStoreGraph implements DatasetGraph
+public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //implements DatasetGraph
 {
     Store store ;
     Graph defaultGraph = null ;
@@ -78,6 +82,33 @@ public class DatasetStoreGraph implements DatasetGraph
 
     public void close()
     { store.close(); }
+
+    //---- Update
+    public void startRequest()
+    {}
+
+    public void finishRequest()
+    {}
+
+    public Dataset toDataset()
+    { return new DatasetImpl(this) ; }
+
+    public void addGraph(Node graphName, Graph graph)
+    {
+        Graph g = getGraph(graphName) ;
+        g.getBulkUpdateHandler().add(graph) ;
+    }
+
+    public Graph removeGraph(Node graphName)
+    {
+        Graph g = getGraph(graphName) ;
+        g.getBulkUpdateHandler().removeAll() ;
+        // Return null (it's empty!)
+        return null ;
+    }
+
+    public void setDefaultGraph(Graph g)
+    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ; }  
 }
 
 /*
