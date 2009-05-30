@@ -47,7 +47,6 @@ public class UpdateProcessorTDB implements UpdateProcessor
         {
             public boolean accept(UpdateRequest request, GraphStore graphStore)
             {
-                //return (graphStore instanceof GraphStoreTDB) ;
                 return (graphStore instanceof DatasetGraphTDB) ;
             }
         
