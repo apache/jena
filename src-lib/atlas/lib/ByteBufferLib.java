@@ -6,11 +6,16 @@
 
 package atlas.lib;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NullOut;
+import static java.lang.System.arraycopy;
+import java.util.Arrays;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 
 public class ByteBufferLib
 {
+    public static boolean allowArray  = false ;
+
     private ByteBufferLib() {}
     
 //    protected static void fill(ByteBuffer bb, byte fillValue)
@@ -57,6 +62,115 @@ public class ByteBufferLib
 //        if ( i < maxSlots )
 //            out.print(" ...") ;
         out.println();
+    }
+
+    // For non-array versions : beware of overlaps.
+    final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    {
+        if ( allowArray && bb.hasArray() )
+        {
+            acopyArray(bb, src, dst, length, slotLen) ;
+            return ;
+        }
+        
+        if ( src == dst )
+            return ;
+        
+        if ( src < dst ) 
+            bbcopy1(bb, src, dst, length, slotLen) ;
+        else
+            bbcopy2(bb, src, dst, length, slotLen) ;
+    }
+
+    public final static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    {
+        int bDst = dst*slotLen ;
+        int bSrc = src*slotLen ;
+        int bLen = length*slotLen ;
+    
+        for ( int i = bLen-1 ; i >= 0 ; i-- )
+            bb.put(bDst+i, bb.get(bSrc+i)) ;
+    }
+
+    public final static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    {
+        int bDst = dst*slotLen ;
+        int bSrc = src*slotLen ;
+        int bLen = length*slotLen ;
+        
+        // src > dst so dst[0] is not in the overlap 
+        for ( int i = 0 ; i < bLen ; i++ )
+            bb.put(bDst+i, bb.get(bSrc+i)) ;
+    }
+
+    public final static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen)
+    {
+        // Assume bb1 and bb2 are different and do not overlap.
+        if ( allowArray && bb1.hasArray() && bb2.hasArray() )
+        {
+            acopyArray(bb1, src, bb2, dst, length, slotLen) ;
+            return ;
+        }
+        // One or both does not have an array.
+        
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        for ( int i = 0 ; i < bLen ; i++ )
+            bb2.put(bDst+i, bb1.get(bSrc+i)) ;
+    }
+
+    final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
+    {
+        if ( ! NullOut )
+            return ;
+        if ( allowArray && bb.hasArray() )
+        {
+            afillArray(bb, fromIdx, toIdx, fillValue, slotLen) ;
+            return ;
+        }
+        
+        int bStart = fromIdx*slotLen ;
+        int bFinish = toIdx*slotLen ;
+        
+        for ( int i = bStart ; i < bFinish ; i++ )
+            bb.put(i, fillValue) ;
+    }
+
+    // To ArrayOps?
+    
+    final private static void acopyArray(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    {
+        byte[] b = bb.array();
+        
+        int OFFSET = bb.arrayOffset() ;
+        
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        arraycopy(b, OFFSET+bSrc, b, OFFSET+bDst, bLen) ;
+    }
+
+    final private static void acopyArray(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen)
+    {
+        byte[] b1 = bb1.array();
+        byte[] b2 = bb2.array();
+        int OFFSET1 = bb1.arrayOffset() ;
+        int OFFSET2 = bb2.arrayOffset() ;
+        
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        arraycopy(b1, OFFSET1+bSrc, b2, OFFSET2+bDst, bLen) ;
+    }
+
+    final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
+    {
+        if ( NullOut )
+            Arrays.fill(bb.array(), fromIdx+bb.arrayOffset(), toIdx+bb.arrayOffset(), fillValue) ;
     }
 
 }
