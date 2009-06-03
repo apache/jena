@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.50 2009-06-03 09:04:27 chris-dollin Exp $
+    $Id: Regression.java,v 1.51 2009-06-03 09:23:33 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date: 2009-06-03 09:04:27 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date: 2009-06-03 09:23:33 $'
  */
 public class Regression extends Object {
 
@@ -450,22 +450,22 @@ public class Regression extends Object {
                     error(test, n, e);
                 }
 
-                try {
-                    n = 170;
-                    n++; r = m.createResource(new ResTestObjF());
-                    n++; if (! r.isAnon()) error(test, n);
-                } catch (JenaException e) {
-                    error(test, n, e);
-                }
+//                try {
+//                    n = 170;
+//                    n++; r = m.createResource(new ResTestObjF());
+//                    n++; if (! r.isAnon()) error(test, n);
+//                } catch (JenaException e) {
+//                    error(test, n, e);
+//                }
 
-                try {
-                    n = 180;
-                    uri = "http://aldabaran.hpl.hp.com/foo";
-                    n++; r = m.createResource(uri, new ResTestObjF());
-                    n++; if (! r.getURI().equals(uri)) error(test, n);
-                } catch (JenaException e) {
-                    error(test, n, e);
-                }
+//                try {
+//                    n = 180;
+//                    uri = "http://aldabaran.hpl.hp.com/foo";
+//                    n++; r = m.createResource(uri, new ResTestObjF());
+//                    n++; if (! r.getURI().equals(uri)) error(test, n);
+//                } catch (JenaException e) {
+//                    error(test, n, e);
+//                }
             }
 
             {
@@ -917,16 +917,16 @@ public class Regression extends Object {
                 error(test, n, e);
             }
 
-            try {
-                Resource r;
-                n = 120;
-                String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a"
-                + Integer.toString(n);
-                n++; r = m.getResource(uri, new ResTestObjF());
-                n++; if (! r.getURI().equals(uri)) error(test,n);
-            } catch (Exception e) {
-                error(test, n, e);
-            }
+//            try {
+//                Resource r;
+//                n = 120;
+//                String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a"
+//                + Integer.toString(n);
+//                n++; r = m.getResource(uri, new ResTestObjF());
+//                n++; if (! r.getURI().equals(uri)) error(test,n);
+//            } catch (Exception e) {
+//                error(test, n, e);
+//            }
 
             try {
                 Property p;
@@ -4862,7 +4862,7 @@ public class Regression extends Object {
 //        }
 //    }
 
-    public static class ResTestObjF implements ResourceF {
+    @Deprecated public static class ResTestObjF implements ResourceF {
         public Resource createResource(Resource r)
             { return new ResourceImpl( r, (ModelCom) r.getModel() ); }
     }
@@ -4893,5 +4893,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.50 2009-06-03 09:04:27 chris-dollin Exp $
+ * $Id: Regression.java,v 1.51 2009-06-03 09:23:33 chris-dollin Exp $
  */

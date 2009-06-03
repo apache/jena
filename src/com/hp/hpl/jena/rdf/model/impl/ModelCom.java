@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.137 2009-01-27 07:57:32 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.138 2009-06-03 09:23:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -85,7 +85,7 @@ public class ModelCom
     */
     protected ModelReifier modelReifier = new ModelReifier( this ); 
 	
-    public Resource getResource(String uri, ResourceF f)  {
+    @Deprecated public Resource getResource(String uri, ResourceF f)  {
         try {
             return f.createResource(getResource(uri));
         } catch (Exception e) {
@@ -435,13 +435,13 @@ public class ModelCom
     public Resource createResource( String uri,Resource type )
         { return getResource( uri ).addProperty( RDF.type, type ); }
     
-    public Resource createResource( ResourceF f )  
+    @Deprecated public Resource createResource( ResourceF f )  
         { return createResource( null, f ); }
     
     public Resource createResource( AnonId id )
         { return new ResourceImpl( id, this ); }
         
-    public Resource createResource( String uri, ResourceF f )  
+    @Deprecated public Resource createResource( String uri, ResourceF f )  
         { return f.createResource( createResource( uri ) ); }
     
  

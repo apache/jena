@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2009-06-03 09:04:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2009-06-03 09:23:32 $'
  */
 
 
@@ -206,7 +206,7 @@ public interface Alt extends Container {
      * object returned.
      
      */
-    public Resource getDefaultResource(ResourceF f);
+    @Deprecated public Resource getDefaultResource(ResourceF f);
     
     /** Return the default value for this resource. 
      * @return the default value for this resource interpreted as the return

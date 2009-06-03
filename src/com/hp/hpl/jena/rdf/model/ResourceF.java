@@ -38,9 +38,10 @@ package com.hp.hpl.jena.rdf.model;
  * supporting this interface may be used to construct instances of these
  * so called enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2008-12-28 19:31:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2009-06-03 09:23:32 $'
+
  */
-public interface ResourceF {
+@Deprecated public interface ResourceF {
     /** Create new resource instance which extends the behaviour of a supplied
      * resource.
      * @param r The core resource whose behaviour is to be extended.

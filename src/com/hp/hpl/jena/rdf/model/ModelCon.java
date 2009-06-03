@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.34 $'
-            Date='$Date: 2009-01-19 12:07:12 $'
+            Revision='$Revision: 1.35 $'
+            Date='$Date: 2009-06-03 09:23:32 $'
  */
 public interface ModelCon {
 
@@ -72,7 +72,7 @@ public interface ModelCon {
  * @param f the factory object
   
  */    
-    Resource getResource(String uri, ResourceF f) ;
+@Deprecated Resource getResource(String uri, ResourceF f) ;
 
 /** Return a Property instance in this model.
  *
@@ -203,7 +203,7 @@ public interface ModelCon {
  * @param f A factory object to create the returned object.
  .
  */
-    public Resource createResource(ResourceF f) ;
+    @Deprecated public Resource createResource(ResourceF f) ;
  
 /** Create a new resource using the supplied factory.
  *
@@ -214,7 +214,7 @@ public interface ModelCon {
  * @param f A factory to create the returned object.
  .
  */   
-    public Resource createResource(String uri, ResourceF f) ;
+    @Deprecated public Resource createResource(String uri, ResourceF f) ;
 
 /** Create a property.
  *

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.31 2009-06-03 09:04:28 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.32 2009-06-03 09:23:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2009-06-03 09:04:28 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2009-06-03 09:23:33 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
@@ -112,7 +112,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
         return getRequiredProperty(RDF.li(index)).getLanguage();
     }
     
-    public Resource getResource(int index, ResourceF f) {
+    @Deprecated public Resource getResource(int index, ResourceF f) {
         return getRequiredProperty(RDF.li(index)).getResource(f);
     }
     

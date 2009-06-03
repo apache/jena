@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2009-06-03 09:04:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2009-06-03 09:23:32 $'
  */
 public interface Seq extends Container {
     
@@ -252,7 +252,7 @@ public interface Seq extends Container {
      * @param f The factory object used to create the returned object.
      .
      */
-    public Resource getResource(int index, ResourceF f) ;
+    @Deprecated public Resource getResource(int index, ResourceF f) ;
     
     /** Get the member at a given index.
      *
