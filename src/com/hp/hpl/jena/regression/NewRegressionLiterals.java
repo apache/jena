@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionLiterals.java,v 1.11 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionLiterals.java,v 1.12 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.regression;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.regression.Regression.*;
+//import com.hp.hpl.jena.regression.Regression.*;
 
 public class NewRegressionLiterals extends NewRegressionBase
     {

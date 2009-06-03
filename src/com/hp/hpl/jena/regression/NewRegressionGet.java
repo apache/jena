@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionGet.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionGet.java,v 1.8 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -10,7 +10,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.regression.Regression.ResTestObjF;
+//import com.hp.hpl.jena.regression.Regression.ResTestObjF;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class NewRegressionGet extends ModelTestBase
@@ -47,12 +47,12 @@ public class NewRegressionGet extends ModelTestBase
         assertEquals( uri, r.getURI() );
         }
 
-    public void testGetResourceFactory()
-        {
-        String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 120;
-        Resource r = m.getResource( uri, new ResTestObjF() );
-        assertEquals( uri, r.getURI() );
-        }
+//    public void testGetResourceFactory()
+//        {
+//        String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 120;
+//        Resource r = m.getResource( uri, new ResTestObjF() );
+//        assertEquals( uri, r.getURI() );
+//        }
 
     public void testGetPropertyOneArg()
         {

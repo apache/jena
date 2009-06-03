@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.18 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.19 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -12,7 +12,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.regression.Regression.*;
+//import com.hp.hpl.jena.regression.Regression.*;
 import com.hp.hpl.jena.shared.PropertyNotFoundException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -127,10 +127,10 @@ public class NewRegressionListSubjects extends ModelTestBase
 //        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvLitObjs[0] ) );
 //
 //        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvLitObjs[1] ) );
-
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvResObjs[0] ) );
-
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvResObjs[1] ) );
+//
+//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvResObjs[0] ) );
+//
+//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvResObjs[1] ) );
 
         // assertEquiv( new HashSet( Arrays.asList( objects ) ), m.listObjectsOfProperty( predicates[1] ) );
         }
@@ -158,9 +158,9 @@ public class NewRegressionListSubjects extends ModelTestBase
 //            { m.createTypedLiteral( new LitTestObjF() ),
 //            m.createTypedLiteral( new LitTestObjF() ) };
         
-        tvResObjs  = new Resource[] 
-            { m.createResource( new ResTestObjF() ),
-            m.createResource( new ResTestObjF() ) };
+//        tvResObjs  = new Resource[] 
+//            { m.createResource( new ResTestObjF() ),
+//            m.createResource( new ResTestObjF() ) };
         
         objects = new RDFNode[]
             {

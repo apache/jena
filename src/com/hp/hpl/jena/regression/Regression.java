@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.51 2009-06-03 09:23:33 chris-dollin Exp $
+    $Id: Regression.java,v 1.52 2009-06-03 09:51:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date: 2009-06-03 09:23:33 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.52 $' Date='$Date: 2009-06-03 09:51:08 $'
  */
 public class Regression extends Object {
 
@@ -1351,7 +1351,7 @@ public class Regression extends Object {
         boolean subjf[] = new boolean[num];
         boolean predf[] = new boolean[num];
 
-        int numObj = 8;
+        int numObj = 7;
         boolean objf[] = new boolean[numObj];
         RDFNode object[] = new RDFNode[numObj];
 
@@ -1361,8 +1361,8 @@ public class Regression extends Object {
         try {
 //            Literal     tvLitObj[]  = { m.createTypedLiteral(new LitTestObjF()),
 //                                        m.createTypedLiteral(new LitTestObjF()) };
-            Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
-                                        m.createResource(new ResTestObjF()) };
+//            Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
+//                                        m.createResource(new ResTestObjF()) };
 
             for (int i = 0; i<num; i++) {
                 subject[i] = m.createResource(suri + Integer.toString(i));
@@ -1398,8 +1398,8 @@ public class Regression extends Object {
 //                    stmt = m.createStatement(subject[i], predicate[j],
 //                                            tvLitObj[j]);
 //                    m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                            tvResObj[j]);
+//                    stmt = m.createStatement(subject[i], predicate[j],
+//                                            tvResObj[j]);
                     m.add(stmt);
                 }
             }
@@ -1411,7 +1411,7 @@ public class Regression extends Object {
             object[5] = m.createLiteral( tvString[1] );
             object[6] = m.createLiteral( tvString[1], lang[1] );
 //            object[7] = tvLitObj[1];
-            object[7] = tvResObj[1];
+//            object[7] = tvResObj[1];
 
             n = 100;
 
@@ -2002,53 +2002,53 @@ public class Regression extends Object {
 //                if (subjf[i]) error(test, n+70+i);
 //            }
 
-            n=1300;
-            // System.out.println( "* -- n := " + n );
-            for (int i=0; i<num; i++) {
-                subjf[i] = false;
-            }
-            found = false;
-            rIter = m.listResourcesWithProperty(predicate[0], tvResObj[0]);
-            while (rIter.hasNext()) {
-                Resource subj = rIter.nextResource();
-                found = false;
-                for (int i=0; i<num; i++) {
-                    if (subj.equals(subject[i])) {
-                        found = true;
-                        if (subjf[i]) error(test, n+10);
-                        subjf[i] = true;
-                    }
-                }
-                if (! found) error(test, n+20);
-            }
-            for (int i=0; i<num; i++) {
-                if (subjf[i]) {
-                    if (i>1) error(test, n+30+i);
-                } else {
-                    if (i<2) error(test, n+40+i);
-                }
-            }
-
-            for (int i=0; i<num; i++) {
-                subjf[i] = false;
-            }
-            found = false;
-            rIter = m.listResourcesWithProperty(predicate[0], tvResObj[1]);
-            while (rIter.hasNext()) {
-                Resource subj = rIter.nextResource();
-                found = false;
-                for (int i=0; i<num; i++) {
-                    if (subj.equals(subject[i])) {
-                        found = true;
-                        if (subjf[i]) error(test, n+50);
-                        subjf[i] = true;
-                    }
-                }
-                if (! found) error(test, n+60);
-            }
-            for (int i=0; i<num; i++) {
-                if (subjf[i]) error(test, n+70+i);
-            }
+//            n=1300;
+//            // System.out.println( "* -- n := " + n );
+//            for (int i=0; i<num; i++) {
+//                subjf[i] = false;
+//            }
+//            found = false;
+//            rIter = m.listResourcesWithProperty(predicate[0], tvResObj[0]);
+//            while (rIter.hasNext()) {
+//                Resource subj = rIter.nextResource();
+//                found = false;
+//                for (int i=0; i<num; i++) {
+//                    if (subj.equals(subject[i])) {
+//                        found = true;
+//                        if (subjf[i]) error(test, n+10);
+//                        subjf[i] = true;
+//                    }
+//                }
+//                if (! found) error(test, n+20);
+//            }
+//            for (int i=0; i<num; i++) {
+//                if (subjf[i]) {
+//                    if (i>1) error(test, n+30+i);
+//                } else {
+//                    if (i<2) error(test, n+40+i);
+//                }
+//            }
+//
+//            for (int i=0; i<num; i++) {
+//                subjf[i] = false;
+//            }
+//            found = false;
+//            rIter = m.listResourcesWithProperty(predicate[0], tvResObj[1]);
+//            while (rIter.hasNext()) {
+//                Resource subj = rIter.nextResource();
+//                found = false;
+//                for (int i=0; i<num; i++) {
+//                    if (subj.equals(subject[i])) {
+//                        found = true;
+//                        if (subjf[i]) error(test, n+50);
+//                        subjf[i] = true;
+//                    }
+//                }
+//                if (! found) error(test, n+60);
+//            }
+//            for (int i=0; i<num; i++) {
+//                if (subjf[i]) error(test, n+70+i);
+//            }
 
             n = 1400;
             // System.out.println( "* -- n := " + n );
@@ -2109,8 +2109,8 @@ public class Regression extends Object {
         try {
 //            Literal     tvLitObj[]  = { m.createTypedLiteral(new LitTestObjF()),
 //                                        m.createTypedLiteral(new LitTestObjF()) };
-            Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
-                                        m.createResource(new ResTestObjF()) };
+//            Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
+//                                        m.createResource(new ResTestObjF()) };
 
             for (int i = 0; i<num; i++) {
                 subject[i] = m.createResource(suri + Integer.toString(i));
@@ -2140,8 +2140,8 @@ public class Regression extends Object {
 //                    stmt = m.createStatement(subject[i], predicate[j],
 //                                            tvLitObj[j]);
 //                    m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                            tvResObj[j]);
+//                    stmt = m.createStatement(subject[i], predicate[j],
+//                                            tvResObj[j]);
                     m.add(stmt);
                 }
             }
@@ -2149,14 +2149,13 @@ public class Regression extends Object {
             StmtIterator iter;
             n=100;
             int count = 0;
-            n++; iter = m.listStatements(
-                                  new SimpleSelector(null, null, (RDFNode)null));
+            n++; iter = m.listStatements( new SimpleSelector(null, null, (RDFNode)null));
             while (iter.hasNext()) {
                 iter.nextStatement();
                 count++;
             }
             n++; iter.close();
-            n++; if (! (count==num*num*7)) {
+            n++; if (! (count==num*num*6)) {
                 error(test,n);
                 System.err.println(count);
             }
@@ -2172,31 +2171,30 @@ public class Regression extends Object {
                 count++;
             }
             n++; iter.close();
-            n++; if (! (count==num*7)) error(test,n);
+            n++; if (! (count==num*6)) error(test,n);
 
             n=120;
             count = 0;
-            n++; iter = m.listStatements(
-                           new SimpleSelector(null, predicate[1], (RDFNode) null));
+            n++; iter = m.listStatements( new SimpleSelector(null, predicate[1], (RDFNode) null));
             while (iter.hasNext()) {
                 stmt = iter.nextStatement();
                 if (! stmt.getPredicate().equals(predicate[1])) error(test, n);
                 count++;
             }
             n++; iter.close();
-            n++; if (! (count==num*7)) error(test,n);
+            n++; if (! (count==num*6)) error(test,n);
 
             n=130;
             count = 0;
-            n++; iter = m.listStatements(
-                            new SimpleSelector(null, null, tvResObj[1]));
-            while (iter.hasNext()) {
-                stmt = iter.nextStatement();
-                if (! stmt.getObject().equals(tvResObj[1])) error(test, n);
-                count++;
-            }
-            n++; iter.close();
-            n++; if (! (count==2)) error(test,n);
+            n++;
+//                iter = m.listStatements( new SimpleSelector(null, null, tvResObj[1]));
+//            while (iter.hasNext()) {
+//                stmt = iter.nextStatement();
+//                if (! stmt.getObject().equals(tvResObj[1])) error(test, n);
+//                count++;
+//            }
+//            n++; iter.close();
+//            n++; if (! (count==2)) error(test,n);
 
             n=140;
             count = 0;
@@ -4781,8 +4779,9 @@ public class Regression extends Object {
               n++; if (! (seq7.size()==num)) error(test,n);
               n=(n/100)*100 + 100;
                    seq7.set(5, tvResObj);
-              n++; if (! (seq7.getResource(5, new ResTestObjF())
-                             .equals(tvResObj))) error(test,n);
+              n++; 
+//                  if (! (seq7.getResource(5, new ResTestObjF())
+//                             .equals(tvResObj))) error(test,n);
               n++; if (! (seq7.getInt(4)==3)) error(test,n);
               n++; if (! (seq7.getInt(6)==5)) error(test,n);
               n++; if (! (seq7.size()==num)) error(test,n);
@@ -4893,5 +4892,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.51 2009-06-03 09:23:33 chris-dollin Exp $
+ * $Id: Regression.java,v 1.52 2009-06-03 09:51:08 chris-dollin Exp $
  */

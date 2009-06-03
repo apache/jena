@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSelector.java,v 1.11 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionSelector.java,v 1.12 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -12,7 +12,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.regression.Regression.*;
+//import com.hp.hpl.jena.regression.Regression.*;
 
 public class NewRegressionSelector extends ModelTestBase
     {
@@ -58,8 +58,8 @@ public class NewRegressionSelector extends ModelTestBase
 
 //        Literal     tvLitObjs[]  = { m.createTypedLiteral(new LitTestObjF()),
 //                                    m.createTypedLiteral(new LitTestObjF()) };
-        Resource    tvResObjs[]  = { m.createResource(new ResTestObjF()),
-                                    m.createResource(new ResTestObjF()) };
+//        Resource    tvResObjs[]  = { m.createResource(new ResTestObjF()),
+//                                    m.createResource(new ResTestObjF()) };
 
         for (int i = 0; i < num; i += 1) 
             {
@@ -78,31 +78,31 @@ public class NewRegressionSelector extends ModelTestBase
                 m.add( subject[i], predicate[j], tvStrings[j] );
                 m.add( subject[i], predicate[j], tvStrings[j], langs[j] );
 //                m.add( subject[i], predicate[j], tvLitObjs[j] );
-                m.add( subject[i], predicate[j], tvResObjs[j] );
+//                m.add( subject[i], predicate[j], tvResObjs[j] );
                 }
             }
         
         StmtIterator it1 = m.listStatements( new SimpleSelector( null, null, (RDFNode) null) );
         List<Statement> L1 = iteratorToList( it1 );
-        assertEquals( num * num * 7, L1.size() );
+        assertEquals( num * num * 6, L1.size() );
 
         StmtIterator it2 = m.listStatements( new SimpleSelector( subject[0], null, (RDFNode) null) );
         List<Statement> L2 = iteratorToList( it2 );
         for (int i = 0; i < L2.size(); i += 1) 
             assertEquals( subject[0], L2.get(i).getSubject() );
-        assertEquals( num * 7, L2.size() );
+        assertEquals( num * 6, L2.size() );
         
         StmtIterator it3 = m.listStatements( new SimpleSelector( null, predicate[1], (RDFNode) null) );
         List<Statement> L3 = iteratorToList( it3 );
         for (int i = 0; i < L3.size(); i += 1) 
             assertEquals( predicate[1], L3.get(i).getPredicate() );
-        assertEquals( num * 7, L3.size() );
+        assertEquals( num * 6, L3.size() );
         
-        StmtIterator it4 = m.listStatements( new SimpleSelector( null, null, tvResObjs[1] ) );
-        List<Statement> L4 = iteratorToList( it4 );
-        for (int i = 0; i < L4.size(); i += 1) 
-            assertEquals( tvResObjs[1], L4.get(i).getObject() );
-        assertEquals( 2, L4.size() );
+//        StmtIterator it4 = m.listStatements( new SimpleSelector( null, null, tvResObjs[1] ) );
+//        List<Statement> L4 = iteratorToList( it4 );
+//        for (int i = 0; i < L4.size(); i += 1) 
+//            assertEquals( tvResObjs[1], L4.get(i).getObject() );
+//        assertEquals( 2, L4.size() );
         
         StmtIterator it5 = m.listStatements( new SimpleSelector( null, null, m.createTypedLiteral( false ) ) );
         List<Statement> L5 = iteratorToList( it5 );

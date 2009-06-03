@@ -1,14 +1,14 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatementMethods.java,v 1.13 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionStatementMethods.java,v 1.14 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.regression.Regression.*;
+//import com.hp.hpl.jena.regression.Regression.*;
 
 import junit.framework.*;
 
@@ -123,11 +123,11 @@ public class NewRegressionStatementMethods extends NewRegressionBase
         assertEquals( lang, m.createStatement( r, RDF.value, tvString, lang ).getLanguage() );
         }
     
-    public void testResObj()
-        {
-        Resource   tvResObj = m.createResource( new ResTestObjF() );
-        assertEquals( tvResObj, m.createStatement( r, RDF.value, tvResObj ).getResource() );
-        }
+//    public void testResObj()
+//        {
+//        Resource   tvResObj = m.createResource( new ResTestObjF() );
+//        assertEquals( tvResObj, m.createStatement( r, RDF.value, tvResObj ).getResource() );
+//        }
     
 //    public void testLitObj()
 //        {
@@ -262,16 +262,16 @@ public class NewRegressionStatementMethods extends NewRegressionBase
         assertTrue( m.contains( r, RDF.value, tvString, lang ) );
         }
 
-    public void testChangeObjectResObject()
-        {
-        Resource   tvResObj = m.createResource( new ResTestObjF() );
-        Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeObject( tvResObj );
-        checkChangedStatementSP( changed );
-        assertEquals( tvResObj, changed.getResource() );
-        checkCorrectStatements( sTrue, changed );
-        assertTrue( m.contains( r, RDF.value, tvResObj ) );
-        }
+//    public void testChangeObjectResObject()
+//        {
+//        Resource   tvResObj = m.createResource( new ResTestObjF() );
+//        Statement sTrue = loadInitialStatement();
+//        Statement changed = sTrue.changeObject( tvResObj );
+//        checkChangedStatementSP( changed );
+//        assertEquals( tvResObj, changed.getResource() );
+//        checkCorrectStatements( sTrue, changed );
+//        assertTrue( m.contains( r, RDF.value, tvResObj ) );
+//        }
 
     public void testChangeObjectLiteral()
         {

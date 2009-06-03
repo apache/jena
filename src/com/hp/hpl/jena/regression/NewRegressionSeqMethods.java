@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeqMethods.java,v 1.8 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionSeqMethods.java,v 1.9 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -34,7 +34,7 @@ public class NewRegressionSeqMethods extends NewRegressionContainerMethods
     protected LitTestObj aLitTestObj;
     protected Literal tvLiteral;
     protected Resource tvResource;
-    protected Resource tvResObj;
+//    protected Resource tvResObj;
     protected Object anObject;
     protected Bag tvBag;
     protected Alt tvAlt;
@@ -50,7 +50,7 @@ public class NewRegressionSeqMethods extends NewRegressionContainerMethods
         aLitTestObj = new LitTestObj( 12345 );
         tvLiteral = m.createLiteral( "test 12 string 2" );
         tvResource = m.createResource();
-        tvResObj = m.createResource( new ResTestObjF() );
+//        tvResObj = m.createResource( new ResTestObjF() );
         anObject = new LitTestObj( 1234 );
         tvBag = m.createBag();
         tvAlt = m.createAlt();
@@ -202,10 +202,10 @@ public class NewRegressionSeqMethods extends NewRegressionContainerMethods
         n++;
         if (!(seq7.size() == num)) error( test, n );
         n = (n / 100) * 100 + 100;
-        seq7.set( 5, tvResObj );
-        n++;
-        if (!(seq7.getResource( 5, new ResTestObjF() ).equals( tvResObj ))) error(
-                test, n );
+//        seq7.set( 5, tvResObj );
+//        n++;
+//        if (!(seq7.getResource( 5, new ResTestObjF() ).equals( tvResObj ))) error(
+//                test, n );
         n++;
         if (!(seq7.getInt( 4 ) == 3)) error( test, n );
         n++;
@@ -407,26 +407,26 @@ public class NewRegressionSeqMethods extends NewRegressionContainerMethods
         n++;
         if (!(seq4.getLiteral( 13 ).equals( tvLiteral ))) error( test, n );
         n++;
-        seq4.add( tvResObj );
-        n++;
-        if (!(seq4.getResource( 14, new ResTestObjF() ).equals( tvResObj ))) error(
-                test, n );
+//        seq4.add( tvResObj );
+//        n++;
+//        if (!(seq4.getResource( 14, new ResTestObjF() ).equals( tvResObj ))) error(
+//                test, n );
         n++;
         seq4.add( tvBag );
         n++;
-        if (!(seq4.getBag( 15 ).equals( tvBag ))) error( test, n );
+        if (!(seq4.getBag( 14 ).equals( tvBag ))) error( test, n );
         n++;
         seq4.add( tvAlt );
         n++;
-        if (!(seq4.getAlt( 16 ).equals( tvAlt ))) error( test, n );
+        if (!(seq4.getAlt( 15 ).equals( tvAlt ))) error( test, n );
         n++;
         seq4.add( tvSeq );
         n++;
-        if (!(seq4.getSeq( 17 ).equals( tvSeq ))) error( test, n );
+        if (!(seq4.getSeq( 16 ).equals( tvSeq ))) error( test, n );
         n++;
         try
             {
-            seq4.getInt( 18 );
+            seq4.getInt( 17 );
             error( test, n );
             }
         catch (SeqIndexBoundsException e)

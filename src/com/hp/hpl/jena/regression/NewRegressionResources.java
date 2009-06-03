@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.16 2009-01-27 14:32:37 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.17 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -12,7 +12,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.regression.Regression.ResTestObjF;
+//import com.hp.hpl.jena.regression.Regression.ResTestObjF;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.regression.Regression.*;
@@ -72,18 +72,18 @@ public class NewRegressionResources extends NewRegressionBase
         assertTrue( m.contains( r, RDF.type, RDF.Property ) );
         }
     
-    public void testCreateAnonByFactory()
-        {
-        Model m = getModel();
-        assertTrue( m.createResource( new ResTestObjF() ).isAnon() );
-        }
+//    public void testCreateAnonByFactory()
+//        {
+//        Model m = getModel();
+//        assertTrue( m.createResource( new ResTestObjF() ).isAnon() );
+//        }
     
-    public void testCreateResourceByFactory()
-        {
-        Model m = getModel();
-        String uri = "http://aldabaran.hpl.hp.com/foo";
-        assertEquals( uri, m.createResource( uri, new ResTestObjF() ).getURI() );
-        }
+//    public void testCreateResourceByFactory()
+//        {
+//        Model m = getModel();
+//        String uri = "http://aldabaran.hpl.hp.com/foo";
+//        assertEquals( uri, m.createResource( uri, new ResTestObjF() ).getURI() );
+//        }
     
     public void testCreateNullPropertyFails()
         {
@@ -199,7 +199,7 @@ public class NewRegressionResources extends NewRegressionBase
         StmtIterator sIter;
 
         Literal tvLiteral = m.createLiteral( "test 12 string 2" );
-        Resource tvResObj = m.createResource( new ResTestObjF() );
+//        Resource tvResObj = m.createResource( new ResTestObjF() );
         Object tvLitObj = new LitTestObj( 1234 );
         Bag tvBag = m.createBag();
         Alt tvAlt = m.createAlt();
@@ -222,9 +222,9 @@ public class NewRegressionResources extends NewRegressionBase
         assertFalse( cont1.contains( tvString, lang ) );
         assertTrue( cont1.add( tvString, lang ).contains( tvString, lang ) );
         assertTrue( cont1.add( tvLiteral ).contains( tvLiteral ) );
-        assertTrue( cont1.add( tvResObj ).contains( tvResObj ) );
+//        assertTrue( cont1.add( tvResObj ).contains( tvResObj ) );
         assertTrue( cont1.add( tvLitObj ).contains( tvLitObj ) );
-        assertEquals( 13, cont1.size() );
+        assertEquals( 12, cont1.size() );
     //
         int num = 10;
         for (int i = 0; i < num; i += 1) cont2.add( i );

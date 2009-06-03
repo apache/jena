@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeq.java,v 1.10 2009-06-03 09:04:27 chris-dollin Exp $
+ 	$Id: NewRegressionSeq.java,v 1.11 2009-06-03 09:51:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -85,13 +85,13 @@ public class NewRegressionSeq extends NewRegressionBase
         assertTrue( seq.contains( new LitTestObj( 12345 ) ) );
         assertFalse( seq.contains( new LitTestObj( 54321 ) ) );
    //     
-        Resource present = m.createResource( new ResTestObjF() );
-        Resource absent = m.createResource( new ResTestObjF() );
-        seq.add( present );
-        assertTrue( seq.contains( present ) );
-        assertFalse( seq.contains( absent ) );
+//        Resource present = m.createResource( new ResTestObjF() );
+//        Resource absent = m.createResource( new ResTestObjF() );
+//        seq.add( present );
+//        assertTrue( seq.contains( present ) );
+//        assertFalse( seq.contains( absent ) );
     //    
-        assertEquals( 12, seq.size() );
+        assertEquals( 11, seq.size() );
         }
     
     public void testSeqAddInts()
@@ -146,7 +146,7 @@ public class NewRegressionSeq extends NewRegressionBase
         LitTestObj tvObject = new LitTestObj(12345);
         Literal    tvLiteral = m.createLiteral("test 12 string 2");
         Resource   tvResource = m.createResource();
-        Resource   tvResObj = m.createResource(new ResTestObjF());
+//        Resource   tvResObj = m.createResource(new ResTestObjF());
         Object     tvLitObj = new LitTestObj(1234);
         Bag        tvBag    = m.createBag();
         Alt        tvAlt    = m.createAlt();
@@ -175,18 +175,18 @@ public class NewRegressionSeq extends NewRegressionBase
 //        assertEquals( tvLitObj, seq.getObject( 10, new LitTestObjF() ) );
         seq.add( tvResource );
         assertEquals( tvResource, seq.getResource( 11 ) );
-        seq.add( tvResObj );
-        assertEquals( tvResObj, seq.getResource( 12, new ResTestObjF() ) );
+//        seq.add( tvResObj );
+//        assertEquals( tvResObj, seq.getResource( 12, new ResTestObjF() ) );
         seq.add( tvLiteral );
-        assertEquals( tvLiteral, seq.getLiteral( 13 ) );
+        assertEquals( tvLiteral, seq.getLiteral( 12 ) );
         seq.add( tvBag );
-        assertEquals( tvBag, seq.getBag( 14 ) );
+        assertEquals( tvBag, seq.getBag( 13 ) );
         seq.add( tvAlt );
-        assertEquals( tvAlt, seq.getAlt( 15 ) );
+        assertEquals( tvAlt, seq.getAlt( 14 ) );
         seq.add( tvSeq );
-        assertEquals( tvSeq, seq.getSeq( 16 ) );
+        assertEquals( tvSeq, seq.getSeq( 15 ) );
     //
-        try { seq.getInt( 17 ); fail( "there is no element 17" ); }
+        try { seq.getInt( 16 ); fail( "there is no element 16" ); }
         catch (SeqIndexBoundsException e) { pass(); }
         try { seq.getInt( 0 ); fail( "there is no element 0" ); }
         catch (SeqIndexBoundsException e) { pass(); }
@@ -197,7 +197,7 @@ public class NewRegressionSeq extends NewRegressionBase
         LitTestObj tvObject = new LitTestObj(12345);
         Literal    tvLiteral = m.createLiteral("test 12 string 2");
         Resource   tvResource = m.createResource();
-        Resource   tvResObj = m.createResource(new ResTestObjF());
+//        Resource   tvResObj = m.createResource(new ResTestObjF());
         Object     tvLitObj = new LitTestObj(1234);
         Bag        tvBag    = m.createBag();
         Alt        tvAlt    = m.createAlt();
@@ -227,8 +227,8 @@ public class NewRegressionSeq extends NewRegressionBase
 //        assertEquals( tvLitObj, seq.getObject( 1, new LitTestObjF() ) );
         seq.add( 1, tvResource );
         assertEquals( tvResource, seq.getResource( 1 ) );
-        seq.add( 1, tvResObj );
-        assertEquals( tvResObj, seq.getResource( 1, new ResTestObjF() ) );
+//        seq.add( 1, tvResObj );
+//        assertEquals( tvResObj, seq.getResource( 1, new ResTestObjF() ) );
         seq.add( 1, tvLiteral );
         assertEquals( tvLiteral, seq.getLiteral( 1 ) );
         seq.add( 1, tvBag );
@@ -243,17 +243,17 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( 2, seq.indexOf( tvAlt ) );
         assertEquals( 3, seq.indexOf( tvBag ) );
         assertEquals( 4, seq.indexOf( tvLiteral ) );
-        assertEquals( 6, seq.indexOf( tvResource ) );
-        assertEquals( 7, seq.indexOf( tvLitObj ) );
-        assertEquals( 8, seq.indexOf( "some string" ) );
-        assertEquals( 9, seq.indexOf( 12345.67890 ) );
-        assertEquals( 10, seq.indexOf( 123.456f ) );
-        assertEquals( 11, seq.indexOf( '!' ) );
-        assertEquals( 12, seq.indexOf( -2 ) );
-        assertEquals( 13, seq.indexOf( -1 ) );
-        assertEquals( 14, seq.indexOf( (short) 2 ) );
-        assertEquals( 15, seq.indexOf( (byte) 1 ) );
-        assertEquals( 16, seq.indexOf( true ) );
+        assertEquals( 5, seq.indexOf( tvResource ) );
+        assertEquals( 6, seq.indexOf( tvLitObj ) );
+        assertEquals( 7, seq.indexOf( "some string" ) );
+        assertEquals( 8, seq.indexOf( 12345.67890 ) );
+        assertEquals( 9, seq.indexOf( 123.456f ) );
+        assertEquals( 10, seq.indexOf( '!' ) );
+        assertEquals( 11, seq.indexOf( -2 ) );
+        assertEquals( 12, seq.indexOf( -1 ) );
+        assertEquals( 13, seq.indexOf( (short) 2 ) );
+        assertEquals( 14, seq.indexOf( (byte) 1 ) );
+        assertEquals( 15, seq.indexOf( true ) );
         }
 
     public void testMoreIndexing()
@@ -294,7 +294,7 @@ public class NewRegressionSeq extends NewRegressionBase
         StmtIterator sIter;
         Literal    tvLiteral = m.createLiteral("test 12 string 2");
         Resource   tvResource = m.createResource();
-        Resource   tvResObj = m.createResource(new ResTestObjF());
+//        Resource   tvResObj = m.createResource(new ResTestObjF());
         Bag        tvBag    = m.createBag();
         Alt        tvAlt    = m.createAlt();
         Seq        tvSeq    = m.createSeq();
@@ -375,11 +375,11 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( 5, seq.getInt( 6 ) );
         assertEquals( num, seq.size() );
         
-        seq.set( 5, tvResObj );
-        assertEquals( tvResObj, seq.getResource( 5, new ResTestObjF() ) );
-        assertEquals( 3, seq.getInt( 4 ) );
-        assertEquals( 5, seq.getInt( 6 ) );
-        assertEquals( num, seq.size() );
+//        seq.set( 5, tvResObj );
+//        assertEquals( tvResObj, seq.getResource( 5, new ResTestObjF() ) );
+//        assertEquals( 3, seq.getInt( 4 ) );
+//        assertEquals( 5, seq.getInt( 6 ) );
+//        assertEquals( num, seq.size() );
         }
     }
 
