@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.17 2009-02-03 10:21:17 chris-dollin Exp $
+# $Id: contributions.n3,v 1.18 2009-06-03 10:40:55 castagna Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -127,6 +127,7 @@
     ; ct:linkTitle "GeoSpatialWeb"
     ; ct:licence "GNU GPL License"
     .
+
 []
     dc:creator "UTD"
     ; dc:name "Infinite Graph"
@@ -136,3 +137,11 @@
     ; ct:licence "BSD LICENCE"
     .
 
+[]
+    dc:creator "Taylor Cowan and David Donohue"
+    ; dc:name "Jenabean"
+    ; dc:description "jenabean uses Jena's flexible RDF/OWL API to persist Java beans."
+    ; ct:link "http://code.google.com/p/jenabean/";
+    ; ct:linkTitle "Jenabean project page"
+    ; ct:licence "Apache 2.0"
+    .
