@@ -255,6 +255,11 @@ public class TS_Expr extends TestSuite
         // Later
         String dateTime4 = "'2005-02-25T13:00:00Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
         
+        String time1 = "'12:03:34Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
+		String time2 = "'12:03:34Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
+		String time3 = "'13:00:00Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
+		String time4 = "'11:03:34Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
+
         ts.addTest(new TestExprBoolean(dateTime1+" = "+dateTime2, true)) ;
         ts.addTest(new TestExprBoolean(dateTime1+" <= "+dateTime2, true)) ;
         ts.addTest(new TestExprBoolean(dateTime1+" >= "+dateTime2, true)) ;
@@ -265,7 +270,40 @@ public class TS_Expr extends TestSuite
         ts.addTest(new TestExprBoolean(dateTime4+" < "+dateTime1, false)) ;
         ts.addTest(new TestExprBoolean(dateTime4+" > "+dateTime1, true)) ;
 
+        ts.addTest(new TestExprBoolean(time1+" = "+time2, true)) ;
+        ts.addTest(new TestExprBoolean(time1+" <= "+time2, true)) ;
+        ts.addTest(new TestExprBoolean(time1+" >= "+time2, true)) ;
+        ts.addTest(new TestExprBoolean(time3+" < "+time2, false)) ;
+        ts.addTest(new TestExprBoolean(time3+" > "+time2, true)) ;
+        ts.addTest(new TestExprBoolean(time4+" < "+time2, true)) ;
+        ts.addTest(new TestExprBoolean(time4+" > "+time2, false)) ;
         return ts ;
+    }
+    
+    static public TestSuite duration()
+    {
+        TestSuite ts = new TestSuite("Duration Expressions") ;
+        String duration1 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        String duration2 = "'P2Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        
+        ts.addTest(new TestExprBoolean(duration1+" < "+duration2, true)) ;
+        ts.addTest(new TestExprBoolean(duration1+" > "+duration2, false)) ;
+        ts.addTest(new TestExprBoolean(duration2+" < "+duration1, true)) ;
+        
+        String duration3 = "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        ts.addTest(new TestExprBoolean(duration1+" = "+duration3, true)) ;
+        ts.addTest(new TestExprBoolean(duration1+" <= "+duration3, true)) ;
+        ts.addTest(new TestExprBoolean(duration1+" >= "+duration3, true)) ;
+        
+        String duration4 = "'PT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        String duration5 = "'PT1H1M1.1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        ts.addTest(new TestExprBoolean(duration5+" > "+duration4, true)) ;
+        
+        String duration7 = "'-PT1H1"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        String duration8 = "'PT0H0M0S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
+        ts.addTest(new TestExprBoolean(duration7+" < "+duration8, true)) ;
+        
+        return ts;
     }
     
     static public TestSuite rdfTermsURIs()

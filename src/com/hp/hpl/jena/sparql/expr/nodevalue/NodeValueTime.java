@@ -1,31 +1,55 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-public interface NodeValueVisitor
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.expr.ExprException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+
+/** XSD Date (which is unrelated to XSD dateTime in the datatype hierarchy) */ 
+
+public class NodeValueTime extends NodeValue
 {
-    public void visit(NodeValueBoolean nv) ;
-    public void visit(NodeValueDate nv) ;
-    public void visit(NodeValueDateTime nv) ;
-    public void visit(NodeValueDecimal nv) ;
-    public void visit(NodeValueDouble nv) ;
-    public void visit(NodeValueFloat nv) ;
-    public void visit(NodeValueInteger nv) ;
-    public void visit(NodeValueNode nv) ;
-    public void visit(NodeValueString nv) ;
-    public void visit(NodeValueTime nv) ;
-	public void visit(NodeValueDuration nodeValueDuration);
+    XSDDateTime time ; 
     
-    //public void visit(NodeValue nv) ;
+    public NodeValueTime(XSDDateTime dt)
+    { 
+        time = dt ;
+        if (dt.getDays() != 0 && dt.getMonths() !=0 && dt.getYears() != 0) {
+        	throw new ExprException("Illegal time: "+dt) ;
+        }
+        if ( dt.getTimePart() == 0 ) 
+            throw new ExprException("Illegal time: "+dt) ;
+    }
+    
+    public NodeValueTime(XSDDateTime dt, Node n) { super(n) ; time = dt ; }
+    
+    @Override
+    public boolean isTime() { return true ; }
+    
+    @Override
+    public XSDDateTime getTime()     { return time ; }
+    
+    @Override
+    protected Node makeNode()
+    {
+        String lex = time.toString() ;
+        return Node.createLiteral(lex, null, XSDDatatype.XSDtime) ;
+    }
+    
+    @Override
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

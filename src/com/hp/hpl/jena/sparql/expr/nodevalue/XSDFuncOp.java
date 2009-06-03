@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
@@ -590,6 +591,18 @@ public class XSDFuncOp
             return compareDateFO(nv1, nv2) ;
         return compareXSDDateTime(nv1.getDate(), nv2.getDate()) ;
     }
+    
+    public static int compareTime(NodeValue nv1, NodeValue nv2)
+    { 
+        if ( strictDateTimeFO )
+            return compareDateFO(nv1, nv2) ;
+        return compareXSDDateTime(nv1.getTime(), nv2.getTime()) ;
+    }
+    
+    public static int compareDuration(NodeValue nv1, NodeValue nv2)
+    { 
+        return compareXSDDuration(nv1.getDuration(), nv2.getDuration()) ;
+    }
 
     public static final String defaultTimezone = "Z" ;
     
@@ -709,7 +722,24 @@ public class XSDFuncOp
             return Expr.CMP_INDETERMINATE ;
         throw new ARQInternalErrorException("Unexpected return from XSDDateTime.compare: "+x) ;
     }
-    
+
+    private static int compareXSDDuration(XSDDuration duration1 , XSDDuration duration2)
+    {
+        // Returns codes are -1/0/1 but also 2 for "Indeterminate"
+        // Not fully sure when Indeterminate is returned with regards to a duration
+
+        int x = duration1.compare(duration2) ;
+        if ( x == XSDDuration.EQUAL )
+            return Expr.CMP_EQUAL ;
+        if ( x == XSDDuration.LESS_THAN )
+            return Expr.CMP_LESS ;
+        if ( x == XSDDuration.GREATER_THAN )
+            return Expr.CMP_GREATER ;
+        if ( x == XSDDuration.INDETERMINATE )
+            return Expr.CMP_INDETERMINATE ;
+        throw new ARQInternalErrorException("Unexpected return from XSDDuration.compare: "+x) ;
+    }
+
 //    private static int compareCal(Calendar cal1 , Calendar cal2)
 //    {
 //        if ( cal1.after(cal2) )

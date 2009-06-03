@@ -14,6 +14,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.ARQ;
@@ -389,6 +390,8 @@ public abstract class NodeValue extends ExprNode
     private static final int VSPACE_NODE            = 70 ;    // RDT Terms that are not literals   
     private static final int VSPACE_UNKNOWN         = 80 ;    // Nodes - literal unknown value space or wrong in some way.
     private static final int VSPACE_DIFFERENT       = 90 ;    // Known to be different values spaces
+    private static final int VSPACE_DURATION      	= 100 ;
+    private static final int VSPACE_TIME       		= 110 ;
     
     /** Return true if the two NodeValues are known to be the same value
      *  return false if known to be different values,
@@ -424,6 +427,21 @@ public abstract class NodeValue extends ExprNode
                     throw new ExprNotComparableException("Indeterminate date comparison") ;
                 return  x == Expr.CMP_EQUAL ;
             }
+            case VSPACE_TIME:
+            {
+                int x = XSDFuncOp.compareTime(nv1, nv2) ;
+                if ( x == Expr.CMP_INDETERMINATE )
+                	throw new ExprNotComparableException("Indeterminate time comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+            case VSPACE_DURATION:
+            {
+                int x = XSDFuncOp.compareDuration(nv1, nv2) ;
+                if ( x == Expr.CMP_INDETERMINATE )
+                	throw new ExprNotComparableException("Indeterminate duration comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+
             case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == Expr.CMP_EQUAL ;
             case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == Expr.CMP_EQUAL ;
             
@@ -593,13 +611,33 @@ public abstract class NodeValue extends ExprNode
                 compType = VSPACE_DIFFERENT ;
                 break ;
             }
+            case VSPACE_TIME:
+            {
+                int x = XSDFuncOp.compareTime(nv1, nv2) ;
+                if ( x != Expr.CMP_INDETERMINATE )
+                    return x ;
+                // Indeterminate => can't compare as strict values.
+                compType = VSPACE_DIFFERENT ;
+                break ;
+            }
+            case VSPACE_DURATION:
+            {
+                int x = XSDFuncOp.compareDuration(nv1, nv2) ;
+                if ( x != Expr.CMP_INDETERMINATE )
+                    return x ;
+                // Indeterminate => can't compare as strict values.
+                compType = VSPACE_DIFFERENT ;
+                break ;
+            }
         }
             
         switch (compType)
         {    
             case VSPACE_DATETIME:
             case VSPACE_DATE:
-                throw new ARQInternalErrorException("Still seeing date/dateTime compare type") ;
+            case VSPACE_TIME:
+            case VSPACE_DURATION:
+                throw new ARQInternalErrorException("Still seeing date/dateTime/time/duration compare type") ;
             
             case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) ;
             case VSPACE_STRING:
@@ -706,7 +744,9 @@ public abstract class NodeValue extends ExprNode
     {
         if ( nv.isNumber() )   return VSPACE_NUM ;
         if ( nv.isDateTime() ) return VSPACE_DATETIME ;
-        
+        if ( nv.isDate() ) return VSPACE_DATE ;
+        if ( nv.isTime() ) return VSPACE_TIME ;
+        if ( nv.isDuration() ) return VSPACE_DURATION ;
         
         if ( VALUE_EXTENSIONS && nv.isDate() )
             return VSPACE_DATE ;
@@ -769,7 +809,9 @@ public abstract class NodeValue extends ExprNode
     
     public boolean isDateTime()    { return false ; }
     public boolean isDate()        { return false ; }
-    public boolean isLiteral()     { return getNode() == null || getNode().isLiteral() ; } 
+    public boolean isLiteral()     { return getNode() == null || getNode().isLiteral() ; }
+    public boolean isDuration()    { return false ; }
+    public boolean isTime()   	   { return false ; }
     // getters
     
     public boolean getBoolean()
@@ -782,6 +824,8 @@ public abstract class NodeValue extends ExprNode
     public double      getDouble()   { raise(new ExprEvalException("Not a double: "+this)) ; return Double.NaN ; }
     public XSDDateTime    getDateTime() { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
     public XSDDateTime    getDate()     { raise(new ExprEvalException("Not a date: "+this)) ; return null ; }
+    public XSDDateTime    getTime()     { raise(new ExprEvalException("Not a time: "+this)) ; return null ; }
+    public XSDDuration    getDuration()     { raise(new ExprEvalException("Not a duration: "+this)) ; return null ; }
 
 //    // ---- Force to a type : Needed? 
 //    
@@ -915,6 +959,19 @@ public abstract class NodeValue extends ExprNode
                 // Jena datatype support works on masked dataTimes. 
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDate(dateTime, node) ;
+            }
+            
+            if ( XSDDatatype.XSDtime.isValidLiteral(lit) )
+            {
+                // Jena datatype support works on masked dataTimes. 
+                XSDDateTime time = (XSDDateTime)lit.getValue() ;
+                return new NodeValueTime(time, node) ;
+            }
+            
+            if ( XSDDatatype.XSDduration.isValidLiteral(lit) )
+            {
+                XSDDuration duration = (XSDDuration)lit.getValue() ;
+                return new NodeValueDuration(duration, node) ;
             }
             
             if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
