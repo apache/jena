@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.17 2009-06-03 10:07:45 chris-dollin Exp $
+ * $Id: TestCaseBasic.java,v 1.18 2009-06-03 10:31:11 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.test.JenaTestBase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2009-06-03 10:07:45 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2009-06-03 10:31:11 $
  */
 public class TestCaseBasic extends JenaTestBase {
 
@@ -260,25 +260,27 @@ public class TestCaseBasic extends JenaTestBase {
 	}
 
 	public void test16() {
-		try {
-			Regression test = new Regression();
-			test.test16(m1);
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
+	    new Regression().test16( m1 );
+//		try {
+//			Regression test = new Regression();
+//			test.test16(m1);
+//			assertTrue(!test.getErrors());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			assertTrue(false);
+//		}
 	}
 
 	public void test17() {
-		try {
-			Regression test = new Regression();
-			test.test17(m1);
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
+	    new Regression().test17( m1 );
+//		try {
+//			Regression test = new Regression();
+//			test.test17(m1);
+//			assertTrue(!test.getErrors());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			assertTrue(false);
+//		}
 	}
 
 	public void test18() {

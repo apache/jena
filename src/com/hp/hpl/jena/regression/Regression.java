@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.53 2009-06-03 10:07:45 chris-dollin Exp $
+    $Id: Regression.java,v 1.54 2009-06-03 10:31:11 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.53 $' Date='$Date: 2009-06-03 10:07:45 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.54 $' Date='$Date: 2009-06-03 10:31:11 $'
  */
 public class Regression extends Object {
 
@@ -2863,7 +2863,7 @@ public class Regression extends Object {
             String     tvString = "test 12 string";
             LitTestObj tvObject = new LitTestObj(12345);
             Literal tvLiteral = m.createLiteral("test 12 string 2");
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -2897,11 +2897,11 @@ public class Regression extends Object {
             n++; if (! bag.contains(tvString)) error(test, n);
             n++; bag.add(tvLiteral);
             n++; if (! bag.contains(tvLiteral)) error(test, n);
-            n++; bag.add(tvResObj);
-            n++; if (! bag.contains(tvResObj)) error(test, n);
+//            n++; bag.add(tvResObj);
+//            n++; if (! bag.contains(tvResObj)) error(test, n);
             n++; bag.add(tvLitObj);
             n++; if (! bag.contains(tvLitObj)) error(test, n);
-            n++; if (! (bag.size()==12)) error(test,n);
+            n++; if (! (bag.size()==11)) error(test,n);
 
             {
                 n=300;
@@ -3040,7 +3040,7 @@ public class Regression extends Object {
             LitTestObj tvObject = new LitTestObj(12345);
             Literal    tvLiteral = m.createLiteral("test 12 string 2");
             Resource   tvResource = m.createResource();
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -3074,11 +3074,11 @@ public class Regression extends Object {
             n++; if (! alt.contains(tvString)) error(test, n);
             n++; alt.add(tvLiteral);
             n++; if (! alt.contains(tvLiteral)) error(test, n);
-            n++; alt.add(tvResObj);
-            n++; if (! alt.contains(tvResObj)) error(test, n);
+//            n++; alt.add(tvResObj);
+//            n++; if (! alt.contains(tvResObj)) error(test, n);
             n++; alt.add(tvLitObj);
             n++; if (! alt.contains(tvLitObj)) error(test, n);
-            n++; if (! (alt.size()==12)) error(test,n);
+            n++; if (! (alt.size()==11)) error(test,n);
 
             {
                 n=300;
@@ -3223,10 +3223,10 @@ public class Regression extends Object {
                 n++; if (!  alt.setDefault(tvString)
                                .getDefaultString().equals(tvString))
                        error(test,n);
-                n++; if (!  alt.setDefault(tvResObj)
-                               .getDefaultResource(new ResTestObjF())
-                               .equals(tvResObj))
-                       error(test,n);
+//                n++; if (!  alt.setDefault(tvResObj)
+//                               .getDefaultResource(new ResTestObjF())
+//                               .equals(tvResObj))
+//                       error(test,n);
                 n++; 
 //                    if (!  alt.setDefault(tvLitObj)
 //                               .getDefaultObject(new LitTestObjF())
@@ -3277,7 +3277,7 @@ public class Regression extends Object {
             LitTestObj tvObject = new LitTestObj(12345);
             Literal    tvLiteral = m.createLiteral("test 12 string 2");
             Resource   tvResource = m.createResource();
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -3311,11 +3311,11 @@ public class Regression extends Object {
             n++; if (! seq.contains(tvString)) error(test, n);
             n++; seq.add(tvLiteral);
             n++; if (! seq.contains(tvLiteral)) error(test, n);
-            n++; seq.add(tvResObj);
-            n++; if (! seq.contains(tvResObj)) error(test, n);
+//            n++; seq.add(tvResObj);
+//            n++; if (! seq.contains(tvResObj)) error(test, n);
             n++; seq.add(tvLitObj);
             n++; if (! seq.contains(tvLitObj)) error(test, n);
-            n++; if (! (seq.size()==12)) error(test,n);
+            n++; if (! (seq.size()==11)) error(test,n);
 
             {
                 n=300;
@@ -3453,17 +3453,17 @@ public class Regression extends Object {
                 n++; if (!  (seq.getResource(11).equals(tvResource))) error(test,n);
                 n++; seq.add(tvLiteral);
                 n++; if (!  (seq.getLiteral(12).equals(tvLiteral))) error(test,n);
-                n++; seq.add(tvResObj);
-                n++; if (!  (seq.getResource(13, new ResTestObjF())
-                                .equals(tvResObj))) error(test,n);
+//                n++; seq.add(tvResObj);
+//                n++; if (!  (seq.getResource(13, new ResTestObjF())
+//                                .equals(tvResObj))) error(test,n);
                 n++; seq.add(tvBag);
-                n++; if (!  (seq.getBag(14).equals(tvBag))) error(test,n);
+                n++; if (!  (seq.getBag(13).equals(tvBag))) error(test,n);
                 n++; seq.add(tvAlt);
-                n++; if (!  (seq.getAlt(15).equals(tvAlt))) error(test,n);
+                n++; if (!  (seq.getAlt(14).equals(tvAlt))) error(test,n);
                 n++; seq.add(tvSeq);
-                n++; if (!  (seq.getSeq(16).equals(tvSeq))) error(test,n);
+                n++; if (!  (seq.getSeq(15).equals(tvSeq))) error(test,n);
                 n++; try {
-                        seq.getInt(17); error(test,n);
+                        seq.getInt(16); error(test,n);
                     } catch (SeqIndexBoundsException e) {
                         // as required
                     }
@@ -3623,17 +3623,18 @@ public class Regression extends Object {
               n++; if (! (seq.getInt(6)==5)) error(test,n);
               n++; if (! (seq.size()==num)) error(test,n);
               n=1220;
-                   seq.set(5, tvResObj);
-              n++; if (! (seq.getResource(5, new ResTestObjF())
-                             .equals(tvResObj))) error(test,n);
+//                   seq.set(5, tvResObj);
+//              n++; if (! (seq.getResource(5, new ResTestObjF())
+//                             .equals(tvResObj))) error(test,n);
               n++; if (! (seq.getInt(4)==3)) error(test,n);
               n++; if (! (seq.getInt(6)==5)) error(test,n);
               n++; if (! (seq.size()==num)) error(test,n);
         }
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
+            throw e;
         }
 //        System.out.println("End of " + test);
     }
@@ -3667,9 +3668,10 @@ public class Regression extends Object {
             n=10000; testSeq(m, m.createSeq(), m.createSeq(), m.createSeq(),
                                 m.createSeq(), m.createSeq(), m.createSeq(),
                                 m.createSeq(), test, n);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
+            throw e;
         }
 //        System.out.println("End of " + test);
     }
@@ -3780,7 +3782,7 @@ public class Regression extends Object {
             try {
                 n=100;
                 Resource r11 = m1.createResource();
-                Resource r12 = m2.createResource(new ResTestObjF());
+//                Resource r12 = m2.createResource(new ResTestObjF());
                 long size1 = m1.size();
                 long size2 = m2.size();
 
@@ -3788,20 +3790,20 @@ public class Regression extends Object {
                 n++; if (! (m1.size() == ++size1)) error(test, n);
                 n++; if (! (m2.size() == size2)) error(test,n);
 
-                stmt = m2.createStatement(r11, RDF.value, r12);
-                n++; if (! (stmt.getSubject().getModel() == m2)) error(test,n);
-                n++; if (! (stmt.getResource().getModel() == m2)) error(test,n);
-
-                m1.add(stmt);
-                n++; if (! (m1.size() == ++size1)) error(test, n);
-                n++; if (! (m2.size() == size2)) error(test,n);
-
-                sIter = m1.listStatements( new SimpleSelector( r11, RDF.value, r12 ) );
-                n++; if (! sIter.hasNext()) error(test, n);
-                n++; stmt = sIter.nextStatement();
-                n++; if (! (stmt.getSubject().getModel() == m1)) error(test,n);
-                n++; if (! (stmt.getResource().getModel() == m1)) error(test,n);
-                sIter.close();
+//                stmt = m2.createStatement(r11, RDF.value, r12);
+//                n++; if (! (stmt.getSubject().getModel() == m2)) error(test,n);
+//                n++; if (! (stmt.getResource().getModel() == m2)) error(test,n);
+//
+//                m1.add(stmt);
+//                n++; if (! (m1.size() == ++size1)) error(test, n);
+//                n++; if (! (m2.size() == size2)) error(test,n);
+//
+//                sIter = m1.listStatements( new SimpleSelector( r11, RDF.value, r12 ) );
+//                n++; if (! sIter.hasNext()) error(test, n);
+//                n++; stmt = sIter.nextStatement();
+//                n++; if (! (stmt.getSubject().getModel() == m1)) error(test,n);
+//                n++; if (! (stmt.getResource().getModel() == m1)) error(test,n);
+//                sIter.close();
 
 
             } catch (Exception e) {
@@ -4050,7 +4052,7 @@ public class Regression extends Object {
             String     tvString = "test 12 string";
             LitTestObj tvObject = new LitTestObj(12345);
             Literal tvLiteral = m.createLiteral("test 12 string 2");
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -4086,11 +4088,11 @@ public class Regression extends Object {
             n++; if (! cont1.contains(tvString, lang)) error(test, n);
             n++; cont1.add(tvLiteral);
             n++; if (! cont1.contains(tvLiteral)) error(test, n);
-            n++; cont1.add(tvResObj);
-            n++; if (! cont1.contains(tvResObj)) error(test, n);
+//            n++; cont1.add(tvResObj);
+//            n++; if (! cont1.contains(tvResObj)) error(test, n);
             n++; cont1.add(tvLitObj);
             n++; if (! cont1.contains(tvLitObj)) error(test, n);
-            n++; if (! (cont1.size()==13)) error(test,n);
+            n++; if (! (cont1.size()==12)) error(test,n);
 
             {
                 n=(n/100+1)*100;
@@ -4133,9 +4135,10 @@ public class Regression extends Object {
                 n++;    if (! (found[i]==pattern[i])) error(test,n);
                     }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
+            throw e;
         }
     }
 
@@ -4262,7 +4265,7 @@ public class Regression extends Object {
             LitTestObj tvObject = new LitTestObj(12345);
             Literal    tvLiteral = m.createLiteral("test 12 string 2");
             Resource   tvResource = m.createResource();
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -4406,10 +4409,10 @@ public class Regression extends Object {
                        error(test,n);
                 n++; if (!  alt4.getDefaultLanguage().equals(lang))
                        error(test,n);
-                n++; if (!  alt4.setDefault(tvResObj)
-                               .getDefaultResource(new ResTestObjF())
-                               .equals(tvResObj))
-                       error(test,n);
+//                n++; if (!  alt4.setDefault(tvResObj)
+//                               .getDefaultResource(new ResTestObjF())
+//                               .equals(tvResObj))
+//                       error(test,n);
                 n++; 
 //                    if (!  alt4.setDefault(tvLitObj)
 //                               .getDefaultObject(new LitTestObjF())
@@ -4453,7 +4456,7 @@ public class Regression extends Object {
             LitTestObj tvObject = new LitTestObj(12345);
             Literal    tvLiteral = m.createLiteral("test 12 string 2");
             Resource   tvResource = m.createResource();
-            Resource   tvResObj = m.createResource(new ResTestObjF());
+//            Resource   tvResObj = m.createResource(new ResTestObjF());
             Object     tvLitObj = new LitTestObj(1234);
             Bag        tvBag    = m.createBag();
             Alt        tvAlt    = m.createAlt();
@@ -4598,17 +4601,17 @@ public class Regression extends Object {
                 n++; if (!  (seq4.getResource(12).equals(tvResource))) error(test,n);
                 n++; seq4.add(tvLiteral);
                 n++; if (!  (seq4.getLiteral(13).equals(tvLiteral))) error(test,n);
-                n++; seq4.add(tvResObj);
-                n++; if (!  (seq4.getResource(14, new ResTestObjF())
-                                .equals(tvResObj))) error(test,n);
+//                n++; seq4.add(tvResObj);
+//                n++; if (!  (seq4.getResource(14, new ResTestObjF())
+//                                .equals(tvResObj))) error(test,n);
                 n++; seq4.add(tvBag);
-                n++; if (!  (seq4.getBag(15).equals(tvBag))) error(test,n);
+                n++; if (!  (seq4.getBag(14).equals(tvBag))) error(test,n);
                 n++; seq4.add(tvAlt);
-                n++; if (!  (seq4.getAlt(16).equals(tvAlt))) error(test,n);
+                n++; if (!  (seq4.getAlt(15).equals(tvAlt))) error(test,n);
                 n++; seq4.add(tvSeq);
-                n++; if (!  (seq4.getSeq(17).equals(tvSeq))) error(test,n);
+                n++; if (!  (seq4.getSeq(16).equals(tvSeq))) error(test,n);
                 n++; try {
-                        seq4.getInt(18); error(test,n);
+                        seq4.getInt(17); error(test,n);
                     } catch (SeqIndexBoundsException e) {
                         // as required
                     }
@@ -4781,7 +4784,7 @@ public class Regression extends Object {
               n++; if (! (seq7.getInt(6)==5)) error(test,n);
               n++; if (! (seq7.size()==num)) error(test,n);
               n=(n/100)*100 + 100;
-                   seq7.set(5, tvResObj);
+//                   seq7.set(5, tvResObj);
               n++; 
 //                  if (! (seq7.getResource(5, new ResTestObjF())
 //                             .equals(tvResObj))) error(test,n);
@@ -4791,9 +4794,10 @@ public class Regression extends Object {
 
         }
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
+            throw e;
         }
     }
 
@@ -4895,5 +4899,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.53 2009-06-03 10:07:45 chris-dollin Exp $
+ * $Id: Regression.java,v 1.54 2009-06-03 10:31:11 chris-dollin Exp $
  */
