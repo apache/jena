@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.25 2009-04-23 08:47:29 chris-dollin Exp $
+	$Id: Statement.java,v 1.26 2009-06-03 09:04:28 chris-dollin Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.25 $ $Date: 2009-04-23 08:47:29 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.26 $ $Date: 2009-06-03 09:04:28 $
  */
 
 public interface Statement extends FrontsTriple
@@ -201,14 +201,6 @@ public interface Statement extends FrontsTriple
      * 
      */    
     public Resource getResource(ResourceF f) ;
-    
-    /** Return the object of the statement.
-     * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @return The object of the statement.
-     * @param f A factory used to create the returned object.
-     * 
-     */    
-    @Deprecated public Object getObject(ObjectF f) ;
     
     /** Return the object of the statement.
      *

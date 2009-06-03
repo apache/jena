@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAltMethods.java,v 1.7 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionAltMethods.java,v 1.8 2009-06-03 09:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -50,7 +50,7 @@ public class NewRegressionAltMethods extends NewRegressionContainerMethods
         assertEquals( tvChar, a.setDefault( tvChar ).getDefaultChar() );
         assertEquals( tvString, a.setDefault( tvString ).getDefaultString() );
         assertEquals( tvResObj, a.setDefault( tvResObj ).getDefaultResource() );
-        assertEquals( tvLitObj, a.setDefault( tvLitObj ).getDefaultObject( new LitTestObjF() ) );
+//        assertEquals( tvLitObj, a.setDefault( tvLitObj ).getDefaultObject( new LitTestObjF() ) );
         assertEquals( tvAlt, a.setDefault( tvAlt ).getDefaultAlt() );
         assertEquals( tvBag, a.setDefault( tvBag ).getDefaultBag() );
         assertEquals( tvSeq, a.setDefault( tvSeq ).getDefaultSeq() );

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionLiterals.java,v 1.10 2009-01-16 17:23:50 andy_seaborne Exp $
+ 	$Id: NewRegressionLiterals.java,v 1.11 2009-06-03 09:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -127,13 +127,13 @@ public class NewRegressionLiterals extends NewRegressionBase
         assertEquals( m.createLiteral( "A", "en" ), m.createLiteral( "A", "en" ) );
         }
 
-    public void testLiteralObjects()
-        {
-        Model m = getModel();
-        testLiteralObject( m, 0 );
-        testLiteralObject( m, 12345 );
-        testLiteralObject( m, -67890 );
-        }
+//    public void testLiteralObjects()
+//        {
+//        Model m = getModel();
+////        testLiteralObject( m, 0 );
+////        testLiteralObject( m, 12345 );
+////        testLiteralObject( m, -67890 );
+//        }
 
     protected void testByte( Model m, byte tv )
         {
@@ -229,12 +229,12 @@ public class NewRegressionLiterals extends NewRegressionBase
         assertEquals( "", l.getLanguage() );
         }
 
-    protected void testLiteralObject( Model m, int x )
-        {
-        LitTestObj tv = new LitTestObj( x );
-        LitTestObjF factory = new LitTestObjF();
-        assertEquals( tv, m.createTypedLiteral( tv ).getObject( factory ) );
-        }
+//    protected void testLiteralObject( Model m, int x )
+//        {
+//        LitTestObj tv = new LitTestObj( x );
+//        LitTestObjF factory = new LitTestObjF();
+//        assertEquals( tv, m.createTypedLiteral( tv ).getObject( factory ) );
+//        }
     }
 
 

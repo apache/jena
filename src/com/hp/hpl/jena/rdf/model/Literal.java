@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $ $Date: 2009-04-23 08:47:29 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $ $Date: 2009-06-03 09:04:28 $
  */
 public interface Literal extends RDFNode {
     
@@ -189,18 +189,18 @@ public interface Literal extends RDFNode {
     //       with getLexicalForm
     public String getString() ;
     
-    /**
-     * In the case of plain literals this recreates an object from its
-     * lexical form using the given factory. In the case of typed literals
-     * the factory is ignored and the value is returned instead.
-     * 
-     * @return the object created from the literal string
-     * @param f A factory object for creating the returned object.
-     
-     */
-    // @TODO is this the right approach, could reparse the lexical form 
-    //       using the factory even for typed literals
-    @Deprecated public Object getObject(ObjectF f) ;
+//    /**
+//     * In the case of plain literals this recreates an object from its
+//     * lexical form using the given factory. In the case of typed literals
+//     * the factory is ignored and the value is returned instead.
+//     * 
+//     * @return the object created from the literal string
+//     * @param f A factory object for creating the returned object.
+//     
+//     */
+//    // @TODO is this the right approach, could reparse the lexical form 
+//    //       using the factory even for typed literals
+//    @Deprecated public Object getObject(ObjectF f) ;
     
     /** 
          If a language is defined for this literal return it

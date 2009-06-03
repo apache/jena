@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.15 2008-12-28 19:32:04 andy_seaborne Exp $
+ * $Id: TestCaseBasic.java,v 1.16 2009-06-03 09:04:27 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.test.JenaTestBase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2008-12-28 19:32:04 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2009-06-03 09:04:27 $
  */
 public class TestCaseBasic extends JenaTestBase {
 
@@ -167,25 +167,27 @@ public class TestCaseBasic extends JenaTestBase {
 	}
 
 	public void test8() {
-		try {
-			Regression test = new Regression();
-			test.test8(m1);
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
+	    new Regression().test8( m1 );
+//		try {
+//			Regression test = new Regression();
+//			test.test8(m1);
+//			assertTrue(!test.getErrors());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			assertTrue(false);
+//		}
 	}
 
 	public void test9() {
-		try {
-			Regression test = new Regression();
-			test.test9(m2);
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
+	    new Regression().test9( m2 );
+//		try {
+//			Regression test = new Regression();
+//			test.test9(m2);
+//			assertTrue(!test.getErrors());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			assertTrue(false);
+//		}
 	}
 
 	public void test10() {
@@ -244,14 +246,15 @@ public class TestCaseBasic extends JenaTestBase {
 	}
 
 	public void test15() {
-		try {
-			Regression test = new Regression();
-			test.test15(m1);
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
+	    new Regression().test15( m1 );
+//		try {
+//			Regression test = new Regression();
+//			test.test15(m1);
+//			assertTrue(!test.getErrors());
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			assertTrue(false);
+//		}
 	}
 
 	public void test16() {

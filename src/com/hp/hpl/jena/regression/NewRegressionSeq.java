@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSeq.java,v 1.9 2009-01-27 14:32:37 chris-dollin Exp $
+ 	$Id: NewRegressionSeq.java,v 1.10 2009-06-03 09:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -172,7 +172,7 @@ public class NewRegressionSeq extends NewRegressionBase
         seq.add( "some string" );
         assertEquals( "some string", seq.getString( 9 ) );
         seq.add( tvLitObj );
-        assertEquals( tvLitObj, seq.getObject( 10, new LitTestObjF() ) );
+//        assertEquals( tvLitObj, seq.getObject( 10, new LitTestObjF() ) );
         seq.add( tvResource );
         assertEquals( tvResource, seq.getResource( 11 ) );
         seq.add( tvResObj );
@@ -224,7 +224,7 @@ public class NewRegressionSeq extends NewRegressionBase
         seq.add( 1, "some string" );
         assertEquals( "some string", seq.getString( 1 ) );
         seq.add( 1, tvLitObj );
-        assertEquals( tvLitObj, seq.getObject( 1, new LitTestObjF() ) );
+//        assertEquals( tvLitObj, seq.getObject( 1, new LitTestObjF() ) );
         seq.add( 1, tvResource );
         assertEquals( tvResource, seq.getResource( 1 ) );
         seq.add( 1, tvResObj );
@@ -370,7 +370,7 @@ public class NewRegressionSeq extends NewRegressionBase
         assertEquals( num, seq.size() );
         
         seq.set( 5, tvLitObj );
-        assertEquals( tvLitObj, seq.getObject( 5, new LitTestObjF() ) );
+//        assertEquals( tvLitObj, seq.getObject( 5, new LitTestObjF() ) );
         assertEquals( 3, seq.getInt( 4 ) );
         assertEquals( 5, seq.getInt( 6 ) );
         assertEquals( num, seq.size() );

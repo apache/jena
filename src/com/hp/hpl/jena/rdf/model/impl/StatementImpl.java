@@ -1,20 +1,19 @@
 /*
 	(c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.36 2009-04-23 08:47:29 chris-dollin Exp $
+	$Id: StatementImpl.java,v 1.37 2009-06-03 09:04:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.graph.*;
 
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.36 $ $Date: 2009-04-23 08:47:29 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.37 $ $Date: 2009-06-03 09:04:28 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -100,15 +99,6 @@ public class StatementImpl  extends StatementBase implements Statement {
             return (Literal) object;
         } else {    
             throw new LiteralRequiredException( object );
-        }
-    }
-    
-
-    @Deprecated public Object getObject(ObjectF f)  {
-        try {
-            return f.createObject( getLiteral().toString());
-        } catch (Exception e) {
-            throw new JenaException(e);
         }
     }
         
