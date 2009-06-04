@@ -12,7 +12,7 @@ public class Dev
     
     // ----
     
-    // Clean up BPLustTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
+    // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
     
     // Variable value length blocks.
