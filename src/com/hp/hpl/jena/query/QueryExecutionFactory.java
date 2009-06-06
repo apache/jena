@@ -485,6 +485,8 @@ public class QueryExecutionFactory
     {
         Query query = QueryFactory.make() ;
         query.setQueryPattern(pattern) ;
+        query.setQuerySelectType() ;
+        query.setQueryResultStar(true) ;
         return query ;
     }
 
