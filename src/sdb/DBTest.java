@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.RunListener;
 import sdb.cmd.CmdArgsDB;
-import sdb.junit.TextListenerCustom;
+import sdb.junit.TextListener2;
 import sdb.test.Params;
 import sdb.test.ParamsVocab;
 import sdb.test.TestI18N;
@@ -78,7 +78,8 @@ public class DBTest extends CmdArgsDB
         sdb.test.Env.set(jdbc, params, false) ;
         
         JUnitCore x = new org.junit.runner.JUnitCore() ;
-        RunListener listener = new TextListenerCustom() ;
+        //RunListener listener = new TextListener2() ;
+        RunListener listener = new TextListener2(System.out) ;
         x.addListener(listener) ;
         
         //x.run(sdb.test.AllTests.class) ;

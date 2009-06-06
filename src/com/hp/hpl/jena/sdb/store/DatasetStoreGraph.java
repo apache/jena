@@ -38,12 +38,11 @@ public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //
     
     public DatasetStoreGraph(Store store, GraphSDB graph)
     {
-        this.store = store ; 
+        this.store = store ;
+        // Force the "default" graph
         this.defaultGraph = graph ;
     }
 
-    /** Use only with existing Jena RDB models */ 
-    
     public DatasetStoreGraph(StoreRDB store)
     {
         this.store = store ; 
@@ -108,7 +107,7 @@ public class DatasetStoreGraph implements DatasetGraph, Closeable, GraphStore //
     }
 
     public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ; }  
+    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a SDB-backed dataset") ; }  
 }
 
 /*

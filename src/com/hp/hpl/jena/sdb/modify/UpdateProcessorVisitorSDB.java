@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
@@ -21,7 +20,6 @@ import com.hp.hpl.jena.sparql.modify.op.UpdateExt;
 
 public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
 {
-    Store store ;
     DatasetStoreGraph graphStore ;
     
     UpdateProcessorVisitorSDB(DatasetStoreGraph graphStore, Binding inputBinding)
@@ -58,9 +56,9 @@ public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
     {
         Graph g ;
         if (n != null )
-            g = SDBFactory.connectNamedGraph(store, n) ;
+            g = SDBFactory.connectNamedGraph(graphStore.getStore(), n) ;
         else
-            g = SDBFactory.connectDefaultGraph(store) ;
+            g = SDBFactory.connectDefaultGraph(graphStore.getStore()) ;
         // Delete all triples.
         g.getBulkUpdateHandler().removeAll() ;
     }

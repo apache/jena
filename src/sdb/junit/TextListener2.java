@@ -1,38 +1,63 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.modify;
+package sdb.junit;
 
-import junit.framework.TestSuite;
+import java.io.PrintStream;
 
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sparql.suites.TestUpdateGraph;
-import com.hp.hpl.jena.update.GraphStore;
+import org.junit.internal.TextListener;
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
 
-public class TestSPARQLUpdate extends TestUpdateGraph
+public class TextListener2 extends TextListener
 {
-    public static junit.framework.Test suite() {
-        TestSuite ts = new TestSuite();
-        ts.addTestSuite(TestSPARQLUpdate.class);
-        return ts;
+
+    private PrintStream out ;
+    int count = 0 ;
+
+    public TextListener2(PrintStream writer)
+    {
+        super(writer) ;
+        this.out = writer ;
     }
     
     @Override
-    protected GraphStore getEmptyGraphStore()
+    public void testRunStarted(Description description)
     {
-        Store store = SDB.createInMemoryStore() ;
-        GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
-        return graphStore ;
+        //count = 0 ;
     }
-}
+    
+    @Override
+    public void testStarted(Description description) {
+        newline() ;
+        out.append('.');
+    }
 
+    private void newline()
+    {
+        if ( count != 0 && count%50 == 0 )
+            out.println();
+        count++ ;
+    }
+
+    @Override
+    public void testFailure(Failure failure) {
+        newline() ;
+        out.append('E');
+    }
+
+    @Override
+    public void testIgnored(Description description) {
+        newline() ;
+        out.append('I');
+    }
+    
+}
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
