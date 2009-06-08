@@ -32,7 +32,6 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-
     TS_Lib.class
     , TS_Iterator.class
     , TS_Riot.class
