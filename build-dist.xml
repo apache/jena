@@ -14,7 +14,7 @@
 
   <!-- ==== Release -->
 
-  <target name="release" depends="copy-init,copy-dist,zip-release"
+  <target name="release" depends="clean-once,copy-init,copy-dist,zip-release"
 	  description="Build a release zip"/>
 
   <target name="package" depends="copy-init,copy-dist,zip-release"/>
@@ -77,13 +77,14 @@
     </zip>
   </target>
 
-  <!-- To calm error checking -->
+  <!-- To calm error checking
   <target name="test"/>
   <target name="clean"/>
   <target name="clean-once"/>
   <target name="artifacts"/>
   <target name="jar"/>
   <target name="javadoc"/>
+  -->
   
   <target name="clean-dist">
     <delete dir="${dist.root}"/>

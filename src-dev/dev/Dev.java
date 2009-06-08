@@ -35,12 +35,7 @@ public class Dev
     // Relayering for index interface
     
     // ==== Build
-    // Refactor to improve "publish and release" (new targets?)
-    
-    /* Works: ant clean publish release 
-       Fails: ant clean release publish
-    */
-    
+    // Refactor to improve "publish and release" (new "once" targets?)
     
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
