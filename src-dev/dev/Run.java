@@ -68,6 +68,9 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
+        tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
+        
+        
         // Problem 1: When symUnionDefaultGraph -> quads but not a DatasetGraphTDB but a DataSourceGraphImpl
         // See OpExecutor.execute(OpQuadPattern) line 111
         // [DONE]

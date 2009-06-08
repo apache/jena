@@ -11,6 +11,8 @@ public class Dev
     // Check the version/properties mechanisms
     // Is/was this a bug in ARQ?
     
+    // Testing assembler.
+    
     // release+publish all in one - deleting the build jar only in clean-once?
     
     // == 0.8.1

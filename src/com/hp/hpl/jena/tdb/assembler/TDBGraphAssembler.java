@@ -9,7 +9,8 @@ package com.hp.hpl.jena.tdb.assembler;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
+
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -61,18 +62,20 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         if ( root.hasProperty(pGraphName) )
             graphName = root.getProperty(pGraphName).getResource().getURI() ;
         
+        if ( root.hasProperty(pIndex) )
+            Log.warn(this, "Custom indexes not implemented yet - ignored") ;
         
-        if ( ! root.hasProperty(pIndex) )
-        {
-            if ( graphName != null )
-                return TDBFactory.createNamedModel(graphName, loc) ;
-        }
+        if ( graphName != null )
+            return TDBFactory.createNamedModel(graphName, loc) ;
         else
-            // Make just using the location.
-            return TDBFactory.createModel(loc) ;
-            
+            return TDBFactory.createModel(loc) ;    
+    }
+    
+    //@Unused
+    private void indexes(Resource root)
+    {
         // ---- API ways
-        
+
         StmtIterator sIter = root.listProperties(pIndex) ;
         while(sIter.hasNext())
         {
@@ -84,15 +87,14 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
                 continue ;
             }
             throw new TDBException("Wrong format for tdb:index: should be a string: found: "+FmtUtils.stringForRDFNode(obj)) ; 
-//            Resource x = (Resource)obj ;
-//            String desc = x.getProperty(pDescription).getString() ;
-//            String file = x.getProperty(pFile).getString() ;
-//            System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
+            //          Resource x = (Resource)obj ;
+            //          String desc = x.getProperty(pDescription).getString() ;
+            //          String file = x.getProperty(pFile).getString() ;
+            //          System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
         }
-        
+
         System.out.flush();
         throw new TDBException("Custom indexes turned off") ; 
- 
     }
 
 }

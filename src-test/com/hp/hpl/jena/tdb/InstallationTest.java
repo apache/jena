@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.riot.TS_Riot;
+import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler;
 import com.hp.hpl.jena.tdb.base.TS_Base;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     
     // The script suite
     , GraphTDBTestSuite.class
-
+    , TS_TDBAssembler.class
 } )
 
 public class InstallationTest

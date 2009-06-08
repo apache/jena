@@ -233,7 +233,6 @@
 	  unless="built.jar">
     <antcall target="build.jar"/>
     <property name="built.jar" value="done"/>
-
   </target>
 
   <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>

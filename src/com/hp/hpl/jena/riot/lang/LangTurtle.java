@@ -487,7 +487,7 @@ public class LangTurtle
             if ( expansion == null )
             {
                 expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
-                exception("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+                exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
             }
             token.setType(IRI) ;
             token.setImage(expansion) ;
@@ -576,8 +576,13 @@ public class LangTurtle
     }
 
     private void exception(String msg, Object... args)
-    { throw new ParseException(String.format(msg, args), token().getLine(), token().getColumn()) ; }
+    { 
+        exceptionDirect(String.format(msg, args), token().getLine(), token().getColumn()) ;
+    }
 
+    private void exceptionDirect(String msg, long line, long col)
+    { throw new ParseException(msg, line, col) ; }
+    
     private void emit(Node subject, Node predicate, Node object)
     {
         if ( CHECKING )
