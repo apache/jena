@@ -77,14 +77,13 @@
     </zip>
   </target>
 
-  <!-- To calm error checking
+  <!-- To calm error checking -->
   <target name="test"/>
   <target name="clean"/>
   <target name="clean-once"/>
   <target name="artifacts"/>
   <target name="jar"/>
   <target name="javadoc"/>
-  -->
   
   <target name="clean-dist">
     <delete dir="${dist.root}"/>
