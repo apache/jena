@@ -8,8 +8,10 @@ package dev;
 
 public class Dev
 {
-    // == 0.8.0
+    // Check the version/properties mechanisms
     
+    // == 0.8.0
+    // 
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
