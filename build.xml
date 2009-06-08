@@ -13,8 +13,8 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   	value="0"/>
   <property name="version-minor"        value="8"/>
-  <property name="version-revision"     value="0"/>
-  <property name="version-status"       value=""/>
+  <property name="version-revision"     value="1"/>
+  <property name="version-status"       value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
@@ -36,7 +36,7 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-publish, repo-local -->
-  <property name="publish.resolver"       value="repo-local"/>
+  <property name="publish.resolver"       value="repo-publish"/>
 
 
   <!-- Metadata -->

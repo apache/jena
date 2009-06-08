@@ -9,8 +9,11 @@ package dev;
 public class Dev
 {
     // Check the version/properties mechanisms
+    // Is/was this a bug in ARQ?
     
-    // == 0.8.0
+    // release+publish all in one - deleting the build jar only in clean-once?
+    
+    // == 0.8.1
     // 
     // ----
     
