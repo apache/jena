@@ -27,6 +27,7 @@ import com.hp.hpl.jena.tdb.store.TS_Store;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
+// Not called TS_...
 // In the build script, it finds all the TS_*.
 // Ideally would do that here
 
