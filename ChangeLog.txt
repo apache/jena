@@ -1,6 +1,8 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.1
+
 ==== 0.8.0
 
 ** The on-disk file format has changed : datasets must be reloaded **
