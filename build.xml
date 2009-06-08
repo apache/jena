@@ -36,7 +36,7 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-publish, repo-local -->
-  <property name="publish.resolver"       value="repo-local"/>
+  <property name="publish.resolver"       value="repo-publish"/>
 
 
   <!-- Metadata -->
