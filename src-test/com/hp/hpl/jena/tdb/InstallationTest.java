@@ -36,7 +36,6 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     TS_Lib.class
     , TS_Iterator.class
     , TS_Riot.class
-
     , TS_Base.class
     , TS_Index.class
     , TS_Store.class     // The main storage implementation.  Slow tests.

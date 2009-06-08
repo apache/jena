@@ -9,13 +9,13 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.junit.Test;
 import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-
-import org.junit.Test;
+import com.hp.hpl.jena.shared.JenaException;
 
 public class TestLangTurtle extends BaseTest
 {
@@ -29,6 +29,26 @@ public class TestLangTurtle extends BaseTest
         assertEquals(1, model.getNsPrefixMap().size()) ;
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
+    
+    @Test(expected=JenaException.class)
+    public void errorJunk()
+    {
+        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
+        Model model = ModelFactory.createDefaultModel() ;
+        Reader reader = new StringReader("<p>") ;
+        parser.read(model, reader, "http://example/base/") ;
+    }
+    
+    @Test(expected=JenaException.class)
+    public void errorNoPrefixDef()
+    {
+        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
+        Model model = ModelFactory.createDefaultModel() ;
+        Reader reader = new StringReader("x:p <p> 'q' .") ;
+        parser.read(model, reader, "http://example/base/") ;
+    }
+    
+    
 }
 
 /*
