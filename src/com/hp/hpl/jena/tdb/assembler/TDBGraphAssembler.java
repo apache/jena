@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.*;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
 
 import atlas.logging.Log;
@@ -60,7 +59,7 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         
         String graphName = null ;
         if ( root.hasProperty(pGraphName) )
-            graphName = root.getProperty(pGraphName).getResource().getURI() ;
+            graphName = getAsStringValue(root, pGraphName) ; // root.getProperty(pGraphName).getResource().getURI() ;
         
         if ( root.hasProperty(pIndex) )
             Log.warn(this, "Custom indexes not implemented yet - ignored") ;

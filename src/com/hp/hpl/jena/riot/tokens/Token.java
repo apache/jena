@@ -117,8 +117,10 @@ public final class Token
         if ( addLocation && getLine() >= 0 && getColumn() >= 0 )
             sb.append(String.format("[%d,%d]", getLine(), getColumn())) ;
         sb.append("[") ;
-        sb.append(getType().toString()) ;
-        
+        if ( getType() == null )
+            sb.append("null") ;
+        else
+            sb.append(getType().toString()) ;
         
         if ( getImage() != null )
         {

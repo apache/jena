@@ -485,10 +485,7 @@ public class LangTurtle
             String suffix   = token.getImage2() ;
             String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
             if ( expansion == null )
-            {
-                expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
                 exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
-            }
             token.setType(IRI) ;
             token.setImage(expansion) ;
             token.setImage2(null) ;
@@ -506,8 +503,8 @@ public class LangTurtle
         return token ;
     }
     
-    
-    private static Token tokenEOF = null ;
+    // Set when we get to EOF to record line/col of the EOF.
+    private Token tokenEOF = null ;
 
     private boolean eof()
     {
@@ -577,7 +574,7 @@ public class LangTurtle
 
     private void exception(String msg, Object... args)
     { 
-        exceptionDirect(String.format(msg, args), token().getLine(), token().getColumn()) ;
+        exceptionDirect(String.format(msg, args), tokenRaw().getLine(), tokenRaw().getColumn()) ;
     }
 
     private void exceptionDirect(String msg, long line, long col)

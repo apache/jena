@@ -14,16 +14,21 @@ import atlas.lib.FileOps;
 import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphNamedTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDBBase;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 
 public class TestTDBAssembler extends BaseTest
 {
+    // Can be slow - explicitly closes the dataset.
     static final String dirAssem    = "testing/Assembler" ;
     static final String dirDB       = ConfigTest.getTestingDir()+"/DB" ;
 
@@ -47,8 +52,10 @@ public class TestTDBAssembler extends BaseTest
         String f = dirAssem+"/tdb-dataset.ttl" ;
         Object thing = AssemblerUtils.build( f, VocabTDB.tDatasetTDB) ;
         assertTrue(thing instanceof Dataset) ;
-        ((Dataset)thing).asDatasetGraph() ;
+        Dataset ds = (Dataset)thing ;
+        ds.asDatasetGraph() ;
         assertTrue(((Dataset)thing).asDatasetGraph() instanceof DatasetGraphTDB) ;
+        ds.close() ;
     }
     
     @Test public void createGraphDirect()
@@ -56,7 +63,12 @@ public class TestTDBAssembler extends BaseTest
         String f = dirAssem+"/tdb-graph.ttl" ;
         Object thing = AssemblerUtils.build( f, VocabTDB.tGraphTDB) ;
         assertTrue(thing instanceof Model) ;
-        assertTrue(((Model)thing).getGraph() instanceof GraphTDB) ; 
+        Graph graph  = ((Model)thing).getGraph() ;
+        assertTrue(graph instanceof GraphTDB) ;
+        
+        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
+        if ( ds != null )
+            ds.close();
     }
     
     @Test public void createDatasetEmbed()
@@ -64,8 +76,9 @@ public class TestTDBAssembler extends BaseTest
         String f = dirAssem+"/tdb-dataset-embed.ttl" ;
         Object thing = AssemblerUtils.build( f, DatasetAssemblerVocab.tDataset) ;
         assertTrue(thing instanceof Dataset) ;
-        ((Dataset)thing).asDatasetGraph() ;
-        assertTrue(((Dataset)thing).asDatasetGraph() instanceof DatasetGraphTDB) ;
+        Dataset ds = (Dataset)thing ;
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTDB) ;
+        ds.close();
     }
     
     @Test public void createGraphEmbed()
@@ -73,9 +86,33 @@ public class TestTDBAssembler extends BaseTest
         String f = dirAssem+"/tdb-graph-embed.ttl" ;
         Object thing = AssemblerUtils.build( f, JA.Model) ;
         assertTrue(thing instanceof Model) ;
-        assertTrue(((Model)thing).getGraph() instanceof GraphTDB) ; 
+        Graph graph = ((Model)thing).getGraph() ;
+        
+        assertTrue(graph instanceof GraphTDB) ; 
+        assertTrue(graph instanceof GraphTriplesTDB) ;
+        assertFalse(graph instanceof GraphNamedTDB) ;
+
+        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
+        if ( ds != null )
+            ds.close();
     }
     
+    // Named graph
+    @Test public void createNamedGraph()
+    {
+        String f = dirAssem+"/tdb-named-graph.ttl" ;
+        Object thing = AssemblerUtils.build( f, VocabTDB.tGraphTDB) ;
+        assertTrue(thing instanceof Model) ;
+        Graph graph = ((Model)thing).getGraph() ;
+        
+        assertTrue(graph instanceof GraphTDB) ; 
+        assertFalse(graph instanceof GraphTriplesTDB) ;
+        assertTrue(graph instanceof GraphNamedTDB) ;
+        
+        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
+        if ( ds != null )
+            ds.close();
+    }
 }
 
 /*

@@ -77,8 +77,13 @@ public class UnitTestTurtle extends TestCase
                 assertTrue("Models not isomorphic", b) ;
         } catch (ParseException ex)
         {
+            // Catch and retrhow - debugging.
             throw ex ;    
         }
+        catch (RuntimeException ex) 
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ; }
     }
 }
 

@@ -36,6 +36,12 @@ public class Dev
     
     // ==== Build
     // Refactor to improve "publish and release" (new targets?)
+    
+    /* Works: ant clean publish release 
+       Fails: ant clean release publish
+    */
+    
+    
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
