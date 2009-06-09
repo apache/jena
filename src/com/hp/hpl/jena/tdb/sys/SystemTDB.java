@@ -55,13 +55,14 @@ public class SystemTDB
     public static final int LenIndexQuadRecord      = 4 * NodeId.SIZE ;
     
     /** Size, in bytes, of a Node hash.
-     * In TDB 0.7.5 and before this was 8 bytes (64/8).
+     * In TDB 0.7.X and before this was 8 bytes (64/8).
      * In TDB 0.8.0 and above it is 16 bytes (128/8).
      * These two systems are not compatible.
      * 
      * @see{com.hp.hpl.jena.tdb.TDB.VERSION}
      */
-    public static final int LenNodeHash             = 128/8 ; // Was "SizeOfLong" for TDB <= 0.7.X
+    //public static final int LenNodeHash             = SizeOfLong ; // TDB <= 0.7.X
+    public static final int LenNodeHash             = 128/8 ; // TDB >= 0.8.0
 
     // ---- Symbols and similar
     

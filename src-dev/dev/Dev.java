@@ -9,11 +9,7 @@ package dev;
 public class Dev
 {
     // Check the version/properties mechanisms
-    // Is/was this a bug in ARQ?
-    
-    // Testing assembler.
-    
-    // release+publish all in one - deleting the build jar only in clean-once?
+    // Is/was this a bug in ARQ?  Is it fixed?
     
     // == 0.8.1
     // 
@@ -35,8 +31,7 @@ public class Dev
     // Relayering for index interface
     
     // ==== Build
-    // Refactor to improve "publish and release" (new "once" targets?)
-    
+    // Refactor to improve "publish and release" (new "once" target for "build"?)
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
