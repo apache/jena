@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -16,6 +14,8 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.lib.Cache;
+import com.hp.hpl.jena.sparql.lib.CacheLRU;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 /** Wrapper around a DatasetGraph. See also DataSourceImpl.
@@ -27,7 +27,7 @@ public class DatasetImpl implements Dataset
 {
     protected DatasetGraph dsg = null ;
     // Cache graph => model so returned models are the same (==)
-    private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
+    private Cache<Graph, Model> cache = new CacheLRU<Graph, Model>(0.75f, 100) ;      
 
     public DatasetImpl(Model model)
     {
@@ -78,21 +78,21 @@ public class DatasetImpl implements Dataset
     {
         if ( graph == null )
             return ;
-        cache.remove(graph) ;
+        cache.removeObject(graph) ;
     }
 
     private void addToCache(Model model)
     {
-        cache.put(model.getGraph(), model) ;
+        cache.putObject(model.getGraph(), model) ;
     }
 
     private Model graph2model(Graph graph)
     { 
-        Model model = cache.get(graph) ;
+        Model model = cache.getObject(graph) ;
         if ( model == null )
         {
             model = ModelFactory.createModelForGraph(graph) ;
-            cache.put(graph, model) ;
+            cache.putObject(graph, model) ;
         }
         return model ;
     }
