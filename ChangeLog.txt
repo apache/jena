@@ -1,7 +1,11 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.2
+
 ==== 0.8.1
+
++ Fix bug when assembling one unnamed graph. 
 
 ==== 0.8.0
 
