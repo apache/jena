@@ -3,6 +3,12 @@ ChangeLog for ARQ
 
 ==== ARQ 2.7.1
 
++ Upgrade to stax 1.0.1 and wstx-asl-3.2.9
+
++ Remove json.jar (jena compiled code from org.json).  Replace with source code, renamed, in ARQ itself. 
+  package com.hp.hpl.jena.sparql.lib.org.json;
+  Cleaned up for Jeva generics.
+
 ==== ARQ 2.7.0
 
 + New build system.

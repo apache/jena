@@ -9,8 +9,7 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.OutputStream;
 
-import org.json.JSONObject;
-import org.json.JSONStringer;
+import com.hp.hpl.jena.sparql.lib.org.json.*;
 
 /** JSON Output (ASK format)
  * 

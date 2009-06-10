@@ -13,9 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.hp.hpl.jena.sparql.lib.org.json.*;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
@@ -271,8 +269,7 @@ public class JSONInput extends SPARQLResult
                 Binding binding = new BindingMap() ;
                 JSONObject jsolution = jbindings.getJSONObject(row) ;
                 
-                for (   @SuppressWarnings("unchecked")
-                        Iterator<String> it = jsolution.keys(); it.hasNext() ; ) 
+                for ( Iterator<String> it = jsolution.keys(); it.hasNext() ; ) 
                 {
                     String varName = it.next() ;
                     JSONObject jbinding = jsolution.getJSONObject(varName) ;

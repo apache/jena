@@ -14,7 +14,7 @@
 
   <!-- ==== Release -->
 
-  <target name="release" depends="copy-init,copy-dist,zip-release"
+  <target name="release" depends="clean-once,copy-init,copy-dist,zip-release"
 	  description="Build a release zip"/>
 
   <target name="package" depends="copy-init,copy-dist,zip-release"/>

@@ -8,7 +8,7 @@
   <property environment="env"/>
 
   <!-- The major and minor version numbers  -->
-  <property name="version-major"   		value="2"/>
+  <property name="version-major"        value="2"/>
   <property name="version-minor"        value="7"/>
   <property name="version-revision"     value="1"/>
   <property name="version-status"       value="-dev"/>
@@ -37,6 +37,7 @@
       	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
 
   <!-- Override -->
+
   <target name="package.jar" depends="clean-jar,compile,make-jar-core,make-jar-extra">
     <!-- And place in lib/ as unversioned files -->
     <copy file="${build.dir}/${jarfile}" tofile="${lib.dir}/${jarfile.lib}"/>
@@ -77,7 +78,9 @@
   <property name="src.dev.dir"            value="src-dev"/>
 
   <!-- Coordinate with ivysetting.xml -->
-  <property name="publish.resolver"       value="dev-publish"/>
+  <!-- repo-publish, repo-local -->
+  <property name="publish.resolver"     value="repo-local"/>
+
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/sparql/arq-properties.xml"/>

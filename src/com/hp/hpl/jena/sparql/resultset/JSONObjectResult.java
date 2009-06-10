@@ -9,9 +9,7 @@ package com.hp.hpl.jena.sparql.resultset;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.hp.hpl.jena.sparql.lib.org.json.*;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
