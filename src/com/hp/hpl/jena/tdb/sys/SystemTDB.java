@@ -61,8 +61,8 @@ public class SystemTDB
      * 
      * @see{com.hp.hpl.jena.tdb.TDB.VERSION}
      */
-    public static final int LenNodeHash             = SizeOfLong ; // TDB <= 0.7.X
-    //public static final int LenNodeHash             = 128/8 ; // TDB >= 0.8.0
+    //public static final int LenNodeHash             = SizeOfLong ; // TDB <= 0.7.X
+    public static final int LenNodeHash             = 128/8 ; // TDB >= 0.8.0
 
     // ---- Symbols and similar
     
