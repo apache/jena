@@ -75,7 +75,7 @@ public class SystemTDB
     /** Root of any TDB-defined Java system properties */   
     public static final String tdbPropertyRoot      = "com.hp.hpl.jena.tdb" ;
 
-    // TODO Make these settable via the propertis file.
+    // TODO Make these settable via the properties file.
     
     /** Log duplicates during loading */
     public static final Symbol symLogDuplicates     = allocSymbol("logDuplicates") ;
