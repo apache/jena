@@ -178,7 +178,7 @@ public class JSONArray {
      * @throws JSONException If not an array.
      */
 
-    public JSONArray(Collection<Object> collection, boolean includeSuperClass) {
+    public JSONArray(Collection<Object> collection, boolean includeSuperClass) throws JSONException  {
 		this.myArrayList = new ArrayList<Object>();
 		if (collection != null) {
 			Iterator<Object> iter = collection.iterator();;
