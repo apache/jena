@@ -11,8 +11,13 @@ public class Dev
     // Check the version/properties mechanisms
     // Is/was this a bug in ARQ?  Is it fixed?
     
-    // == 0.8.1
-    // 
+    // == 0.8.2
+    // Share graphs ==> same graph?
+    // Use of tdb:dataset 
+    // c.f.<#sdb-one-graph> a sdb:Model ; 
+    //       sdb:dataset <#sdb> ;
+    //       sdb:namedGraph ... ;
+    
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
