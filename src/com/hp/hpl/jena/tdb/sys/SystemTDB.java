@@ -75,6 +75,8 @@ public class SystemTDB
     /** Root of any TDB-defined Java system properties */   
     public static final String tdbPropertyRoot      = "com.hp.hpl.jena.tdb" ;
 
+    // TODO Make these settable via the propertis file.
+    
     /** Log duplicates during loading */
     public static final Symbol symLogDuplicates     = allocSymbol("logDuplicates") ;
 
@@ -177,6 +179,16 @@ public class SystemTDB
     }
     
     // ----
+    
+    private static int intValue(String prefix, String name, int defaultValue)
+    {
+        
+        if ( ! prefix.endsWith(".") )
+            name = prefix+"."+name ;
+        else
+            name = prefix+name ;
+        return intValue(name, defaultValue) ;
+    }
     
     private static int intValue(String name, int defaultValue)
     {

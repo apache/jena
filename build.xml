@@ -5,13 +5,13 @@
 
   <!-- ========================================== -->
   <!-- ==== Configuration -->
-  <property name="Name"                   value="TDB"/>
-  <property name="name"                   value="tdb"/>
+  <property name="Name"             	value="TDB"/>
+  <property name="name"                 value="tdb"/>
 
   <property environment="env"/>
 
   <!-- The major and minor version numbers  -->
-  <property name="version-major"   	value="0"/>
+  <property name="version-major"   	    value="0"/>
   <property name="version-minor"        value="8"/>
   <property name="version-revision"     value="1"/>
   <property name="version-status"       value=""/>
@@ -27,16 +27,16 @@
   <target name="main" depends="jar"/>
 
   <!-- Sources as a path -->
-  <property name="src.dir"                value="src"/>
-  <property name="src.test.dir"           value="src-test"/>
-  <property name="src.lib.dir"            value="src-lib"/>
-  <property name="src.lib.test.dir"       value="src-lib-test"/>
-  <property name="src.examples.dir"       value="src-examples"/>
-  <property name="src.dev.dir"            value="src-dev"/>
+  <property name="src.dir"              value="src"/>
+  <property name="src.test.dir"         value="src-test"/>
+  <property name="src.lib.dir"          value="src-lib"/>
+  <property name="src.lib.test.dir"     value="src-lib-test"/>
+  <property name="src.examples.dir"     value="src-examples"/>
+  <property name="src.dev.dir"          value="src-dev"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-publish, repo-local -->
-  <property name="publish.resolver"       value="repo-publish"/>
+  <property name="publish.resolver"     value="repo-publish"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
