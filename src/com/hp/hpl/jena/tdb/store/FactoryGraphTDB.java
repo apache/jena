@@ -197,6 +197,9 @@ public class FactoryGraphTDB
     // ---- All creation happens here
     // Metadata for location.
     
+    /** Create or connect a TDB-back graph (graph-level)
+     * This will be the default graph of a dataset except that the quads table is not attached/created
+     */
     private static GraphTriplesTDB _createGraph(IndexBuilder indexBuilder, Location location)
     {
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;

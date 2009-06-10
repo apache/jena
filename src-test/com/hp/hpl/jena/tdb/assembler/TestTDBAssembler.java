@@ -97,11 +97,20 @@ public class TestTDBAssembler extends BaseTest
             ds.close();
     }
     
-    // Named graph
-    @Test public void createNamedGraph()
+    @Test public void createNamedGraph1()
     {
-        String f = dirAssem+"/tdb-named-graph.ttl" ;
-        Object thing = AssemblerUtils.build( f, VocabTDB.tGraphTDB) ;
+        testNamedGraph(dirAssem+"/tdb-named-graph-1.ttl") ;
+    }
+    
+    @Test public void createNamedGraph2()
+    {
+        testNamedGraph(dirAssem+"/tdb-named-graph-2.ttl") ;
+    }
+    
+
+    private static void testNamedGraph(String assemblerFile)
+    {
+        Object thing = AssemblerUtils.build( assemblerFile, VocabTDB.tGraphTDB) ;
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
         

@@ -12,5 +12,6 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     . 
 
 <#graph> rdf:type tdb:GraphTDB ;
-    tdb:location "tmp/testing/DB" ;
+    # tdb:location "tmp/testing/DB" ;
+    tdb:location "--mem--" ;
     .

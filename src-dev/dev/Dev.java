@@ -12,7 +12,14 @@ public class Dev
     // Is/was this a bug in ARQ?  Is it fixed?
     
     // == 0.8.2
+    // Dev-1:
     // Share graphs ==> same graph?
+    //   Via shared datasets
+    //   Old routes: TDBFactory. _createGraph() ; FactoryGraphTDB
+    // Downplay FactoryGraphTDB
+    // Make graph creation just dataset+selection.
+    // TDBFactory.Impl is only dataset.
+    
     // Use of tdb:dataset 
     // c.f.<#sdb-one-graph> a sdb:Model ; 
     //       sdb:dataset <#sdb> ;

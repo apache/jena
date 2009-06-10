@@ -68,6 +68,10 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
+        Dataset ds = TDBFactory.createDataset("--mem--") ;
+        System.exit(0) ;
+        
+        
         tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
         
         

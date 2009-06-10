@@ -55,6 +55,12 @@ public class Location
     
     public Location(String rootname)
     { 
+        if ( rootname.equals(pathnameMem) )
+        {
+            pathname = pathnameMem ;
+            return ;
+        }
+        
         // Prefer "/"
         rootname = rootname.replace('\'', '/') ;
         File file = new File(rootname) ;

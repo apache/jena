@@ -29,7 +29,6 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 public class TDBGraphAssembler extends AssemblerBase implements Assembler
 {
     static IndexAssembler indexAssembler = null ; 
-    // See Store/gbt.ttl
     
     @Override
     public Model open(Assembler a, Resource root, Mode mode)
@@ -43,23 +42,29 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         // [] rdf:type tdb:GraphTDB ;
         //    tdb:location "dir" ;
         
-        // Or [not tested]
+        // Make a named model.
         // [] rdf:type tdb:GraphTDB ;
-        //      tdb:index "SPO" ;
-        //    .
-        
+        //    tdb:location "dir" ;
+        //    tdb:graphName <http://example/name> ;
+
         // Or [not ready]
         // [] rdf:type tdb:GraphBDB ;
         
         if ( ! exactlyOneProperty(root, pLocation) )
             throw new AssemblerException(root, "No location given") ;
 
+        
+        
+        
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
         
+        // Two possible properties.
         String graphName = null ;
-        if ( root.hasProperty(pGraphName) )
-            graphName = getAsStringValue(root, pGraphName) ; // root.getProperty(pGraphName).getResource().getURI() ;
+        if ( root.hasProperty(pGraphName1) )
+            graphName = getAsStringValue(root, pGraphName1) ;
+        if ( root.hasProperty(pGraphName2) )
+            graphName = getAsStringValue(root, pGraphName2) ;
         
         if ( root.hasProperty(pIndex) )
             Log.warn(this, "Custom indexes not implemented yet - ignored") ;
