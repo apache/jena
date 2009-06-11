@@ -15,8 +15,6 @@ import com.hp.hpl.jena.sdb.util.Vocab;
 
 public class AssemblerVocab
 {
-    // Vocabulary later
-    // Was: "http://jena.hpl.hp.com/2006/01/acmd#"
     private static final String NS = SDB.namespace ;
     
     public static String getURI() { return NS ; } 
@@ -31,7 +29,8 @@ public class AssemblerVocab
     public static final Property pStore              = Vocab.property(NS, "store") ;
     public static final Property pDataset            = Vocab.property(NS, "dataset") ;
     public static final Property pGraphData          = Vocab.property(NS, "graph") ;
-    public static final Property pNamedGraph         = Vocab.property(NS, "namedGraph") ;
+    public static final Property pNamedGraph1        = Vocab.property(NS, "graphName") ;
+    public static final Property pNamedGraph2        = Vocab.property(NS, "namedGraph") ;
 
     // ---- Experimental
     

@@ -39,9 +39,10 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
         StoreDesc storeDesc = datasetAssem.openStore(a, dataset, mode) ;
 
         // Attempt to find a graph name - may be absent.
-        Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pNamedGraph) ;
-        if ( x != null && ! x.isURIResource() )
-            throw new BadDescriptionException(root, "Graph name not a URI: "+x) ;
+        // Two names : "namedGraph" and "graphName"
+        String x = GraphUtils.getAsStringValue(root, AssemblerVocab.pNamedGraph1) ;
+        if ( x == null )
+            x = GraphUtils.getAsStringValue(root, AssemblerVocab.pNamedGraph2) ;
         
         // No name - default model.
         Graph g = null ;
