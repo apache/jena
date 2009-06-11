@@ -58,19 +58,6 @@ public class TestTDBAssembler extends BaseTest
         ds.close() ;
     }
     
-    @Test public void createGraphDirect()
-    {
-        String f = dirAssem+"/tdb-graph.ttl" ;
-        Object thing = AssemblerUtils.build( f, VocabTDB.tGraphTDB) ;
-        assertTrue(thing instanceof Model) ;
-        Graph graph  = ((Model)thing).getGraph() ;
-        assertTrue(graph instanceof GraphTDB) ;
-        
-        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
-        if ( ds != null )
-            ds.close();
-    }
-    
     @Test public void createDatasetEmbed()
     {
         String f = dirAssem+"/tdb-dataset-embed.ttl" ;
@@ -79,6 +66,11 @@ public class TestTDBAssembler extends BaseTest
         Dataset ds = (Dataset)thing ;
         assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTDB) ;
         ds.close();
+    }
+
+    @Test public void createGraphDirect()
+    {
+        testGraph(dirAssem+"/tdb-graph.ttl", false) ;
     }
     
     @Test public void createGraphEmbed()
@@ -99,24 +91,36 @@ public class TestTDBAssembler extends BaseTest
     
     @Test public void createNamedGraph1()
     {
-        testNamedGraph(dirAssem+"/tdb-named-graph-1.ttl") ;
+        testGraph(dirAssem+"/tdb-named-graph-1.ttl", true) ;
     }
     
     @Test public void createNamedGraph2()
     {
-        testNamedGraph(dirAssem+"/tdb-named-graph-2.ttl") ;
+        testGraph(dirAssem+"/tdb-named-graph-2.ttl", true) ;
     }
     
+    @Test public void createNamedGraphViaDataset()
+    {
+        testGraph(dirAssem+"/tdb-graph-ref-dataset.ttl",false) ;
+    }
 
-    private static void testNamedGraph(String assemblerFile)
+    private static void testGraph(String assemblerFile, boolean named)
     {
         Object thing = AssemblerUtils.build( assemblerFile, VocabTDB.tGraphTDB) ;
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
         
         assertTrue(graph instanceof GraphTDB) ; 
-        assertFalse(graph instanceof GraphTriplesTDB) ;
-        assertTrue(graph instanceof GraphNamedTDB) ;
+        if ( named )
+        {
+            assertFalse( graph instanceof GraphTriplesTDB) ;
+            assertTrue(graph instanceof GraphNamedTDB) ;
+        }
+        else
+        {
+            assertTrue( graph instanceof GraphTriplesTDB) ;
+            assertFalse(graph instanceof GraphNamedTDB) ;
+        }
         
         DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
         if ( ds != null )

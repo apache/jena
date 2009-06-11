@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
 
 import atlas.logging.Log;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.assembler.Assembler;
@@ -50,29 +51,39 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         // Or [not ready]
         // [] rdf:type tdb:GraphBDB ;
         
-        if ( ! exactlyOneProperty(root, pLocation) )
-            throw new AssemblerException(root, "No location given") ;
-
+        // Location or dataset reference.
+        String locationDir = getStringValue(root, pLocation) ;
+        Resource dataset = getResourceValue(root, pDataset) ;
         
+        if ( locationDir != null && dataset != null )
+            throw new AssemblerException(root, "Both location and dataset given: exactly one required") ; 
         
+        if ( locationDir == null && dataset == null )
+            throw new AssemblerException(root, "Must give location or refer to a dataset description") ;
         
-        String dir = getStringValue(root, pLocation) ;
-        Location loc = new Location(dir) ;
-        
-        // Two possible properties.
         String graphName = null ;
         if ( root.hasProperty(pGraphName1) )
             graphName = getAsStringValue(root, pGraphName1) ;
         if ( root.hasProperty(pGraphName2) )
             graphName = getAsStringValue(root, pGraphName2) ;
-        
+
         if ( root.hasProperty(pIndex) )
             Log.warn(this, "Custom indexes not implemented yet - ignored") ;
+
+        final Dataset ds ;
         
-        if ( graphName != null )
-            return TDBFactory.createNamedModel(graphName, loc) ;
+        if ( locationDir != null )
+        {
+            Location location = new Location(locationDir) ;
+            ds = TDBFactory.createDataset(location) ;
+        }
         else
-            return TDBFactory.createModel(loc) ;    
+            ds = DatasetAssemblerTDB.make(dataset) ;
+
+        if ( graphName != null )
+            return ds.getNamedModel(graphName) ;
+        else
+            return ds.getDefaultModel() ;
     }
     
     //@Unused

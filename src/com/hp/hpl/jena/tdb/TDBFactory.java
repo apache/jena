@@ -41,18 +41,23 @@ public class TDBFactory
     }
 
     // ---- Implementation factories 
-    // Standard implementation factory: change graph creation to dataset?
+    /** Implementation factory for creation of datasets - uncached */ 
     public final static ImplFactory uncachedFactory = new ConcreteImplFactory() ;
     
+    /** Implementation factory for cached creation of datasets */ 
     public final static ImplFactory cachedFactory = new CachingImplFactory(uncachedFactory) ;
 
     // Caching by location.
     private static boolean CACHING = true ;
-    
+
+    /** The default implementation factory for TDB datasets. 
+     *  Caching of daatsets for sharing purposes.  
+     */
+
     public final static ImplFactory stdFactory = CACHING ? cachedFactory :
                                                            uncachedFactory ;
 
-    // Always in-memory implementation factory
+    /** In-memory datasets */
     public final static ImplFactory memFactory = new MemoryImplFactory() ;
 
     // ----
@@ -201,17 +206,18 @@ public class TDBFactory
     // -------- Dataset and graph implementation factories. 
     
     /** Set the implementation factory.  Not normally needed - only systems that wish
-     * to create unusually combinations of indexes and ndoe tables need to use this call.
+     * to create unusually combinations of indexes and node tables need to use this call.
      * A detailed knowledge of how TDB works, and internal assumptions, is needed to
      * create full functional TDB graphs or datasets.  Beware.   
      */
     public static void setImplFactory(ImplFactory f) { factory = f ; }
     
-    /** Get the implementation factory. */
+    /** Get the current implementation factory. */
     public static ImplFactory getImplFactory() { return factory ; }
     
     // ---- Concrete
 
+    /** An ImplFactory that creates datasets in the usual way for TDB */
     public final static class ConcreteImplFactory implements ImplFactory
     {
         @Override
@@ -240,6 +246,10 @@ public class TDBFactory
 
     // ---- Caching
     
+    /** An ImplFactory that creates datasets in the usual way for TDB and caches them
+     * baed on the location.  Asking for a dataset at a location will 
+     * return the same (cached) one. 
+     */
     public final static class CachingImplFactory implements ImplFactory
     {
         private static Logger log = LoggerFactory.getLogger(CachingImplFactory.class) ;
@@ -249,11 +259,11 @@ public class TDBFactory
         public CachingImplFactory(ImplFactory factory)
         { this.factory1 = factory ; }
         
-        // Uncached
+        // Uncached currently
         @Override
         public GraphTDB createGraph()                  { return factory1.createGraph() ; }
         
-        // Uncached
+        // Uncached currently
         @Override
         public DatasetGraphTDB createDatasetGraph()    { return factory1.createDatasetGraph() ; }
     
@@ -261,7 +271,7 @@ public class TDBFactory
         public DatasetGraphTDB createDatasetGraph(Location location)
         {
             //if ( location.isMem() )
-            // The named in-memory location.  This is caceable.
+            // The named in-memory location.  This is cacheable.
             
             String absPath = location.getDirectoryPath() ;
             DatasetGraphTDB dg = cache.get(absPath) ;
@@ -302,6 +312,7 @@ public class TDBFactory
 
     // ---- In-memory
     
+    /** ImplFactory for many in-memeory datasets. Mainly for testing. */ 
     public static class MemoryImplFactory implements ImplFactory
     {
         @Override

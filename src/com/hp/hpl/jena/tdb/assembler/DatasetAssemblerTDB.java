@@ -10,6 +10,7 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
@@ -24,11 +25,17 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
+    static { TDB.init(); }
+    
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
         TDB.init() ;
-        
+        return make(root) ;
+    }
+
+    static Dataset make(Resource root)
+    {
         if ( ! exactlyOneProperty(root, pLocation) )
             throw new AssemblerException(root, "No location given") ;
 
@@ -36,7 +43,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
         Location loc = new Location(dir) ;
         return TDBFactory.createDataset(loc) ;
     }
-
+    
 }
 
 /*
