@@ -25,6 +25,8 @@ public class Dev
     //       sdb:dataset <#sdb> ;
     //       sdb:namedGraph ... ;
     
+    // NodeTable as Index<Node, NodeID> and Index<NodeId, Node>
+    
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
