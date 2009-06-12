@@ -20,12 +20,7 @@ public class Dev
     // Make graph creation just dataset+selection.
     // TDBFactory.Impl is only dataset.
     
-    // Use of tdb:dataset 
-    // c.f.<#sdb-one-graph> a sdb:Model ; 
-    //       sdb:dataset <#sdb> ;
-    //       sdb:namedGraph ... ;
-    
-    // NodeTable as Index<Node, NodeID> and Index<NodeId, Node>
+    // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     
     // ----
     
