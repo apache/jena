@@ -383,7 +383,7 @@ public class Run
     
     private static void runQTest()
     {
-        String DIR = "testing/ARQ/Assign/" ;
+        String DIR = "testing/ARQ/DAWG-Final/" ;
         String []a1 = { "--strict", "--data="+DIR+"data.ttl",
             "--query="+DIR+"assign-01.arq",
             "--result="+DIR+"assign-01.srx"} ;

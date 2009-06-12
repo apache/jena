@@ -50,8 +50,8 @@ public class AlgebraGenerator
     // The  {{}} results in (join unit (filter ...)) the filter is not moved
     // into the LeftJoin.  
     
-    static public boolean applySimplification = true ;      // Allows raw algebra to be generated (testing) 
-    boolean simplifyInAlgebraGeneration = false ;           // False is correct setting. 
+    static public boolean applySimplification = true ;              // Allows raw algebra to be generated (testing) 
+    private boolean simplifyTooEarlyInAlgebraGeneration = false ;   // False is the correct setting. 
 
     public AlgebraGenerator(Context context)
     { 
@@ -78,7 +78,7 @@ public class AlgebraGenerator
     {
         Op op = compileElement(elt) ;
         Op op2 = op ;
-        if ( ! simplifyInAlgebraGeneration && applySimplification && simplify != null )
+        if ( ! simplifyTooEarlyInAlgebraGeneration && applySimplification && simplify != null )
             op2 = Transformer.transform(simplify, op) ;
         return op2;
     }
@@ -504,8 +504,7 @@ public class AlgebraGenerator
 //            return current ;
 //        }
         
-        
-        if ( simplifyInAlgebraGeneration && applySimplification )
+        if ( simplifyTooEarlyInAlgebraGeneration && applySimplification )
         {
             if ( OpJoin.isJoinIdentify(current) )
                 return newOp ;

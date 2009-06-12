@@ -15,7 +15,7 @@ public class TS_DAWG extends TestSuite
   static final String testSetNameDAWG        = "DAWG - Misc" ;
 
   static final public String testDirDAWG         = "testing/DAWG" ;
-  static final public String testDirWGApproved   = "testing/DAWG-Approved" ;
+  static final public String testDirWGApproved   = "testing/DAWG-Final" ;
   static final public String testDirWGPending    = "testing/DAWG-Pending" ;
 
     static public TestSuite suite() { return new TS_DAWG(); }
@@ -24,8 +24,17 @@ public class TS_DAWG extends TestSuite
     {
         super("DAWG") ;
         
+        // One test, dawg-optional-filter-005-simplified or dawg-optional-filter-005-not-simplified
+        // must fail because it's the same query and daat with different interpretations of the
+        // spec.  ARQ implements dawg-optional-filter-005-not-simplified.
+
+
+        
         TestSuite ts1 = new TestSuite("Approved") ;
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest.ttl")) ;
+        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
+        // These merely duplictae ARQ's synstax tests becuase Andy write the DAGW syntax tests,
+        // but they are quick so include the snapshot
+        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
         addTest(ts1) ;
         
 //        TestSuite ts2 = new TestSuite("Pending") ;
