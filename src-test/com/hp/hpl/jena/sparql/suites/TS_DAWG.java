@@ -25,12 +25,11 @@ public class TS_DAWG extends TestSuite
         super("DAWG") ;
         
         TestSuite ts1 = new TestSuite("Approved") ;
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/simple/manifest.n3")) ;
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/examples/manifest.n3")) ; // Query pattern examples
+        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest.ttl")) ;
         addTest(ts1) ;
         
-        TestSuite ts2 = new TestSuite("Pending") ;
-        addTest(ts2) ;
+//        TestSuite ts2 = new TestSuite("Pending") ;
+//        addTest(ts2) ;
         
         TestSuite ts3 = new TestSuite("Misc") ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Misc/manifest.n3")) ;
