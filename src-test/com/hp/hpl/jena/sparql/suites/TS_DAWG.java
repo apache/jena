@@ -27,8 +27,6 @@ public class TS_DAWG extends TestSuite
         // One test, dawg-optional-filter-005-simplified or dawg-optional-filter-005-not-simplified
         // must fail because it's the same query and daat with different interpretations of the
         // spec.  ARQ implements dawg-optional-filter-005-not-simplified.
-
-
         
         TestSuite ts1 = new TestSuite("Approved") ;
         ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
