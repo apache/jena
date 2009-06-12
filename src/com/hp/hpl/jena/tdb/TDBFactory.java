@@ -23,7 +23,6 @@ import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
@@ -31,12 +30,9 @@ public class TDBFactory
     /** Interface to maker of the actual implementations of TDB graphs and datasets */ 
     public interface ImplFactory 
     {
-        /** Make a memory implementation of a TDB graph (memory graphs are for testing, not efficiency) */
-        public GraphTDB createGraph() ;
-        /** Make a TDB graph with persistent data at the location */
-        public GraphTDB createGraph(Location loc) ;
-        
+        /** Create an in-memory dataset */
         public DatasetGraphTDB createDatasetGraph() ;
+        /** Create a TDB-backed dataset at a given location */
         public DatasetGraphTDB createDatasetGraph(Location location) ;
     }
 
@@ -168,7 +164,7 @@ public class TDBFactory
     public static Graph createNamedGraph(String name, Location location)
     { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
 
-    // Meaningless unless there is only one in-memeory dataset */
+    // Meaningless unless there is only one in-memory dataset */
 //    /** Create a TDB model for named model for an in-memory */  
 //    public static Graph createNamedGraph(String name)
 //    { return createDataset().getNamedModel(name) ; }
@@ -189,12 +185,12 @@ public class TDBFactory
     // Cache?
     
     private static Graph _createGraph()
-    { return factory.createGraph() ; }
+    { return factory.createDatasetGraph().getDefaultGraph() ; }
 
     private static Graph _createGraph(Location loc)
     {
         // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
-        return factory.createGraph(loc) ;
+        return factory.createDatasetGraph(loc).getDefaultGraph() ;
     }
 
     private static DatasetGraphTDB _createDatasetGraph()
@@ -218,19 +214,8 @@ public class TDBFactory
     // ---- Concrete
 
     /** An ImplFactory that creates datasets in the usual way for TDB */
-    public final static class ConcreteImplFactory implements ImplFactory
+    private final static class ConcreteImplFactory implements ImplFactory
     {
-        @Override
-        public GraphTDB createGraph()
-        { return FactoryGraphTDB.createGraphMem() ; }
-    
-        @Override
-        public GraphTDB createGraph(Location location)      
-        { 
-            if ( location.isMem() )
-                return createGraph() ;
-            return FactoryGraphTDB.createGraph(location) ; }
-    
         @Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         { 
@@ -250,7 +235,7 @@ public class TDBFactory
      * baed on the location.  Asking for a dataset at a location will 
      * return the same (cached) one. 
      */
-    public final static class CachingImplFactory implements ImplFactory
+    private final static class CachingImplFactory implements ImplFactory
     {
         private static Logger log = LoggerFactory.getLogger(CachingImplFactory.class) ;
         private ImplFactory factory1 ;
@@ -258,10 +243,6 @@ public class TDBFactory
     
         public CachingImplFactory(ImplFactory factory)
         { this.factory1 = factory ; }
-        
-        // Uncached currently
-        @Override
-        public GraphTDB createGraph()                  { return factory1.createGraph() ; }
         
         // Uncached currently
         @Override
@@ -286,13 +267,6 @@ public class TDBFactory
             return dg ;
         }
     
-        @Override
-        public GraphTDB createGraph(Location loc)
-        {
-            // Note - this equates a graph with the default graph of a dataset.  
-            return createDatasetGraph(loc).getDefaultGraphTDB() ;
-        }
-    
         public void flush() { cache.clear() ; }
         public void release(Location location)
         {
@@ -312,17 +286,9 @@ public class TDBFactory
 
     // ---- In-memory
     
-    /** ImplFactory for many in-memeory datasets. Mainly for testing. */ 
-    public static class MemoryImplFactory implements ImplFactory
+    /** ImplFactory for many in-memory datasets. Mainly for testing. */ 
+    private final static class MemoryImplFactory implements ImplFactory
     {
-        @Override
-        public GraphTDB createGraph()
-        { return FactoryGraphTDB.createGraphMem() ; }
-    
-        @Override
-        public GraphTDB createGraph(Location loc)      
-        { return FactoryGraphTDB.createGraphMem() ; }
-    
         @Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         { return FactoryGraphTDB.createDatasetGraphMem() ; }

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+
 /** General descriptor of a reorderring (mapping) of columns in tuples to columns in indexes, 
  * for example, from triples to triple index order. 
  * @author Andy Seaborne

@@ -3,6 +3,12 @@ ChangeLog for TDB
 
 ==== 0.8.2
 
++ TDB-backed graphs at the same location now use the shared dataset.
+  This means all created modesl in a JVM shared TDB caches.
+  
++ All tables now created even for just a graph or model
+  (including the named graph quad tables).
+
 ==== 0.8.1
 
 + Fix bug when assembling one unnamed graph. 

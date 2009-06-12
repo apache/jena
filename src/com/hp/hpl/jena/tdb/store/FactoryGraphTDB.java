@@ -18,11 +18,10 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import atlas.lib.ColumnMap;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -51,18 +50,8 @@ public class FactoryGraphTDB
     public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    /** Create a TDB graph at the location.  Any existing persistent files are reconnected.
-     * If there no index or node files at the location, an empty graph is setup.
-     * 
-     * @param location      The location containg the file system resources.
-     */
-    public static GraphTriplesTDB createGraph(Location location)
-    {
-        return createGraph(IndexBuilder.get(), location) ;
-    }  
-    
-    // Detect existing (other technology) indexes.
-//    public static PGraph create(Location location)
+//    // Detect existing (other technology) indexes.
+//    public static DatasetGraphTDB create(Location location)
 //    { 
 //        if ( location == null )
 //            throw new TDBException("Location is null") ;
@@ -70,22 +59,22 @@ public class FactoryGraphTDB
 //        if ( location.exists(Names.indexNode2Id, Names.extHashExt) )
 //        {
 //            log.info("Existing extendible hash index for nodes found - using ExtHash/B+Tree indexing") ;
-//            return create(IndexBuilder.getExtHash(), location) ;
+//            return createDatasetGraph(IndexBuilder.getExtHash(), location) ;
 //        }
 //        
 //        if ( location.exists(indexSPO, Names.btExt) )
 //        {
 //            log.info("Existing BTree index found - using BTree indexing") ;
-//            return create(IndexBuilder.getBTree(), location) ;
+//            return createDatasetGraph(IndexBuilder.getBTree(), location) ;
 //        }
 //        
 //        if ( location.exists(indexSPO, Names.bptExt1) )
 //        {
 //            log.debug("Existing B+Tree index found - using B+Tree indexing") ;
-//            return create(IndexBuilder.getBPlusTree(), location) ;
+//            return createDatasetGraph(IndexBuilder.getBPlusTree(), location) ;
 //        }   
 //        
-//        return create(IndexBuilder.get(), location) ;
+//        return createDatasetGraph(IndexBuilder.get(), location) ;
 //    }
 
     
@@ -94,43 +83,37 @@ public class FactoryGraphTDB
     {
         return _createGraph(indexBuilder, location) ;
     }  
-    
-    /** Create a TDB graph in-memory - for testing */
-    public static GraphTriplesTDB createGraphMem()
-    {
-        return createGraphMem(IndexBuilder.mem()) ;
-    }
-
+//    
+//    /** Create a TDB graph in-memory - for testing */
+//    public static GraphTriplesTDB createGraphMem()
+//    {
+//        return createGraphMem(IndexBuilder.mem()) ;
+//    }
+//
     /** Create a TDB graph in-memory - for testing */
     public static GraphTriplesTDB createGraphMem(IndexBuilder indexBuilder)
     {
         return createGraph(indexBuilder, Location.mem()) ;
     }
-
-    /** Create a TDB graph at the location and wrap it up as a Model.  
-     * Any existing persistent files are reconnected.
-     * If there no index or node files at the location, an empty graph is setup.
-     * 
-     * @param location      The location containg the file system resources.
-     */
-    public static Model createModel(Location location)
-    {
-        return ModelFactory.createModelForGraph(createGraph(location)) ;
-    }
-    
     
     /** Create or connect a TDB dataset */ 
     public static DatasetGraphTDB createDatasetGraph(Location location)
     {
-        return createDatasetGraph(IndexBuilder.get(), location, tripleIndexes, quadIndexes) ;
+        return createDatasetGraph(IndexBuilder.get(), location) ;
     }
 
     /** Create or connect a TDB dataset in-memory - for testing */ 
     public static DatasetGraphTDB createDatasetGraphMem()
     {
-        return createDatasetGraph(IndexBuilder.mem(), Location.mem(), tripleIndexes, quadIndexes) ;
+        return createDatasetGraph(IndexBuilder.mem(), Location.mem()) ;
     }
 
+    /** Create or connect a TDB dataset (graph-level) */
+    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location)
+    {
+        return _createDatasetGraph(indexBuilder, location, tripleIndexes, quadIndexes) ;
+    }
+    
     /** Create or connect a TDB dataset (graph-level) */
     public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
     {

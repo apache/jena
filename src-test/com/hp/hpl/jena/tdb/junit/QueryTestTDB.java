@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 
 public class QueryTestTDB extends EarlTestCase
 {
-    // Chnaged to using in-memory graphs/datasets because this is testing the query
+    // Changed to using in-memory graphs/datasets because this is testing the query
     // processing.  Physical graph/datsets is in package "store". 
     
     private static Logger log = LoggerFactory.getLogger(QueryTestTDB.class) ;
