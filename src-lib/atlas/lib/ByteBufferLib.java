@@ -45,15 +45,19 @@ public class ByteBufferLib
         
         // Print bytes.
         int i = 0 ;
-        int maxBytes = 3*24 ;
+        int maxBytes = 3*20 ;
         for ( ; i < maxBytes && i < byteBuffer.limit() ; i++ )
         {
-            if ( i%24 == 0 )
+            if ( i%20 == 0 )
                 out.println() ;
             out.printf(" 0x%02X", byteBuffer.get(i)) ;
         }
-        if ( i < maxBytes )
+        if ( i < byteBuffer.limit() )
+        {
+            if ( i%24 == 0 )
+                out.println() ;
             out.print(" ...") ;
+        }
         // Print as 4-byte ints
 //        int maxSlots = 8 ;
 //        int i = 0 ;
