@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.lib.iterator.Transform;
 
-
 //@RunWith(Parameterized.class)
 public abstract class ParamAllStores
 {

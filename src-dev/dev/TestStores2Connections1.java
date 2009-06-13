@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 /** 
- * Imitate conenction pooling. 
+ * Imitate connection pooling. 
  * Create an SQL/JDBC connection, create a store around it, do something
  * then remove the store (forget it, close it).
  * Create another store on the JDBC conenction.
