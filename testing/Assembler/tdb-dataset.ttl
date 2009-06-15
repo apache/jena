@@ -5,5 +5,6 @@
 [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
+    # Do at least one the long way.
     tdb:location "tmp/testing/DB" ;
     .
