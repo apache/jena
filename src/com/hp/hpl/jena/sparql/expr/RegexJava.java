@@ -7,6 +7,8 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.regex.* ;
 
+import com.hp.hpl.jena.query.QueryParseException;
+
 /** 
  * @author Andy Seaborne
  */
@@ -59,7 +61,8 @@ public class RegexJava implements RegexEngine
                 case 's' : newMask |= Pattern.DOTALL ;              break ;
                 //case 'x' : newMask |= Pattern.;  break ;
                 
-                default  : throw new ExprException("Illegal flag in regex modifiers: "+modifiers.charAt(i)) ;
+                default  : 
+                    throw new QueryParseException("Illegal flag in regex modifiers: "+modifiers.charAt(i), -1, -1) ;
             }
         }
         return newMask ;

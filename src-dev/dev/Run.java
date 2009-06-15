@@ -46,6 +46,7 @@ import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.StrUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -63,6 +64,17 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        String qs = StrUtils.strjoinNL(
+                           "PREFIX books:   <http://example.org/book/>",
+                           "PREFIX dc:      <http://purl.org/dc/elements/1.1/>",
+                           "SELECT ?book ?title" ,
+                           "{ ?book dc:title ?title . FILTER regex(?title, 'foo', 'a') }") ;
+        Query query = QueryFactory.create(qs) ;
+        System.out.println(query) ;
+        System.exit(0) ;
+        
+        
+        
         Op op = SSE.readOp("Q.sse") ;
         op = Algebra.optimize(op) ; 
         System.out.print(op) ;
