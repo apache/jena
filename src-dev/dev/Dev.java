@@ -13,6 +13,11 @@ public class Dev
     // Convert test suite by manifest to JUnit4.
     // DatasetImpl cache refinement
     // JMX
+    //   Per query details.
+    //     LastQuery, way for subsystems to register info (string/?)
+    //   Total queries
+    //   ??Datasets opened, closed
+    //   Remote queries made
     // ----
     
     //   TransformFilterPlacement
