@@ -1,6 +1,0 @@
-# SPARQL query to test the URIs in a dataset
-PREFIX : <.>
-
-SELECT ?g 
-WHERE
-  { GRAPH ?g { } }

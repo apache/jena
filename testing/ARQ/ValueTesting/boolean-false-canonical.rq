@@ -1,7 +1,0 @@
-# Canonical format of FALSE
-# $Id: boolean-false-canonical.rq,v 1.14 2009-05-15 21:58:27 andy_seaborne Exp $
-
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT ?s
- WHERE { ?s ?p FALSE }

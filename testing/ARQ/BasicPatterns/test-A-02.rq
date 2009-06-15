@@ -1,7 +1,0 @@
-SELECT  ?b ?y
-WITH <model5.nt>
-WHERE
-{
-    ( ?b rdf:type rdf:Bag )
-      ( ?b ?x ?y )
-      FILTER! ( ( ?x = rdf:type ) && ( ?y = rdf:Bag ) )

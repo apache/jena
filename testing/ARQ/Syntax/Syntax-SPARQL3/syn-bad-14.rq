@@ -1,3 +1,0 @@
-# CONSTRUCT and DOTs
-CONSTRUCT { ?s ?p ?o . . }
-WHERE { }

@@ -1,8 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT ?x ?v
-{
-  { ?x :p ?v . FILTER (?v = 1) }
-  UNION 
-  { ?x :q :z }
-}

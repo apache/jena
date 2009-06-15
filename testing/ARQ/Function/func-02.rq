@@ -1,7 +1,0 @@
-PREFIX  : <http://example.org/ns#>
-PREFIX  fn: <http://example.org/functions#>
-SELECT  ?z
-WHERE
-    { ?x :p ?z . 
-      FILTER fn:unknown(?z) .
-    }

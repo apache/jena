@@ -1,3 +1,0 @@
-@prefix roman: <http://rome.example.org/> .
-
-roman:TwentyFirstLegion roman:legionNumber "XXI"^^roman:Numeral .

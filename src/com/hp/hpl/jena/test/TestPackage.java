@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.48 2009-03-30 13:15:27 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.49 2009-06-15 14:32:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -29,15 +29,6 @@ public class TestPackage extends TestCase{
         addTest(ts,  "Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
         addTest(ts,  "N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
         addTest(ts,  "Turtle", com.hp.hpl.jena.n3.turtle.test.TurtleTestSuite.suite()) ;
-
-        // Avoid a compile time dependency on ARQ.
-        {
-            TestSuite arqSuite = TestPackageARQ.suite() ;
-            if ( arqSuite != null )
-                addTest(ts, "ARQ", arqSuite) ;
-            else
-                System.err.println("ARQ test suite not run") ;
-        }
         addTest(ts,  "XML Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
         addTest(ts,  "Util", com.hp.hpl.jena.util.test.TestPackage.suite());
         addTest(ts,  "Jena iterator", com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );

@@ -1,4 +1,0 @@
-PREFIX  ns: <http://rdf.hp.com/ns#>
-SELECT  *
-WHERE
-    { ?x ?y "value"^^ns:someType }

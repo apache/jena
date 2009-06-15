@@ -1,3 +1,0 @@
-SELECT  *
-WHERE
-    { ?x ?y "value"@en }

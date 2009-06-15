@@ -1,4 +1,0 @@
-PREFIX : <http://example.org/>
-
-SELECT ?x
-  { :x :p ?x . :x :q ?y }

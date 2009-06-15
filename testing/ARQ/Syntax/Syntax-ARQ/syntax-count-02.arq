@@ -1,3 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT (count(distinct *) AS ?count) { ?x :p ?p .}

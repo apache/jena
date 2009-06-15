@@ -1,9 +1,0 @@
-# dateTime-tz0 - test equivilent timezone representations
-# $Id: dateTime-tz0.rq,v 1.14 2009-05-15 21:58:27 andy_seaborne Exp $
-
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX t: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/dateTime.ttl#>
-
-SELECT ?label WHERE {
-  { ?event t:lable ?label ; t:time ?t
-    FILTER (?t = "2002-10-10T17:00:00Z"^^xsd:dateTime) }

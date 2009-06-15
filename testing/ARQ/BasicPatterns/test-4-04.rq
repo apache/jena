@@ -1,3 +1,0 @@
-SELECT  *
-WHERE
-    { ?a ?b "http://rdf.hp.com/s2" }

@@ -1,3 +1,0 @@
-SELECT  *
-WHERE
-    { ?x <http://rdf.hp.com/p-1> ?z }

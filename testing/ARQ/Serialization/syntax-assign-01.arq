@@ -1,6 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT *
-{
-    LET ( ?x := 1+3 )
-}

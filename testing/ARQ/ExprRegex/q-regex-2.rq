@@ -1,7 +1,0 @@
-prefix :  <http://example.org/ns#> 
-
-SELECT ?c
-{ :x :str ?c . 
-   FILTER regex(?c, "a", "i" )
-}
-

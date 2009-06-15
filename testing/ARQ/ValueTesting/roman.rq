@@ -1,7 +1,0 @@
-PREFIX roman: <http://rome.example.org/>
-
-SELECT ?legion
-WHERE {
-  ?legion roman:legionNumber ?n .
-  FILTER ( ?n = 21 )
-}

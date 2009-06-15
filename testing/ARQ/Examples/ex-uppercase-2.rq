@@ -1,8 +1,0 @@
-PREFIX      :    <http://example/>
-PREFIX  jext:    <java:arq.examples.propertyfunction.>
-
-SELECT ?v
-{
-    [] ?p ?v .
-    ?v jext:uppercase "ZZZ" .
-}

@@ -1,4 +1,0 @@
-PREFIX : <http://example/>
-SELECT *
-{ ?x :p ?p .}
-GROUP BY ?p

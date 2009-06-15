@@ -1,7 +1,0 @@
-PREFIX : <http://example.org/#> 
-
-SELECT *
-{ :x :p _:a .
-  FILTER ( false )
-}
-
