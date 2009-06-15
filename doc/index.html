@@ -63,21 +63,24 @@
 
     <p>ARQ Features:</p>
     <ul>
-      <li>Multiple query languages:
-      <ul>
-	<li>SPARQL</li>
-	<li>RDQL</li>
-	<li>ARQ, the engine's own language (access to experimental features)</li>
-      </ul>
-      </li>
-      <li>Multiple query engines:
-      <ul>
-	<li>General purpose engine</li>
-	<li>Remote access engines</li>
-	<li>Rewriter to SQL (<a href="http://jena./sf.net/SDB">SDB</a>)</li>
-      </ul>
-      </li>
+      <li>Standard SPARQL</li>
+		<li>Free text search via Lucene</li>
+		<li>SPARQL/Update</li>
+		<li>Access and extension of the SPARQL algebra</li>
+		<li>Support for custom filter functions</li>
+		<li>Property functions for custom processing of semantic relationships</li>
+		<li>Aggregation, GROUP BY and assignment as SPARQL extensions</li>
+		<li>Support for federated query</li>
+		<li>Support for extension to other storage systems</li>
+		<li>Client-support for remote access to any SPARQL endpoint</li>
     </ul>
+    
+    <p>Jena storage engines that plug into ARQ include:</p>
+	<ul>
+		<li>TDB -- Custom storage engine for high performance applications</li>
+		<li><a href="http://jena./sf.net/SDB">SDB</a> -- Rewriter to SQL for 
+		transactional SPARQL on standard relational databases</li>
+	</ul>
     
     <h2>Online Demo</h2>
     <p>Online <a href="http://www.sparql.org/query.html">Query Form</a> 
