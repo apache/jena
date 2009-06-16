@@ -34,6 +34,9 @@ public class Metadata
     static String resource = null ;
     private static void init()
     {
+        if ( resource == null )
+            throw new ARQException("No Java resource name for properties file") ;
+        
         if ( ! initialized )
         {
             initialized = true ;
@@ -51,8 +54,8 @@ public class Metadata
             
             InputStream in = classLoader.getResourceAsStream(resource) ;
             if ( in == null )
-                //throw new TDBException("Failed to find the properties file") ;
-                return ;
+                throw new ARQException("Failed to find the properties file") ;
+                //return ;
             try
             {
                 properties.loadFromXML(in) ;
