@@ -538,6 +538,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = Assignment()
  |
    el = FetchGraph()
+ |
+   el = ExistsElt()
+ |
+   el = NotExistsElt()
 
  )
   { return el ; }
@@ -581,6 +585,18 @@ Element FetchGraph() : { Node n ; }
   <FETCH>
   n = VarOrIRIref()
   { return new ElementFetch(n) ; }
+}
+
+Element ExistsElt() : {}
+{
+    <EXISTS>
+    { return null ; }
+}
+
+Element NotExistsElt() : {}
+{
+    (<UNSAID>|<NOTEXISTS>)
+    { return null ; }
 }
 
 
@@ -1120,8 +1136,8 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = Var() { return asExpr(gn) ; }
 
   | expr = AggExpression() { return expr ; }
-  | expr = Exists() { return expr ; }
-  | expr = NotExists() { return expr ; }
+  | expr = ExistsFunc() { return expr ; }
+  | expr = NotExistsFunc() { return expr ; }
 
   )
 }
@@ -1183,13 +1199,13 @@ Expr RegexExpression() :
 }
 
 
-Expr Exists() : { }
+Expr ExistsFunc() : { }
 {
    <EXISTS>
    { return null ; }
 }
 
-Expr NotExists() : { }
+Expr NotExistsFunc() : { }
 {
    (<UNSAID>|<NOTEXISTS>)
    { return null ; }

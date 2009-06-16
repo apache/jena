@@ -22,7 +22,8 @@ public class Dev
     
     //---
     // E_Exists
-    //   Parsing
+    //   Parsing (synatx done - not generating elements)
+    //   AST Element(Not)Exists, E_Exists
     //   Formatting 
     //     SPARQL -- FmtExpr.FmtExprARQVisitor
     //     Prefix --  WriterExpr.FmtExprPrefixVisitor
