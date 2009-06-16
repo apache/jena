@@ -60,6 +60,10 @@ public class ExecutionContext implements FunctionEnv
     }
 
     public Context getContext()       { return context ; }
+
+//    public ExecutionContext getExecutionContext()       { return this ; }
+
+    
     public void openIterator(QueryIterator qIter)
     {
         openIterators.add(qIter) ;

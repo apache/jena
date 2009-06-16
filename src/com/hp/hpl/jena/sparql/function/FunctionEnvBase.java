@@ -12,13 +12,14 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.util.Context;
 
-/** Environment passed to functions */
+/** Environment passed to functions -- see also {@link com.hp.hpl.jena.sparql.engine.ExecutionContext} */
 
 public class FunctionEnvBase implements FunctionEnv
 {
     private Context context ;
     private Graph activeGraph ;
     private DatasetGraph dataset ;
+    private ExecutionContext execContext = null ;
 
     /** Create an execution environment suitable for testing fucntions and expressions */ 
     public static FunctionEnv createTest()
@@ -31,7 +32,10 @@ public class FunctionEnvBase implements FunctionEnv
     public FunctionEnvBase(Context context) { this ( context, null, null) ; }
     
     public FunctionEnvBase(ExecutionContext execCxt)
-    { this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ; }
+    { 
+        this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ;
+        execContext = execCxt ;
+    }
 
     public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset)
     {
@@ -48,6 +52,13 @@ public class FunctionEnvBase implements FunctionEnv
     {
         return context ;
     }
+
+//    public ExecutionContext getExecutionContext()
+//    {
+//        if ( execContext == null )
+//            execContext = new ExecutionContext(context, activeGraph, dataset, QC.getFactory(context)) ;
+//        return execContext ;
+//    }
 
     public DatasetGraph getDataset()
     {

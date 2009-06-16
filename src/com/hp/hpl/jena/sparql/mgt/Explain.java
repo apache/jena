@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.mgt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

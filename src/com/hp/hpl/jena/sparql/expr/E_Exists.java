@@ -9,12 +9,13 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.OpEval;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-public class E_Exists extends ExprFunction
+public class E_Exists extends ExprFunction /*ExprNode*/
 {
     private static final String symbol = "exists" ;
     private Op op ;
@@ -34,20 +35,21 @@ public class E_Exists extends ExprFunction
     @Override
     public int numArgs()
     {
+        // There are no function arguments - the pattern is not an expression.
         return 0 ;
     }
 
     @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        return null ;
+        // Does not pass down fold constants.  Oh well.
+        Op op2 = Substitute.substitute(op, binding) ;
+        return new E_Exists(op2) ;
     }
 
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        // XXX Dubious.  Need to get the OpExecutorFactory and that needs an ExecutionContext.
-        // XXX Dubious.  QueryIterator tracking is lost.
         OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
         if ( opExec == null )
             throw new ARQInternalErrorException("No OpExec") ;
