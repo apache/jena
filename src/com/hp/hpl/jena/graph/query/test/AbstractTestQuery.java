@@ -1,13 +1,14 @@
   /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.51 2009-03-16 14:59:11 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.52 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.QueryStageException;
 import com.hp.hpl.jena.util.CollectionFactory;
@@ -414,7 +415,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
      */
     public void testQueryTripleOrder()
         {
-        Triple t1 = Triple.create( "A B C" ), t2 = Triple.create( "D E F" );
+        Triple t1 = NodeCreateUtils.createTriple( "A B C" ), t2 = NodeCreateUtils.createTriple( "D E F" );
         List<Triple> desired = Arrays.asList( new Triple[] {t1, t2} );
         List<Triple> obtained = getTriplesFromQuery( desired );
         assertEquals( desired, obtained );

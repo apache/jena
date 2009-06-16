@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.41 2009-03-17 10:28:56 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.42 2009-06-16 10:50:15 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -73,7 +73,7 @@ public class GraphTestBase extends JenaTestBase
         which see.
     */
     public static Triple triple( String fact )
-        { return Triple.create( fact ); }
+        { return NodeCreateUtils.createTriple( fact ); }
     
     /**
         Answer a triple described by the three space-separated node descriptions
@@ -81,7 +81,7 @@ public class GraphTestBase extends JenaTestBase
         shorthand for <code>Triple.create(pm, fact)</code>, which see.
     */
     public static Triple triple( PrefixMapping pm, String fact )
-        { return Triple.create( pm, fact ); }
+        { return NodeCreateUtils.createTriple( pm, fact ); }
         
     /**
         Answer an array of triples; each triple is described by one of the

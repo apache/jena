@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleTripleSorter.java,v 1.12 2008-12-28 19:32:23 andy_seaborne Exp $
+  $Id: TestSimpleTripleSorter.java,v 1.13 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -59,7 +59,7 @@ public class TestSimpleTripleSorter extends GraphTestBase
         
     public void testSingle(String ts )
         {
-        Triple t = Triple.create( ts );
+        Triple t = NodeCreateUtils.createTriple( ts );
         assertEquals( Arrays.asList( new Triple[] {t} ), Arrays.asList( sorter.sort( new Triple[] {t} ) ) );
         }
         

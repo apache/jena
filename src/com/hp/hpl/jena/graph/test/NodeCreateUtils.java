@@ -1,13 +1,16 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: NodeCreateUtils.java,v 1.3 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: NodeCreateUtils.java,v 1.4 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import java.util.StringTokenizer;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
@@ -127,6 +130,29 @@ public class NodeCreateUtils
         int close = nodeString.lastIndexOf( quote );
         return literal( pm, nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
         }
+
+	/**
+	    Utility factory as for create(String), but allowing the PrefixMapping to
+	    be specified explicitly.
+	*/
+	public static Triple createTriple( PrefixMapping pm, String fact )
+	    {
+	    StringTokenizer st = new StringTokenizer( fact );
+	    Node sub = create( pm, st.nextToken() );
+	    Node pred = create( pm, st.nextToken() );
+	    Node obj = create( pm, st.nextToken() );
+	    return Triple.create( sub, pred, obj );
+	    }
+
+	/**
+	    Utility factory method for creating a triple based on the content of an
+	    "S P O" string. The S, P, O are processed by Node.create, see which for
+	    details of the supported syntax. This method exists to support test code.
+	    Nodes are interpreted using the Standard prefix mapping.
+	*/
+	
+	public static Triple createTriple( String fact )
+	    { return createTriple( PrefixMapping.Standard, fact ); }
     }
 
 

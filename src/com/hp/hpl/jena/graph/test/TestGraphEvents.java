@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestGraphEvents.java,v 1.3 2008-12-28 19:31:53 andy_seaborne Exp $
+ 	$Id: TestGraphEvents.java,v 1.4 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -17,7 +17,7 @@ public class TestGraphEvents extends GraphTestBase
         {
         testGraphEventContents( "testing", "an example" );
         testGraphEventContents( "toasting", Boolean.TRUE );
-        testGraphEventContents( "tasting", Triple.create( "we are here" ) );
+        testGraphEventContents( "tasting", NodeCreateUtils.createTriple( "we are here" ) );
         }
     
     public void testGraphEventsRemove()
@@ -30,7 +30,7 @@ public class TestGraphEvents extends GraphTestBase
 
     private void testGraphEventsRemove( String S, String P, String O )
         {
-        Triple expected = Triple.create( S + " " + P + " " + O );
+        Triple expected = NodeCreateUtils.createTriple( S + " " + P + " " + O );
         GraphEvents e = GraphEvents.remove( node( S ), node( P ), node( O ) );
         assertEquals( expected, e.getContent() );
         assertEquals( "remove", e.getTitle() );

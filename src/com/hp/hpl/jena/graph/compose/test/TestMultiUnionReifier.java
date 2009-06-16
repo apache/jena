@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestMultiUnionReifier.java,v 1.3 2009-01-28 14:16:46 chris-dollin Exp $
+ 	$Id: TestMultiUnionReifier.java,v 1.4 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -51,17 +51,17 @@ public class TestMultiUnionReifier extends ModelTestBase
                 {}
             else if (fact.charAt( 0 ) == '!')
                 {
-                Triple t = Triple.create( fact.substring( 1 ) );
+                Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
                 result.add( t );
                 result.getReifier().reifyAs( NodeCreateUtils.create( "_r" + ++count ), t );
                 }
             else if (fact.charAt( 0 ) == '~')
                 {
-                Triple t = Triple.create( fact.substring( 1 ) );
+                Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
                 result.getReifier().reifyAs( NodeCreateUtils.create( "_r" + ++count ), t );
                 }
             else
-                result.add( Triple.create( fact ) );
+                result.add( NodeCreateUtils.createTriple( fact ) );
             }
         return result;
         }

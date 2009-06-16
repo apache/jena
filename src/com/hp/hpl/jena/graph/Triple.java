@@ -1,16 +1,16 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.33 2009-01-27 08:55:47 chris-dollin Exp $
+  $Id: Triple.java,v 1.34 2009-06-16 10:50:17 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.*;
-
-import java.util.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Filter;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /**
     Triples are the basis for RDF statements; they have a subject, predicate, and
@@ -169,29 +169,6 @@ public class Triple implements TripleMatch
     public static Triple createMatch( Node s, Node p, Node o )
         { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
         
-    /**
-        Utility factory method for creating a triple based on the content of an
-        "S P O" string. The S, P, O are processed by Node.create, see which for
-        details of the supported syntax. This method exists to support test code.
-        Nodes are interpreted using the Standard prefix mapping.
-    */
-    
-    public static Triple create( String fact )
-        { return create( PrefixMapping.Standard, fact ); }
-        
-    /**
-        Utility factory as for create(String), but allowing the PrefixMapping to
-        be specified explicitly.
-    */
-    public static Triple create( PrefixMapping pm, String fact )
-        {
-        StringTokenizer st = new StringTokenizer( fact );
-        Node sub = NodeCreateUtils.create( pm, st.nextToken() );
-        Node pred = NodeCreateUtils.create( pm, st.nextToken() );
-        Node obj = NodeCreateUtils.create( pm, st.nextToken() );
-        return Triple.create( sub, pred, obj );
-        }
-
     /**
         A Triple that is wildcarded in all fields. 
     */

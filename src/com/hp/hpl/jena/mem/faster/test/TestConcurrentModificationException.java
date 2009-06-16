@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConcurrentModificationException.java,v 1.11 2009-03-17 11:01:52 chris-dollin Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.12 2009-06-16 10:50:05 castagna Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -13,6 +13,7 @@ import junit.framework.*;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.StageElement;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -64,11 +65,11 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
     public void testAddThenNextThrowsCME()
         { 
         TripleBunch b = getBunch();
-        b.add( Triple.create( "a P b" ) );
-        b.add( Triple.create( "c Q d" ) );
+        b.add( NodeCreateUtils.createTriple( "a P b" ) );
+        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
         ExtendedIterator<Triple> it = b.iterator();
         it.next();
-        b.add( Triple.create( "change its state" ) );
+        b.add( NodeCreateUtils.createTriple( "change its state" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
         catch (ConcurrentModificationException e) { pass(); } 
         }
@@ -76,11 +77,11 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
     public void testDeleteThenNextThrowsCME()
         { 
         TripleBunch b = getBunch();
-        b.add( Triple.create( "a P b" ) );
-        b.add( Triple.create( "c Q d" ) );
+        b.add( NodeCreateUtils.createTriple( "a P b" ) );
+        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
         ExtendedIterator<Triple> it = b.iterator();
         it.next();
-        b.remove( Triple.create( "a P b" ) );
+        b.remove( NodeCreateUtils.createTriple( "a P b" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
         catch (ConcurrentModificationException e) { pass(); } 
         }
@@ -103,13 +104,13 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
     public void testAddDuringAppThrowsCME()
         {
         final TripleBunch b = getBunch();
-        b.add( Triple.create( "a P b" ) );
-        b.add( Triple.create( "c Q d" ) );
+        b.add( NodeCreateUtils.createTriple( "a P b" ) );
+        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
         StageElement se = new StageElement() 
             {
             @Override
             public void run( Domain current )
-                { b.add( Triple.create(  "S P O"  ) ); }
+                { b.add( NodeCreateUtils.createTriple(  "S P O"  ) ); }
             };
         try { b.app(  new Domain( 0 ), se, mob ); fail(" should throw CME" ); }
         catch (ConcurrentModificationException e) { pass(); }

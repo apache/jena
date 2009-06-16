@@ -19,7 +19,6 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import java.util.*;
 
-import com.hp.hpl.jena.ontology.impl.test.TestOntTools;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.Filter;
@@ -30,10 +29,10 @@ import com.hp.hpl.jena.util.iterator.Filter;
  * Some general utilities and algorithms to support developers working with the
  * general classes in the Jena ontology API. <strong>Warning</strong> these
  * utilities are <strong>experimental</strong>. Extensive testing has not yet
- * occurred (see {@link TestOntTools} for basic unit tests), and in particular
- * performance testing has not been carried out yet. Users are advised to exercise
- * caution before relying on these utilities in production code. Please send
- * any comments or suggestions to the
+ * occurred (see {@link com.hp.hpl.jena.ontology.impl.test.TestOntTools} for basic 
+ * unit tests), and in particular performance testing has not been carried out yet. 
+ * Users are advised to exercise caution before relying on these utilities in 
+ * production code. Please send any comments or suggestions to the
  * <a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support email list</a>.
  * </p>
  *

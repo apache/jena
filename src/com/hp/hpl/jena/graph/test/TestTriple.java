@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.25 2008-12-28 19:31:53 andy_seaborne Exp $
+  $Id: TestTriple.java,v 1.26 2009-06-16 10:50:16 castagna Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -116,7 +116,7 @@ public class TestTriple extends GraphTestBase
     public void testTripleCreateFromString()
         {
         Node S = NodeCreateUtils.create( "a" ), P = NodeCreateUtils.create( "_P" ), O = NodeCreateUtils.create( "?c" );
-        assertEquals( new Triple( S, P, O ), Triple.create( "a _P ?c") );
+        assertEquals( new Triple( S, P, O ), NodeCreateUtils.createTriple( "a _P ?c") );
         }
         
     /**
@@ -127,7 +127,7 @@ public class TestTriple extends GraphTestBase
         {
         Node S = NodeCreateUtils.create( "rdf:alpha" ), P = NodeCreateUtils.create( "dc:creator" );
         Node O = NodeCreateUtils.create( "spoo:notmapped" );
-        Triple t = Triple.create( "rdf:alpha dc:creator spoo:notmapped" );
+        Triple t = NodeCreateUtils.createTriple( "rdf:alpha dc:creator spoo:notmapped" );
         assertEquals( new Triple( S, P, O ), t );
         }
         
@@ -137,8 +137,8 @@ public class TestTriple extends GraphTestBase
             .setNsPrefix( "a", "ftp://foo/" )
             .setNsPrefix( "b", "http://spoo/" )
             ;
-        Triple wanted = Triple.create( "ftp://foo/x http://spoo/y c:z" );
-        Triple got = Triple.create( pm, "a:x b:y c:z" );
+        Triple wanted = NodeCreateUtils.createTriple( "ftp://foo/x http://spoo/y c:z" );
+        Triple got = NodeCreateUtils.createTriple( pm, "a:x b:y c:z" );
         assertEquals( wanted, got );
         }
         
@@ -164,7 +164,7 @@ public class TestTriple extends GraphTestBase
         { testMatches( triple, triple ); }
         
     private void testMatches( String pattern, String triple )
-        { assertTrue( Triple.create( pattern ).matches( Triple.create( triple ) ) ); }
+        { assertTrue( NodeCreateUtils.createTriple( pattern ).matches( NodeCreateUtils.createTriple( triple ) ) ); }
         
     public void testPlainTripleDoesntMatch()
         {
@@ -181,50 +181,50 @@ public class TestTriple extends GraphTestBase
         }
         
     public void testMatchFails( String pattern, String triple )
-        { assertFalse( Triple.create( pattern ).matches( Triple.create( triple ) ) ); }
+        { assertFalse( NodeCreateUtils.createTriple( pattern ).matches( NodeCreateUtils.createTriple( triple ) ) ); }
         
     public void testMatchesNodes()
         {
-        assertTrue( Triple.create( "S P O" ).matches( node("S" ), node( "P" ), node( "O" ) ) );
-        assertTrue( Triple.create( "?? P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
-        assertTrue( Triple.create( "S ?? O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
-        assertTrue( Triple.create( "S P ??" ).matches( node("S" ), node( "P" ), node( "I" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P O" ).matches( node("S" ), node( "P" ), node( "O" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "?? P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S ?? O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P ??" ).matches( node("S" ), node( "P" ), node( "I" ) ) );
     /* */
-        assertFalse( Triple.create( "S P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
-        assertFalse( Triple.create( "S P O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
-        assertFalse( Triple.create( "S P O" ).matches( node("Z" ), node( "P" ), node( "I" ) ) );        
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("Z" ), node( "P" ), node( "I" ) ) );        
         }
         
     public void testElementMatches()
         {
-        assertTrue( Triple.create( "S P O" ).subjectMatches( node( "S" ) ) );
-        assertTrue( Triple.create( "S P O" ).predicateMatches( node( "P" ) ) );
-        assertTrue( Triple.create( "S P O" ).objectMatches( node( "O" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P O" ).subjectMatches( node( "S" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P O" ).predicateMatches( node( "P" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P O" ).objectMatches( node( "O" ) ) );
     /* */
-        assertFalse( Triple.create( "S P O" ).subjectMatches( node( "Z" ) ) );
-        assertFalse( Triple.create( "S P O" ).predicateMatches( node( "Q" ) ) );
-        assertFalse( Triple.create( "S P O" ).objectMatches( node( "I" ) ) );        
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).subjectMatches( node( "Z" ) ) );
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).predicateMatches( node( "Q" ) ) );
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).objectMatches( node( "I" ) ) );        
     /* */
-        assertTrue( Triple.create( "?? P O" ).subjectMatches( node( "SUB" ) ) );
-        assertTrue( Triple.create( "S ?? O" ).predicateMatches( node( "PRED" ) ) );
-        assertTrue( Triple.create( "S P ??" ).objectMatches( node( "OBJ" ) ) );    
+        assertTrue( NodeCreateUtils.createTriple( "?? P O" ).subjectMatches( node( "SUB" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S ?? O" ).predicateMatches( node( "PRED" ) ) );
+        assertTrue( NodeCreateUtils.createTriple( "S P ??" ).objectMatches( node( "OBJ" ) ) );    
         }
         
     public void testConcrete()
         {
-        assertTrue( Triple.create( "S P O" ).isConcrete() );
-        assertTrue( Triple.create( "S P 11").isConcrete() );
-        assertTrue( Triple.create( "S P _X").isConcrete() );
-        assertTrue( Triple.create( "S _P 11").isConcrete() );
-        assertTrue( Triple.create( "_S _P _O").isConcrete() );
-        assertTrue( Triple.create( "10 11 12").isConcrete() );
-        assertTrue( Triple.create( "S P 11").isConcrete() );
-        assertFalse( Triple.create( "?? P 11").isConcrete() );
-        assertFalse( Triple.create( "S ?? 11").isConcrete() );
-        assertFalse( Triple.create( "S P ??").isConcrete() );
-        assertFalse( Triple.create( "?S P 11").isConcrete() );
-        assertFalse( Triple.create( "S ?P 11").isConcrete() );
-        assertFalse( Triple.create( "S P ?O").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "S P O" ).isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "S P 11").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "S P _X").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "S _P 11").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "_S _P _O").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "10 11 12").isConcrete() );
+        assertTrue( NodeCreateUtils.createTriple( "S P 11").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "?? P 11").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "S ?? 11").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "S P ??").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "?S P 11").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "S ?P 11").isConcrete() );
+        assertFalse( NodeCreateUtils.createTriple( "S P ?O").isConcrete() );
         }
         
     /**
@@ -233,7 +233,7 @@ public class TestTriple extends GraphTestBase
     */
     public void testTripleToStringOrdering()
         {
-        Triple t1 = Triple.create( "subject predicate object" );
+        Triple t1 = NodeCreateUtils.createTriple( "subject predicate object" );
         assertTrue( "subject must be present",  t1.toString().indexOf( "subject" ) >= 0 );    
         assertTrue( "subject must preceed predicate", t1.toString().indexOf( "subject" ) < t1.toString().indexOf( "predicate" ) );
         assertTrue( "predicate must preceed object", t1.toString().indexOf( "predicate" ) < t1.toString().indexOf( "object" ) );
@@ -241,7 +241,7 @@ public class TestTriple extends GraphTestBase
         
     public void testTripleToStringQuoting()
         {
-        Triple t1 = Triple.create( "subject predicate 'object'" );
+        Triple t1 = NodeCreateUtils.createTriple( "subject predicate 'object'" );
         assertTrue( t1.toString().indexOf( "\"object\"") > 0 );
         }
         
@@ -249,15 +249,15 @@ public class TestTriple extends GraphTestBase
         {
         PrefixMapping pm = PrefixMapping.Factory.create();
         pm.setNsPrefix( "spoo", "eg://domain.dom/spoo#" );
-        Triple t1 = Triple.create( "eg://domain.dom/spoo#a b c" );
+        Triple t1 = NodeCreateUtils.createTriple( "eg://domain.dom/spoo#a b c" );
         assertEquals( "spoo:a @eh:/b eh:/c", t1.toString( pm ) );
         }
     
     public void testTripleMaps()
         {
-        assertEquals( node( "x" ), Triple.getSubject.map1( Triple.create( "x P z" ) ) );
-        assertEquals( node( "P" ), Triple.getPredicate.map1( Triple.create( "x P z" ) ) );
-        assertEquals( node( "z" ), Triple.getObject.map1( Triple.create( "x P z" ) ) );
+        assertEquals( node( "x" ), Triple.getSubject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "P" ), Triple.getPredicate.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
+        assertEquals( node( "z" ), Triple.getObject.map1( NodeCreateUtils.createTriple( "x P z" ) ) );
         }
     
 
