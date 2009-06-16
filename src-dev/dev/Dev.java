@@ -20,6 +20,18 @@ public class Dev
     //   Remote queries made
     // ----
     
+    //---
+    // E_Exists
+    //   Parsing
+    //   Formatting 
+    //     SPARQL -- FmtExpr.FmtExprARQVisitor
+    //     Prefix --  WriterExpr.FmtExprPrefixVisitor
+    //   Translation
+    //   Evaluation
+    //   Testing
+    //---
+    
+    
     //   TransformFilterPlacement
     //   GraphStore API?
     
