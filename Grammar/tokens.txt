@@ -71,6 +71,13 @@
 [<AVG>]        ::= 'AVG'
 [<STDDEV>]     ::= 'STDEV'
 
+[<SERVICE>]     ::=    'SERVICE'
+[<EXISTS>]      ::=    'EXISTS'
+[<NOT>]         ::=    'NOT'
+[<NOTEXISTS>]   ::=    'NOT EXISTS'
+[<UNSAID>]      ::=    'UNSAID'
+[<LET>]         ::=    'LET'
+
 [<FILTER>]     ::= 'FILTER'
 [<REGEXP>]     ::= 'REGEXP'
 [<GRAPH>]      ::= 'GRAPH'
@@ -92,6 +99,8 @@
 [<REGEX>]      ::= 'REGEX'
 [<TRUE>]       ::= 'true'
 [<FALSE>]      ::= 'false'
+
+
 
 [<MODIFY>]      ::= 'MODIFY'
 [<INSERT>]      ::= 'INSERT'

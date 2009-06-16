@@ -50,10 +50,13 @@ public class E_Exists extends ExprFunction /*ExprNode*/
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
+        // Substitute.
+        Op op2 = Substitute.substitute(op, binding) ;
         OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
         if ( opExec == null )
             throw new ARQInternalErrorException("No OpExec") ;
-        QueryIterator qIter = opExec.eval(op, env.getDataset(), binding, env.getContext()) ;
+        // See if any matches
+        QueryIterator qIter = opExec.eval(op2, env.getDataset(), binding, env.getContext()) ;
         boolean b = qIter.hasNext() ;
         qIter.close() ;
         return NodeValue.booleanReturn(b) ;

@@ -661,7 +661,7 @@ void ConstructTriples(TemplateGroup acc) : { }
 
 
 
-    // Rewrite for no recursion - grammar is not LL(1
+    // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)
     (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
     (<DOT>)?
@@ -1120,6 +1120,8 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = Var() { return asExpr(gn) ; }
 
   | expr = AggExpression() { return expr ; }
+  | expr = Exists() { return expr ; }
+  | expr = NotExists() { return expr ; }
 
   )
 }
@@ -1180,6 +1182,18 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
+
+Expr Exists() : { }
+{
+   <EXISTS>
+   { return null ; }
+}
+
+Expr NotExists() : { }
+{
+   (<UNSAID>|<NOTEXISTS>)
+   { return null ; }
+}
 
 Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
 {
@@ -1436,6 +1450,9 @@ TOKEN [IGNORE_CASE] :
 
 | < SERVICE: "service" >
 | < EXISTS: "exists" >
+| < NOT: "not" >
+| < NOTEXISTS: "not" (<WS>)* "exists" >
+| < UNSAID: "unsaid" >
 | < AS: "as" >
 | < LET: "let" >
 | < GROUP: "group" >

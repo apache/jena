@@ -1186,6 +1186,8 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = Var()             { return asExpr(gn) ; }
 #ifdef ARQ
   | expr = AggExpression() { return expr ; }
+  | expr = Exists()        {  return expr ; }
+  | expr = NotExists()     {  return expr ; }
 #endif
   )
 }
@@ -1247,6 +1249,18 @@ Expr RegexExpression() :
 }
 
 #ifdef ARQ
+Expr Exists() : { }
+{
+   <EXISTS> 
+   { return null ; }
+}
+
+Expr NotExists() : { }
+{
+   (<UNSAID>|<NOTEXISTS>)
+   { return null ; }
+}
+
 Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
 {
     aggFactory = Aggregate()
@@ -1502,6 +1516,9 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < SERVICE:     "service" >
 |  < EXISTS:      "exists" >
+|  < NOT:         "not" >
+|  < NOTEXISTS:   "not" (<WS>)* "exists" >
+|  < UNSAID:      "unsaid" >
 |  < AS:          "as" >
 |  < LET:         "let" >
 |  < GROUP:       "group" >
