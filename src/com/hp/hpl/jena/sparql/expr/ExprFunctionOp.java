@@ -52,7 +52,8 @@ public abstract class ExprFunctionOp extends ExprFunction
         
         
         // Substitute. Needed?
-        Op op2 = Substitute.substitute(op, binding) ;
+        //Op op2 = Substitute.substitute(op, binding) ;
+        
 //        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
 //        if ( opExec == null )
 //            throw new ARQInternalErrorException("No OpExec") ;
@@ -71,7 +72,8 @@ public abstract class ExprFunctionOp extends ExprFunction
         // Call the per-operation functionality.
         NodeValue v = eval(binding, qIter, env) ;
         qIter.close() ;
-        return v ;
+        //return v ;
+        return NodeValue.TRUE ;
     }
     
     protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
