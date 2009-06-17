@@ -6,6 +6,10 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
+==== SDB v1.4 (pre)
+
++ Added StoreUtils.isFormatted(Store)
+
 ==== SDB v1.3
 
 + Reification: Support for Reification style "standard" (only)

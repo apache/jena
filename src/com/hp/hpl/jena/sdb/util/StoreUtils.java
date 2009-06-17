@@ -10,6 +10,11 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -21,8 +26,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -106,6 +113,73 @@ public class StoreUtils
         boolean b = rs.hasNext() ;
         qExec.close();
         return b ;
+    }
+
+    /**
+     * Best effort utility to check whether store is formatted
+     * (currently: tables and columns exist)
+     * @param store The store to check
+     */
+    public static boolean isFormatted(Store store) throws SQLException {
+        return checkNodes(store) && checkTuples(store);
+    }
+
+    private static boolean checkNodes(Store store) throws SQLException {
+        Connection conn = store.getConnection().getSqlConnection();
+        TableDescNodes nodeDesc = store.getNodeTableDesc();
+        if (nodeDesc == null) {
+            return true; // vacuously
+        }
+        return hasTableAndColumns(conn,
+                nodeDesc.getTableName(),
+                nodeDesc.getIdColName(),
+                nodeDesc.getHashColName(),
+                nodeDesc.getLexColName(),
+                nodeDesc.getLangColName(),
+                nodeDesc.getTypeColName());
+    }
+
+    private static boolean checkTuples(Store store) throws SQLException {
+        Connection conn = store.getConnection().getSqlConnection();
+        return isTupleTableFormatted(conn, store.getTripleTableDesc()) &&
+                isTupleTableFormatted(conn, store.getQuadTableDesc());
+    }
+
+    private static boolean isTupleTableFormatted(Connection conn, TableDesc desc) throws SQLException {
+        if (desc == null) {
+            return true; // vacuously
+        }
+        return hasTableAndColumns(conn,
+                desc.getTableName(),
+                desc.getColNames().toArray(new String[]{}));
+    }
+
+    private static boolean hasTableAndColumns(Connection conn, String tableName, String... colNames) throws SQLException {
+        Collection<String> cols = new HashSet<String>();
+        for (String c : colNames) {
+            if (c != null) {
+                cols.add(c.toLowerCase());
+            }
+        }
+        return (hasColumns(conn, tableName, cols) ||
+                hasColumns(conn, tableName.toLowerCase(), cols) ||
+                hasColumns(conn, tableName.toUpperCase(), cols));
+    }
+
+    private static boolean hasColumns(Connection conn, String tableName, Collection<String> colNames) throws SQLException {
+        java.sql.ResultSet res = null;
+        try {
+            res = conn.getMetaData().getColumns(null, null, tableName, null);
+            while (res.next()) {
+                String colName = res.getString("COLUMN_NAME");
+                colNames.remove(colName.toLowerCase());
+            }
+            return colNames.isEmpty();
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+        }
     }
 }
 
