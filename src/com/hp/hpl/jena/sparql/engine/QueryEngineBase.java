@@ -72,6 +72,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         initContext(context) ;
     }
     
+    // Put any per-query execution global configuration state here.
     private static void initContext(Context context)
     {
         context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;

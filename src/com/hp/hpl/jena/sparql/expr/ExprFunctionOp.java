@@ -5,13 +5,14 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.engine.OpEval;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.syntax.Element;
 
@@ -47,13 +48,24 @@ public abstract class ExprFunctionOp extends ExprFunction
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        // Substitute.
+        // Substitute. Needed?
         Op op2 = Substitute.substitute(op, binding) ;
-        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
-        if ( opExec == null )
-            throw new ARQInternalErrorException("No OpExec") ;
-        // See if any matches
-        QueryIterator qIter = opExec.eval(op2, env.getDataset(), binding, env.getContext()) ;
+//        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
+//        if ( opExec == null )
+//            throw new ARQInternalErrorException("No OpExec") ;
+//        // See if any matches
+        
+        // --- Move this to QC.???
+        ExecutionContext execCxt = new ExecutionContext(env.getContext(),
+                                                        env.getActiveGraph(),
+                                                        env.getDataset(),
+                                                        QC.getFactory(env.getContext())
+                                                        ) ;
+        QueryIterator qIter1 = new QueryIterSingleton(binding, execCxt) ;
+        QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
+        // Wrap with something to check for closed iterators.
+        qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        // Call the per-operation functionality.
         NodeValue v = eval(binding, qIter, env) ;
         qIter.close() ;
         return v ;

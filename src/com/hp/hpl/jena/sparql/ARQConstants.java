@@ -176,8 +176,8 @@ public class ARQConstants
     /** Context key for the algebra expression of the query execution */
     public static final Symbol sysCurrentAlgebra  = Symbol.create(systemVarNS+"algebra") ;
 
-    /** Context key for the algebra execution engine of the query execution */
-    public static final Symbol sysCurrentOpExec   = Symbol.create(systemVarNS+"opExec") ;
+//    /** Context key for the algebra execution engine of the query execution */
+//    public static final Symbol sysCurrentOpExec   = Symbol.create(systemVarNS+"opExec") ;
 
     /** Context key for the current time of query execution */
     public static final Symbol sysCurrentTime  = Symbol.create(systemVarNS+"now") ;
