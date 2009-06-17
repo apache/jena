@@ -81,8 +81,13 @@ public class AlgebraGenerator
         Op op = compileElement(elt) ;
         Op op2 = op ;
         if ( ! simplifyTooEarlyInAlgebraGeneration && applySimplification && simplify != null )
-            op2 = Transformer.transform(simplify, op) ;
+            op2 = simplify(op) ;
         return op2;
+    }
+    
+    private static Op simplify(Op op)
+    {
+        return Transformer.transform(simplify, op) ;
     }
 
     // This is the operation to call for recursive application of step 4.
@@ -277,6 +282,9 @@ public class AlgebraGenerator
         {
             ElementPathBlock epb = (ElementPathBlock)elt ;
             Op op = compilePathBlock(epb.getPattern()) ;
+            
+            // Not a join
+            
             return join(current, op) ;
         }
         
@@ -314,22 +322,18 @@ public class AlgebraGenerator
         
         if ( elt instanceof ElementExists )
         {
-            ElementExists elt2 = (ElementExists)elt ; 
-            Op subOp = compileElement(elt2.getElement()) ;
-            Expr expr = new E_Exists(elt2, subOp) ;
-            exprList.add(expr) ;
-            return current ;
+            ElementExists elt2 = (ElementExists)elt ;
+            Op op = compileElementExists(current, elt2) ;
+            return op ;
+            //return sequence(current, op) ;
         }
         
         if ( elt instanceof ElementNotExists )
         {
-            ElementNotExists elt2 = (ElementNotExists)elt ; 
-            Op subOp = compileElement(elt2.getElement()) ;
-            Expr expr = new E_Exists(elt2, subOp) ;
-            expr = new E_LogicalNot(expr) ;
-            exprList.add(expr) ;
-            return current ;
-
+            ElementNotExists elt2 = (ElementNotExists)elt ;
+            Op op = compileElementNotExists(current, elt2) ;
+            return op ;
+            //return sequence(current, op) ;
         }
         
         // All other elements: compile the element and then join on to the current group expression.
@@ -345,6 +349,22 @@ public class AlgebraGenerator
         
         broken("compile/Element not recognized: "+Utils.className(elt)) ;
         return null ;
+    }
+
+    private Op compileElementNotExists(Op current, ElementNotExists elt2)
+    {
+        Op op = compile(elt2.getElement()) ;    // "compile", not "compileElement" -- do simpliifcation  
+        Expr expr = new E_Exists(elt2, op) ;
+        expr = new E_LogicalNot(expr) ;
+        return OpFilter.filter(expr, current) ;
+    }
+
+    private Op compileElementExists(Op current, ElementExists elt2)
+    {
+        Op op = compile(elt2.getElement()) ;    // "compile", not "compileElement" -- do simpliifcation 
+        op = simplify(op) ;
+        Expr expr = new E_Exists(elt2, op) ;
+        return OpFilter.filter(expr, current) ;
     }
 
     protected Op compileElementOptional(ElementOptional eltOpt, Op current)
@@ -536,6 +556,11 @@ public class AlgebraGenerator
         return OpJoin.create(current, newOp) ;
     }
 
+    protected Op sequence(Op current, Op newOp)
+    {
+        return OpSequence.create(current, newOp) ;
+    }
+    
     private void broken(String msg)
     {
         //System.err.println("AlgebraGenerator: "+msg) ;

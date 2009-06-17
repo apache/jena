@@ -48,6 +48,9 @@ public abstract class ExprFunctionOp extends ExprFunction
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
+        System.out.println(binding) ;
+        
+        
         // Substitute. Needed?
         Op op2 = Substitute.substitute(op, binding) ;
 //        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
