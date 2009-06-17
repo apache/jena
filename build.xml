@@ -124,7 +124,7 @@
     <delete dir="${bldsrc.dir}"/>
     <mkdir  dir="${bldsrc.dir}"/>
     <tstamp>
-      <format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
+      <format property="BUILD_TIME" pattern="yyyy-MM-dd'T'HH:mm:ss.S"/>
     </tstamp>
     <copy todir="${bldsrc.dir}" >
       <fileset dir="${src.dir}" excludes="**/CVS"/>
