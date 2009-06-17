@@ -10,11 +10,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.core.Var;
 
 public class ExprVars
 {
-    interface Action<T> { void var(Collection<T> acc, ExprVar nv) ; }
+    interface Action<T> { void var(Collection<T> acc, Var var) ; }
     
     public static Set<Var> getVarsMentioned(Expr expr)
     {
@@ -27,9 +28,9 @@ public class ExprVars
     {
         ExprVars.Action<Var> action =
             new ExprVars.Action<Var>(){
-                public void var(Collection<Var> acc, ExprVar nv)
+                public void var(Collection<Var> acc, Var var)
                 {
-                    acc.add(nv.asVar()) ;
+                    acc.add(var) ;
                 }
             } ;
         ExprVarsWorker<Var> vv = new ExprVarsWorker<Var>(acc, action) ;
@@ -47,9 +48,9 @@ public class ExprVars
     {
         ExprVars.Action<String> action =
             new ExprVars.Action<String>(){
-                public void var(Collection<String> acc, ExprVar nv)
+                public void var(Collection<String> acc, Var var)
                 {
-                    acc.add(nv.getVarName()) ;
+                    acc.add(var.getVarName()) ;
                 }
             } ;
         ExprVarsWorker<String> vv = new ExprVarsWorker<String>(acc, action) ;
@@ -66,7 +67,17 @@ public class ExprVars
         
         @Override
         public void visit(ExprVar nv)
-        { action.var(acc, nv) ; }
+        { action.var(acc, nv.asVar()) ; }
+        
+        @Override
+        public void visit(ExprFunctionOp funcOp)
+        { 
+            Set<Var> vars = OpVars.allVars(funcOp.getOp()) ;
+            
+            for ( Var v : vars )
+                action.var(acc, v) ;
+        }
+        
     }
 }
 

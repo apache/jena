@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.opt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -22,7 +23,6 @@ import com.hp.hpl.jena.query.ARQ;
 public class Optimize implements Rewrite
 {
     static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
-    // Optimize at query execution time.
 
     // A small (one slot) registry to allow plugging in an alternative optimizer
     public interface Factory { Rewrite create(Context context) ; }
@@ -33,16 +33,32 @@ public class Optimize implements Rewrite
         public Rewrite create(Context context)
         {
             return new Optimize(context) ;
-        }} ;  
-    
+        }} ; 
+        
     static private Rewrite decideOptimizer(Context context)
     {
-        if ( factory == null )
+        Factory f = (Factory)context.get(ARQConstants.sysOptimizer) ;
+        if ( f == null )
+            f = factory ;
+        if ( f == null )
             return new Optimize(context) ;    // Only if default 'factory' gets lost.
         else
-            return factory.create(context) ;
+            return f.create(context) ;
     }
-        
+
+    // ----    
+    public static Factory noOptimizationFactory = new Factory()
+    {
+        public Rewrite create(Context context)
+        {
+            return new Rewrite() {
+
+                public Op rewrite(Op op)
+                {
+                    return op ;
+                }} ;
+        }} ;
+    
     // ----        
         
     public static Op optimize(Op op, ExecutionContext execCxt)

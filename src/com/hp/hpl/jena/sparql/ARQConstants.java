@@ -167,6 +167,9 @@ public class ARQConstants
 
     /** Context key for the OpExecutor to be used */
     public static final Symbol sysOpExecutorFactory  = Symbol.create(systemVarNS+"opExecutorFactory") ;
+
+    /** Context key for the optimizer to be used */
+    public static final Symbol sysOptimizer  = Symbol.create(systemVarNS+"optimizer") ;
     
     /** Context key for the dataset for the current query execution 
      * May be null if was not created from a query string.

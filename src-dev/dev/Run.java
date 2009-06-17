@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
@@ -26,6 +27,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.core.Substitute;
@@ -64,9 +66,9 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
-        
-        //qparse("--file=Q.arq", "--print=query", "--print=op") ;
-        execQuery("D.ttl", "Q.arq") ;
+        //ARQ.getContext().set(ARQConstants.sysOptimizer, Optimize.noOptimizationFactory) ;
+        qparse("--file=Q.arq", "--print=query", "--print=op", "--opt") ;
+        //execQuery("D.ttl", "Q.arq") ;
         
         String qs = StrUtils.strjoinNL(
                            "PREFIX books:   <http://example.org/book/>",

@@ -6,7 +6,6 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -46,10 +45,11 @@ public abstract class ExprFunctionOp extends ExprFunction
     // ---- Evaluation
     
     @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
+    public final NodeValue eval(Binding binding, FunctionEnv env)
     {
-        System.out.println(binding) ;
-        
+
+//        System.out.println(binding) ;
+//        System.out.println(op) ;
         
         // Substitute. Needed?
         //Op op2 = Substitute.substitute(op, binding) ;
@@ -67,19 +67,24 @@ public abstract class ExprFunctionOp extends ExprFunction
                                                         ) ;
         QueryIterator qIter1 = new QueryIterSingleton(binding, execCxt) ;
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
+        
+        //qIter = new QueryIteratorLogging(qIter) ;
+        
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        
         // Call the per-operation functionality.
         NodeValue v = eval(binding, qIter, env) ;
         qIter.close() ;
-        //return v ;
-        return NodeValue.TRUE ;
+        //System.out.println(this.getClass().getSimpleName()+":"+v) ;
+        return v ;
     }
     
     protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
     
     @Override
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
+    public void visit(ExprVisitor visitor) 
+    { visitor.visit(this) ; }
 }
 
 /*

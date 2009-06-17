@@ -52,7 +52,7 @@ public class QueryIteratorLogging extends QueryIteratorWrapper
     protected void closeIterator()
     {
         if ( logging )
-            log.info("closeIterator:") ;
+            log.info("closeIterator") ;
         super.closeIterator();
     }
     
