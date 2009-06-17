@@ -2957,7 +2957,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                       Element el ;
     jj_consume_token(EXISTS);
     el = GroupGraphPattern();
-     {if (true) return new E_Exists(el) ;}
+     {if (true) return createExprExists(el) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -2976,7 +2976,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       throw new ParseException();
     }
     el = GroupGraphPattern();
-     {if (true) return new E_NotExists(el) ;}
+     {if (true) return createExprNotExists(el) ;}
     throw new Error("Missing return statement in function");
   }
 

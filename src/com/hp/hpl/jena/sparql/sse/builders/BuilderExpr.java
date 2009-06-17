@@ -185,6 +185,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
         dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
         dispatch.put(Tags.tagExists, buildExists) ;
+        dispatch.put(Tags.tagNotExists, buildNotExists) ;
         
         dispatch.put(Tags.tagCount, buildCount) ;
         dispatch.put(Tags.tagSum, buildSum) ;
@@ -519,6 +520,16 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "exists: wanted 1 arguments: got: "+list.size()) ;
             Op op = BuilderOp.build(list.get(1)) ;
             return new E_Exists(op) ;
+        }
+    };
+    
+    final protected Build buildNotExists = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "notexists: wanted 1 arguments: got: "+list.size()) ;
+            Op op = BuilderOp.build(list.get(1)) ;
+            return new E_NotExists(op) ;
         }
     };
     

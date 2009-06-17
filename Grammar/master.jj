@@ -1274,14 +1274,14 @@ Expr ExistsFunc() : { Element el ; }
 {
    <EXISTS>
    el = GroupGraphPattern()
-   { return new E_Exists(el) ; }
+   { return createExprExists(el) ; }
 }
 
 Expr NotExistsFunc() : { Element el ; }
 {
    (<UNSAID>|<NOTEXISTS>)
    el = GroupGraphPattern()
-   { return new E_NotExists(el) ; }
+   { return createExprNotExists(el) ; }
 }
 
 Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }

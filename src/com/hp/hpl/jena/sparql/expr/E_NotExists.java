@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 
 public class E_NotExists extends ExprFunctionOp
 {
+    // Translated to "(not (exists (...)))" 
     private static final String symbol = "notexists" ;
     private Op op ;
 

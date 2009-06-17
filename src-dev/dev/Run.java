@@ -64,6 +64,10 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        
+        //qparse("--file=Q.arq", "--print=query", "--print=op") ;
+        execQuery("D.ttl", "Q.arq") ;
+        
         String qs = StrUtils.strjoinNL(
                            "PREFIX books:   <http://example.org/book/>",
                            "PREFIX dc:      <http://purl.org/dc/elements/1.1/>",

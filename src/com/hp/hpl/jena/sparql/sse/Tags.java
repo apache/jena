@@ -115,6 +115,7 @@ public class Tags
     public static final String tagIsLiteral     = "isLiteral" ;
     public static final String tagRegex         = "regex" ;
     public static final String tagExists        = "exists" ;
+    public static final String tagNotExists     = "notexists" ;
 
     public static final String tagTrue          = "true" ;
     public static final String tagFalse         = "false" ;

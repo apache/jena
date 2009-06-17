@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.sse.writers;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.expr.ExprFunctionOp;
@@ -122,11 +125,32 @@ public class WriterExpr
         {
             out.print("(") ;
             out.print(funcOp.getFunctionName(context)) ;
-            out.print(" ") ;
+            out.incIndent() ;
+
+            
+            Op op = funcOp.getOp() ;
+            if ( oneLine(op) )
+                out.print(" ") ;
+            else
+                out.ensureStartOfLine() ;
             //Without trappings.
             WriterOp.outputNoPrologue(out, funcOp.getOp(), context) ;
+            out.decIndent() ;
             out.print(")") ;
+            return ;
         }
+        
+        private static boolean oneLine(Op op)
+        {
+            if ( OpBGP.isBGP(op) )
+            {
+                BasicPattern bgp = ((OpBGP)op).getPattern() ;
+                if ( bgp.getList().size() <= 1 )
+                    return true ;
+            }
+            return false ;
+        }
+                               
         
         public void visit(NodeValue nv)
         {

@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.E_Exists;
+import com.hp.hpl.jena.sparql.expr.E_NotExists;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.path.P_Link;
 import com.hp.hpl.jena.sparql.path.Path;
@@ -300,6 +302,17 @@ public class ParserBase
         
         //label = unescapeCodePoint(label, line, column) ;
         return activeLabelMap.asNode(label) ;
+    }
+    
+    protected Expr createExprExists(Element element)
+    {
+        return new E_Exists(element) ;
+    }
+    
+    protected Expr createExprNotExists(Element element)
+    {
+        // Could negate here.
+        return new E_NotExists(element) ;
     }
     
     protected String fixupPrefix(String prefix, int line, int column)
