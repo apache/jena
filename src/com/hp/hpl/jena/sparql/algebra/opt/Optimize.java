@@ -27,25 +27,7 @@ public class Optimize implements Rewrite
     // A small (one slot) registry to allow plugging in an alternative optimizer
     public interface Factory { Rewrite create(Context context) ; }
     
-    // Set this to a different factory implementation to have a different general optimizer.  
-    public static Factory factory = new Factory(){
-
-        public Rewrite create(Context context)
-        {
-            return new Optimize(context) ;
-        }} ; 
-        
-    static private Rewrite decideOptimizer(Context context)
-    {
-        Factory f = (Factory)context.get(ARQConstants.sysOptimizer) ;
-        if ( f == null )
-            f = factory ;
-        if ( f == null )
-            return new Optimize(context) ;    // Only if default 'factory' gets lost.
-        else
-            return f.create(context) ;
-    }
-
+    
     // ----    
     public static Factory noOptimizationFactory = new Factory()
     {
@@ -58,6 +40,17 @@ public class Optimize implements Rewrite
                     return op ;
                 }} ;
         }} ;
+        
+    public static Factory stdOptimizationFactory = new Factory()
+    {
+        public Rewrite create(Context context)
+        {
+            return new Optimize(context) ;
+        }
+    } ;
+    
+    // Set this to a different factory implementation to have a different general optimizer.  
+    private static Factory factory = stdOptimizationFactory ;
     
     // ----        
         
@@ -73,6 +66,33 @@ public class Optimize implements Rewrite
         return opt.rewrite(op) ;
     }
 
+    /** Set the global optimizer factory to one that does nothing */
+    public static void noOptimizer()
+    {
+        setFactory(noOptimizationFactory) ;
+    }
+
+    static private Rewrite decideOptimizer(Context context)
+    {
+        Factory f = (Factory)context.get(ARQConstants.sysOptimizer) ;
+        if ( f == null )
+            f = factory ;
+        if ( f == null )
+            f = stdOptimizationFactory ;    // Only if default 'factory' gets lost.
+        return f.create(context) ;
+    }
+
+    
+    /** Globably set the fcaory for making optimizers */ 
+    public static void setFactory(Factory aFactory)
+    { factory = aFactory ; }
+
+    /** Get the global factory for making optimizers */ 
+    public static Factory getFactory(Factory aFactory)
+    { return factory ; }
+    
+    // ---- The object proper for the standard optimizations
+    
     private final Context context ;
     private Optimize(ExecutionContext execCxt)
     {

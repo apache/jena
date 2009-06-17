@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
@@ -66,7 +65,8 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
-        //ARQ.getContext().set(ARQConstants.sysOptimizer, Optimize.noOptimizationFactory) ;
+        if ( false )
+            Optimize.noOptimizer() ;
         qparse("--file=Q.arq", "--print=query", "--print=op", "--opt") ;
         //execQuery("D.ttl", "Q.arq") ;
         
