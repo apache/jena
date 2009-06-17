@@ -1,48 +1,30 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-/** A set of constraints in a query expression.
+/** Element - abstract class for all pattern elements 
  * 
  * @author Andy Seaborne
  */
 
-public class ElementUnsaid extends Element
+public abstract class Element1 extends Element
 {
-    Element element ;
+    private Element element ;
 
-    public ElementUnsaid(Element el) { element = el ;}
+    protected Element1(Element element) { this.element = element ; }
     
     public Element getElement() { return element ; } 
     
-    @Override
-    public int hashCode() { return element.hashCode() ^ Element.HashUnsaid ; }
 
-    @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementUnsaid ) )
-            return false ;
-        ElementUnsaid unsaid2 = (ElementUnsaid)el2 ;
-        if ( ! this.getElement().equalTo(unsaid2.getElement(), isoMap) )
-            return false ;
-        return true ;
-    }
-    
-    @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
+import com.hp.hpl.jena.sparql.expr.ExprFunctionOp;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
@@ -117,6 +118,16 @@ public class WriterExpr
             out.decIndent() ;
         }
 
+        public void visit(ExprFunctionOp funcOp)
+        {
+            out.print("(") ;
+            out.print(funcOp.getFunctionName(context)) ;
+            out.print(" ") ;
+            //Without trappings.
+            WriterOp.outputNoPrologue(out, funcOp.getOp(), context) ;
+            out.print(")") ;
+        }
+        
         public void visit(NodeValue nv)
         {
             out.print(nv.asQuotedString(context)) ;

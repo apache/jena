@@ -28,7 +28,9 @@ public class ElementVisitorBase implements ElementVisitor
 
     public void visit(ElementNamedGraph el)     { }
 
-    public void visit(ElementUnsaid el)         { }
+    public void visit(ElementExists el)         { }
+    
+    public void visit(ElementNotExists el)      { }
     
     public void visit(ElementService el)        { }
     

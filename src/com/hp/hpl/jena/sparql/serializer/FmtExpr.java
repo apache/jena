@@ -8,8 +8,10 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Output expressions in the syntax that ARQ expects them */
@@ -115,6 +117,17 @@ public class FmtExpr
                 expr.visit(this) ;
             }
             out.print(")");
+        }
+
+        public void visit(ExprFunctionOp funcOp)
+        {
+            FormatterElement fmtElt = new FormatterElement(out, context) ;
+            out.print(funcOp.getFunctionName(context)) ;
+            out.print(" ") ;
+            Element el = funcOp.getElement() ; 
+            if ( el == null )
+                el = OpAsQuery.asQuery(funcOp.getOp()).getQueryPattern() ;
+            el.visit(fmtElt) ;
         }
 
         public void visit(NodeValue nv)

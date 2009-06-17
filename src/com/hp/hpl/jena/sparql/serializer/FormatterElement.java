@@ -56,8 +56,8 @@ public class FormatterElement extends FormatterBase
     /** Control whether GRAPH indents in a fixed way or based on the layout size */
     public static final boolean GRAPH_FIXED_INDENT = true ;
     
-    /** Control whether UNSAID indents in a fixed way or based on the layout size */
-    public static final boolean UNSAID_FIXED_INDENT = true ;
+    /** Control whether NOT EXIST/EXISTS indents in a fixed way or based on the layout size */
+    public static final boolean ELEMENT1_FIXED_INDENT = true ;
     
     /** Control triples pretty printing */
     public static final int TRIPLES_SUBJECT_COLUMN = 8 ;
@@ -358,13 +358,13 @@ public class FormatterElement extends FormatterBase
             out.decIndent(len) ;
     }
 
-    public void visit(ElementUnsaid el)
+    private void visitElement1(String label, Element1 el)
     {
-        String s = "UNSAID " ;
-        int len = s.length() ;
-        out.print(s) ;
-        len += s.length() ;
-        if ( UNSAID_FIXED_INDENT )
+
+        int len = label.length() ;
+        out.print(label) ;
+        len += label.length() ;
+        if ( ELEMENT1_FIXED_INDENT )
         {
             out.incIndent(INDENT) ;
             out.newline() ; // NB and newline
@@ -376,11 +376,23 @@ public class FormatterElement extends FormatterBase
             out.incIndent(len) ;
         }
         visitAsGroup(el.getElement()) ;
-        if ( UNSAID_FIXED_INDENT )
+        if ( ELEMENT1_FIXED_INDENT )
             out.decIndent(INDENT) ;
         else
             out.decIndent(len) ;
     }
+
+    public void visit(ElementExists el)
+    {
+        visitElement1("EXISTS", el) ;
+    }
+
+    public void visit(ElementNotExists el)
+    {
+        visitElement1("NOT EXISTS", el) ;
+    }
+    
+
     
     public void visit(ElementSubQuery el)
     {

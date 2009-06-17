@@ -22,13 +22,11 @@ public class Dev
     
     //---
     // E_Exists
-    //   Parsing (synatx done - not generating elements)
-    //   AST Element(Not)Exists, E_Exists
-    //   Formatting 
-    //     SPARQL -- FmtExpr.FmtExprARQVisitor
-    //     Prefix --  WriterExpr.FmtExprPrefixVisitor
-    //   Translation
-    //   Evaluation
+    //   [DONE] Parsing
+    //   [DONE] AST Element(Not)Exists, E_Exists
+    //   [DONE] Need to generate from elt in E_Exists when written directly.  Prepare.
+    //   [DONE] Formatting
+    //     excpet it print "notexists" as an operator.  Need to convert to !exists 
     //   Testing
     //---
     

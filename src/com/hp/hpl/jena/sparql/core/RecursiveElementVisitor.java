@@ -71,14 +71,17 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementFetch el)   {}
     public void endElement  (ElementFetch el)   {}
 
-    public void startElement(ElementUnsaid el) {}
-    public void endElement  (ElementUnsaid el) {}
+    public void startElement(ElementExists el)  {}
+    public void endElement  (ElementExists el)  {}
+    
+    public void startElement(ElementNotExists el) {}
+    public void endElement  (ElementNotExists el) {}
     
     public void endElement(ElementSubQuery el)      {}
     public void startElement(ElementSubQuery el)    {}
 
-    public void endElement(ElementPathBlock el)      {}
-    public void startElement(ElementPathBlock el)    {}
+    public void endElement(ElementPathBlock el)     {}
+    public void startElement(ElementPathBlock el)   {}
 
     protected ElementVisitor visitor = null ;
     
@@ -166,12 +169,21 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
     
-    public final void visit(ElementUnsaid el)
+    public final void visit(ElementExists el)
     {
         startElement(el) ;
         el.getElement().visit(this) ;
         endElement(el) ;
     }
+
+    public final void visit(ElementNotExists el)
+    {
+        startElement(el) ;
+        el.getElement().visit(this) ;
+        endElement(el) ;
+    }
+
+    
     public void visit(ElementSubQuery el)
     { 
         startElement(el) ;

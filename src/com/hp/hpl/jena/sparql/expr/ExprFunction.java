@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 /** A function in the expression hierarchy.
  *  Everything that is evaluable (i.e. not NodeValue, NodeVar) is a function).
  *  It is useful to distinguish between values, vars and functions.
+ *  The exists operations (which take a op, not arguments) are functions of zero arguments.
  */
  
 public abstract class ExprFunction extends ExprNode
@@ -84,7 +85,6 @@ public abstract class ExprFunction extends ExprNode
         }
         return true ;
     }
-
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     

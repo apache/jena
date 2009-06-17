@@ -52,6 +52,9 @@ public class ExprWalker //implements ExprVisitor
                 func.visit(visitor) ;
         }
         
+        public void visit(ExprFunctionOp op)
+        {}
+        
         public void visit(NodeValue nv)   { nv.visit(visitor) ; }
         public void visit(ExprVar nv)     { nv.visit(visitor) ; }
         

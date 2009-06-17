@@ -90,6 +90,14 @@ public class WriterOp
         WriterBasePrefix.output(iWriter, fmt, sCxt.getPrologue()) ;
     }        
     
+    // Without the base/prefix wrapper. 
+    static void outputNoPrologue(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
+    {
+        OpWriterWorker v = new OpWriterWorker(iWriter, sCxt) ;
+        op.visit(v) ;
+    }        
+    
+    
     private static class OpWriterWorker implements OpVisitor
     {
         private IndentedWriter out ;

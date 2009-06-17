@@ -3,8 +3,7 @@ PREFIX : <http://example/>
 SELECT *
 {
     ?s ?p ?o
-    {
-    SELECT ?s ?p { ?s ?p ?o}
-    }
-    ?s ?p ?o
+    NOT EXISTS { ?s ?p ?o }
+    FILTER ( bound(?x) || not exists{?s ?p ?o } || exists{?s ?p ?o })
+#    FILTER (exists{?s ?p ?o })
 }

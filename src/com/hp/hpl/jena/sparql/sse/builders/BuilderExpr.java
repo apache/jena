@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.*;
@@ -183,6 +184,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagURI, buildURI) ;
         dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
         dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
+        dispatch.put(Tags.tagExists, buildExists) ;
         
         dispatch.put(Tags.tagCount, buildCount) ;
         dispatch.put(Tags.tagSum, buildSum) ;
@@ -494,7 +496,7 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderLib.checkLength(2, list, "isBlank: wanted 1 arguments: got :"+list.size()) ;
+            BuilderLib.checkLength(2, list, "isBlank: wanted 1 arguments: got: "+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_IsBlank(ex) ;
         }
@@ -504,9 +506,19 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderLib.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
+            BuilderLib.checkLength(2, list, "isLiteral: wanted 1 arguments: got: "+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_IsLiteral(ex) ;
+        }
+    };
+    
+    final protected Build buildExists = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "exists: wanted 1 arguments: got: "+list.size()) ;
+            Op op = BuilderOp.build(list.get(1)) ;
+            return new E_Exists(op) ;
         }
     };
     

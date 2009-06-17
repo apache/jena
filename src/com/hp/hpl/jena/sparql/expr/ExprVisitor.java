@@ -11,8 +11,8 @@ public interface ExprVisitor
 {
     void startVisit() ;
     
-    void visit(ExprFunction expr) ;
-    
+    void visit(ExprFunction func) ;
+    void visit(ExprFunctionOp funcOp) ;
     void visit(NodeValue nv) ;
     void visit(ExprVar nv) ;        // AKA ExprFunction0
 

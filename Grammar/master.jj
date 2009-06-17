@@ -628,16 +628,18 @@ Element FetchGraph() : { Node n ; }
   { return new ElementFetch(n) ; }
 }
 
-Element ExistsElt() : {}
+Element ExistsElt() : { Element el ; }
 {
     <EXISTS>
-    { return null ; }
+    el = GroupGraphPattern()
+    { return new ElementExists(el) ; }
 }
 
-Element NotExistsElt() : {}
+Element NotExistsElt() : { Element el ; }
 {
     (<UNSAID>|<NOTEXISTS>)
-    { return null ; }
+    el = GroupGraphPattern()
+    { return new ElementNotExists(el) ; }
 }
 
 #endif
@@ -1202,8 +1204,6 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = Var()             { return asExpr(gn) ; }
 #ifdef ARQ
   | expr = AggExpression() { return expr ; }
-  | expr = ExistsFunc()    {  return expr ; }
-  | expr = NotExistsFunc() {  return expr ; }
 #endif
   )
 }
@@ -1250,6 +1250,11 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
 
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
+#ifdef ARQ
+  | expr = ExistsFunc()      { return expr ; }
+  | expr = NotExistsFunc()   { return expr ; }
+#endif
+
 }
 
 Expr RegexExpression() :
@@ -1265,16 +1270,18 @@ Expr RegexExpression() :
 }
 
 #ifdef ARQ
-Expr ExistsFunc() : { }
+Expr ExistsFunc() : { Element el ; }
 {
-   <EXISTS> 
-   { return null ; }
+   <EXISTS>
+   el = GroupGraphPattern()
+   { return new E_Exists(el) ; }
 }
 
-Expr NotExistsFunc() : { }
+Expr NotExistsFunc() : { Element el ; }
 {
    (<UNSAID>|<NOTEXISTS>)
-   { return null ; }
+   el = GroupGraphPattern()
+   { return new E_NotExists(el) ; }
 }
 
 Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }

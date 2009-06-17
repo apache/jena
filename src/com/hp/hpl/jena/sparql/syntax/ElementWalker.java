@@ -97,7 +97,14 @@ public class ElementWalker
             proc.visit(el) ;
         }
         
-        public void visit(ElementUnsaid el)
+        public void visit(ElementExists el)
+        {
+            if ( el.getElement() != null )
+                el.getElement().visit(this) ;
+            proc.visit(el) ;
+        }
+
+        public void visit(ElementNotExists el)
         {
             if ( el.getElement() != null )
                 el.getElement().visit(this) ;

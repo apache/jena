@@ -58,10 +58,11 @@ public abstract class Element
     static final int HashGroup                = 0xA2 ;
     static final int HashUnion                = 0xA3 ;
     static final int HashOptional             = 0xA4 ;
-    // static final int HashGraph                = 0xA5 ; // Nor needed
-    static final int HashUnsaid               = 0xA6 ;
-    static final int HashPath                 = 0xA7 ;
-    static final int HashFetch                = 0xA8 ;
+    // static final int HashGraph                = 0xA5 ; // Not needed
+    static final int HashExists               = 0xA6 ;
+    static final int HashNotExists            = 0xA7 ;
+    static final int HashPath                 = 0xA8 ;
+    static final int HashFetch                = 0xA9 ;
 }
 
 /*

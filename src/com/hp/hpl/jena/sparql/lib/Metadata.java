@@ -54,8 +54,9 @@ public class Metadata
             
             InputStream in = classLoader.getResourceAsStream(resource) ;
             if ( in == null )
-                throw new ARQException("Failed to find the properties file") ;
-                //return ;
+                //throw new ARQException("Failed to find the properties file") ;
+                // In development, there is no properties file.
+                return ;
             try
             {
                 properties.loadFromXML(in) ;
@@ -72,6 +73,7 @@ public class Metadata
     public static String get(String name, String defaultValue)
     {
         init() ;
+        if ( properties == null ) return defaultValue ;
         return properties.getProperty(name, defaultValue) ;
     }
 }

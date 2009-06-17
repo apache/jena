@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.Collection;
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -75,6 +76,10 @@ public abstract class ExprNode implements Expr
     
     public boolean isFunction()        { return false ; }
     public ExprFunction getFunction()  { return null ; }
+    
+    public boolean isGraphPttern()     { return false ; }
+    public Op getGraphPttern()         { return null ; }
+    
     // ---- 
     
     @Override

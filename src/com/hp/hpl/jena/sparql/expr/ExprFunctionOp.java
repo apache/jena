@@ -1,76 +1,73 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.engine.OpEval;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.syntax.Element;
 
-public class E_Exists extends ExprFunctionOp
+
+/** A "function" that executes over a pattern */
+ 
+public abstract class ExprFunctionOp extends ExprFunction
 {
-    private static final String symbol = "exists" ;
     private Op op ;
-
-    public E_Exists(Op op)
-    {
-        this(null, op) ;
-    }
+    private Element element ;
     
-    public E_Exists(Element elt)
+    protected ExprFunctionOp(String fName, Element el, Op op)
     {
-        this(elt, Algebra.compile(elt)) ;
-    }
-    
-    public E_Exists(Element el, Op op)
-    {
-        super(symbol, el, op) ;
+        super(fName) ;
+        this.op = op ;
+        this.element = el ;
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr getArg(int i)
     {
-        // Does not pass down fold constants.  Oh well.
+        return null ;
+    }
+    
+    public Op getOp()       { return op ; }
+    public Element getElement()       { return element ; }
+    
+    @Override
+    public int numArgs() { return 0 ; }
+    
+    // ---- Evaluation
+    
+    @Override
+    public NodeValue eval(Binding binding, FunctionEnv env)
+    {
+        // Substitute.
         Op op2 = Substitute.substitute(op, binding) ;
-        return new E_Exists(getElement(), op2) ;
-    }
-
-    @Override
-    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
-    {
-        boolean b = qIter.hasNext() ;
-        return NodeValue.booleanReturn(b) ;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return symbol.hashCode() ^ getOp().hashCode() ;
+        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
+        if ( opExec == null )
+            throw new ARQInternalErrorException("No OpExec") ;
+        // See if any matches
+        QueryIterator qIter = opExec.eval(op2, env.getDataset(), binding, env.getContext()) ;
+        NodeValue v = eval(binding, qIter, env) ;
+        qIter.close() ;
+        return v ;
     }
     
+    protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
+    
     @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-
-        if ( ! ( other instanceof E_Exists ) )
-            return false ;
-        
-        E_Exists ex = (E_Exists)other ;
-        return this.getOp().equals(ex.getOp()) ;
-    }
+    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

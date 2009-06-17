@@ -20,6 +20,8 @@ import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
+import com.hp.hpl.jena.sparql.expr.E_Exists;
+import com.hp.hpl.jena.sparql.expr.E_LogicalNot;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
@@ -285,7 +287,6 @@ public class AlgebraGenerator
             if ( fixedFilterPosition )
                 // Not SPARQL.
                 return OpFilter.filter(f.getExpr(), current) ;
-             
             exprList.add(f.getExpr()) ;
             return current ;
         }
@@ -309,6 +310,26 @@ public class AlgebraGenerator
             ElementAssign assign = (ElementAssign)elt ;
             Op subOp = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
             return subOp ;
+        }
+        
+        if ( elt instanceof ElementExists )
+        {
+            ElementExists elt2 = (ElementExists)elt ; 
+            Op subOp = compileElement(elt2.getElement()) ;
+            Expr expr = new E_Exists(elt2, subOp) ;
+            exprList.add(expr) ;
+            return current ;
+        }
+        
+        if ( elt instanceof ElementNotExists )
+        {
+            ElementNotExists elt2 = (ElementNotExists)elt ; 
+            Op subOp = compileElement(elt2.getElement()) ;
+            Expr expr = new E_Exists(elt2, subOp) ;
+            expr = new E_LogicalNot(expr) ;
+            exprList.add(expr) ;
+            return current ;
+
         }
         
         // All other elements: compile the element and then join on to the current group expression.

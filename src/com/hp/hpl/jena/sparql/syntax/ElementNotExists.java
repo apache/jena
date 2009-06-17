@@ -1,27 +1,44 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package com.hp.hpl.jena.sparql.syntax;
 
-// Walk the expression tree
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ExprVisitorBase implements ExprVisitor 
+/** The syntax element for "Not Exists" in a pattern.
+ * 
+ * @author Andy Seaborne
+ */
+
+public class ElementNotExists extends Element1
 {
-    public void startVisit()                {}
+    public ElementNotExists(Element el) { super(el) ; }
     
-    public void visit(ExprFunction func)    {}
-    public void visit(ExprFunctionOp op)    {}
-    public void visit(NodeValue nv)         {}
-    public void visit(ExprVar nv)           {}
+    @Override
+    public int hashCode() { return getElement().hashCode() ^ Element.HashNotExists ; }
 
-    public void finishVisit()               {}
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( el2 == null ) return false ;
+
+        if ( ! ( el2 instanceof ElementNotExists ) )
+            return false ;
+        ElementNotExists unsaid2 = (ElementNotExists)el2 ;
+        if ( ! this.getElement().equalTo(unsaid2.getElement(), isoMap) )
+            return false ;
+        return true ;
+    }
+    
+    @Override
+    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

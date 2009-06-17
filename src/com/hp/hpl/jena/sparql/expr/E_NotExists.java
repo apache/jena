@@ -1,55 +1,75 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.syntax.Element;
 
-/** An optional element in a query.
- * 
- * @author Andy Seaborne
- */
-
-public class ElementOptional extends Element
+public class E_NotExists extends ExprFunctionOp
 {
-    Element optionalPart ;
+    private static final String symbol = "notexists" ;
+    private Op op ;
 
-    public ElementOptional(Element optionalPart)
+    public E_NotExists(Op op)
     {
-        this.optionalPart = optionalPart ;
+        this(null, op) ;
+    }
+    
+    public E_NotExists(Element elt)
+    {
+        this(elt, Algebra.compile(elt)) ;
+    }
+    
+    public E_NotExists(Element el, Op op)
+    {
+        super(symbol, el, op) ;
     }
 
-    public Element getOptionalElement() { return optionalPart ; }
+    @Override
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    {
+        // Does not pass down fold constants.  Oh well.
+        Op op2 = Substitute.substitute(op, binding) ;
+        return new E_NotExists(getElement(), op2) ;
+    }
+
+    @Override
+    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
+    {
+        boolean b = qIter.hasNext() ;
+        return NodeValue.booleanReturn(!b) ;
+    }
 
     @Override
     public int hashCode()
     {
-        int hash = Element.HashOptional ;
-        hash = hash ^ getOptionalElement().hashCode() ;
-        return hash ;
-    }
-
-    @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementOptional ) ) 
-            return false ;
-        
-        ElementOptional opt2 = (ElementOptional)el2 ;
-        return getOptionalElement().equalTo(opt2.getOptionalElement(), isoMap) ;
+        return symbol.hashCode() ^ getOp().hashCode() ;
     }
     
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public boolean equals(Object other)
+    {
+        if ( this == other ) return true ;
+
+        if ( ! ( other instanceof E_NotExists ) )
+            return false ;
+        
+        E_NotExists ex = (E_NotExists)other ;
+        return this.getOp().equals(ex.getOp()) ;
+    }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
