@@ -56,6 +56,15 @@ public class PatternVars
             }
         }
         
+        // Variables here are non-binding.
+        @Override
+        public void visit(ElementExists el)
+        { }
+        
+        @Override
+        public void visit(ElementNotExists el)
+        { }
+        
 //      public void visit(ElementFilter el)
 //      {
 //      el.getExpr().varsMentioned(acc);

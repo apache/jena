@@ -216,11 +216,11 @@ public class AlgebraGenerator
             
             if ( elt instanceof ElementTriplesBlock )
             {
-                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-
                 if ( prev2 != null )
                     throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 1)") ;
                 
+                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
+
                 if ( prev != null )
                 {
                     // Previous was an ElementTriplesBlock.
@@ -263,6 +263,7 @@ public class AlgebraGenerator
             
             // Anything else.
             prev = null ;
+            prev2 = null ;
             groupElts.add(elt) ;
         }
         return groupElts ;

@@ -10,13 +10,15 @@ package com.hp.hpl.jena.sparql.syntax;
 
 /** An element visitor that walks the graph pattern tree, applying a visitor
  *  at each Element traversed.
+ *  Only walks one levele of the query (not subqueries -- sub SELECT, (NOT)EXISTS
+ *  these wil need to cakll down themselves if it is meaningful for the visitor.  
  *  Bottom-up walk - apply to subelements before applying to current element.
  * @author Andy Seaborne
  */
 
 public class ElementWalker 
 {
-    // See also RecursiveVisitor
+    // See also RecursiveElementVisitor
     
     public static void walk(Element el, ElementVisitor visitor)
     {
@@ -96,18 +98,20 @@ public class ElementWalker
         {
             proc.visit(el) ;
         }
+
+        // EXISTs, NOT EXISTs are really subqueries so don't automatically walk down them.
         
         public void visit(ElementExists el)
         {
-            if ( el.getElement() != null )
-                el.getElement().visit(this) ;
+//            if ( el.getElement() != null )
+//                el.getElement().visit(this) ;
             proc.visit(el) ;
         }
 
         public void visit(ElementNotExists el)
         {
-            if ( el.getElement() != null )
-                el.getElement().visit(this) ;
+//            if ( el.getElement() != null )
+//                el.getElement().visit(this) ;
             proc.visit(el) ;
         }
 

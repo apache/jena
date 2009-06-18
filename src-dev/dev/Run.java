@@ -67,7 +67,7 @@ public class Run
     {
         if ( false )
             Optimize.noOptimizer() ;
-        qparse("--file=Q.arq", "--print=query", "--print=op", "--opt") ;
+        qparse("--file=testing/ARQ/Negation/neg-08.arq", "--print=query", "--print=op", "--opt") ;
         //execQuery("D.ttl", "Q.arq") ;
         
         String qs = StrUtils.strjoinNL(

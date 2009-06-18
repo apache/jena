@@ -64,5 +64,6 @@
         <GroupBy/manifest.ttl>
         <SubQuery/manifest.ttl>
         <Paths/manifest.ttl>
+        <Negation/manifest.ttl>
     ) .
 

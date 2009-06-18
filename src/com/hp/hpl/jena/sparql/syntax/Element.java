@@ -21,7 +21,7 @@ public abstract class Element
 {
     public Set<Var> varsMentioned()
     {
-        // In patterns, not in filters
+        // Binding variables -- in patterns, not in filters and not in EXISTS
         LinkedHashSet<Var> s = new LinkedHashSet<Var>() ;
         return PatternVars.vars(s, this) ;
     }

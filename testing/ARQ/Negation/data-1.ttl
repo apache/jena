@@ -1,0 +1,13 @@
+@prefix : <http://example/> .
+@prefix ns: <http://example/ns#> .
+
+:x1 :p 1 .
+:x1 :p 2 .
+:x1 :p 3 .
+
+:x2 :p 1 .
+:x2 :p 2 .
+
+:x3 :p 1 .
+
+:x4 :p 4 .

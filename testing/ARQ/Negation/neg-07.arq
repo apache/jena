@@ -1,0 +1,8 @@
+PREFIX :    <http://example/> 
+PREFIX ns:  <http://example/ns#> 
+
+SELECT *
+{
+    ?x :p 1
+    EXISTS{?x :p ?z}
+}

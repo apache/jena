@@ -7,13 +7,16 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 
-/** Element - abstract class for all pattern elements 
+/** Element1 - elements that have a single subElement. 
  * 
  * @author Andy Seaborne
  */
 
 public abstract class Element1 extends Element
 {
+    // Not used very widely.
+    // For historicial rasons ElementOptional does not use this.
+    // It foudn do - it just doesn't. 
     private Element element ;
 
     protected Element1(Element element) { this.element = element ; }

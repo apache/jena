@@ -1,0 +1,7 @@
+PREFIX :    <http://example/> 
+PREFIX ns:  <http://example/ns#> 
+
+ASK
+{
+    NOT EXISTS{:x3 :p []}
+}
