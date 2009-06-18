@@ -1,5 +1,5 @@
 @echo off
-if NOT "%ARQROOT%" == "" exit /B
+if NOT "%JENAROOT%" == "" exit /B
 
-echo ARQROOT not set
+echo JENAROOT not set
 exit /B

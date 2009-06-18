@@ -1,12 +1,12 @@
 @echo off
 @REM Script to run a command
 
-if NOT "%ARQROOT%" == "" goto :okRoot
-echo ARQROOT not set
+if NOT "%JENAROOT%" == "" goto :okRoot
+echo JENAROOT not set
 exit /B
 
 :okRoot
-call %ARQROOT%\bat\make_classpath.bat %ARQROOT%
+call %JENAROOT%\bat\make_classpath.bat %JENAROOT%
 
-java -cp %CP% arq.qexpr %*
+java %SOCKS% -cp %CP% arq.qexpr %*
 exit /B

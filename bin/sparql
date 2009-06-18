@@ -1,10 +1,11 @@
 #!/bin/bash
 
-if [ "$ARQROOT" == "" ]
+if [ "$JENAROOT" == "" ]
 then
-    echo "ARQROOT not set" 1>&2
+    echo "JENAROOT not set" 1>&2
     exit 1
     fi
 
-CP=$($ARQROOT/bin/arq_path)
-java -Xmx1024M $SOCKS -cp "$CP" arq.sparql "$@"
+CP="$($JENAROOT/bin/jena_path)"
+
+java $SOCKS -cp "$CP" arq.sparql "$@"
