@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$JENAROOT" == "" ]
+then
+    echo "JENAROOT not set" 1>&2
+    exit 1
+    fi
+
+exec "$JENAROOT/bin/make_classpath" "$JENAROOT"
