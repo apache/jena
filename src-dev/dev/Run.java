@@ -48,6 +48,8 @@ import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 import dump.DumpIndex;
 import dump.DumpNodes;
@@ -68,6 +70,21 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
+        {
+        Dataset dataset = TDBFactory.createDataset("DBtmp");
+        Model model = dataset.getNamedModel("http://foo");
+        //Model model = dataset.getDefaultModel() ;
+        System.out.println(model.size());
+        for (int i = 0; i <10000; i++) {
+            model.add(DC.title,RDFS.label,"title"+i);
+        }
+        System.out.println(model.size());
+        System.out.println(model.getGraph().size());
+        model.close();
+        dataset.close();
+        System.exit(0) ;
+        }
+        
         Dataset ds = TDBFactory.createDataset("--mem--") ;
         System.exit(0) ;
         

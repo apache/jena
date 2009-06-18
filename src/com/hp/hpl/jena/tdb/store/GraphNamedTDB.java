@@ -133,8 +133,10 @@ public class GraphNamedTDB extends GraphTDBBase
     {
         NodeId gn = getGraphNodeId() ;
         Tuple<NodeId> t = Tuple.create(gn, null, null, null) ;
-        
+//        TDB.sync(this) ;
+//        
         Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
+//        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0).find(t) ;
         return iter ;
     }
     
