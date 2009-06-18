@@ -47,6 +47,7 @@ public class GraphNamedTDB extends GraphTDBBase
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
     {
         super(dataset, graphName, transform, dataset.getLocation()) ;
+        
         this.quadTable = dataset.getQuadTable() ;
         this.transform = transform ;
         
@@ -133,18 +134,17 @@ public class GraphNamedTDB extends GraphTDBBase
     {
         NodeId gn = getGraphNodeId() ;
         Tuple<NodeId> t = Tuple.create(gn, null, null, null) ;
-//        TDB.sync(this) ;
-//        
-        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
-//        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0).find(t) ;
+        //Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().find(t) ;
+        Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0).find(t) ;
         return iter ;
     }
     
     /** Graph node as NodeId */
     public final NodeId getGraphNodeId()
     {
-        if ( graphNodeId == null )
-            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
+            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getAllocateNodeId(graphNode) ;
+
         return graphNodeId ;
     }
 

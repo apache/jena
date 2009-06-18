@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 public abstract class AbstractTestGraph2 extends TestBase
 {
-    // This will become the basis for a general graph test in Jena(3)
+    // This will become the basis for a general graph test in Jena
     protected static final Node s1 = makeNode("<s1>") ;
     protected static final Node p1 = makeNode("<p1>") ;
     protected static final Node o1 = makeNode("<o1>") ;
@@ -224,6 +224,14 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertEquals(0, g.size()) ;
     }
        
+    @Test public void count_01()
+    {
+        Graph graph = emptyGraph() ;
+        assertEquals(0, graph.size()) ;
+        Triple t1 = triple(s1, p1, o1) ;
+        graph.add(t1) ;
+        assertEquals(1, graph.size()) ;
+    }
     
     // Tests : triples and values.
     

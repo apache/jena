@@ -77,7 +77,7 @@ public class NodeTableBase implements NodeTable
 
     /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
     @Override
-    public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
+    public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
     // ---- The worker functions
     

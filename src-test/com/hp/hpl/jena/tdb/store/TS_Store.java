@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
     TestNodeId.class
     , TestTripleTable.class
     , TestGraphTDB.class
+    , TestGraphNamedTDB.class
     , TestDatasetTDB.class
     , TestDataset.class
 } )

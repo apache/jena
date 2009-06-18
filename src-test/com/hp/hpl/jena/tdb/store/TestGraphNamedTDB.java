@@ -4,45 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.nodetable;
+package com.hp.hpl.jena.tdb.store;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.store.NodeId;
-
-/** Sink node table */
-public class NodeTableSink implements NodeTable
+/** Programmatic tests on persistent graph */
+public class TestGraphNamedTDB extends AbstractTestGraph2
 {
-    long id = 0 ;
-    @Override
-    public void close()
-    {}
+    Node graphNode = SSE.parseNode("<http://example/namedGraph>") ;
 
     @Override
-    public NodeId getNodeIdForNode(Node node)
+    protected Graph emptyGraph()
     {
-        throw new TDBException("NodeTableSink.nodeIdForNode") ;
+        DatasetGraph dataset = TDBFactory.createDatasetGraph() ;
+        return dataset.getGraph(graphNode) ;
     }
-
-    @Override
-    public Node getNodeForNodeId(NodeId id)
-    {
-        throw new TDBException("NodeTableSink.retrieveNodeByNodeId") ;
-    }
-
-    @Override
-    public NodeId getAllocateNodeId(Node node)
-    {
-        NodeId nid = NodeId.create(id) ;
-        id++ ;
-        return nid ;
-    }
-
-    @Override
-    public void sync(boolean force)
-    {}
-
 }
 
 /*

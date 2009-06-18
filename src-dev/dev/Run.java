@@ -71,18 +71,18 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         {
-        Dataset dataset = TDBFactory.createDataset("DBtmp");
-        Model model = dataset.getNamedModel("http://foo");
-        //Model model = dataset.getDefaultModel() ;
-        System.out.println(model.size());
-        for (int i = 0; i <10000; i++) {
-            model.add(DC.title,RDFS.label,"title"+i);
-        }
-        System.out.println(model.size());
-        System.out.println(model.getGraph().size());
-        model.close();
-        dataset.close();
-        System.exit(0) ;
+            Dataset dataset = TDBFactory.createDataset("--mem--");
+            Model model = dataset.getNamedModel("http://foo");
+            //Model model = dataset.getDefaultModel() ;
+            System.out.println(model.size());
+            for (int i = 0; i <1; i++)
+            {
+                model.add(DC.title,RDFS.label,"title"+i);
+            }
+            System.out.println(model.size());
+            model.close();
+            dataset.close();
+            System.exit(0) ;
         }
         
         Dataset ds = TDBFactory.createDataset("--mem--") ;

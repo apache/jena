@@ -50,7 +50,7 @@ public class NodeTupleTable implements Sync, Closeable
     {
         NodeId n[] = new NodeId[nodes.length] ;
         for ( int i = 0 ; i < nodes.length ; i++ )
-            n[i] = storeNode(nodes[i]) ;
+            n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
         
         Tuple<NodeId> t = Tuple.create(n) ;
         return tupleTable.add(t) ;
@@ -114,19 +114,6 @@ public class NodeTupleTable implements Sync, Closeable
         if ( node == null || node == Node.ANY )
             return NodeId.NodeIdAny ;
         return nodeTable.getNodeIdForNode(node) ;
-    }
-    
-    // Store node, return id.  Node may already be stored.
-    //protected abstract int storeNode(Node node) ;
-    
-    protected final NodeId storeNode(Node node)
-    {
-        return nodeTable.storeNode(node) ;
-    }
-    
-    protected final Node retrieveNode(NodeId id)
-    {
-        return nodeTable.getNodeForNodeId(id) ;
     }
     
     // ==== Accessors
