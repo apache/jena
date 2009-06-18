@@ -9,6 +9,9 @@ ChangeLog for TDB
 + All tables now created even for just a graph or model
   (including the named graph quad tables).
 
++ Bug fix: asking the size of a empty graph before any other operation would make the size zero 
+  for the rest of the lifetime of the in-memory graph.  No data corruption on disk.  
+  
 ==== 0.8.1
 
 + Fix bug when assembling one unnamed graph. 

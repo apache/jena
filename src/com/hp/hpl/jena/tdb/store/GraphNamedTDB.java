@@ -142,9 +142,10 @@ public class GraphNamedTDB extends GraphTDBBase
     /** Graph node as NodeId */
     public final NodeId getGraphNodeId()
     {
-        if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
+//        if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
+//            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+        if ( graphNodeId == null )
             graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getAllocateNodeId(graphNode) ;
-
         return graphNodeId ;
     }
 

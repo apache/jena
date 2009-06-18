@@ -74,7 +74,11 @@ public class Run
             Dataset dataset = TDBFactory.createDataset("--mem--");
             Model model = dataset.getNamedModel("http://foo");
             //Model model = dataset.getDefaultModel() ;
+            //System.out.println(model.size());
+            
+            model.listStatements(DC.title,RDFS.label,"title") ;
             System.out.println(model.size());
+            
             for (int i = 0; i <1; i++)
             {
                 model.add(DC.title,RDFS.label,"title"+i);
