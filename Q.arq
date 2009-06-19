@@ -1,11 +1,20 @@
-PREFIX : <http://example/>
+# Names of people who have not stated that they know anyone
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT ?name
+WHERE { ?x foaf:givenName ?name .
+	FILTER (NOT EXISTS { ?x foaf:knows ?who })
+        ?x foaf:knows ?who 
+      } 
 
-SELECT *
-{
-    ?s :p 1 .
-#    EXISTS { ?s :p 2 }
-    FILTER (NOT EXISTS { ?s :p 2 })
-
-#    FILTER ( bound(?x) || not exists{?s ?p ?o } || exists{?s ?p ?o })
-#   FILTER not exists{?s ?p ?o . ?s ?p ?o}
-}
+## 
+## PREFIX : <http://example/>
+## 
+## SELECT *
+## {
+##     ?s :p 1 .
+## #    EXISTS { ?s :p 2 }
+##     FILTER (NOT EXISTS { ?s :p 2 })
+## 
+## #    FILTER ( bound(?x) || not exists{?s ?p ?o } || exists{?s ?p ?o })
+## #   FILTER not exists{?s ?p ?o . ?s ?p ?o}
+## }
