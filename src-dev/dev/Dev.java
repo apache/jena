@@ -20,18 +20,6 @@ public class Dev
     //   Remote queries made
     // ----
     
-    //---
-    // E_Exists
-    //   [DONE] Parsing
-    //   [DONE] AST Element(Not)Exists, E_Exists
-    //   [DONE] Need to generate from elt in E_Exists when written directly.  Prepare.
-    //   [DONE] Formatting
-    //     except it print "notexists" as an operator
-    //     Need to convert to !exists some how.  In parser and no E_NotExists? Unneat. 
-    //   Testing
-    //---
-    
-    
     //   TransformFilterPlacement
     //   GraphStore API?
     
