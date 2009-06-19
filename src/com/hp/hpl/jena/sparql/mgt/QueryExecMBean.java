@@ -6,9 +6,21 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
+/** Statistics from the main query engine */
 public interface QueryExecMBean
 {
+    /** Number of queries executed */
+    long getQueryCount() ; 
+    
+    /** Last query seen, as a string */
+    String getLastQueryString() ;
+    
+    /** Point in time when last query seen */
+    String getLastQueryExecAt() ;
 
+    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */  
+    long getLastQueryExecTime() ;
+    
 }
 
 /*
