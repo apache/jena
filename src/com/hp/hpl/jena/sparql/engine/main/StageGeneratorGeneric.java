@@ -132,7 +132,7 @@ public class StageGeneratorGeneric implements StageGenerator
     }
     
     /** Use the inline BGP matcher */ 
-    private static QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         return QueryIterBlockTriples.create(input, pattern, execCxt) ;
     }

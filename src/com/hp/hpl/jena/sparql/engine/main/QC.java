@@ -8,10 +8,12 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -42,6 +44,12 @@ public class QC
     {
         QueryIterator qIter = new QueryIterSingleton(binding, execCxt) ;
         return OpExecutor.execute(op, qIter, execCxt) ;
+    }
+    
+    /** Execute a BGP directly - no optimization. */ 
+    public static QueryIterator executeDirect(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        return QueryIterBlockTriples.create(input, pattern, execCxt) ;
     }
 }
 

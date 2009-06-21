@@ -1,8 +1,1 @@
-PREFIX : <http://example/>
-PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
-
-SELECT ?x ?list
-{
-    ?list list:member 1 .
-    ?x :p ?list .
-}
+CONSTRUCT {?s ?p ?o} WHERE { ?s ?p ?o}

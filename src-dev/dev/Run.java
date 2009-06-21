@@ -6,6 +6,10 @@
 
 package dev;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 import arq.sparql;
@@ -49,6 +53,11 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StrUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -65,6 +74,8 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        report() ;
+        
         if ( false )
             Optimize.noOptimizer() ;
         qparse("--file=testing/ARQ/Negation/neg-08.arq", "--print=query", "--print=op", "--opt") ;
@@ -113,13 +124,30 @@ public class Run
 
     public static void report()
     {
-        qparse("--file=Q.arq", "--opt") ; System.exit(0) ;
-        
-        Query query = QueryFactory.read("Q.arq") ;
-        //System.out.println(query) ;
-        Op op = Algebra.compile(query) ;
-        op = Algebra.optimize(op) ;
-        System.out.println(op) ;
+        Model model=ModelFactory.createOntologyModel();
+        String requete=StrUtils.strjoinNL("PREFIX : <http://www.owl-ontologies.com/Ontology1239120737.owl#>",
+                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+                                          "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
+                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                                          "INSERT DATA { :etud1 :APourNom 'Saleh' .",
+                                          "              :etud1 :APourLogin 'saleh' .",
+                                          "              :etud1 :APourPWD 'saleh' . }") ;
+        GraphStore graphstore=GraphStoreFactory.create();
+        graphstore.setDefaultGraph(model.getGraph());
+        UpdateRequest updaterequest=UpdateFactory.create(requete);
+        UpdateAction.execute(updaterequest, graphstore);
+
+        OutputStream path ;
+        try
+        {
+            path = new FileOutputStream(new File("elearning.owl")) ;
+        } catch (FileNotFoundException ex)
+        {
+            ex.printStackTrace();
+            return ;
+        }   
+        model.write(path, "RDF/XML-ABBREV");
+        System.out.println("OK");
         System.exit(0) ;
     }
     

@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.SortCondition;
-
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
@@ -26,7 +25,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
@@ -51,7 +50,7 @@ public class EvaluatorSimple implements Evaluator
 
     public Table basicPattern(BasicPattern pattern)
     {
-        QueryIterator qIter = StageBuilder.execute(pattern, QueryIterRoot.create(execCxt), execCxt) ;
+        QueryIterator qIter = QC.executeDirect(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 
