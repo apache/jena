@@ -16,6 +16,7 @@ public class Dev
     // == 0.8.2
     
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
+    //    Assumes variable length records
     
     // ----
     
