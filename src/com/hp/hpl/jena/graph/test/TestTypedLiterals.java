@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.72 2009-03-17 15:30:10 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.73 2009-06-21 11:15:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.72 $ on $Date: 2009-03-17 15:30:10 $
+ * @version $Revision: 1.73 $ on $Date: 2009-06-21 11:15:11 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -561,6 +561,9 @@ public class TestTypedLiterals extends TestCase {
         assertTrue("equality test", l1.sameValueAs( m.createTypedLiteral("P1Y", XSDDatatype.XSDduration) ) );
         assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y", XSDDatatype.XSDduration));
 
+        l1 = m.createTypedLiteral("-P120D", XSDDatatype.XSDduration);
+        Literal l2 = m.createTypedLiteral( l1.getValue() );
+        assertEquals("-P120D", l2.getLexicalForm() );
         
         // dateTime
         l1 = m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime);
