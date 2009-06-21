@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.40 2009-05-28 09:35:42 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.41 2009-06-21 10:11:47 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -62,7 +62,13 @@ final public class LiteralLabel {
 	 * N.B. This applies to any literal, not just XML well-formed literals.
 	 */
 	private boolean wellformed = true;
-
+	
+	/**
+	 * keeps the message provided by the DatatypeFormatException
+	 * if parsing failed for delayed exception thrown in getValue()
+	 */
+	private String exceptionMsg = null; // Suggested by Andreas Langegger
+	
 	//=======================================================================
 	// Constructors
 
@@ -199,6 +205,7 @@ final public class LiteralLabel {
 				throw e;
 			} else {
 				wellformed = false;
+				exceptionMsg  = e.getMessage();
 			}
 		}
 	}
@@ -293,7 +300,7 @@ final public class LiteralLabel {
 			throw new DatatypeFormatException(
 				lexicalForm,
 				dtype,
-				" in getValue()");
+				exceptionMsg);
 		}
 	}
 
