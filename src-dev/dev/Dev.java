@@ -15,17 +15,12 @@ public class Dev
     
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
+    //    Need better var index support first
     
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
-    
-    // Variable value length blocks.
-    // Inline? Auxilliary file? (similar to current node table).
-    
-    // Misc:
-    //   FactoryGraphTDB._createGraph passes null for dataset
     
     // Metadata.
     //   Metafile for directory.
@@ -48,7 +43,6 @@ public class Dev
 
     // To ARQ:
     //   Atlas? Iterator.
-    //   Explain, and explain logger (from ARQ?)
     
     // NodeLib.encode/decode ==> swap to a Nodec
 

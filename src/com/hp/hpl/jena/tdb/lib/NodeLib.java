@@ -40,7 +40,7 @@ public class NodeLib
 {
     // ---- Node <->String
     
-    Nodec nodec = new NodecSSE() ;
+    private static Nodec nodec = new NodecSSE() ;
     
     
     // Charcters in IRIs that are illegal and cause SSE problems, but we wish to keep.
@@ -51,6 +51,7 @@ public class NodeLib
 
     public static String encode(Node node, PrefixMapping pmap)
     {
+        
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeLabel() ;
         if ( node.isURI() ) 
