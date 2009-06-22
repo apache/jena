@@ -18,6 +18,7 @@ public class Dev
     //   Total queries
     //   ??Datasets opened, closed
     //   Remote queries made
+    // Quad-based filter placement [DONE]
     // ----
     
     //   TransformFilterPlacement
