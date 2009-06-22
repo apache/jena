@@ -11,8 +11,6 @@ public class Dev
     // Check the version/properties mechanisms
     // Is/was this a bug in ARQ?  Is it fixed?
     
-    // Add the model.size() test case 
-    
     // == 0.8.2
     
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
