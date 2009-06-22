@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.48 $
+ * @version 	$Revision: 1.49 $
  */
 public class TestPackage extends TestCase
 {
@@ -106,7 +106,6 @@ public class TestPackage extends TestCase
     }
 
     private static void addTest(TestSuite ts, String name, TestSuite tc) {
-        System.err.println("Add test -- "+name) ;
         if ( name != null )
             tc.setName(name);
         ts.addTest(tc);

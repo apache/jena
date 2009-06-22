@@ -11,7 +11,7 @@ public class Driver_HSQLDB extends Driver_HSQL
     public Driver_HSQLDB()
     {
         super() ;
-        DATABASE_TYPE = "HSQL";
+        DATABASE_TYPE = "HSQLDB";
     }
 }
 
