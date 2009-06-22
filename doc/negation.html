@@ -63,7 +63,7 @@ WHERE { ?x foaf:givenName ?name .
 <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 SELECT ?name
 WHERE { ?x foaf:givenName ?name .
-	FILTER (NOT EXISTS { ?x foaf:knows ?who })
+	FILTER (NOT EXISTS { ?x foaf:knows ?y })
         ?x foaf:knows ?who 
       } </pre>
 <p>is the same as (it's a single basic graph pattern - the filter does not break 
@@ -72,13 +72,14 @@ it in two):</p>
 <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 SELECT ?name
 WHERE { ?x foaf:givenName ?name .
-        ?x foaf:knows ?who .
+        ?x foaf:knows ?y .
 	FILTER (NOT EXISTS { ?x foaf:knows ?who })
       } </pre>
 
 <p>and the <code>
-FILTER</code> will always be false (<code>{ ?x foaf:knows ?who }</code> must 
-have matched to get to this point in the query).</p>
+FILTER</code> will always be false (<code>{ ?x foaf:knows ?y }</code> must 
+have matched to get to this point in the query and useing ?who instead makes no 
+difference).</p>
 
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p></body></html>
