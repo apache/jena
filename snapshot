@@ -1,8 +1,8 @@
 #!/bin/bash
 
 MODULE="$@"
-DEFAULT="TDB SDB Joseki3"
-#DEFAULT="TDB"
+#DEFAULT="TDB SDB Joseki3"
+DEFAULT="TDB"
 
 
 for m in $MODULE

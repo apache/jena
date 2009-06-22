@@ -3,14 +3,4 @@
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix :        <http://example/> .
 
-
-
-:x1 :p 1 .
-:x1 :p 2 .
-
-:x2 :p 2 .
-
-:x3 :p 1 .
-:x3 :p 3 .
-
-:x4 :p 4 .
+:x :p (1 2) .

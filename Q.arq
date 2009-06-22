@@ -1,16 +1,10 @@
-PREFIX pjc:     <http://example/ns#>
-PREFIX tops:     <http://example/tops#>
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
-PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
-
+PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :        <http://example/>
 
 SELECT *
-{
-   ?c pjc:excludeProperty ?p .
-   ?c rdfs:subClassOf ?r .
-   ?r a owl:Restriction .
-   ?r owl:onProperty ?p .
-   LET (?restriction := ?r) .
-   ( ?subject ?predicate ?object ) tops:dependsOn ?restriction .
+WHERE {
+    :x :p ?list .
+    LET (?z := fn:ceiling(1)) .
+    ?list list:member ?z .
 }

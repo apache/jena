@@ -6,9 +6,6 @@
 
 package dev;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 
@@ -124,7 +121,12 @@ public class Run
 
     public static void report()
     {
-        Model model=ModelFactory.createOntologyModel();
+//        Model model=ModelFactory.createDefaultModel() ;
+//        
+//        model.write(System.out, "TTL") ;
+//        System.exit(0) ;
+        
+        Model model=ModelFactory.createDefaultModel() ;
         String requete=StrUtils.strjoinNL("PREFIX : <http://www.owl-ontologies.com/Ontology1239120737.owl#>",
                                           "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
                                           "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
@@ -137,15 +139,7 @@ public class Run
         UpdateRequest updaterequest=UpdateFactory.create(requete);
         UpdateAction.execute(updaterequest, graphstore);
 
-        OutputStream path ;
-        try
-        {
-            path = new FileOutputStream(new File("elearning.owl")) ;
-        } catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
-            return ;
-        }   
+        OutputStream path = System.out ;
         model.write(path, "RDF/XML-ABBREV");
         System.out.println("OK");
         System.exit(0) ;
