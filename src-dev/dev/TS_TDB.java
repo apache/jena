@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.InstallationTest;
 
+// This is not in the test source folder tree.
 // In the build script, it finds all the TS_*.
 // Ideally would do that here
 
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.tdb.InstallationTest;
     InstallationTest.class
 } )
 
-public class TS_Main
+public class TS_TDB
 { }
 
 

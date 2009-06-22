@@ -10,6 +10,7 @@ public class Dev
 {
     // Check the version/properties mechanisms
     // Is/was this a bug in ARQ?  Is it fixed?
+    // ** Quad-based filter placement is now ready.
     
     // == 0.8.2
     
@@ -87,10 +88,6 @@ public class Dev
     //   ==> Moveable roots.
     
     // ---- Interactions with ARQ
-    // + Other indexes
-    // + SPARQL/Update
-    //   Dataset is cloned on a Joseki/SPARQL/update operation
-    //   Need ARQ change + TDB to provide a GraphStore.
     // Optimizations
     // Quad-based filter placement
     
@@ -101,5 +98,5 @@ public class Dev
     //   ** (script) to work on gzip files
 
     // ---- 32 bit mode.
-    // ARC (Adaptive Replacement Cache) Cache Scheme
+    // Different caching schemes.
 }
