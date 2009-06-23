@@ -59,7 +59,7 @@ and is used by the clock.
 /** Generator for timebased UUIDs (version 1, variant 2)
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1_Gen.java,v 1.5 2009-01-16 17:23:59 andy_seaborne Exp $
+ * @version 	$Id: UUID_V1_Gen.java,v 1.6 2009-06-23 12:21:58 andy_seaborne Exp $
  */
 
 
@@ -263,7 +263,7 @@ public class UUID_V1_Gen implements UUIDFactory
 	{
         long random = LibUUID.makeRandom().nextLong() ;
 
-        node = Bits.unpack(random, 0, 47);      // Low 48bits, except grousp address bit
+        node = Bits.unpack(random, 0, 47);      // Low 48bits, except groups address bit
         node = Bits.set(node, 47) ;             // Set group address bit
         
         // Can also set the clock sequence number to increase the randomness.
