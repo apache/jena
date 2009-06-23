@@ -24,7 +24,13 @@ else
     SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-ant clean build
+#ant clean build
+
+function jarName
+{
+    local JAR="$1"
+    perl -e '$_=$ARGV[0] ; s!(.*/)?([^/]*)-\d.\d.\d.*.jar!$2.jar! ; print "$_\n"' $JAR
+}
 
 ## # Remove version numbers
 ## for jar in build/arq*.jar
@@ -37,13 +43,19 @@ ant clean build
 for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
-  cp -u build/arq*.jar ../$d/lib
+  
+  for jar in build/arq*.jar
+    do
+    J2=$(jarName $jar)
+    cp -u $jar ../$d/lib/$J2
+    done
   ## Fix up 
   chmod u+rw ../$d/lib/arq*jar
   # And Jena
   cp -u lib/jena.jar ../$d/lib
   cp -u lib/jenatest.jar ../$d/lib
   done
+exit
 
 ## rm build/arq*.jar
 
