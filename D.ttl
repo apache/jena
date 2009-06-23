@@ -2,5 +2,6 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix :        <http://example/> .
-
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+:x :q "str"^^xsd:string .
 :x :p (1 2) .
