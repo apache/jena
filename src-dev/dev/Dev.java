@@ -20,6 +20,8 @@ public class Dev
     //    Assumes variable length records
     //    Need better var index support first
     
+    // BDB-JE? BlockMgr as index?
+    
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
