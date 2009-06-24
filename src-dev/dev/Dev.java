@@ -12,6 +12,7 @@ public class Dev
     // Is/was this a bug in ARQ?  Is it fixed?
     
     // ** Quad-based filter placement is now ready.
+    // ** metadata files and BPT creation.
     
     // == 0.8.2
     
