@@ -62,7 +62,7 @@ public class juuid extends CmdGeneral
             String str = null ;
             if ( asURN )
                 str = uuid.asURN() ; 
-            else if ( asURN )
+            else if ( asURI )
                 str = uuid.asURI() ; 
             else if ( asPlain )
                 str = uuid.asString() ; 
@@ -86,7 +86,7 @@ public class juuid extends CmdGeneral
     
     static ArgDecl argDeclNum      = new ArgDecl(ArgDecl.HasValue,  "num", "n") ;
     static ArgDecl argDeclReset    = new ArgDecl(ArgDecl.NoValue,   "reset") ;
-    static ArgDecl argDeclGen      = new ArgDecl(ArgDecl.HasValue,  "gen", "scheme") ;
+    static ArgDecl argDeclGen      = new ArgDecl(ArgDecl.HasValue,  "gen", "scheme", "type", "ver") ;
     static ArgDecl argDeclURN      = new ArgDecl(ArgDecl.NoValue,   "urn") ;
     static ArgDecl argDeclURI      = new ArgDecl(ArgDecl.NoValue,   "uri") ;
     static ArgDecl argDeclPlain    = new ArgDecl(ArgDecl.NoValue,   "plain") ;
