@@ -10,6 +10,7 @@ public class Dev
 {
     // Check the version/properties mechanisms
     // Is/was this a bug in ARQ?  Is it fixed?
+    
     // ** Quad-based filter placement is now ready.
     
     // == 0.8.2
