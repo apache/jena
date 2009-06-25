@@ -133,11 +133,12 @@ public class Run
     {
         // Directory metadata files.
 
-        FileSet fileSet = new FileSet(new Location("DB"), "XYZ") ;
-        MetaFile metafile = fileSet.getMetaFile() ;
+        Location location = new Location("DB") ;
+        //FileSet fileSet = new FileSet(location, "XYZ") ;
+        //MetaFile metafile = fileSet.getMetaFile() ;
+        MetaFile metafile = location.getMetaFile() ;
         
         System.out.println("Exists meta? "+metafile.existsMetaData()) ;
-        System.out.println("Exists? "+fileSet.exists("idn")) ;
         metafile.setProperty("item1", "snork") ;
         metafile.flush() ;
         System.out.println("Exists meta? "+metafile.existsMetaData()) ;
