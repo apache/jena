@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.base.file ;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
-import java.util.Properties;
 
 import atlas.lib.FileOps;
 import atlas.lib.Tuple;
@@ -17,12 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.util.FileUtils;
 
 /** Naming, access and metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
  */
-public class FileSet
+public class FileSet extends MetaBase
 {
     // Cope with "in-memory" fileset (location == null)
     
@@ -30,11 +28,6 @@ public class FileSet
     
     private Location location ;
     private String basename ;
-    // For now, Java properties file.
-//    // The properties of a FileGroup are an RDF model written in Turtle.
-//    private Model properties ;
-    private Properties properties ;
-    private String metaFilename ;
 
     /** FileSet for "in-memory" */
     public static FileSet mem()
@@ -42,15 +35,17 @@ public class FileSet
         FileSet fs = new FileSet() ;
         fs.location = Location.mem() ;
         fs.basename = "mem" ;
-        fs.metaFilename = null ;
-        fs.properties = new Properties() ;
+        fs.initMetaFile("mem", Names.memName) ;
         return fs ;
     }
+
+    private FileSet() {}        // Uninitialized.
+
     
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(String directory, String basename)
     {
-        init(new Location(directory), basename) ;
+        initFileSet(new Location(directory), basename) ;
     }
     
     /** Create a FileSet given Location (directory) and name within the directory */  
@@ -61,61 +56,23 @@ public class FileSet
         String fn = t.get(1) ;
         if ( dir == null )
             dir = "." ;
-        init(new Location(dir), fn) ;
+        initFileSet(new Location(dir), fn) ;
     }
     
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(Location directory, String basename)
     {
-        init(directory, basename) ;
+        initFileSet(directory, basename) ;
     }
     
-    private void init(Location directory, String basename)
+    private void initFileSet(Location directory, String basename)
     {
         this.location = directory ;
         this.basename = basename ;
-        this.metaFilename = location.absolute(basename, Names.metaData) ;
-        this.properties = new Properties() ;
-        loadProperties() ; 
+        String metaFileName = basename+"."+Names.extMeta ;
+        super.initMetaFile(this.basename, metaFileName) ;
     }
     
-    private FileSet() {}
-    
-    private void loadProperties()
-    {
-        InputStream in = null ;
-        try { 
-            in = new FileInputStream(metaFilename) ;
-            Reader r = FileUtils.asBufferedUTF8(in) ;
-            properties.load(r) ;
-        }
-        catch (FileNotFoundException ex) {} 
-        catch (IOException ex)
-        {
-            log.error("Failed to load properties: "+metaFilename, ex) ;
-        }
-    }
-
-    public String getProperty(String key)
-    {
-        return properties.getProperty(key, null) ;
-    }
-    
-    public int getPropertyAsInteger(String key)
-    {
-        return Integer.parseInt(properties.getProperty(key, null)) ;
-    }
-    
-
-    public void setProperty(String key, String value)
-    {
-        properties.setProperty(key, value) ;
-    }
-    
-    public void setProperty(String key, int value)
-    {
-        setProperty(key, Integer.toString(value)) ;
-    }
     
     public Location getLocation()   { return location ; }
     public String getBasename()     { return basename ; }
@@ -130,14 +87,6 @@ public class FileSet
         return open(ext, "rw") ;
     }
         
-    public boolean existsMetaData()
-    {
-        File f = new File(metaFilename) ;
-        if ( f.isDirectory() )
-            log.warn("Metadata file clashes with a directory") ;
-        return f.exists() && f.isFile() ;
-    }
-    
     public boolean exists(String ext)
     {
         String fn = filename(ext) ;
@@ -158,22 +107,7 @@ public class FileSet
         return location.isMem() ;
     }
     
-    public void flush()
-    {
-        if ( isMem() )
-            return ;
-        try {
-            FileOutputStream fos = new FileOutputStream(metaFilename) ;
-            Writer w = FileUtils.asUTF8(fos) ;
-            w = new BufferedWriter(w) ;
-            properties.store(w, "File set: "+basename) ;
-        } 
-        catch (IOException ex)
-        {
-            log.error("Failed to store properties: "+metaFilename, ex) ;
-        }
-    }
-    
+ 
     public String filename(String ext)
     {
         return location.getPath(basename, ext) ;

@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -23,6 +24,10 @@ public interface GraphTDB extends Graph, Closeable, Sync, Reorderable
 {
     public NodeTupleTable getNodeTupleTable() ;
     public Tuple<Node> asTuple(Triple triple) ;
+    
+    /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */
+    public Lock getLock() ;
+    
     /**
      * Return the graph node for this graph if it's in a quad table, else return
      * null for a triple table based (e.g. the default graph of a dataset)

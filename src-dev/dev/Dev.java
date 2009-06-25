@@ -22,12 +22,17 @@ public class Dev
     
     // BDB-JE? BlockMgr as index?
     
+    // Document concurrency 
+    // Graph.getLock in Jena?
+    // Remove all relics of cretaing graphs without a dataset (FactoryGraphTDB._createGraph())
+    // Remove MetaFile and then MetaBase => MetaFile 
+    
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
     
-    // TODO Use PrefixMappingPersistent with DatasetPrefixes. 
+    // ** Use PrefixMappingPersistent with DatasetPrefixes. 
 
     // Metadata.
     //   Metafile for directory.

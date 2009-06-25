@@ -85,11 +85,6 @@ public class SystemTDB
 
     /** Index type */
     public static final Symbol symIndexType         = allocSymbol("indexType") ;
-    
-    // ---- Parameters
-    
-    // -- Machinary: statics must be defined before used.
-    // Tie to location but that means one instance per graph
 
     private static final String propertyFileKey1    = tdbPropertyRoot+".settings" ;
     private static final String propertyFileKey2    = tdbSymbolPrefix+":settings" ;

@@ -24,7 +24,7 @@ public class NodeTableIndex extends NodeTableBase
         // Index.
         Index nodeToId = indexBuilder.newIndex(filesetIdx, FactoryGraphTDB.nodeRecordFactory) ;
         // Node table.
-        String filename = filesetTable.filename(Names.nodeDataExt) ;
+        String filename = filesetTable.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }

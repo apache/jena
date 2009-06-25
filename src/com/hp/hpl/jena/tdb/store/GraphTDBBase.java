@@ -19,6 +19,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 
+import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
@@ -62,7 +63,8 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     @Override
     public final DatasetGraphTDB getDataset()                   { return dataset ; }
     
-    
+    @Override
+    public Lock getLock()                                       { return dataset.getLock() ; }
     
     protected void duplicate(Triple t)
     {

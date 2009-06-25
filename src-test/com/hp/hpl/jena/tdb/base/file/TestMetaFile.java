@@ -45,6 +45,8 @@ public class TestMetaFile extends BaseTest
         assertNull(f2.get("test.value.other")) ;
     }
 
+    // Test MetaBase
+    
     @AfterClass public static void afterClass()
     { clear() ; }
     

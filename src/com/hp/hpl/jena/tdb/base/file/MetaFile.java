@@ -14,11 +14,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.base.block.BlockException;
 
 
-/** Meta data for a file */
+/** Meta data for a file */ 
+// Replaced by MetaBase?
 public class MetaFile
 {
     // Simple wrapper for now - may need a different, more efficent solution later. */
@@ -27,8 +28,10 @@ public class MetaFile
 
     public MetaFile(String fn)
     {
-        if ( ! fn.endsWith(".meta") )
-            filename = fn+".meta" ;
+        //System.err.println("MetaFile constructor") ; 
+        
+        if ( ! fn.endsWith(Names.extMeta) )
+            filename = fn+"."+Names.extMeta ;
         try {
             InputStream in = new FileInputStream(filename) ;
             in = new BufferedInputStream(in) ;

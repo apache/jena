@@ -16,9 +16,6 @@ public class Names
     public static final String[] quadIndexes        = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
     
     
-    /** Properties information for a FileGroup*/ 
-    public static final String metaData             = "info" ;
-    
     /** B+Trees - nodes file and records file */
     public static final String bptExt1              = "idn" ;
     public static final String bptExt2              = "dat" ;
@@ -31,7 +28,7 @@ public class Names
     public static final String extHashBucketExt     = "dat" ;
     
     /** Node file */
-    public static final String nodeDataExt          = "dat" ;           // Extension of node files.
+    public static final String extNodeData          = "dat" ;           // Extension of node files.
     
     public static final String nodeTable            = "nodes" ;         // Node table
     public static final String indexNode2Id         = "node2id";        // Node hash to id table
@@ -47,6 +44,16 @@ public class Names
     public static final String optStats             = "stats.opt";
     public static final String optDefault           = "fixed.opt";      // Currently, it's just the presence of this file that matters.
     public static final String optNone              = "none.opt"; 
+    
+//    /** Properties information for a FileGroup*/ 
+//    public static final String metaData             = "info" ;
+    
+    public static final String extMeta              = "meta" ;
+    public static final String directoryMetafile    = "this" ;          // Root name of the directory for a metafile.  
+
+    /** Name to indicate in-memory */ 
+    public static final String memName              = "--mem--" ;
+    public static boolean isMem(String name)        { return memName.equals(name) ; }
     
     // ---- Names for Java properties in metadata files 
     

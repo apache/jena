@@ -8,13 +8,15 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.File;
 
+import com.hp.hpl.jena.tdb.sys.Names;
+
 /** 
  *  Wrapper for a file system directory; can create filenames in that directory.
  *  Enforces some simple consistency policies and provides a
  *  "typed string" for a filename to reduce errors.
  */   
  
-public class Location
+public class Location extends MetaBase
 {
     static String pathSeparator = File.separator ;  // Or just "/"
     
@@ -45,19 +47,19 @@ public class Location
 //        return loc ;
 //    }
     
-    public static final String pathnameMem = "--mem--" ;
     String pathname ;
     
     static Location mem = new Location() ;
     static public Location mem() { return new Location(); } 
     
-    private Location() { pathname = pathnameMem ; }
+    private Location() { pathname = Names.memName ; }
     
     public Location(String rootname)
     { 
-        if ( rootname.equals(pathnameMem) )
+        super() ;
+        if ( rootname.equals(Names.memName) )
         {
-            pathname = pathnameMem ;
+            pathname = Names.memName ;
             return ;
         }
         
@@ -72,9 +74,15 @@ public class Location
         }
         else if ( ! file.isDirectory() )
             throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
+
         pathname = file.getAbsolutePath() ;
         if ( ! pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
             pathname = pathname + pathSeparator ;
+        
+        // Metafilename for a directory.
+        String metafile = getPath(Names.directoryMetafile, Names.extMeta) ;
+        
+        super.initMetaFile(rootname, metafile) ;
     }        
 
     public String getDirectoryPath()
@@ -84,7 +92,7 @@ public class Location
 
     public boolean isMem()
     {
-        return pathname.equals(pathnameMem) ;
+        return Names.isMem(pathname) ;
     }
     
     public Location getSubLocation(String dirname)

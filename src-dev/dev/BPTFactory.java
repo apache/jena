@@ -6,10 +6,21 @@
 
 package dev;
 
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+
 /** Make B+Trees */
 public class BPTFactory
 {
     // Sort out with IndexBuilder later
+    
+    public static RangeIndex create(Location location)
+    {
+        MetaFile metafile = null ;
+        return null ;
+    }
+    
 }
 
 /*

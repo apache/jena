@@ -23,6 +23,7 @@ import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
@@ -276,7 +277,7 @@ public class TDBFactory
             String absPath = location.getDirectoryPath() ;
             
             if ( ! cache.containsKey(absPath) )
-                if ( ! absPath.equals(Location.pathnameMem) )
+                if ( ! absPath.equals(Names.memName) )
                     // Don't worry if a dataset in-memory is cached or not.
                     log.warn("Not a cached location: "+absPath) ;
             log.debug("Remove from dataset cache: "+absPath) ;
