@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.*;
 import atlas.junit.TestBase;
@@ -17,6 +17,7 @@ import org.junit.Test;
 
 public class TestNodeLib extends TestBase
 {
+    // Test sof TDBs NodeLib
     @Test public void hash1() 
     {
         Node x1 = SSE.parseNode("<http://example/x>") ;

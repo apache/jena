@@ -36,7 +36,9 @@ import com.hp.hpl.jena.tdb.sys.Names;
 public class DatasetPrefixes implements Closeable, Sync
 {
     // Index on GPU and a nodetable.
-    // The nodetable is itself an index and a data file.. 
+    // The nodetable is itself an index and a data file.
+    
+    // TODO Use PerfixMappingPersistent
     
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     private final NodeTupleTable nodeTupleTable ;
@@ -219,8 +221,19 @@ public class DatasetPrefixes implements Closeable, Sync
         @Override
         protected void set(String prefix, String uri)
         {
-            super.set(prefix, uri) ;
+            // Delete old one if present and different.
+            String x = get(prefix) ;
+            if ( x != null )
+            {
+                if(x.equals(uri))
+                    // Already there - no-op (thanks to Eric Diaz for pointing this out)
+                    return;
+                removeFromPrefixMap(graphName, prefix, x) ;
+            }
+            // Persist
             insertPrefix(graphName, prefix, uri) ;
+            // Add to caches. 
+            super.set(prefix, uri) ;
         }
 
         @Override

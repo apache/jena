@@ -27,6 +27,8 @@ public class Dev
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
     
+    // TODO Use PrefixMappingPersistent with DatasetPrefixes. 
+
     // Metadata.
     //   Metafile for directory.
     //   Metafiles and opening indexes

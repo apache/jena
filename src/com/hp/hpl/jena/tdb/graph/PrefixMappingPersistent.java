@@ -17,6 +17,9 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 
 public abstract class PrefixMappingPersistent extends PrefixMappingImpl implements Closeable, Sync
 {
+    // ** Does not cope with storing prefies for different graphs
+    // See TDB's DatasetPrefixes
+    
     private String graphName ; 
 
     public PrefixMappingPersistent(String graphURI)
@@ -34,8 +37,20 @@ public abstract class PrefixMappingPersistent extends PrefixMappingImpl implemen
     @Override
     protected void set(String prefix, String uri)
     {
-        super.set(prefix, uri) ;
+        // Delete old one if present and different.
+        String x = get(prefix) ;
+        if ( x != null )
+        {
+            if(x.equals(uri))
+                // Already there - no-op (thanks to Eric Diaz for pointing this out)
+                return;
+            removeFromPrefixMap(graphName, prefix, x) ;
+        }
+
+        // Persist
         insertIntoPrefixMap(graphName, prefix, uri) ;
+        // Set in-memory cache.
+        super.set(prefix, uri) ;
     }
 
     @Override

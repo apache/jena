@@ -10,17 +10,17 @@ package com.hp.hpl.jena.tdb;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+// Tests using Jena graph tests
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNodeLib.class
-    , TestGraphBPlusTreeMem.class
+    TestGraphBPlusTreeMem.class
     , TestGraphBPlusTreeMem2.class
     , TestGraphBTreeMem.class
     , TestGraphBTreeMem2.class
-    , TestTDBFactory.class
 })
 
-public class TS_TDB
+public class TS_Jena
 {
 
 }

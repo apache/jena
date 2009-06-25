@@ -106,7 +106,7 @@ public class OpExecutorTDB extends OpExecutor
     {
         return optimizeExecuteTriples(graph.getReorderTransform(), input, pattern, exprs, execCxt) ;
         
-        // May have a name - expolciitly named default graph
+        // May have a name - explicitly named default graph
 //        if ( graph.getGraphNode() == null )
 //            return optimizeExecuteTriples(graph.getReorderTransform(), input, pattern, exprs, execCxt) ;
 //        else

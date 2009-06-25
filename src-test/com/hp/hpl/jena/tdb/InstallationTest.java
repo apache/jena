@@ -20,6 +20,7 @@ import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler;
 import com.hp.hpl.jena.tdb.base.TS_Base;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
+import com.hp.hpl.jena.tdb.lib.TS_LibTDB;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.store.GraphTDBTestSuite;
@@ -37,12 +38,13 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     , TS_Iterator.class
     , TS_Riot.class
     , TS_Base.class
+    , TS_LibTDB.class
     , TS_Index.class
     , TS_Store.class     // The main storage implementation.  Slow tests.
     , TS_Solver.class
     , TS_Sys.class
     , TS_Graph.class
-    , TS_TDB.class
+    , TS_Factory.class
     
     // The script suite
     , GraphTDBTestSuite.class
