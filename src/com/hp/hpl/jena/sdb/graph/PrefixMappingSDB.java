@@ -77,8 +77,20 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     @Override
     protected void set(String prefix, String uri)
     {
-        super.set(prefix, uri) ;
+        // Delete old one if present.
+        String x = get(prefix) ;
+        if ( x != null )
+        {
+            if(x.equals(uri))
+                // Already there - no-op (thanks to Eric Diaz for pointing this out)
+                return;
+            removeFromPrefixMap(prefix, x) ;
+        }
+
+        // Persist
         insertIntoPrefixMap(prefix, uri) ;
+        // Set caches
+        super.set(prefix, uri) ;
     }
 
     @Override
@@ -164,13 +176,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     
     private void insertIntoPrefixMap(String prefix, String uri)
     {
-        // Only called from set() and set() has already updated the superclass
-        // but get() defers to superclass so is never null.  Err.
+        // Only called from set()
+        // Assumes not present in the persistent table.
         try {
-            // Delete old one.
-            String x = get(prefix) ;
-            if ( x != null )
-                removeFromPrefixMap(prefix, x) ;
             prefix = encode(prefix) ;
             String sqlStmt = sqlStr(
                 "INSERT INTO "+prefixTableName,
