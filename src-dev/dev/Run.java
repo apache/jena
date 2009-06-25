@@ -132,7 +132,6 @@ public class Run
     static void metadata()
     {
         // Directory metadata files.
-
         Location location = new Location("DB") ;
         //FileSet fileSet = new FileSet(location, "XYZ") ;
         //MetaFile metafile = fileSet.getMetaFile() ;
