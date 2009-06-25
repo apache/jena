@@ -1,88 +1,197 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Properties;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.base.block.BlockException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/** Meta data for a file */ 
-// Replaced by MetaBase?
-public class MetaFile
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.util.FileUtils;
+
+/** Support for persistent metadata files */
+public class MetaFile implements Sync, Closeable
 {
-    // Simple wrapper for now - may need a different, more efficent solution later. */
-    Properties prop = new Properties() ;
-    private String filename ;
-
-    public MetaFile(String fn)
+    // Replaces MetaFile???
+    
+    // The magic name "--mem--" means in-memory only.
+    private static Logger log = LoggerFactory.getLogger(MetaFile.class) ;
+    private String metaFilename = null ;
+    private Properties properties = null ;
+    private String label = null ;
+    private boolean changed = false ;
+    
+    //Must call init(,) afterwards.
+    protected MetaFile()
+    {}
+    
+    public MetaFile(String label, String fn)
     {
-        //System.err.println("MetaFile constructor") ; 
+        this.label = label ;
+        this.metaFilename = fn ;
+        if ( fn != null )
+            initMetaFile(label, fn) ;
+    }
+    
+    private void initMetaFile(String label, String fn)
+    {
+        close() ;
+        this.label = label ;
+        if ( fn.equals(Names.memName) )
+            return ;
         
+        // Make absolute (current directy may change later)
         if ( ! fn.endsWith(Names.extMeta) )
-            filename = fn+"."+Names.extMeta ;
-        try {
-            InputStream in = new FileInputStream(filename) ;
-            in = new BufferedInputStream(in) ;
-            prop.load(in) ;
-            in.close();
-        } catch (FileNotFoundException ex)
-        {
-            // Create empty.
-            force() ;
-        }
-        catch (Exception ex)
-        {
-            throw new BlockException("Failed to load properties", ex) ;
-        }
-       
+            fn = fn+"."+Names.extMeta ;
+        File f = new File(fn) ;
+        this.metaFilename = f.getAbsolutePath() ;
+        // Does not load the details yet.
     }
     
-    Properties getProperties() { return prop ; }
-    
-    public void set(String key, String value)
-    { prop.put(key,value) ; }
-    
-    public String get(String key)
-    {
-        return get(key, null) ;
+    private void ensureInit()
+    { 
+        if ( properties == null )
+        {
+            properties = new Properties() ;
+            if ( metaFilename != null )
+                loadProperties() ;
+        }
     }
     
-    public String get(String key, String defaultValue)
+    public boolean existsMetaData()
     {
-        return prop.getProperty(key, defaultValue) ;
+        if ( isMem() )
+            return true ;
+        File f = new File(metaFilename) ;
+        if ( f.isDirectory() )
+            log.warn("Metadata file clashes with a directory") ;
+        return f.exists() && f.isFile() ;
+    }
+    
+    public String getFilename()         { return metaFilename ; } 
+    
+    public String getProperty(String key)
+    {
+        return _getProperty(key, null) ;
+    }
+    
+    public String getProperty(String key, String defaultString)
+    {
+        return _getProperty(key, defaultString) ;
     }
 
-    public void force()
+    public int getPropertyAsInteger(String key)
     {
+        return Integer.parseInt(_getProperty(key, null)) ;
+    }
+    
+    public void setProperty(String key, String value)
+    {
+        _setProperty(key, value) ;
+    }
+    
+    public void setProperty(String key, int value)
+    {
+        _setProperty(key, Integer.toString(value)) ;
+    }
+
+    // All get/set access through these two operations
+    private String _getProperty(String key, String dft)
+    {
+        ensureInit() ;
+        return properties.getProperty(key, dft) ;
+    }
+    
+    private void _setProperty(String key, String value)
+    {
+        ensureInit() ;
+        properties.setProperty(key, value) ;
+        changedEvent() ;
+    }
+    
+    private void changedEvent() { changed = true ; }
+ 
+    private boolean isMem() { return Names.isMem(metaFilename) ; }
+    
+    public void flush()
+    {
+        if ( ! changed )
+            return ;
+        
+        saveProperties() ;
+        changed = false ;
+    }
+
+    private void saveProperties()
+    {
+        if ( isMem() )
+            return ;
         try {
-            // Convenience - don't keep an open file around so
-            // we can look at it while the code runs. 
-            OutputStream out = new FileOutputStream(filename) ;
-            out = new BufferedOutputStream(out) ;
-            prop.store(out, "Jena block meta file") ;
-            out.close();
-        }
-        catch (Exception ex)
+            FileOutputStream fos = new FileOutputStream(metaFilename) ;
+            Writer w = FileUtils.asUTF8(fos) ;
+            w = new BufferedWriter(w) ;
+            String str = label ;
+            if ( str == null )
+                str = metaFilename ;
+            properties.store(w, "Metadata: "+str) ;
+        } 
+        catch (IOException ex)
         {
-            throw new BlockException("Failed to store properties", ex) ;
+            log.error("Failed to store properties: "+metaFilename, ex) ;
         }
     }
+
+    
+    private void loadProperties()
+    {
+        if ( isMem() )
+        {
+            properties = new Properties() ;
+            return ;
+        }
+        
+        if ( properties == null )
+            properties = new Properties() ;
+        
+        // if ( metaFilename == null )
+        InputStream in = null ;
+        try { 
+            in = new FileInputStream(metaFilename) ;
+            Reader r = FileUtils.asBufferedUTF8(in) ;
+            properties.load(r) ;
+        }
+        catch (FileNotFoundException ex) {} 
+        catch (IOException ex)
+        {
+            log.error("Failed to load properties: "+metaFilename, ex) ;
+        }
+    }
+
+    @Override
+    public void sync(boolean force)
+    { flush() ; }
+
+    @Override
+    public void close()
+    {
+        flush() ;
+        metaFilename = null ;
+        properties = null ;
+
+    }
+
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

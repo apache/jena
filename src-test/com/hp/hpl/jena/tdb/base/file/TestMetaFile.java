@@ -30,19 +30,22 @@ public class TestMetaFile extends BaseTest
     @Test public void meta1()
     {
         clear() ;
-        MetaFile f = new MetaFile(testfile) ;
+        MetaFile f = new MetaFile("META", testfile) ;
+        assertFalse(new File(testfileMeta).exists()) ;
+        f.setProperty("key", "value") ;
+        f.flush() ;
         assertTrue(new File(testfileMeta).exists()) ;
     }
     
     @Test public void meta2()
     {
         clear() ;
-        MetaFile f = new MetaFile(testfile) ;
-        f.set("test.value1", "1") ;
-        f.force();
-        MetaFile f2 = new MetaFile(testfile) ;
-        assertEquals("1", f2.get("test.value1")) ;
-        assertNull(f2.get("test.value.other")) ;
+        MetaFile f = new MetaFile("META", testfile) ;
+        f.setProperty("test.value1", "1") ;
+        f.flush();
+        MetaFile f2 = new MetaFile("META", testfile) ;
+        assertEquals("1", f2.getProperty("test.value1")) ;
+        assertNull(f2.getProperty("test.value.other")) ;
     }
 
     // Test MetaBase

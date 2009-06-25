@@ -13,12 +13,16 @@ import com.hp.hpl.jena.tdb.index.IndexFactory;
 import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.btree.BTree;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
 {
     
     private final int order ;
 
+    public IndexFactoryBTreeMem()
+    { this(SystemTDB.OrderMem) ; }
+    
     public IndexFactoryBTreeMem(int order)
     {
         this.order = order ;

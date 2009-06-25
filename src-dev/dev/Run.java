@@ -18,7 +18,6 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import tdb.tdbclean;
 import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
 
@@ -33,6 +32,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -48,8 +48,6 @@ import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 import dump.DumpIndex;
 import dump.DumpNodes;
@@ -70,71 +68,9 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
-        {
-            Dataset dataset = TDBFactory.createDataset("--mem--");
-            Model model = dataset.getNamedModel("http://foo");
-            //Model model = dataset.getDefaultModel() ;
-            //System.out.println(model.size());
-            
-            model.listStatements(DC.title,RDFS.label,"title") ;
-            System.out.println(model.size());
-            
-            for (int i = 0; i <1; i++)
-            {
-                model.add(DC.title,RDFS.label,"title"+i);
-            }
-            System.out.println(model.size());
-            model.close();
-            dataset.close();
-            System.exit(0) ;
-        }
+        metadata() ;
         
-        Dataset ds = TDBFactory.createDataset("--mem--") ;
-        System.exit(0) ;
-        
-        
-        tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
-        
-        
-        // Problem 1: When symUnionDefaultGraph -> quads but not a DatasetGraphTDB but a DataSourceGraphImpl
-        // See OpExecutor.execute(OpQuadPattern) line 111
-        // [DONE]
-        
-        // Problem 2: BGP on named model is not quads.
-        // See OpExecutor.execute(OpBGP) line ~335
-        // Line 224 is the entry into the chained OpExecutorTDB.
-        
-        TDB.getContext().set(TDB.symUnionDefaultGraph, true);
-        //TDB.setExecutionLogging(true) ; 
-        Dataset dataset = TDBFactory.createDataset( "DB" );
-        
-        // "SELECT * { GRAPH <urn:x-arq:UnionGraph> { ?s ?p ?o}}"
-        String queryString =  "SELECT * {?s ?p ?o}" ;
-        
-        query(queryString, dataset) ;
-        System.exit(0) ;
-        
-        
-        System.out.println("Default model") ;
-        query(queryString, dataset.getDefaultModel()) ;
-        // Separate dataset.getMergedNamedModels();
-
-        System.out.println("graph1") ;
-        query(queryString, dataset.getNamedModel("http://example/graph1")) ;
-        
-        System.out.println("union") ;
-        query(queryString, dataset.getNamedModel("urn:x-arq:UnionGraph")) ;
-        
-        System.out.println("named default") ;
-        query(queryString, dataset.getNamedModel("urn:x-arq:DefaultGraph")) ;
-        
-        System.out.println("generated default") ;
-        query(queryString, dataset.getNamedModel("urn:x-arq:DefaultGraphNode")) ;
-
-        System.exit(0) ;
-
-        
-        
+        //tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
         if ( true )
         {
             TDB.init();
@@ -154,8 +90,9 @@ public class Run
             System.exit(0) ;
         }
         
-        if ( true )
+        if ( false )
         {
+            // Dump indexes
 //            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
 //            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
             
@@ -163,16 +100,16 @@ public class Run
             // Metafiles remove the need for record facories other than first use.Node  
             
             //Index creations?
-          FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "node2id") ;
-          Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.nodeRecordFactory) ;
-          
-          boolean b = index.isEmpty() ;
-          
+            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "node2id") ;
+            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.nodeRecordFactory) ;
+
+            boolean b = index.isEmpty() ;
+
             ByteArrayOutputStream out = new ByteArrayOutputStream() ;
             DumpIndex.dump(out, index) ;
             String x = new String(out.toByteArray()) ;
             System.out.println(x) ;
-            
+
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
             Index index2 = IndexBuilder.createIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
             DumpIndex.reload(in, index2) ;
@@ -184,49 +121,35 @@ public class Run
             }
             System.out.println() ;
             DumpIndex.dump(out, index2) ;
-            
+
             System.out.flush();
             System.exit(0) ;
         }
-        FileSet fs = new FileSet(".", ".") ;
+
         System.exit(0) ;
-        
-        if ( true )
-        {
-            tdbclean.main("DB") ;
-            //tdb.tdbloader.main("--tdb=tdb.ttl", "D.ttl") ;
-            Model m = TDBFactory.createModel("DB") ;
-            FileManager.get().readModel(m, "D.ttl") ;
-            m.write(System.out, "TTL") ;
-            m.close();
-            m.close();
-        }
-        
-        if ( false )
-        {
-            System.out.println("----") ;
-            Model m = TDBFactory.createModel("DB") ;
-            m.write(System.out, "TTL") ;
-        }
-        System.exit(0) ;
-        
+    }
+    
+    static void metadata()
+    {
         // Directory metadata files.
 
-        FileSet fileSet = new FileSet(new Location("DB"), "SPO") ;
-        System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
+        FileSet fileSet = new FileSet(new Location("DB"), "XYZ") ;
+        MetaFile metafile = fileSet.getMetaFile() ;
+        
+        System.out.println("Exists meta? "+metafile.existsMetaData()) ;
         System.out.println("Exists? "+fileSet.exists("idn")) ;
-        fileSet.setProperty("item1", "snork") ;
-        fileSet.flush() ;
-        System.out.println("Exists meta? "+fileSet.existsMetaData()) ;
+        metafile.setProperty("item1", "snork") ;
+        metafile.flush() ;
+        System.out.println("Exists meta? "+metafile.existsMetaData()) ;
         System.out.println("----") ;
-        System.exit(0) ;
 
         
-        fileSet.setProperty("item1", "snork") ;
-        fileSet.flush() ;
+        metafile.setProperty("item1", "snork") ;
+        metafile.flush() ;
         
-        fileSet = new FileSet(".", "DATA") ;
-        System.out.println(fileSet.getProperty("item1")) ;
+        String mf = metafile.getFilename() ;
+        metafile = new MetaFile("label", mf) ;
+        System.out.println(metafile.getProperty("item1")) ;
         System.out.println("----") ;
         System.exit(0) ;
     }

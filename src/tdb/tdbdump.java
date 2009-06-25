@@ -99,7 +99,7 @@ public class tdbdump extends CmdSub
             // Quad indexes :       FactoryGraphTDB.indexRecordQuadFactory ;
             // Look in the fileset metadata.
             
-            if ( fileset.existsMetaData() )
+            if ( fileset.getMetaFile().existsMetaData() )
             {
                //fileset.getPropertyAsInteger(key) ;
             }

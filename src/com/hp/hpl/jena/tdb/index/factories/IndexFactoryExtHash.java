@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Index factory for extendible hash tables.
  *  Only an index, not a range index
@@ -26,6 +27,9 @@ public class IndexFactoryExtHash implements IndexFactory
 {
     private final int blockSize ;
 
+    public IndexFactoryExtHash()
+    { this(SystemTDB.BlockSize) ; }
+    
     public IndexFactoryExtHash(int blockSize)
     {
         this.blockSize = blockSize ;

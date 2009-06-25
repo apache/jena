@@ -18,9 +18,8 @@ import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHashMem;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** A policy holder for making indexes, range indexes, and data files. 
- */   
-
+/** A policy holder for making indexes, range indexes, and data files.  */
+ 
 public class IndexBuilder
 {
     // Migrate to be a general policy place for files.
@@ -56,19 +55,19 @@ public class IndexBuilder
         {
             case BTree:
             {
-                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(SystemTDB.OrderMem) ;
+                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem() ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
             case BPlusTree:
             {
-                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
+                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem() ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
             case ExtHash:
             {
                 // Index files are Extendible hash indexes; range indexes are is B+Tree 
                 IndexFactoryExtHashMem idxFactory = new IndexFactoryExtHashMem() ;
-                IndexFactoryBPlusTreeMem idxRangeFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
+                IndexFactoryBPlusTreeMem idxRangeFactory = new IndexFactoryBPlusTreeMem() ;
                 return new IndexBuilder(idxFactory, idxRangeFactory) ;
             }
         }
@@ -81,18 +80,18 @@ public class IndexBuilder
         {
             case BTree:
             {
-                IndexFactoryBTree idx = new IndexFactoryBTree(SystemTDB.BlockSize) ;
+                IndexFactoryBTree idx = new IndexFactoryBTree() ;
                 return new IndexBuilder(idx, idx) ;
             }
             case BPlusTree:
             {
-                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(SystemTDB.BlockSize) ;
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree() ;
                 return new IndexBuilder(idx, idx) ;
             }
             case ExtHash:
             {
-                IndexFactoryExtHash idxFactory = new IndexFactoryExtHash(SystemTDB.BlockSize) ;
-                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(SystemTDB.BlockSize) ;
+                IndexFactoryExtHash idxFactory = new IndexFactoryExtHash() ;
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree() ;
                 return new IndexBuilder(idxFactory, idx) ;
             }
         }

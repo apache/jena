@@ -6,23 +6,56 @@
 
 package dev;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 
 /** Make B+Trees */
 public class BPTFactory
 {
-    // Sort out with IndexBuilder later
-    
-    public static RangeIndex create(Location location)
+    private static final Logger log = LoggerFactory.getLogger(BPTFactory.class) ;
+
+    // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
+
+    public static RangeIndex create(FileSet fileset, int order, int blockSize, RecordFactory factory)
     {
-        MetaFile metafile = null ;
+        MetaFile mf = fileset.getMetaFile() ;
+        if ( mf == null )
+            mf = fileset.getLocation().getMetaFile() ;
+        
+        // Params from previous settings
+        if ( mf.existsMetaData() )
+        {
+            // Put block size in BPTParams?
+
+            BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileset) ;
+
+            int blkSize2 = mf.getPropertyAsInteger(BPlusTreeParams.ParamBlockSize) ;
+            //            log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
+            //            log.info("Read: "+params2.toString()) ;
+            //            log.info("Calc: "+params.toString()) ;
+            if ( blkSize2 != blockSize )
+                log.error(String.format("Metadata declares block size to be %d, not %d", blkSize2, blockSize)) ;  
+            // params = ...;
+            // Check.
+        }
+        else
+        {
+            BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+            mf.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
+            params.addToMetaData(fileset) ;
+            mf.flush();
+        }
+
+        MetaFile metafile = fileset.getMetaFile() ;
         return null ;
     }
-    
 }
-
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
  *  "typed string" for a filename to reduce errors.
  */   
  
-public class Location extends MetaBase
+public class Location
 {
     static String pathSeparator = File.separator ;  // Or just "/"
     
@@ -47,7 +47,8 @@ public class Location extends MetaBase
 //        return loc ;
 //    }
     
-    String pathname ;
+    private String pathname ;
+    private MetaFile metafile = null ; 
     
     static Location mem = new Location() ;
     static public Location mem() { return new Location(); } 
@@ -80,20 +81,14 @@ public class Location extends MetaBase
             pathname = pathname + pathSeparator ;
         
         // Metafilename for a directory.
-        String metafile = getPath(Names.directoryMetafile, Names.extMeta) ;
+        String metafileName = getPath(Names.directoryMetafile, Names.extMeta) ;
         
-        super.initMetaFile(rootname, metafile) ;
+        metafile = new MetaFile("Location: "+rootname, metafileName) ;
     }        
 
-    public String getDirectoryPath()
-    {
-        return pathname ;
-    }
-
-    public boolean isMem()
-    {
-        return Names.isMem(pathname) ;
-    }
+    public String getDirectoryPath()    { return pathname ; }
+    public MetaFile getMetaFile()       { return metafile ; }
+    public boolean isMem()              { return Names.isMem(pathname) ; }
     
     public Location getSubLocation(String dirname)
     {

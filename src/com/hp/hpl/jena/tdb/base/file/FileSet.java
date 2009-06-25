@@ -20,7 +20,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
 /** Naming, access and metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
  */
-public class FileSet extends MetaBase
+public class FileSet
 {
     // Cope with "in-memory" fileset (location == null)
     
@@ -28,6 +28,7 @@ public class FileSet extends MetaBase
     
     private Location location ;
     private String basename ;
+    private MetaFile metafile ;
 
     /** FileSet for "in-memory" */
     public static FileSet mem()
@@ -35,7 +36,7 @@ public class FileSet extends MetaBase
         FileSet fs = new FileSet() ;
         fs.location = Location.mem() ;
         fs.basename = "mem" ;
-        fs.initMetaFile("mem", Names.memName) ;
+        fs.metafile = new MetaFile("mem", Names.memName) ;
         return fs ;
     }
 
@@ -69,14 +70,20 @@ public class FileSet extends MetaBase
     {
         this.location = directory ;
         this.basename = basename ;
-        String metaFileName = basename+"."+Names.extMeta ;
-        super.initMetaFile(this.basename, metaFileName) ;
+        String metaFileName = location.getPath(basename, Names.extMeta) ;
+        metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
     }
     
     
     public Location getLocation()   { return location ; }
     public String getBasename()     { return basename ; }
+    public MetaFile getMetaFile()   { return metafile ; }
     
+    public boolean isMem()
+    {
+        return location.isMem() ;
+    }
+
     public RandomAccessFile openReadOnly(String ext)
     {
         return open(ext, "r") ;
@@ -102,12 +109,6 @@ public class FileSet extends MetaBase
         return "FileSet:"+filename(null) ;
     }
     
-    public boolean isMem()
-    {
-        return location.isMem() ;
-    }
-    
- 
     public String filename(String ext)
     {
         return location.getPath(basename, ext) ;

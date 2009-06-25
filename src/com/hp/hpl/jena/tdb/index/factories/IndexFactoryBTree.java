@@ -17,11 +17,15 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.btree.BTree;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
 {
     private final int blockSize ;
 
+    public IndexFactoryBTree()
+    { this(SystemTDB.BlockSize) ; }
+    
     public IndexFactoryBTree(int blockSize)
     {
         this.blockSize = blockSize ;

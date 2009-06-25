@@ -21,15 +21,16 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
 {
     private static Logger log = LoggerFactory.getLogger(IndexFactoryBPlusTree.class) ;
     private final int blockSize ;
-    
-    private static final String NS = IndexFactoryBPlusTree.class.getName() ;
-    private static final String ParamBlockSize = NS+".blockSize" ;
 
+    public IndexFactoryBPlusTree()
+    { this(SystemTDB.BlockSize) ; }
+    
     public IndexFactoryBPlusTree(int blockSize)
     {
         this.blockSize = blockSize ;
@@ -49,33 +50,6 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         if ( params.getBlockSize() > blockSize )
             throw new TDBException("Calculated block size is greater than required size") ;
-        
-        if ( false )
-        {
-            // Params from previous settings
-            if ( fileset.existsMetaData() )
-            {
-                // Put block size in BPTParams?
-                
-                BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileset) ;
-                
-                int blkSize2 = fileset.getPropertyAsInteger(ParamBlockSize) ;
-    //            log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
-    //            log.info("Read: "+params2.toString()) ;
-    //            log.info("Calc: "+params.toString()) ;
-                if ( blkSize2 != blockSize )
-                    log.error(String.format("Metadata declares block size to be %d, not %d", blkSize2, blockSize)) ;  
-                // params = ...;
-                // Check.
-            }
-            else
-            {
-                params = new BPlusTreeParams(order, factory) ;
-                fileset.setProperty(ParamBlockSize, blockSize) ;
-                params.addToMetaData(fileset) ;
-                fileset.flush();
-            }
-        }        
         
         String fnNodes = fileset.filename(Names.bptExt1) ;
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
