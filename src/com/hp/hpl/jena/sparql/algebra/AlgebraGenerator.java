@@ -41,7 +41,7 @@ public class AlgebraGenerator
 {
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
     // Helpful only to write exactly what you mean and test the full query compiler.
-    boolean fixedFilterPosition = false ;
+    private boolean fixedFilterPosition = false ;
     private Context context ;
     private PathCompiler pathCompiler = new PathCompiler() ;
     
@@ -173,18 +173,20 @@ public class AlgebraGenerator
         Op current = OpTable.unit() ;
         ExprList exprList = new ExprList() ;
         
-        // First: get all filters, merge adjacent BGPs.
-        // The ElementGroup is in syntax order. 
-        // This includes BGP-FILTER-BGP
-        // This is a delay from parsing time so a printed query
+        // First: get all filters, merge adjacent BGPs. This includes BGP-FILTER-BGP
+        // This is done in finalizeSyntax after which the new ElementGroup is in
+        // the right order w.r.t. BGPs and filters. 
+        // 
+        // This is a delay from parsing time is so a printed query
         // keeps filters where the query writer put them.
-        List<Element> groupElts = finalizeSyntax(groupElt, exprList) ; 
         
+        List<Element> groupElts = finalizeSyntax(groupElt) ;
+
         // Second: compile the consolidated group elements.
         for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
             Element elt = iter.next() ;
-            current = compileOneInGroup(elt, current, exprList) ;
+            current = compileOneInGroup(elt, current) ;
         }
             
         // Third: Filters collected from the group. 
@@ -198,10 +200,16 @@ public class AlgebraGenerator
      * Return a list of elements: update the exprList
      */
     
-    private List<Element> finalizeSyntax(ElementGroup groupElt, ExprList exprList)
+    private List<Element> finalizeSyntax(ElementGroup groupElt)
     {
+        if ( fixedFilterPosition )
+            // Illegal SPARQL
+            return groupElt.getElements() ;
+        
+        
         List<Element> groupElts = new ArrayList<Element>() ;
         BasicPattern prev = null ;
+        List<ElementFilter> filters = null ;
         PathBlock prev2 = null ;
         
         for (Element elt : groupElt.getElements() )
@@ -209,8 +217,10 @@ public class AlgebraGenerator
             if ( elt instanceof ElementFilter )
             {
                 ElementFilter f = (ElementFilter)elt ;
-                exprList.add(f.getExpr()) ;
-                // Does not place it in the returned list.
+                if ( filters == null )
+                    filters = new ArrayList<ElementFilter>() ;
+                filters.add(f) ;
+                // Collect filters but do not place them yet.
                 continue ;
             }
             
@@ -261,15 +271,29 @@ public class AlgebraGenerator
                 continue ;
             }
             
-            // Anything else.
+            // Anything else.  End of BGP - put in any accumulated filters 
+            endBGP(groupElts, filters) ;
+
+            // Clear any BGP-related accumulators.
+            filters = null ;
             prev = null ;
             prev2 = null ;
+            
+            // Add this element (not BGP/Filter related).
             groupElts.add(elt) ;
         }
+        //End of BGP - put in any accumulated filters 
+        endBGP(groupElts, filters) ;
         return groupElts ;
     }
 
-    private Op compileOneInGroup(Element elt, Op current, ExprList exprList)
+    private void endBGP(List<Element> groupElts, List<ElementFilter> filters)
+    {
+        if ( filters != null )
+            groupElts.addAll(filters) ;
+    }
+    
+    private Op compileOneInGroup(Element elt, Op current)
     {
         // Replace triple patterns by OpBGP (i.e. SPARQL translation step 1)
         if ( elt instanceof ElementTriplesBlock )
@@ -289,15 +313,12 @@ public class AlgebraGenerator
             return join(current, op) ;
         }
         
-        // Collect filters
+        // Filters were collected together by finalizeSyntax.
+        // So they are in the right place.
         if ( elt instanceof ElementFilter )
         {
             ElementFilter f = (ElementFilter)elt ;
-            if ( fixedFilterPosition )
-                // Not SPARQL.
-                return OpFilter.filter(f.getExpr(), current) ;
-            exprList.add(f.getExpr()) ;
-            return current ;
+            return OpFilter.filter(f.getExpr(), current) ;
         }
     
         // Optional: recurse

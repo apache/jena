@@ -4,7 +4,10 @@ PREFIX  :        <http://example/>
 
 SELECT *
 WHERE {
-    :x :p ?list .
-    LET (?z := fn:ceiling(1)) .
-    ?list list:member ?z .
+    :x :p ?x . :x :p ?x .
+    FILTER(?x = 23 ) 
+    OPTIONAL { :XX :PP :QQ }
+#    NOT EXISTS { ?s ?p ?o }
+    :x :q ?y .
+    FILTER(?y = 57 )
 }

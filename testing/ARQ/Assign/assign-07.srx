@@ -3,19 +3,9 @@
   <head>
     <variable name="x"/>
     <variable name="v"/>
-    <variable name="y"/>
+    <variable name="more"/>
+    <variable name="more2"/>
   </head>
   <results>
-    <result>
-      <binding name="x">
-        <uri>http://example/x3</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
-      </binding>
-      <binding name="y">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
-      </binding>
-    </result>
   </results>
 </sparql>
