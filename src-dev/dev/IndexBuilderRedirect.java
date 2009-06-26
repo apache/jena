@@ -20,12 +20,37 @@ public class IndexBuilderRedirect
 {
     private static final Logger log = LoggerFactory.getLogger(IndexBuilderRedirect.class) ;
 
+    // Properties.
+
+    // General:
+    //    tdb.version=
+    //    tdb.version.fileformat=
+    
+    // B+Tree:
+    //    tdb.bptree.order=
+    //    tdb.bptree.keyLength=
+    //    tdb.bptree.valueLength=
+    //    tdb.bptree.blockSize=
+    
+    // ExtHashTable
+    //   tdb.exthash...
+    
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
 
-    public static RangeIndex create(FileSet fileset, int order, int blockSize, RecordFactory factory)
+    public static RangeIndex createRangeIndex(FileSet fileset, int order, int blockSize, RecordFactory factory)
     {
+        MetaFile mf = fileset.getMetaFile() ;
+        if ( mf == null )
+            mf = fileset.getLocation().getMetaFile() ;
+        return createBPTree(fileset, mf, order, blockSize, factory) ;
+    }
+    
+    
+    public static RangeIndex createBPTree(FileSet fileset, MetaFile metafile, int order, int blockSize, RecordFactory factory)
+    {
+        // ----  Checking
         if ( blockSize < 0 && order < 0 )
-            throw new IllegalArgumentException("Nother blocksize nor order specificied") ;
+            throw new IllegalArgumentException("Neither blocksize nor order specificied") ;
         if ( blockSize >= 0 && order < 0 )
             order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
         if ( blockSize >= 0 && order >= 0 )
@@ -35,23 +60,24 @@ public class IndexBuilderRedirect
                 throw new IllegalArgumentException("Wrong order ("+order+"), calculated = "+order2) ;
         }
         
-        // Iffy
+        // Iffy - does not allow for slop. 
         if ( blockSize < 0 && order >= 0 )
+        {
+            // Only in-memory.
             blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+        }
         
-        MetaFile mf = fileset.getMetaFile() ;
-        if ( mf == null )
-            mf = fileset.getLocation().getMetaFile() ;
+        
         
         BPlusTreeParams params = null ;
         // Params from previous settings
-        if ( mf.existsMetaData() )
+        if ( metafile.existsMetaData() )
         {
             // Put block size in BPTParams?
             log.debug("Reading metadata ...") ;
-            BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileset) ;
+            BPlusTreeParams params2 = BPlusTreeParams.readMeta(metafile) ;
 
-            int blkSize2 = mf.getPropertyAsInteger(BPlusTreeParams.ParamBlockSize) ;
+            int blkSize2 = metafile.getPropertyAsInteger(BPlusTreeParams.ParamBlockSize) ;
             log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
             log.info("Read: "+params2.toString()) ;
 
@@ -64,9 +90,9 @@ public class IndexBuilderRedirect
         else
         {
             params = new BPlusTreeParams(order, factory) ;
-            mf.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
-            params.addToMetaData(fileset) ;
-            mf.flush();
+            metafile.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
+            params.addToMetaData(metafile) ;
+            metafile.flush();
         }
 
         log.info("Params: "+params) ;

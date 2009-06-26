@@ -6,12 +6,11 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.*;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfPointer;
 import org.slf4j.Logger;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -26,7 +25,8 @@ public class BPlusTreeParams
     public static boolean CheckingNode = false ;                // Check within BtreeNode
 
     // Metadata
-    public static final String NS = BPlusTreeParams.class.getName() ;
+    //public static final String NS = BPlusTreeParams.class.getName() ;
+    public static final String NS = "tdb.bptree" ;
     public static final String ParamOrder          = NS+".order" ;
     public static final String ParamKeyLength      = NS+".keyLength" ;
     public static final String ParamValueLength    = NS+".valueLength" ;
@@ -114,9 +114,8 @@ public class BPlusTreeParams
                              ) ;
     }
 
-    public static BPlusTreeParams readMeta(FileSet fileset)
+    public static BPlusTreeParams readMeta(MetaFile mf)
     {
-        MetaFile mf = fileset.getMetaFile() ;
         try {
             int pOrder = mf.getPropertyAsInteger(ParamOrder) ;
             int pKeyLen = mf.getPropertyAsInteger(ParamKeyLength) ;
@@ -129,9 +128,8 @@ public class BPlusTreeParams
         }
     }
     
-    public void addToMetaData(FileSet fileset)
+    public void addToMetaData(MetaFile mf)
     {
-        MetaFile mf = fileset.getMetaFile() ;
         mf.setProperty(ParamOrder, order) ;
         mf.setProperty(ParamKeyLength, recordFactory.keyLength()) ;
         mf.setProperty(ParamValueLength, recordFactory.valueLength()) ;
