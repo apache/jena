@@ -107,7 +107,13 @@ public class SDBConnectionFactory
         try {
             return JDBC.createConnection(jdbcURL, user, password) ;
         } catch (SQLException e)
-        { throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()) ; }
+        {
+            SQLException e2 = e.getNextException() ;
+            String more = "" ;
+            if ( e2 != null )
+                more = " : "+e2.getMessage() ;
+            throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()+more) ;
+        }
     }
     
 }

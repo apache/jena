@@ -51,6 +51,9 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
+        sdb.sdbconfig.main("--sdb=sdb.ttl", "--create") ;
+        System.exit(0) ;
+        
         {
             // Make sure the database is created but empty first.
             String modelName = "http://example/g1" ;
