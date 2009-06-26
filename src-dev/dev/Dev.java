@@ -42,7 +42,7 @@ public class Dev
     
     // ==== Build
     // Refactor to improve "publish and release"
-    //   new "build-once" target to create jar
+    //   Multiple artifacts : macro for tasks.
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.

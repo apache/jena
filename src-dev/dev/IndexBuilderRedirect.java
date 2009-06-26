@@ -15,10 +15,10 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 
-/** Make B+Trees */
-public class BPTFactory
+/** Make indexes */
+public class IndexBuilderRedirect
 {
-    private static final Logger log = LoggerFactory.getLogger(BPTFactory.class) ;
+    private static final Logger log = LoggerFactory.getLogger(IndexBuilderRedirect.class) ;
 
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
 

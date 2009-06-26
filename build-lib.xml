@@ -28,10 +28,19 @@
        clean      clean up
        clean-once clean up once - can depend on this repeatedly - will run first time only.
        compile    compile sources
-       jar        make jar
+       jar        make jar, once
+       build.jar  make jar
        release    make a release
        publish    export to maven
-       test       Run the test suite
+       test       Run the test suite (runs once)
+
+
+		Process properties used to indicate a task has run.
+			jar.run
+			clean.run
+			test.run
+		
+		The "once" tasks will run once-per-run
 
        == Assumes directory layout
        doc/
@@ -169,14 +178,17 @@
   </target>
 
   <target name="build.jar" depends="compile">
-    <delete file="${build.dir}/${jarfile}" failonerror="false"/>
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
+    <antcall target="package.jar"/>
+  </target>
+
+  <target name="package.jar">
+    <delete file="${build.dir}/${jarfile}" failonerror="false"/>
     <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}" index="yes">
-      <!--<fileset file="${build.metadata.file.dest}"/>-->
+       <!--<fileset file="${build.metadata.file.dest}"/>-->
     </jar>
   </target>
-  
 
   <!-- ========================================== -->
   <!-- ==== Javadoc -->
@@ -230,9 +242,9 @@
 
   <target name="jar" 
 	  description="Compile and build the jar"
-	  unless="built.jar">
+	  unless="jar.run">
     <antcall target="build.jar"/>
-    <property name="built.jar" value="done"/>
+    <property name="jar.run" value="done"/>
   </target>
 
   <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
@@ -383,7 +395,7 @@
   <target name="ivy-resolve" depends="ivy-resolve-report"/>
 
   <target name="ivy-resolve-report" depends="ivy-init">
-    <ivy:resolve conf="dev"
+    <ivy:resolve conf="main"
                  haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
@@ -391,7 +403,7 @@
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
-    <ivy:deliver conf="main"/>
+    <!-- <ivy:deliver conf="main"/> -->
     <ivy:publish conf="main" 
                  resolver="${publish.resolver}" 
                  overwrite="true">

@@ -70,7 +70,7 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         FileSet fileset = new FileSet("tmp", "XYZ") ;
-        BPTFactory.create(fileset, -1, 8*1024, new RecordFactory(24,0)) ;
+        IndexBuilderRedirect.create(fileset, -1, 8*1024, new RecordFactory(24,0)) ;
         System.exit(0) ;
         metadata() ;
         
