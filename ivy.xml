@@ -25,10 +25,6 @@
   </publications>
 
   <dependencies>
-    <!-- Because Jena depends on ARQ, these can also be obtained via Jena
-	 For clarity on which ARQ really dependences, we list here
-    -->
-
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
     <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/>
     <dependency org="org.apache.lucene" name="lucene-core" rev="2.3.1"/>

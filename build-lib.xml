@@ -8,19 +8,15 @@
        Name
        name
        version
-       [or
-           version-major
-           version-minor
-           version-revision
-           version-status
-       ]
+       [or version-major-version-minor.version-revision[version-status]
+
        javadoc.packages       Package list (comma separated)  (Optional)
        javadoc.packages.all   Package list (comma separated)  (Optional)
        build.metadata.file    (Optional)
           The metadata file to add to the build (Java properties)
-
        Copyright.text
-       
+       publish.resolver
+         Ivy resolver to use for publication
        ++ Paths
        java.source.path
 
@@ -28,11 +24,23 @@
        fileset.src
  
        == Library of standard tasks
+       build      Build jar, run tests and snapshot sources
        clean      clean up
        clean-once clean up once - can depend on this repeatedly - will run first time only.
        compile    compile sources
-       jar        make jar 
+       jar        make jar, once
+       build.jar  make jar
+       release    make a release
        publish    export to maven
+       test       Run the test suite (runs once)
+
+
+		Process properties used to indicate a task has run.
+			jar.run
+			clean.run
+			test.run
+		
+		The "once" tasks will run once-per-run
 
        == Assumes directory layout
        doc/
@@ -50,12 +58,6 @@
        == Other
        JUnit test suites look like TS_*
        
-  -->
-
-  <!--
-  	Main targets:
-  		build		Build jar and snapshot sources
-  		
   -->
   
   <!-- Set version from components (if not already set) -->
@@ -95,7 +97,7 @@
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
-  <property name="javadoc.window.title"   value="${Name}-${versio-major}.${version-minor} Javadoc"/>
+  <property name="javadoc.window.title"   value="${Name}-${version-major}.${version-minor} Javadoc"/>
 
   <!-- <property name="build.metadata.file"          value="unset"/> Set by system -->
   <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
@@ -109,14 +111,7 @@
   <!-- ========================================== -->
   <!-- ==== Setup  -->
 
-  <!-- This must be after IVY has done it's dependence stuff --> 
   
-  <!-- See also ant task <pathconvert> -->
-
-  <path id="java.build.class.path">
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-  </path>
-
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
@@ -136,18 +131,6 @@
     <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
   </filterset>
   
-  <!--
-    <filterset id="filters.shared">
-    <filter token="Name"              value="${Name}" />
-    <filter token="website"           value="${web.site}" />
-    <filter token="version-major"     value="${version-major}" />
-    <filter token="version-minor"     value="${version-minor}" />
-    <filter token="version-status"    value="${version-status}" />
-    <filter token="version"           value="${version}" />
-    <filterset refid="filters.version"/>
-    </filterset>
-  -->
-
   <target name="javac-flags">
     <!-- Target - so can have different javac flags (properties are set once) -->
     <property name="java.debug"       value="true"/>
@@ -155,17 +138,23 @@
     <property name="java.deprecation" value="true"/>
     <property name="java.optimize"    value="true"/>
     <property name="java.encoding"    value="UTF8"/>
-    <property name="java.source"      value="1.5"/>
-    <property name="java.target"      value="1.5"/>
+    <property name="java.source"      value="1.6"/>
+    <property name="java.target"      value="1.6"/>
   </target>
+        
+  <target name="set-classpath">
+    <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
+    <path id="java.build.class.path">
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+    </path>
+  </target>          
+
+  <target name="java-init" depends="javac-flags,set-classpath"/>
 
   <!-- ========================================== -->
-  <!-- ==== Sources -->
-  
-  <!-- ========================================== -->
-  <!-- ==== Build and compile -->
+  <!-- ==== Build, compile, jar, javadoc -->
 
-  <target name="compile" depends="javac-flags" description="Compile project">
+  <target name="compile" depends="java-init" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
     <javac destdir="${build.classes.dir}"
            debug="${java.debug}"
@@ -183,44 +172,28 @@
 
   <target name="build-properties" if="build.metadata.file">
     <delete file="${build.metadata.file.dest}"/>
-    <copy  file="${build.metadata.file.src}" tofile="${build.metadata.file.dest}">
+    <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
       <filterset refid="filters.build.metadata"/>
     </copy>
   </target>
 
-    <!-- Incremental compile and make the jar -->
-  <target name="jar" depends="package.jar" description="Build the jar (incremental)"/>
-    
-  <!-- Main target.  Build the jar from a clean state and wrap up the sources -->
-  <target name="build" depends="clean,package.jar,src-zip" description="Build the jar, and snapshot the sources used"/>
-  
-  <target name="package.jar" depends="compile" >
-    <delete file="${build.dir}/${jarfile}"/>
+  <target name="build.jar" depends="compile">
     <!-- Insert the properties for the build into the class area -->
     <antcall target="build-properties"/>
-    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
+    <antcall target="package.jar"/>
+  </target>
+
+  <target name="package.jar">
+    <delete file="${build.dir}/${jarfile}" failonerror="false"/>
+    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}" index="yes">
+       <!--<fileset file="${build.metadata.file.dest}"/>-->
     </jar>
   </target>
-  
-  <!-- Zipped files -->
-  
-  <target name="src-zip" description="Create zip file of the sources">
-    <zip destfile="${build.dir}/${src.zipfile}">
-      <fileset refid="fileset.src"/>
-    </zip>
-  </target>
 
- <target name="javadoc-zip" depends="javadoc">
-    <jar destfile="${build.dir}/${javadoc.zipfile}" 
-         basedir="${javadoc.dir}"/>
-  </target>
-
-  
-  
   <!-- ========================================== -->
   <!-- ==== Javadoc -->
 
-  <target name="javadoc" depends="javac-flags"
+  <target name="javadoc" depends="java-init"
           description="Make the javadoc"
           if="javadoc.packages">
     <delete  dir="${javadoc.dir}"/>
@@ -241,7 +214,7 @@
     </javadoc>
   </target>
 
-  <target name="javadoc-all" depends="javac-flags"
+  <target name="javadoc-all" depends="java-init"
           description="Make all the javadoc"
           if="javadoc.all.packages">
     <delete  dir="${javadoc.all.dir}"/>
@@ -261,7 +234,35 @@
       <classpath refid="java.build.class.path"/>
     </javadoc>
   </target>
-  
+
+  <!-- ========================================== -->
+  <!-- ==== Basic tasks -->
+
+  <!-- Not depends="build.jar" because that will always be run even if the body is "unless"'ed out -->
+
+  <target name="jar" 
+	  description="Compile and build the jar"
+	  unless="jar.run">
+    <antcall target="build.jar"/>
+    <property name="jar.run" value="done"/>
+  </target>
+
+  <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
+
+  <!-- ========================================== -->
+  <!-- ==== Zipping -->
+
+  <target name="src-zip" description="Create zip file of the sources">
+    <zip destfile="${build.dir}/${src.zipfile}">
+      <fileset refid="fileset.src"/>
+    </zip>
+  </target>
+
+ <target name="javadoc-zip" depends="javadoc">
+    <jar destfile="${build.dir}/${javadoc.zipfile}" 
+         basedir="${javadoc.dir}"/>
+  </target>  
+
   <!-- ========================================== -->
   <!-- ==== Artifacts -->       
   
@@ -303,19 +304,27 @@
   </target>
   
   <target name="publish-test" description="Build and publish this version (locally, for testing)"
-            depends="clean-once,artifacts,test,ivy-publish-dev">
+	  depends="clean-once,artifacts,test,ivy-publish-dev">
   </target>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
-  <target name="test" depends="junit" description="Run the test suite"/>
-  <target name="junit" depends="run-junit" description="Run the test suite">
+  <target name="test" unless="test.run"
+	  description="Run the test suite">
+    <antcall target="junit"/>
+    <property name="test.run" value="done"/>
+  </target>
+
+  <target name="junit" 
+	  depends="run-junit,run-report" description="Run the test suite">
     <fail message="JUnit tests failed" if="junit.failed"/>
     <echo message="JUnit tests passed"/>
   </target>
 
-  <target name="report" depends="run-report" description="Run tests and generate reports">
+  <target name="report" 
+	  depends="run-junit,run-report" 
+	  description="Run tests and generate reports">
     <fail message="JUnit tests failed" if="junit.failed"/>
     <echo message="JUnit tests passed"/>
   </target>
@@ -329,7 +338,8 @@
     <mkdir dir="${reports.dir.xml}"/>
 
     <!-- Don't stop on failure - set a property instead -->
-    <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">
+    <junit fork="yes" printsummary="yes" 
+	   errorProperty="junit.failed" failureProperty="junit.failed">
       <!-- usefile="false"  type="plain"-->
       <!-- <formatter usefile="false" type="brief"/> -->
       <formatter type="xml" />
@@ -337,6 +347,7 @@
         <pathelement path="${build.classes.dir}" />
         <path refid="java.run.class.path" />
       </classpath>
+      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
 
       <test name="com.hp.hpl.jena.sparql.test.ARQTestSuite" outfile="${reports.dir.xml}/junit-report"/>
       <!--
@@ -350,10 +361,11 @@
         </fileset>
       </batchtest>
       -->
+
     </junit>
   </target>
 
-  <target name="run-report" depends="run-junit">
+  <target name="run-report" >
     <junitreport todir="./${reports.dir}">
       <fileset dir="./${reports.dir.xml}">
         <include name="**.xml"/>
@@ -365,20 +377,19 @@
   <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
-  <!-- Convenience target -->
-  <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
+  <target name="ivy-init">
+    <ivy:settings />
   </target>
 
-  <target name="ivy-init">
-    <!-- <ivy:settings /> Process settings etc when first needed -->
-    <ivy:configure /> <!-- Process settings now  -->
+  <!-- Convenience target -->
+  <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
   </target>
 
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
           description="Resolve and fetch dependences with Ivy">
     <!-- sync causes artefacts and versions no longer need to be deleted -->
-    <ivy:retrieve conf="main" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
+    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
     
     <!--
@@ -397,10 +408,9 @@
   </target>
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
-    <!-- <ivy:resolve conf="main"/> -->
-      
     <fail message="ARQ: Does not work for multiple artifacts"/>
-      
+
+    <!-- <ivy:resolve conf="main"/> -->
     <ivy:deliver conf="main"/>
     <ivy:publish conf="main" 
                  resolver="${publish.resolver}" 
@@ -424,8 +434,8 @@
 
   <!-- DEVELOPMENT -->
   <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
+    <fail message="ARQ: Does not work for multiple artifacts"/>
     <!-- <ivy:resolve conf="main"/> -->
-    <echo message="ARQ: Does not work for multiple artifacts"/>
     <ivy:publish conf="main" 
                  resolver="dev-resolver" 
                  overwrite="true"
@@ -472,7 +482,6 @@
 
   <target name="clean-once" unless="clean.run">
     <antcall target="clean"/>
-    <!-- Not inside the "clean" as it's scoped -->
     <property name="clean.run" value="set"/>
   </target>
 
@@ -484,7 +493,7 @@
   </target>
   
   <target name="clean-build-area">
-    <delete dir="${build.dir}"/>
+    <delete quiet="true" dir="${build.dir}"/>
     <mkdir  dir="${build.dir}"/>
   </target>
 
