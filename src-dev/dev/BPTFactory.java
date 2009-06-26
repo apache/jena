@@ -24,35 +24,54 @@ public class BPTFactory
 
     public static RangeIndex create(FileSet fileset, int order, int blockSize, RecordFactory factory)
     {
+        if ( blockSize < 0 && order < 0 )
+            throw new IllegalArgumentException("Nother blocksize nor order specificied") ;
+        if ( blockSize >= 0 && order < 0 )
+            order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+        if ( blockSize >= 0 && order >= 0 )
+        {
+            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if ( order != order2 )
+                throw new IllegalArgumentException("Wrong order ("+order+"), calculated = "+order2) ;
+        }
+        
+        // Iffy
+        if ( blockSize < 0 && order >= 0 )
+            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+        
         MetaFile mf = fileset.getMetaFile() ;
         if ( mf == null )
             mf = fileset.getLocation().getMetaFile() ;
         
+        BPlusTreeParams params = null ;
         // Params from previous settings
         if ( mf.existsMetaData() )
         {
             // Put block size in BPTParams?
-
+            log.debug("Reading metadata ...") ;
             BPlusTreeParams params2 = BPlusTreeParams.readMeta(fileset) ;
 
             int blkSize2 = mf.getPropertyAsInteger(BPlusTreeParams.ParamBlockSize) ;
-            //            log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
-            //            log.info("Read: "+params2.toString()) ;
-            //            log.info("Calc: "+params.toString()) ;
+            log.info(String.format("Block size -- %d, given %d", blkSize2, blockSize)) ;
+            log.info("Read: "+params2.toString()) ;
+
             if ( blkSize2 != blockSize )
                 log.error(String.format("Metadata declares block size to be %d, not %d", blkSize2, blockSize)) ;  
             // params = ...;
             // Check.
+            params = params2 ;
         }
         else
         {
-            BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+            params = new BPlusTreeParams(order, factory) ;
             mf.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
             params.addToMetaData(fileset) ;
             mf.flush();
         }
 
-        MetaFile metafile = fileset.getMetaFile() ;
+        log.info("Params: "+params) ;
+        
+        //MetaFile metafile = fileset.getMetaFile() ;
         return null ;
     }
 }

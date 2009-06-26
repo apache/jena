@@ -35,6 +35,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
@@ -68,6 +69,9 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
+        FileSet fileset = new FileSet("tmp", "XYZ") ;
+        BPTFactory.create(fileset, -1, 8*1024, new RecordFactory(24,0)) ;
+        System.exit(0) ;
         metadata() ;
         
         //tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
