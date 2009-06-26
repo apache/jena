@@ -21,6 +21,8 @@ public class Dev
     // Quad-based filter placement [DONE]
     // ----
     
+    // Like TDB, the "do once" build targets been sorting out
+    
     //   TransformFilterPlacement
     //   GraphStore API?
     

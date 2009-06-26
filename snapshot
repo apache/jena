@@ -26,6 +26,7 @@ fi
 
 #ant clean build
 
+# Remove path and version numbers.
 function jarName
 {
     local JAR="$1"
