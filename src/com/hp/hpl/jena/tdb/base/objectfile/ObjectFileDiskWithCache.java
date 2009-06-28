@@ -65,7 +65,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     // Write cache.  Strings written but not sent to disk. 
     // List<Pair<NodeId, String>>
     
-    @Override
+    //@Override
     public NodeId write(String str)
     { 
         if ( delayCache != null && delayCache.size() >= delayCacheSize )
@@ -147,7 +147,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         buffer.clear() ;
     }
     
-    @Override
+    //@Override
     public String read(NodeId id)
     {
         // Check cache.
@@ -199,7 +199,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    @Override
+    //@Override
     public void close()
     {
         flushCache() ;
@@ -210,7 +210,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
 
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         if ( force )

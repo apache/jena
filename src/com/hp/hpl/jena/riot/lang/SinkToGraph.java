@@ -31,7 +31,7 @@ public abstract class SinkToGraph<T> implements Sink<T>
         // Convert between the new global event system (EventManager)
         // and old style Jena graph events.
         el1 = new EventListener(){
-            @Override
+            //@Override
             public void event(Object dest, Event event)
             {
                 graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
@@ -39,7 +39,7 @@ public abstract class SinkToGraph<T> implements Sink<T>
         } ;
 
         el2 = new EventListener(){
-            @Override
+            //@Override
             public void event(Object dest, Event event)
             {
                 graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
@@ -51,10 +51,10 @@ public abstract class SinkToGraph<T> implements Sink<T>
 
     }
 
-    @Override
+    //@Override
     public void flush() { }
     
-    @Override
+    //@Override
     public void close()
     {
         EventManager.unregister(this, startRead, el1) ;

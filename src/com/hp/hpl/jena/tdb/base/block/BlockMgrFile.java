@@ -71,7 +71,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
     
     final protected void putNotification(int id, ByteBuffer block) { isEmpty = false ; }
     
-    @Override final synchronized
+    //@Override 
+    final synchronized
     public int allocateId()
     {
         checkIfClosed() ;
@@ -85,7 +86,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
         return id ;
     }
     
-    @Override final synchronized
+    //@Override
+    final synchronized
     public boolean valid(int id)
     {
         // Access to numFileBlocks not synchronized - it's only a check
@@ -124,7 +126,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
         { throw new BlockException("Channel.force failed", ex) ; }
     }
     
-    @Override public final boolean isClosed() { return channel == null ; }  
+    //@Override 
+    final public boolean isClosed() { return channel == null ; }  
     
     protected final void checkIfClosed() 
     { 
@@ -133,8 +136,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
     }
     
     protected abstract void _close() ; 
-    @Override  final 
-    public void close()
+    //@Override
+    final public void close()
     {
         _close() ;
         if ( out != null )

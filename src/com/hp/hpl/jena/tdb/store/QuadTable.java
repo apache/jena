@@ -77,7 +77,7 @@ public class QuadTable implements Sync, Closeable
     }
     
     private static Transform<Tuple<Node>, Quad> action = new Transform<Tuple<Node>, Quad>(){
-        @Override
+        //@Override
         public Quad convert(Tuple<Node> item)
         {
             return new Quad(item.get(0), item.get(1), item.get(2), item.get(3)) ;
@@ -86,11 +86,11 @@ public class QuadTable implements Sync, Closeable
     
     public NodeTupleTable getNodeTupleTable() { return table ; }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     { table.sync(force) ; }
 
-    @Override
+    //@Override
     public void close()
     { table.close() ; }
 }

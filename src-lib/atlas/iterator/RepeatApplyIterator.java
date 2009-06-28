@@ -22,7 +22,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
         this.input = input ;
     }
 
-    @Override
+    //@Override
     public boolean hasNext()
     {
         if  ( finished )
@@ -50,7 +50,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
 
     protected abstract Iterator<T> makeNextStage(T t) ;
     
-    @Override
+    //@Override
     public T next()
     {
         if ( ! hasNext() )
@@ -58,11 +58,11 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
         return currentStage.next() ;
     }
 
-    @Override
+    //@Override
     public final void remove()
     { throw new UnsupportedOperationException() ; }
     
-    @Override
+    //@Override
     public void close()
     {
         if ( input instanceof ClosableIterator )

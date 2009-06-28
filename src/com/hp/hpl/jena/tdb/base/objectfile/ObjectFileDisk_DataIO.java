@@ -68,7 +68,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    @Override
+    //@Override
     public void close()
     {
         try {
@@ -78,7 +78,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         try {
@@ -104,7 +104,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
         { throw new FileException("ObjectFile.all", ex) ; }
     }
 
-    @Override
+    //@Override
     public void dump()
     {
         System.out.println("No dump implemented") ;

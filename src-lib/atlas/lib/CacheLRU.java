@@ -23,17 +23,17 @@ public class CacheLRU<K,V> implements Cache<K,V>
     
     public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
 
-    @Override
+    //@Override
     public void clear()
     { cache.clear() ; }
 
-    @Override
+    //@Override
     public boolean contains(K key)
     {
         return cache.containsKey(key) ;
     }
 
-    @Override
+    //@Override
     //public V getObject(K key, boolean exclusive)
     public V getObject(K key)
     {
@@ -46,13 +46,13 @@ public class CacheLRU<K,V> implements Cache<K,V>
         throw new AtlasException("Not implemented") ; 
     }
 
-    @Override
+    //@Override
     public void putObject(K key, V thing)
     {
         cache.put(key, thing) ;
     }
 
-    @Override
+    //@Override
     public void removeObject(K key)
     {
         cache.remove(key) ;
@@ -64,19 +64,19 @@ public class CacheLRU<K,V> implements Cache<K,V>
         throw new AtlasException("Not implemented") ;
     }
     
-    @Override
+    //@Override
     public long size()
     {
         return cache.size() ;
     }
 
-    @Override
+    //@Override
     public Iterator<K> keys()
     {
         return cache.keySet().iterator() ;
     }
 
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return cache.isEmpty() ;

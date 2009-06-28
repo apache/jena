@@ -11,9 +11,9 @@ package atlas.lib;
 public final class SinkCounting<T> implements Sink<T>
 {
     public long count = 0 ; 
-    @Override public void send(T thing)  { count++ ; }
-    @Override public void flush() {}
-    @Override public void close() {}
+    /*@Override*/ public void send(T thing)  { count++ ; }
+    /*@Override*/ public void flush() {}
+    /*@Override*/ public void close() {}
 }
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP

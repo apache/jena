@@ -20,14 +20,14 @@ public abstract class PageBase implements Page
         this.byteBuffer = byteBuffer ;
     }
     
-    @Override final
-    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
+    //@Override
+    final public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
 
-    @Override final
-    public int getId()                      { return id ; }
+    //@Override
+    final public int getId()                      { return id ; }
 
-    @Override final
-    public void setId(int id)               { this.id = id ; }
+    //@Override
+    final public void setId(int id)               { this.id = id ; }
 }
 
 /*

@@ -66,7 +66,7 @@ public class TripleTable implements Sync, Closeable
     }
     
     private static Transform<Tuple<Node>, Triple> action = new Transform<Tuple<Node>, Triple>(){
-        @Override
+        //@Override
         public Triple convert(Tuple<Node> item)
         {
             return new Triple(item.get(0), item.get(1), item.get(2)) ;
@@ -74,11 +74,11 @@ public class TripleTable implements Sync, Closeable
     
     public NodeTupleTable getNodeTupleTable() { return table ; }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     { table.sync(force) ; }
 
-    @Override
+    //@Override
     public void close()
     { table.close() ; }
     

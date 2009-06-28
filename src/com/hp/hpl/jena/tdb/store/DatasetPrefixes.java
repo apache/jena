@@ -161,13 +161,13 @@ public class DatasetPrefixes implements Closeable, Sync
             nodeTupleTable.deleteRow(g, p, iter.next().get(2)) ;
     }
 
-    @Override
+    //@Override
     public void close()
     {
         nodeTupleTable.close() ;
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     { 
         nodeTupleTable.sync(force) ;

@@ -21,7 +21,7 @@ public class PrintingSink implements Sink<Triple>
 
     public PrintingSink(Logger log) { this.log = log ; }
 
-    @Override
+    //@Override
     public void send(Triple triple)
     {
         String string =
@@ -38,8 +38,11 @@ public class PrintingSink implements Sink<Triple>
         return FmtUtils.stringForNode(n) ;
     }
     
-    @Override public void flush() { }
-    @Override public void close() { }
+    //@Override
+    public void flush() { }
+    
+    //@Override
+    public void close() { }
 
     public static String strForTriple(Triple triple)
     {

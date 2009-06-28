@@ -241,7 +241,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return root.maxRecord() ;
     }
 
-    @Override
+    //@Override
     public boolean add(Record record)
     {
         return addAndReturnOld(record) == null ;
@@ -277,7 +277,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return r ;
     }
 
-    @Override
+    //@Override
     public Iterator<Record> iterator()
     {
         return root.iterator() ;
@@ -288,7 +288,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return root.iterator(fromRec, toRec) ;
     }
     
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return nodeManager.getBlockMgr().isEmpty() ;

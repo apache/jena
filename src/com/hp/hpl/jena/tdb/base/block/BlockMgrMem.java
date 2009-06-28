@@ -50,7 +50,7 @@ public class BlockMgrMem extends BlockMgrBase
         safeModeThisMgr = safeMode ;
     }
     
-    @Override
+    //@Override
     public int allocateId()
     {
         int idx = -1 ;
@@ -85,7 +85,7 @@ public class BlockMgrMem extends BlockMgrBase
         return bb ;
     }
     
-    @Override
+    //@Override
     public ByteBuffer get(int id)
     {
         check(id) ;
@@ -103,7 +103,7 @@ public class BlockMgrMem extends BlockMgrBase
         return bb ;
     }
 
-    @Override
+    //@Override
     public ByteBuffer getSilent(int id)
     {
         check(id) ;
@@ -117,7 +117,7 @@ public class BlockMgrMem extends BlockMgrBase
         return bb ;
     }
     
-    @Override
+    //@Override
     public boolean valid(int id)
     {
         if ( id >= blocks.size() )
@@ -129,7 +129,7 @@ public class BlockMgrMem extends BlockMgrBase
         return (bb != FreeBlock) && (bb != null) ;
     }
 
-    @Override
+    //@Override
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
@@ -140,7 +140,7 @@ public class BlockMgrMem extends BlockMgrBase
         blocks.set(id, block) ;
     }
     
-    @Override
+    //@Override
     public void freeBlock(int id)
     { 
         check(id) ;
@@ -158,20 +158,21 @@ public class BlockMgrMem extends BlockMgrBase
         return blocks.get(id) == FreeBlock ; 
     }
     
-    @Override
+    //@Override
     public void sync(boolean force)
     { }
     
-    @Override public boolean isClosed() { return blocks == null ; }  
+    //@Override
+    public boolean isClosed() { return blocks == null ; }  
     
-    @Override
+    //@Override
     public void close()
     { 
         blocks = null ;
         freeBlocks = null ;
     }
     
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return blocks.size() == 0 ;

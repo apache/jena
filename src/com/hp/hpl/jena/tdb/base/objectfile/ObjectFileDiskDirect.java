@@ -51,7 +51,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
     
     //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
     
-    @Override
+    //@Override
     public NodeId write(String str)
     { 
         str = compress(str) ;
@@ -76,7 +76,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.write", ex) ; }
     }
     
-    @Override
+    //@Override
     public String read(NodeId id)
     {
         ByteBuffer bb = readBytes(id) ;
@@ -108,7 +108,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    @Override
+    //@Override
     public void close()
     {
         try {
@@ -118,7 +118,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
 
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {
 //        try {
@@ -167,7 +167,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
     }
     
     static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
-        @Override
+        //@Override
         public void handle(long fileIdx, String str)
         {
             System.out.printf("0x%08X : %s\n", fileIdx, str) ;

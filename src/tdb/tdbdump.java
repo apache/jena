@@ -38,11 +38,11 @@ public class tdbdump extends CmdSub
     {
         super(argv) ;
         super.addSubCommand(CMD_INDEX, new Exec()
-        { @Override public void exec(String[] argv) { new SubIndex(argv).mainRun() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubIndex(argv).mainRun() ; } }) ;
         super.addSubCommand(CMD_DATA, new Exec()
-        { @Override public void exec(String[] argv) { new SubData(argv).mainRun() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubData(argv).mainRun() ; } }) ;
         super.addSubCommand(CMD_NODES, new Exec()
-        { @Override public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubNodes(argv).mainRun() ; } }) ;
     }
 
 
@@ -135,7 +135,7 @@ public class tdbdump extends CmdSub
         }
         
         static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
-            @Override
+            //@Override
             public void handle(long fileIdx, String str)
             {
                 System.out.printf("0x%08X : %s\n", fileIdx, str) ;

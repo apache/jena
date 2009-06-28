@@ -49,7 +49,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
-    @Override
+    //@Override
     public boolean containsGraph(Node graphNode)
     {
         NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
@@ -87,14 +87,14 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {
-        @Override
+        //@Override
         public NodeId convert(Tuple<NodeId> item)
         {
             return item.get(0) ;
         }
     } ;
     
-    @Override
+    //@Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().getTupleTable().getIndex(0).all() ;
@@ -102,12 +102,12 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z) ;
     }
 
-    @Override
+    //@Override
     public int size()                   { return (int)Iter.count(listGraphNodes()) ; }
     
     public Location getLocation()       { return location ; }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         tripleTable.sync(force) ;
@@ -131,23 +131,23 @@ public class DatasetGraphTDB extends DatasetGraphBase
     }
 
     // --- GraphStore
-    @Override
+    //@Override
     public void startRequest()      {}
 
-    @Override
+    //@Override
     public void finishRequest()     { this.sync(true) ; } 
 
-    @Override
+    //@Override
     public Dataset toDataset()      { return new DatasetImpl(this) ; }
 
-    @Override
+    //@Override
     public void addGraph(Node graphName, Graph graph)
     {
         Graph g = getGraph(graphName) ;
         g.getBulkUpdateHandler().add(graph) ;
     }
 
-    @Override
+    //@Override
     public Graph removeGraph(Node graphName)
     {
         Graph g = getGraph(graphName) ;
@@ -156,7 +156,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return null ;
     }
 
-    @Override
+    //@Override
     public void setDefaultGraph(Graph g)
     { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ; }  
 }

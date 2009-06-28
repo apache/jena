@@ -15,14 +15,17 @@ public class SinkLogging<T> implements Sink<T>
 
     public SinkLogging(Logger log) { this.log = log ; }
     
-    @Override
+    //@Override
     public void send(T item)
     {
         log.info("Sink: "+item) ;
     }
 
-    @Override public void flush() { }
-    @Override public void close() {}
+    //@Override 
+    public void flush() { }
+    
+    //@Override
+    public void close() {}
 
 }
 

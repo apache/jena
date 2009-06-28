@@ -51,20 +51,23 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     /** Reorder processor - may be null, for "none" */
-    @Override
+    //@Override
     public final ReorderTransformation getReorderTransform()    { return reorderTransform ; }
     
-    @Override
+    //@Override
     public final Location getLocation()                         { return location ; }
     
-    @Override
+    //@Override
     public final Node getGraphNode()                            { return graphNode ; }
     
-    @Override
+    //@Override
     public final DatasetGraphTDB getDataset()                   { return dataset ; }
     
-    @Override
+    //@Override
     public Lock getLock()                                       { return dataset.getLock() ; }
+    
+    //@Override
+    public abstract void sync(boolean force) ;
     
     protected void duplicate(Triple t)
     {
@@ -122,15 +125,19 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         private final Node graphNode ;
         /** Project quads to triples - check the graphNode is as expected if not null */
         ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Triple next()
+        //@Override
+        public boolean hasNext() { return iter.hasNext() ; }
+        
+        //@Override
+        public Triple next()
         { 
             Quad q = iter.next();
             if ( graphNode != null && ! q.getGraph().equals(graphNode))
                 throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph") ;
             return q.getTriple() ;
         }
-        @Override public void remove() { iter.remove(); }
+        //@Override
+        public void remove() { iter.remove(); }
     }
     
     @Override

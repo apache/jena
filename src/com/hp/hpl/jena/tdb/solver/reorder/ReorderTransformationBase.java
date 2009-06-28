@@ -32,13 +32,13 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
 {
     protected static final boolean DEBUG = false ;  
     
-    @Override
+    //@Override
     public BasicPattern reorder(BasicPattern pattern)
     {
         return reorderIndexes(pattern).reorder(pattern) ;
     }
 
-    @Override
+    //@Override
     public final ReorderProc reorderIndexes(BasicPattern pattern)
     {
         if (pattern.size() <= 1 )
@@ -286,7 +286,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     } ;
     // Triples to TriplePatterns.
     private static Transform<Triple, PatternTriple> convert = new Transform<Triple, PatternTriple>(){
-        @Override
+        //@Override
         public PatternTriple convert(Triple triple)
         {
             return new PatternTriple(triple) ;

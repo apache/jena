@@ -34,7 +34,7 @@ public class BlockMgrDirect extends BlockMgrFile
         return ByteBuffer.allocate(blockSize) ;
     }
 
-    @Override
+    //@Override
     public ByteBuffer get(int id)
     {
         check(id) ;
@@ -45,7 +45,7 @@ public class BlockMgrDirect extends BlockMgrFile
         return getByteBuffer(id) ;
     }
 
-    @Override
+    //@Override
     public ByteBuffer getSilent(int id)
     {
         check(id) ;
@@ -65,7 +65,7 @@ public class BlockMgrDirect extends BlockMgrFile
         { throw new BlockException("BlockMgrDirect.get", ex) ; }
     }
     
-    @Override
+    //@Override
     public void put(int id, ByteBuffer block)
     {
         if ( log.isDebugEnabled() ) 
@@ -89,7 +89,7 @@ public class BlockMgrDirect extends BlockMgrFile
         return ((long)id)*((long)blockSize) ;
     }
     
-    @Override
+    //@Override
     public void freeBlock(int id)
     { 
         check(id) ;
@@ -120,7 +120,7 @@ public class BlockMgrDirect extends BlockMgrFile
         return log ;
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         if ( force )

@@ -49,7 +49,7 @@ public final class IteratorArray<T> implements Iterator<T>
             finishIdx = array.length ;
     }
 
-    @Override
+    //@Override
     public boolean hasNext()
     {
 //        if ( idx < 0 )
@@ -66,7 +66,7 @@ public final class IteratorArray<T> implements Iterator<T>
         return array[idx] ;
     }
     
-    @Override
+    //@Override
     public T next()
     {
         if ( ! hasNext() )
@@ -74,7 +74,7 @@ public final class IteratorArray<T> implements Iterator<T>
         return array[idx++] ;
     }
 
-    @Override
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException("ArrayIterator") ; }
 }

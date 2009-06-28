@@ -217,7 +217,7 @@ public class TDBFactory
     /** An ImplFactory that creates datasets in the usual way for TDB */
     private final static class ConcreteImplFactory implements ImplFactory
     {
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         { 
             if ( location.isMem() )
@@ -225,7 +225,7 @@ public class TDBFactory
             return FactoryGraphTDB.createDatasetGraph(location) ;
         }
     
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph()
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     }
@@ -246,10 +246,10 @@ public class TDBFactory
         { this.factory1 = factory ; }
         
         // Uncached currently
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph()    { return factory1.createDatasetGraph() ; }
     
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         {
             //if ( location.isMem() )
@@ -290,11 +290,11 @@ public class TDBFactory
     /** ImplFactory for many in-memory datasets. Mainly for testing. */ 
     private final static class MemoryImplFactory implements ImplFactory
     {
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     
-        @Override
+        //@Override
         public DatasetGraphTDB createDatasetGraph()
         { return FactoryGraphTDB.createDatasetGraphMem() ; }
     }

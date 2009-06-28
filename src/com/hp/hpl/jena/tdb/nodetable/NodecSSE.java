@@ -35,7 +35,7 @@ public class NodecSSE implements Nodec
     
     public NodecSSE() {}
     
-    @Override
+    //@Override
     public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap)
     {
         if ( node.isURI() ) 
@@ -64,7 +64,7 @@ public class NodecSSE implements Nodec
         bb.putInt(idx) ;
     }
 
-    @Override
+    //@Override
     public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap)
     {
         // XXX Length issues

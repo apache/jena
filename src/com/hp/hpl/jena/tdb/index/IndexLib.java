@@ -9,28 +9,23 @@ package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator;
 
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
 import atlas.lib.Tuple;
 
-
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class IndexLib
 {
-    @Deprecated
-    public static Iterator<Tuple<NodeId>> tuples(RangeIndex index)
-    {
-        return tuplesRaw(index.iterator()) ;
-    }
-
-    @Deprecated
-    public static void print(RangeIndex index)
-    {
-        print(tuples(index)) ;
-    }
+//    @Deprecated
+//    public static Iterator<Tuple<NodeId>> tuples(RangeIndex index)
+//    {
+//        return tuplesRaw(index.iterator()) ;
+//    }
+//
+//    @Deprecated
+//    public static void print(RangeIndex index)
+//    {
+//        print(tuples(index)) ;
+//    }
 
 
     public static void print(Iterator<Tuple<NodeId>> iter)
@@ -42,28 +37,28 @@ public class IndexLib
         } 
     }
 
-    @Deprecated
-    public static Iterator<Tuple<NodeId>> tuplesRaw(Iterator<Record> iter)
-    {
-        Transform<Record, Tuple<NodeId>> transform = new Transform<Record, Tuple<NodeId>>() {
-            @Override
-            public Tuple<NodeId> convert(Record item)
-            {
-                return tuplesRaw(item) ;
-            }} ; 
-            return Iter.map(iter, transform) ;
-    }
-    // ----
-
-    @Deprecated
-    public static Tuple<NodeId> tuplesRaw(Record e)
-    {
-        // In index native order
-        NodeId x = NodeLib.getNodeId(e, 0) ;
-        NodeId y = NodeLib.getNodeId(e, NodeId.SIZE) ;
-        NodeId z = NodeLib.getNodeId(e, 2*NodeId.SIZE) ;
-        return Tuple.create(x, y, z) ;
-    }
+//    @Deprecated
+//    public static Iterator<Tuple<NodeId>> tuplesRaw(Iterator<Record> iter)
+//    {
+//        Transform<Record, Tuple<NodeId>> transform = new Transform<Record, Tuple<NodeId>>() {
+//            //@Override
+//            public Tuple<NodeId> convert(Record item)
+//            {
+//                return tuplesRaw(item) ;
+//            }} ; 
+//            return Iter.map(iter, transform) ;
+//    }
+//    // ----
+//
+//    @Deprecated
+//    public static Tuple<NodeId> tuplesRaw(Record e)
+//    {
+//        // In index native order
+//        NodeId x = NodeLib.getNodeId(e, 0) ;
+//        NodeId y = NodeLib.getNodeId(e, NodeId.SIZE) ;
+//        NodeId z = NodeLib.getNodeId(e, 2*NodeId.SIZE) ;
+//        return Tuple.create(x, y, z) ;
+//    }
 
 }
 

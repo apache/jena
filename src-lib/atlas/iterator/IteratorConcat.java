@@ -24,7 +24,7 @@ public class IteratorConcat<T> implements Iterator<T>
     
     public void add(Iterator<T> iter) { iterators.add(iter) ; }
     
-    @Override
+    //@Override
     public boolean hasNext()
     {
         if ( finished )
@@ -46,14 +46,14 @@ public class IteratorConcat<T> implements Iterator<T>
         return false ;
     }
 
-    @Override
+    //@Override
     public T next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException() ; 
         return current.next();
     }
 
-    @Override
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 

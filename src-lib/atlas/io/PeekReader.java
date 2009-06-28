@@ -77,13 +77,13 @@ public final class PeekReader extends Reader
         final Reader reader ;
         SourceReader(Reader r) { reader = r ; }
         
-        @Override
+        //@Override
         public void close()
         { 
             try { reader.close() ; } catch (IOException ex) { exception(ex) ; } 
         }
         
-        @Override
+        //@Override
         public int fill(char[] array)
         {
             try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
@@ -96,13 +96,13 @@ public final class PeekReader extends Reader
         CharsetDecoder decoder = Chars.createDecoder() ;
         SourceChannel(ReadableByteChannel r) { channel = r ; }
         
-        @Override
+        //@Override
         public void close()
         { 
             try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
         }
         
-        @Override
+        //@Override
         public int fill(char[] array)
         {
             // Encoding foo.

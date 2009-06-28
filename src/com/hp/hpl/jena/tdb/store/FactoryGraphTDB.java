@@ -140,7 +140,7 @@ public class FactoryGraphTDB
         // Collect things need to build tuple indexes.
         TupleIndexBuilder b = new TupleIndexBuilder()
         {
-            @Override
+            //@Override
             public TupleIndex create(String primary, String desc, RecordFactory recordFactory)
             {
                 return createTupleIndex(indexBuilder, recordFactory, location, primary, desc) ;

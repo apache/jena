@@ -36,7 +36,7 @@ public class TupleIndexMem implements TupleIndex
         this.colMap = colMapping ;
     }
     
-    @Override
+    //@Override
     public boolean add(Tuple<NodeId> tuple)
     {
         NodeId x1 = colMap.mapSlot(0, tuple) ;
@@ -45,13 +45,13 @@ public class TupleIndexMem implements TupleIndex
         return index.put(x1,x2,x3, tuple) ;  
     }
 
-    @Override
+    //@Override
     public Iterator<Tuple<NodeId>> all()
     {
         return index.flatten() ;
     }
 
-    @Override
+    //@Override
     public boolean delete(Tuple<NodeId> tuple)
     {
         NodeId x1 = colMap.mapSlot(0, tuple) ;
@@ -60,7 +60,7 @@ public class TupleIndexMem implements TupleIndex
         return index.remove(x1,x2,x3 ) ;  
     }
 
-    @Override
+    //@Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
         NodeId x1 = colMap.mapSlot(0, pattern) ;
@@ -101,19 +101,19 @@ public class TupleIndexMem implements TupleIndex
         return new SingletonIterator<Tuple<NodeId>>(t) ;
     }
 
-    @Override
+    //@Override
     public String getLabel()
     {
         return colMap.getLabel() ;
     }
 
-    @Override
+    //@Override
     public int getTupleLength()
     {
         return tupleLength ;
     }
 
-    @Override
+    //@Override
     public int weight(Tuple<NodeId> pattern)
     {
         for ( int i = 0 ; i < tupleLength ; i++ )
@@ -129,23 +129,23 @@ public class TupleIndexMem implements TupleIndex
     private boolean undef(NodeId x)
     { return NodeId.isAny(x) ; }
     
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return index.isEmpty() ;
     }
 
-    @Override
+    //@Override
     public long size()
     {
         return index.size() ;
     }
     
-    @Override
+    //@Override
     public void sync(boolean force)
     {}
 
-    @Override
+    //@Override
     public void close()
     {}
 

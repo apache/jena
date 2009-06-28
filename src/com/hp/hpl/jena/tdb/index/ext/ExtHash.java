@@ -146,7 +146,7 @@ public class ExtHash implements Index
     
     // Hash function that is the first 4 bytes of the key (key must be at least 4 bytes long). 
     static HashRecordKey hash4bytes = new HashRecordKey(){
-        @Override
+        //@Override
         public int hashCode(byte[] key)
         { return Bytes.getInt(key) ; }
     } ;
@@ -289,17 +289,17 @@ public class ExtHash implements Index
         return b ;
     }
 
-    @Override
+    //@Override
     public RecordFactory getRecordFactory()
     { return recordFactory ; }
 
-    @Override
+    //@Override
     public Iterator<Record> iterator()
     {
         return new ExtHashIterator(this) ; 
     }
 
-    @Override
+    //@Override
     public boolean isEmpty()
     { 
        if ( dictionary.limit() == 1 )
@@ -311,7 +311,7 @@ public class ExtHash implements Index
        return false ;
     }
 
-    @Override
+    //@Override
     public long size()
     { return count() ; }
 
@@ -333,20 +333,20 @@ public class ExtHash implements Index
         return count ;
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     { 
         hashBucketMgr.getBlockMgr().sync(force) ;
         dictionaryFile.sync(force) ;
     }
 
-    @Override
+    //@Override
     public long sessionTripleCount()
     {
         return sessionCounter ;
     }
 
-    @Override
+    //@Override
     public void close()
     {
         hashBucketMgr.getBlockMgr().close() ;

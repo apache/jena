@@ -22,7 +22,7 @@ public class Cache1<K, V> implements Cache<K,V>
     
     public Cache1() { clear() ; }
     
-    @Override
+    //@Override
     public boolean contains(K key)
     {
         if ( cacheKey == null )
@@ -30,7 +30,7 @@ public class Cache1<K, V> implements Cache<K,V>
         return cacheKey.equals(key) ;
     }
 
-    @Override
+    //@Override
     public V getObject(K key)
     {
         if ( cacheKey == null ) return null ;
@@ -38,26 +38,26 @@ public class Cache1<K, V> implements Cache<K,V>
         return null ;
     }
 
-    @Override
+    //@Override
     public void clear()
     { 
         cacheKey = null ;
         cacheValue = null ;
     }
 
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return cacheKey == null ;
     }
 
-    @Override
+    //@Override
     public Iterator<K> keys()
     {
         return new SingletonIterator<K>(cacheKey) ;
     }
 
-    @Override
+    //@Override
     public void putObject(K key, V thing)
     {
         // Displaces any existing cached key/value pair
@@ -65,7 +65,7 @@ public class Cache1<K, V> implements Cache<K,V>
         cacheValue = thing ;
     }
 
-    @Override
+    //@Override
     public void removeObject(K key)
     {
         if ( cacheKey == null ) return ;
@@ -76,13 +76,13 @@ public class Cache1<K, V> implements Cache<K,V>
         }
     }
 
-    @Override
+    //@Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
     {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+    //@Override
     public long size()
     {
         return (cacheKey == null) ? 0 : 1 ;

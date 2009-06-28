@@ -277,16 +277,16 @@ public final class BPTreeNode extends BPTreePage
     
     // count is the number of pointers.
     
-    @Override
+    //@Override
     public final int getMaxSize()           { return params.getOrder() ; }
     
-    @Override
+    //@Override
     public final int getCount()             { return count ; }
  
-    @Override
+    //@Override
     public final void setCount(int count)   { this.count = count ; }
     
-    @Override
+    //@Override
     public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
     
     /** Do not use without great care */
@@ -294,10 +294,10 @@ public final class BPTreeNode extends BPTreePage
     /** Do not use without great care */
     public PtrBuffer getPtrBuffer()       { return ptrs ; }
 
-    @Override
+    //@Override
     public int getId()                      { return id ; }
 
-    @Override
+    //@Override
     public void setId(int id)               { this.id = id ; }
     
     public long size()

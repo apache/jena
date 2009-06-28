@@ -71,16 +71,16 @@ public class tdbperf extends CmdSub
         super(argv) ;
 
         super.addSubCommand(CMD_LOAD, new Exec()
-          { @Override public void exec(String[] argv) { new SubLoad(argv).exec() ; } }) ;
+          { /*@Override*/ public void exec(String[] argv) { new SubLoad(argv).exec() ; } }) ;
         
         super.addSubCommand(CMD_PARSE, new Exec()
-        { @Override public void exec(String[] argv) { new SubParse(argv).exec() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubParse(argv).exec() ; } }) ;
 
         super.addSubCommand(CMD_HELP, new Exec()
-        { @Override public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
         
         super.addSubCommand(CMD_INFO, new Exec()
-        { @Override public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
+        { /*@Override*/ public void exec(String[] argv) { new SubInfo(argv).mainRun() ; } }) ;
 
         
     }

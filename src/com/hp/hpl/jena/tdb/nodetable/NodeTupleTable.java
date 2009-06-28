@@ -130,14 +130,14 @@ public class NodeTupleTable implements Sync, Closeable
     
     public long size()              { return tupleTable.size() ; }
     
-    @Override
+    //@Override
     public final void close()
     {
         tupleTable.close() ;
         nodeTable.close() ;
     }
     
-    @Override
+    //@Override
     public final void sync(boolean force)
     {
         tupleTable.sync(force) ;

@@ -20,27 +20,27 @@ public abstract class BlockMgrBase implements BlockMgr
     
     protected abstract Logger getLog() ;
     
-    @Override
+    //@Override
     final
     public int blockSize()
     { return blockSize ; }
     
-    @Override
+    //@Override
     public abstract ByteBuffer allocateBuffer(int id) ;
     
-    @Override
+    //@Override
     public void finishUpdate()
     {}
 
-    @Override
+    //@Override
     public void startUpdate()
     {}
 
-    @Override
+    //@Override
     public void startRead()
     {}
 
-    @Override
+    //@Override
     public void finishRead()
     {}
 }

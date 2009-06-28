@@ -31,7 +31,7 @@ public class UpdateProcessorTDB implements UpdateProcessor
         this.inputBinding = inputBinding ;
     }
     
-    @Override
+    //@Override
     public void execute()
     {
         graphStore.startRequest() ;

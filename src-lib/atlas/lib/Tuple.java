@@ -49,7 +49,7 @@ public final class Tuple<T> implements Iterable<T>
     
     public T[] tuple() { return tuple ; }
 
-    @Override
+    //@Override
     public Iterator<T> iterator()
     {
         return IteratorArray.create(tuple) ;

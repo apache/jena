@@ -189,7 +189,7 @@ public class BTree implements Iterable<Record>, RangeIndex
         return root.maxRecord() ;
     }
 
-    @Override
+    //@Override
     public boolean add(Record record)
     {
         return addAndReturnOld(record) == null ;
@@ -225,7 +225,7 @@ public class BTree implements Iterable<Record>, RangeIndex
         return r ;
     }
 
-    @Override
+    //@Override
     public Iterator<Record> iterator()
     {
         return root.iterator() ;
@@ -236,7 +236,7 @@ public class BTree implements Iterable<Record>, RangeIndex
         return root.iterator(fromRec, toRec) ;
     }
     
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return pageMgr.getBlockMgr().isEmpty() ;
@@ -254,7 +254,7 @@ public class BTree implements Iterable<Record>, RangeIndex
             pageMgr.getBlockMgr().close()   ;
     }
     
-    @Override
+    //@Override
     public long size()
     { 
         Iterator<Record> iter = iterator() ;

@@ -13,7 +13,7 @@ public class ReorderLib
 {
     private static class ReorderProcIdentity implements ReorderProc
     {
-        @Override
+        //@Override
         public BasicPattern reorder(BasicPattern pattern)
         {
             return pattern ;
@@ -28,13 +28,13 @@ public class ReorderLib
 
     private static class ReorderTransformationIdentity implements ReorderTransformation
     {
-        @Override
+        //@Override
         public BasicPattern reorder(BasicPattern pattern)
         {
             return pattern ;
         }
 
-        @Override
+        //@Override
         public ReorderProc reorderIndexes(BasicPattern pattern)
         {
             return _identityProc ;

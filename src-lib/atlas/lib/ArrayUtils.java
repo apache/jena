@@ -7,7 +7,6 @@
 package atlas.lib;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 
 /** Collection of array-related operations */
 public class ArrayUtils
@@ -23,17 +22,20 @@ public class ArrayUtils
 //        T[] array = (T[])new Object[n] ;
 // or is T known 
 //        @SuppressWarnings("unchecked")
-//        Set<Type> x[] = new Set[length] ;
+//        Set<T> x[] = new Set[length] ;
 //        return array ;
     }
     
     /** Allocation space and copy */ 
     public static <T> T[] copy(T[] array)
     {
-        return Arrays.copyOf(array, array.length) ;
-//        T[] array2 = alloc(array.length) ;
-//        System.arraycopy(array, 0, array2, 0, array.length) ;
-//        return array2 ;
+        // Java6.
+        //return Arrays.copyOf(array, array.length) ;
+        // Java5.
+        @SuppressWarnings("unchecked")
+        T[] array2 = (T[])new Object[array.length] ;
+        System.arraycopy(array, 0, array2, 0, array.length) ;
+        return array2 ;
     }
 }
 

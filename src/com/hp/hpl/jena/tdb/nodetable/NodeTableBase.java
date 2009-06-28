@@ -65,18 +65,18 @@ public class NodeTableBase implements NodeTable
     // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */
-    @Override
+    //@Override
     public Node getNodeForNodeId(NodeId id)
     {
         return _retrieveNodeByNodeId(id) ;
     }
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
-    @Override
+    //@Override
     public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
 
     /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
-    @Override
+    //@Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
     // ---- The worker functions
@@ -240,7 +240,7 @@ public class NodeTableBase implements NodeTable
     }
     // -------- NodeId<->Node
 
-    @Override
+    //@Override
     public synchronized void close()
     {
         // Close once.  This may be shared (e.g. triples table and quads table). 
@@ -256,7 +256,7 @@ public class NodeTableBase implements NodeTable
         }
     }
 
-    @Override
+    //@Override
     public synchronized void sync(boolean force)
     {
         if ( nodeHashToId != null )

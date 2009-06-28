@@ -333,7 +333,7 @@ public class BulkLoader
     private Runnable setup(final Semaphore sema, final TupleIndex srcIndex, final TupleIndex destIndex, final String label, final boolean printTiming)
     {
         Runnable builder = new Runnable(){
-            @Override
+            //@Override
             public void run()
             {
                 copyIndex(srcIndex.all(), new TupleIndex[]{destIndex}, label, printTiming) ;

@@ -65,7 +65,7 @@ public class TokenizerText implements Tokenizer
         return t ;
     }
     
-    @Override
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 

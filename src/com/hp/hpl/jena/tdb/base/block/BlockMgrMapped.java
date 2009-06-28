@@ -76,7 +76,7 @@ public class BlockMgrMapped extends BlockMgrFile
         return bb ;
     }
     
-    @Override
+    //@Override
     public ByteBuffer get(int id)
     {
         check(id) ;
@@ -86,7 +86,7 @@ public class BlockMgrMapped extends BlockMgrFile
         return getSilent(id) ;
     }
 
-    @Override
+    //@Override
     public ByteBuffer getSilent(int id)
     {
         check(id) ;
@@ -200,7 +200,7 @@ public class BlockMgrMapped extends BlockMgrFile
         }
     }
 
-    @Override
+    //@Override
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
@@ -213,7 +213,7 @@ public class BlockMgrMapped extends BlockMgrFile
         putNotification(id, block) ;
     }
     
-    @Override
+    //@Override
     public void freeBlock(int id)
     { 
         check(id) ;
@@ -224,7 +224,7 @@ public class BlockMgrMapped extends BlockMgrFile
             getLog().debug(format("freeBlock(%d)", id)) ;
     }
     
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         checkIfClosed() ;

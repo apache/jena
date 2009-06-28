@@ -46,7 +46,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
             writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
-                @Override
+                //@Override
                 public void apply(Integer id, ByteBuffer bb)
                 { 
                     log("Cache spill: write block: %d", id) ;

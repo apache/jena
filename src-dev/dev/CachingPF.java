@@ -22,11 +22,11 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 public class CachingPF implements PropertyFunction
 {
 
-    @Override
+    //@Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {}
 
-    @Override
+    //Override
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt)
     {

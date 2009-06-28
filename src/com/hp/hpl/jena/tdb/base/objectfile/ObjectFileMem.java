@@ -31,7 +31,7 @@ public class ObjectFileMem implements ObjectFile
     {
     }
     
-    @Override
+    //@Override
     public NodeId write(String str)
     { 
         ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
@@ -54,7 +54,7 @@ public class ObjectFileMem implements ObjectFile
         return bb2 ;
     }
 
-    @Override
+    //@Override
     public String read(NodeId id)
     {
         ByteBuffer bb = readBytes(id) ;
@@ -72,15 +72,15 @@ public class ObjectFileMem implements ObjectFile
         return strings ;
     }
 
-    @Override
+    //@Override
     public void close()
     {}
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {}
     
-    @Override
+    //@Override
     public void dump()
     {
         for ( int i = 0 ; i < buffers.size(); i++ )

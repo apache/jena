@@ -27,7 +27,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     abstract protected Graph _createNamedGraph(Node graphNode) ;
     abstract protected Graph _createDefaultGraph() ;
     
-    @Override
+    //@Override
     public final void close()
     {
         defaultGraph = null ;
@@ -43,7 +43,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
 //        return sub:containsGraph(graphNode) ;
 //    }
 
-    @Override
+    //@Override
     public final Graph getDefaultGraph()
     {
         if ( defaultGraph == null )
@@ -51,7 +51,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return defaultGraph ;
     }
 
-    @Override
+    //@Override
     public final Graph getGraph(Node graphNode)
     {
         Graph graph = namedGraphs.get(graphNode) ;
@@ -63,7 +63,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return graph ;
     }
 
-    @Override
+    //@Override
     public Lock getLock()
     {
         if ( lock == null )

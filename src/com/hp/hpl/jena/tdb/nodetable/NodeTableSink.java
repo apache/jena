@@ -15,23 +15,23 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class NodeTableSink implements NodeTable
 {
     long id = 0 ;
-    @Override
+    //@Override
     public void close()
     {}
 
-    @Override
+    //@Override
     public NodeId getNodeIdForNode(Node node)
     {
         throw new TDBException("NodeTableSink.nodeIdForNode") ;
     }
 
-    @Override
+    //@Override
     public Node getNodeForNodeId(NodeId id)
     {
         throw new TDBException("NodeTableSink.retrieveNodeByNodeId") ;
     }
 
-    @Override
+    //@Override
     public NodeId getAllocateNodeId(Node node)
     {
         NodeId nid = NodeId.create(id) ;
@@ -39,7 +39,7 @@ public class NodeTableSink implements NodeTable
         return nid ;
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {}
 

@@ -15,33 +15,33 @@ public class ObjectFileSink implements ObjectFile
 {
     long id = 0 ;
     
-    @Override
+    //@Override
     public List<String> all()
     {
         throw new UnsupportedOperationException() ;
     }
 
-    @Override
+    //@Override
     public void close()
     {}
 
-    @Override
+    //@Override
     public String read(NodeId id)
     {
         throw new UnsupportedOperationException() ;
     }
 
-    @Override
+    //@Override
     public void sync(boolean force)
     {}
 
-    @Override
+    //@Override
     public NodeId write(String str)
     {
         return NodeId.create(++id) ;
     }
     
-    @Override
+    //@Override
     public void dump() {}
 }
 

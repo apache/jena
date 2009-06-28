@@ -70,7 +70,7 @@ public class LangNTriples implements Iterator<Triple>
         return parseOne() ;
     }
     
-    @Override
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException(); }
 

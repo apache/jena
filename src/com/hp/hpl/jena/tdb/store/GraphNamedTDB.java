@@ -149,7 +149,7 @@ public class GraphNamedTDB extends GraphTDBBase
         return graphNodeId ;
     }
 
-    @Override
+    //@Override
     public Tuple<Node> asTuple(Triple triple)
     {
 //        if ( getGraphNode() == null )
@@ -161,7 +161,7 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     protected final Logger getLog() { return log ; }
     
-    @Override
+    //@Override
     public NodeTupleTable getNodeTupleTable()
     {
         // Concrete default graph.

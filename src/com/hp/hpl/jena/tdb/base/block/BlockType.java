@@ -49,6 +49,7 @@ public enum BlockType implements Printable, Named
     { out.print(getName()) ; }
 
     abstract public int id() ;
+    abstract public String getName() ;
     
     @Override public String toString() { return getName() ; }
     

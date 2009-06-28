@@ -18,39 +18,33 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     
     public CacheWrapper(Cache<Key,T> cache) { this.cache = cache ; }
 
-    @Override
+    //@Override
     public void clear()                             { cache.clear(); }
 
-    @Override
+    //@Override
     public boolean contains(Key key)                  { return cache.contains(key) ; }
     
-    @Override
+    //@Override
     //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
     public T getObject(Key key)                       { return cache.getObject(key) ; }
 
-    @Override
+    //@Override
     public boolean isEmpty()                          { return cache.isEmpty() ; }
 
-    @Override
+    //@Override
     public Iterator<Key> keys()                       { return cache.keys(); }
 
-//    @Override
-//    public void promote(K key)                      { cache.promote(key) ; }
-
-    @Override
+    //@Override
     public void putObject(Key key, T thing)           { cache.putObject(key, thing) ; }
 
-    @Override
+    //@Override
     public void removeObject(Key key)                 { cache.removeObject(key) ; }
 
-//    @Override
-//    public void returnObject(K key)                 { cache.removeObject(key) ; }
-
-    @Override
+    //@Override
     public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
     { cache.setDropHandler(dropHandler) ; }
 
-    @Override
+    //@Override
     public long size()                              { return cache.size() ; }
 
 }

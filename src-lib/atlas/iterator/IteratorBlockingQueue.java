@@ -21,7 +21,7 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
 
     public IteratorBlockingQueue(BlockingQueue<T> queue, T endMarker) { this.queue = queue ; this.endMarker = endMarker ; }
     
-    @Override
+    //@Override
     public boolean hasNext()
     {
         if ( finished ) return false ;
@@ -45,7 +45,7 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
         return false ;
     }
 
-    @Override
+    //@Override
     public T next()
     {
         if ( ! hasNext() )
@@ -55,7 +55,7 @@ public class IteratorBlockingQueue<T> implements Iterator<T>
         return item ;
     }
 
-    @Override
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 }

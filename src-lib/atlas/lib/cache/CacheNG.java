@@ -61,7 +61,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
         
         objects = new CacheLRU.CacheImpl<Key, PoolEntry>(max) ;
         objects.setDropHandler(new ActionKeyValue<Key, PoolEntry>(){
-            @Override
+            //@Override
             public void apply(Key key, PoolEntry entry)
             {
                 cacheEjects++ ;
@@ -212,7 +212,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
         stats() ;
     }
     
-    @Override
+    //@Override
     synchronized
     public void removeObject(Key key)
     {
@@ -230,7 +230,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
     }
     
     
-    @Override
+    //@Override
     public Iterator<Key> keys()
     {
         return objects.keySet().iterator() ;
@@ -242,17 +242,17 @@ public class CacheNG<Key, T> implements Cache<Key, T>
             log.info("Clear") ;
         objects.clear() ;
     }
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return objects.isEmpty() ;
     }
     
-    @Override
+    //@Override
     public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
     {}
     
-    @Override
+    //@Override
     public long size()
     {
         return objects.size() ;

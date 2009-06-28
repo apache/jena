@@ -19,7 +19,7 @@ public class SinkToGraphTriples extends SinkToGraph<Triple>
         
     }
 
-    @Override
+    //@Override
     public void send(Triple triple)
     {
         graph.add(triple) ;

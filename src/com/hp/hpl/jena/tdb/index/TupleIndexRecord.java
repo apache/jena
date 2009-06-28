@@ -43,7 +43,7 @@ public class TupleIndexRecord implements TupleIndex
     }
     
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    @Override
+    //@Override
     public boolean add(Tuple<NodeId> tuple) 
     { 
         if ( Check )
@@ -56,7 +56,7 @@ public class TupleIndexRecord implements TupleIndex
         return index.add(r) ;
     }
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    @Override
+    //@Override
     public boolean delete(Tuple<NodeId> tuple) 
     { 
         if ( Check )
@@ -69,7 +69,7 @@ public class TupleIndexRecord implements TupleIndex
         return index.delete(r) ;
     }
     
-    @Override
+    //@Override
     public String getLabel() { return colMap.getLabel() ;  } 
     //public ColumnMap getColMap() { return colMap ;  }
     
@@ -77,7 +77,7 @@ public class TupleIndexRecord implements TupleIndex
      *  Input pattern in natural order, not index order.
      */
     
-    @Override
+    //@Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
         return findOrScan(pattern) ;
@@ -185,7 +185,7 @@ public class TupleIndexRecord implements TupleIndex
         return tuples ;
     }
     
-    @Override
+    //@Override
     public Iterator<Tuple<NodeId>> all()
     {
         Iterator<Record> iter = index.iterator() ;
@@ -194,7 +194,7 @@ public class TupleIndexRecord implements TupleIndex
     
     private Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
     {
-        @Override
+        //@Override
         public Tuple<NodeId> convert(Record item)
         {
             return TupleLib.tuple(item, colMap) ;
@@ -206,7 +206,7 @@ public class TupleIndexRecord implements TupleIndex
     {
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>()
         {
-            @Override
+            //@Override
             public boolean accept(Tuple<NodeId> item)
             {
                 // Check on pattern
@@ -226,7 +226,7 @@ public class TupleIndexRecord implements TupleIndex
     }
     
     /** Weight a pattern in normal order (not index order) */
-    @Override
+    //@Override
     public int weight(Tuple<NodeId> pattern)
     {
         if ( Check )
@@ -245,13 +245,13 @@ public class TupleIndexRecord implements TupleIndex
         return tupleLength ;
     }
     
-    @Override
+    //@Override
     public void close()
     {
         index.close();
     }
     
-    @Override
+    //@Override
     public void sync(boolean force)
     {
         index.sync(force) ;
@@ -262,19 +262,19 @@ public class TupleIndexRecord implements TupleIndex
     protected final ColumnMap getColumnMap()                { return colMap ; }
     protected final RecordFactory getRecordFactory()        { return factory ; }
     
-    @Override
+    //@Override
     public final int getTupleLength()
     {
         return tupleLength ;
     }
 
-    @Override
+    //@Override
     public boolean isEmpty()
     {
         return index.isEmpty() ;
     }
 
-    @Override
+    //@Override
     public long size()
     {
         return index.size() ;
