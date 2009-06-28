@@ -24,7 +24,9 @@ else
     SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-#ant clean build
+## Make jars
+rm -f lib/arq.jar lib/arq-extra.jar
+ant clean build
 
 # Remove path and version numbers.
 function jarName
@@ -56,7 +58,7 @@ do
   cp -u lib/jena.jar ../$d/lib
   cp -u lib/jenatest.jar ../$d/lib
   done
-exit
+
 
 ## rm build/arq*.jar
 

@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -58,7 +59,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class Run
+public class RunARQ
 {
     static String divider = "----------" ;
     static String nextDivider = null ;
@@ -71,6 +72,13 @@ public class Run
     
     public static void main(String[] argv) throws Exception
     {
+        // "-Dcom.sun.management.jmxremote" needed for Java5
+        // Efficiently do nothing.
+        ARQMgt.init() ;
+        System.out.println("Waiting (nearly) forever..."); 
+        Thread.sleep(Long.MAX_VALUE);
+        System.exit(0) ;
+        
         report() ;
         
         if ( false )
