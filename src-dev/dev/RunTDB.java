@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.FileManager;
 import dump.DumpIndex;
 import dump.DumpNodes;
 
-public class Run
+public class RunTDB
 {
     static String divider = "----------" ;
     static String nextDivider = null ;
