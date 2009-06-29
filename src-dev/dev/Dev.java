@@ -9,7 +9,7 @@ package dev;
 public class Dev
 {
     // ==== 2.7.1
-    
+    // Update licenese pages for versions (ARQ and Jena inc IRI).
     
     
     // ==== ARQ
