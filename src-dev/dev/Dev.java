@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // ==== 2.7.1
+    
+    
+    
     // ==== ARQ
     // Convert test suite by manifest to JUnit4.
     // DatasetImpl cache refinement
@@ -23,7 +27,7 @@ public class Dev
     //   GraphStore API?
     
     // == Build
-    // Multipel artifacts
+    // Multiple artifacts
     // Make artifacts then publish
     // (pom and extra pom need rewrite rules).
     // No sources or javadoc for arq-extra.
