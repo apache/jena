@@ -8,10 +8,11 @@ package dev;
 
 public class Dev
 {
-    // ** Quad-based filter placement is now ready.
     // ** metadata files and BPT creation.
     
     // == 0.8.2
+    // Document concurrency.
+    // Remove all relics of creating graphs without a dataset (FactoryGraphTDB._createGraph())
     
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
@@ -20,9 +21,8 @@ public class Dev
     // BDB-JE? BlockMgr as index?
     
     // Document concurrency 
-    // Graph.getLock in Jena?
-    // Remove all relics of cretaing graphs without a dataset (FactoryGraphTDB._createGraph())
-    // Remove MetaFile and then MetaBase => MetaFile 
+    // Graph.getLock in Jena?  Share with dataset.
+    // Remove all relics of creating graphs without a dataset (FactoryGraphTDB._createGraph())
     
     // ----
     
@@ -31,14 +31,8 @@ public class Dev
     
     // ** Use PrefixMappingPersistent with DatasetPrefixes. 
 
-    // Metadata.
-    //   Metafile for directory.
-    //   Metafiles and opening indexes
-    //   New and reattach
-    // Relayering for index interface
-    
     // ==== Build
-    // Refactor to improve "publish and release"
+    // <target name="publish"> in build-lib.xml
     //   Multiple artifacts : macro for tasks.
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
@@ -57,29 +51,14 @@ public class Dev
 
     // Version of BufferingWriter that works on OutputStreams.
 
-    // ==== Execution
-    // Quad pattern execution/optimization with filters (done for default graph).
-    // File metafiles. FileSets
-    //    Reopenable files.
-    //      Alterntaive length hash codes.
-    //      Record lengths
-    //    Node file stats
+    //  Reopenable files.
+    //    Alterntaive length hash codes.
+    //    Record lengths
     
-    // ==== Tools
-    // ** Command line optimizer "explain (bgp ....)"
-    // ** LARQ builder for literals
-    
-    // ---- Quads:
-    //   Filter placement : (filter (quads...)) : FILTER (between(x,y)) => range on index. => OpRange.
-    //   Generalise quads to be quads, not (node, bgp) ??
-
     //   Quad loader; dataset merge.
-    //   Generalised the pattern stuff in the optimizer?
     //   Dataset management??
-    //   Tidy OpExecutorTDB.execute(quads)
     
     // ---- Optimizer
-    //   Relationship of filter placement and OpExecutor and StageGenerators.
     //   The disjunction/UNION rewrite (ARQ)
     
     // ---- Documentation
@@ -94,10 +73,6 @@ public class Dev
     // ==> Accurate size (?? meaningful beyond isEmpty/notEmpty?)
     // ==> Metablocks.
     //   ==> Moveable roots.
-    
-    // ---- Interactions with ARQ
-    // Optimizations
-    // Quad-based filter placement
     
     // ---- Misc
     // Inlines => Inline56, Inline64

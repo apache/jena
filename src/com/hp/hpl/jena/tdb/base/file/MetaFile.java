@@ -23,8 +23,6 @@ import com.hp.hpl.jena.tdb.sys.Names;
 /** Support for persistent metadata files */
 public class MetaFile implements Sync, Closeable
 {
-    // Replaces MetaFile???
-    
     // The magic name "--mem--" means in-memory only.
     private static Logger log = LoggerFactory.getLogger(MetaFile.class) ;
     private String metaFilename = null ;
