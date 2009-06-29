@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <version-major>2</version-major>
+    <version-minor>6</version-minor>
+    <version-revision>2</version-revision>
+    <version-status>-dev</version-status>
+  </properties>
+
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>jena</artifactId>
+  <version>${version-major}.${version-minor}.${version-revision}${version-status}</version>
+  <packaging>jar</packaging>
+
+  <name>Jena</name>
+  <url>http://jena.sourceforge.net/</url>
+  <inceptionYear>2003</inceptionYear>
+  <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
+
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://jena.sourceforge.net/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:cvs:pserver:anonymous:@jena.cvs.sourceforge.net:/cvsroot/jena:jena2</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@jena.cvs.sourceforge.net:/cvsroot/jena:jena2</developerConnection> <!-- TO TEST! -->
+    <tag>HEAD</tag>
+    <url>http://jena.cvs.sourceforge.net/jena/jena2/</url>
+  </scm>
+
+  <organization>
+    <name>HP Labs</name>
+    <url>http://www.hpl.hp.com/semweb/</url>
+  </organization>
+  
+  <developers>
+    <developer>
+      <id>andy_seaborne</id>
+      <name>Andy Seaborne</name>
+      <email>andy_seaborne@users.sourceforge.net</email>
+      <roles>
+        <role>project manager</role>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>bwm</id>
+      <name>Brian McBride</name>
+      <email>bwm@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>castagna</id>
+      <name>Paolo Castagna</name>
+      <email>castagna@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>chris-dollin</id>
+      <name>Chris Dollin</name>
+      <email>chris-dollin@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>cyganiak</id>
+      <name>Richard Cyganiak</name>
+      <email>cyganiak@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>der</id>
+      <name>Dave Reynolds</name>
+      <email>der@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>ian_dickinson</id>
+      <name>Ian J. Dickinson</name>
+      <email>ian_dickinson@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>jeremy_carroll</id>
+      <name>Jeremy Carroll</name>
+      <email>jeremy_carroll@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>major_error</id>
+      <name>Peter Coetzee</name>
+      <email>major_error@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>markus_stocker</id>
+      <name>Markus Stocker</name>
+      <email>markus_stocker@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>pldms</id>
+      <name>Damian Steer</name>
+      <email>pldms@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>rebach</id>
+      <name>Reto Bachmann-Gmuer</name>
+      <email>rebach@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>steve_battle</id>
+      <name>Steve Battle</name>
+      <email>steve_battle@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>wkw</id>
+      <name>Kevin Wilkinson</name>
+      <email>wkw@users.sourceforge.net</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>2.7.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq-extra</artifactId>
+      <version>2.7.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>iri</artifactId>
+      <version>0.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.4.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.7.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <!-- These should be retrieved transitively via the dependency with ARQ.
+         It does not work, probably because the circularity... -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>json-jena</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+	<dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>wstx-asl</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+  </dependencies>
+  
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+	      <source>1.5</source>
+	      <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.2</version> <!-- Surefire v2.4.3 does not set system properties - http://jira.codehaus.org/browse/SUREFIRE-121 -->
+        <configuration>
+          <includes>
+            <include>com/hp/hpl/jena/test/TestPackage.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <executions> 
+	      <execution>
+	        <id>attach-sources</id>
+	        <phase>verify</phase>
+	        <goals>
+	          <goal>jar</goal>
+	        </goals>
+	      </execution>
+	    </executions>
+      </plugin>
+
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-javadoc-plugin</artifactId>
+	    <executions>
+	      <execution>
+	        <id>attach-javadocs</id>
+	        <goals>
+	          <goal>jar</goal>
+	        </goals>
+	      </execution>
+	    </executions>
+        <configuration>
+          <author>true</author>
+          <version>true</version>
+          <show>public</show>
+          <windowtitle>${project.name} Framework</windowtitle>
+          <doctitle>${project.name} Framework</doctitle>
+          <bottom>Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
+          <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
+          <groups>
+            <group>
+              <title>API - Application Programming Interface</title>
+              <packages>com.hp.hpl.jena.db:com.hp.hpl.jena.rdf.model:com.hp.hpl.jena.rdf.listeners:com.hp.hpl.jena.rdf.arp:com.hp.hpl.jena.rdf.arp.lang:com.hp.hpl.jena.datatypes:com.hp.hpl.jena.datatypes.xsd:com.hp.hpl.jena.rdql:com.hp.hpl.jena.shared:com.hp.hpl.jena.vocabulary:com.hp.hpl.jena.xmloutput:com.hp.hpl.jena.ontology:com.hp.hpl.jena.ontology.daml:com.hp.hpl.jena.reasoner:com.hp.hpl.jena.reasoner.rulesys:com.hp.hpl.jena.reasoner.rulesys.builtins:com.hp.hpl.jena.reasoner.transitiveReasoner:com.hp.hpl.jena.reasoner.dig</packages>
+            </group>
+            <group>
+              <title>SPI - System Programming Interface</title>
+              <packages>com.hp.hpl.jena.enhanced:com.hp.hpl.jena.graph:com.hp.hpl.jena.graph.compose:com.hp.hpl.jena.graph.query:com.hp.hpl.jena.util:com.hp.hpl.jena.util.iterator</packages>
+            </group>
+            <group>
+              <title>Command line tools</title>
+              <packages>jena</packages>
+            </group>
+            <group>
+              <title>Other Packages</title>
+              <packages>com.hp.hpl.jena.assembler</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${basedir}/lib</outputDirectory>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteSnapshots>true</overWriteSnapshots>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-sources</phase>
+            <configuration>
+              <tasks>
+                <tstamp>
+                  <format property="build-time" pattern="d-MMMM-yyyy HH:mm"/>
+                </tstamp>
+                <copy file="src/main/java/com/hp/hpl/jena/Jena.java.template" toFile="src/main/java/com/hp/hpl/jena/Jena.java" overwrite="true">
+                  <filterset>
+                    <filter token="version-major" value="${version-major}"/>
+                    <filter token="version-minor" value="${version-minor}"/>
+                    <filter token="version-revision" value="${version-revision}"/>
+                    <filter token="version-status" value="${version-status}"/>
+                    <filter token="version" value="${project.version}"/>
+                    <filter token="Name" value="${project.name}"/>
+                    <filter token="website" value="${project.url}"/>
+                    <filter token="build-time" value="${build-time}"/>
+                  </filterset>
+                </copy>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>etc</directory>
+        <targetPath>etc</targetPath>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>vocabularies</directory>
+        <targetPath>vocabularies</targetPath>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>log4j.properties</include>
+        </includes>
+      </resource>
+    </resources>
+    
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>testing</directory>
+      </testResource>
+      <testResource>
+        <directory>doc</directory>
+        <includes>
+          <include>inference/data/owlDemoSchema.xml</include>
+        </includes>
+        <targetPath>doc/inference/data</targetPath>
+      </testResource>
+    </testResources>
+
+  </build>
+  
+  <reporting>
+  
+    <outputDirectory>${project.build.directory}/site</outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+    </plugins>
+  
+  </reporting>
+
+</project>

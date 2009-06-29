@@ -1,0 +1,81 @@
+<assembly>
+  <id>dist</id>
+  <baseDirectory>Jena-${project.version}</baseDirectory>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+
+  <fileSets>
+
+    <fileSet>
+      <includes>
+        <include>copyright.txt</include>
+        <include>INSTALL.txt</include>
+        <include>readme.html</include>
+        <include>README.txt</include>
+        <include>ReleaseNotes.txt</include>
+        <include>build.xml</include>
+        <include>test.bat</include>
+        <include>test.sh</include>
+        <include>test-db.sh</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>lib</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>jena-${project.version}.jar</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>bat</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>bin</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>doc</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>etc</directory>
+    </fileSet>
+    
+    <fileSet>
+      <directory>src</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>src-examples</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>testing</directory>
+    </fileSet>
+
+    <fileSet>
+      <directory>vocabularies</directory>
+    </fileSet>
+
+    <!-- this does not seem to work, test! -->
+    <fileSet>
+      <directory>${project.build.directory}/site/apidocs</directory>
+      <outputDirectory>doc/javadoc</outputDirectory>
+    </fileSet>
+
+  </fileSets>
+
+</assembly>
