@@ -1,49 +1,47 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.lib;
 
-import java.util.Stack;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-/** A Pool of objects. Base implements a non-blocking pool (returns null on no entry)
- * with infinite upper bound.  Set effective size by creating the right number of
- * entries when created.
- */ 
-public class PoolBase<T> implements Pool<T>
+import com.hp.hpl.jena.util.FileUtils;
+
+public class PropertyUtils
 {
-    // For convenience we operate a LIFO policy.
-    // This not part of the extenal contract of a "pool"
+    /** Java5 does not have read/write from readers/writers - needed for UTF-8 */ 
     
-    //Deque<T> pool = new ArrayDeque<T>(); Better but Java6
-    Stack<T> pool = new Stack<T>() ;
-    int maxSize = -1 ;  // Unbounded
-    
-    public PoolBase() {} 
-    //public Pool(int maxSize) { this.maxSize = maxSize ; }
-    
-    public void put(T item)
+    static public void loadFromFile(Properties properties, String filename) throws IOException
     {
-        // Currently, unbounded
-        if ( maxSize >= 0 && pool.size() == 0 )
-        {}
-        pool.push(item) ;
+        String x = FileUtils.readWholeFileAsUTF8(filename) ;
+        byte b[] = x.getBytes(FileUtils.encodingUTF8) ;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(b);
+        properties.load(inputStream) ;
     }
     
-    /** Get an item from the pool - return null if the pool is empty */
-    public T get()              
-    { 
-        if ( pool.size() == 0 ) return null ;
-        return pool.pop();
+    static public void storeToFile(Properties properties, String comment, String filename) throws IOException
+    {
+        String str = comment ;
+        if ( str == null )
+            str = filename ;
+        FileOutputStream fos = new FileOutputStream(filename) ;
+//        Writer w = FileUtils.asUTF8(fos) ;
+//        w = new BufferedWriter(w) ;
+//        //properties.store(w, "Metadata: "+str) ;   // Java6.
+        // Warning - not UTF-8 safe.
+        properties.store(fos, str) ;
     }
-    
-    public boolean isEmpty()    { return pool.size() == 0 ; } 
+
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

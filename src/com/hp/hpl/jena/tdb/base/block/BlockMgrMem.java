@@ -9,15 +9,14 @@ package com.hp.hpl.jena.tdb.base.block;
 import static java.lang.String.format;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Block manager that simulates a disk in-memory - for testing, not written for efficiency.
  * There is a safe mode, whereby blocks are copied in and out to guarantee no writing to an unallocated block
@@ -30,7 +29,8 @@ public class BlockMgrMem extends BlockMgrBase
     private List<ByteBuffer> blocks = new ArrayList<ByteBuffer>() ;
     
     // Chain of indexes of free blocks.
-    private Deque<Integer> freeBlocks = new ArrayDeque<Integer>();
+    //private Deque<Integer> freeBlocks = new ArrayDeque<Integer>();    // Java6
+    private Stack<Integer> freeBlocks = new Stack<Integer>();
     
     private static ByteBuffer FreeBlock = ByteBuffer.allocate(0) ;      // Marker
 
@@ -56,7 +56,8 @@ public class BlockMgrMem extends BlockMgrBase
         int idx = -1 ;
         if ( !freeBlocks.isEmpty() )
         {
-            idx = freeBlocks.removeFirst() ;
+            //idx = freeBlocks.removeFirst() ;
+            idx = freeBlocks.pop();
             // Set this slot - remove a FreeBlock.
             blocks.set(idx, null) ;
             return idx ;
@@ -150,7 +151,8 @@ public class BlockMgrMem extends BlockMgrBase
             throw new BlockException("Already free: "+id) ;
         
         blocks.set(id, FreeBlock) ;
-        freeBlocks.addLast(id) ;
+        //freeBlocks.addLast(id) ;      // Java6
+        freeBlocks.push(id) ;
     }
 
     private boolean isFree(int id)

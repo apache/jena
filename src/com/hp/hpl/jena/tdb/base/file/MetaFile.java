@@ -6,16 +6,19 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.PropertyUtils;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.util.FileUtils;
 
 /** Support for persistent metadata files */
 public class MetaFile implements Sync, Closeable
@@ -134,14 +137,13 @@ public class MetaFile implements Sync, Closeable
     {
         if ( isMem() )
             return ;
+        String str = label ;
+        if ( str == null )
+            str = metaFilename ;
+        str = "Metadata: "+str ;
+
         try {
-            FileOutputStream fos = new FileOutputStream(metaFilename) ;
-            Writer w = FileUtils.asUTF8(fos) ;
-            w = new BufferedWriter(w) ;
-            String str = label ;
-            if ( str == null )
-                str = metaFilename ;
-            properties.store(w, "Metadata: "+str) ;
+            PropertyUtils.storeToFile(properties, str, metaFilename) ;
         } 
         catch (IOException ex)
         {
@@ -164,9 +166,7 @@ public class MetaFile implements Sync, Closeable
         // if ( metaFilename == null )
         InputStream in = null ;
         try { 
-            in = new FileInputStream(metaFilename) ;
-            Reader r = FileUtils.asBufferedUTF8(in) ;
-            properties.load(r) ;
+            PropertyUtils.loadFromFile(properties, metaFilename) ;
         }
         catch (FileNotFoundException ex) {} 
         catch (IOException ex)

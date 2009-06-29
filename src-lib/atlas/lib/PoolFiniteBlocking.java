@@ -6,38 +6,57 @@
 
 package atlas.lib;
 
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import com.hp.hpl.jena.sparql.ARQException;
-
-/** Finite capacity pool - capacity is fixed at create time */ 
-public class PoolFiniteBlocking<T> implements Pool<T>
+public class PoolFiniteBlocking<T> implements Pool<T> 
 {
-    BlockingDeque<T> pool  ;
+    private PoolFiniteBlocking(int size) { }
     
-    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
-    
-    //@Override
-    public final void put(T item)
+    public T get()
     {
-        pool.addLast(item) ;
+        return null ;
     }
-    
-    //@Override
-    public T get()              
-    { 
-        try
-        { 
-            return pool.takeFirst() ;
-        } catch (InterruptedException ex)
-        {
-            throw new ARQException("Failed to get an item from the pool (InterruptedException): "+ex.getMessage()) ;
-        }
+
+    public boolean isEmpty()
+    {
+        return false ;
     }
-    
-    //@Override
-    public boolean isEmpty()    { return pool.isEmpty() ; } 
+
+    public void put(T item)
+    {}
 }
+
+// **** Java6
+//import java.util.concurrent.BlockingDeque;
+//import java.util.concurrent.LinkedBlockingDeque;
+//import com.hp.hpl.jena.sparql.ARQException;
+//
+///** Finite capacity pool - capacity is fixed at create time */ 
+//public class PoolFiniteBlocking<T> implements Pool<T>
+//{
+//    BlockingDeque<T> pool  ;
+//    
+//    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
+//    
+//    //@Override
+//    public final void put(T item)
+//    {
+//        pool.addLast(item) ;
+//    }
+//    
+//    //@Override
+//    public T get()              
+//    { 
+//        try
+//        { 
+//            return pool.takeFirst() ;
+//        } catch (InterruptedException ex)
+//        {
+//            throw new ARQException("Failed to get an item from the pool (InterruptedException): "+ex.getMessage()) ;
+//        }
+//    }
+//    
+//    //@Override
+//    public boolean isEmpty()    { return pool.isEmpty() ; } 
+//}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

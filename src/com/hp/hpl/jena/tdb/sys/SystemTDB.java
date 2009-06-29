@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.ByteOrder;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.PropertyUtils;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -24,8 +23,6 @@ import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.NodeId;
-
-import com.hp.hpl.jena.util.FileUtils;
 
 public class SystemTDB
 {
@@ -208,9 +205,8 @@ public class SystemTDB
         Properties p = new Properties() ;
         try
         {
-            Reader r = FileUtils.asBufferedUTF8(new FileInputStream(propertyFileName)) ;
-            p.load(r) ;
             TDB.logInfo.info("Using properties from '"+propertyFileName+"'") ;
+            PropertyUtils.loadFromFile(properties, propertyFileName) ;
         } catch (FileNotFoundException ex)
         { 
             log.debug("No system properties file ("+propertyFileName+")") ;
