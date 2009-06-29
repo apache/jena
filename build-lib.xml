@@ -401,7 +401,16 @@
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
 
-  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
+  
+  <import file="build-macros.xml"/>
+    
+  <target name="ivy-publish" depends="ivy-init">
+    <publish-module ivy.file="ivy.xml" resolver="${publish.resolver}"/>
+  </target>
+
+  
+  
+  <target name="ivy-publish-old" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
     <!-- <ivy:deliver conf="main"/> -->
     <ivy:publish conf="main" 
