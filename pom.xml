@@ -19,7 +19,7 @@
 
   <name>Jena</name>
   <url>http://jena.sourceforge.net/</url>
-  <inceptionYear>2003</inceptionYear>
+  <inceptionYear>2000</inceptionYear>
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <licenses>
@@ -42,148 +42,19 @@
     <url>http://www.hpl.hp.com/semweb/</url>
   </organization>
   
-  <developers>
-    <developer>
-      <id>andy_seaborne</id>
-      <name>Andy Seaborne</name>
-      <email>andy_seaborne@users.sourceforge.net</email>
-      <roles>
-        <role>project manager</role>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>bwm</id>
-      <name>Brian McBride</name>
-      <email>bwm@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>castagna</id>
-      <name>Paolo Castagna</name>
-      <email>castagna@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>chris-dollin</id>
-      <name>Chris Dollin</name>
-      <email>chris-dollin@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>cyganiak</id>
-      <name>Richard Cyganiak</name>
-      <email>cyganiak@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>der</id>
-      <name>Dave Reynolds</name>
-      <email>der@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>ian_dickinson</id>
-      <name>Ian J. Dickinson</name>
-      <email>ian_dickinson@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>jeremy_carroll</id>
-      <name>Jeremy Carroll</name>
-      <email>jeremy_carroll@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>major_error</id>
-      <name>Peter Coetzee</name>
-      <email>major_error@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>markus_stocker</id>
-      <name>Markus Stocker</name>
-      <email>markus_stocker@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>pldms</id>
-      <name>Damian Steer</name>
-      <email>pldms@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>rebach</id>
-      <name>Reto Bachmann-Gmuer</name>
-      <email>rebach@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>steve_battle</id>
-      <name>Steve Battle</name>
-      <email>steve_battle@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-    <developer>
-      <id>wkw</id>
-      <name>Kevin Wilkinson</name>
-      <email>wkw@users.sourceforge.net</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-  </developers>
-
-  <dependencies>
+   <dependencies>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>2.7.0</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq-extra</artifactId>
       <version>2.7.0</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -229,32 +100,6 @@
       <artifactId>log4j</artifactId>
       <version>1.2.13</version>
       <scope>runtime</scope>
-    </dependency>
-    
-    <!-- These should be retrieved transitively via the dependency with ARQ.
-         It does not work, probably because the circularity... -->
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>json-jena</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>stax</groupId>
-      <artifactId>stax-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-	<dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>wstx-asl</artifactId>
-      <version>3.0.0</version>
     </dependency>
 
   </dependencies>
@@ -312,6 +157,7 @@
           <author>true</author>
           <version>true</version>
           <show>public</show>
+          <quiet>true</quiet>
           <windowtitle>${project.name} Framework</windowtitle>
           <doctitle>${project.name} Framework</doctitle>
           <bottom>Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
