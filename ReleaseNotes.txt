@@ -4,6 +4,9 @@ Release Notes
 
 ==== Jena 2.6.1
 
++ Maven-style codebase layout.
++ Update to iri.jar (version 0.7). 
+
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:
   arq.jar, arq-extra.jar, lucene-core-2.3.1.jar, json.jar, stax-api-1.0.jar, wstx-asl-3.0.0.jar 
