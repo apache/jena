@@ -1,44 +1,52 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphPrefixMapping.java,v 1.2 2009-06-29 18:42:07 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.util;
 
-import junit.framework.TestSuite;
-
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import junit.framework.*;
 
 /**
- 	@author kers
-*/
-public class TestGraphPrefixMapping extends GraphTestBase
-    {
-    public TestGraphPrefixMapping( String name )
-        { super( name ); }
-        
-    public static TestSuite suite()
-        { return new TestSuite( TestGraphPrefixMapping.class ); }   
+ * All developers should edit this file to add their tests.
+ * Please try to name your tests and test suites appropriately.
+ * Note, it is better to name your test suites on creation
+ * rather than in this file.
+ * @author  jjc
+ */
+public class TestPackage extends TestSuite {
+
+    static public TestSuite suite() {
+        return new TestPackage();
+    }
     
-    public void testGraphPrefixMapping()
-        { 
-        Graph g = Factory.createDefaultGraph();
-        AbstractTestPrefixMapping.testUseEasyPrefix
-            ( "from Graph", g.getPrefixMapping() ); 
-        testSameMapping( g );
-        }
-        
-    public void testSameMapping( Graph g )
-        {
-        PrefixMapping pm = g.getPrefixMapping();
-        assertTrue( pm == g.getPrefixMapping() );
-        }
+    /** Creates new TestPackage */
+    private TestPackage() {
+        super( "util" );
+        addTest( "TestCache",             TestCache.suite() );
+        addTest( "TestTokenzier",         TestTokenizer.suite());
+        addTest( "TestFileUtils",         TestFileUtils.suite() );
+        addTest( "TestHashUtils",         TestCollectionFactory.suite() );
+        addTest( "TestLocationMapper",    TestLocationMapper.suite() ) ;
+        addTest( "TestFileManager",       TestFileManager.suite()) ;
+        addTest( "TestMonitors",       TestMonitors.suite()) ;
+        addTest( "TestPrintUtil",       TestPrintUtil.suite()) ;
+        addTest( TestIteratorCollection.suite() );
+        addTest( "TestUtil",            TestUtil.suite()) ;
+        addTestSuite( TestLocators.class );
+        addTestSuite( TestOneToManyMap.class );
     }
 
+    private void addTest(String name, TestSuite tc) {
+        tc.setName(name);
+        addTest(tc);
+    }        
+    private void addTest(String name, Test tc) {
+        addTest(tc);
+    }
+
+}
 
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

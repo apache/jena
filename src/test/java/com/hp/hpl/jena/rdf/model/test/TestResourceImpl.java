@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: TestResourceImpl.java,v 1.2 2009-06-29 18:42:06 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -44,7 +44,7 @@ public class TestResourceImpl extends ModelTestBase
     
     public void testNameSpace()
         { 
-        assertEquals( "eh:x", resource( "eh:xyz" ).getNameSpace() ); 
+        assertEquals( "eh:", resource( "eh:xyz" ).getNameSpace() ); 
         assertEquals( "http://d/", resource( "http://d/stuff" ).getNameSpace() ); 
         assertEquals( "ftp://dd.com/12345", resource( "ftp://dd.com/12345" ).getNameSpace() ); 
         assertEquals( "http://domain/spoo#", resource( "http://domain/spoo#anchor" ).getNameSpace() ); 
@@ -53,7 +53,7 @@ public class TestResourceImpl extends ModelTestBase
     
     public void testLocalName()
         { 
-        assertEquals( "yz", resource( "eh:xyz" ).getLocalName() );
+        assertEquals( "xyz", resource( "eh:xyz" ).getLocalName() );
         }
     
     public void testHasURI()

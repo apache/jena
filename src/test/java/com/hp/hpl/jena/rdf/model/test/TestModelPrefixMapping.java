@@ -1,18 +1,20 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelPrefixMapping.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: TestModelPrefixMapping.java,v 1.2 2009-06-29 18:42:06 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.test.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom;
+import junit.framework.TestSuite;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
+import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
     Test that a model is a prefix mapping.

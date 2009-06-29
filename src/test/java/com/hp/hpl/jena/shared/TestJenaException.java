@@ -1,43 +1,35 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphPrefixMapping.java,v 1.2 2009-06-29 18:42:07 andy_seaborne Exp $
+  $Id: TestJenaException.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.shared;
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.test.JenaTestBase;
 
 /**
+    Introduced to test that nested Jena exceptions preserve the
+    caught exception's message.
  	@author kers
 */
-public class TestGraphPrefixMapping extends GraphTestBase
+public class TestJenaException extends JenaTestBase
     {
-    public TestGraphPrefixMapping( String name )
-        { super( name ); }
-        
+    public TestJenaException(String name)
+        { super(name); }
+
     public static TestSuite suite()
-        { return new TestSuite( TestGraphPrefixMapping.class ); }   
-    
-    public void testGraphPrefixMapping()
-        { 
-        Graph g = Factory.createDefaultGraph();
-        AbstractTestPrefixMapping.testUseEasyPrefix
-            ( "from Graph", g.getPrefixMapping() ); 
-        testSameMapping( g );
-        }
+        { return new TestSuite( TestJenaException.class );  }
         
-    public void testSameMapping( Graph g )
+    public void testRethrownMessage()
         {
-        PrefixMapping pm = g.getPrefixMapping();
-        assertTrue( pm == g.getPrefixMapping() );
+        Exception e = new Exception( "kings and queens" );
+        JenaException j = new JenaException( e );
+        assertTrue( j.getMessage().endsWith( e.getMessage() ) );
         }
-    }
+}
 
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.1 2009-06-29 08:56:03 castagna Exp $
+  $Id: TestPackage.java,v 1.2 2009-06-29 18:42:07 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -25,18 +25,18 @@ public class TestPackage extends TestCase{
         ts.setName("Jena") ;
         addTest(ts,  "Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest(ts,  "Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
-        addTest(ts,  null, com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
+        addTest(ts,  "Mem", com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
-        addTest(ts,  "N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
-        addTest(ts,  "Turtle", com.hp.hpl.jena.n3.turtle.test.TurtleTestSuite.suite()) ;
+        addTest(ts,  "N3", com.hp.hpl.jena.n3.N3TestSuite.suite());
+        addTest(ts,  "Turtle", com.hp.hpl.jena.n3.turtle.TurtleTestSuite.suite()) ;
         addTest(ts,  "XML Output", com.hp.hpl.jena.xmloutput.test.TestPackage.suite());
-        addTest(ts,  "Util", com.hp.hpl.jena.util.test.TestPackage.suite());
+        addTest(ts,  "Util", com.hp.hpl.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
         addTest(ts,  "Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
         addTest(ts,  "Assembler", TestAssemblerPackage.suite() );
-        addTest(ts,  null, com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
+        addTest(ts,  "ARP", com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
         addTest(ts,  "Vocabularies", com.hp.hpl.jena.vocabulary.test.TestVocabularies.suite() );
-        addTest(ts,  null, com.hp.hpl.jena.shared.test.TestSharedPackage.suite() );
+        addTest(ts,  "Shared", com.hp.hpl.jena.shared.TestSharedPackage.suite() );
         addTest(ts,  "Reasoners", com.hp.hpl.jena.reasoner.test.TestPackage.suite());
         addTest(ts,  "Composed graphs", com.hp.hpl.jena.graph.compose.test.TestPackage.suite() );
         addTest(ts,  "Ontology", com.hp.hpl.jena.ontology.impl.test.TestPackage.suite() );

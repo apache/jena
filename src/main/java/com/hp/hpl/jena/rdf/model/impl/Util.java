@@ -37,9 +37,6 @@ import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.shared.*;
 
 /** Some utility functions.
- *
- * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:32 $'
  */
 public class Util extends Object {
 
@@ -54,6 +51,24 @@ public class Util extends Object {
      * @return the index of the first character of the localname
      */
     public static int splitNamespace(String uri) {
+        
+        // XML Namespaces 1.0:
+        // A qname name is NCName ':' NCName
+        // NCName             ::=      NCNameStartChar NCNameChar*
+        // NCNameChar         ::=      NameChar - ':'
+        // NCNameStartChar    ::=      Letter | '_'
+        // 
+        // XML 1.0
+        // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
+        //                        [#xD8-#xF6] | [#xF8-#x2FF] |
+        //                        [#x370-#x37D] | [#x37F-#x1FFF] |
+        //                        [#x200C-#x200D] | [#x2070-#x218F] |
+        //                        [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+        //                        [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+        // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+        //                        [#x0300-#x036F] | [#x203F-#x2040]
+        // Name               ::= NameStartChar (NameChar)*
+        
         char ch;
         int lg = uri.length();
         if (lg == 0)
@@ -63,12 +78,33 @@ public class Util extends Object {
             ch = uri.charAt(i);
             if (notNameChar(ch)) break;
         }
+        
         int j = i + 1 ;
+
+        if ( j >= lg )
+            return lg ;
+        
+        // Check we haven't split up a %-encoding.
+        if ( j >= 2 && uri.charAt(j-2) == '%' )
+            j = j+1 ;
+        if ( j >= 1 && uri.charAt(j-1) == '%' )
+            j = j+2 ;
+        
+        // Have found the leftmost NCNameChar from the
+        // end of the URI string.
+        // Now scan forward for an NCNameStartChar
+        // The split must start with NCNameStart.
         for (; j < lg; j++) {
             ch = uri.charAt(j);
-            if (XMLChar.isNCNameStart(ch)) {
-                if (uri.charAt(j - 1) == ':'
-                    && uri.lastIndexOf(':', j - 2) == -1)
+//            if (XMLChar.isNCNameStart(ch))
+//                break ;
+            if (XMLChar.isNCNameStart(ch))
+            {
+                // "mailto:" is special.
+                // Keep part after mailto: at least one charcater.
+                // Do a quick test before calling .startsWith
+                // OLD: if ( uri.charAt(j - 1) == ':' && uri.lastIndexOf(':', j - 2) == -1)
+                if ( j == 7 && uri.startsWith("mailto:"))
                     continue; // split "mailto:me" as "mailto:m" and "e" !
                 else
                     break;

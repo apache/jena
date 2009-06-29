@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPolyadicPrefixMapping.java,v 1.1 2009-06-29 08:55:42 castagna Exp $
+  $Id: TestPolyadicPrefixMapping.java,v 1.2 2009-06-29 18:42:06 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -10,8 +10,8 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
+import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
 public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     {
