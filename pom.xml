@@ -112,8 +112,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-	      <source>1.5</source>
-	      <target>1.5</target>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
 
@@ -130,34 +131,35 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-source-plugin</artifactId>
-	    <executions> 
-	      <execution>
-	        <id>attach-sources</id>
-	        <phase>verify</phase>
-	        <goals>
-	          <goal>jar</goal>
-	        </goals>
-	      </execution>
-	    </executions>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions> 
+              <execution>
+                <id>attach-sources</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-javadoc-plugin</artifactId>
-	    <executions>
-	      <execution>
-	        <id>attach-javadocs</id>
-	        <goals>
-	          <goal>jar</goal>
-	        </goals>
-	      </execution>
-	    </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
         <configuration>
           <author>true</author>
           <version>true</version>
           <show>public</show>
           <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
           <windowtitle>${project.name} Framework</windowtitle>
           <doctitle>${project.name} Framework</doctitle>
           <bottom>Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
@@ -232,6 +234,14 @@
           </execution>
         </executions>
       </plugin>
+
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-resources-plugin</artifactId>
+       <configuration>
+       <encoding>UTF-8</encoding>
+       </configuration>
+    </plugin>
 
     </plugins>
 
