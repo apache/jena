@@ -8,7 +8,7 @@
   <artifactId>iri</artifactId>
   <packaging>jar</packaging>
   <name>Jena IRI</name>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.7</version>
   <description/>
   <url>http://jena.sf.net/iri</url>
 
@@ -51,78 +51,78 @@
     <testSourceDirectory>src-test</testSourceDirectory>
 
     <resources>
-     <resource>
-       <directory>resources</directory>
-     </resource>
+      <resource>
+        <directory>resources</directory>
+      </resource>
     </resources>
 
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<configuration>
-	  <source>1.5</source>
-	  <target>1.5</target>
-	  <encoding>UTF-8</encoding>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-source-plugin</artifactId>
-	<executions> 
-	  <execution>
-	    <id>attach-sources</id>
-	    <phase>verify</phase>
-	    <goals>
-	      <goal>jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
-	<configuration>
-	  <includes>
-	    <include>com/hp/hpl/jena/iri/test/TestPackage.java</include>
-	  </includes>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>com/hp/hpl/jena/iri/test/TestPackage.java</include>
+          </includes>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>attach-javadocs</id>
-	    <goals>
-	      <goal>jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-	<configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
           <quiet>true</quiet>
-	  <encoding>UTF-8</encoding>
-	</configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
       </plugin>
       
       <plugin>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<version>2.2-beta-3</version>
-	<configuration>
-	  <descriptors>
-	    <descriptor>assembly.xml</descriptor>
-	  </descriptors>
-	</configuration>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-3</version>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
-	<configuration>
-	  <encoding>UTF-8</encoding>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       
@@ -131,20 +131,20 @@
   </build>
   
   <distributionManagement>
+    <!--
     <repository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
       <layout>default</layout>
     </repository>
-    <!--
+-->
     <repository>
       <id>jena-repo</id>
       <name>Jena Repository</name>
       <url>sftp://jena.hpl.hp.com/var/repo</url>
       <layout>default</layout>
     </repository>
-    -->
   </distributionManagement>
 
 </project>

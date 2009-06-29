@@ -1,6 +1,9 @@
 
 Release Notes:
 
+iri-0.7:
+Java5 compatible.
+
 iri-0.6:
 Convert to Java6
 
