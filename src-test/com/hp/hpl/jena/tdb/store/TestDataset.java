@@ -9,7 +9,9 @@ package com.hp.hpl.jena.tdb.store;
 import atlas.test.BaseTest;
 import org.junit.Test;
 
+import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -144,6 +146,64 @@ public class TestDataset extends BaseTest
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
     
+    // Put a model into a general dataset and use it.
+    @Test public void generalDataset1()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getNamedModel("http://example/graph2") ;
+        
+        // Use graph2 as default model.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.setDefaultModel(ds.getNamedModel("http://example/graph2")) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o}" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void generalDataset2()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getNamedModel("http://example/graph2") ;
+        
+        // Use graph1 as a differently named model.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.addNamedModel("http://example/graphOther", m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void generalDataset3()
+    {
+        Dataset ds = create() ;
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        Model m = ds.getDefaultModel() ;
+        
+        // Use the default model in one dataset as a named model in another.
+        DataSource ds2 = DatasetFactory.create() ;
+        ds2.addNamedModel("http://example/graphOther", m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { {?s ?p ?o} UNION { GRAPH <http://example/graphOther> {?s ?p ?o} } }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+
     // removeAll
 }
 
