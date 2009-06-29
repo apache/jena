@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>iri</artifactId>
-      <version>0.6</version>
+      <version>0.7</version>
     </dependency>
 
     <dependency>

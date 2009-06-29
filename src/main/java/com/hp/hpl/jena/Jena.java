@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Aug-2003
  * Filename           $RCSfile: Jena.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 14:46:43 $
+ * Last modified on   $Date: 2009-06-29 20:55:16 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -33,7 +33,7 @@ package com.hp.hpl.jena;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Version 2.6.2-dev, CVS $Id: Jena.java,v 1.2 2009-06-29 14:46:43 andy_seaborne Exp $
+ * @version Version 2.6.2-dev, CVS $Id: Jena.java,v 1.3 2009-06-29 20:55:16 andy_seaborne Exp $
  */
 public interface Jena
 {
@@ -66,7 +66,7 @@ public interface Jena
     public static final String VERSION_STATUS = "-dev";
     
     /** The date and time at which this release was built */    
-    public static final String BUILD_DATE = "29-June-2009 15:01";
+    public static final String BUILD_DATE = "29-June-2009 20:56";
     
 
     // External signature methods
