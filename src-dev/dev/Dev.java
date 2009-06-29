@@ -14,6 +14,7 @@ public class Dev
     // Document concurrency.
     // Remove all relics of creating graphs without a dataset (FactoryGraphTDB._createGraph())
     
+    
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
     //    Need better var index support first
