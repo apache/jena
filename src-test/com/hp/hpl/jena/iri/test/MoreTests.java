@@ -2,7 +2,7 @@
  *  (c)     Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.2 2009-02-28 17:39:14 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.3 2009-06-29 19:57:09 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.iri.test;
@@ -67,9 +67,11 @@ public class MoreTests extends TestCase {
 		IRI base = f.create("http://example.org/");
 		IRI frag = base.resolve("http://eg.com/test.txt#xpointer(/unit[5])");
 		Iterator<Violation> it = frag.violations(false);
-		while (it.hasNext()) {
-			System.err.println(it.next().getLongMessage());
-		}
+        assertTrue(it.hasNext()) ;
+
+//		while (it.hasNext()) {
+//			System.err.println(it.next().getLongMessage());
+//		}
 		
 	}
 	public void testNotIDN() {
@@ -80,9 +82,11 @@ public class MoreTests extends TestCase {
 				"00003DB3650000D3E3AEE226D20A49A390BCD779EC5D470"+
 					"00001182DB0000/www.uconnectevent.org");
 		Iterator <Violation>it = frag.violations(false);
-		while (it.hasNext()) {
-			System.err.println(it.next().getLongMessage());
-		}
+		assertTrue(it.hasNext()) ;
+		
+//		while (it.hasNext()) {
+//			System.err.println(it.next().getLongMessage());
+//		}
 		
 	}
 }
