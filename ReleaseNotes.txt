@@ -5,7 +5,11 @@ Release Notes
 ==== Jena 2.6.1
 
 + Maven-style codebase layout.
+
 + Update to iri.jar (version 0.7). 
+
++ Change the way URIs are split into namespace and 
+  local part so as to not split %-encoded sequences.
 
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:
