@@ -57,14 +57,13 @@
     <dependency>
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
     </dependency>
 
     <dependency>
-      <!-- org.codehaus.woodstox : The POM groupId is "woodstox" -->
-      <groupId>woodstox</groupId>
+      <groupId>org.codehaus.woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
-      <version>3.0.0</version>
+      <version>3.2.9</version>
     </dependency>
 
     <dependency>
@@ -86,12 +85,6 @@
     <!-- log4j 1.2.15 brings in dependences for 
 	 inaccessible things and causes warnings
 	 -->	
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>json-jena</artifactId>
-      <version>1.0</version>
-    </dependency>
 	
   </dependencies>
 
