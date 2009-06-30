@@ -8,12 +8,12 @@ package dev;
 
 public class Dev
 {
-    // ==== 2.7.1
-    // Update licenese pages for versions (ARQ and Jena inc IRI).
     
+    // ==== 2.7.1
     
     // ==== ARQ
     // Convert test suite by manifest to JUnit4.
+    // JUnit4TestAdpter
     // DatasetImpl cache refinement
     // JMX
     //   Query count

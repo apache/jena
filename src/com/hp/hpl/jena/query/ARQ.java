@@ -240,7 +240,7 @@ public class ARQ
     public static boolean isFalse(Symbol symbol)          { return getContext().isFalse(symbol) ; }
     public static boolean isTrueOrUndef(Symbol symbol)    { return getContext().isTrueOrUndef(symbol) ; }
     public static boolean isFalseOrUndef(Symbol symbol)   { return getContext().isFalseOrUndef(symbol) ; }
-//    
+
     // ----------------------------------
     
     /** The root package name for ARQ */   
