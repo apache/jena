@@ -40,16 +40,28 @@ N-TRIPLES</li>
   <dd>ARP aims to be fully compliant with the latest decisions of the
 RDF Core WG. The Jena2 version is compliant with the RDF Core recommendations. ARP is typically invoked using
 Jena's read operations, but can also be used standalone.</dd>
+	<dt>&nbsp;</dt>
+
+  <dt>SPARQL<b> query language</b></dt>
+  <dd>SPARQL is an RDF query language and protocol developed within W3C.&nbsp; 
+  Jena provides the <a href="http://jena.sf.net/ARQ">ARQ</a> query engine which 
+	is a complete implementation of the
+	<a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language</a>. See 
+	<a href="http://jena.sourceforge.net/ARQ/Tutorial/index.html">SPARQL Tutorial</a> and the
+  <a href="http://jena.sourceforge.net/ARQ/documentation.html">ARQ documentation</a>. 
+	In addition there is <a href="http://www.joseki.org/">Joseki</a>, an 
+	implementation of the <a href="http://www.w3.org/TR/rdf-sparql-protocol/">
+	SPARQL protocol</a>.</dd>
   <dd>&nbsp;</dd>
-  <dt>Persistence</dt>
-  <dd>The Jena2 persistence subsystem implements an extension to the Jena Model 
-  class that provides persistence for models through use of a back-end database 
-  engine. Jena2 also supports a Fastpath capability for SPARQL
-queries that dynamically generates SQL queries to perform as much of
-the SPARQL query as possible within an SQL database engine. See the <a
- href="DB/index.html"> persistence documentation</a> for more
-details. </dd>
-  <dd>&nbsp;</dd>
+	<dt>Persistence</dt>
+	<dd>There are two persistence subsystem for Jena -
+	<a href="http://jena.sf.net/SDB">SDB</a>, which employs a custom SQL schema 
+	on a wide variety of databases, both open source and proprietary; and
+	<a href="http://jena.sf.net/TDB">TDB</a>, which is a high-performance system 
+	using custom storage. Both provide full SPARQL support through ARQ 
+	integration.</dd>
+	<dt>&nbsp;</dt>
+	
   <dt><b>Reasoning Subsystem</b></dt>
   <dd>The Jena2 reasoner subsystem includes a generic rule based
 inference engine together with configured rule sets for RDFS and for
@@ -80,15 +92,6 @@ that assists with process of managing imported ontology documents. See
 the <a href="ontology/index.html">ontology documentation</a> for
 more details.</dd>
   <dd>&nbsp;</dd>
-  <dt>SPARQL<b> query language</b></dt>
-  <dd>SPARQL is an RDF query language and protocol developed within W3C.&nbsp; 
-  Jena provides the ARQ query engine which implements both the
-  <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language</a>.
-  The implementation in Jena
-is coupled to relational database storage so that optimized query is
-performed over data held in a Jena relational persistence store. </dd>
-  <dd>See <a href="http://jena.sourceforge.net/ARQ/Tutorial/index.html">SPARQL Tutorial</a> and the
-  <a href="http://jena.sourceforge.net/ARQ/documentation.html">ARQ documentation</a>.</dd>
 </dl>
 <h2>Documentation</h2>
 <p>Documentation is to be found in the <a href="index.html">doc/
@@ -100,29 +103,7 @@ directory</a> of the Jena download.</p>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
   <li>set the Java classpath to include all the JAR files in the
 JENAROOT/lib/ directory
-    <pre>  JENAROOT/lib/jena.jar
-  JENAROOT/lib/jenatest.jar
-  JENAROOT/lib/iri.jar
-  JENAROOT/lib/arq.jar
-  JENAROOT/lib/arq-extra.jar
-  JENAROOT/lib/commons-logging-1.1.1.jar
-  JENAROOT/lib/xercesImpl.jar
-  JENAROOT/lib/xml-apis.jar
-  JENAROOT/lib/icu4j_3_4.jar
-  JENAROOT/lib/json.jar
-  JENAROOT/lib/concurrent.jar
-  JENAROOT/lib/antlr-2.7.5.jar
-  JENAROOT/lib/junit.jar
-  JENAROOT/lib/log4j-1.2.12.jar
-  JENAROOT/lib/wstx-asl-3.0.0.jar
-  JENAROOT/lib/stax-api-1.0.jar
-</pre>
-  </li>
-  <li>Test the distribution by running the regression tests, either:
-    <pre>	ant test          // if you have ant configured to run junit<br>	test.bat          // on windows<br>	sh test.sh        // on unix<br>	</pre>
-The tests should all pass. If you are behind a firewall, you may have
-to configure a proxy for some of the tests - see below for the
-appropriate properties. </li>
+    </li>
 </ul>
 <h2>Applications</h2>
 <p>The Jena distribution includes some convenience applications. These are 
@@ -137,8 +118,7 @@ line:</p>
 <pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
 <pre>&nbsp;</pre>
 <h2>License</h2>
-<p>Jena is distributed under a BSD-style open source <a
- href="../copyright.txt">license</a>.</p>
+<p>Jena is distributed under a BSD-style open source <a href="license.html">license</a>.</p>
 <p>Details of other licenses, together with version number information, are
 <a href="Licenses/index.html">available</a>.</p>
 <p>It includes software developed by the Apache Software Foundation
@@ -150,13 +130,8 @@ acknowledge:</p>
 <ul>
   <li><a href="http://xml.apache.org/xerces-j/index.html">Xerces</a></li>
   <li><a href="http://www.junit.org/">JUnit</a></li>
-  <li><a href="http://jakarta.apache.org/oro/">Jakarta ORO</a></li>
   <li><a href="http://oss.software.ibm.com/icu4j/">ICU4J</a></li>
-  <li><a
- href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/">util.concurrent</a>
-from <a href="http://gee.cs.oswego.edu/dl">Doug Lea</a></li>
-  <li><a href="http://jakarta.apache.org/commons/logging.html">Jakarta
-Commons Logging</a></li>
+  <li><a href="http://www.slf4j.org/">SLF4J</a></li>
   <li><a href="http://logging.apache.org/log4j/docs/">log4j</a></li>
   <li><a href="http://ant.apache.org/">ant</a></li>
   <li><a href="http://woodstox.codehaus.org/">WoodSToX</a></li>
