@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:32 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-07-01 14:36:04 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1896,6 +1896,28 @@ public class TestBugReports
 
         assertFalse( "should not be an individual", c2.isIndividual() );
         assertTrue(  "should be an individual", punned.isIndividual() );
+    }
+
+    /* Bugrep from David Patterson - classes as individuals in OWL Lite */
+    public void testDP0() {
+        String NS = "http://jena.hpl.hp.com/example#";
+
+        OntModelSpec mySpec = OntModelSpec.OWL_LITE_MEM_TRANS_INF; // classes are also individuals
+        OntModel model = ModelFactory.createOntologyModel( mySpec );
+
+        OntClass book = model.createClass( NS + "Book" );
+        OntProperty title = model.createOntProperty( NS + "title" );
+        ObjectProperty publisher = model.createObjectProperty( NS + "publisher" );
+        DatatypeProperty price = model.createDatatypeProperty( NS + "price" );
+
+        Individual sc1 = model.createIndividual( NS + "Ant: The Definitive Guide", book );
+
+        model.setStrictMode( true );
+
+        assertFalse( book + " should not be an individual", book.canAs( Individual.class ));
+        assertFalse( title + " should not be an individual", title.canAs( Individual.class ));
+        assertFalse( publisher + " should not be an individual", publisher.canAs( Individual.class ));
+        assertFalse( price + " should not be an individual", price.canAs( Individual.class ));
     }
 
 

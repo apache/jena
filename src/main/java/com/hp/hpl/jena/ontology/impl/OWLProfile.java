@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:49 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-07-01 14:36:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
@@ -41,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.1 2009-06-29 08:55:49 castagna Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.2 2009-07-01 14:36:07 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -225,6 +226,45 @@ public class OWLProfile
         public boolean doCheck( Node n, EnhGraph g ) {
             return true;
         }
+
+        /**
+         * Return a set of all of the nodes that are the objects of <code>rdf:type</code>
+         * triples whose subject is <code>n</code>
+         * @param n A subject node
+         * @param g A graph
+         * @return All <code>rdf:type</code> nodes for <code>n</code> in <code>g</code>
+         */
+        public Set<Node> allTypes( Node n, EnhGraph g) {
+            Set<Node> types = new HashSet<Node>();
+            for (ExtendedIterator<Triple> i = g.asGraph().find( n, RDF.type.asNode(), Node.ANY ); i.hasNext(); ) {
+                types.add( i.next().getObject() );
+            }
+            return types;
+        }
+
+        /**
+         * Return true if there is any intersection between the nodes in <code>nodes</code>
+         * and the nodes of the resources in <code>ref</code>.
+         * @param nodes
+         * @param ref
+         * @return
+         */
+        public boolean intersect( Set<Node> nodes, Resource[] ref ) {
+            for (Resource r: ref) {
+                if (nodes.contains( r.asNode() )) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Return true if the node <code>n</code> in graph <code>g</code> has one of the
+         * types in <code>ref</code>
+         */
+        public boolean hasType( Node n, EnhGraph g, Resource[] ref ) {
+            return intersect( allTypes( n, g ), ref );
+        }
     }
 
 
@@ -257,11 +297,8 @@ public class OWLProfile
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph eg ) {
                                                 Graph g = eg.asGraph();
-                                                Node rdfTypeNode = RDF.type.asNode();
-                                                return g.contains( n, rdfTypeNode, OWL.Class.asNode() ) ||
-                                                       g.contains( n, rdfTypeNode, OWL.Restriction.asNode() ) ||
-                                                       g.contains( n, rdfTypeNode, RDFS.Class.asNode() ) ||
-                                                       g.contains( n, rdfTypeNode, RDFS.Datatype.asNode() ) ||
+
+                                                return hasType( n, eg, new Resource[] {OWL.Class, OWL.Restriction, RDFS.Class, RDFS.Datatype} ) ||
                                                        // These are common cases that we should support
                                                        n.equals( OWL.Thing.asNode() ) ||
                                                        n.equals( OWL.Nothing.asNode() ) ||
@@ -284,11 +321,8 @@ public class OWLProfile
         {  ObjectProperty.class,        new SupportsCheck() {
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
-                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) ||
-                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) ||
-                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() )
-                                                ;
+                                                return hasType( n, g, new Resource[] {OWL.ObjectProperty,OWL.TransitiveProperty,
+                                                                                      OWL.SymmetricProperty, OWL.InverseFunctionalProperty} );
                                             }
                                         }
         },
@@ -317,14 +351,10 @@ public class OWLProfile
         {  OntProperty.class,           new SupportsCheck() {
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), RDF.Property.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.ObjectProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.DatatypeProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.AnnotationProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.TransitiveProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.SymmetricProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.FunctionalProperty.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.InverseFunctionalProperty.asNode() );
+                                                return hasType( n, g, new Resource[] {RDF.Property, OWL.ObjectProperty, OWL.DatatypeProperty,
+                                                                                      OWL.AnnotationProperty, OWL.TransitiveProperty,
+                                                                                      OWL.SymmetricProperty, OWL.InverseFunctionalProperty,
+                                                                                      OWL.FunctionalProperty} );
                                             }
                                         }
         },
