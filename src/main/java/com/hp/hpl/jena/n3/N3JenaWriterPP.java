@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.2 2009-06-30 07:46:28 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.3 2009-07-01 17:23:13 andy_seaborne Exp $
  */
 
 
@@ -296,8 +296,32 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     @Override
     protected void finishWriting()
     {
-        oneRefObjects.removeAll(oneRefDone);
+ 
+        // Are there any unattached RDF lists?
+        // e..g ([] [] []) . in the data.
+        // We missed these earlier.
+        for (Iterator<Resource> leftOverIter = rdfLists.iterator(); leftOverIter.hasNext();)
+        {
+            Resource r = leftOverIter.next();
+            if (rdfListsDone.contains(r))
+                continue;
+            out.println();
+            if (N3JenaWriter.DEBUG)
+                out.println("# RDF List");
 
+            if (!r.isAnon() || countArcsTo(r) > 0 )
+            {
+                // Name it.
+                out.print(formatResource(r));
+                out.print(" :- ");
+            }
+            writeList(r);
+            out.println(" .");
+        }
+
+        // Finally, panic.
+        // Dump anything that has not been output yet. 
+        oneRefObjects.removeAll(oneRefDone);
         for (Iterator<RDFNode> leftOverIter = oneRefObjects.iterator(); leftOverIter.hasNext();)
         {
             out.println();
@@ -307,27 +331,6 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             allowDeep = false;
             writeOneGraphNode((Resource) leftOverIter.next());
             allowDeep = true;
-        }
-
-        // Are there any unattached RDF lists?
-        // We missed these earlier (assumed all DAML lists are values of some statement)
-        for (Iterator<Resource> leftOverIter = rdfLists.iterator(); leftOverIter.hasNext();)
-        {
-            Resource r = leftOverIter.next();
-            if (rdfListsDone.contains(r))
-                continue;
-            out.println();
-            if (N3JenaWriter.DEBUG)
-                out.println("# RDF List");
-                
-            if (!r.isAnon() || countArcsTo(r) > 0 )
-            {
-                // Name it.
-                out.print(formatResource(r));
-                out.print(" :- ");
-            }
-            writeList(r);
-            out.println(" .");
         }
 
         //out.println() ;
