@@ -214,7 +214,7 @@
                 <tstamp>
                   <format property="build-time" pattern="yyyy-MM-dd'T'HH:mm:ss.S"/>
                 </tstamp>
-                <copy file="src/main/resources/jena-properties.xml" toFile="${basedir}/target/classes/jena-properties.xml" overwrite="true">
+                <copy file="src/main/resources/jena-properties.xml" toFile="${basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
                   <filterset>
                     <filter token="NAME" value="${project.name}"/>
                     <filter token="WEBSITE" value="${project.url}"/>
@@ -246,10 +246,6 @@
     </plugins>
 
     <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
       <resource>
         <directory>etc</directory>
         <targetPath>etc</targetPath>
