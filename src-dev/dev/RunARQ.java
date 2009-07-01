@@ -6,18 +6,20 @@
 
 package dev;
 
-import java.io.OutputStream;
 import java.util.Iterator;
 
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
@@ -30,13 +32,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -51,13 +48,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StrUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class RunARQ
 {
@@ -72,6 +63,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        report() ;
+        
         // "-Dcom.sun.management.jmxremote" needed for Java5
         // Efficiently do nothing.
         ARQMgt.init() ;
@@ -94,18 +87,6 @@ public class RunARQ
         Query query = QueryFactory.create(qs) ;
         System.out.println(query) ;
         System.exit(0) ;
-        
-        
-        
-        Op op = SSE.readOp("Q.sse") ;
-        op = Algebra.optimize(op) ; 
-        System.out.print(op) ;
-        System.exit(0);
-        
-        report() ; System.exit(0) ;
-        execQueryCode("D.ttl", "Q.arq") ; System.exit(0) ;
-        
-        queryEquality() ;
         
         execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
         
@@ -134,62 +115,10 @@ public class RunARQ
 //        model.write(System.out, "TTL") ;
 //        System.exit(0) ;
         
-        Model model=ModelFactory.createDefaultModel() ;
-        String requete=StrUtils.strjoinNL("PREFIX : <http://www.owl-ontologies.com/Ontology1239120737.owl#>",
-                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
-                                          "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
-                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                                          "INSERT DATA { :etud1 :APourNom 'Saleh' .",
-                                          "              :etud1 :APourLogin 'saleh' .",
-                                          "              :etud1 :APourPWD 'saleh' . }") ;
-        GraphStore graphstore=GraphStoreFactory.create();
-        graphstore.setDefaultGraph(model.getGraph());
-        UpdateRequest updaterequest=UpdateFactory.create(requete);
-        UpdateAction.execute(updaterequest, graphstore);
-
-        OutputStream path = System.out ;
-        model.write(path, "RDF/XML-ABBREV");
-        System.out.println("OK");
+        qparse("--print=op", "--print=query", "--file=Q.arq") ; 
+        // PathPrimary to be split into Unary and Primary.
+        // PathSequence, PathElt
         System.exit(0) ;
-    }
-    
-    public static void report1()
-    {
-        QueryEngineMain.SUBSTITUE = false ;
-        
-        Model model = ModelFactory.createDefaultModel();
-        //model.read("http://topbraid.org/examples/kennedys");
-        model.read("file:D.rdf") ;
-        String query =
-            "PREFIX rdfs: <" + RDFS.getURI() + "> \n" +
-            "SELECT ?label\n" +
-            "WHERE {\n" +
-            "    { LET ( ?x := 3 ) } # ?property a ?type .\n" +
-            //"    ?this rdfs:label ?label .\n" +
-            "    {\n" +
-            "        SELECT ?label WHERE { ?this rdfs:label ?label }\n" +
-            "    } .\n" +
-            "}";
-                
-        Query arqQuery = QueryFactory.create(query, Syntax.syntaxARQ);
-        //QueryEngineRef.register() ;
-        QueryExecution qexec = QueryExecutionFactory.create(arqQuery, model);
-        QuerySolutionMap bindings = new QuerySolutionMap();
-        bindings.add("this", model.getResource("http://topbraid.org/examples/kennedys#Person"));
-        qexec.setInitialBinding(bindings) ;
-        ResultSet rs = qexec.execSelect();
-        while(rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            System.out.println(" - " + sol);
-        }
-        System.out.println("-------") ;
-        
-        Op op = Algebra.compile(arqQuery) ;
-        System.out.println(op) ;
-        Binding b = new Binding1(null, Var.alloc("this"), Node.createURI("http://topbraid.org/examples/kennedys#Person")) ;
-        op = Substitute.substitute(op, b) ;
-        System.out.println(op) ;
-        
     }
     
     public static void check(Query query, boolean optimizeAlgebra)
@@ -329,22 +258,6 @@ public class RunARQ
         sparql.main(new String[]{"--file=Q.arq"}) ;
         //System.out.println("----") ;
         System.exit(0) ; 
-    }
-    
-    public static void code()
-    {
-
-        Op op = SSE.readOp("Q.sse") ;
-        //op = Algebra.optimize(op) ;
-        //Op op3 = Algebra.compileQuad(query) ;
-
-        System.out.println("---- Original") ;
-        System.out.println(op) ;
-        Op op2 = AlgebraQuad.quadize(op) ;
-
-        System.out.println("---- Quadization") ;
-        System.out.println(op2) ;
-        System.exit(0) ;
     }
     
     public static void opExtension()

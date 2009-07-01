@@ -11,8 +11,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter;
+
+import org.junit.Test;
+import static org.junit.Assert.* ;
+
+//import junit.framework.Test;
+//import junit.framework.TestCase;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -28,16 +33,16 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPath;
 import com.hp.hpl.jena.sparql.sse.writers.WriterPath;
-import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
-public class TestPath extends TestCase
+public class TestPath
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestPath.class) ;
-        ts.setName(Utils.classShortName(TestPath.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestPath.class) ;
+//        TestSuite ts = new TestSuite(TestPath.class) ;
+//        ts.setName(Utils.classShortName(TestPath.class)) ;
+//        return ts ;
     }
 
     static Graph graph1 = GraphUtils.makeDefaultGraph() ;
@@ -69,37 +74,38 @@ public class TestPath extends TestCase
     
     // ----
     
-    public void testParsePath_01()           { parse(":p") ; }
-    public void testParsePath_02()           { parse("(:p)") ; }
-    public void testParsePath_03()           { parse("^:p") ; }
-    public void testParsePath_04()           { parse(":p*") ; }
-    public void testParsePath_05()           { parse(":p+") ; }
-    public void testParsePath_06()           { parse(":p?") ; }
+    @Test public void parsePath_01()           { parse(":p") ; }
+    @Test public void parsePath_02()           { parse("(:p)") ; }
+    @Test public void parsePath_03()           { parse("^:p") ; }
+    @Test public void parsePath_04()           { parse(":p*") ; }
+    @Test public void parsePath_05()           { parse(":p+") ; }
+    @Test public void parsePath_06()           { parse(":p?") ; }
     
-    public void testParsePath_10()           { parse(":p/:q") ; }
-    public void testParsePath_11()           { parse(":p|:q") ; }
-    public void testParsePath_12()           { parse(":p{1}") ; }
-    public void testParsePath_13()           { parse(":p{1,}") ; }
-    public void testParsePath_14()           { parse(":p{1,2}") ; }
+    @Test public void parsePath_10()           { parse(":p/:q") ; }
+    @Test public void parsePath_11()           { parse(":p|:q") ; }
+    @Test public void parsePath_12()           { parse(":p{1}") ; }
+    @Test public void parsePath_13()           { parse(":p{1,}") ; }
+    @Test public void parsePath_14()           { parse(":p{1,2}") ; }
     
-    public void testParsePath_15()           { parse(":p^:q") ; }
-    public void testParsePath_16()           { parse("^:p^:q") ; }
-    public void testParsePath_17()           { parse("^:p/:q") ; }
-    public void testParsePath_18()           { parse("^(:p/:q)") ; }
-    public void testParsePath_19()           { parse("^(:p^:q)") ; }
-    public void testParsePath_20()           { parse(":p^(:q/:r)") ; }
+    @Test public void parsePath_15()           { parse(":p^:q") ; }
+    @Test public void parsePath_16()           { parse("^:p^:q") ; }
+    @Test public void parsePath_17()           { parse("^:p/:q") ; }
+    @Test public void parsePath_18()           { parse("^(:p/:q)") ; }
+    @Test public void parsePath_19()           { parse("^(:p^:q)") ; }
+    @Test public void parsePath_20()           { parse(":p^(:q/:r)") ; }
     
-    public void testParsePathErr_01()        { parse("", false) ; }
-    public void testParsePathErr_02()        { parse("()", false) ; }
-    public void testParsePathErr_03()        { parse(":p :q", false) ; }
+    @Test public void parsePathErr_01()        { parse("", false) ; }
+    @Test public void parsePathErr_02()        { parse("()", false) ; }
+    @Test public void parsePathErr_03()        { parse(":p :q", false) ; }
     
-    // Bracketted form on the left
-    public void testParseEquals_1()         {  parse("(:p)",        ":p") ; }
-    public void testParseEquals_2()         {  parse(":p/(:q/:r)",  ":p/:q/:r") ; }
-    public void testParseEquals_3()         {  parse("(:p/:q)|:r",  ":p/:q|:r") ; }
-    public void testParseEquals_4()         {  parse(":p|(:q/:r)",  ":p|:q/:r") ; }
-    public void testParseEquals_5()         {  parse("^:p/:q",       "(^:p)/:q") ; }
-    
+    // Check we get the form on the right for the expression on the right.
+    @Test public void parseEquals_1()         {  parse("(:p)",        ":p") ; }
+    @Test public void parseEquals_2()         {  parse(":p/:q/:r",    "(:p/:q)/:r") ; }
+    @Test public void parseEquals_3()         {  parse("^:p^:q^:r",   "(^:p^:q)^:r") ; }
+    @Test public void parseEquals_4()         {  parse(":p/(:q/:r)",  ":p/(:q/:r)") ; }
+    @Test public void parseEquals_5()         {  parse("(:p/:q)|:r",  ":p/:q|:r") ; }
+    @Test public void parseEquals_6()         {  parse(":p|(:q/:r)",  ":p|:q/:r") ; }
+    @Test public void parseEquals_7()         {  parse("^:p/:q",      "(^:p)/:q") ; }
 
     // ----
     
@@ -141,33 +147,33 @@ public class TestPath extends TestCase
     }
 
 
-    public void testPath_01()   { test(graph1, n1,   ":p",          new Node[]{n2}) ; }
-    public void testPath_02()   { test(graph1, n1,   ":p{0}",       new Node[]{n1}) ; }
-    public void testPath_03()   { test(graph1, n1,   ":p{1}",       new Node[]{n2}) ; }
-    public void testPath_04()   { test(graph1, n1,   ":p{2}",       new Node[]{n3}) ; }
-    public void testPath_05()   { test(graph1, n1,   ":p{0,1}",     new Node[]{n1, n2}) ; }
-    public void testPath_06()   { test(graph1, n1,   ":p{0,2}",     new Node[]{n1,n2,n3}) ; }
-    public void testPath_07()   { test(graph1, n1,   ":p{1,2}",     new Node[]{n2, n3}) ; }
-    public void testPath_08()   { test(graph1, n1,   ":p{9,9}",     new Node[]{}) ; }
-    public void testPath_09()   { test(graph1, n1,   ":p{0,9}",     new Node[]{n1,n2,n3,n4}) ; }
-    public void testPath_10()   { test(graph1, n1,   ":p*",         new Node[]{n1,n2,n3,n4}) ; }
-    public void testPath_11()   { test(graph1, n1,   ":p+",         new Node[]{n2,n3,n4}) ; }
-    public void testPath_12()   { test(graph1, n1,   ":p?",         new Node[]{n1,n2}) ; }
-    public void testPath_13()   { test(graph1, n1,   ":p/:p",       new Node[]{n3}) ; }
-    public void testPath_14()   { test(graph1, n2,   "^:p",         new Node[]{n1}) ; }
-    public void testPath_15()   { test(graph1, n2,   "^:p^:p",      new Node[]{}) ; }
-    public void testPath_16()   { test(graph1, n4,   "^:p^:p",      new Node[]{n2}) ; }
-    public void testPath_17()   { test(graph1, n4,   "^(:p/:p)",    new Node[]{n2}) ; }
-    public void testPath_18()   { test(graph1, n2,   "^:p/:p",      new Node[]{n2}) ; }
+    @Test public void path_01()   { test(graph1, n1,   ":p",          new Node[]{n2}) ; }
+    @Test public void path_02()   { test(graph1, n1,   ":p{0}",       new Node[]{n1}) ; }
+    @Test public void path_03()   { test(graph1, n1,   ":p{1}",       new Node[]{n2}) ; }
+    @Test public void path_04()   { test(graph1, n1,   ":p{2}",       new Node[]{n3}) ; }
+    @Test public void path_05()   { test(graph1, n1,   ":p{0,1}",     new Node[]{n1, n2}) ; }
+    @Test public void path_06()   { test(graph1, n1,   ":p{0,2}",     new Node[]{n1,n2,n3}) ; }
+    @Test public void path_07()   { test(graph1, n1,   ":p{1,2}",     new Node[]{n2, n3}) ; }
+    @Test public void path_08()   { test(graph1, n1,   ":p{9,9}",     new Node[]{}) ; }
+    @Test public void path_09()   { test(graph1, n1,   ":p{0,9}",     new Node[]{n1,n2,n3,n4}) ; }
+    @Test public void path_10()   { test(graph1, n1,   ":p*",         new Node[]{n1,n2,n3,n4}) ; }
+    @Test public void path_11()   { test(graph1, n1,   ":p+",         new Node[]{n2,n3,n4}) ; }
+    @Test public void path_12()   { test(graph1, n1,   ":p?",         new Node[]{n1,n2}) ; }
+    @Test public void path_13()   { test(graph1, n1,   ":p/:p",       new Node[]{n3}) ; }
+    @Test public void path_14()   { test(graph1, n2,   "^:p",         new Node[]{n1}) ; }
+    @Test public void path_15()   { test(graph1, n2,   "^:p^:p",      new Node[]{}) ; }
+    @Test public void path_16()   { test(graph1, n4,   "^:p^:p",      new Node[]{n2}) ; }
+    @Test public void path_17()   { test(graph1, n4,   "^(:p/:p)",    new Node[]{n2}) ; }
+    @Test public void path_18()   { test(graph1, n2,   "^:p/:p",      new Node[]{n2}) ; }
     
 
-    public void testPath_20()   { test(graph2, n1,   ":p",          new Node[]{n2,n3}) ; }
-    public void testPath_21()   { test(graph2, n1,   ":p/:q",       new Node[]{n4}) ; }
-    public void testPath_22()   { test(graph2, n2,   "^:p|:q",      new Node[]{n1,n4}) ; }
-    public void testPath_23()   { test(graph2, n2,   "^(:p|^:q)*",  new Node[]{n1,n2,n4}) ; }
+    @Test public void path_20()   { test(graph2, n1,   ":p",          new Node[]{n2,n3}) ; }
+    @Test public void path_21()   { test(graph2, n1,   ":p/:q",       new Node[]{n4}) ; }
+    @Test public void path_22()   { test(graph2, n2,   "^:p|:q",      new Node[]{n1,n4}) ; }
+    @Test public void path_23()   { test(graph2, n2,   "^(:p|^:q)*",  new Node[]{n1,n2,n4}) ; }
 
-    public void testPath_24()   { testReverse(graph1, n2,   ":p",          new Node[]{n1}) ; }
-    public void testPath_25()   { testReverse(graph1, n3,   ":p/:p",       new Node[]{n1}) ; }
+    @Test public void path_24()   { testReverse(graph1, n2,   ":p",          new Node[]{n1}) ; }
+    @Test public void path_25()   { testReverse(graph1, n3,   ":p/:p",       new Node[]{n1}) ; }
     // ----
     private static void test(Graph graph, Node start, String string, Node[] expectedNodes)
     {

@@ -859,40 +859,39 @@ Path PathAlternative() : { Path p1 , p2 ; }
 {
    p1 = PathSequence()
    (
-      <VBAR> p2 = PathAlternative()
-      { return new P_Alt(p1, p2) ; }
-   ) ?
+      <VBAR> p2 = PathSequence()
+      { p1 = new P_Alt(p1, p2) ; }
+   )*
    { return p1 ; }
 }
 
 Path PathSequence() : { Path p1 , p2 ; }
 {
-    p1 = PathElt()
-    ( <SLASH> p2 = PathSequence()
-      { return new P_Seq(p1, p2) ; }
-    | <CARROT> p2 = PathSequence()
-      { return new P_Seq(p1, new P_Reverse(p2)) ; }
-    )?
+    p1 = PathEltOrReverse()
+    ( <SLASH> p2 = PathEltOrReverse()
+      { p1 = new P_Seq(p1, p2) ; }
+    | <CARROT> p2 = PathElt()
+      { p1 = new P_Seq(p1, new P_Reverse(p2)) ; }
+    )*
    { return p1; }
-//   // Different from N3 meaning
-//   | <PLING> Path()    // ! Forward path
-//   | <FPATH> p2 = Path()    // -> Forward path :p/:q
-//       { return new P_Seq(p, p2) ; }
-//   | <RPATH> p2 = Path()    // <- Reverse path :
-//       { return new P_SeqR(p, p2) ; }
-//  | <RSLASH> Path()
-
 }
 
-// Primary or it's reverse (unary ^)
+// Path unit element, no reverse
 Path PathElt() : { String str ; Node n ; Path p ; }
 { 
-   ( p = PathPrimary() 
+   p = PathPrimary() 
+   ( p = PathMod(p) )?
+   { return p ; }
+}
+
+// Path unit element, include reverse.
+Path PathEltOrReverse() : { String str ; Node n ; Path p ; }
+{ 
+   ( p = PathElt() 
    | <CARROT>
-     p = PathPrimary()
+     p = PathElt()
      { p = new P_Reverse(p) ; }
    )
-   ( p = PathMod(p) )?
    { return p ; }
 }
 
