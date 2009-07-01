@@ -31,6 +31,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:
+      case VAR:
       case LPAREN:
       case NIL:
       case LBRACE:
@@ -66,6 +67,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:
+    case VAR:
     case LPAREN:
     case NIL:
     case LBRACE:
@@ -120,11 +122,11 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:
+    case VAR:
     case NIL:
     case LBRACE:
     case ANON:
-      //  s = VarOrTerm()
-        s = Term();
+      s = VarOrTerm();
       PropertyListNotEmpty(s);
       break;
     case LPAREN:
@@ -315,6 +317,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:
+      case VAR:
       case LPAREN:
       case NIL:
       case LBRACE:
@@ -352,12 +355,12 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case PNAME_NS:
     case PNAME_LN:
     case BLANK_NODE_LABEL:
+    case VAR:
     case NIL:
     case LBRACE:
     case ANON:
-      //  n = VarOrTerm() { return n ; }
-        n = Term();
-               {if (true) return n ;}
+      n = VarOrTerm();
+                    {if (true) return n ;}
       break;
     case LPAREN:
     case LBRACKET:
@@ -372,14 +375,12 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// Node VarOrTerm() : {Node n = null ; }
-// {
-//   ( n = Var() | n = GraphTerm() | n = Formula() )
-//   { return n ; }
-// }
-  final public Node Term() throws ParseException {
-               Node n = null ;
+  final public Node VarOrTerm() throws ParseException {
+                    Node n = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VAR:
+      n = Var();
+      break;
     case TRUE:
     case FALSE:
     case INTEGER:
@@ -439,6 +440,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       case PNAME_NS:
       case PNAME_LN:
       case BLANK_NODE_LABEL:
+      case VAR:
       case LPAREN:
       case NIL:
       case LBRACE:
@@ -737,7 +739,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       jj_la1_0 = new int[] {0xde1fc000,0xde1fc000,0xc000,0xde1f0000,0xc0002000,0x0,0xc0002000,0x0,0xc0002000,0x0,0xde1f0000,0xde1f0000,0xde1f0000,0x0,0xde1f0000,0xde1f0000,0x1c0000,0xc000,0xc000,0xc000,0xc000,0x30000,0x1e000000,0xc0000000,0x80000000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x2b43,0x2b43,0x0,0x2b43,0x60001,0x4000,0x60001,0x8000,0x60001,0x840,0x2b43,0x2b43,0x2303,0x10000,0x2b43,0x2103,0x0,0x4000008,0x4000008,0x8,0x0,0x0,0x0,0x1,0x1,0x2002,};
+      jj_la1_1 = new int[] {0x2b47,0x2b47,0x0,0x2b47,0x60001,0x4000,0x60001,0x8000,0x60001,0x840,0x2b47,0x2b47,0x2307,0x10000,0x2b47,0x2103,0x0,0x4000008,0x4000008,0x8,0x0,0x0,0x0,0x1,0x1,0x2002,};
    }
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

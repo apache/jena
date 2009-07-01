@@ -2,7 +2,7 @@
 # Parser builder
 
 CLASS=Turtle
-DIR="../src/com/hp/hpl/jena/n3/turtle/parser"
+DIR="../src/main/java/com/hp/hpl/jena/n3/turtle/parser"
 FILE=turtle.jj
 NAME=Turtle
 

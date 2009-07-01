@@ -32,7 +32,7 @@ public class ParserTurtle
         // Nasty things happen if the reader is not UTF-8.
         try {
             TurtleParser parser = new TurtleParser(reader) ;
-            parser.setEventHandler(new TurtleEventInserter(graph)) ;
+            parser.setEventHandler(new TurtleRDFGraphInserter(graph)) ;
             parser.setBaseURI(baseURI) ;
             parser.parse() ;
         }

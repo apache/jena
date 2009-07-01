@@ -72,8 +72,7 @@ TOKEN:
 
 void TriplesSameSubject() : { Node s ; } 
 {
-//  s = VarOrTerm()
-  s = Term()
+  s = VarOrTerm()       // Emit Triple checks it's a valid triple.
   PropertyListNotEmpty(s) 
 |
   // Any of the triple generating syntax elements
@@ -185,24 +184,16 @@ Node Collection() :
 
 Node GraphNode() : { Node n ; }
 {
-//  n = VarOrTerm() { return n ; }
-  n = Term() { return n ; }
+  n = VarOrTerm() { return n ; }
  |
   n = TriplesNode() { return n ; }
 }
 
-// Node VarOrTerm() : {Node n = null ; }
-// {
-//   ( n = Var() | n = GraphTerm() | n = Formula() )
-//   { return n ; }
-// }
-
-Node Term() : {Node n = null ; }
+Node VarOrTerm() : {Node n = null ; }
 {
-  ( n = GraphTerm() | n = Formula() )
+  ( n = Var() | n = GraphTerm() | n = Formula() )
   { return n ; }
 }
-
 
 Node Formula() : {Token t ; }
 {

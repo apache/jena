@@ -7,15 +7,31 @@
 package com.hp.hpl.jena.n3.turtle;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 
-public class TurtleEventInserter implements TurtleEventHandler
+public class TurtleRDFGraphInserter implements TurtleEventHandler
 {
     Graph graph = null ;
-    public TurtleEventInserter(Graph graph) { this.graph = graph ; }
+    public TurtleRDFGraphInserter(Graph graph) { this.graph = graph ; }
     
-    public void triple(int line, int col, Triple triple) { graph.add(triple) ; }
+    public void triple(int line, int col, Triple triple)
+    {
+        //Check it's valid triple.
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        
+        if ( ! ( s.isURI() || s.isBlank() ) )
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
+        if ( ! p.isURI() )
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
+        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
+        
+        graph.add(triple) ;
+    }
 
     public void startFormula(int line, int col)
     { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
