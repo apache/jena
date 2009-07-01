@@ -69,12 +69,11 @@ public class WriterPath
     }
     
     private static final boolean multiline = false ;
+    private static final boolean maxBracket = false ;
+    
     private static void nl(IndentedWriter out)
     {
-        if ( multiline )
-            out.println();
-        else
-            out.print(" ") ;
+        nl(out, true) ;
     }
 
     private static void nl(IndentedWriter out, boolean spaceForNL)
@@ -141,7 +140,7 @@ public class WriterPath
             nl(out) ; 
             output(path2.getRight()) ;
             out.decIndent() ;
-            out.print(" )") ;
+            out.print(")") ;
         }
 
         //@Override
@@ -177,10 +176,14 @@ public class WriterPath
             out.print("(") ;
             out.print(Tags.tagPathReverse) ;
             nl(out) ; 
+            
             out.incIndent() ;
-            output(reversePath.getSubPath()) ;
+            Path p = reversePath.getSubPath() ;
+            output(p) ;
             out.decIndent() ;
-            out.print(" )") ;
+            nl(out, false) ;
+            
+            out.print(")") ;
         }
 
     }

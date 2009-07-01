@@ -42,7 +42,7 @@ public class PathWriter
 
         private IndentedWriter out ;
         private Prologue prologue ;
-        private boolean alwaysInnerParens = false ;
+        private static boolean alwaysInnerParens = true ;
         private boolean needParens = false ;
 
         PathWriterWorker(IndentedWriter indentedWriter, Prologue prologue)
@@ -106,9 +106,15 @@ public class PathWriter
         //@Override
         public void visit(P_Mod pathMod)
         {
-            if ( needParens ) out.print("(") ;
-            
+            if ( needParens )
+                out.print("(") ;
+            if ( alwaysInnerParens )
+                out.print("(") ;
             pathMod.getSubPath().visit(this) ;
+            if ( alwaysInnerParens )
+                out.print(")") ;
+            
+            
             if ( pathMod.isZeroOrMore() )
                 out.print("*") ;
             else if ( pathMod.isOneOrMore() )
@@ -123,7 +129,8 @@ public class PathWriter
                 out.print(Long.toString(pathMod.getMax())) ;
                 out.print("}") ;
             }
-            if ( needParens ) out.print(")") ;
+            if ( needParens )
+                out.print(")") ;
         }
 
         // Need to consider binary ^

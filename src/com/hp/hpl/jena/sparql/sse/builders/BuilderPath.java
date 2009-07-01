@@ -71,13 +71,15 @@ public class BuilderPath
     private Path build(ItemList list)
     {
         Item head = list.get(0) ;
+        if ( !head.isSymbol() )
+            return build(head) ;
         String tag = head.getSymbol() ;
-
         Build bob = findBuild(tag) ;
         if ( bob != null )
             return bob.make(list) ;
         else
             BuilderLib.broken(head, "Unrecognized path operation: "+tag) ;
+            
         return null ;
     }
     
