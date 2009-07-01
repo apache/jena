@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-07-01 14:36:04 $
+ * Last modified on   $Date: 2009-07-01 14:43:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -19,7 +19,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////

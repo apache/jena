@@ -10,8 +10,8 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:32 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-07-01 14:43:46 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -19,7 +19,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.ontology.impl;
 
 
 // Imports
@@ -29,7 +29,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.rulesys.test.TestBugs;
@@ -46,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.1 2009-07-01 14:43:46 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase

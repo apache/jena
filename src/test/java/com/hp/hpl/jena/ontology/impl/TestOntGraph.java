@@ -1,54 +1,37 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+  $Id: TestOntGraph.java,v 1.1 2009-07-01 14:43:46 ian_dickinson Exp $
 */
 
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.ontology.impl;
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
 
 /**
-    Collected test suite for the .ontology.impl package.
-    @author  Ian Dickinson
+    Ensure that an OntGraph passes the graph tests. Clunky because it has to go
+    via OntModel - there doesn't appear to be an OntGraph class.
+    
+ 	@author kers
 */
 
-public class TestPackage extends TestSuite {
+public class TestOntGraph extends AbstractTestGraph
+    {
+    public TestOntGraph( String name )
+        { super( name ); }
+        
+    public static TestSuite suite()
+        { return new TestSuite( TestOntGraph.class ); }
 
-    static public TestSuite suite() {
-        return new TestPackage();
+    @Override
+    public Graph getGraph()
+        { return ModelFactory.createOntologyModel().getGraph(); }
     }
 
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("ontology.impl");
-        addTest( "TestOntGraph", TestOntGraph.suite() );
-        addTest( "TestResource", TestResource.suite() );
-        addTest( "TestAxioms", TestAxioms.suite() );
-        addTest( "TestClassExpression", TestClassExpression.suite() );
-        addTest( "TestOntDocumentManager", TestOntDocumentManager.suite() );
-        addTest( "TestOntology", TestOntology.suite() );
-        addTest( "TestProperty", TestProperty.suite() );
-        addTest( "TestListSyntaxCategories", TestListSyntaxCategories.suite() );
-        addTest( "TestCreate", TestCreate.suite() );
-        addTest( "TestIndividual", TestIndividual.suite() );
-        addTest( "TestAllDifferent", TestAllDifferent.suite() );
-        addTestSuite( TestOntModelSpec.class );
-        addTest( new TestSuite( TestOntReasoning.class  ) );
-        addTest( new TestSuite( TestOntModel.class ) );
-        addTest( new TestSuite( TestBugReports.class ));
-        addTest( new TestSuite( TestOntClass.class ));
-        addTest( new TestSuite( TestFrameView.class ));
-        addTest( new TestSuite( TestOntTools.class ));
-    }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

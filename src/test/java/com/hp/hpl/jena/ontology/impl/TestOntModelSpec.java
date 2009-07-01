@@ -1,10 +1,10 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestOntModelSpec.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+ 	$Id: TestOntModelSpec.java,v 1.1 2009-07-01 14:43:46 ian_dickinson Exp $
 */
 
-package com.hp.hpl.jena.ontology.impl.test;
+package com.hp.hpl.jena.ontology.impl;
 
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
