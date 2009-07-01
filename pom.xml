@@ -131,29 +131,29 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions> 
-              <execution>
-                <id>attach-sources</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <author>true</author>
           <version>true</version>
@@ -208,22 +208,22 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <phase>process-sources</phase>
+            <phase>process-resources</phase>
             <configuration>
               <tasks>
                 <tstamp>
-                  <format property="build-time" pattern="d-MMMM-yyyy HH:mm"/>
+                  <format property="build-time" pattern="yyyy-MM-dd'T'HH:mm:ss.S"/>
                 </tstamp>
-                <copy file="src/main/java/com/hp/hpl/jena/Jena.java.template" toFile="src/main/java/com/hp/hpl/jena/Jena.java" overwrite="true">
+                <copy file="src/main/resources/jena-properties.xml" toFile="${basedir}/target/classes/jena-properties.xml" overwrite="true">
                   <filterset>
-                    <filter token="version-major" value="${version-major}"/>
-                    <filter token="version-minor" value="${version-minor}"/>
-                    <filter token="version-revision" value="${version-revision}"/>
-                    <filter token="version-status" value="${version-status}"/>
-                    <filter token="version" value="${project.version}"/>
-                    <filter token="Name" value="${project.name}"/>
-                    <filter token="website" value="${project.url}"/>
-                    <filter token="build-time" value="${build-time}"/>
+                    <filter token="NAME" value="${project.name}"/>
+                    <filter token="WEBSITE" value="${project.url}"/>
+                    <filter token="VERSION-MAJOR" value="${version-major}"/>
+                    <filter token="VERSION-MINOR" value="${version-minor}"/>
+                    <filter token="VERSION-REVISION" value="${version-revision}"/>
+                    <filter token="VERSION-STATUS" value="${version-status}"/>
+                    <filter token="VERSION" value="${project.version}"/>
+                    <filter token="BUILD_TIME_XSD" value="${build-time}"/>
                   </filterset>
                 </copy>
               </tasks>
@@ -235,33 +235,37 @@
         </executions>
       </plugin>
 
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-resources-plugin</artifactId>
-       <configuration>
-       <encoding>UTF-8</encoding>
-       </configuration>
-    </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+        <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
 
     </plugins>
 
     <resources>
       <resource>
-        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
         <directory>etc</directory>
         <targetPath>etc</targetPath>
+        <filtering>false</filtering>
       </resource>
       <resource>
-        <filtering>false</filtering>
         <directory>vocabularies</directory>
         <targetPath>vocabularies</targetPath>
+        <filtering>false</filtering>
       </resource>
       <resource>
-        <filtering>false</filtering>
         <directory>src/main/java</directory>
         <includes>
           <include>log4j.properties</include>
         </includes>
+        <filtering>false</filtering>
       </resource>
     </resources>
     

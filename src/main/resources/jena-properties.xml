@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties version="1.0">
+  <comment>Jena System Properties</comment>
+  <entry key="com.hp.hpl.jena.name">@NAME@</entry>
+  <entry key="com.hp.hpl.jena.website">@WEBSITE@</entry>
+  <entry key="com.hp.hpl.jena.version">@VERSION@</entry>
+  <entry key="com.hp.hpl.jena.version.major">@VERSION-MAJOR@</entry>
+  <entry key="com.hp.hpl.jena.version.minor">@VERSION-MINOR@</entry>
+  <entry key="com.hp.hpl.jena.version.revision">@VERSION-REVISION@</entry>
+  <entry key="com.hp.hpl.jena.version.status">@VERSION-STATUS@</entry>
+  <entry key="com.hp.hpl.jena.build.datetime">@BUILD_TIME_XSD@</entry>
+</properties>
