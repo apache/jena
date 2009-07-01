@@ -43,6 +43,22 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <path-05.srx>
       ]
+
+      [  mf:name    "Path-06" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-06.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <path-06.srj>
+      ]
+      [  mf:name    "Path-07" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-07.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <path-07.srj>
+      ]
+
       [  mf:name    "Path-10" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
