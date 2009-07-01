@@ -81,15 +81,10 @@ public class FactoryGraphTDB
     /** Create a TDB graph using a specifc index builder - mainly for testing */
     public static GraphTriplesTDB createGraph(IndexBuilder indexBuilder, Location location)
     {
-        return _createGraph(indexBuilder, location) ;
+        DatasetGraphTDB ds = _createDatasetGraph(indexBuilder, location, tripleIndexes, quadIndexes) ;
+        return (GraphTriplesTDB)ds.getDefaultGraph() ;
     }  
-//    
-//    /** Create a TDB graph in-memory - for testing */
-//    public static GraphTriplesTDB createGraphMem()
-//    {
-//        return createGraphMem(IndexBuilder.mem()) ;
-//    }
-//
+
     /** Create a TDB graph in-memory - for testing */
     public static GraphTriplesTDB createGraphMem(IndexBuilder indexBuilder)
     {
@@ -178,28 +173,14 @@ public class FactoryGraphTDB
     }
 
     // ---- All creation happens here
-    // Metadata for location.
-    
-    /** Create or connect a TDB-back graph (graph-level)
-     * This will be the default graph of a dataset except that the quads table is not attached/created
-     */
-    private static GraphTriplesTDB _createGraph(IndexBuilder indexBuilder, Location location)
-    {
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
-        TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
-        ReorderTransformation transform = chooseOptimizer(location) ;
-        DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
-        return new GraphTriplesTDB(null, table, prefixes, transform, location) ;
-    }
     
     /** Create or connect a TDB dataset (graph-level) */
-    private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
+    private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphIndexDesc, String[] quadIndexDesc)
     {
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
-        TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphDesc) ;
-        QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadDesc) ;
+        TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc) ;
+        QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc) ;
         DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
-        //return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }
 

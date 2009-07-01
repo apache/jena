@@ -11,10 +11,12 @@ public class Dev
     // ** metadata files and BPT creation.
     
     // == 0.8.2
+    // TS_jena
+    // Finidng missing TS test suites (1080)
     // Document concurrency.
-    // Remove all relics of creating graphs without a dataset (FactoryGraphTDB._createGraph())
+
     
-    
+    // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
     //    Need better var index support first

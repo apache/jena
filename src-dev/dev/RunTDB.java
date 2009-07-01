@@ -69,6 +69,22 @@ public class RunTDB
     
     public static void main(String ... args) throws IOException
     {
+        // ?s rdf:type/rdfs:subClassOf* ?o
+        Model m = FileManager.get().loadModel("D.ttl") ;
+        
+//        Model m2 = TDBFactory.createModel() ;
+//        m2.add(m) ;
+//        m = m2 ;
+        
+        String qs = "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>" ;
+        qs = qs + "SELECT * {  ?s rdf:type/rdfs:subClassOf* ?o }" ;
+        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        System.exit(0) ;
+        
+        
         FileSet fileset = new FileSet("tmp", "XYZ") ;
         IndexBuilderRedirect.createRangeIndex(fileset, -1, 8*1024, new RecordFactory(24,0)) ;
         System.exit(0) ;

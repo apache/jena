@@ -49,6 +49,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     // The script suite
     , GraphTDBTestSuite.class
     , TS_TDBAssembler.class
+    , TS_Jena.class
 } )
 
 public class InstallationTest
