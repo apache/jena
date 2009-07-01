@@ -1,13 +1,16 @@
-PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+#PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
 PREFIX  :        <http://example/>
 
 SELECT *
 WHERE {
-    :x :p ?x . :x :p ?x .
-    FILTER(?x = 23 ) 
-    OPTIONAL { :XX :PP :QQ }
-#    NOT EXISTS { ?s ?p ?o }
-    :x :q ?y .
-    FILTER(?y = 57 )
+    ?x ^:p* ?y
+
+    { ?x ^:p^:q^:r ?y }
+UNION
+    { ?x ^:p/^:q/^:r ?y }
+UNION
+   { ?x ^:p/^:q*/^:r ?y }
+UNION
+    { ?x ^:p/^(:q*)/^:r ?y }
 }
