@@ -12,7 +12,9 @@ public class Dev
     
     // == 0.8.2
     // TS_jena
-    // Finidng missing TS test suites (1080)
+    // Sort out tests TS_Base calls TS_others, confusing ant (looks for TS_*.java)
+    // Invent TC_ (TestCollection) which is a group TS_*
+    //   rename GraphTDBTestSuite
     // Document concurrency.
 
     

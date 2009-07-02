@@ -6,14 +6,16 @@
 
 package com.hp.hpl.jena.tdb;
 
-import atlas.iterator.TS_Iterator;
-import atlas.lib.TS_Lib;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import atlas.event.TS_Event;
+import atlas.io.TS_IO;
+import atlas.iterator.TS_Iterator;
+import atlas.lib.TS_Lib;
 
 import com.hp.hpl.jena.riot.TS_Riot;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler;
@@ -34,20 +36,30 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_Lib.class
+    // Library
+      TS_Lib.class
     , TS_Iterator.class
+    , TS_Event.class
+    , TS_IO.class
+    
+    // RIOT
     , TS_Riot.class
-    , TS_Base.class
+    
+    // TDB
+
+    // Includes TS_Block, TS_File, TS_Buffer(indireetcly), TS_Record, TS_RecordFile
+    // so duplicates during ant's "find tests"
+    , TS_Base.class     
     , TS_LibTDB.class
     , TS_Index.class
-    , TS_Store.class     // The main storage implementation.  Slow tests.
+    , TS_Store.class        // The main storage implementation.  Slow tests.
     , TS_Solver.class
     , TS_Sys.class
     , TS_Graph.class
     , TS_Factory.class
     
     // The script suite
-    , GraphTDBTestSuite.class
+    , GraphTDBTestSuite.class // Move to TS_Store?
     , TS_TDBAssembler.class
     , TS_Jena.class
 } )

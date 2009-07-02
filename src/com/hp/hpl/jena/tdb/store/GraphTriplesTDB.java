@@ -113,7 +113,6 @@ public class GraphTriplesTDB extends GraphTDBBase
             tripleTable.close();
             super.close() ;
         }
-        // Else do nothing.
     }
     
     @Override
