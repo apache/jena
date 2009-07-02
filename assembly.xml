@@ -15,10 +15,6 @@
         <include>readme.html</include>
         <include>README.txt</include>
         <include>ReleaseNotes.txt</include>
-        <include>build.xml</include>
-        <include>test.bat</include>
-        <include>test.sh</include>
-        <include>test-db.sh</include>
       </includes>
     </fileSet>
 
@@ -28,6 +24,9 @@
       <includes>
         <include>*.jar</include>
       </includes>
+      <excludes>
+        <exclude>jena*.jar</exclude>
+      </excludes>
     </fileSet>
 
     <fileSet>
@@ -35,6 +34,16 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <include>jena-${project.version}.jar</include>
+        <include>jena-${project.version}-tests.jar</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>jena-${project.version}-sources.jar</include>
+        <include>jena-${project.version}-javadoc.jar</include>
       </includes>
     </fileSet>
 
@@ -51,28 +60,11 @@
     </fileSet>
 
     <fileSet>
-      <directory>etc</directory>
-    </fileSet>
-    
-    <fileSet>
-      <directory>src</directory>
-    </fileSet>
-
-    <fileSet>
       <directory>src-examples</directory>
     </fileSet>
 
     <fileSet>
-      <directory>testing</directory>
-    </fileSet>
-
-    <fileSet>
-      <directory>vocabularies</directory>
-    </fileSet>
-
-    <!-- this does not seem to work, test! -->
-    <fileSet>
-      <directory>${project.build.directory}/site/apidocs</directory>
+      <directory>${project.build.directory}/apidocs</directory>
       <outputDirectory>doc/javadoc</outputDirectory>
     </fileSet>
 

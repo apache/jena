@@ -239,8 +239,22 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
-        <encoding>UTF-8</encoding>
+          <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+
+      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
