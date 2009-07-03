@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.tdb.store;
 
 
+import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph;
+
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -77,7 +79,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
             getLog().info("Duplicate: ("+$+")") ;
         }
     }
-
     
     protected static ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
     {
@@ -88,7 +89,23 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         return new MapperIteratorTriples(iter) ;
     }
     
+    protected static ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
+    {
+        Node gn = graphNode ;
+        // Explicitly named union graph. 
+        if ( isQuadUnionGraph(gn) )
+            gn = Node.ANY ;
 
+        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iter == null )
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
+        
+        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn) , iter) ;
+        
+        if ( gn == Node.ANY )
+            iterTriples = Iter.distinct(iterTriples) ;
+        return new MapperIteratorTriples(iterTriples) ;
+    }
     
     @Override
     protected Reifier constructReifier()

@@ -10,8 +10,12 @@ public class Dev
 {
     // ** metadata files and BPT creation.
     
+    
     // == 0.8.2
     // Report
+    //  Path code goes to graph directly, bypassing testing the union in the environment.
+    //  Change ds.getDefaultGraph??
+    // Need (more) tests for symUnionDefaultGraph
     // Document concurrency.
 
     

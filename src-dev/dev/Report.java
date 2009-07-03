@@ -6,8 +6,6 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -24,10 +22,10 @@ public class Report
         String testNS = "http://test.com/test#";
 
         Model domain = ModelFactory.createDefaultModel();
-        domain.read("file:domain.n3", "N3");
+        domain.read("file:tmp/domain.n3", "N3");
 
         Model instance = ModelFactory.createDefaultModel();
-        instance.read("file:instance.n3", "N3");
+        instance.read("file:tmp/instance.n3", "N3");
 
         DataSource src = DatasetFactory.create();
         Model domain_instance = ModelFactory.createDefaultModel();
@@ -35,11 +33,10 @@ public class Report
         domain_instance.add(instance);
 
         src.setDefaultModel(domain_instance);
-
         executePathQuery(src);
 
 
-        TDB.getContext().setTrue(TDB.symUnionDefaultGraph);
+        TDB.getContext().setTrue(TDB.symUnionDefaultGraph); // Has no effect on Path evaluation?
         TDB.getContext().setTrue(TDB.symLogExec);
         //Dataset ds = TDBFactory.createDataset("/Users/Gyaan/eclipse_workspace_etr/EtrConfiguration/UserDatasetTest/users/");
         Dataset ds = TDBFactory.createDataset();
@@ -51,9 +48,13 @@ public class Report
 
         TDB.sync(ds);
 
+//        Query q = QueryFactory.create("SELECT * {?s ?p ?o}") ;
+//        ResultSetFormatter.out(QueryExecutionFactory.create(q, ds).execSelect()) ;
+        
+        
+        
         //Dataset tdbSrc = TDBFactory.createDataset("/Users/Gyaan/eclipse_workspace_etr/EtrConfiguration/UserDatasetTest/users/");
         executePathQuery(ds);
-
     }
 
     public static void executePathQuery(Dataset src){
@@ -72,9 +73,9 @@ public class Report
         try{
             QueryExecution cqexec = null;
             Query q = QueryFactory.create(StringUtils.join("\n",sparql), Syntax.syntaxARQ) ;
-            Op op = Algebra.compile(q) ;
-            op = Algebra.optimize(op) ;
-            System.out.println(op) ;
+//            Op op = Algebra.compile(q) ;
+//            op = Algebra.optimize(op) ;
+//            System.out.println(op) ;
             
             cqexec = QueryExecutionFactory.create( q,  src) ;
             ResultSet results = cqexec.execSelect();

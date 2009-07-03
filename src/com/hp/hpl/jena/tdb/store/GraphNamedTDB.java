@@ -13,7 +13,6 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import atlas.iterator.Iter;
 import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
@@ -109,26 +108,15 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
+        // Explicitly named default graph
+        // (no test for union in teh context is done here)
         if ( isDefaultGraph(graphNode) )
             // Default graph.
             return graphBaseFindWorker(getDataset().getTripleTable(), m) ;
-
-        Node gn = graphNode ;
-        if ( isQuadUnionGraph(graphNode) )
-            gn = Node.ANY ;
         
-        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
-        if ( iter == null )
-            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
-        
-        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn) , iter) ;
-        
-        if ( gn == Node.ANY )
-            iterTriples = Iter.distinct(iterTriples) ;
-        return new MapperIteratorTriples(iterTriples) ;
-
+        return graphBaseFindWorker(getDataset(), graphNode, m) ;
     }
-
+    
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {
