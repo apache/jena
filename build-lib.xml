@@ -371,7 +371,7 @@
   <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
-  <target name="ivy-init">
+  <target name="ivy-init" depends="publish-check">
     <ivy:settings />
   </target>
 
@@ -408,8 +408,6 @@
     <publish-module ivy.file="ivy.xml" resolver="${publish.resolver}"/>
   </target>
 
-  
-  
   <target name="ivy-publish-old" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
     <!-- <ivy:deliver conf="main"/> -->
