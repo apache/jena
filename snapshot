@@ -26,7 +26,7 @@ fi
 
 ## Make jars
 rm -f lib/arq.jar lib/arq-extra.jar
-ant clean build
+ant clean jar
 
 # Remove path and version numbers.
 function jarName

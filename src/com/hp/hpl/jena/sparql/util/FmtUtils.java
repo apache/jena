@@ -312,8 +312,11 @@ public class FmtUtils
         
         if ( n.isVariable() )
             return "?"+n.getName() ;
+        
+        if ( n.equals(Node.ANY) )
+            return "ANY" ;
 
-        ALog.warn(FmtUtils.class, "Failed to a node to a string: "+n) ;
+        ALog.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
         return n.toString() ;
     }
 
