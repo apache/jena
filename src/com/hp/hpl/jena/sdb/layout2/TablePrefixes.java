@@ -14,7 +14,7 @@ public class TablePrefixes
     private static final String tableName       = PrefixMappingSDB.prefixTableName ;
     public static String name()                 { return tableName; }
     public static final int    prefixColWidth   = PrefixMappingSDB.prefixColWidth ;
-    public static final int    uriColWidth       = PrefixMappingSDB.uriColWidth ;
+    public static final int    uriColWidth      = PrefixMappingSDB.uriColWidth ;
 
 }
 
