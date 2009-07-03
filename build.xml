@@ -44,6 +44,13 @@
     <copy file="${build.dir}/${jarfile.extra}" tofile="${lib.dir}/${jarfile.extra.lib}"/>
   </target>
 
+  <target name="jar-artifact" depends="jar">
+    <!-- <delete file="${artifacts.dir}/${jarfile}"/> -->
+    <!-- <delete file="${artifacts.dir}/${jarfile.extra}"/> -->
+    <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
+    <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile.extra}"/>
+  </target>
+
   <target name="clean-jar">
     <delete file="${lib.dir}/${jarfile.lib}"/>
     <delete file="${lib.dir}/${jarfile.extra.lib}"/>
