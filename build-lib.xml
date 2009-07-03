@@ -303,10 +303,6 @@
           depends="clean-once,artifacts,test,ivy-publish">
   </target>
   
-  <target name="publish-test" description="Build and publish this version (locally, for testing)"
-	  depends="clean-once,artifacts,test,ivy-publish-dev">
-  </target>
-  
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
@@ -377,7 +373,7 @@
   <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
-  <target name="ivy-init">
+  <target name="ivy-init" depends="publish-check">
     <ivy:settings />
   </target>
 
@@ -407,16 +403,14 @@
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
 
-  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
-    <fail message="ARQ: Does not work for multiple artifacts"/>
+  <import file="build-macros.xml"/>
 
-    <!-- <ivy:resolve conf="main"/> -->
-    <ivy:deliver conf="main"/>
-    <ivy:publish conf="main" 
-                 resolver="${publish.resolver}" 
-                 overwrite="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-    </ivy:publish>
+  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
+    <publish-module ivy.file="ivy.xml" resolver="${publish.resolver}"/>
+    <publish-module ivy.file="ivy-extra.xml" resolver="${publish.resolver}"/>
+    <!--
+    <fail message="ARQ: Does not work for multiple artifacts"/>
+    -->
   </target>
 
   <target name="publish-check">
@@ -432,22 +426,10 @@
     <fail message="Publication environment variable (IVYKEY) not set"  unless="env.IVYKEY"/>
   </target>
 
-  <!-- DEVELOPMENT -->
-  <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
-    <fail message="ARQ: Does not work for multiple artifacts"/>
-    <!-- <ivy:resolve conf="main"/> -->
-    <ivy:publish conf="main" 
-                 resolver="dev-resolver" 
-                 overwrite="true"
-                 forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-    </ivy:publish>
-  </target>
-
   <target name="ivy-pom" depends="ivy-init">
     <!-- Make a basic POM file -->
     <ivy:makepom ivyfile="ivy.xml" 
-                 pomfile="pom-tdb-auto.xml">
+                 pomfile="pom-${name}-auto.xml">
       <!--
         <mapping conf="default" scope="compile"/>
         <mapping conf="runtime" scope="runtime"/>
