@@ -15,7 +15,7 @@
        build.metadata.file    (Optional)
           The metadata file to add to the build (Java properties)
        Copyright.text
-       publish.resolver
+       publish.repo
          Ivy resolver to use for publication
        ++ Paths
        java.source.path
@@ -329,7 +329,8 @@
 
   <target name="pre-run-junit"/>
 
-  <target name="run-junit" depends="pre-run-junit,clean-reports">
+  <target name="run-junit"
+	  depends="clean-once,jar,pre-run-junit,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 
@@ -406,8 +407,8 @@
   <import file="build-macros.xml"/>
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
-    <publish-module ivy.file="ivy.xml" resolver="${publish.resolver}"/>
-    <publish-module ivy.file="ivy-extra.xml" resolver="${publish.resolver}"/>
+    <publish-module ivy.file="ivy.xml" resolver="${publish.repo}"/>
+    <publish-module ivy.file="ivy-extra.xml" resolver="${publish.repo}"/>
     <!--
     <fail message="ARQ: Does not work for multiple artifacts"/>
     -->
