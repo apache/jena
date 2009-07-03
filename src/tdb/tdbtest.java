@@ -16,7 +16,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
@@ -53,9 +53,9 @@ public class tdbtest
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new TextListener2(out)) ;
         
-        InstallationTest.beforeClass() ;
+        TC_TDB.beforeClass() ;
         Result result = runner.run(ts) ;
-        InstallationTest.afterClass() ;
+        TC_TDB.afterClass() ;
         
         if ( result.getFailureCount() > 0 )
             System.exit(1) ;

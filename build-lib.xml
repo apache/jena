@@ -15,7 +15,7 @@
        build.metadata.file    (Optional)
           The metadata file to add to the build (Java properties)
        Copyright.text
-       publish.resolver
+       publish.repo
          Ivy resolver to use for publication
        ++ Paths
        java.source.path
@@ -333,7 +333,8 @@
 
   <target name="pre-run-junit"/>
 
-  <target name="run-junit" depends="pre-run-junit,clean-reports">
+  <target name="run-junit"
+	  depends="clean-once,jar,pre-run-junit,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 
@@ -343,6 +344,7 @@
       <!-- usefile="false"  type="plain"-->
       <!-- <formatter usefile="false" type="brief"/> -->
       <formatter type="xml" />
+      <formatter type="plain" />
       <classpath>
         <pathelement path="${build.classes.dir}" />
         <path refid="java.run.class.path" />
@@ -405,14 +407,14 @@
   <import file="build-macros.xml"/>
     
   <target name="ivy-publish" depends="ivy-init">
-    <publish-module ivy.file="ivy.xml" resolver="${publish.resolver}"/>
+    <publish-module ivy.file="ivy.xml" resolver="${publish.repo}"/>
   </target>
 
   <target name="ivy-publish-old" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
     <!-- <ivy:deliver conf="main"/> -->
     <ivy:publish conf="main" 
-                 resolver="${publish.resolver}" 
+                 resolver="${publish.repo}" 
                  overwrite="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>

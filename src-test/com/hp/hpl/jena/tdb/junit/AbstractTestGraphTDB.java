@@ -18,6 +18,9 @@ public class AbstractTestGraphTDB extends AbstractTestGraph
     @Override public void testBulkAddWithReification() {}
     
     @Override public void testIsomorphismFile() {}
+    
+    // Meanling less - graphs (and hence models) are not indpenedent of their datasets. 
+    @Override public void testCloseSetsIsClosed() {}
 }
 
 /*

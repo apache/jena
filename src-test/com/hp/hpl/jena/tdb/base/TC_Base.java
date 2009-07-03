@@ -4,32 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.base;
 
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.tdb.base.block.TS_Block;
+import com.hp.hpl.jena.tdb.base.file.TS_File;
+import com.hp.hpl.jena.tdb.base.record.TS_Record;
+import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+
 import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+      TS_Block.class
+    , TS_File.class
+    , TS_Record.class
+    , TS_RecordFile.class
+})
 
-/** Scripted test generation */
 
-@RunWith(AllTests.class)
-public class GraphTDBTestSuite extends TestSuite
-{
-    public final static String manifestMain = "testing/manifest.ttl" ;
-    
-    static public TestSuite suite() { return new GraphTDBTestSuite() ; }
-    
-    private GraphTDBTestSuite()
-    {
-        super("TDB-Scripts") ;
-        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBFactory.stdFactory) ;
-    }
-
-    
-}
+public class TC_Base
+{}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

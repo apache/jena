@@ -26,7 +26,7 @@ public class tdbclean extends CmdTDB
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" [--desc=assembler|--loc=DIR]" ;
+        return getCommandName()+" DIRECTORY" ;
     }
 
     @Override

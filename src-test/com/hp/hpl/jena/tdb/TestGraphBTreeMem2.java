@@ -19,6 +19,9 @@ public class TestGraphBTreeMem2 extends AbstractTestGraph2
         return GraphTDBFactoryTest.createBTreeMem() ;
     }
 
+    @Override
+    protected void returnGraph(Graph g)
+    {}
 }
 
 /*

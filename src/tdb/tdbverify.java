@@ -14,7 +14,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.TDB;
 
 
@@ -29,7 +29,7 @@ public class tdbverify
             out.printf("TDB v%s test suite (Built: %s)\n", TDB.VERSION, TDB.BUILD_DATE) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new MyTextListener(out)) ;
-        Result result = runner.run(InstallationTest.class) ;
+        Result result = runner.run(TC_TDB.class) ;
         
         if ( result.getFailureCount() > 0 )
             System.exit(1) ;

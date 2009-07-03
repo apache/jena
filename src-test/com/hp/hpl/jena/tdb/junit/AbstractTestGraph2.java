@@ -35,13 +35,14 @@ public abstract class AbstractTestGraph2 extends TestBase
     { return new Triple(s, p, o) ; }
     
     protected abstract Graph emptyGraph() ;
+    protected abstract void returnGraph(Graph g) ;
     protected static Node makeNode(String str) { return  SSE.parseNode(str) ; }
     
     @Test public void graph_01()
     {
         Graph g = emptyGraph() ;
         assertEquals(0, g.size()) ;
-        g.close();
+        returnGraph(g) ;
     }
     
     @Test public void graph_add_01()
@@ -52,7 +53,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t)) ;
         assertTrue(g.contains(s1,p1,o1)) ;
-        g.close();
+        returnGraph(g) ;
     }
     
     @Test public void graph_add_02()
@@ -65,7 +66,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t)) ;
         assertTrue(g.contains(s1,p1,o1)) ;
-        g.close();
+        returnGraph(g) ;
 
     }
     
@@ -89,7 +90,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(t1)) ;
         assertTrue(g.contains(t2)) ;
         assertTrue(g.contains(ns1,np1,no1)) ;
-        g.close();
+        returnGraph(g) ;
 
     }
 
@@ -108,7 +109,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(s1,p1,lit2)) ;
         Node o = makeNode("<lex>") ;
         assertFalse(g.contains(s1,p1,o)) ;
-        g.close();
+        returnGraph(g) ;
 
     }        
         
@@ -120,6 +121,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.delete(t) ;
         assertEquals(0, g.size()) ;
         assertFalse("g contains t", g.contains(t)) ;
+        returnGraph(g) ;
     }
     
     @Test public void graph_add_delete_02()
@@ -131,6 +133,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.add(t) ;
         assertEquals(1, g.size()) ;
         assertTrue("g does not contain t", g.contains(t)) ;
+        returnGraph(g) ;
     }
 
     @Test public void graph_add_delete_03()
@@ -143,6 +146,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.delete(t) ;
         assertEquals(0, g.size()) ;
         assertFalse("g contains t", g.contains(t)) ;
+        returnGraph(g) ;
     }
     
     @Test public void graph_add_delete_04()
@@ -157,6 +161,7 @@ public abstract class AbstractTestGraph2 extends TestBase
 
         assertEquals(1, g.size()) ;
         assertTrue("g does not contain t2", g.contains(t2)) ;
+        returnGraph(g) ;
     }
 
     @Test public void graph_add_find_01()
@@ -168,6 +173,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertFalse(g.contains(t1)) ;
         g.add(t1) ;
         assertTrue(g.contains(t1)) ;
+        returnGraph(g) ;
     }
     
     @Test public void graph_add_find_02()
@@ -179,6 +185,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertFalse(g.contains(t1)) ;
         g.add(t1) ;
         assertTrue(g.contains(t1)) ;
+        returnGraph(g) ;
     }
 
     @Test public void remove_01()
@@ -188,6 +195,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.add(t1) ;
         g.getBulkUpdateHandler().remove(null, null, null) ;
         assertEquals(0, g.size()) ;
+        returnGraph(g) ;
     }
     
     @Test public void remove_02()
@@ -198,6 +206,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.getBulkUpdateHandler().remove(s2, null, null) ;
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t1)) ;
+        returnGraph(g) ;
     }
 
     @Test public void remove_03()
@@ -207,6 +216,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.add(t1) ;
         g.getBulkUpdateHandler().remove(s1, null, null) ;
         assertEquals(0, g.size()) ;
+        returnGraph(g) ;
     }
 
     @Test public void removeAll_01()
@@ -222,15 +232,17 @@ public abstract class AbstractTestGraph2 extends TestBase
         g.add(t4) ;
         g.getBulkUpdateHandler().removeAll() ;
         assertEquals(0, g.size()) ;
+        returnGraph(g) ;
     }
        
     @Test public void count_01()
     {
-        Graph graph = emptyGraph() ;
-        assertEquals(0, graph.size()) ;
+        Graph g = emptyGraph() ;
+        assertEquals(0, g.size()) ;
         Triple t1 = triple(s1, p1, o1) ;
-        graph.add(t1) ;
-        assertEquals(1, graph.size()) ;
+        g.add(t1) ;
+        assertEquals(1, g.size()) ;
+        returnGraph(g) ;
     }
     
     // Tests : triples and values.

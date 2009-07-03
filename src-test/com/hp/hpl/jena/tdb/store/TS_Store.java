@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
     , TestGraphNamedTDB.class
     , TestDatasetTDB.class
     , TestDataset.class
+    // The script suite
+    , TestSuiteGraphTDB.class
 } )
 public class TS_Store
 { 

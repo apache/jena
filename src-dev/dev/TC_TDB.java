@@ -4,28 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base;
-
-import com.hp.hpl.jena.tdb.base.block.TS_Block;
-import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.record.TS_Record;
-import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
+package dev;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+// This is not in the test source folder tree.
+// In the build script, it finds all the TS_*.
+// Ideally would do that here
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TS_Block.class
-    , TS_File.class
-    // No TS_Buffer - called from TS_Record
-    , TS_Record.class
-    , TS_RecordFile.class
-})
+    com.hp.hpl.jena.tdb.TC_TDB.class
+} )
+
+public class TC_TDB
+{ }
 
 
-public class TS_Base
-{}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

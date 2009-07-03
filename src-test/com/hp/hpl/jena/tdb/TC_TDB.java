@@ -19,20 +19,19 @@ import atlas.lib.TS_Lib;
 
 import com.hp.hpl.jena.riot.TS_Riot;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler;
-import com.hp.hpl.jena.tdb.base.TS_Base;
+import com.hp.hpl.jena.tdb.base.TC_Base;
 import com.hp.hpl.jena.tdb.graph.TS_Graph;
 import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.store.GraphTDBTestSuite;
 import com.hp.hpl.jena.tdb.store.TS_Store;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
-// Not called TS_...
-// In the build script, it finds all the TS_*.
-// Ideally would do that here
+// Naming conventions.
+// TS_* - Test sets: collections of testing files (Often Test*)
+// TC_*  - Test collection: sets of TS's and TC's.
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -47,9 +46,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     
     // TDB
 
-    // Includes TS_Block, TS_File, TS_Buffer(indireetcly), TS_Record, TS_RecordFile
-    // so duplicates during ant's "find tests"
-    , TS_Base.class     
+    , TC_Base.class         // Test Collection.    
     , TS_LibTDB.class
     , TS_Index.class
     , TS_Store.class        // The main storage implementation.  Slow tests.
@@ -57,14 +54,11 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     , TS_Sys.class
     , TS_Graph.class
     , TS_Factory.class
-    
-    // The script suite
-    , GraphTDBTestSuite.class // Move to TS_Store?
     , TS_TDBAssembler.class
     , TS_Jena.class
 } )
 
-public class InstallationTest
+public class TC_TDB
 {
     @BeforeClass static public void beforeClass()   
     {
@@ -77,7 +71,7 @@ public class InstallationTest
     
     // For "ant" before 1.7 that only understands JUnit3. 
     public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(InstallationTest.class) ;
+        return new junit.framework.JUnit4TestAdapter(TC_TDB.class) ;
     }
 }
 

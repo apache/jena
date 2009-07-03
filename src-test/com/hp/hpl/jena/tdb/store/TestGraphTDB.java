@@ -56,6 +56,10 @@ public class TestGraphTDB extends AbstractTestGraph2
     {
         return graph ;
     }
+    
+    @Override
+    protected void returnGraph(Graph g)
+    {}
 }
 
 /*

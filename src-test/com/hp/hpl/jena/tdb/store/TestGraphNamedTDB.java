@@ -24,6 +24,10 @@ public class TestGraphNamedTDB extends AbstractTestGraph2
         DatasetGraph dataset = TDBFactory.createDatasetGraph() ;
         return dataset.getGraph(graphNode) ;
     }
+    
+    @Override
+    protected void returnGraph(Graph g)
+    {}
 }
 
 /*

@@ -14,6 +14,10 @@ public class TestGraphBPlusTreeMem2 extends AbstractTestGraph2
 {
     @Override
     public Graph emptyGraph() { return GraphTDBFactoryTest.createBPlusTreeMem() ; }
+
+    @Override
+    protected void returnGraph(Graph g)
+    {}
 }
 
 /*

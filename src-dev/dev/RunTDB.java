@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
@@ -245,9 +245,9 @@ public class RunTDB
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new TextListener2(System.out)) ;
         
-        InstallationTest.beforeClass() ;
+        TC_TDB.beforeClass() ;
         Result result = runner.run(t) ;
-        InstallationTest.afterClass() ;
+        TC_TDB.afterClass() ;
     }
     
     

@@ -4,28 +4,32 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.store;
 
+import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runners.AllTests;
 
-import com.hp.hpl.jena.tdb.InstallationTest;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 
-// This is not in the test source folder tree.
-// In the build script, it finds all the TS_*.
-// Ideally would do that here
+/** Scripted test generation */
 
-// **** SEE ALSO InstallationTest ****
+@RunWith(AllTests.class)
+public class TestSuiteGraphTDB extends TestSuite
+{
+    public final static String manifestMain = "testing/manifest.ttl" ;
+    
+    static public TestSuite suite() { return new TestSuiteGraphTDB() ; }
+    
+    private TestSuiteGraphTDB()
+    {
+        super("TDB-Scripts") ;
+        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBFactory.stdFactory) ;
+    }
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    InstallationTest.class
-} )
-
-public class TS_TDB
-{ }
-
-
+    
+}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
