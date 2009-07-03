@@ -14,8 +14,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class Report
 {
-
-
     public static void main(String[] args){
 
         CmdUtils.setLog4j() ;
