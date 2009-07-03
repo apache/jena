@@ -1,18 +1,10 @@
 @prefix : <http://example/> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 
-## # Default.
-## :g :label "Default" .
-## :x :p <http://example/> .
-## :x :p 1 .
-## :x :p 2 .
+:C1 rdfs:subClassOf :C2 .
+:C2 rdfs:subClassOf :C3 .
 
-## # Named - 1
-## :g :label "Graph-1" .
-## :x :p 1 .
-## :x1 :q :x .
 
-# Named - 1
-:g :label "Graph-2" .
-:x :p 1 .
-:x2 :q :x .
-:x2 :q :x1 .
+:x  rdf:type :C1 .
+
