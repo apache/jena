@@ -116,6 +116,8 @@ public class PathLib
         o = Var.lookup(binding, o) ;
         Iterator<Node> iter = null ;
         Node endNode = null ;
+        // Hereby monsters.
+        // "Compile" a SPARQL query to access the magic names of graphs.
         Graph graph = execCxt.getActiveGraph() ;
         
         if ( Var.isVar(s) && Var.isVar(o) )
@@ -172,7 +174,7 @@ public class PathLib
         return IterLib.noResults(execCxt) ;
     }
 
-    // Brute force evaluation of a TriplePah where neither subject nor object ar ebound 
+    // Brute force evaluation of a TriplePath where neither subject nor object are bound 
     private static QueryIterator ungroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar,
                                                 ExecutionContext execCxt)
     {

@@ -9,7 +9,9 @@ package dev;
 public class Dev
 {
     // ==== 2.7.1
-    // Build: no arq-extra anymore?
+    // Build: no arq-extra anymore?  Too much hassle!
+    // build-lib => one artifact
+    // Separation of test code?
     
     
     // ==== ARQ
@@ -23,6 +25,9 @@ public class Dev
     //   ??Datasets opened, closed
     //   Remote queries made
     // ----
+    
+    // Improve PathLib.ungroundedPath
+    // e.g. if first step is a URI, use this to seed the process
     
     //   TransformFilterPlacement
     //   GraphStore API?
