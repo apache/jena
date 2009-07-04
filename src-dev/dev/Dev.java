@@ -13,9 +13,12 @@ public class Dev
     // build-lib => one artifact
     // Separation of test code?
     
-    // POM testing - javadoc - does it really need attaching?  Choosing the packages. 
+    // POM testing 
     // Assembly checking.
+    //  Surefire report names!
     // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
+    // Test scripts involving arq.examples
+    //   Movbe to src-examples/**/test
      
     
     // ==== ARQ
