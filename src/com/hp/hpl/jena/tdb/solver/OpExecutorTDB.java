@@ -63,7 +63,7 @@ public class OpExecutorTDB extends OpExecutor
     public OpExecutorTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
-        // NB. The datset may be a TDB one, or a general one.
+        // NB. The dataset may be a TDB one, or a general one.
         // Merged union graph magic is only for a TDB dataset.
         
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;

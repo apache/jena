@@ -15,7 +15,7 @@ import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
-/** DatasetGraph that caching graphs created.
+/** DatasetGraph that caches graphs created.
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {

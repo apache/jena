@@ -21,10 +21,10 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
-// Used for DatasetTDB evaluation (not a TDB graph in any other datase).
+// This exists to intercept the query execution setup.
+//  e.g choose the transformation optimizations
+// then to make the quad form.
 // TDB also uses a custom OpExecutor to intercept certain Op evaluations
-
-// Generalize - this is the quad transform only.
 
 public class QueryEngineTDB extends QueryEngineMain
 {
@@ -61,6 +61,8 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
+            
+            
             QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
             return engine.getPlan() ;
         }

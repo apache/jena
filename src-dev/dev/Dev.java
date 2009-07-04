@@ -13,11 +13,15 @@ public class Dev
     
     // == 0.8.2
     // Report
-    //  Path code goes to graph directly, bypassing testing the union in the environment.
-    //  Change ds.getDefaultGraph??
+    //  Path code goes to graph directly, 
+    // using ds.getActiveGraph, bypassing testing the union in the environment.
+    //   ?? QueryEngineTDB - alter default graph to be union?
+    //      copy & .setUnionDefaultGraph??
+    // See "Hereby monsters." in ARQ/PathLib
+    //   Special default graph?
+    //   Then remove looking at symbol in OpExecutorTDB.
     // Need (more) tests for symUnionDefaultGraph
     // Document concurrency.
-
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
@@ -38,8 +42,10 @@ public class Dev
     // ** Use PrefixMappingPersistent with DatasetPrefixes. 
 
     // ==== Build
-    // <target name="publish"> in build-lib.xml
-    //   Multiple artifacts : macro for tasks.
+    // Multiple artifacts : macro for tasks.
+    // Compile tests separately from main codebase.
+    //   Path for src->artifact and src->NotArtifact
+    
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.

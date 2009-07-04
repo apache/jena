@@ -89,6 +89,9 @@
   <!-- Build area - locally publising in ivy is to build/pub --> 
   <property name="build.dir"              value="build"/>
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
+  <!-- A bit of a misnomer - this is all non-artifact classes -->
+  <property name="build.classes.test.dir" value="${build.dir}/classes-test"/>
+  
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
   <property name="pub.dir.local"          location="${build.dir}/pub"/>
 
@@ -154,7 +157,9 @@
   <!-- ========================================== -->
   <!-- ==== Build, compile, jar, javadoc -->
 
-  <target name="compile" depends="java-init" description="Compile project">
+  <target name="compile" depends="java-init,compile-main"  description="Compile project"/>
+  
+  <target name="compile-main">
     <mkdir dir="${build.classes.dir}"/>
     <javac destdir="${build.classes.dir}"
            debug="${java.debug}"
@@ -170,7 +175,24 @@
     </javac>
   </target>
 
-  <target name="build-properties" if="build.metadata.file">
+  <!-- WORK IN PROGRRESSS : SPLITTING MAIN AND TEST COMPILATION -->     
+  <target name="compile-test">
+    <mkdir dir="${build.classes.test.dir}"/>
+    <javac destdir="${build.classes.test.dir}"
+           debug="${java.debug}"
+           deprecation="${java.debuglevel}"
+           optimize="${java.optimize}"
+           encoding="${java.encoding}"
+           source="${java.source}"
+           target="${java.target}"
+           >
+      <src refid="java.source.path.test"/> 
+      <classpath refid="java.build.class.path" />	<!-- FIXME -->
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+        <target name="build-properties" if="build.metadata.file">
     <delete file="${build.metadata.file.dest}"/>
     <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
       <filterset refid="filters.build.metadata"/>
