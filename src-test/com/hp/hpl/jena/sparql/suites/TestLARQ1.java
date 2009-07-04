@@ -6,19 +6,25 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import arq.examples.larq.*;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.larq.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderNode;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexBuilderSubject;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.junit.TestLARQUtils;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -388,57 +394,6 @@ public class TestLARQ1 extends TestCase
 //        index.close() ;
 //        LARQ.removeDefaultIndex() ;
 //    }
-
-    // Check the LARQ examples at least run without problems.
-    
-    public void test_larq_example_1() throws Exception
-    { 
-        PrintStream pOut = System.out ;
-        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
-        System.setOut(pNull) ;
-        try {
-            ExLucene1.main(null) ;
-        } finally { System.setOut(pOut) ; }
-    }
-
-    public void test_larq_example_2() throws Exception
-    {
-        PrintStream pOut = System.out ;
-        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
-        System.setOut(pNull) ;
-        try {
-            ExLucene2.main(null) ;
-        } finally { System.setOut(pOut) ; }
-    }
-
-    public void test_larq_example_3() throws Exception
-    {
-        PrintStream pOut = System.out ;
-        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
-        System.setOut(pNull) ;
-        try {
-            ExLucene3.main(null) ;
-        } finally { System.setOut(pOut) ; }
-    }
-
-    public void test_larq_example_4() throws Exception
-    {
-        PrintStream pOut = System.out ;
-        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
-        System.setOut(pNull) ;
-        try {
-            ExLucene4.main(null) ;
-        } finally { System.setOut(pOut) ; }
-    }
-    public void test_larq_example_5() throws Exception
-    {
-        PrintStream pOut = System.out ;
-        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
-        System.setOut(pNull) ;
-        try {
-            ExLucene5.main(null) ;
-        } finally { System.setOut(pOut) ; }
-    }
 }
 
 /*

@@ -13,6 +13,10 @@ public class Dev
     // build-lib => one artifact
     // Separation of test code?
     
+    // POM testing - javadoc - does it really need attaching?  Choosing the packages. 
+    // Assembly checking.
+    // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
+     
     
     // ==== ARQ
     // Convert test suite by manifest to JUnit4.
