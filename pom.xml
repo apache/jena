@@ -211,6 +211,7 @@
             <phase>process-resources</phase>
             <configuration>
               <tasks>
+                <mkdir dir="${basedir}/target"/>
                 <tstamp>
                   <format property="build-time" pattern="yyyy-MM-dd'T'HH:mm:ss.S"/>
                 </tstamp>
@@ -296,9 +297,16 @@
   </build>
   
   <reporting>
-  
     <outputDirectory>${project.build.directory}/site</outputDirectory>
     <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-report-plugin</artifactId>
+	<!-- Put surfire report somewhere in the build area -->
+	<configuration>
+           <outputDirectory>${basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
