@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.1 2009-06-29 08:55:56 castagna Exp $
+ * $Id: WGReasonerTester.java,v 1.2 2009-07-04 16:41:35 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.arp.test.ARPTests;
+import com.hp.hpl.jena.rdf.arp.ARPTests;
 
 import com.hp.hpl.jena.shared.*;
 
@@ -43,7 +43,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:56 $
+ * @version $Revision: 1.2 $ on $Date: 2009-07-04 16:41:35 $
  */
 public class WGReasonerTester {
 

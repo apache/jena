@@ -1,14 +1,14 @@
 /*
 (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: rdfparse.java,v 1.1 2009-06-29 08:55:55 castagna Exp $
+$Id: rdfparse.java,v 1.2 2009-07-04 16:41:35 andy_seaborne Exp $
 */
 
 package jena.test;
 
 //import junit.swingui.TestRunner;
 
-import com.hp.hpl.jena.rdf.arp.test.ARPTests;
+import com.hp.hpl.jena.rdf.arp.ARPTests;
 import com.hp.hpl.jena.shared.Command;
 
 public class rdfparse implements Command

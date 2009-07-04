@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2009, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLMisc.java,v 1.1 2009-07-03 14:38:47 der Exp $
+ * $Id: TestOWLMisc.java,v 1.2 2009-07-04 16:41:35 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -14,6 +14,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -29,7 +32,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.ValidityReport;
@@ -39,15 +41,12 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Misc. tests of the OWL rule engine configurations which 
  * have arisen from bug reports or user questions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestOWLMisc extends TestCase  {
 
