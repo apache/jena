@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+  $Id: Model.java,v 1.2 2009-07-04 16:27:41 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $Date: 2009/03/27 15:55:05 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $Date: 2009/06/29 08:55:38 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -1014,6 +1014,4 @@ public interface Model
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id: Model.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
  */

@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.1 2009-06-29 08:55:51 castagna Exp $
+ *  $Id: BaseXMLWriter.java,v 1.2 2009-07-04 16:27:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -70,17 +70,20 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * <li>xmlbase
  * <li>relative URIs
  * <li>encoding issues
- * <li>anonymous node presentationall
+ * <li>anonymous node presentational
  * <li>errorHandler
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:51 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-07-04 16:27:42 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     private static final String newline = 
         JenaRuntime.getSystemProperty( "line.separator" );
+    static private final String DEFAULT_NS_ENTITY_NAME = "this";
+    static private final String DEFAULT_NS_ENTITY_NAME_ALT = "here";
+    private String defaultNSEntityName = "UNSET" ;
     
     public BaseXMLWriter() {
         setupMaps();
@@ -232,20 +235,36 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
     
     private void primeNamespace( Model model )
-        {
+    {
         Map<String, String> m = model.getNsPrefixMap();
         Iterator<Map.Entry<String, String>> it  = m.entrySet().iterator();
         while (it.hasNext())
-            {
+        {
             Map.Entry<String, String> e = it.next();
-//            String key = e.getKey();
             String value = e.getValue();
             String already = this.getPrefixFor( value );
             if (already == null) 
-                { this.setNsPrefix( model.getNsURIPrefix( value ), value ); 
-                if (writingAllModelPrefixNamespaces) this.addNameSpace( value ); }
+            { 
+                this.setNsPrefix( model.getNsURIPrefix( value ), value ); 
+                if (writingAllModelPrefixNamespaces) this.addNameSpace( value ); 
             }
         }
+        
+        if ( usesPrefix(model, "") )
+        {
+            // Doing "" prefix.  Ensure it is a non-clashing, non-empty entity name.
+            String entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME ;
+            if ( usesPrefix(model, entityForEmptyPrefix) ) 
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT ;
+            int i = 0 ;
+            while ( usesPrefix(model,entityForEmptyPrefix) )
+            {
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT+"."+i ;
+                i++ ;
+            }
+            defaultNSEntityName = entityForEmptyPrefix ;
+        }
+    }
 
     void setupMaps() {
         nameSpaces.set11(RDF.getURI(), "rdf");
@@ -475,7 +494,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
         if (showDoctypeDeclaration.booleanValue()) generateDoctypeDeclaration( model, pw );
 //		try {
-        // TODO errors?
+        // errors?
 			if (xmlBase == null) {
 				baseURI = (base == null || base.length() == 0) ? null : factory.create(base);
 				writeBody(model, pw, base, false);
@@ -510,7 +529,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
             return prefix == null || isPredefinedEntityName( prefix )
                 ? attributeQuoted( substituted )
-                : attributeQuoted( "&" + prefix + ";" + substituted.substring( split ) )
+                : attributeQuoted( "&" + strForPrefix(prefix) + ";" + substituted.substring( split ) )
                 ;
             }
         }
@@ -528,13 +547,26 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         for (Iterator<String> it = prefixes.keySet().iterator(); it.hasNext();)
         {
             String prefix = it.next();
-            if (!isPredefinedEntityName( prefix ) )
-                pw.print(  newline + "  <!ENTITY " + prefix + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix )) + "'>" );
+            if (isPredefinedEntityName( prefix ) )
+                continue ;
+            pw.print(  newline + "  <!ENTITY " + strForPrefix(prefix) + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix )) + "'>" );
         }
         pw.print( "]>" + newline );
         }
 
-	private void writeXMLDeclaration(Writer out, PrintWriter pw) {
+	private String strForPrefix(String prefix)
+    {
+        if ( prefix.length() == 0 )
+            return defaultNSEntityName ;
+        return prefix ;
+    }
+	
+	private static boolean usesPrefix(Model model, String prefix)
+	{
+	    return model.getNsPrefixURI(prefix) != null ;
+    }
+
+    private void writeXMLDeclaration(Writer out, PrintWriter pw) {
 		String decl = null;
 		if (out instanceof OutputStreamWriter) {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
@@ -780,7 +812,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         Answer the relative form of the URI against the base, according to the relativeFlags.
     */
     private String relativize( IRI base, String uri )  {
-        // TODO errors?
+        // errors?
         return base.relativize( uri, relativeFlags).toString();
     }
 

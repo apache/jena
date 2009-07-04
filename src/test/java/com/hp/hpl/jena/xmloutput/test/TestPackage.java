@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: TestPackage.java,v 1.1 2009-06-29 08:55:52 castagna Exp $
+    $Id: TestPackage.java,v 1.2 2009-07-04 16:27:31 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.BadURIException;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.1 2009-06-29 08:55:52 castagna Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.2 2009-07-04 16:27:31 andy_seaborne Exp $,
  */
 public class TestPackage extends TestCase{
 
@@ -47,6 +47,7 @@ public class TestPackage extends TestCase{
         suite.addTestSuite( TestURIExceptions.class );
         suite.addTestSuite( TestEntityOutput.class );
         suite.addTestSuite( TestLiteralEncoding.class );
+        suite.addTestSuite( TestWriterFeatures.class ) ;
         return suite;
     }
     
@@ -99,5 +100,5 @@ public class TestPackage extends TestCase{
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.1 2009-06-29 08:55:52 castagna Exp $
+ * $Id: TestPackage.java,v 1.2 2009-07-04 16:27:31 andy_seaborne Exp $
  */
