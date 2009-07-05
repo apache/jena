@@ -31,7 +31,8 @@ public class TestReifier2 extends AbstractTestReifier
     }
 
     // Standard only.
-    @Override public void testStyle() { assertSame( Standard, getGraph( Standard ).getReifier().getStyle() ); }
+    @Override public void testStyle() { assertSame( ReificationStyle.Standard, 
+                                                    getGraph( ReificationStyle.Standard ).getReifier().getStyle() ); }
     
     // Other styles.
     @Override public void testIntercept() {}
