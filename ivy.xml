@@ -29,6 +29,14 @@
     <dependency org="com.hp.hpl.jena" name="arq" rev="2.7.0"/>
     <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.7.0"/>
 
+    <!-- Explicit - gets the javadoc and sources -->
+    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
+    <!-- <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/> -->
+    
+
+    <!-- Need Jena test code as well -->
+    <!-- <dependency org="com.hp.hpl.jena" name="jena" rev="2.7.0" conf="test,runtime,compile"/> -->
+
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="1.5.6"/>
