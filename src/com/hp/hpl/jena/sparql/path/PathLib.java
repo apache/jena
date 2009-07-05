@@ -116,8 +116,6 @@ public class PathLib
         o = Var.lookup(binding, o) ;
         Iterator<Node> iter = null ;
         Node endNode = null ;
-        // Hereby monsters.
-        // "Compile" a SPARQL query to access the magic names of graphs.
         Graph graph = execCxt.getActiveGraph() ;
         
         if ( Var.isVar(s) && Var.isVar(o) )
