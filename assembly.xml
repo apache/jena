@@ -57,6 +57,16 @@
 
     <fileSet>
       <directory>doc</directory>
+      <excludes>
+        <exclude>release</exclude>
+        <exclude>linkcheck</exclude>
+        <exclude>produce</exclude>
+        <exclude>merge</exclude>
+        <exclude>template.html</exclude>
+        <exclude>**/_*/**</exclude>
+        <exclude>**/desktop.ini</exclude>
+	<exclude>javadoc/**</exclude>
+      </excludes>
     </fileSet>
 
     <fileSet>
