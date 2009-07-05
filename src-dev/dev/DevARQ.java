@@ -12,15 +12,7 @@ public class DevARQ
     // Surefire report names!
     // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
 
-    // ((
-    // Build: no arq-extra anymore?  Too much hassle!
-    // build-lib => one artifact
-    // Separation of test code?
-    // ))
-    
     // ==== ARQ
-    // Convert test suite by manifest to JUnit4.
-    // JUnit4TestAdpter
     // DatasetImpl cache refinement
     // JMX
     //   Query count
@@ -38,23 +30,19 @@ public class DevARQ
     
     // == Build
     // Multiple artifacts
+    // Build: no arq-extra anymore?  Too much hassle!
     // Make artifacts then publish
     // (pom and extra pom need rewrite rules).
     // No sources or javadoc for arq-extra.
-    
-    // -- Tidy up
-	// Build: "dev" and "main" ==> "main"
-    // Two ivy modules.
-    
-    // -- Build process
-    //   Testing - need TS_* files and data.
 
+    // == Test
+    // Convert test suite by manifest to JUnit4. JUnit4TestAdpter
+    
     // Library
     // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.
     //   Combine StringUtils and StrUtils.
 
     // NodeFactory == SSE => Merge
-    // Systematic execution logging.
 
     // === Optimization
     // Amalgamation: BGPs,Quads, Sequences.

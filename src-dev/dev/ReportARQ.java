@@ -6,48 +6,39 @@
 
 package dev;
 
-import junit.framework.TestSuite;
-import arq.examples.test.TestLARQExamples;
+import java.io.OutputStream;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
-import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.util.StrUtils;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 
-/** All tests - the main test suite and also teh examples tests */
-public class AllTests extends TestSuite
+public class ReportARQ
 {
-    static public TestSuite suite()
+    public static void main(String[] argv) throws Exception
     {
-        // Fiddle around with the config if necessary
-        if ( false )
-        {
-            QueryEngineMain.unregister() ;
-            QueryEngineRef.register() ;
-        }
-        
-        TestSuite ts = new AllTests() ;
+        Model model=ModelFactory.createDefaultModel() ;
+        String requete=StrUtils.strjoinNL("PREFIX : <http://www.owl-ontologies.com/Ontology1239120737.owl#>",
+                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+                                          "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
+                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                                          "INSERT DATA { :etud1 :APourNom 'Saleh' .",
+                                          "              :etud1 :APourLogin 'saleh' .",
+                                          "              :etud1 :APourPWD 'saleh' . }") ;
+        GraphStore graphstore=GraphStoreFactory.create();
+        graphstore.setDefaultGraph(model.getGraph());
+        UpdateRequest updaterequest=UpdateFactory.create(requete);
+        UpdateAction.execute(updaterequest, graphstore);
 
-        ts.addTest(ARQTestSuite.suite()) ;
-
-        // Scripted tests for ARQ examples.
-        ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
-        ts.addTest(TestLARQExamples.suite()) ;
-        return ts ;
+        OutputStream path = System.out ;
+        model.write(path, "RDF/XML-ABBREV");
+        System.out.println("OK");
+        System.exit(0) ;
     }
-    
-    private AllTests()
-    {
-        super("ARQ");
-        ARQ.init() ;
-        // Tests should be silent.
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-    }
-
 }
 
 /*

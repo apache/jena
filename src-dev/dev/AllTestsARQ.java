@@ -1,25 +1,57 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
 
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
+import junit.framework.TestSuite;
+import arq.examples.test.TestLARQExamples;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.expr.E_Function;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.test.ARQTestSuite;
 
-public class RunSSE
+/** All tests - the main test suite and also teh examples tests */
+public class AllTestsARQ extends TestSuite
 {
-    public static void main(String[] argv)
+    static public TestSuite suite()
     {
-        String[] a = { "--file=SSE/all.sse" } ;
-        BuilderExec.main(a) ;
+        // Fiddle around with the config if necessary
+        if ( false )
+        {
+            QueryEngineMain.unregister() ;
+            QueryEngineRef.register() ;
+        }
+        
+        TestSuite ts = new AllTestsARQ() ;
+
+        ts.addTest(ARQTestSuite.suite()) ;
+
+        // Scripted tests for ARQ examples.
+        ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
+        ts.addTest(TestLARQExamples.suite()) ;
+        return ts ;
     }
+    
+    private AllTestsARQ()
+    {
+        super("ARQ");
+        ARQ.init() ;
+        // Tests should be silent.
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+    }
+
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

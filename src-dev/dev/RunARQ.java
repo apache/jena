@@ -43,6 +43,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -425,6 +426,14 @@ public class RunARQ
         String a2[] = { "--service=http://dbpedia.org/sparql",
         "SELECT * WHERE {  <http://dbpedia.org/resource/Angela_Merkel> <http://dbpedia.org/property/reference> ?object.  FILTER  (!isLiteral(?object))}"} ;
         arq.remote.main(a2) ;
+        System.exit(0) ;
+    }
+    
+    private static void runExecuteSSE(String[] argv)
+    {
+        
+        String[] a = { "--file=SSE/all.sse" } ;
+        BuilderExec.main(a) ;
         System.exit(0) ;
     }
 }
