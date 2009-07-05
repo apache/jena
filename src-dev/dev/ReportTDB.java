@@ -12,7 +12,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class Report
+public class ReportTDB
 {
     public static void main(String[] args){
 

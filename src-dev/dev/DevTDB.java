@@ -15,7 +15,8 @@ public class DevTDB
     // Need (more) tests for symUnionDefaultGraph
     // ** Document concurrency.
     // ** Move DatasetGraphBase to ARQ
-    // *8 Check for assmbler and GraphTDB
+    // ** Check for tests of assembler and GraphTDB
+    // Enable metadata?
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
@@ -51,6 +52,7 @@ public class DevTDB
     // See BPlusTreeParams.readMeta
 
     // To ARQ:
+    //   DatasetGraphBase
     //   Atlas? Iterator.
     
     // NodeLib.encode/decode ==> swap to a Nodec
