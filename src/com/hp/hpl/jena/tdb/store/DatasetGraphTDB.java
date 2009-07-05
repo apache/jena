@@ -67,7 +67,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
     @Override
     protected GraphTDB _createDefaultGraph()
     {
-        return new GraphTriplesTDB(this, tripleTable, prefixes, transform, location) ; 
+        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
     }
     
     public GraphTDB getDefaultGraphTDB()
@@ -83,7 +83,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
     @Override
     protected GraphTDB _createNamedGraph(Node graphNode)
     {
-        return new GraphNamedTDB(this, graphNode, transform);
+        return new GraphNamedTDB(this, graphNode) ;
     }
 
     public ReorderTransformation getTransform()     { return transform ; }

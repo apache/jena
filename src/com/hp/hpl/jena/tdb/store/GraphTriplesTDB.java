@@ -16,11 +16,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -34,11 +32,9 @@ public class GraphTriplesTDB extends GraphTDBBase
     
     public GraphTriplesTDB(DatasetGraphTDB dataset,
                            TripleTable tripleTable,
-                           DatasetPrefixes prefixes,
-                           ReorderTransformation reorderTransform,
-                           Location location)
+                           DatasetPrefixes prefixes)
     {
-        super(dataset, null, reorderTransform, location) ;
+        super(dataset, null) ;
         
         this.tripleTable = tripleTable ;
         this.prefixes = prefixes ;

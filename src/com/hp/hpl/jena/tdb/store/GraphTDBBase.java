@@ -37,27 +37,22 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final QueryHandlerTDB queryHandler = new QueryHandlerTDB(this) ;
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
-    private final ReorderTransformation reorderTransform  ;
-    private final Location location ;
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
 
-    public GraphTDBBase(DatasetGraphTDB dataset, Node graphName, 
-                        ReorderTransformation transformation, Location location)
+    public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
         super() ;
         this.dataset = dataset ; 
         this.graphNode = graphName ;
-        this.reorderTransform = transformation ;
-        this.location = location ;
     }
     
     /** Reorder processor - may be null, for "none" */
     //@Override
-    public final ReorderTransformation getReorderTransform()    { return reorderTransform ; }
+    public final ReorderTransformation getReorderTransform()    { return dataset.getTransform() ; }
     
     //@Override
-    public final Location getLocation()                         { return location ; }
+    public final Location getLocation()                         { return dataset.getLocation() ; }
     
     //@Override
     public final Node getGraphNode()                            { return graphNode ; }

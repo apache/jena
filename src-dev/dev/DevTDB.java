@@ -14,10 +14,8 @@ public class DevTDB
     // == 0.8.2
     // Need (more) tests for symUnionDefaultGraph
     // ** Document concurrency.
-    // ** Remove GraphTDBBase.getReorderTransform (can get via dataset if really needed).
-    //    Err - per graph possibilities later?
-    //    No -- quad rules
-    //  ** Move DatasetGraphBase to ARQ
+    // ** Move DatasetGraphBase to ARQ
+    // *8 Check for assmbler and GraphTDB
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )

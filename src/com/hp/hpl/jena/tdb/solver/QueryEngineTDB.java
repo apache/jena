@@ -77,7 +77,7 @@ public class QueryEngineTDB extends QueryEngineMain
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
             //ALog.info(this, "Union graph") ;
-            ds.setDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph, ds.getTransform())) ;
+            ds.setDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
             dsg = ds ;
         }
         

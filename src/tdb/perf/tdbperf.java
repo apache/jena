@@ -47,6 +47,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
@@ -135,8 +136,10 @@ public class tdbperf extends CmdSub
             ReorderTransformation transform = ReorderLib.identity() ;
             DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
             
+            DatasetGraphTDB ds = new DatasetGraphTDB(table, null, prefixes, transform, location) ;
+            
             // ??? null: see FactoryGraphTDB._createGraph
-            return new GraphTriplesTDB(null, table, prefixes, transform, location) ;
+            return new GraphTriplesTDB(ds, table, prefixes) ;
         } 
     }
     

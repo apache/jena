@@ -24,7 +24,6 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -41,14 +40,11 @@ public class GraphNamedTDB extends GraphTDBBase
     private final QuadTable quadTable ; 
     private NodeId graphNodeId = null ;
 
-    private final ReorderTransformation transform ;
-
-    public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
+    public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName) 
     {
-        super(dataset, graphName, transform, dataset.getLocation()) ;
+        super(dataset, graphName) ;
         
         this.quadTable = dataset.getQuadTable() ;
-        this.transform = transform ;
         
         if ( graphName == null )
             throw new TDBException("GraphNamedTDB: Null graph name") ; 
