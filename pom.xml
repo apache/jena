@@ -9,7 +9,7 @@
     <version-major>2</version-major>
     <version-minor>6</version-minor>
     <version-revision>2</version-revision>
-    <version-status>-dev</version-status>
+    <version-status>-SNAPSHOT</version-status>
   </properties>
 
   <groupId>com.hp.hpl.jena</groupId>
@@ -202,6 +202,15 @@
             <descriptor>assembly.xml</descriptor>
           </descriptors>
         </configuration>
+	<executions>
+	  <execution>
+	    <id>create-assembly</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>attached</goal>
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
 
       <plugin>
@@ -327,5 +336,24 @@
     </plugins>
   
   </reporting>
+
+  <distributionManagement>
+    <downloadUrl>http://jena.hpl.hp.com/repo-dev</downloadUrl>
+    <repository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <!-- scp does not work (TERM not set !!) -->
+      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <url>file:tmp</url>
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <url>file:tmp</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>
