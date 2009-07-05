@@ -1,12 +1,13 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.test;
-
+package dev;
 
 import junit.framework.TestSuite;
+import arq.examples.test.TestLARQExamples;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
@@ -14,17 +15,11 @@ import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
-import com.hp.hpl.jena.sparql.suites.*;
+import com.hp.hpl.jena.sparql.test.ARQTestSuite;
 
-/**
- * All the ARQ tests 
- * @author		Andy Seaborne
- */
-
-public class ARQTestSuite extends TestSuite
+/** All tests - the main test suite and also teh examples tests */
+public class AllTests extends TestSuite
 {
-    public static final String testDirARQ = "testing/ARQ" ;
-    
     static public TestSuite suite()
     {
         // Fiddle around with the config if necessary
@@ -34,55 +29,30 @@ public class ARQTestSuite extends TestSuite
             QueryEngineRef.register() ;
         }
         
-        TestSuite ts = new ARQTestSuite() ;
+        TestSuite ts = new AllTests() ;
 
-        // Internal
-        ts.addTest(TS.suite() );
+        ts.addTest(ARQTestSuite.suite()) ;
 
-        // Scripted tests for SPARQL
-        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
-      
-        // ARQ + Lucene
-        ts.addTest(TestLARQ.suite()) ;
-      
-        // Scripted tests for ARQ features outside SPARQL syntax
-        // Currently at end of manifest-arq.ttl
-//        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
-        
-        // The DAWG official tests (some may be duplicated in ARQ test suite
-        // but this should be the untouched versions)
-        ts.addTest(TS_DAWG.suite()) ;
-      
-        // The RDQL engine ported to ARQ
-        ts.addTest(TS_RDQL.suite()) ;
-      
-        // API
-        ts.addTest(TestAPI.suite()) ;
-        
-        // SPARQL/Update
-        ts.addTest(TS_Update.suite()) ;
-        
-        ts.addTest(TS_SSE.suite()) ;
-        
-//        // The ARQ-Optimizer test suite, Markus Stocker 08/06/2007
-//        ts.addTest(OptimizerTestSuite.suite()) ;
-        
+        // Scripted tests for ARQ examples.
+        ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
+        ts.addTest(TestLARQExamples.suite()) ;
         return ts ;
     }
-
-	private ARQTestSuite()
-	{
-        super("All ARQ tests");
+    
+    private AllTests()
+    {
+        super("ARQ");
         ARQ.init() ;
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
-	}
+    }
+
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

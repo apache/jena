@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="src-dev"/>
 	<classpathentry kind="src" path="src-examples"/>
 	<classpathentry kind="src" path="src-test"/>
+	<classpathentry kind="src" path="src-dev"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>
 	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="jena-src.zip"/>

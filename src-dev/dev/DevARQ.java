@@ -9,17 +9,14 @@ package dev;
 public class DevARQ
 {
     // ==== 2.7.1
+    // Surefire report names!
+    // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
+
+    // ((
     // Build: no arq-extra anymore?  Too much hassle!
     // build-lib => one artifact
     // Separation of test code?
-    
-    // POM testing 
-    // Assembly checking.
-    //  Surefire report names!
-    // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
-    // Test scripts involving arq.examples
-    //   Movbe to src-examples/**/test
-     
+    // ))
     
     // ==== ARQ
     // Convert test suite by manifest to JUnit4.
