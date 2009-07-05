@@ -33,7 +33,8 @@ public class Report
         src.setDefaultModel(domain_instance);
         executePathQuery(src);
 
-
+        System.out.println("==== START TDB ====") ;
+        
         TDB.getContext().setTrue(TDB.symUnionDefaultGraph); // Has no effect on Path evaluation?
         TDB.getContext().setTrue(TDB.symLogExec);
         //Dataset ds = TDBFactory.createDataset("/Users/Gyaan/eclipse_workspace_etr/EtrConfiguration/UserDatasetTest/users/");

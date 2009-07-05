@@ -12,16 +12,12 @@ public class DevTDB
     
     
     // == 0.8.2
-    // ** Report
-    //  Path code goes to graph directly, 
-    // using ds.getActiveGraph, bypassing testing the union in the environment.
-    //   ?? QueryEngineTDB - alter default graph to be union?
-    //      copy & .setUnionDefaultGraph??
-    // See "Hereby monsters." in ARQ/PathLib
-    //   Special default graph?
-    //   Then remove looking at symbol in OpExecutorTDB.
     // Need (more) tests for symUnionDefaultGraph
     // ** Document concurrency.
+    // ** Remove GraphTDBBase.getReorderTransform (can get via dataset if really needed).
+    //    Err - per graph possibilities later?
+    //    No -- quad rules
+    //  ** Move DatasetGraphBase to ARQ
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )

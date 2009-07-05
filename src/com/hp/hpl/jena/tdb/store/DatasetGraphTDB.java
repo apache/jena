@@ -46,6 +46,11 @@ public class DatasetGraphTDB extends DatasetGraphBase
         this.location = location ;
     }
     
+    public DatasetGraphTDB duplicate()
+    {
+        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location) ;
+    }
+    
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
@@ -158,7 +163,12 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     //@Override
     public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ; }  
+    { 
+        if ( ! ( g instanceof GraphTDBBase ) )
+            throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
+        GraphTDBBase tg = (GraphTDBBase)g ;
+        super.defaultGraph = g ;
+    }    
 }
 
 /*

@@ -6,20 +6,28 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
-
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphNamedTDB;
 
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
@@ -53,6 +61,64 @@ public class QueryEngineTDB extends QueryEngineMain
         return op ;
     }
 
+    @Override
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
+    {
+        // Top of execution of a query.
+        // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
+        
+        // Fix DatasetGraph for global union.
+        if ( context.isTrue(TDB.symUnionDefaultGraph) ) 
+        {
+            // Rewrite so that any explicitly named "default graph" is union graph.
+            Transform t = new TransformRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
+            op = Transformer.transform(t, op) ;
+
+            // And set the default graph to be the union graph as well.
+            DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
+            //ALog.info(this, "Union graph") ;
+            ds.setDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph, ds.getTransform())) ;
+            dsg = ds ;
+        }
+        
+        return super.eval(op, dsg, input, context) ;
+    }
+    
+    static Transform graphNameChange = null ;
+    
+    // ---- Rewrite that looks for a fixed node as the graph name 
+    // (in (graph) and (quad)) and changes it to another one.
+    static class TransformRename extends TransformCopy
+    { 
+        private Node oldGraphName ;
+        private Node newGraphName ;
+
+        public TransformRename(Node oldGraphName, Node newGraphName)
+        {
+            this.oldGraphName = oldGraphName ;
+            this.newGraphName = newGraphName ;
+        }
+
+        // Does not affect variables.
+        @Override
+        public Op transform(OpGraph opGraph, Op x)
+        { 
+            if ( opGraph.getNode().equals(oldGraphName) )
+                return new OpGraph(newGraphName, x) ;
+            return super.transform(opGraph, x) ;
+        }
+
+        @Override
+        public Op transform(OpQuadPattern opQuadPattern)
+        {
+            if ( opQuadPattern.getGraphNode().equals(oldGraphName) )
+                return new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern()) ;
+            return super.transform(opQuadPattern) ;
+        }
+    } ;
+    
+    
+    
     // ---- Factory
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
@@ -61,8 +127,6 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
-            
-            
             QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
             return engine.getPlan() ;
         }

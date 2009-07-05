@@ -109,11 +109,10 @@ public class GraphNamedTDB extends GraphTDBBase
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         // Explicitly named default graph
-        // (no test for union in teh context is done here)
         if ( isDefaultGraph(graphNode) )
             // Default graph.
             return graphBaseFindWorker(getDataset().getTripleTable(), m) ;
-        
+        // Union graph?
         return graphBaseFindWorker(getDataset(), graphNode, m) ;
     }
     

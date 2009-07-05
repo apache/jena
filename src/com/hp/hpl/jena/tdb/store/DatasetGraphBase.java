@@ -15,12 +15,14 @@ import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
-/** DatasetGraph that caches graphs created.
+/** 
+ * DatasetGraph that caches graphs created.
+ * Move to ARQ.
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {
     private Lock lock = null ;
-    private Graph defaultGraph = null ;
+    protected Graph defaultGraph = null ;
     private Map<Node, Graph> namedGraphs = new HashMap<Node, Graph>() ;
     
     abstract protected void _close() ;

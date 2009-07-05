@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.solver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import atlas.lib.InternalErrorException;
 import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -20,7 +19,6 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -30,7 +28,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
@@ -64,7 +61,8 @@ public class OpExecutorTDB extends OpExecutor
     {
         super(execCxt) ;
         // NB. The dataset may be a TDB one, or a general one.
-        // Merged union graph magic is only for a TDB dataset.
+        // Any merged union graph magic (for a TDB dataset was handled
+        // in QueryEngineTDB).
         
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
@@ -105,12 +103,9 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
         
-        if ( isUnionDefaultGraph(execCxt) )
-            return execute(new OpQuadPattern(Quad.unionGraph, opBGP.getPattern()), input) ;
-        
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         
-        // Not default union - is if the default graph (normal or explicitly named)?
+        // Is it the real default graph (normal route or explicitly named)?
         if ( ! isDefaultGraphStorage(graph.getGraphNode()))
         {
             // Not default storage - it's a named graph in storage. 
@@ -157,16 +152,11 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! isForTDB )
             return super.execute(quadPattern, input) ;
         
-//        // Dataset a TDB one?
-//        // Presumably the quad transform has been applied.
-//        if ( ! ( execCxt.getDataset() instanceof DatasetGraphTDB ) )
-//            return super.execute(quadPattern, input) ;
+//        DatasetGraph dg = execCxt.getDataset() ;
+//        if ( ! ( dg instanceof DatasetGraphTDB ) )
+//            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
         
-        DatasetGraph dg = execCxt.getDataset() ;
-        if ( ! ( dg instanceof DatasetGraphTDB ) )
-            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
-        
-        DatasetGraphTDB ds = (DatasetGraphTDB)dg ;
+        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         BasicPattern bgp = quadPattern.getBasicPattern() ;
         Node gn = quadPattern.getGraphNode() ;
         return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
@@ -260,10 +250,8 @@ public class OpExecutorTDB extends OpExecutor
         //   Quad.defaultGraphIRI -- the IRI used in GRAPH <> to mean the default graph.
         //   Quad.defaultGraphNodeGenerated -- the internal marker node used for the quad form of queries.
         //   Quad.unionGraph -- the IRI used in GRAPH <> to mean the union of named graphs
-        // Also: isUnionDefaultGraph if implicit union of named graphs.
     
-        boolean isUnionDefaultGraph = isUnionDefaultGraph(execCxt) ;
-        if ( !isUnionDefaultGraph && isDefaultGraphStorage(gn) ) 
+        if ( isDefaultGraphStorage(gn) ) 
         {
             // Storage concrete, default graph. 
             // Either outside GRAPH (no implicit union)
@@ -275,9 +263,9 @@ public class OpExecutorTDB extends OpExecutor
         // ---- Union (RDF Merge) of named graphs
         boolean doingUnion = false ;
     
-        if ( isUnionDefaultGraph && Quad.isQuadDefaultGraphNode(gn) ) 
-            // Implicit: default graph is union of named graphs. 
-            doingUnion = true ;
+//        if ( isUnionDefaultGraph && Quad.isQuadDefaultGraphNode(gn) ) 
+//            // Implicit: default graph is union of named graphs.  (rewritten - does not occur). 
+//            doingUnion = true ;
     
         if ( gn.equals(Quad.unionGraph) )
             // Explicit name of the union of named graphs
@@ -289,13 +277,6 @@ public class OpExecutorTDB extends OpExecutor
         return gn ;
     }
 
-    /** Execution-wide default graph is the union of the named graphs */ 
-    private static boolean isUnionDefaultGraph(ExecutionContext execCxt)
-    {
-        // Union graph is context set and als the dataset is TDB-backed.
-        return execCxt.getContext().isTrue(TDB.symUnionDefaultGraph) && execCxt.getDataset() instanceof DatasetGraphTDB ;
-    }
-    
     // Is this a query against the real default graph in the storage (in a 3-tuple table). 
     private static boolean isDefaultGraphStorage(Node gn)
     {
