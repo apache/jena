@@ -250,17 +250,16 @@ build.time.txt=${build.time.txt}
   <distributionManagement>
     <downloadUrl>http://jena.hpl.hp.com/repo-dev</downloadUrl>
     <repository>
-      <id>jena-repo-dev</id>
-      <name>Jena development repo</name>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
       <!-- scp does not work (TERM not set !!) -->
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <!-- <url>sftp://jena.hpl.hp.com/var/repo</url> -->
       <url>file:tmp</url>
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!-- scp does not work (TERM not set !!) -->
       <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
       <url>file:tmp</url>
       <layout>default</layout>
