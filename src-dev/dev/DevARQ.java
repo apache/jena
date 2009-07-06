@@ -8,6 +8,16 @@ package dev;
 
 public class DevARQ
 {
+    // Maven.
+    // javadoc - package
+    // sources - package
+    // test-jar - package 
+    // assembly --> verify, package
+    //   Or use ant.
+    //   Or mvn package assembly:assembly
+
+    // Fix indent of (! (exists ...))
+    
     // ==== 2.7.1
     // CmdUtils to somewhere else
     // EarlReport to main code (other test support?)
