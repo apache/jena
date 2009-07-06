@@ -2,7 +2,7 @@ PREFIX  :        <http://example/>
 
 SELECT *
 {
-   { LET (?V:=1) ?a :p1 ?b UNSAID { ?a :p2 ?c . ?c :p3 ?b } }
-UNION
-   { LET (?V:=2)  ?a :p1 ?b UNSAID { ?a :p2 ?c . OPTIONAL{ ?c :p3 ?b } } }
+ UNSAID { ?a :p2 ?c . OPTIONAL { ?c :p3 ?b } }
+ ?a :p1 ?b 
+ #?a :p1 ?b UNSAID { ?a :p2 ?c OPTIONAL { ?c :p3 ?b } }
 }

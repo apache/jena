@@ -1,4 +1,4 @@
 @prefix :        <http://example/> .
 
- :a1 :p1 :b1 ; :p2 :c1 . :c1 :p3 :b2 .
+ :a1 :p1 :b1 ; :p2 :c1 . #:c1 :p3 :b2 .
 
