@@ -80,7 +80,8 @@
 
     <!-- Choose your logging provider 
 	 But note ARQ confgures log4j (and java.util.logging)
-	 in its logging support utilities.
+	 in its logging support utilities so needs it to 
+	 compile.
     -->
     
     <dependency>
@@ -101,7 +102,7 @@
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>src-test</testSourceDirectory>
     
-    <!-- Written by antrun -->
+    <!-- The filter file is written by antrun -->
     <filters>
       <filter>${basedir}/target/filter.properties</filter>
     </filters>

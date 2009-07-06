@@ -2,7 +2,8 @@ PREFIX  :        <http://example/>
 
 SELECT *
 {
- UNSAID { ?a :p2 ?c . OPTIONAL { ?c :p3 ?b } }
  ?a :p1 ?b 
+    FILTER(?x > 5 )
+ UNSAID { ?a :p2 ?c .  ?c :p3 ?b } 
  #?a :p1 ?b UNSAID { ?a :p2 ?c OPTIONAL { ?c :p3 ?b } }
 }
