@@ -19,8 +19,8 @@ public class DevTDB
     // Enable metadata?
     // ** New ARQ build (arq-extra?)
     //    Commands need moving.
-    //    EarlReport
-    //    Update ivy
+    //      EarlReport
+    //      Update ivy
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
@@ -43,6 +43,7 @@ public class DevTDB
     // ==== Build
     // Multiple artifacts : macro for tasks.
     // Compile tests separately from main codebase.
+    // Main code to a jar; test remain in classes-test
     //   Path for src->artifact and src->NotArtifact
     
     // Copy with no sources, no javadoc for auxillary jars
