@@ -17,6 +17,10 @@ public class DevTDB
     // ** Move DatasetGraphBase to ARQ
     // ** Check for tests of assembler and GraphTDB
     // Enable metadata?
+    // ** New ARQ build (arq-extra?)
+    //    Commands need moving.
+    //    EarlReport
+    //    Update ivy
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
