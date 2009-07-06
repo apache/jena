@@ -24,16 +24,32 @@ else
     SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
-## Make jars
-rm -f lib/arq.jar lib/arq-extra.jar
-ant clean jar
-
-# Remove path and version numbers.
+## Remove path and version numbers.
 function jarName
 {
     local JAR="$1"
     perl -e '$_=$ARGV[0] ; s!(.*/)?([^/]*)-\d.\d.\d.*.jar!$2.jar! ; print "$_\n"' $JAR
 }
+
+function version
+{
+    local JAR="$1"
+    perl -e '$_=$ARGV[0] ; s!(.*/)?[^/]*-(\d.\d.\d).*.jar!$2! ; print "$_\n"' $JAR
+}
+
+
+## Make jar
+mvn clean compile jar:jar
+
+## Get version.
+VER="$(echo target/arq-[0-9].[0-9].[0-9].jar)"
+# echo "Version: $(version $VER) (alt)"
+
+VER=${VER#target/arq-}
+VER=${VER%.jar}
+echo "Version: $VER"
+
+JARS=target/arq-$VER.jar
 
 ## # Remove version numbers
 ## for jar in build/arq*.jar
@@ -47,7 +63,7 @@ for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
   
-  for jar in build/arq*.jar
+  for jar in $JARS
     do
     J2=$(jarName $jar)
     cp -u $jar ../$d/lib/$J2
@@ -64,19 +80,22 @@ do
 
 ## Source code.
 
+echo '**** SOURCE CODE'
 rm -f arq-src.zip
+SRCS=target/arq-$VER-sources.jar 
 
-for d in src src-dev src-test
-do
-  ( cd $d ; find . -name test -prune -o -name .svn -prune -o -print | \
-    xargs -n 200 zip -q ../arq-src.zip
-  )
-  done
+
+## for d in src src-dev src-test
+## do
+##   ( cd $d ; find . -name test -prune -o -name .svn -prune -o -print | \
+##     xargs -n 200 zip -q ../arq-src.zip
+##   )
+##   done
 
 for d in  $SRCDIRS
 do
   echo "Moving arq-src.zip to project $d"
-  cp -u arq-src.zip ../$d
+  cp -u "$SRCS" ../$d/arq-src.zip
   # And Jena
   cp -u jena-src.zip ../$d
   done

@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.7.1
 
++ Build is now done by maven
+
 + Bug fix: Reverse paths of length 3 or more were not being parsed correctly.
 
 + Upgrade to stax 1.0.1 and wstx-asl-3.2.9
