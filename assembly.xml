@@ -7,17 +7,6 @@
     -->
     <format>zip</format>
   </formats>
-<!--
-   What prioperties available?
-testing?
-Vocabularies
-Grammars
-doc
-  excludes
-  how to produce javadoc
-src-examples
-
--->
 
   <fileSets>
 
@@ -48,7 +37,6 @@ src-examples
         <exclude>arq*.jar</exclude>
       </excludes>
     </fileSet>
-
 
     <fileSet>
       <directory>bin</directory>
