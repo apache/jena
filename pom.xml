@@ -202,15 +202,15 @@
             <descriptor>assembly.xml</descriptor>
           </descriptors>
         </configuration>
-	<executions>
-	  <execution>
-	    <id>create-assembly</id>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>attached</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -293,6 +293,7 @@
       <testResource>
         <filtering>false</filtering>
         <directory>testing</directory>
+        <targetPath>testing</targetPath>
       </testResource>
       <testResource>
         <directory>doc</directory>
@@ -309,11 +310,11 @@
     <outputDirectory>${project.build.directory}/site</outputDirectory>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-report-plugin</artifactId>
-	<!-- Put surfire report somewhere in the build area -->
-	<configuration>
-           <outputDirectory>${basedir}/target/surefire-reports-html</outputDirectory>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <!-- Put surfire report somewhere in the build area -->
+        <configuration>
+          <outputDirectory>${basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
       </plugin>
       <plugin>
