@@ -58,7 +58,6 @@ JARS=target/arq-$VER.jar
 ##   mv $jar $J2
 ##   done
 
-
 for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
