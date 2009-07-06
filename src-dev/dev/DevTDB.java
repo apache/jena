@@ -46,6 +46,9 @@ public class DevTDB
     // Main code to a jar; test remain in classes-test
     //   Path for src->artifact and src->NotArtifact
     
+    // == tdbcheck
+    //  Checking graph (with IRI cache).
+    
     // Copy with no sources, no javadoc for auxillary jars
     // Confs - simplify "main"
     // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
