@@ -9,6 +9,8 @@ package dev;
 public class DevARQ
 {
     // ==== 2.7.1
+    // CmdUtils to somewhere else
+    // EarlReport to main code (other test support?)
     // Surefire report names!
     // [INFO] skip non existing resourceDirectory c:\home\afs\Projects\ARQ\src\test\resources
 
