@@ -63,7 +63,7 @@ public class TestClassify extends TestCase
 	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
     // Not safe: ?s
-    // Other parts of RHS may restrict ?s to thins that can't match the LHS.
+    // Other parts of RHS may restrict ?s to things that can't match the LHS.
 	public void testClassify_Join_11() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", false) ; }
 
