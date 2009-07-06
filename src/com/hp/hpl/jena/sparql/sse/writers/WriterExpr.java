@@ -124,18 +124,28 @@ public class WriterExpr
         public void visit(ExprFunctionOp funcOp)
         {
             out.print("(") ;
+            
+            // How far we are from current indent to current location
+            // (beginning of operator name)
+            int x = out.getCurrentOffset() ;
+            // Indent to "("
+            out.incIndent(x) ;
+            
             out.print(funcOp.getFunctionName(context)) ;
             out.incIndent() ;
-
             
             Op op = funcOp.getOp() ;
             if ( oneLine(op) )
                 out.print(" ") ;
             else
                 out.ensureStartOfLine() ;
+            
+            //Ensures we are unit indent under the (operator ...)
+            
             //Without trappings.
             WriterOp.outputNoPrologue(out, funcOp.getOp(), context) ;
             out.decIndent() ;
+            out.decIndent(x) ;
             out.print(")") ;
             return ;
         }

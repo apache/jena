@@ -64,6 +64,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        qparse("--file=Q.arq", "--print=op") ;
         report() ;
         
         // "-Dcom.sun.management.jmxremote" needed for Java5

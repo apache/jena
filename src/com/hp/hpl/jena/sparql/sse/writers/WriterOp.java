@@ -263,6 +263,9 @@ public class WriterOp
         public void visit(OpFilter opFilter)
         { 
             start(opFilter, NoNL) ;
+//            int x = out.getCurrentOffset() ;
+//            out.incIndent(x) ;
+            
             ExprList exprs = opFilter.getExprs() ;
             if ( exprs == null )
             { start() ; finish() ; }
@@ -270,6 +273,9 @@ public class WriterOp
                 WriterExpr.output(out, exprs, sContext) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
+            
+//            out.decIndent(x) ;
+            
             finish(opFilter) ;
         }
     
