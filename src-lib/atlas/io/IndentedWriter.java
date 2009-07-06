@@ -221,7 +221,14 @@ public class IndentedWriter
     public int getIndent() { return currentIndent ; }
     
     /** Position past current indent */ 
-    public int getCurrentOffset() { return getCol() - getIndent() ; }
+    public int getCurrentOffset()
+    { 
+        int x = getCol() - getIndent() ;
+        if ( x >= 0 )
+            return x ;
+        // At start of line somehow.
+        return 0 ;
+    }
     
     
     public boolean hasLineNumbers()
