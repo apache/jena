@@ -15,14 +15,14 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 
 /** A persistence layer for a PrefixMapping */ 
 
-public abstract class PrefixMappingPersistent extends PrefixMappingImpl implements Closeable, Sync
+public abstract class PrefixMappingPersistent_Unused extends PrefixMappingImpl implements Closeable, Sync
 {
     // ** Does not cope with storing prefies for different graphs
     // See TDB's DatasetPrefixes
     
     private String graphName ; 
 
-    public PrefixMappingPersistent(String graphURI)
+    public PrefixMappingPersistent_Unused(String graphURI)
     {
         super() ;
         graphName = graphURI ;
