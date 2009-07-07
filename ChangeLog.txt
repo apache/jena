@@ -9,6 +9,7 @@ Documentation:
 ==== SDB v1.4 (pre)
 
 + Added StoreUtils.isFormatted(Store)
++ Added sdbdelete and sdbload --replace option
 
 ==== SDB v1.3
 

@@ -40,6 +40,7 @@ public class sdbload extends CmdArgsDB
     
     private static ModGraph modGraph = new ModGraph() ;
     private static ArgDecl argDeclTruncate = new ArgDecl(false, "truncate") ;
+    private static ArgDecl argDeclReplace = new ArgDecl(false, "replace") ;
     
     public static void main(String... argv)
     {
@@ -53,6 +54,7 @@ public class sdbload extends CmdArgsDB
         super(args);
         addModule(modGraph) ;
         add(argDeclTruncate) ;
+        add(argDeclReplace) ;
     }
 
     @Override
@@ -74,17 +76,22 @@ public class sdbload extends CmdArgsDB
         if ( contains(argDeclTruncate) ) 
             getStore().getTableFormatter().truncate() ;
         for ( String x : args )
-            loadOne(x) ;
+            loadOne(x, contains(argDeclReplace)) ;
         StoreBaseHSQL.close(getStore()) ;
     }
     
-    private void loadOne(String filename)
+    private void loadOne(String filename, boolean replace)
     {
         Monitor monitor = null ;
         
         Model model = modGraph.getModel(getStore()) ;
         Graph graph = model.getGraph() ;    
-        
+
+        if ( isVerbose() && replace )
+            System.out.println("Emptying: "+filename) ;
+        if (replace)
+            model.removeAll();
+
         if ( isVerbose() || getModTime().timingEnabled() )
             System.out.println("Start load: "+filename) ;
         if ( getModTime().timingEnabled() )
