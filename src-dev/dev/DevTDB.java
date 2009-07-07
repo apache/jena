@@ -17,10 +17,7 @@ public class DevTDB
     // ** Move DatasetGraphBase to ARQ
     // ** Check for tests of assembler and GraphTDB
     // Enable metadata?
-    // ** New ARQ build (arq-extra?)
-    //    Commands need moving.
-    //      EarlReport
-    //      Update ivy
+    // Use PrefixMappingPersistent
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
@@ -28,6 +25,11 @@ public class DevTDB
     //    Need better var index support first
     
     // BDB-JE? BlockMgr as index?
+    
+    // ** New ARQ build (arq-extra?)
+    //    Commands need moving.
+    //      EarlReport
+    //      Update ivy
     
     // Document concurrency 
     // Graph.getLock in Jena?  Share with dataset.
