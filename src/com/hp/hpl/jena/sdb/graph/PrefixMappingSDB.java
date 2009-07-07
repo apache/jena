@@ -30,6 +30,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public class PrefixMappingSDB extends PrefixMappingImpl
 {
+    // See PrefixMappingPersistent
     static private Logger log = LoggerFactory.getLogger(PrefixMappingSDB.class) ;
     
     static public final String prefixTableName  = "Prefixes" ;
