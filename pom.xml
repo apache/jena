@@ -205,7 +205,12 @@
         <executions>
           <execution>
             <id>create-assembly</id>
-            <phase>package</phase>
+            <!-- <phase>package</phase> -->
+	        <!-- verify? install? 
+	             Must be after javadoc, sources and test-jar are done.
+	             Before install means it's part of the local repo.
+             -->
+	        <phase>verify</phase>
             <goals>
               <goal>attached</goal>
             </goals>
