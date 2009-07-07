@@ -15,7 +15,12 @@ import java.util.List;
 public class Version
 {
     private List<Class< ? >> classes = new ArrayList<Class< ? >>() ; 
-    public void addClass(Class< ? > c) { classes.add(c) ; }
+    public void addClass(Class< ? > c)
+    {
+        if ( ! classes.contains(c) ) 
+            classes.add(c) ;
+    }
+    
     private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
 
     public void print()
