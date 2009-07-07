@@ -32,11 +32,11 @@ public class DatasetGraphTDB extends DatasetGraphBase
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
-    private DatasetPrefixes prefixes ;
+    private DatasetPrefixesTDB prefixes ;
     private final ReorderTransformation transform ;
     private final Location location ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixes prefixes, 
+    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
                            ReorderTransformation transform, Location location)
     {
         this.tripleTable = tripleTable ;
@@ -88,7 +88,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     public ReorderTransformation getTransform()     { return transform ; }
     
-    public DatasetPrefixes getPrefixes()            { return prefixes ; }
+    public DatasetPrefixesTDB getPrefixes()            { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {

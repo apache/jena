@@ -1,5 +1,39 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib">
 
+  <!-- TODO
+     Pick out lifecycle cleanly.
+       pre- post-
+
+initialize - compile - gather - package - publish - package 
+main
+  generate-sources 	
+  process-sources 	
+  generate-resources 	
+  process-resources 	
+  compile-main
+test-src 	
+  generate-test-sources 	
+  process-test-sources 	
+  generate-test-resources 	
+  process-test-resources 	
+  test-compile 	
+  	
+test
+
+prepare-package 	
+package 	
+integrity
+verify 	
+(install) 	
+deploy 	
+       
+     Check(write) documentation
+     Publish self.
+     echo lifecycle.
+     http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+  --> 
+    
+    
   <!-- ========================================== -->
   <!-- ==== Configuration  -->
 
@@ -113,7 +147,6 @@
 
   <!-- ========================================== -->
   <!-- ==== Setup  -->
-
   
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
@@ -157,7 +190,7 @@
   <!-- ========================================== -->
   <!-- ==== Build, compile, jar, javadoc -->
 
-  <target name="compile" depends="java-init,compile-main"  description="Compile project"/>
+  <target name="compile" depends="java-init,compile-main,compile-test"  description="Compile project"/>
   
   <target name="compile-main">
     <mkdir dir="${build.classes.dir}"/>
@@ -187,7 +220,10 @@
            target="${java.target}"
            >
       <src refid="java.source.path.test"/> 
-      <classpath refid="java.build.class.path" />	<!-- FIXME -->
+      <classpath>
+		<pathelement path="${build.classes.dir}" />
+        <path refid="java.run.class.path" />
+      </classpath>
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
@@ -369,6 +405,7 @@
       <formatter type="plain" />
       <classpath>
         <pathelement path="${build.classes.dir}" />
+        <pathelement path="${build.classes.test.dir}" />
         <path refid="java.run.class.path" />
       </classpath>
       <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
@@ -489,6 +526,7 @@
       <arg value="100"/>
       <classpath>
         <pathelement path="${build.classes.dir}"/>
+        <pathelement path="${build.classes.test.dir}"/>
         <path refid="java.run.class.path"/>
       </classpath>
     </java>

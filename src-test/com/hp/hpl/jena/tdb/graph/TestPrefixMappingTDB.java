@@ -18,12 +18,12 @@ import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixes;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
 {
-    static DatasetPrefixes datasetPrefixes = DatasetPrefixes.testing() ; 
+    static DatasetPrefixesTDB datasetPrefixes = DatasetPrefixesTDB.testing() ; 
     
     @Override
     protected PrefixMapping create()
@@ -33,7 +33,7 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
 
     @Test public void multiple1()
     {
-        DatasetPrefixes prefixes = DatasetPrefixes.testing() ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.testing() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -43,7 +43,7 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     
     @Test public void multiple2()
     {
-        DatasetPrefixes prefixes = DatasetPrefixes.testing() ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.testing() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -57,13 +57,13 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixes prefixes = DatasetPrefixes.create(new Location(dir)) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
         // This fails when run in the complete test suite, but not run individually. 
-        prefixes = DatasetPrefixes.create(new Location(dir)) ;
+        prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
         prefixes.close();
     }

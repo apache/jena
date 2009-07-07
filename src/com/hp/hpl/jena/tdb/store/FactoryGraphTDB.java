@@ -180,7 +180,7 @@ public class FactoryGraphTDB
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc) ;
-        DatasetPrefixes prefixes = DatasetPrefixes.create(indexBuilder, location) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }
 

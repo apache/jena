@@ -11,34 +11,29 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import atlas.lib.ColumnMap;
 import atlas.lib.Tuple;
 
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
+import com.hp.hpl.jena.tdb.graph.GraphPrefixesProjection;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.sys.Names;
 
-public class DatasetPrefixes implements Closeable, Sync
+public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
     // Index on GPU and a nodetable.
     // The nodetable is itself an index and a data file.
-    
-    // TODO Use PerfixMappingPersistent
     
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     private final NodeTupleTable nodeTupleTable ;
@@ -46,13 +41,13 @@ public class DatasetPrefixes implements Closeable, Sync
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
 
-    public static DatasetPrefixes create(Location location) { return create(IndexBuilder.get(), location) ; }
+    public static DatasetPrefixesTDB create(Location location) { return create(IndexBuilder.get(), location) ; }
     
-    public static DatasetPrefixes create(IndexBuilder indexBuilder, Location location)
-    { return new DatasetPrefixes(indexBuilder, location) ; }
+    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location)
+    { return new DatasetPrefixesTDB(indexBuilder, location) ; }
 
     
-    private DatasetPrefixes(IndexBuilder indexBuilder, Location location)
+    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location)
     {
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
         // GPU index
@@ -76,14 +71,15 @@ public class DatasetPrefixes implements Closeable, Sync
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     
-    private DatasetPrefixes()
+    private DatasetPrefixesTDB()
     {
         this(IndexBuilder.mem(), Location.mem()) ;
     }
     
     /** Testing - dataset prefixes in-memory */
-    public static DatasetPrefixes testing() { return new DatasetPrefixes() ; }
+    public static DatasetPrefixesTDB testing() { return new DatasetPrefixesTDB() ; }
 
+    //@Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -93,6 +89,7 @@ public class DatasetPrefixes implements Closeable, Sync
         nodeTupleTable.addRow(g,p,u) ;
     }
 
+    //@Override
     public Set<String> graphNames()
     {
         Iterator<Tuple<Node>> iter = nodeTupleTable.find((Node)null, null, null) ;
@@ -102,6 +99,7 @@ public class DatasetPrefixes implements Closeable, Sync
         return x ;
     }
     
+    //@Override
     public synchronized String readPrefix(String graphName, String prefix)
     {
         Node g = Node.createURI(graphName) ; 
@@ -113,6 +111,7 @@ public class DatasetPrefixes implements Closeable, Sync
         return uri.getURI() ; 
     }
 
+    //@Override
     public synchronized String readByURI(String graphName, String uriStr)
     {
         Node g = Node.createURI(graphName) ; 
@@ -124,6 +123,7 @@ public class DatasetPrefixes implements Closeable, Sync
         return prefix.getLiteralLexicalForm()  ;
     }
 
+    //@Override
     public synchronized Map<String, String> readPrefixMap(String graphName)
     {
         Node g = Node.createURI(graphName) ;
@@ -139,6 +139,7 @@ public class DatasetPrefixes implements Closeable, Sync
         return map ;
     }
     
+    //@Override
     public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap)
     {
         Node g = Node.createURI(graphName) ;
@@ -152,6 +153,7 @@ public class DatasetPrefixes implements Closeable, Sync
         }
     }
     
+    //@Override
     public synchronized void removeFromPrefixMap(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -160,6 +162,16 @@ public class DatasetPrefixes implements Closeable, Sync
         while ( iter.hasNext() )
             nodeTupleTable.deleteRow(g, p, iter.next().get(2)) ;
     }
+
+    /** Return a PrefixMapping for the unamed graph */
+    //@Override
+    public PrefixMapping getPrefixMapping()
+    { return getPrefixMapping(unamedGraphURI) ; }
+
+    /** Return a PrefixMapping for a named graph */
+    //@Override
+    public PrefixMapping getPrefixMapping(String graphName)
+    { return new GraphPrefixesProjection(graphName, this) ; }
 
     //@Override
     public void close()
@@ -171,92 +183,6 @@ public class DatasetPrefixes implements Closeable, Sync
     public void sync(boolean force)
     { 
         nodeTupleTable.sync(force) ;
-    }
-
-    /** Return a PrefixMapping for the unamed graph */ 
-    public PrefixMapping getPrefixMapping()
-    { return getPrefixMapping(unamedGraphURI) ; }
-    
-    /** Return a PrefixMapping for a named graph */ 
-    public PrefixMapping getPrefixMapping(String graphName)
-    { return new Projection(graphName) ; }
-    
-    // A view of the table.
-    // Manages the PrefixMappingImpl cache as well.
-    class Projection extends PrefixMappingImpl
-    {
-        // Own cache and complete replace  PrefixMappingImpl?
-        
-        private String graphName ; 
-        Projection(String graphName) { this.graphName = graphName ; }
-
-//        @Override
-//        protected void regenerateReverseMapping() {}
-
-        @Override
-        public String getNsURIPrefix( String uri )
-        {
-            String x = super.getNsURIPrefix(uri) ;
-            if ( x !=  null )
-                return x ;
-            // Do a reverse read.
-            x = readByURI(graphName, uri) ;
-            if ( x != null )
-                super.set(x, uri) ;
-            return x ;
-        }
-        
-        
-        @Override 
-        public Map<String, String> getNsPrefixMap()
-        {
-            Map<String, String> m =  readPrefixMap(graphName) ;
-            // Force into the cache
-            for ( Entry<String, String> e : m.entrySet() ) 
-                super.set(e.getKey(), e.getValue()) ;
-            return m ;
-        }
-
-        
-        @Override
-        protected void set(String prefix, String uri)
-        {
-            // Delete old one if present and different.
-            String x = get(prefix) ;
-            if ( x != null )
-            {
-                if(x.equals(uri))
-                    // Already there - no-op (thanks to Eric Diaz for pointing this out)
-                    return;
-                removeFromPrefixMap(graphName, prefix, x) ;
-            }
-            // Persist
-            insertPrefix(graphName, prefix, uri) ;
-            // Add to caches. 
-            super.set(prefix, uri) ;
-        }
-
-        @Override
-        protected String get(String prefix)
-        {
-            String x = super.get(prefix) ;
-            if ( x !=  null )
-                return x ;
-            // In case it has been updated.
-            x = readPrefix(graphName, prefix) ;
-            super.set(prefix, x) ;
-            return x ;
-        }
-
-        @Override
-        public PrefixMapping removeNsPrefix(String prefix)
-        {
-            String uri = super.getNsPrefixURI(prefix) ;
-            if ( uri != null )
-                removeFromPrefixMap(graphName, prefix, uri) ;
-            super.removeNsPrefix(prefix) ;
-            return this ; 
-        }
     }
 }
 

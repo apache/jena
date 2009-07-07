@@ -17,7 +17,6 @@ public class DevTDB
     // ** Move DatasetGraphBase to ARQ
     // ** Check for tests of assembler and GraphTDB
     // Enable metadata?
-    // Use PrefixMappingPersistent
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
@@ -33,28 +32,14 @@ public class DevTDB
     
     // Document concurrency 
     // Graph.getLock in Jena?  Share with dataset.
-    // Remove all relics of creating graphs without a dataset (FactoryGraphTDB._createGraph())
     
     // ----
     
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
     
-    // ** Use PrefixMappingPersistent with DatasetPrefixes. 
-
-    // ==== Build
-    // Multiple artifacts : macro for tasks.
-    // Compile tests separately from main codebase.
-    // Main code to a jar; test remain in classes-test
-    //   Path for src->artifact and src->NotArtifact
-    
     // == tdbcheck
     //  Checking graph (with IRI cache).
-    
-    // Copy with no sources, no javadoc for auxillary jars
-    // Confs - simplify "main"
-    // Rewrite build-lib to use a macro for publishing - dev and main are then calls with a resolver argument.
-    // Rename resolvers consistently in ivysettings.xml
     
     // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
@@ -81,7 +66,7 @@ public class DevTDB
     
     // ---- Documentation
     //  Concurrency policy
-    //  Change assembler page to emphasise creating a dataset.
+    //  Change assembler page to emphasise creating a dataset. [Done?]
     
     // ---- BlockMgrs
     // Consistency - do not manage in block managers except where MRSW not safe.

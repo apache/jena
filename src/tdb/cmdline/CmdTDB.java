@@ -10,6 +10,8 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
 
+import com.hp.hpl.jena.Jena;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -32,6 +34,8 @@ public abstract class CmdTDB extends CmdARQ
         init() ;
         super.add(argNamedGraph, "--graph=IRI", "Act on a named graph") ;
         super.addModule(tdbDatasetAssembler) ;
+        super.modVersion.addClass(Jena.class) ;
+        super.modVersion.addClass(ARQ.class) ;
         super.modVersion.addClass(TDB.class) ;
     }
     

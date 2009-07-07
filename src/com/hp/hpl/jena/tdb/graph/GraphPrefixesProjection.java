@@ -1,39 +1,60 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.graph;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
+/** View of a dataset's prefixes for a particualr graph */
 
-import com.hp.hpl.jena.tdb.lib.Sync;
-
-/** A persistence layer for a PrefixMapping */ 
-
-public abstract class PrefixMappingPersistent_Unused extends PrefixMappingImpl implements Closeable, Sync
+public class GraphPrefixesProjection extends PrefixMappingImpl
 {
-    // ** Does not cope with storing prefies for different graphs
-    // See TDB's DatasetPrefixes
-    
-    private String graphName ; 
+    // Own cache and complete replace  PrefixMappingImpl?
 
-    public PrefixMappingPersistent_Unused(String graphURI)
-    {
-        super() ;
-        graphName = graphURI ;
-        try { readPrefixMapping(graphName) ; }
-        catch (Throwable th) { }
+    private String graphName ;
+    private DatasetPrefixStorage prefixes ; 
+
+    public GraphPrefixesProjection(String graphName, DatasetPrefixStorage prefixes)
+    { 
+        this.graphName = graphName ;
+        this.prefixes = prefixes ;
     }
 
-//    @Override 
-//    public Map<String, String> getNsPrefixMap()
-//    { return super.getNsPrefixMap() ; }
-    
+    //@Override
+    //protected void regenerateReverseMapping() {}
+
+    @Override
+    public String getNsURIPrefix( String uri )
+    {
+        String x = super.getNsURIPrefix(uri) ;
+        if ( x !=  null )
+            return x ;
+        // Do a reverse read.
+        x = prefixes.readByURI(graphName, uri) ;
+        if ( x != null )
+            super.set(x, uri) ;
+        return x ;
+    }
+
+
+    @Override 
+    public Map<String, String> getNsPrefixMap()
+    {
+        Map<String, String> m =  prefixes.readPrefixMap(graphName) ;
+        // Force into the cache
+        for ( Entry<String, String> e : m.entrySet() ) 
+            super.set(e.getKey(), e.getValue()) ;
+        return m ;
+    }
+
+
     @Override
     protected void set(String prefix, String uri)
     {
@@ -44,12 +65,12 @@ public abstract class PrefixMappingPersistent_Unused extends PrefixMappingImpl i
             if(x.equals(uri))
                 // Already there - no-op (thanks to Eric Diaz for pointing this out)
                 return;
-            removeFromPrefixMap(graphName, prefix, x) ;
+            // Remove from cache.
+            prefixes.removeFromPrefixMap(graphName, prefix, x) ;
         }
-
         // Persist
-        insertIntoPrefixMap(graphName, prefix, uri) ;
-        // Set in-memory cache.
+        prefixes.insertPrefix(graphName, prefix, uri) ;
+        // Add to caches. 
         super.set(prefix, uri) ;
     }
 
@@ -60,7 +81,9 @@ public abstract class PrefixMappingPersistent_Unused extends PrefixMappingImpl i
         if ( x !=  null )
             return x ;
         // In case it has been updated.
-        return readFromPrefixMap(graphName, prefix) ;
+        x = prefixes.readPrefix(graphName, prefix) ;
+        super.set(prefix, x) ;
+        return x ;
     }
 
     @Override
@@ -68,37 +91,13 @@ public abstract class PrefixMappingPersistent_Unused extends PrefixMappingImpl i
     {
         String uri = super.getNsPrefixURI(prefix) ;
         if ( uri != null )
-            removeFromPrefixMap(graphName, prefix, uri) ;
+            prefixes.removeFromPrefixMap(graphName, prefix, uri) ;
         super.removeNsPrefix(prefix) ;
         return this ; 
     }
-
-    // Abstraction of storage.
-
-    /** Boot strap - preload prefixes */
-    protected abstract void readPrefixMapping(String graphName) ;
-
-    /** Read a prefix */
-    protected abstract String readFromPrefixMap(String graphName, String prefix) ;
-    /** Add or update a prefix */
-    protected abstract void insertIntoPrefixMap(String graphName, String prefix, String uri) ;
-    /** Remove a  prefix mapping*/
-    protected abstract void removeFromPrefixMap(String graphName, String prefix, String uri) ;
-
-    // Always put in a trailing ":" so the prefix is never the empty string.
-    // Convenience for database systems that think the empoty string and the
-    // null string are the same. 
-
-    private String encode(String prefix)
-    { return prefix+":" ; }
-
-    private String decode(String prefix)
-    { return prefix.substring(0, prefix.length()-1) ; }
-    
 }
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

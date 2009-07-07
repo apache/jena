@@ -28,11 +28,11 @@ public class GraphTriplesTDB extends GraphTDBBase
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
-    private final DatasetPrefixes prefixes ;
+    private final DatasetPrefixesTDB prefixes ;
     
     public GraphTriplesTDB(DatasetGraphTDB dataset,
                            TripleTable tripleTable,
-                           DatasetPrefixes prefixes)
+                           DatasetPrefixesTDB prefixes)
     {
         super(dataset, null) ;
         
