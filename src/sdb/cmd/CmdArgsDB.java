@@ -12,6 +12,8 @@ import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
 
+import com.hp.hpl.jena.Jena;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
@@ -40,6 +42,10 @@ public abstract class CmdArgsDB extends CmdGeneral
         addModule(modLogSQL) ;
         addModule(modTime) ;
         ModSymbol.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
+        ARQ.init() ;
+        super.modVersion.addClass(Jena.class) ;
+        super.modVersion.addClass(ARQ.class) ;
+        super.modVersion.addClass(SDB.class) ;
     }
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
