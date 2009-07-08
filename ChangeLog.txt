@@ -4,6 +4,9 @@ ChangeLog for ARQ
 ==== ARQ 2.7.1
 
 + Build is now done by maven
+** JAR changes: the ARQ jars are now called "arq.jar" and "arq-tests.jar".
+   Only "arq.jar is needed at runtime unless running ARQ test code. 
+** There is only one maven artifact "arq".  "arq-extra" is no more.
 
 + Bug fix: Reverse paths of length 3 or more were not being parsed correctly.
 
