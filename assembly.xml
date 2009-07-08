@@ -2,7 +2,8 @@
   <id>dist</id>
   <baseDirectory>Jena-${project.version}</baseDirectory>
   <formats>
-    <format>tar.gz</format>
+    <!-- Remove while testing (slow upload!) -->
+    <!--<format>tar.gz</format>-->
     <format>zip</format>
   </formats>
 
