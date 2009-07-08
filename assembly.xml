@@ -36,7 +36,7 @@
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-	<include>arq-${project.version}.jar</include>
+        <include>arq-${project.version}.jar</include>
         <include>arq-${project.version}-tests.jar</include>
       </includes>
     </fileSet>
@@ -59,15 +59,22 @@
       <directory>bat</directory>
     </fileSet>
 
+    <!-- For testing the deployment -->
     <fileSet>
       <directory>testing</directory>
     </fileSet>
 
     <fileSet>
+      <includes>
+	<include>test.sh</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
       <directory>doc</directory>
       <excludes>
-	<exclude>linkcheck</exclude>
-	<exclude>template.html</exclude>
+        <exclude>linkcheck</exclude>
+        <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
       </excludes>
