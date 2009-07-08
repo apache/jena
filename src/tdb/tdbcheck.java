@@ -12,8 +12,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import arq.cmd.CmdUtils;
 import arq.cmdline.CmdARQ;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -30,7 +30,7 @@ public class tdbcheck extends CmdARQ
     static public void main(String... argv)
     { 
         TDB.init(); // Includes reorganising the Jena readers.
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         // Checking done in graph.
         new tdbcheck(argv).mainRun() ;
     }

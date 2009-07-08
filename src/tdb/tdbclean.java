@@ -7,14 +7,14 @@
 package tdb;
 
 import tdb.cmdline.CmdTDB;
-import arq.cmd.CmdUtils;
 import atlas.lib.FileOps;
+import atlas.logging.Log;
 
 public class tdbclean extends CmdTDB
 {
     static public void main(String... argv)
     { 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         new tdbclean(argv).mainRun() ;
     }
 

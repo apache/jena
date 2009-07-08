@@ -7,7 +7,7 @@
 package tdb;
 
 import tdb.cmdline.CmdTDB;
-import arq.cmd.CmdUtils;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
@@ -19,7 +19,7 @@ public class tdbstats extends CmdTDB
     // tdbconfig?
     static public void main(String... argv)
     { 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         new tdbstats(argv).mainRun() ;
     }
 

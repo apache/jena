@@ -9,7 +9,7 @@ package tdb;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
-import arq.cmd.CmdUtils;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
@@ -26,7 +26,7 @@ public class tdbdump extends CmdSub
     
     static public void main(String... argv)
     { 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         new tdbdump(argv).exec() ;
     }
 

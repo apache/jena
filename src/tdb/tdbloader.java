@@ -9,15 +9,12 @@ package tdb;
 import java.util.List;
 
 import tdb.cmdline.CmdTDB;
-import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
-
-import com.hp.hpl.jena.rdf.model.Model;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.query.ARQ;
-
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
@@ -36,7 +33,7 @@ public class tdbloader extends CmdTDB
     
     static public void main(String... argv)
     { 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         new tdbloader(argv).mainRun() ;
     }
 

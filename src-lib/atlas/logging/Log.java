@@ -6,6 +6,8 @@
 
 package atlas.logging;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +144,18 @@ public class Log
         org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
         java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.OFF) ;
     }
-
+    
+    /** Set log4j - try to find a file "log4j.properties" if nothing already set */
+    public static void setLog4j()
+    {
+        if ( System.getProperty("log4j.configuration") == null )
+        {
+            String fn = "log4j.properties" ;
+            File f = new File(fn) ;
+            if ( f.exists() ) 
+                System.setProperty("log4j.configuration", "file:"+fn) ;
+        }
+    }
 }
 
 /*

@@ -9,8 +9,8 @@ package tdb;
 import java.util.Iterator;
 
 import tdb.cmdline.CmdTDB;
-import arq.cmd.CmdUtils;
 import atlas.lib.Bytes;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
@@ -25,7 +25,7 @@ public class tdbnode extends CmdTDB
     // Debugging tool.
     static public void main(String... argv)
     { 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         new tdbnode(argv).mainRun() ;
     }
 
