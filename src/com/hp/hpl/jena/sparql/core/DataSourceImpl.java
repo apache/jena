@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 public class DataSourceImpl implements DataSource
 {
     protected DataSourceGraph dsg = null ;
-    // Cache graph => model so returned models are the same (==)
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
     public DataSourceImpl()

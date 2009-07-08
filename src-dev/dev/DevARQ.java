@@ -10,6 +10,7 @@ public class DevARQ
 {
 	// ==== 2.7.1
     // Then ready to go.  Is it 2.8.0?
+    // Sort out Dataset/DataSource and caching.
     
     // == Jena maven
     // CmdUtils to somewhere else

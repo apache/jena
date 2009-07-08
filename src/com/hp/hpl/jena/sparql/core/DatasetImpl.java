@@ -27,6 +27,7 @@ public class DatasetImpl implements Dataset
 {
     protected DatasetGraph dsg = null ;
     // Cache graph => model so returned models are the same (==)
+    private boolean caching = false ;
     private Cache<Graph, Model> cache = new CacheLRU<Graph, Model>(0.75f, 100) ;      
 
     public DatasetImpl(Model model)
