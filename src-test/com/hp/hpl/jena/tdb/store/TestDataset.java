@@ -6,21 +6,16 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import atlas.test.BaseTest;
 import org.junit.Test;
+import atlas.test.BaseTest;
 
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -145,6 +140,54 @@ public class TestDataset extends BaseTest
         Model m2 = qExec.execConstruct() ;
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
+    
+    @Test public void special3()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        load2(m) ;
+        load3(m) ;
+        
+        String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o }" ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        Model m2 = qExec.execConstruct() ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
+    }
+    
+    @Test public void special4()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        load2(m) ;
+        load3(m) ;
+        TDB.sync(ds) ;
+        
+        String qs = "PREFIX : <"+baseNS+"> SELECT (COUNT(?x) as ?c) WHERE { ?x (:p1|:p2) 'x1' }" ;
+        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ; 
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        long c1 = qExec.execSelect().next().getLiteral("c").getLong() ;
+        qExec.close() ;
+        
+        qExec = QueryExecutionFactory.create(q, m) ;
+        long c2 = qExec.execSelect().next().getLiteral("c").getLong() ;
+        assertEquals(c1, c2) ; 
+        qExec.close() ;
+    }
+    
+    
     
     // Put a model into a general dataset and use it.
     @Test public void generalDataset1()

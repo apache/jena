@@ -14,9 +14,10 @@ public class DevTDB
     // == 0.8.2
     // Need (more) tests for symUnionDefaultGraph
     // ** Document concurrency.
-    // ** Move DatasetGraphBase to ARQ
     // ** Check for tests of assembler and GraphTDB
-    // Enable metadata?
+    //
+    // ** Move DatasetGraphBase to ARQ [later]
+    // Enable metadata? [later]
     
     // ------
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
