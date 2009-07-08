@@ -21,6 +21,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.lib.Metadata;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -79,6 +80,8 @@ public class SDB
         // Set this immediately in case code below causes init() to be called.
         // (It's better if there are no dependences but ...)
         initialized = true ;
+        
+        Metadata.setMetadata("com/hp/hpl/jena/sdb/sdb-properties.xml") ;
         
         // Better not to break up BGPs too much.
         ARQ.getContext().set(ARQ.filterPlacement, false) ;
@@ -152,25 +155,22 @@ public class SDB
     public static final String PATH = "com.hp.hpl.jena.sdb";
    
     /** The product name */   
-    public static final String NAME = "@name@";
+    public static final String NAME = "SDB";
    
-    /** The SDB web site : see also http://jena.sourceforge.net*/   
-    public static final String WEBSITE = "@website@";
+    /** The full name of the current ARQ version */   
+    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
    
-    /** The full name of the current SDB version */   
-    public static final String VERSION = "@version@";
-   
-    /** The major version number for this release of SDB (ie '2' for SDB 2.0) */
-    public static final String MAJOR_VERSION = "@version-major@";
-   
-    /** The minor version number for this release of SDB (ie '0' for SDB 2.0) */
-    public static final String MINOR_VERSION = "@version-minor@";
-   
-    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
-    public static final String VERSION_STATUS = "@version-status@";
+//    /** The major version number for this release of SDB (ie '2' for SDB 2.0) */
+//    public static final String MAJOR_VERSION = "@version-major@";
+//   
+//    /** The minor version number for this release of SDB (ie '0' for SDB 2.0) */
+//    public static final String MINOR_VERSION = "@version-minor@";
+//   
+//    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
+//    public static final String VERSION_STATUS = "@version-status@";
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = "@build-time@";
+    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 /*

@@ -65,110 +65,110 @@ public class ExprMatcher
                      mapAction) ;
     }
 
-}
-    
-// Visit/walk the pattern
-class MatchVisitor implements ExprVisitor
-{
-    private Expr       target ;
-    private MapAction  aMap ;
-    private MapResult  rMap ;
-    private MapCallout cMap ;
-
-    // Default action is to accept anything - i.e. pattern variables are any expression
-    static ActionMatch defaultAction = new ActionMatchBind() ;
-    
-    MatchVisitor(Expr target, MapAction aMap, MapCallout cMap, MapResult rMap)
-    { 
-        this.aMap = aMap ;
-        this.rMap = rMap ;
-        this.cMap = cMap ;
-        this.target = target ;
-    }
-    
-    public void startVisit()
-    {}
-
-    /* ExprFunction in the pattern:
-     * 1/ If in the call out map, do that : return 
-     * 2/ Check that the thing to be matched is a function as well
-     *    and has the same function label (internal name or IRI).
-     * 3/ Check same number of arguments
-     * 4/ For each argument, match that as well.
-     */
-    
-    public void visit(ExprFunction patExpr)
+    // Visit/walk the pattern
+    static class MatchVisitor implements ExprVisitor
     {
-        String uri = patExpr.getFunctionIRI() ;
-        
-        if ( uri != null && cMap != null && cMap.containsKey(uri) )
-        {
-            List<Expr> args = patExpr.getArgs() ;
-            if( ! cMap.get(uri).match(uri, args, rMap) )
-                throw new NoExprMatch("Function callout rejected match") ;
-            return ;
+        private Expr       target ;
+        private MapAction  aMap ;
+        private MapResult  rMap ;
+        private MapCallout cMap ;
+
+        // Default action is to accept anything - i.e. pattern variables are any expression
+        static ActionMatch defaultAction = new ActionMatchBind() ;
+
+        MatchVisitor(Expr target, MapAction aMap, MapCallout cMap, MapResult rMap)
+        { 
+            this.aMap = aMap ;
+            this.rMap = rMap ;
+            this.cMap = cMap ;
+            this.target = target ;
         }
-        
-        if ( ! target.isFunction() )  
-            throw new NoExprMatch("Not an ExprFunction: "+target) ;
-        
-        ExprFunction funcTarget = target.getFunction() ;
-        
-        if ( ! patExpr.getFunctionSymbol().equals(funcTarget.getFunctionSymbol()) )
-            throw new NoExprMatch("Different function symbols: "+patExpr.getFunctionSymbol().getSymbol()+" // "+funcTarget.getFunctionSymbol().getSymbol()) ;
-        
-        if ( patExpr.numArgs() != funcTarget.numArgs() )
-            throw new NoExprMatch("Different arity: "+patExpr.numArgs()+"/"+funcTarget.numArgs()) ;
-        
-        // Either both null (some built-in) or both the same IRI 
-        if ( ! ( patExpr.getFunctionIRI() == null && funcTarget.getFunctionIRI() == null ) )
-            if ( ! patExpr.getFunctionIRI().equals(funcTarget.getFunctionIRI()) )
-                throw new NoExprMatch("Different functions: "+patExpr.getFunctionIRI()+" "+funcTarget.getFunctionIRI()) ;
-        
-        for ( int i = 1 ; i <= funcTarget.numArgs() ; i++ )
+
+        public void startVisit()
+        {}
+
+        /* ExprFunction in the pattern:
+         * 1/ If in the call out map, do that : return 
+         * 2/ Check that the thing to be matched is a function as well
+         *    and has the same function label (internal name or IRI).
+         * 3/ Check same number of arguments
+         * 4/ For each argument, match that as well.
+         */
+
+        public void visit(ExprFunction patExpr)
         {
-            // Recurse, breaking up the target. 
-            Expr p = patExpr.getArg(i) ;
-            Expr e = funcTarget.getArg(i) ;
-            
-            MatchVisitor m = new MatchVisitor(e, aMap, cMap, rMap) ;
-            p.visit(m) ;
+            String uri = patExpr.getFunctionIRI() ;
+
+            if ( uri != null && cMap != null && cMap.containsKey(uri) )
+            {
+                List<Expr> args = patExpr.getArgs() ;
+                if( ! cMap.get(uri).match(uri, args, rMap) )
+                    throw new NoExprMatch("Function callout rejected match") ;
+                return ;
+            }
+
+            if ( ! target.isFunction() )  
+                throw new NoExprMatch("Not an ExprFunction: "+target) ;
+
+            ExprFunction funcTarget = target.getFunction() ;
+
+            if ( ! patExpr.getFunctionSymbol().equals(funcTarget.getFunctionSymbol()) )
+                throw new NoExprMatch("Different function symbols: "+patExpr.getFunctionSymbol().getSymbol()+" // "+funcTarget.getFunctionSymbol().getSymbol()) ;
+
+            if ( patExpr.numArgs() != funcTarget.numArgs() )
+                throw new NoExprMatch("Different arity: "+patExpr.numArgs()+"/"+funcTarget.numArgs()) ;
+
+            // Either both null (some built-in) or both the same IRI 
+            if ( ! ( patExpr.getFunctionIRI() == null && funcTarget.getFunctionIRI() == null ) )
+                if ( ! patExpr.getFunctionIRI().equals(funcTarget.getFunctionIRI()) )
+                    throw new NoExprMatch("Different functions: "+patExpr.getFunctionIRI()+" "+funcTarget.getFunctionIRI()) ;
+
+            for ( int i = 1 ; i <= funcTarget.numArgs() ; i++ )
+            {
+                // Recurse, breaking up the target. 
+                Expr p = patExpr.getArg(i) ;
+                Expr e = funcTarget.getArg(i) ;
+
+                MatchVisitor m = new MatchVisitor(e, aMap, cMap, rMap) ;
+                p.visit(m) ;
+            }
         }
-    }
 
-    /* NodeValue in the pattern
-     * The target must have the same.  
-     */
-    
-    public void visit(NodeValue nv)
-    {
-        if ( ! target.isConstant() )
-            throw new NoExprMatch("Not a NodeValue") ;
-        if ( ! nv.equals(target.getConstant()) )
-            throw new NoExprMatch("Different value: "+nv+" & "+target.getConstant()) ;
-    }
+        /* NodeValue in the pattern
+         * The target must have the same.  
+         */
 
-    /*
-     * Variable is the pattern
-     * 1/ If in the action map, do the action
-     * 2/ Invoke default action. 
-     */
-    
-    public void visit(ExprVar patternVar)
-    {
-        Var vn = patternVar.asVar() ;
-        ActionMatch a = aMap.get(vn) ; 
-        if ( a == null )
-            a = defaultAction ;
-        
-        if ( a.match(vn, target, rMap) )
-            return ;
-        throw new NoExprMatch("Action for "+patternVar+ "+failed") ;
-    }
+        public void visit(NodeValue nv)
+        {
+            if ( ! target.isConstant() )
+                throw new NoExprMatch("Not a NodeValue") ;
+            if ( ! nv.equals(target.getConstant()) )
+                throw new NoExprMatch("Different value: "+nv+" & "+target.getConstant()) ;
+        }
 
-    public void finishVisit()
-    {}
+        /*
+         * Variable is the pattern
+         * 1/ If in the action map, do the action
+         * 2/ Invoke default action. 
+         */
+
+        public void visit(ExprVar patternVar)
+        {
+            Var vn = patternVar.asVar() ;
+            ActionMatch a = aMap.get(vn) ; 
+            if ( a == null )
+                a = defaultAction ;
+
+            if ( a.match(vn, target, rMap) )
+                return ;
+            throw new NoExprMatch("Action for "+patternVar+ "+failed") ;
+        }
+
+        public void finishVisit()
+        {}
+    }
 }
+
 
 
 /*

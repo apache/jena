@@ -29,8 +29,6 @@ public class SDBCmd
     public static int sdbquery(String... args)     { return exit(new sdb.sdbquery(args(args))) ; } 
     public static int sdbtruncate(String... args)  { return exit(new sdb.sdbtruncate(args(args))) ; } 
 
-    public static int sdbtest(String... args)      { return exit(new sdb.sdbtest(args(args))) ; } 
-    
     public static int sdbinfo(String... args)      { return exit(new sdb.sdbinfo(args(args))) ; } 
     public static int sdbmeta(String... args)      { return exit(new sdb.sdbmeta(args(args))) ; } 
     public static int sdbsql(String... args)       { return exit(new sdb.sdbsql(args(args))) ; } 
