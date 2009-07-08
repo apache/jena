@@ -12,7 +12,6 @@ public class DevTDB
     
     
     // == 0.8.2
-    // Need (more) tests for symUnionDefaultGraph
     // ** Document concurrency.
     // ** Check for tests of assembler and GraphTDB
     //
