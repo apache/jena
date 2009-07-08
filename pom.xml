@@ -206,11 +206,11 @@
           <execution>
             <id>create-assembly</id>
             <!-- <phase>package</phase> -->
-	        <!-- verify? install? 
-	             Must be after javadoc, sources and test-jar are done.
-	             Before install means it's part of the local repo.
+                <!-- verify? install? 
+                     Must be after javadoc, sources and test-jar are done.
+                     Before install means it's part of the local repo.
              -->
-	        <phase>verify</phase>
+                <phase>verify</phase>
             <goals>
               <goal>attached</goal>
             </goals>
@@ -358,7 +358,7 @@
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
+      <!--<url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
       <url>file:tmp</url>
       <layout>default</layout>
     </snapshotRepository>
