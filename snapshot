@@ -28,7 +28,8 @@ fi
 function jarName
 {
     local JAR="$1"
-    perl -e '$_=$ARGV[0] ; s!(.*/)?([^/]*)-\d.\d.\d.*.jar!$2.jar! ; print "$_\n"' $JAR
+    local VER="$2"
+    perl -e '$_=$ARGV[0] ; s!(.*/)?([^/]*)-\d.\d.\d(-.*).jar!$2$3.jar! ; print "$_\n"' $JAR
 }
 
 function version
@@ -39,17 +40,16 @@ function version
 
 
 ## Make jar
-mvn clean compile jar:jar
+#mvn clean verify
 
 ## Get version.
-VER="$(echo target/arq-[0-9].[0-9].[0-9].jar)"
-# echo "Version: $(version $VER) (alt)"
+X=$(echo target/arq-*-tests.jar)
+[ -e "$X" ] || { echo "No such tests jar" 1>&2 ; exit 1 ; }
+VER=$X
+VER=${VER#*/arq-}
+VER=${VER%-tests.jar}
 
-VER=${VER#target/arq-}
-VER=${VER%.jar}
-echo "Version: $VER"
-
-JARS=target/arq-$VER.jar
+echo "ARQ version: $VER"
 
 ## # Remove version numbers
 ## for jar in build/arq*.jar
@@ -61,12 +61,8 @@ JARS=target/arq-$VER.jar
 for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
-  
-  for jar in $JARS
-    do
-    J2=$(jarName $jar)
-    cp -u $jar ../$d/lib/$J2
-    done
+  cp -u target/arq-$VER.jar ../$d/lib/arq.jar
+  cp -u target/arq-$VER-tests.jar ../$d/lib/arq-tests.jar
   ## Fix up 
   chmod u+rw ../$d/lib/arq*jar
   # And Jena
