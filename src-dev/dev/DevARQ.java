@@ -8,17 +8,9 @@ package dev;
 
 public class DevARQ
 {
-    // Maven.
-    // javadoc - package
-    // sources - package
-    // test-jar - package 
-    // assembly --> verify, package
-    //   Or use ant.
-    //   Or mvn package assembly:assembly
-
-    // Fix indent of (! (exists ...))
-    
 	// ==== 2.7.1
+    // Document EXISTS
+    // Then ready to go.  Is it 2.8.0?
     
     // == Jena maven
     // CmdUtils to somewhere else
