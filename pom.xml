@@ -241,10 +241,10 @@
                   <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
                 </tstamp>
                 <echo file="${basedir}/target/filter.properties">
-                  #begin
-                  build.time.xsd=${build.time.xsd}
-                  build.time.txt=${build.time.txt}
-                  #end
+#begin
+build.time.xsd=${build.time.xsd}
+build.time.txt=${build.time.txt}
+#end
                 </echo>
                 <echo message="build.time=${build.time.txt}"/>
               </tasks>
