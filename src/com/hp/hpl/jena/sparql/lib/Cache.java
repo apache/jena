@@ -12,12 +12,9 @@ import java.util.Iterator;
 public interface Cache<Key, Value>
 {
     public boolean contains(Key key) ;
-//    public T getObject(Key key, boolean exclusive) ;
-    public Value getObject(Key key) ;
-    public void putObject(Key key, Value thing) ;
-//    public void promote(Key key) ;
-//    public void returnObject(Key key) ;
-    public void removeObject(Key key) ;
+    public Value get(Key key) ;
+    public void put(Key key, Value thing) ;
+    public void remove(Key key) ;
     public Iterator<Key> keys() ;
     
     public boolean isEmpty() ;

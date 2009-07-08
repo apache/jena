@@ -78,21 +78,21 @@ public class DatasetImpl implements Dataset
     {
         if ( graph == null )
             return ;
-        cache.removeObject(graph) ;
+        cache.remove(graph) ;
     }
 
     private void addToCache(Model model)
     {
-        cache.putObject(model.getGraph(), model) ;
+        cache.put(model.getGraph(), model) ;
     }
 
     private Model graph2model(Graph graph)
     { 
-        Model model = cache.getObject(graph) ;
+        Model model = cache.get(graph) ;
         if ( model == null )
         {
             model = ModelFactory.createModelForGraph(graph) ;
-            cache.putObject(graph, model) ;
+            cache.put(graph, model) ;
         }
         return model ;
     }

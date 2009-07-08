@@ -34,8 +34,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    //public V getObject(K key, boolean exclusive)
-    public V getObject(K key)
+    public V get(K key)
     {
         return cache.get(key) ;
     }
@@ -47,13 +46,13 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    public void putObject(K key, V thing)
+    public void put(K key, V thing)
     {
         cache.put(key, thing) ;
     }
 
     //@Override
-    public void removeObject(K key)
+    public void remove(K key)
     {
         cache.remove(key) ;
     }
