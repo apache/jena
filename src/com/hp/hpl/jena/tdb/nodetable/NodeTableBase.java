@@ -180,7 +180,7 @@ public class NodeTableBase implements NodeTable
     protected Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
-        return id2node_Cache.getObject(id) ;
+        return id2node_Cache.get(id) ;
     }
     
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
@@ -189,7 +189,7 @@ public class NodeTableBase implements NodeTable
         // Remember things known (currently) not to exist 
         if ( notPresent.contains(node) ) return null ;
         if ( node2id_Cache == null ) return null ;
-        return node2id_Cache.getObject(node) ; 
+        return node2id_Cache.get(node) ; 
     }
 
     /** Update the Node->NodeId caches */
@@ -212,9 +212,9 @@ public class NodeTableBase implements NodeTable
         }
         
         if ( node2id_Cache != null )
-            node2id_Cache.putObject(node, id) ;
+            node2id_Cache.put(node, id) ;
         if ( id2node_Cache != null )
-            id2node_Cache.putObject(id, node) ;
+            id2node_Cache.put(id, node) ;
         if ( notPresent.contains(node) )
             notPresent.remove(node) ;
     }

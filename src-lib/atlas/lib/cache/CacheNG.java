@@ -71,7 +71,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
     }
 
     synchronized
-    public boolean contains(Key key)
+    public boolean containsKey(Key key)
     {
         boolean b = objects.containsKey(key) ;
         if ( logging )
@@ -79,7 +79,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
         return b ;
     }
 
-    public T getObject(Key key) { return getObject(key, false) ; }
+    public T get(Key key) { return getObject(key, false) ; }
 
     
     //@Override
@@ -128,7 +128,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
         }
     }
     synchronized
-    public void putObject(Key key, T thing)
+    public void put(Key key, T thing)
     {
         PoolEntry entry = objects.get(key) ;
         if ( entry != null )
@@ -214,7 +214,7 @@ public class CacheNG<Key, T> implements Cache<Key, T>
     
     //@Override
     synchronized
-    public void removeObject(Key key)
+    public void remove(Key key)
     {
         PoolEntry entry = objects.get(key) ;
         if ( entry == null )

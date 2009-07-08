@@ -175,11 +175,11 @@ public class IRIResolver
     
     public IRI resolveSilent(String relURI)
     {
-        if ( resolvedIRIs != null && resolvedIRIs.contains(relURI) ) 
-            return resolvedIRIs.getObject(relURI) ;
+        if ( resolvedIRIs != null && resolvedIRIs.containsKey(relURI) ) 
+            return resolvedIRIs.get(relURI) ;
         IRI iri = base.resolve(relURI) ;
         if ( resolvedIRIs != null )
-            resolvedIRIs.putObject(relURI, iri) ;
+            resolvedIRIs.put(relURI, iri) ;
         return iri ;
     }
     

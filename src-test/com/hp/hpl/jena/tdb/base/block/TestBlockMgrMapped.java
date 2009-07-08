@@ -9,8 +9,8 @@ package com.hp.hpl.jena.tdb.base.block;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import arq.cmd.CmdUtils;
 import atlas.lib.FileOps;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 
@@ -18,7 +18,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
     static boolean logging = false ;
     
-    static { if ( logging ) CmdUtils.setLog4j() ; }
+    static { if ( logging ) Log.setLog4j() ; }
     
     static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
     

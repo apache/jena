@@ -58,12 +58,12 @@ public class BlockMgrCache extends BlockMgrWrapper
     
     private void expelEntry(Integer id)
     {
-        ByteBuffer bb = writeCache.getObject(id) ;
+        ByteBuffer bb = writeCache.get(id) ;
         if ( bb == null )
             return ;
         log("Drop (write cache): %d", id) ;
         blockMgr.put(id, bb) ;
-        writeCache.removeObject(id) ;
+        writeCache.remove(id) ;
     }
 
     // Pool?
@@ -90,7 +90,7 @@ public class BlockMgrCache extends BlockMgrWrapper
 
     private ByteBuffer fetchEntry(int id, boolean silent)
     {
-        ByteBuffer bb = readCache.getObject(id) ;
+        ByteBuffer bb = readCache.get(id) ;
         if ( bb != null )
         {
             cacheHits++ ;
@@ -100,7 +100,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( writeCache != null )
         {
             // Might still be in the dirty blocks.
-            bb = writeCache.getObject(id) ;
+            bb = writeCache.get(id) ;
             if ( bb != null )
             {
                 cacheWriteHits++ ;
@@ -116,7 +116,7 @@ public class BlockMgrCache extends BlockMgrWrapper
             bb = blockMgr.getSilent(id) ;
         else
             bb = blockMgr.get(id) ;
-        readCache.putObject(id, bb) ;
+        readCache.put(id, bb) ;
         return bb ;
     }
 
@@ -126,21 +126,21 @@ public class BlockMgrCache extends BlockMgrWrapper
         log("Put   : %d", id) ;
         
         if ( writeCache != null )
-            writeCache.putObject(id, block) ;
+            writeCache.put(id, block) ;
         else
             blockMgr.put(id, block) ;
 
         // ????
-        readCache.putObject(id, block) ;
+        readCache.put(id, block) ;
     }
     
     @Override
     public void freeBlock(int id)
     {
         log("Free  : %d", id) ;
-        readCache.removeObject(id) ;
+        readCache.remove(id) ;
         if ( writeCache != null )
-            writeCache.removeObject(id) ;
+            writeCache.remove(id) ;
         blockMgr.freeBlock(id) ;
     }
     

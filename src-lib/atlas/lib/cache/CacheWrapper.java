@@ -22,11 +22,11 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public void clear()                             { cache.clear(); }
 
     //@Override
-    public boolean contains(Key key)                  { return cache.contains(key) ; }
+    public boolean containsKey(Key key)                  { return cache.containsKey(key) ; }
     
     //@Override
     //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
-    public T getObject(Key key)                       { return cache.getObject(key) ; }
+    public T get(Key key)                       { return cache.get(key) ; }
 
     //@Override
     public boolean isEmpty()                          { return cache.isEmpty() ; }
@@ -35,10 +35,10 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public Iterator<Key> keys()                       { return cache.keys(); }
 
     //@Override
-    public void putObject(Key key, T thing)           { cache.putObject(key, thing) ; }
+    public void put(Key key, T thing)           { cache.put(key, thing) ; }
 
     //@Override
-    public void removeObject(Key key)                 { cache.removeObject(key) ; }
+    public void remove(Key key)                 { cache.remove(key) ; }
 
     //@Override
     public void setDropHandler(ActionKeyValue<Key, T> dropHandler)

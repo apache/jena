@@ -23,7 +23,7 @@ public class Cache1<K, V> implements Cache<K,V>
     public Cache1() { clear() ; }
     
     //@Override
-    public boolean contains(K key)
+    public boolean containsKey(K key)
     {
         if ( cacheKey == null )
             return false ;
@@ -31,7 +31,7 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     //@Override
-    public V getObject(K key)
+    public V get(K key)
     {
         if ( cacheKey == null ) return null ;
         if ( cacheKey.equals(key) ) return cacheValue ;
@@ -58,7 +58,7 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     //@Override
-    public void putObject(K key, V thing)
+    public void put(K key, V thing)
     {
         // Displaces any existing cached key/value pair
         cacheKey = key ;
@@ -66,7 +66,7 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     //@Override
-    public void removeObject(K key)
+    public void remove(K key)
     {
         if ( cacheKey == null ) return ;
         if ( cacheKey.equals(key) )

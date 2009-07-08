@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.HashMap;
-import java.util.Map;
+import atlas.lib.Cache;
+import atlas.lib.CacheFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -23,7 +23,9 @@ abstract public class DatasetGraphBase implements DatasetGraph
 {
     private Lock lock = null ;
     protected Graph defaultGraph = null ;
-    private Map<Node, Graph> namedGraphs = new HashMap<Node, Graph>() ;
+    
+    private boolean caching = true ;
+    private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
     abstract protected void _close() ;
     abstract protected Graph _createNamedGraph(Node graphNode) ;
@@ -48,6 +50,9 @@ abstract public class DatasetGraphBase implements DatasetGraph
     //@Override
     public final Graph getDefaultGraph()
     {
+        if ( ! caching )
+            return _createDefaultGraph() ;
+        
         if ( defaultGraph == null )
             defaultGraph = _createDefaultGraph() ;
         return defaultGraph ;
@@ -56,6 +61,9 @@ abstract public class DatasetGraphBase implements DatasetGraph
     //@Override
     public final Graph getGraph(Node graphNode)
     {
+        if ( ! caching )
+            return _createNamedGraph(graphNode) ;
+
         Graph graph = namedGraphs.get(graphNode) ;
         if ( graph == null )
         {

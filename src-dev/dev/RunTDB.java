@@ -18,8 +18,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import arq.cmd.CmdUtils;
 import atlas.junit.TextListener2;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -64,11 +64,13 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    static { CmdUtils.setLog4j() ; }
+    static { Log.setLog4j() ; }
  
     
     public static void main(String ... args) throws IOException
     {
+        tdbquery("--query=container-1.rq") ;
+        
         // ?s rdf:type/rdfs:subClassOf* ?o
         Model m = FileManager.get().loadModel("D.ttl") ;
         

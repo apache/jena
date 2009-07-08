@@ -81,6 +81,9 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
+        
+        boolean b = iter.hasNext() ;
+        
         return new MapperIteratorTriples(iter) ;
     }
     

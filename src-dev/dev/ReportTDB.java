@@ -1,7 +1,7 @@
 package dev;
 
 
-import arq.cmd.CmdUtils;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -16,7 +16,7 @@ public class ReportTDB
 {
     public static void main(String[] args){
 
-        CmdUtils.setLog4j() ;
+        Log.setLog4j() ;
         String testNS = "http://test.com/test#";
 
         Model domain = ModelFactory.createDefaultModel();

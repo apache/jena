@@ -1,0 +1,31 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix   :         <http://example/> .
+
+:x1 :list (1 2 3) .
+
+:x2 :list (1 2 3) .
+
+:x3 :bag [ a rdf:Bag ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_5   2 ;
+        ] .
+       
+
+:x4 :alt [ a rdf:Alt ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_3   3 ;
+        ] .
+       
+:x5 :seq [ a rdf:Seq ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_3   3 ;
+          rdf:_10   10 ;
+        ] .
+
+# Not a container of any kind - no type.
+:x6 :bag [ rdf:_1   1 ; 
+          rdf:_2   9 ;
+        ] .

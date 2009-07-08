@@ -9,7 +9,7 @@ package dev.opt;
 import java.util.Map;
 import java.util.Set;
 
-import arq.cmd.CmdUtils;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -26,7 +26,7 @@ public class Driver
         nextDivider = "" ;
     }
 
-    static { CmdUtils.setLog4j() ; }
+    static { Log.setLog4j() ; }
  
     public static void main(String ... args)
     {

@@ -43,38 +43,38 @@ public class CacheStats<Key,T> extends CacheWrapper<Key,T>
     }
     
     @Override synchronized
-    public T getObject(Key key)
+    public T get(Key key)
     { 
-        if ( cache.contains(key) )
+        if ( cache.containsKey(key) )
             cacheMisses ++ ;
         else
             cacheHits++ ;
-        return cache.getObject(key) ;
+        return cache.get(key) ;
     }
     
     @Override synchronized
-    public void putObject(Key key, T t)
+    public void put(Key key, T t)
     {
-        T v = getObject(key) ;
+        T v = get(key) ;
         if ( v == null )
         {
             cacheEntries++ ;
-            cache.putObject(key, v) ;
+            cache.put(key, v) ;
             return ;
         }
         //if ( v.equals(t) ) { }
         // Do it anyway to be consistent 
-        cache.putObject(key, v) ;
+        cache.put(key, v) ;
     }
     
     @Override synchronized
-    public void removeObject(Key key)
+    public void remove(Key key)
     {
-        if ( cache.contains(key) )
+        if ( cache.containsKey(key) )
             cacheEntries-- ;
 
         // Do it anyway to be consistent
-        cache.removeObject(key) ;
+        cache.remove(key) ;
     }
     
     
