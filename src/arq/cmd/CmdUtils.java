@@ -6,7 +6,6 @@
 
 package arq.cmd;
 
-import java.io.File;
 
 /** Odds and ends
  * 
@@ -22,17 +21,6 @@ public class CmdUtils
         System.setProperty("objectLists" ,         "false") ;
         System.setProperty("minGap",               "2") ;
         System.setProperty("propertyColumn",       "14") ;
-    }
-    
-    public static void setLog4j()
-    {
-        if ( System.getProperty("log4j.configuration") == null )
-        {
-            String fn = "log4j.properties" ;
-            File f = new File(fn) ;
-            if ( f.exists() ) 
-                System.setProperty("log4j.configuration", "file:"+fn) ;
-        }
     }
 }
 

@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
 
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 // Added usage + some common flags
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
 {
-    static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
 
     protected ModGeneral modGeneral = new ModGeneral(this) ;
     protected ModVersion modVersion = new ModVersion(true) ;
