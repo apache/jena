@@ -16,7 +16,7 @@ VER=${VER%-tests.jar}
 echo "Test: Jena version: $VER"
 
 #CP="lib/jena-$VER.jar${S}lib/jena-$VER-tests.jar
-CP=""v
+CP=""
 
 for jar in lib/*.jar
 do
@@ -30,7 +30,7 @@ do
       fi
   done
 
-echo $CP
+#echo $CP
 
 #SOCKS=-DsocksProxyHost="<your socks server>"
 
