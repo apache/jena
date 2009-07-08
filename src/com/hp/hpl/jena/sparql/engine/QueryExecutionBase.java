@@ -204,7 +204,7 @@ public class QueryExecutionBase implements QueryExecution
         }
 
         for (DescribeHandler dh : dhList)
-            dh.start(model, getContext()) ;
+            dh.finish() ;
 
         this.close() ;
         return model ; 
