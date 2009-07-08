@@ -9,7 +9,6 @@ package dev;
 public class DevARQ
 {
 	// ==== 2.7.1
-    // Document EXISTS
     // Then ready to go.  Is it 2.8.0?
     
     // == Jena maven

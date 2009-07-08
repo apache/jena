@@ -602,6 +602,7 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
 }
 
 #ifdef ARQ
+
 Element ServiceGraphPattern() : { Element el ; Node n ; }
 {
   <SERVICE> 
@@ -1534,6 +1535,7 @@ TOKEN [IGNORE_CASE] :
 |  < GRAPH:       "graph" >
 |  < OPTIONAL:    "optional" >
 |  < UNION:       "union" >
+|  < MINUS:       "minus" >
 
 #ifdef ARQ
 |  < SERVICE:     "service" >

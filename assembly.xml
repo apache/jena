@@ -1,4 +1,5 @@
 <assembly>
+  <id>dist</id>
   <baseDirectory>ARQ-${project.version}</baseDirectory>
   <formats>
     <!--
@@ -19,14 +20,7 @@
       </includes>
     </fileSet>
 
-    <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>arq*.jar</include>
-      </includes>
-    </fileSet>
-    
+    <!-- lib/ -->
     <fileSet>
       <directory>lib</directory>
       <outputDirectory>lib</outputDirectory>
@@ -39,6 +33,25 @@
     </fileSet>
 
     <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+	<include>arq-${project.version}.jar</include>
+        <include>arq-${project.version}-tests.jar</include>
+      </includes>
+    </fileSet>
+
+    <!-- But put sources and javadoc at the top level -->
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>arq-${project.version}-sources.jar</include>
+        <include>arq-${project.version}-javadoc.jar</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
       <directory>bin</directory>
     </fileSet>
 
@@ -46,7 +59,10 @@
       <directory>bat</directory>
     </fileSet>
 
-    <!-- TODO -->
+    <fileSet>
+      <directory>testing</directory>
+    </fileSet>
+
     <fileSet>
       <directory>doc</directory>
       <excludes>
@@ -59,12 +75,10 @@
 
     <fileSet>
       <directory>src</directory>
-      <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
 
     <fileSet>
       <directory>src-examples</directory>
-      <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
 
     <fileSet>
