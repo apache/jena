@@ -4,30 +4,23 @@
 S=":"
 if [ "$OSTYPE" == "cygwin" ]; then S=";"; fi
 
-LIBS="$(cat<<EOF
-arq.jar
-arq-extra.jar
-slf4j-api-1.5.6.jar
-slf4j-log4j12-1.5.6.jar
-icu4j_3_4.jar
-jena.jar
-jenatest.jar
-json.jar
-iri.jar
-junit-4.5.jar
-log4j-1.2.12.jar
-lucene-core-2.3.1.jar
-xercesImpl.jar
-stax-api-1.0.jar
-wstx-asl-3.0.0.jar
-EOF
-)"
-
 CP=""
-for jar in $LIBS
+
+# File name expansion in a scrip.
+X=$(echo lib/jena-*-tests.jar)
+[ -e "$X" ] || { echo "No such tests jar" 1>&2 ; exit 1 ; }
+
+VER=$X
+VER=${VER#lib/jena-}
+VER=${VER%-tests.jar}
+echo "Test: Jena version: $VER"
+
+#CP="lib/jena-$VER.jar${S}lib/jena-$VER-tests.jar
+CP=""v
+
+for jar in lib/*.jar
 do
-  jar="lib/${jar}"
-  [ -e "$jar" ] || echo "No such jar: $jar" 1>&2
+  # [ -e "$jar" ] || echo "No such jar: $jar" 1>&2
 
   if [ "$CP" == "" ]
   then

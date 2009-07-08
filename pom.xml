@@ -294,6 +294,7 @@
       </resource>
     </resources>
     
+    <!-- To be removed
     <testResources>
       <testResource>
         <filtering>false</filtering>
@@ -308,6 +309,7 @@
         <targetPath>doc/inference/data</targetPath>
       </testResource>
     </testResources>
+    -->
 
   </build>
   

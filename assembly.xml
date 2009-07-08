@@ -49,6 +49,17 @@
     </fileSet>
 
     <fileSet>
+      <directory>testing</directory>
+    </fileSet>
+
+    <fileSet>
+      <includes>
+        <include>test.sh</include>
+        <include>test.bat</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
       <directory>bat</directory>
     </fileSet>
 
