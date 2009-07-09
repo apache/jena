@@ -116,16 +116,6 @@
       </resource>
     </resources>
 
-    <!--
-    <testResources>
-      <testResource>
-        <filtering>false</filtering>
-        <directory>testing</directory>
-        <targetPath>testing</targetPath>
-      </testResource>
-    </testResources>
-    -->
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -153,7 +143,16 @@
           <execution>
             <id>attach-sources</id>
             <goals>
-              <goal>jar</goal>
+	      <!-- Maven v2.2.0 jar-no-fork does not exists 
+		   contrary to the documentation
+	      -->
+              <goal>jar</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>

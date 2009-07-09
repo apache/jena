@@ -13,8 +13,8 @@ public class DevARQ
     // Sort out Dataset/DataSource and caching.
     
     // == Jena maven
-    // CmdUtils to somewhere else
     // EarlReport to main code (other test support?)
+    // ??
 
     // ==== ARQ
     // DatasetImpl cache refinement
