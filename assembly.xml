@@ -1,3 +1,5 @@
+<!-- The ARQ distibution -->
+
 <assembly>
   <id>dist</id>
   <baseDirectory>ARQ-${project.version}</baseDirectory>

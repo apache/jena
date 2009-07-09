@@ -142,6 +142,8 @@
         <executions> 
           <execution>
             <id>attach-sources</id>
+	    <phase>package</phase>
+
             <goals>
 	      <!-- Maven v2.2.0 jar-no-fork does not exists 
 		   contrary to the documentation
@@ -151,6 +153,7 @@
           </execution>
           <execution>
             <id>attach-sources-test</id>
+	    <phase>package</phase>
             <goals>
               <goal>test-jar</goal>
             </goals>
