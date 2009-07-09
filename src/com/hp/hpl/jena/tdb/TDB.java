@@ -144,17 +144,12 @@ public class TDB
     
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
         
-        //TDB.getContext().set(??,??) ;
-        
-        // TDB uses a custom OpCompiler.
-        
-        AssemblerUtils.init() ;     // ARQ initialization.
+        ARQ.init() ;
+        AssemblerUtils.init() ;
         VocabTDB.init();
         QueryEngineTDB.register() ;
         UpdateProcessorTDB.register() ;
-        
-        TDB.getContext().set(ARQ.filterPlacement, false) ;
-        
+
         wireIntoExecution() ;
         
         // Override N-TRIPLES and Turtle with faster implementations.
@@ -174,6 +169,8 @@ public class TDB
 
     private static void wireIntoExecution()
     {
+        // TDB does it itself.
+        TDB.getContext().set(ARQ.filterPlacement, false) ;
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
         
