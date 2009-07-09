@@ -142,7 +142,7 @@
         <executions> 
           <execution>
             <id>attach-sources</id>
-	    <phase>package</phase>
+	    <!-- <phase>package</phase> package is the default -->
 
             <goals>
 	      <!-- Maven v2.2.0 jar-no-fork does not exists 
@@ -153,7 +153,6 @@
           </execution>
           <execution>
             <id>attach-sources-test</id>
-	    <phase>package</phase>
             <goals>
               <goal>test-jar</goal>
             </goals>
@@ -206,6 +205,7 @@
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
+            <descriptor>assembly-testing.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
