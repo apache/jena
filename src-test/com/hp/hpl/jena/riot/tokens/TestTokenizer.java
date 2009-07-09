@@ -311,6 +311,19 @@ public class TestTokenizer extends BaseTest
         assertTrue(tokenizer.hasNext()) ;
     }
 
+    public void tokenUnit_str_long12()
+    {
+        Tokenizer tokenizer = tokenizer("'''x'''@en") ;
+        assertTrue(tokenizer.hasNext()) ;
+    }
+
+    public void tokenUnit_str_long13()
+    {
+        Tokenizer tokenizer = tokenizer("'''123'''^^<xyz>") ;
+        assertTrue(tokenizer.hasNext()) ;
+    }
+
+    
     @Test
     public void tokenUnit_bNode1()
     {

@@ -134,23 +134,26 @@ public class TokenizerText implements Tokenizer
                     token.setImage(readLong(ch, false)) ;
                     TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
                     token.setType(tt) ;
-                    return token ;
                 }
-                // Two quotes then a non-quote.
-                // Must be '' or ""
-
-                // No need to pushback characters as we know the lexical form is the empty string.
-                //if ( ch2 != EOF ) reader.pushbackChar(ch2) ;
-                //if ( ch1 != EOF ) reader.pushbackChar(ch1) ;    // Must be '' or ""
-                token.setImage("") ;
-                // 
+                else
+                {
+                    // Two quotes then a non-quote.
+                    // Must be '' or ""
+                    // No need to pushback characters as we know the lexical form is the empty string.
+                    //if ( ch2 != EOF ) reader.pushbackChar(ch2) ;
+                    //if ( ch1 != EOF ) reader.pushbackChar(ch1) ;    // Must be '' or ""
+                    token.setImage("") ;
+                    token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+                }
             }
             else
+            {
                 // Single quote character.
                 token.setImage(allBetween(ch, ch, true, false)) ;
-            // Single quoted string.
-            token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
-
+                // Single quoted string.
+                token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+            }
+            
             // Literal.  Is it @ or ^^
             if ( reader.peekChar() == CH_AT )
             {
@@ -278,23 +281,6 @@ public class TokenizerText implements Tokenizer
 
         readPrefixedNameOrKeyWord(token) ;
         
-//        long posn = reader.getPosition() ;
-//        token.setImage(readWord(false)) ;
-//        token.setType(TokenType.KEYWORD) ;
-//        ch = reader.peekChar() ;
-//        if ( ch == CH_COLON )
-//        {
-//            reader.readChar() ;
-//            token.setType(TokenType.PREFIXED_NAME) ;
-//            token.setImage2(readWord(true)) ;
-//            if ( Checking ) checkPrefixedName(token.getImage(), token.getImage2()) ;
-//            return token ;
-//        }
-//
-//        // If we made no progress, nothing found, not even a keyworks -- it's an error.
-//        if ( posn == reader.getPosition() )  
-//            exception(String.format("Unknown char: %c(%d)",ch,ch)) ;
-
         if ( Checking ) checkKeyword(token.getImage()) ;
         return token ;
     }
