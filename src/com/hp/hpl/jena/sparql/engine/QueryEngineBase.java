@@ -26,7 +26,8 @@ import com.hp.hpl.jena.query.Query;
 /** Main part of a QueryEngine - somethign that takes responsibility for a complete query execution */ 
 public abstract class QueryEngineBase implements OpEval, Closeable
 {
-    private DatasetGraph dataset = null ;
+    // See also ExecutinContext.getDataset()
+    protected DatasetGraph dataset = null ;
     protected Context context ;
     private Binding startBinding ;
     
