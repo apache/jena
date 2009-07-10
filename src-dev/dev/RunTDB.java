@@ -10,9 +10,7 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +23,7 @@ import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -72,9 +70,18 @@ public class RunTDB
     
     public static void main(String ... args) throws IOException
     {
-        InputStream input = new FileInputStream("tmp/X.ttl") ;
-        JenaReaderTurtle2.parse(input) ;
+        
+//        InputStream input = new FileInputStream("D.ttl") ;
+//        JenaReaderTurtle2.parse(input) ;
+//        System.out.println("END") ;
+//        System.exit(0) ;
+     
+        TDB.init();
+        Model model = ModelFactory.createDefaultModel() ;
+        model.read("file:D.ttl", null, "TTL") ;
+        model.write(System.out, "N-TRIPLES") ;
         System.exit(0) ;
+        
         
         tdbquery("--query=container-1.rq") ;
         

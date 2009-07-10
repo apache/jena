@@ -16,8 +16,10 @@ import arq.cmdline.CmdARQ;
 import atlas.logging.Log;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.riot.Checker;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 import com.hp.hpl.jena.tdb.TDB;
@@ -61,10 +63,22 @@ public class tdbcheck extends CmdARQ
             execOne(f) ;
     }
 
+    class GraphCheckingSink extends GraphSink
+    {
+        Checker checker = new Checker(null) ;
+        
+            @Override
+            public void performAdd( Triple triple )
+            {
+                checker.check(triple) ;
+            }
+    }
+    
     private void execOne(String f)
     {
-        // Black hole for triples.
-        Graph g = new GraphSink() ;
+        // Black hole for triples - with checking.
+        // Trutle already does this checking.
+        Graph g = new GraphCheckingSink() ;
         Model model = ModelFactory.createModelForGraph(g) ;
         
         if ( f != null )

@@ -20,6 +20,7 @@ public class DevTDB
     // Enable metadata? [later]
     
     // ------
+    // Properties on the readers
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
     //    Need better var index support first

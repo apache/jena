@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIComponents;
@@ -43,6 +44,30 @@ public class Checker
         else if ( node.isVariable() )   checkVar(node) ;
     }
 
+    /** Check a triple - assumes individual nodes are legal */
+    public void check(Triple triple) 
+    {
+        validate(null, triple) ;
+    }
+    
+    public static void validate(String msg, Triple triple)
+    {
+        validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
+    }
+    
+    public static void validate(String msg, Node subject, Node predicate, Node object)
+    {
+        if ( msg == null )
+            msg = "Validation" ;
+        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
+            throw new RiotException(msg+": Subject is not a URI or blank node") ;
+        if ( predicate == null || ( ! predicate.isURI() ) )
+            throw new RiotException(msg+": Predicate not a URI") ;
+        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
+            throw new RiotException(msg+": Object is not a URI, blank node or literal") ;
+    }
+
+    
     final private void checkVar(Node node)
     {}
 
@@ -129,7 +154,7 @@ public class Checker
                 String msg = v.getShortMessage();
                 String iriStr = iri.toString();
     
-                // Put out warnings for all IRI issues - later, execption for errors.
+                // Put out warnings for all IRI issues - later, exception for errors.
                 if (v.getViolationCode() == ViolationCodes.REQUIRED_COMPONENT_MISSING &&
                     v.getComponent() == IRIComponents.SCHEME)
                 {
