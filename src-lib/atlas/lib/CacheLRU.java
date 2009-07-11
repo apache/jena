@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import atlas.lib.AtlasException;
-
 
 /**
  * @author Andy Seaborne
@@ -41,12 +39,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    public void promote(K key)
-    {
-        throw new AtlasException("Not implemented") ; 
-    }
-
-    //@Override
     public void put(K key, V thing)
     {
         cache.put(key, thing) ;
@@ -58,12 +50,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
         cache.remove(key) ;
     }
 
-    //@Override
-    public void returnObject(K key)
-    {
-        throw new AtlasException("Not implemented") ;
-    }
-    
     //@Override
     public long size()
     {

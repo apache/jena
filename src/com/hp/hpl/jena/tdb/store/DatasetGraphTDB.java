@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraphBase;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -54,8 +55,8 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
-    //@Override
-    public boolean containsGraph(Node graphNode)
+    @Override
+    protected boolean _containsGraph(Node graphNode)
     {
         NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
         Tuple<NodeId> pattern = Tuple.create(graphNodeId, null, null, null) ;
