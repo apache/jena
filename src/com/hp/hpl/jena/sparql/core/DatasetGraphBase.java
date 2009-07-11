@@ -43,6 +43,8 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public boolean containsGraph(Node graphNode)
     {
         if ( namedGraphs.containsKey(graphNode) )
+            // Empty graph may or may not count.
+            // If they don't, need to override ths method.
             return true ;
         return _containsGraph(graphNode) ;
     }
