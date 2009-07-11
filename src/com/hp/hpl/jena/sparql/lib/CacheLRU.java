@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.hp.hpl.jena.sparql.ARQException;
-
-
 /**
  * @author Andy Seaborne
  */
@@ -28,21 +25,16 @@ public class CacheLRU<K,V> implements Cache<K,V>
     { cache.clear() ; }
 
     //@Override
-    public boolean contains(K key)
+    public boolean containsKey(K key)
     {
         return cache.containsKey(key) ;
     }
 
     //@Override
+    //public V getObject(K key, boolean exclusive)
     public V get(K key)
     {
         return cache.get(key) ;
-    }
-
-    //@Override
-    public void promote(K key)
-    {
-        throw new ARQException("Not implemented") ; 
     }
 
     //@Override
@@ -57,12 +49,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
         cache.remove(key) ;
     }
 
-    //@Override
-    public void returnObject(K key)
-    {
-        throw new ARQException("Not implemented") ;
-    }
-    
     //@Override
     public long size()
     {

@@ -6,22 +6,86 @@
 
 package com.hp.hpl.jena.sparql.lib;
 
-import java.util.Iterator;
 
-/** A cache */
-public interface Cache<Key, Value>
+public class CacheSetLRU<T>
 {
-    public boolean containsKey(Key key) ;
-    public Value get(Key key) ;
-    public void put(Key key, Value thing) ;
-    public void remove(Key key) ;
-    public Iterator<Key> keys() ;
+    //LinkHashSet does not have LRU support.
     
-    public boolean isEmpty() ;
-    public void clear() ;
-    public long size() ;
+    //Action<T> dropHandler = null ;
     
-    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
+    static Object theOnlyValue = new Object() ;
+    CacheLRU.CacheImpl<T, Object> cacheMap = null ;
+    
+    public CacheSetLRU(int maxSize)
+    {
+        this(0.75f, maxSize) ;
+    }
+    
+    public CacheSetLRU(float loadFactor, int maxSize)
+    {
+        cacheMap = new CacheLRU.CacheImpl<T, Object>(loadFactor, maxSize) ;
+    }
+
+//    /** Callback for entries when dropped from the cache */
+//    public void setDropHandler(Action<T> dropHandler)
+//    {
+//        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
+//    }
+    
+    // From map action to set action.
+    static class Wrapper<T>  implements ActionKeyValue<T, Object>
+    {
+        Action<T> dropHandler ;
+        public Wrapper(Action<T> dropHandler)
+        { this.dropHandler = dropHandler ; }
+
+        //@Override
+        public void apply(T key, Object value)
+        { dropHandler.apply(key) ; }
+
+    }
+    
+    public void add(T e)
+    {
+        cacheMap.put(e, theOnlyValue) ;
+    }
+
+
+    public void clear()
+    { 
+        cacheMap.clear() ;
+    }
+
+
+    public boolean contains(T obj)
+    {
+        return cacheMap.containsKey(obj) ;
+    }
+
+
+    public boolean isEmpty()
+    {
+        return cacheMap.isEmpty() ;
+    }
+
+
+//    public Iterator<T> iterator()
+//    {
+//        return cacheMap.keySet().iterator() ;
+//    }
+
+
+    public void remove(T obj)
+    {
+        cacheMap.remove(obj);
+    }
+
+
+    public long size()
+    {
+        return cacheMap.size() ;
+    }
+
 }
 
 /*

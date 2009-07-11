@@ -26,13 +26,16 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 public class DatasetImpl implements Dataset
 {
     protected DatasetGraph dsg = null ;
-    // Cache graph => model so returned models are the same (==)
-    private boolean caching = false ;
-    private Cache<Graph, Model> cache = new CacheLRU<Graph, Model>(0.75f, 100) ;      
+    
+    // A small cache so that calls getDefaultModel()/getNamedModel() are
+    // cheap when used repeatedly in code.  This is not an excuse for
+    // DatasetGraph not to cache if appropriate for the storage technology.
+    private Model defaultModel = null ;
+    private Cache<String, Model> cache = new CacheLRU<String, Model>(0.75f, 20) ;      
 
     public DatasetImpl(Model model)
     {
-        addToCache(model);
+        defaultModel = model ;
         this.dsg = new DataSourceGraphImpl(model.getGraph()) ;
     }
     
@@ -41,23 +44,34 @@ public class DatasetImpl implements Dataset
         this.dsg = dsg ;
     }
 
-    //  Does it matter if this is not the same model each time?
+    /** Return the default model */
     public Model getDefaultModel() 
     { 
-        return graph2model(dsg.getDefaultGraph()) ;
+        if ( defaultModel == null )
+            defaultModel = graph2model(dsg.getDefaultGraph()) ;
+        return defaultModel ;
     }
 
     public Lock getLock() { return dsg.getLock() ; }
     
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
+    /** Return a model for the named graph - repeated calls so not guarantee to return the same Java object */
     public Model getNamedModel(String uri)
     { 
-        return graph2model(dsg.getGraph(Node.createURI(uri))) ;
+        Model m = cache.get(uri) ;
+        if ( m == null )
+        {
+            m = graph2model(dsg.getGraph(Node.createURI(uri))) ;
+            cache.put(uri, m) ;
+        }
+        return m ;
     }
 
     public boolean containsNamedModel(String uri)
     { 
+        if ( cache.containsKey(uri) )
+            return true ;
         return dsg.containsGraph(Node.createURI(uri)) ;
     }
 
@@ -72,30 +86,9 @@ public class DatasetImpl implements Dataset
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
-//  -------
-//  Cache models wrapping graph
-
-    private void removeFromCache(Graph graph)
-    {
-        if ( graph == null )
-            return ;
-        cache.remove(graph) ;
-    }
-
-    private void addToCache(Model model)
-    {
-        cache.put(model.getGraph(), model) ;
-    }
-
     private Model graph2model(Graph graph)
     { 
-        Model model = cache.get(graph) ;
-        if ( model == null )
-        {
-            model = ModelFactory.createModelForGraph(graph) ;
-            cache.put(graph, model) ;
-        }
-        return model ;
+        return ModelFactory.createModelForGraph(graph) ;
     }
 }
 

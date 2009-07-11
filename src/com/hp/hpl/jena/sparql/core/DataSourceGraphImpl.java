@@ -33,6 +33,7 @@ import com.hp.hpl.jena.query.Dataset;
 public class DataSourceGraphImpl implements DataSourceGraph
 {
     Graph defaultGraph = null ;
+    // Caution: this is unbounded.
     Map<Node, Graph> namedGraphs = null ;
     Lock lock = null ;
 

@@ -1,37 +1,27 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query;
+package com.hp.hpl.jena.sparql.lib;
 
-//import java.util.Iterator;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
-/** A DataSource is a Dataset that has modification operations.
- * 
- * @author Andy Seaborne
- */
-
-public interface DataSource extends Dataset
+public class CacheFactory
 {
-    /** Set the background graph.  Can be set to null for none.  */
-    public void  setDefaultModel(Model model) ;
-
-    /** Set a named graph. */
-    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
-
-    /** Remove a named graph. */
-    public void  removeNamedModel(String uri) ;
-
-    /** Change a named graph for another using the same name */
-    public void  replaceNamedModel(String uri, Model model) ;
+    public static <Key, T> Cache<Key, T> createCache(int maxSize)
+    {
+        return createCache(0.75f, maxSize) ;
+    }
+    
+    public static <Key, T> Cache<Key, T> createCache(float loadFactor, int maxSize)
+    {
+        return new CacheLRU<Key, T>(0.75f, maxSize) ;
+    }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
 
-public interface DatasetGraph
+public interface DatasetGraph extends Closeable
 {
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph() ;

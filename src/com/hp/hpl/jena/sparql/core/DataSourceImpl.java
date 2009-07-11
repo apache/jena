@@ -40,11 +40,11 @@ public class DataSourceImpl implements DataSource
         this.dsg = otherDSG ;
     }
     
-    public DataSourceImpl(DatasetGraph dSetGraph)
-    { 
-        // Must clone.
-    }
-    
+//    public DataSourceImpl(DatasetGraph dSetGraph)
+//    { 
+//        // Must clone.
+//    }
+//    
     public DataSourceImpl(Model model)
     {
         addToCache(model) ;

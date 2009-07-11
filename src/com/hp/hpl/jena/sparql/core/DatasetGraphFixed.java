@@ -1,37 +1,56 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query;
+package com.hp.hpl.jena.sparql.core ;
 
-//import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.Lock;
 
-/** A DataSource is a Dataset that has modification operations.
- * 
- * @author Andy Seaborne
- */
-
-public interface DataSource extends Dataset
+/** Restrict a DataSourceGraph to a DatasetGraph */
+public class DatasetGraphFixed implements DatasetGraph
 {
-    /** Set the background graph.  Can be set to null for none.  */
-    public void  setDefaultModel(Model model) ;
 
-    /** Set a named graph. */
-    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
+    final private DataSourceGraph dsg ;
 
-    /** Remove a named graph. */
-    public void  removeNamedModel(String uri) ;
+    public DatasetGraphFixed(DataSourceGraph dsg) { this.dsg = dsg ; }
+    
+    public boolean containsGraph(Node graphNode)
+    { 
+        return dsg.containsGraph(graphNode) ;
+    }
 
-    /** Change a named graph for another using the same name */
-    public void  replaceNamedModel(String uri, Model model) ;
+    public Graph getDefaultGraph()
+    {
+        return dsg.getDefaultGraph() ;
+    }
+
+    public Graph getGraph(Node graphNode)
+    {
+        return dsg.getGraph(graphNode) ;
+    }
+
+    public Lock getLock()
+    {
+        return dsg.getLock() ;
+    }
+
+    public Iterator<Node> listGraphNodes()
+    {
+        return dsg.listGraphNodes() ;
+    }
+
+    public int size()       { return dsg.size() ; }
+
+    public void close()     { dsg.close() ; }
 }
-
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

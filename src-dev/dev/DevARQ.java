@@ -11,14 +11,13 @@ public class DevARQ
 	// ==== 2.7.1
     // Then ready to go.  Is it 2.8.0?
     // pom.xml -- assembly-testing
-    // Sort out Dataset/DataSource and caching.
     
     // == Jena maven
     // EarlReport to main code (other test support?)
     // ??
 
     // ==== ARQ
-    // DatasetImpl cache refinement
+    // DescribeHandler.describe / named graphs (DescribeBNodeClosure)
     // JMX
     //   Query count
     //   Last query
