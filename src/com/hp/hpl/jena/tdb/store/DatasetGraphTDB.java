@@ -56,6 +56,12 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public TripleTable getTripleTable()     { return tripleTable ; } 
     
     @Override
+    public boolean containsGraph(Node graphNode)
+    {
+        return _containsGraph(graphNode) ;
+    }
+    
+    @Override
     protected boolean _containsGraph(Node graphNode)
     {
         NodeId graphNodeId = quadTable.getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;

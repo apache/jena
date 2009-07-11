@@ -56,6 +56,17 @@ public class Names
     public static boolean isMem(String name)        { return memName.equals(name) ; }
     
     // ---- Names for Java properties in metadata files 
+    /* Metadata names - global */
+    public static final String keyNS                = "tdb" ;
+    
+    private static String makeMetadataKey(String keyShortName)  { return keyNS+"."+keyShortName ; }
+    public static final String keyIndexType             = makeMetadataKey("indexType") ;
+    public static final String keyIndexFileVersion      = makeMetadataKey("indexFileVersion") ;
+    
+    // Current values
+    public static final String currentIndexType         = "BPlusTree" ;   // Align with IndexType enum.
+    public static final String currentIndexFileVersion  = "v1" ;
+
     
 }
 

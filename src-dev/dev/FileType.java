@@ -4,49 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package dev;
 
-import java.io.InputStream;
-import java.io.Reader;
-
-import atlas.io.PeekReader;
-import atlas.lib.Sink;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.JenaReaderBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.riot.lang.LangNTriples;
-import com.hp.hpl.jena.riot.lang.SinkToGraphTriples;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
-import com.hp.hpl.jena.tdb.graph.GraphFactory;
-import com.hp.hpl.jena.util.FileUtils;
-
-
-/** Jena's RDFReader interface for RIOT/N-Triples */
-public class JenaReaderNTriples2 extends JenaReaderBase
-{
-    @Override
-    protected void readWorker(Model model, Reader reader, String base) throws Exception
-    {
-        PeekReader peekReader = PeekReader.make(reader) ;
-        Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        LangNTriples parser = new LangNTriples(tokenizer) ;
-        parser.parse(sink) ;
-    }
-    
-    /** Parse - but do nothing else */
-    public static void parse(InputStream input)
-    {
-        Reader reader = FileUtils.asUTF8(input) ;
-        PeekReader peekReader = PeekReader.make(reader) ;
-        Sink<Triple> sink = new SinkToGraphTriples(GraphFactory.sinkGraph()) ;
-        
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        LangNTriples parser = new LangNTriples(tokenizer) ;
-        parser.parse(sink) ;
-    }
+public enum FileType {
+    BPTree, BTREE, EXTHASH, DATA
 }
 
 /*

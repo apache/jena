@@ -9,11 +9,19 @@ package dev;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Make indexes */
 public class IndexBuilderRedirect
@@ -35,16 +43,71 @@ public class IndexBuilderRedirect
     // ExtHashTable
     //   tdb.exthash...
     
-    // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
 
-    public static RangeIndex createRangeIndex(FileSet fileset, int order, int blockSize, RecordFactory factory)
+    // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
+    
+    // IndexBuilder.createIndexBuilder(IndexType) is broken - fixed pairing. 
+    
+    // See SystemTDB.getIndexType()
+    //   IndexBuilder.chooseIndexBuilder.
+    //   Return IndexRangeFactory
+    
+    public static RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory)
     {
-        MetaFile mf = fileset.getMetaFile() ;
-        if ( mf == null )
-            mf = fileset.getLocation().getMetaFile() ;
-        return createBPTree(fileset, mf, order, blockSize, factory) ;
+        return createRangeIndex(fileset, SystemTDB.BlockSize, factory) ;
     }
     
+    public static RangeIndex createRangeIndex(FileSet fileset, int blockSize, RecordFactory factory)
+    {
+        MetaFile metafile = fileset.getMetaFile() ;
+        if ( metafile == null )
+            metafile = fileset.getLocation().getMetaFile() ;
+        
+        // Anything already there?
+        if ( metafile.existsMetaData() )
+        {
+            // Check version.
+            String indexTypeStr = metafile.getProperty(Names.keyIndexType) ; 
+            String fileVersion = metafile.getProperty(Names.keyIndexFileVersion) ;
+            
+            if ( indexTypeStr != null )
+            {
+                IndexType indexType = IndexType.get(indexTypeStr) ;
+                if ( indexType == null )
+                    throw new TDBException("Unknown uindex type: '"+indexTypeStr+"'") ;
+                return chooseIndexBuilder(indexType).newRangeIndex(fileset, factory) ;
+            }
+            //Metadata - no keyIndexType - default. 
+        }
+        
+        // No - call default.
+        return createDefault(fileset, metafile, blockSize, factory) ;
+    }
+    
+    // From IndexBuilder.
+    private static IndexBuilder chooseIndexBuilder(IndexType indexType)
+    {
+        switch (indexType)
+        {
+            case BTree:
+            {
+                IndexFactoryBTree idx = new IndexFactoryBTree() ;
+                return new IndexBuilder(idx, idx) ;
+            }
+            case BPlusTree:
+            {
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree() ;
+                return new IndexBuilder(idx, idx) ;
+            }
+            case ExtHash:
+            {
+                IndexFactoryExtHash idxFactory = new IndexFactoryExtHash() ;
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree() ;
+                return new IndexBuilder(idxFactory, idx) ;
+            }
+        }
+        throw new TDBException("Unrecognized index type: " + indexType) ;
+    }
     
     public static RangeIndex createBPTree(FileSet fileset, MetaFile metafile, int order, int blockSize, RecordFactory factory)
     {
@@ -67,12 +130,15 @@ public class IndexBuilderRedirect
             blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
         }
         
-        
-        
         BPlusTreeParams params = null ;
         // Params from previous settings
-        if ( metafile.existsMetaData() )
+        if ( metafile != null & metafile.existsMetaData() )
         {
+            // Check version.
+            //String fileType = metafile.getProperty(Names.keyIndexType) ; 
+            //String fileVersion = metafile.getProperty(Names.keyIndexFileVersion) ;
+            
+            
             // Put block size in BPTParams?
             log.debug("Reading metadata ...") ;
             BPlusTreeParams params2 = BPlusTreeParams.readMeta(metafile) ;
@@ -96,9 +162,22 @@ public class IndexBuilderRedirect
         }
 
         log.info("Params: "+params) ;
-        
-        //MetaFile metafile = fileset.getMetaFile() ;
         return null ;
+    }
+    
+    static private  RangeIndex createDefault(FileSet fileset, MetaFile metafile, int blockSize, RecordFactory factory)
+    {
+        int order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        
+        metafile.setProperty(Names.keyIndexType, Names.currentIndexType) ; 
+        metafile.setProperty(Names.keyIndexFileVersion, Names.currentIndexFileVersion) ;
+        metafile.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
+        
+        params.addToMetaData(metafile) ;
+        metafile.flush();
+        // TODO integrate
+        return IndexBuilder.get().newRangeIndex(fileset, factory) ;
     }
 }
 /*

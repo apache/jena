@@ -9,14 +9,10 @@ package dev;
 public class DevTDB
 {
     // ** metadata files and BPT creation.
-    // ** Dataset
-    //    DataSourceIMpl is ARQ caches.
     
     // == 0.8.2
     // ** Document concurrency.
     // ** Check for tests of assembler and GraphTDB
-    //
-    // ** Move DatasetGraphBase to ARQ [later]
     // Enable metadata? [later]
     
     // ------
