@@ -18,11 +18,8 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import atlas.lib.ColumnMap;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -94,6 +91,8 @@ public class FactoryGraphTDB
     /** Create or connect a TDB dataset */ 
     public static DatasetGraphTDB createDatasetGraph(Location location)
     {
+        if ( location.isMem() )
+            return createDatasetGraphMem() ;
         return createDatasetGraph(IndexBuilder.get(), location) ;
     }
 
@@ -115,25 +114,26 @@ public class FactoryGraphTDB
         return _createDatasetGraph(indexBuilder, location, graphDesc, quadDesc) ;
     }
 
-    /** Create or connect a TDB dataset */
-    public static Dataset createDataset(Location location)
-    {
-        return new DatasetImpl(createDatasetGraph(location)) ;
-    }
+//    /** Create or connect a TDB dataset */
+//    public static Dataset createDataset(Location location)
+//    {
+//        return new DatasetImpl(createDatasetGraph(location)) ;
+//    }
+//
+//    /** Create or connect a TDB dataset (in-memory - for testing) */
+//    public static Dataset createDatasetMem()
+//    {
+//        return new DatasetImpl(createDatasetGraphMem()) ;
+//    }
 
-    /** Create or connect a TDB dataset (in-memory - for testing) */
-    public static Dataset createDatasetMem()
-    {
-        return new DatasetImpl(createDatasetGraphMem()) ;
-    }
-
-    
-    // ---- Process
+    /** Given an IndexBuilder, RecordFactory, Location and index descriptions,
+     *  make a set of indexes. 
+     */
     public static TupleIndex[] indexes(final IndexBuilder indexBuilder, RecordFactory recordFactory, 
                                        final Location location, String primary, String...descs)
     {
         // Collect things need to build tuple indexes.
-        TupleIndexBuilder b = new TupleIndexBuilder()
+        TupleIndexBuilder builder = new TupleIndexBuilder()
         {
             //@Override
             public TupleIndex create(String primary, String desc, RecordFactory recordFactory)
@@ -146,16 +146,10 @@ public class FactoryGraphTDB
         int i = 0 ;
         for ( String desc : descs )
         {
-            indexes[i] = b.create(primary, desc, recordFactory) ;
+            indexes[i] = builder.create(primary, desc, recordFactory) ;
             i++ ;
         }
         return indexes ;
-    }
-    
-    public static TupleIndex indexes(TupleIndexBuilder indexBuilder, RecordFactory recordFactory, 
-                                       String primary, String desc)
-    {
-        return indexBuilder.create(primary, desc, recordFactory) ;
     }
     
     /** Testing */
@@ -165,13 +159,30 @@ public class FactoryGraphTDB
         return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes) ;
     }
 
-    /** Testing */
+    /** Public for testing only : create a triple table.*/
     public static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
         return new TripleTable(indexes, indexRecordTripleFactory, nodeTable, location) ;
     }
 
+    // ---- All creation happens here
+    
+    /** Testing */
+    static QuadTable createQuadTableMem()
+    {
+        NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
+        return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
+    }
+    
+    /** Public for testing only : create a quad table.*/
+    public static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
+                                             Location location, String...descs)
+    {
+        TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;
+        return new QuadTable(indexes, indexRecordQuadFactory, nodeTable, location) ;
+    }
+    
     // ---- All creation happens here
     
     /** Create or connect a TDB dataset (graph-level) */
@@ -184,22 +195,6 @@ public class FactoryGraphTDB
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }
 
-    // ----
-
-    /** Testing */
-    static QuadTable createQuadTableMem()
-    {
-        NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
-        return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
-    }
-    
-    private static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
-                                             Location location, String...descs)
-    {
-        TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;
-        return new QuadTable(indexes, indexRecordQuadFactory, nodeTable, location) ;
-    }
-    
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)
     {
         // Map name of index to name of file.

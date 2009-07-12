@@ -6,7 +6,6 @@
 
 package tdb.perf;
 
-import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
@@ -46,13 +45,8 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.BulkLoader;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -132,14 +126,17 @@ public class tdbperf extends CmdSub
                 //new NodeTableSink() ;
                 new NodeTableBase(nodeToId, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
 
-            TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
+            TripleTable tripleTable = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, Names.tripleIndexes) ; 
+            QuadTable quadTable = FactoryGraphTDB.createQuadTable(indexBuilder, nodeTable, location, Names.quadIndexes) ; 
+            
+            
             ReorderTransformation transform = ReorderLib.identity() ;
             DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
             
-            DatasetGraphTDB ds = new DatasetGraphTDB(table, null, prefixes, transform, location) ;
+            DatasetGraphTDB ds = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location) ;
             
             // ??? null: see FactoryGraphTDB._createGraph
-            return new GraphTriplesTDB(ds, table, prefixes) ;
+            return new GraphTriplesTDB(ds, tripleTable, prefixes) ;
         } 
     }
     

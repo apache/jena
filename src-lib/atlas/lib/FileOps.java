@@ -49,25 +49,25 @@ public class FileOps
     
     public static void clearDirectory(String dir)
     {
-        try {
-            File d = new File(dir) ;
+        File d = new File(dir) ;
+        
+        FilenameFilter filter = new FilenameFilter(){
+            //@Override
+            public boolean accept(File dir, String name)
+            {
+                return name.matches(".*\\..*") ;
+            }} ;
             
-            FilenameFilter filter = new FilenameFilter(){
-                //@Override
-                public boolean accept(File dir, String name)
-                {
-                    return name.matches(".*\\..*") ;
-                }} ;
-                
-            for ( File f : d.listFiles(filter))
-                delete(f, false) ;
-           
-        } catch (Exception ex)
-        {
-            System.err.println("Exception: "+ex) ;
-            ex.printStackTrace(System.err) ;
-            System.exit(1) ;
-        }
+        for ( File f : d.listFiles(filter))
+            delete(f, false) ;
+    }
+
+    /** See if there are any files in this directory */ 
+    public static boolean existsAnyFiles(String dir)
+    {
+        File d = new File(dir) ;
+        File[] entries = d.listFiles() ;
+        return entries.length > 0 ;
     }
 
     public static void ensureDir(String dirname)

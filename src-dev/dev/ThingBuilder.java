@@ -8,7 +8,9 @@ package dev;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.FileOps;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -45,7 +47,49 @@ public class ThingBuilder
     
     public static DatasetGraphTDB build(Location location)
     {
+        MetaFile metafile = location.getMetaFile() ;
+        if ( metafile.existsMetaData() )
+        {
+            String verString = metafile.getProperty(Names.keyVersion, "unknown") ;
+            TDB.logInfo.debug("Location: "+location.toString()) ;
+            TDB.logInfo.debug("Version:  "+verString) ;
+        }
         
+        // Any files at this location?
+        
+        if ( ! FileOps.existsAnyFiles(location.getDirectoryPath()) )
+        {
+            // Fresh location.
+            metafile.setProperty(Names.keyVersion, TDB.VERSION) ;
+            //metafile.setProperty(Names.keyVersion, Utils.nowAsXSDDateTimeString()) ;
+            return createNew(location) ;
+        }
+            
+        // Existing location (has some files in it).
+        // Existing files, no metadata.
+        // Fake it as TDB 0.8.1
+        // If it's the wrong file format, things do badly wrong later.
+        metafile.setProperty(Names.keyVersion, "<=0.8.1") ;
+        // Fake index metadata.
+        
+        // Create over existing
+        
+        return null ;
+    }
+    
+    public static DatasetGraphTDB createNew(Location location)
+    {
+        MetaFile metafile = location.getMetaFile() ;
+        if ( metafile.existsMetaData() )
+        {
+            String verString = metafile.getProperty(Names.keyVersion, "unknown") ;
+            TDB.logInfo.debug("Location: "+location.toString()) ;
+            TDB.logInfo.debug("Version:  "+verString) ;
+        }
+        
+        // New createDatasetGraph(Location) 
+        
+        //return FactoryGraphTDB.createDatasetGraph(location) ;
         return null ;
     }
     
