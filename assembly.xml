@@ -1,7 +1,7 @@
 <!-- The ARQ distibution -->
 
 <assembly>
-  <id>dist</id>
+  <!--<id>dist</id> Makes the name VER.zip -->
   <baseDirectory>ARQ-${project.version}</baseDirectory>
   <formats>
     <!--

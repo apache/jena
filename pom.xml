@@ -7,7 +7,7 @@
   <artifactId>arq</artifactId>
   <packaging>jar</packaging>
   <name>ARQ</name>
-  <version>2.7.1-SNAPSHOT</version>
+  <version>2.7.1-RC-1</version>
   <description/>
   <url>http://jena.sf.net/ARQ</url>
 
@@ -202,12 +202,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-            <descriptor>assembly-testing.xml</descriptor>
-          </descriptors>
-        </configuration>
         <executions>
           <execution>
             <id>create-assembly</id>
@@ -216,6 +210,12 @@
             <goals>
 	      <goal>single</goal>
             </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+                <descriptor>assembly-testing.xml</descriptor>
+              </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -248,6 +248,7 @@ build.time.xsd=${build.time.xsd}
 build.time.txt=${build.time.txt}
 #end
                 </echo>
+                <echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>
               </tasks>
             </configuration>
@@ -284,13 +285,14 @@ build.time.txt=${build.time.txt}
       <name>Jena repo</name>
       <!-- scp does not work (TERM not set !!) -->
       <!-- <url>sftp://jena.hpl.hp.com/var/repo</url> -->
-      <url>file:tmp</url>
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>  <!-- Because RC's aren't snapshots -->
+      <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
       <url>file:tmp</url>
       <layout>default</layout>
     </snapshotRepository>

@@ -10,15 +10,17 @@
     -->
     <format>zip</format>
   </formats>
+  
+  <fileSets>
+    <fileSet>
+      <directory>testing</directory>
+    </fileSet>
 
-  <fileSet>
-    <directory>testing</directory>
-  </fileSet>
-
-  <fileSet>
-    <includes>
-      <include>test.sh</include>
-    </includes>
-  </fileSet>
+    <fileSet>
+      <includes>
+	<include>test.sh</include>
+      </includes>
+    </fileSet>
+  </fileSets>
   
 </assembly>

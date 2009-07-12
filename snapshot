@@ -40,7 +40,7 @@ function version
 
 
 ## Make jar
-#mvn clean verify
+mvn clean package
 
 ## Get version.
 X=$(echo target/arq-*-tests.jar)
@@ -75,10 +75,8 @@ do
 
 ## Source code.
 
-echo '**** SOURCE CODE'
 rm -f arq-src.zip
 SRCS=target/arq-$VER-sources.jar 
-
 
 ## for d in src src-dev src-test
 ## do

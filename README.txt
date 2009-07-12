@@ -3,7 +3,7 @@ ARQ <http://jena.hpl.hp.com/ARQ>
 
 A query processor for Jena that implements SPARQL
 
-    andy.seaborne@hp.com
+Website: http://jena.hpl.hp.com/ARQ
 
 ARQ is a complete implementation of SPARQL that can query any Jena model
 or graph, including ones stored in databases.
@@ -17,6 +17,16 @@ http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
 Also available via anonymous SVN:
 https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 
+Maven:
+GroupId: com.hp.hpl.jena
+ArtifactId: arq
+
+Release repository: http://jena.hpl.hp.com/repo
+  Mirrored to http://repo1.maven.org/
+Development repo: http://jena.hpl.hp.com/repo-dev
+
+See blow of maven repository contents.
+
 Online demos and services
 -------------------------
 
@@ -28,7 +38,7 @@ http://www.sparql.org/validator.html
 Documentation
 -------------
 
-Included in the download in doc/index.html
+Included in the download in doc/index.html and online at http://jena.sf.net/ARQ
 
 Installation
 ------------
@@ -41,6 +51,26 @@ ARQ includes a copy of Jena, the one it is tested against.
 
 Put each and every the jar file in lib/ on your classpath.
 
+Maven Distribution
+------------------
+The maven repository contains the following files (for version VER)
+
+arq-VER.jar                 ARQ jar
+arq-VER-javadoc.jar         Javadoc
+arq-VER-sources.jar         Sources
+
+arq-VER-tests.jar           ARQ testing code
+arq-VER-test-sources.jar    Sourecs for test code
+arq-VER-tests.zip           Datafiles for tests, and test scripts.
+
+arq-VER.pom                 ARQ POM
+
+arq-VER.zip                 The complete distribution file
+
+To run tests, you will need 'arq-VER.jar', 'arq-VER-tests.jar' and all dependences
+and to unpack 'arq-VER-tests.zip' to get the "testing" data directory and test scripts.
+
+Or downlaod the distribution 'arq-VER.zip'. 
 
 Running from the command line
 -----------------------------
