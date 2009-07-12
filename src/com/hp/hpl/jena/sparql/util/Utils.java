@@ -60,8 +60,9 @@ public class Utils
         return xdt.toString() ;
     }
     
+    /** Return "now" as readable string (date in yyyy/MM/dd format) */
     public static String nowAsString()
-    { return nowAsString("yyyy/MM/dd HH:mm:ss") ; }
+    { return nowAsString("yyyy/MM/dd HH:mm:ss z") ; }
     
     public static String nowAsString(String formatString)
     {
