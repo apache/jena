@@ -32,7 +32,8 @@ public class IndexBuilderRedirect
 
     // General:
     //    tdb.version=
-    //    tdb.version.fileformat=
+    //    tdb.indexType=
+    //    tdb.indexFileVersion=
     
     // B+Tree:
     //    tdb.bptree.order=
@@ -42,6 +43,9 @@ public class IndexBuilderRedirect
     
     // ExtHashTable
     //   tdb.exthash...
+    
+    // Cluster
+    //   tdb.cluster....
     
 
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
@@ -59,6 +63,9 @@ public class IndexBuilderRedirect
     
     public static RangeIndex createRangeIndex(FileSet fileset, int blockSize, RecordFactory factory)
     {
+        // This is the main worker function
+        // 1 - Decide if there is an index already at that location (metafile)
+        // 
         MetaFile metafile = fileset.getMetaFile() ;
         if ( metafile == null )
             metafile = fileset.getLocation().getMetaFile() ;
@@ -79,12 +86,15 @@ public class IndexBuilderRedirect
             }
             //Metadata - no keyIndexType - default. 
         }
+        else
+            chooseIndexBuilder(IndexType.BPlusTree) ;
         
         // No - call default.
         return createDefault(fileset, metafile, blockSize, factory) ;
     }
     
     // From IndexBuilder.
+    // TODO Check the IndexFcatories for metadata files
     private static IndexBuilder chooseIndexBuilder(IndexType indexType)
     {
         switch (indexType)
