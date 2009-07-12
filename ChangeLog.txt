@@ -1,12 +1,16 @@
 ChangeLog for ARQ
 =================
 
-==== ARQ 2.7.1
+==== ARQ 2.8.0
 
 + Build is now done by maven
 ** JAR changes: the ARQ jars are now called "arq.jar" and "arq-tests.jar".
    Only "arq.jar is needed at runtime unless running ARQ test code. 
 ** There is only one maven artifact "arq".  "arq-extra" is no more.
+  See README for deatils of files produced.
+
++ Negation-as-failure: NOT EXISTS {pattern}
+  see http://jena.sf.net/ARQ/negation.html for details.
 
 + Bug fix: Reverse paths of length 3 or more were not being parsed correctly.
 
@@ -14,7 +18,7 @@ ChangeLog for ARQ
 
 + Remove json.jar (jena compiled code from org.json).  Replace with source code, renamed, in ARQ itself. 
   package com.hp.hpl.jena.sparql.lib.org.json;
-  Cleaned up for Jeva generics.
+  Cleaned up for Java generics.
 
 ==== ARQ 2.7.0
 
