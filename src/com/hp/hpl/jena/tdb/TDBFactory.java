@@ -183,7 +183,6 @@ public class TDBFactory
     { return _createDatasetGraph() ; }
 
     // ---- Point at which actual graphs are made.
-    // Cache?
     
     private static Graph _createGraph()
     { return factory.createDatasetGraph().getDefaultGraph() ; }

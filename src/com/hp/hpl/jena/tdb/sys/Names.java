@@ -6,65 +6,83 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
+import com.hp.hpl.jena.tdb.index.IndexType;
+
 /** Names of things in TDB */
 public class Names
 {
-    public static final String primaryIndexTriples  = "SPO" ; 
-    public static final String[] tripleIndexes      = { primaryIndexTriples, "POS", "OSP" } ;
+    public static final String primaryIndexTriples      = "SPO" ; 
+    public static final String[] tripleIndexes          = { primaryIndexTriples, "POS", "OSP" } ;
 
-    public static final String primaryIndexQuads    = "GSPO" ; 
-    public static final String[] quadIndexes        = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
+    public static final String primaryIndexQuads        = "GSPO" ; 
+    public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
     
     
     /** B+Trees - nodes file and records file */
-    public static final String bptExt1              = "idn" ;
-    public static final String bptExt2              = "dat" ;
+    public static final String bptExt1                  = "idn" ;
+    public static final String bptExt2                  = "dat" ;
 
     /** BTrees - single file per tree */
-    public static final String btExt                = "idx" ;
+    public static final String btExt                    = "idx" ;
     
     /** ExtHash - dictionary file*/
-    public static final String extHashExt           = "exh" ;
-    public static final String extHashBucketExt     = "dat" ;
+    public static final String extHashExt               = "exh" ;
+    public static final String extHashBucketExt         = "dat" ;
     
     /** Node file */
-    public static final String extNodeData          = "dat" ;           // Extension of node files.
+    public static final String extNodeData              = "dat" ;           // Extension of node files.
     
-    public static final String nodeTable            = "nodes" ;         // Node table
-    public static final String indexNode2Id         = "node2id";        // Node hash to id table
+    public static final String nodeTable                = "nodes" ;         // Node table
+    public static final String indexNode2Id             = "node2id";        // Node hash to id table
     
-    //public static final String indexId2Node     = "id2node";        // Would be the Index for node(hash) to id  
+    //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
 
     /** Prefixes file */
-    public static final String prefixNodeTable      = "prefixes" ;      // Prefix node table 
-    public static final String indexPrefix2Id       = "prefix2id";      // Prefix node table for index Node/hash->id
-    public static final String indexPrefix          = "prefixIdx";      // Primary key on the prefixes table.
+    public static final String prefixNodeTable          = "prefixes" ;      // Prefix node table 
+    public static final String indexPrefix2Id           = "prefix2id";      // Prefix node table for index Node/hash->id
+    public static final String indexPrefix              = "prefixIdx";      // Primary key on the prefixes table.
     
     /** Optimizer / stats */
-    public static final String optStats             = "stats.opt";
-    public static final String optDefault           = "fixed.opt";      // Currently, it's just the presence of this file that matters.
-    public static final String optNone              = "none.opt"; 
+    public static final String optStats                 = "stats.opt";
+    public static final String optDefault               = "fixed.opt";      // Currently, it's just the presence of this file that matters.
+    public static final String optNone                  = "none.opt"; 
     
 //    /** Properties information for a FileGroup*/ 
 //    public static final String metaData             = "info" ;
     
-    public static final String extMeta              = "meta" ;
-    public static final String directoryMetafile    = "this" ;          // Root name of the directory for a metafile.  
+    public static final String extMeta                  = "meta" ;
+    public static final String directoryMetafile        = "this" ;          // Root name of the directory for a metafile.  
 
     /** Name to indicate in-memory */ 
-    public static final String memName              = "--mem--" ;
-    public static boolean isMem(String name)        { return memName.equals(name) ; }
+    public static final String memName                  = "--mem--" ;
+    public static boolean isMem(String name)            { return memName.equals(name) ; }
     
-    // ---- Names for Java properties in metadata files 
+    // ---- Names for Java properties in metadata files
+    
     /* Metadata names - global */
-    public static final String keyNS                = "tdb" ;
+    private static String makeMetadataKey(String keyShortName)
+    { 
+        if ( keyShortName.startsWith(".") )
+            return keyNS+keyShortName ;
+        else
+            return keyNS+"."+keyShortName ;
+    }
+
+    // Root names.
+    public static final String keyNS                    = "tdb" ;
+    public static final String keyNSBPlusTree           = "tdb.bptree" ;
     
-    private static String makeMetadataKey(String keyShortName)  { return keyNS+"."+keyShortName ; }
+    // Location metadata
+    public static final String keyVersion               = makeMetadataKey("version") ;
+    
+    // Index metadata
     public static final String keyIndexType             = makeMetadataKey("indexType") ;
     public static final String keyIndexFileVersion      = makeMetadataKey("indexFileVersion") ;
     
+    // See also BPlusTreeParams for keyNSBPlusTree derived names.
+    
     // Current values
-    public static final String currentIndexType         = "BPlusTree" ;   // Align with IndexType enum.
+    public static final String currentIndexType         = IndexType.BPlusTree.getName() ;
     public static final String currentIndexFileVersion  = "v1" ;
 
     

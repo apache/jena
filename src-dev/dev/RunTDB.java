@@ -74,7 +74,7 @@ public class RunTDB
     public static void main(String ... args) throws IOException
     {
         FileSet fileset = new FileSet("tmp", "XYZ") ;
-        IndexBuilderRedirect.createRangeIndex(fileset, 8*1024, new RecordFactory(24,0)) ;
+        ThingBuilder.createRangeIndex(fileset, 8*1024, new RecordFactory(24,0)) ;
         System.exit(0) ;
         metadata() ;
         

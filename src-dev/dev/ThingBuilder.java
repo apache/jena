@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -20,14 +21,34 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** Make indexes */
-public class IndexBuilderRedirect
+/** Makes things: datasets from locations,  indexes */
+public class ThingBuilder
 {
-    private static final Logger log = LoggerFactory.getLogger(IndexBuilderRedirect.class) ;
+    // TDBFactory : machinary for the API (models, lots of different ways of making things
+    //  --> factory.createDatasetGraph(Location) / factory.createDatasetGraph()
+    
+    // The main factory is ConcreteImplFactory
+    // --> FactoryGraphTDB.createDatasetGraph(Location) / FactoryGraphTDB.createDatasetGraphMem(
+    
+    
+    
+    private static final Logger log = LoggerFactory.getLogger(ThingBuilder.class) ;
 
+
+    // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
+    // FactoryGraphTDB
+    // TDBFactory
+    
+    public static DatasetGraphTDB build(Location location)
+    {
+        
+        return null ;
+    }
+    
     // Properties.
 
     // General:
@@ -48,7 +69,6 @@ public class IndexBuilderRedirect
     //   tdb.cluster....
     
 
-    // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
     
     // IndexBuilder.createIndexBuilder(IndexType) is broken - fixed pairing. 
     

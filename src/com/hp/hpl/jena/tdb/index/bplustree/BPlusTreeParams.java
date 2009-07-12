@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Configuration for a B+Tree */ 
@@ -26,13 +27,12 @@ public class BPlusTreeParams
 
     // Metadata
     //public static final String NS = BPlusTreeParams.class.getName() ;
-    public static final String NS = "tdb.bptree" ;
+    public static final String NS = Names.keyNSBPlusTree ;
     public static final String ParamOrder          = NS+".order" ;
     public static final String ParamKeyLength      = NS+".keyLength" ;
     public static final String ParamValueLength    = NS+".valueLength" ;
     public static final String ParamBlockSize      = NS+".blockSize" ;
 
-    
     public static void checkAll()
     { 
         CheckingTree = true ;
