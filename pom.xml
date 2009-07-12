@@ -283,10 +283,12 @@ build.time.txt=${build.time.txt}
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!-- scp does not work (TERM not set !!) -->
       <!-- <url>sftp://jena.hpl.hp.com/var/repo</url> -->
-      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>  <!-- Because RC's aren't snapshots -->
+      
+      <!-- Because RC's aren't snapshots -->
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
       <!--<url>file:tmp</url>-->
+
       <layout>default</layout>
     </repository> 
     <snapshotRepository>

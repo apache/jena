@@ -25,7 +25,7 @@ Release repository: http://jena.hpl.hp.com/repo
   Mirrored to http://repo1.maven.org/
 Development repo: http://jena.hpl.hp.com/repo-dev
 
-See blow of maven repository contents.
+See below of maven repository contents.
 
 Online demos and services
 -------------------------
@@ -67,10 +67,11 @@ arq-VER.pom                 ARQ POM
 
 arq-VER.zip                 The complete distribution file
 
-To run tests, you will need 'arq-VER.jar', 'arq-VER-tests.jar' and all dependences
-and to unpack 'arq-VER-tests.zip' to get the "testing" data directory and test scripts.
+To run tests, you will need 'arq-VER.jar', 'arq-VER-tests.jar' and all
+dependences and to unpack 'arq-VER-tests.zip' to get the "testing" data
+directory and test scripts.
 
-Or downlaod the distribution 'arq-VER.zip'. 
+Or download the distribution 'arq-VER.zip'. 
 
 Running from the command line
 -----------------------------
