@@ -1,6 +1,9 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.1
+
+
 ==== ARQ 2.8.0
 
 + Build is now done by maven
