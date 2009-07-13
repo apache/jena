@@ -49,6 +49,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>arq-${project.version}-sources.jar</include>
+        <include>arq-${project.version}-test-sources.jar</include>
         <include>arq-${project.version}-javadoc.jar</include>
       </includes>
     </fileSet>
@@ -80,10 +81,6 @@
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
       </excludes>
-    </fileSet>
-
-    <fileSet>
-      <directory>src</directory>
     </fileSet>
 
     <fileSet>
