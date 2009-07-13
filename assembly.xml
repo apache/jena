@@ -1,3 +1,8 @@
+<!-- TODO
+    Check with ant build
+     Store/
+-->
+
 <assembly>
   <id>dist</id>
   <baseDirectory>SDB-${project.version}</baseDirectory>
