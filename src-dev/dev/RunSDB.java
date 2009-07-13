@@ -39,6 +39,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.update.GraphStore;
@@ -47,7 +48,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
-    static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { ALog.setLog4j() ; CmdUtils.setN3Params() ; }
     
     public static void main(String ... argv) throws SQLException
     {
@@ -234,7 +235,7 @@ public class RunSDB
     public static void runConf()
     {
         JDBC.loadDriverHSQL() ;
-        CmdUtils.setLog4j() ;
+        ALog.setLog4j() ;
         
         String hsql = "jdbc:hsqldb:mem:aname" ;
         //String hsql = "jdbc:hsqldb:file:tmp/db" ;

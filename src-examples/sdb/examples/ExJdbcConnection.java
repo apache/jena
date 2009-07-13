@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import arq.cmd.CmdUtils;
-
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -25,13 +23,17 @@ import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.shared.Access;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.DatasetStore;
+import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /** Managed JDBC connections : creat */ 
 
 public class ExJdbcConnection
 {
-    static { CmdUtils.setLog4j() ; }
+    static { ALog.setLog4j() ; }
     
     public static void main(String...argv)
     {

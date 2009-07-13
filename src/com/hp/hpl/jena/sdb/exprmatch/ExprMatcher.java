@@ -164,6 +164,9 @@ public class ExprMatcher
             throw new NoExprMatch("Action for "+patternVar+ "+failed") ;
         }
 
+        public void visit(ExprFunctionOp funcOp)
+        { throw new NoExprMatch("ExprFunctionOp") ; }
+
         public void finishVisit()
         {}
     }
