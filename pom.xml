@@ -260,6 +260,23 @@ build.time.txt=${build.time.txt}
         </executions>
       </plugin>
 
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib2</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
     </plugins>
 
   </build>
