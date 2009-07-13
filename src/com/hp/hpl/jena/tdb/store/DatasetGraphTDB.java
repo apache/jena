@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphBase;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -33,11 +34,11 @@ public class DatasetGraphTDB extends DatasetGraphBase
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
-    private DatasetPrefixesTDB prefixes ;
+    private DatasetPrefixStorage prefixes ;
     private final ReorderTransformation transform ;
     private final Location location ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
+    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
                            ReorderTransformation transform, Location location)
     {
         this.tripleTable = tripleTable ;
@@ -95,7 +96,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     public ReorderTransformation getTransform()     { return transform ; }
     
-    public DatasetPrefixesTDB getPrefixes()            { return prefixes ; }
+    public DatasetPrefixStorage getPrefixes()            { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {

@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
@@ -28,11 +29,11 @@ public class GraphTriplesTDB extends GraphTDBBase
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
-    private final DatasetPrefixesTDB prefixes ;
+    private final DatasetPrefixStorage prefixes ;
     
     public GraphTriplesTDB(DatasetGraphTDB dataset,
                            TripleTable tripleTable,
-                           DatasetPrefixesTDB prefixes)
+                           DatasetPrefixStorage prefixes)
     {
         super(dataset, null) ;
         

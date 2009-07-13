@@ -79,6 +79,11 @@ public class MetaFile implements Sync, Closeable
     
     public String getFilename()         { return metaFilename ; } 
     
+    public boolean hasProperty(String key)
+    {
+        return _getProperty(key, null) != null ;
+    }
+
     public String getProperty(String key)
     {
         return _getProperty(key, null) ;
@@ -102,6 +107,12 @@ public class MetaFile implements Sync, Closeable
     public void setProperty(String key, int value)
     {
         _setProperty(key, Integer.toString(value)) ;
+    }
+    
+    public void clear()
+    {
+        ensureInit() ;
+        properties.clear() ;
     }
 
     // All get/set access through these two operations
