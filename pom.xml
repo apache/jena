@@ -7,7 +7,7 @@
   <artifactId>arq</artifactId>
   <packaging>jar</packaging>
   <name>ARQ</name>
-  <version>2.8.0</version>
+  <version>2.8.1-SHAPSHOT</version>
   <description/>
   <url>http://jena.sf.net/ARQ</url>
 
@@ -240,7 +240,7 @@
                 <mkdir dir="${basedir}/target"/>
                 <tstamp>
                   <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
                 <echo file="${basedir}/target/filter.properties">
 #begin
@@ -287,15 +287,15 @@ build.time.txt=${build.time.txt}
       
       <!-- Because RC's aren't snapshots -->
       <!--<url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
-      <url>file:tmp</url>
+      <!--<url>file:tmp</url>-->
 
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
-      <url>file:tmp</url>
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
+      <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
