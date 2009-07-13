@@ -2,9 +2,4 @@
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 
-:C1 rdfs:subClassOf :C2 .
-:C2 rdfs:subClassOf :C3 .
-
-
-:x  rdf:type :C1 .
-
+< http://www.fakedomain.org/bar#> :p "abc" .
