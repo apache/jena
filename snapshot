@@ -18,10 +18,8 @@ do
 if [ "$MODULE" != "" ]
 then
     LIBDIRS="$MODULE"
-    SRCDIRS="$MODULE"
 else
     LIBDIRS="${LIBDIR:-$DEFAULT}"
-    SRCDIRS="${SRCDIR:-$DEFAULT}"
 fi
 
 ## Remove path and version numbers.
@@ -39,7 +37,7 @@ function version
 }
 
 
-## Make jar
+## Make jar and sources 
 mvn clean package
 
 ## Get version.
@@ -51,46 +49,19 @@ VER=${VER%-tests.jar}
 
 echo "ARQ version: $VER"
 
-## # Remove version numbers
-## for jar in build/arq*.jar
-## do
-##   J2="$(perl -e '$_=$ARGV[0] ; s/(arq.*)-\d.\d.\d.*.jar/$1.jar/ ; print "$_\n" ' $jar)"
-##   mv $jar $J2
-##   done
-
 for d in $LIBDIRS
 do
   echo "Moving ARQ jars to project $d"
-  cp -u target/arq-$VER.jar ../$d/lib/arq.jar
-  cp -u target/arq-$VER-tests.jar ../$d/lib/arq-tests.jar
+  cp -u target/arq-$VER.jar ../$d/lib/
+  cp -u target/arq-$VER-tests.jar ../$d/lib/
+
+  cp -u target/arq-$VER-sources.jar ../$d/
+  cp -u target/arq-$VER-test-sources.jar ../$d/
+
   ## Fix up 
   chmod u+rw ../$d/lib/arq*jar
+  chmod u+rw ../$d/arq*jar
   # And Jena
   cp -u lib/jena.jar ../$d/lib
   cp -u lib/jenatest.jar ../$d/lib
-  done
-
-
-## rm build/arq*.jar
-
-## Source code.
-
-rm -f arq-src.zip
-SRCS=target/arq-$VER-sources.jar 
-
-## for d in src src-dev src-test
-## do
-##   ( cd $d ; find . -name test -prune -o -name .svn -prune -o -print | \
-##     xargs -n 200 zip -q ../arq-src.zip
-##   )
-##   done
-
-for d in  $SRCDIRS
-do
-  echo "Moving arq-src.zip to project $d"
-  cp -u "$SRCS" ../$d/arq-src.zip
-  # And Jena
-  cp -u jena-src.zip ../$d
-  done
-
-rm -f arq-src.zip
+done
