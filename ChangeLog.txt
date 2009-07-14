@@ -10,8 +10,10 @@ ChangeLog for TDB
   (including the named graph quad tables).
 
 + Bug fix: asking the size of a empty graph before any other operation would make the size zero 
-  for the rest of the lifetime of the in-memory graph.  No data corruption on disk.  
-  
+  for the rest of the lifetime of the in-memory graph.  No data corruption on disk.
+
++ Bug fix: language tags on """-strings were causing a parse error. 
+      
 ==== 0.8.1
 
 + Fix bug when assembling one unnamed graph. 
