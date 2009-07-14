@@ -62,7 +62,7 @@ public class ThingBuilder
     // TDBFactory
     
     // Assembler vs metafiles.
-    public static DatasetGraphTDB build(Location location)
+    public static DatasetGraphTDB buildDataset(Location location)
     {
         // Process: 
         //   Location Metadata
@@ -106,10 +106,14 @@ public class ThingBuilder
         NodeTable nodeTable = null ;
         
         // ---- Triple table and quad table indexes.
-        TupleIndex tripleIndexes[] = indexes(location, Names.primaryIndexTriples, Names.tripleIndexes) ;
+        IndexBuilder dftIndexBuilder = null ;
+        
+        TupleIndex tripleIndexes[] = indexes(dftIndexBuilder, location, indexRecordTripleFactory, 
+                                             Names.primaryIndexTriples, Names.tripleIndexes) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, indexRecordTripleFactory, nodeTable, location) ;
         
-        TupleIndex quadIndexes[] = indexes(location, Names.primaryIndexQuads, Names.quadIndexes) ;
+        TupleIndex quadIndexes[] = indexes(dftIndexBuilder, location,  indexRecordQuadFactory, 
+                                           Names.primaryIndexQuads, Names.quadIndexes) ;
         QuadTable quadTable = new QuadTable(quadIndexes, indexRecordQuadFactory, nodeTable, location) ; ;
         
         // Names.primaryIndexTriples / Names.tripleIndexes
@@ -132,9 +136,42 @@ public class ThingBuilder
     
     private static ReorderTransformation chooseOptimizer(Location location) { return null ; }
     
-    public static TupleIndex[] indexes(Location location, String primary, String...descs)
+    public static TupleIndex[] indexes(final IndexBuilder indexBuilder, final Location location, RecordFactory recordFactory, String primary, String[] descs)
     {
-        // Existing metadata?
+        return null ;
+        
+    }
+//        TupleIndexBuilder builder = new TupleIndexBuilder()
+//        {
+//            //@Override
+//            public TupleIndex create(String primary, String desc, RecordFactory recordFactory)
+//            {
+//                return createTupleIndex(indexBuilder, recordFactory, location, primary, desc) ;
+//            }
+//        } ;
+//        
+//        TupleIndex indexes[] = new TupleIndex[descs.length] ;
+//        int i = 0 ;
+//        for ( String desc : descs )
+//        {
+//            indexes[i] = builder.create(primary, desc, recordFactory) ;
+//            i++ ;
+//        }
+//        return indexes ;
+//    }
+//    
+//    private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)
+//    {
+//        // Map name of index to name of file.
+//        FileSet fileset = new FileSet(location, desc) ;
+//        RangeIndex rIdx1 = indexBuilder.newRangeIndex(fileset, recordFactory) ;
+//        TupleIndex tupleIndex = new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), recordFactory, rIdx1) ; 
+//        return tupleIndex ;
+//    }
+    
+    // Decide on an index builder.
+    private static IndexBuilder chooseIndexBuilder(Location location, String primary, String desc)
+    {
         return null ;
     }
     
@@ -172,8 +209,6 @@ public class ThingBuilder
     
     // Cluster
     //   tdb.cluster....
-    
-
     
     // IndexBuilder.createIndexBuilder(IndexType) is broken - fixed pairing. 
     

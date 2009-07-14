@@ -117,6 +117,22 @@ public class OpExecutorTDB extends OpExecutor
         return optimizeExecuteTriples(graph, input, opBGP.getPattern(), null, execCxt) ;
     }
 
+    @Override
+        protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
+        {
+            if ( ! isForTDB )
+                return super.execute(quadPattern, input) ;
+            
+    //        DatasetGraph dg = execCxt.getDataset() ;
+    //        if ( ! ( dg instanceof DatasetGraphTDB ) )
+    //            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
+            
+            DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
+            BasicPattern bgp = quadPattern.getBasicPattern() ;
+            Node gn = quadPattern.getGraphNode() ;
+            return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
+        }
+
     /** Execute, with optimization, a basic graph pattern on the default graph storage */
     /*public*/ 
     private static QueryIterator optimizeExecuteTriples(GraphTDB graph, QueryIterator input,
@@ -146,22 +162,6 @@ public class OpExecutorTDB extends OpExecutor
         return plainExecute(op, input, execCxt) ;
     }
 
-    @Override
-    protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
-    {
-        if ( ! isForTDB )
-            return super.execute(quadPattern, input) ;
-        
-//        DatasetGraph dg = execCxt.getDataset() ;
-//        if ( ! ( dg instanceof DatasetGraphTDB ) )
-//            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
-        
-        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-        BasicPattern bgp = quadPattern.getBasicPattern() ;
-        Node gn = quadPattern.getGraphNode() ;
-        return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
-    }
-    
     /** Execute, with optimization, a quad pattern */
     private static QueryIterator optimizeExecuteQuads(DatasetGraphTDB ds, 
                                                       QueryIterator input, 
