@@ -75,7 +75,7 @@ public class DescribeHandlerRegistry
     
     public List<DescribeHandler> newHandlerList()
     {
-        List<DescribeHandler> a = new ArrayList<DescribeHandler>() ;
+        List<DescribeHandler> a = new ArrayList<DescribeHandler>(registry.size()) ;
         for ( Iterator<DescribeHandlerFactory> iter = handlers() ; iter.hasNext() ; )
         {
             DescribeHandlerFactory f = iter.next();
