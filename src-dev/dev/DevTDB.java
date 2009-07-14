@@ -12,6 +12,7 @@ public class DevTDB
     
     // == 0.8.2
     // ** Document concurrency.
+    // ** Check assembler page for emphasise on creating a dataset.
     // ** Check for tests of assembler and GraphTDB
     // Enable metadata? [later]
     
@@ -36,35 +37,22 @@ public class DevTDB
     // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
     // Ability to overwrite.
     
-    // == tdbcheck
-    //  Checking graph (with IRI cache).
-    
     // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
     // See IndexFactoryBPlusTree.createRangeIndex
     // See BPlusTreeParams.readMeta
 
-    // To ARQ:
-    //   DatasetGraphBase
-    //   Atlas? Iterator.
-    
     // NodeLib.encode/decode ==> swap to a Nodec
 
     // Version of BufferingWriter that works on OutputStreams.
 
-    //  Reopenable files.
-    //    Alterntaive length hash codes.
-    //    Record lengths
-    
-    //   Quad loader; dataset merge.
-    //   Dataset management??
+    // Quad loader; dataset merge.
+    // Dataset management??
     
     // ---- Optimizer
     //   The disjunction/UNION rewrite (ARQ)
     
     // ---- Documentation
-    //  Concurrency policy
-    //  Change assembler page to emphasise creating a dataset. [Done?]
     
     // ---- BlockMgrs
     // Consistency - do not manage in block managers except where MRSW not safe.
@@ -76,11 +64,8 @@ public class DevTDB
     //   ==> Moveable roots.
     
     // ---- Misc
-    // Inlines => Inline56, Inline64
+    // Inlines => Inline56, Inline64, ??
 
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
-
-    // ---- 32 bit mode.
-    // Different caching schemes.
 }

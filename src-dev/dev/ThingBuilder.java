@@ -6,6 +6,10 @@
 
 package dev;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.FileOps;
@@ -15,19 +19,29 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.QuadTable;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** Makes things: datasets from locations,  indexes */
+/** Makes things: datasets from locations, indexes */
+
 public class ThingBuilder
 {
     // TDBFactory : machinary for the API (models, lots of different ways of making things
@@ -36,17 +50,27 @@ public class ThingBuilder
     // The main factory is ConcreteImplFactory
     // --> FactoryGraphTDB.createDatasetGraph(Location) / FactoryGraphTDB.createDatasetGraphMem(
     
-    
+    // ---- Record factories
+    public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 
+    public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ; 
+    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
     private static final Logger log = LoggerFactory.getLogger(ThingBuilder.class) ;
-
 
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
     // FactoryGraphTDB
     // TDBFactory
     
+    // Assembler vs metafiles.
     public static DatasetGraphTDB build(Location location)
     {
+        // Process: 
+        //   Location Metadata
+        //   Build node file
+        //   Build indexes and tables
+        //   Build prefixes
+        //   Make the dataset
+        
         MetaFile metafile = location.getMetaFile() ;
         if ( metafile.existsMetaData() )
         {
@@ -64,16 +88,53 @@ public class ThingBuilder
             //metafile.setProperty(Names.keyVersion, Utils.nowAsXSDDateTimeString()) ;
             return createNew(location) ;
         }
-            
+
+        // Some files exists.
+        
         // Existing location (has some files in it).
         // Existing files, no metadata.
-        // Fake it as TDB 0.8.1
+        // Fake it as TDB 0.8.1 (which did not have metafiles
         // If it's the wrong file format, things do badly wrong later.
-        metafile.setProperty(Names.keyVersion, "<=0.8.1") ;
-        // Fake index metadata.
         
-        // Create over existing
+        if ( ! metafile.hasProperty(Names.keyVersion) )
+        {
+            metafile.setProperty(Names.keyVersion, "<=0.8.1") ;
+            metafile.flush() ;
+        }
+
+        // ---- Node Table.
+        NodeTable nodeTable = null ;
         
+        // ---- Triple table and quad table indexes.
+        TupleIndex tripleIndexes[] = indexes(location, Names.primaryIndexTriples, Names.tripleIndexes) ;
+        TripleTable tripleTable = new TripleTable(tripleIndexes, indexRecordTripleFactory, nodeTable, location) ;
+        
+        TupleIndex quadIndexes[] = indexes(location, Names.primaryIndexQuads, Names.quadIndexes) ;
+        QuadTable quadTable = new QuadTable(quadIndexes, indexRecordQuadFactory, nodeTable, location) ; ;
+        
+        // Names.primaryIndexTriples / Names.tripleIndexes
+        // Names.primaryIndexQuads / Names.quadIndexes 
+        // RecordFactory.indexRecordTripleFactory <-- SystemTDB.LenIndexTripleRecord
+        // RecordFactory.indexRecordQuadFactory <-- SystemTDB.LenIndexQuadRecord
+        
+        // ---- Node Table.
+        
+        // ---- Prefixes
+        
+        // RecordFactory nodeRecordFactory <-- new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+        
+        DatasetPrefixStorage prefixes = null ;
+        
+        
+        // ---- Create the DatasetGraph object
+        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location) ;
+    }
+    
+    private static ReorderTransformation chooseOptimizer(Location location) { return null ; }
+    
+    public static TupleIndex[] indexes(Location location, String primary, String...descs)
+    {
+        // Existing metadata?
         return null ;
     }
     
@@ -148,13 +209,15 @@ public class ThingBuilder
                     throw new TDBException("Unknown uindex type: '"+indexTypeStr+"'") ;
                 return chooseIndexBuilder(indexType).newRangeIndex(fileset, factory) ;
             }
-            //Metadata - no keyIndexType - default. 
+            //Metadata - no keyIndexType - default.
         }
-        else
-            chooseIndexBuilder(IndexType.BPlusTree) ;
+        
+        // No metadata or unrelated metadata.  Create as if new (may attach to existing files).
+        
+        //return chooseIndexBuilder(IndexType.BPlusTree).newRangeIndex(fileset, factory) ;
         
         // No - call default.
-        return createDefault(fileset, metafile, blockSize, factory) ;
+        return createNewRangeIndex(fileset, metafile, blockSize, factory) ;
     }
     
     // From IndexBuilder.
@@ -239,7 +302,7 @@ public class ThingBuilder
         return null ;
     }
     
-    static private  RangeIndex createDefault(FileSet fileset, MetaFile metafile, int blockSize, RecordFactory factory)
+    static private  RangeIndex createNewRangeIndex(FileSet fileset, MetaFile metafile, int blockSize, RecordFactory factory)
     {
         int order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
@@ -251,7 +314,16 @@ public class ThingBuilder
         params.addToMetaData(metafile) ;
         metafile.flush();
         // TODO integrate
+        // TODO Test files existence
         return IndexBuilder.get().newRangeIndex(fileset, factory) ;
+    }
+    
+    static private NodeTable createNodeTable(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
+    {
+        // Check metadata.
+        
+        
+        return new NodeTableBase(nodeToId, objectFile, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 }
 /*
