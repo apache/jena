@@ -29,12 +29,12 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.test.junit.SDBTest;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -101,7 +101,7 @@ public class RunSDB
 
         {
             // SPARQL/Update
-            Store store = SDB.createInMemoryStore() ;
+            Store store = SDBTest.createInMemoryStore() ;
             
             GraphStore gs = SDBFactory.connectGraphStore(store) ;
             UpdateAction.readExecute("update.ru", gs) ;

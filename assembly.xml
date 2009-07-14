@@ -4,7 +4,7 @@
 -->
 
 <assembly>
-  <id>dist</id>
+  <!--<id>dist</id>-->
   <baseDirectory>SDB-${project.version}</baseDirectory>
   <formats>
     <!--
@@ -70,6 +70,10 @@
     </fileSet>
 
     <fileSet>
+      <directory>Store</directory>
+    </fileSet>
+
+    <fileSet>
       <includes>
 	<include>test.sh</include>
       </includes>
@@ -83,10 +87,6 @@
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
       </excludes>
-    </fileSet>
-
-    <fileSet>
-      <directory>src</directory>
     </fileSet>
 
     <fileSet>

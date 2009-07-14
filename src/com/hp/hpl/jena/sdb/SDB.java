@@ -13,9 +13,6 @@ import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.modify.UpdateProcessorSDB;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.util.DerbyUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -134,21 +131,7 @@ public class SDB
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
         return Symbol.create(ARQ.arqNS+shortName) ;
     }
-    
 
-    /** Create an H2-backed in-memory store for testing. */
-    public static Store createInMemoryStore()
-    {
-        // Create an H2-backed in-memory store for testing.
-        SDBConnection conn = SDBFactory.createConnection("jdbc:h2:mem:", "", "") ;
-        StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.H2) ;
-        
-        Store store = SDBFactory.connectStore(conn, desc) ;
-        store.getTableFormatter().create() ;
-        store.getTableFormatter().truncate() ;
-        return  store ;
-    }
-    
     // ----------------------------------
     
     /** The root package name for SDB */   

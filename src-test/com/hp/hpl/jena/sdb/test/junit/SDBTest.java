@@ -1,39 +1,35 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.modify;
-
-import junit.framework.TestSuite;
+package com.hp.hpl.jena.sdb.test.junit;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.test.junit.SDBTest;
-import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
-import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 
-public class TestSPARQLUpdateMgt extends TestUpdateGraphMgt
+public class SDBTest
 {
-
-    public static junit.framework.Test suite() {
-        TestSuite ts = new TestSuite();
-        ts.addTestSuite(TestSPARQLUpdateMgt.class);
-        return ts;
-    }
-    
-    @Override
-    protected GraphStore getEmptyGraphStore()
+    /** Create an HSQLDB-backed in-memory store for testing. */
+    public static Store createInMemoryStore()
     {
-        Store store = SDBTest.createInMemoryStore() ;
-        GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
-        return graphStore ;
+        SDBConnection conn = SDBFactory.createConnection("jdbc:hsqldb:mem", "sa", "") ;
+        StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.HSQLDB) ;
+        
+        Store store = SDBFactory.connectStore(conn, desc) ;
+        store.getTableFormatter().create() ;
+        store.getTableFormatter().truncate() ;
+        return  store ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
