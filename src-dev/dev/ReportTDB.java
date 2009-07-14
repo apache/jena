@@ -7,7 +7,6 @@ import java.io.InputStream;
 import atlas.logging.Log;
 
 import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.tdb.TDB;
 
 public class ReportTDB
 {
