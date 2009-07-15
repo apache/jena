@@ -11,6 +11,8 @@ public class DevTDB
     // ** metadata files and BPT creation.
     
     // == 0.8.2
+    // Ready.
+    
     // ** Document concurrency.
     // ** Check assembler page for emphasise on creating a dataset.
     // ** Check for tests of assembler and GraphTDB
@@ -24,18 +26,13 @@ public class DevTDB
     
     // BDB-JE? BlockMgr as index?
     
-    // ** New ARQ build (arq-extra?)
-    //    Commands need moving.
-    //      EarlReport
-    //      Update ivy
-    
     // Document concurrency 
     // Graph.getLock in Jena?  Share with dataset.
     
-    // ----
-    
-    // Clean up BPlusTree creation.  Currently need different blockmgrs for each B+T nodes, leaves. 
-    // Ability to overwrite.
+    // ==== RIOT
+    // ** Connect the errorhandler set via JenaReaderbase to the one used by RIOT-Turtle/RIOT-NTriples.
+    // Error handler, not exceptions, in Turtle.
+    //   Check for continuation.
     
     // == tdbdump && tdbrestore
     // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)

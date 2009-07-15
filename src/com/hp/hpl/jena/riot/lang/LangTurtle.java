@@ -25,7 +25,7 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.sparql.core.NodeConst;
 import com.hp.hpl.jena.vocabulary.OWL;
 
-public class LangTurtle
+public class LangTurtle extends LangBase
 {
     /* See http://www.w3.org/TeamSubmission/turtle/ */
 
@@ -91,7 +91,6 @@ public class LangTurtle
     private final boolean strict            = false ;
     
     private final Prologue prologue ;
-    private final Checker checker = new Checker(null) ;
 
     /** Provide access to the prefix map.  
      * Note this parser uses a custom, lightweight prefix mapping implementation.
@@ -110,6 +109,7 @@ public class LangTurtle
     
     public LangTurtle(String baseURI, Tokenizer tokens, Sink<Triple> sink)
     { 
+        super(new Checker(null), null) ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
         this.sink = sink ;
@@ -205,7 +205,7 @@ public class LangTurtle
         String iriStr = tokenRaw().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
-        checker.checkIRI(iri) ;
+        getChecker().checkIRI(iri) ;
         prologue.getPrefixMap().add(prefix, iri) ;
         move() ;
         if ( VERBOSE ) log.info("@prefix "+prefix+":  "+iri.toString()) ;
@@ -217,7 +217,7 @@ public class LangTurtle
         String baseStr = tokenRaw().getImage() ;
         // CHECK
         IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
-        checker.checkIRI(baseIRI) ;
+        getChecker().checkIRI(baseIRI) ;
         
         if ( VERBOSE ) log.info("@base <"+baseIRI+">") ;
         move() ;
@@ -325,7 +325,7 @@ public class LangTurtle
         // CHECK
         // This is the only place where Nodes are created for triples.
         Node n = token().asNode() ; 
-        checker.check(n) ; 
+        getChecker().check(n) ; 
         return n ;
     }
     

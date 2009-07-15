@@ -29,21 +29,19 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer;
  *  <li>The <tt>Iterator&lt;Triple&gt;</tt> interface yields triples one-by-one.</li>
  *  </ul>  
  */
-public class LangNTriples implements Iterator<Triple>
+public class LangNTriples extends LangBase implements Iterator<Triple>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTriples.class) ;
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
     
-    public static final ErrorHandler errorHandler   = new ErrorHandlerLogger(messageLog) ;
-    public static final Checker      checker        = null ; // new Checker(errorHandler) ;
-    
     private final Tokenizer tokens ;
     private final PeekIterator<Token> peekIter ;
 
     public LangNTriples(Tokenizer tokens)
     { 
+        super(null, new ErrorHandlerLogger(messageLog)) ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
     }
@@ -85,6 +83,7 @@ public class LangNTriples implements Iterator<Triple>
         Token x = nextToken() ;
         if ( x.getType() != TokenType.DOT )
             exception("Triple not terminated by DOT: %s", x, x) ;
+        Checker checker = getChecker() ;
         if ( checker != null )
         {
             checker.check(s) ;
