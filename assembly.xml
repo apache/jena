@@ -6,6 +6,14 @@
     <!--<format>tar.gz</format>-->
     <format>zip</format>
   </formats>
+  
+  <dependencySets>
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>test</scope>
+      <outputDirectory>/lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
 
   <fileSets>
 
@@ -20,21 +28,9 @@
     </fileSet>
 
     <fileSet>
-      <directory>lib</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-      <excludes>
-        <exclude>jena*.jar</exclude>
-      </excludes>
-    </fileSet>
-
-    <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>jena-${project.version}.jar</include>
         <include>jena-${project.version}-tests.jar</include>
       </includes>
     </fileSet>
@@ -77,7 +73,6 @@
         <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
-	<exclude>javadoc/**</exclude>
       </excludes>
     </fileSet>
 
