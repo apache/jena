@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.test.junit.SDBTest;
+import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -101,7 +101,7 @@ public class RunSDB
 
         {
             // SPARQL/Update
-            Store store = SDBTest.createInMemoryStore() ;
+            Store store = SDBTestUtils.createInMemoryStore() ;
             
             GraphStore gs = SDBFactory.connectGraphStore(store) ;
             UpdateAction.readExecute("update.ru", gs) ;

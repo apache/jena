@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.test.junit.SDBTest;
+import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils;
 import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
 import com.hp.hpl.jena.update.GraphStore;
 
@@ -26,7 +26,7 @@ public class TestSPARQLUpdateMgt extends TestUpdateGraphMgt
     @Override
     protected GraphStore getEmptyGraphStore()
     {
-        Store store = SDBTest.createInMemoryStore() ;
+        Store store = SDBTestUtils.createInMemoryStore() ;
         GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
         return graphStore ;
     }

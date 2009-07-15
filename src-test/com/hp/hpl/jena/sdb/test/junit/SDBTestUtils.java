@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 
-public class SDBTest
+public class SDBTestUtils
 {
     /** Create an HSQLDB-backed in-memory store for testing. */
     public static Store createInMemoryStore()
