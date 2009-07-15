@@ -122,6 +122,18 @@ public class FileOps
         }
         return Tuple.create(path, fn) ;
     }
+
+    public static String basename(String filename)
+    {
+        int j = filename.lastIndexOf('/') ;
+        if ( j < 0 )
+            j = filename.lastIndexOf('\\') ;
+
+        if ( j >= 0 )
+            return  filename.substring(j+1) ;
+        else
+            return filename ;
+    }
     
 //    public static String getExt(String filename)
 //    {

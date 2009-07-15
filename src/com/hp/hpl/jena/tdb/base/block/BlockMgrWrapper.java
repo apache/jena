@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 
 public class BlockMgrWrapper implements BlockMgr
 {
-    protected BlockMgr blockMgr ;
+    private BlockMgr blockMgr ;
 
     public BlockMgrWrapper(BlockMgr blockMgr)
     {
@@ -61,7 +61,9 @@ public class BlockMgrWrapper implements BlockMgr
 
     //@Override
     public void sync(boolean force)
-    { blockMgr.sync(force) ; }
+    {
+        blockMgr.sync(force) ;
+    }
 
     //@Override
     public void close()

@@ -4,27 +4,77 @@
  * [See end of file]
  */
 
-package test;
+package perf;
+
+
+import atlas.lib.FileOps;
+import atlas.lib.RandomLib;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.util.Timer;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrDirect;
+import com.hp.hpl.jena.tdb.base.block.FileMode;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class RandomGraphs
+public class MultipleNamedGraphs
 {
     public static void main(String ... args)
     {
-        Dataset ds = TDBFactory.createDataset() ;
-        int N = 1000*1000*1000 ;
+        Log.setLog4j() ;
+        if ( false )
+        {
+            Log.enable(BlockMgrDirect.class) ;
+            Log.enable(BlockMgrCache.class) ;
+        }
+        FileOps.clearDirectory("DB") ;
+        if ( false )
+            SystemTDB.setFileMode(FileMode.mapped) ;
+        
+        int SYNC_INTERVAL = 1000 ; 
+   
+        Timer timer = new Timer() ;
+        
+        //Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDBFactory.createDataset("DB") ;
+        
+        int N = 5*1000 ;
+        timer.startTimer() ;
         for ( int i = 0 ; i < N ; i++ )
         {
-            if ( i != 0 && i%10000 == 0)
+            if ( i != 0 && i%1000 == 0)
                 System.out.println("N= "+i) ;
             
             String uri = "http://example/graph/"+i ;
             Model m = ds.getNamedModel(uri) ;
+            addSomeContent(m,i) ;
+
+            if (i >0 && i % SYNC_INTERVAL == 0) 
+            {
+                long x = timer.readTimer() ;
+                //System.out.printf("-- sync %.2fs\n", x/1000.0) ;
+                TDB.sync(ds);
+            }
         }
-        System.out.println("END") ;
+        TDB.sync(ds);
+        long ms = timer.endTimer() ;
+        System.out.printf("Time = %.2fs\n", ms/1000.0) ;
+        System.out.printf("Sync interval: %d\n", SYNC_INTERVAL) ;
+    }
+
+    private static void addSomeContent(Model m, int i)
+    {
+        int N = RandomLib.qrandom.nextInt(10) + 10 ;
+        for ( int j = 0 ; j < N ; j++ )
+        {
+            Resource r = m.createResource("http://example/r"+j) ;
+            r.addProperty(m.createProperty("http://example/p"+j), "123") ;
+        }
     }
 }
 

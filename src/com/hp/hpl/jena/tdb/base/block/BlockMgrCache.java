@@ -62,7 +62,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( bb == null )
             return ;
         log("Drop (write cache): %d", id) ;
-        blockMgr.put(id, bb) ;
+        super.put(id, bb) ;
         writeCache.remove(id) ;
     }
 
@@ -113,9 +113,9 @@ public class BlockMgrCache extends BlockMgrWrapper
         log("Miss  : %d", id) ;
         
         if ( silent )
-            bb = blockMgr.getSilent(id) ;
+            bb = super.getSilent(id) ;
         else
-            bb = blockMgr.get(id) ;
+            bb = super.get(id) ;
         readCache.put(id, bb) ;
         return bb ;
     }
@@ -128,7 +128,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( writeCache != null )
             writeCache.put(id, block) ;
         else
-            blockMgr.put(id, block) ;
+            super.put(id, block) ;
 
         // ????
         readCache.put(id, block) ;
@@ -141,7 +141,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         readCache.remove(id) ;
         if ( writeCache != null )
             writeCache.remove(id) ;
-        blockMgr.freeBlock(id) ;
+        super.freeBlock(id) ;
     }
     
 //    @Override
@@ -165,9 +165,15 @@ public class BlockMgrCache extends BlockMgrWrapper
             log("sync (%d blocks)", writeCache.size()) ;
         else
             log("sync") ;
-        syncFlush(force) ;
+        boolean somethingWritten = syncFlush(force) ;
         // Sync the wrapped object
-        super.sync(force) ;
+        if ( somethingWritten ) 
+        {
+            log("sync underlying BlockMgr") ;
+            super.sync(force) ;
+        }
+        else
+            log("Empty sync") ;
         
     }
     
@@ -185,11 +191,12 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         log("close ("+writeCache.size()+" blocks)") ;
         syncFlush(true) ;
-        blockMgr.close() ;
+        super.close() ;
     }
 
-    private void syncFlush(boolean all)
+    private boolean syncFlush(boolean all)
     {
+        boolean didSync = false ;
         if ( writeCache != null )
         {
             log("Flush (write cache)") ;
@@ -199,6 +206,9 @@ public class BlockMgrCache extends BlockMgrWrapper
 
             // Choose ... and it's in order.
             Iterator<Integer> iter = writeCache.keys() ;
+            if ( iter.hasNext() )
+                didSync = true ;
+            // Find all 
             for ( int i = 0 ; iter.hasNext() ; i++ )
                 ids[i] = iter.next() ;
             
@@ -212,6 +222,7 @@ public class BlockMgrCache extends BlockMgrWrapper
                 expelEntry(id) ;
             }
         }
+        return didSync ;
     }
 }
 

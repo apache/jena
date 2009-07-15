@@ -120,9 +120,13 @@ public class BlockMgrDirect extends BlockMgrFile
         return log ;
     }
 
+    static long count = 0 ;
     //@Override
     public void sync(boolean force)
     {
+        count++ ;
+        if ( getLog().isDebugEnabled() )
+            getLog().debug("Sync/BlockMgrDirect "+label+" -- "+count) ;
         if ( force )
             force() ;
     }

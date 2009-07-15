@@ -17,15 +17,18 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import atlas.lib.FileOps;
+
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Abstract class for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase
 {
-    // Woudl like multiple inheritiance to reuse FileBase
+    // Would like multiple inheritiance to reuse FileBase
     private static Logger log = LoggerFactory.getLogger(BlockMgrFile.class) ;
     protected String filename ;
+    protected String label ;
     protected FileChannel channel ;
     protected RandomAccessFile out ;
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
@@ -43,6 +46,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
 
         try {
             this.filename = filename ;
+            this.label = FileOps.basename(filename) ;
             // "rwd" - Syncs only the file contents
             // "rws" - Syncs the file contents and metadata
             // "rw" - cached?

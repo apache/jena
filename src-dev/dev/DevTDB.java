@@ -12,6 +12,7 @@ public class DevTDB
     
     // == 0.8.2
     // Slow writes of named graphs.  Sync issues.
+    // Create test case
     
     // ** Document concurrency.
     // ** Check assembler page for emphasise on creating a dataset.
