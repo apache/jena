@@ -38,19 +38,18 @@
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>arq-${project.version}.jar</include>
-        <include>arq-${project.version}-tests.jar</include>
+        <include>${this.root}.jar</include>
+        <include>${this.root}-tests.jar</include>
       </includes>
     </fileSet>
 
-    <!-- But put sources and javadoc at the top level -->
+    <!-- Put sources at the top level -->
     <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>arq-${project.version}-sources.jar</include>
-        <include>arq-${project.version}-test-sources.jar</include>
-        <include>arq-${project.version}-javadoc.jar</include>
+        <include>${this.root}-sources.jar</include>
+        <include>${this.root}-test-sources.jar</include>
       </includes>
     </fileSet>
 
@@ -73,6 +72,10 @@
       </includes>
     </fileSet>
 
+    <!-- The javadoc had to be unpacked into the doc/ area
+	 so will be picked up here.
+    -->
+    
     <fileSet>
       <directory>doc</directory>
       <excludes>
@@ -96,5 +99,5 @@
     </fileSet>
 
   </fileSets>
-
+  
 </assembly>
