@@ -11,7 +11,7 @@ public class DevTDB
     // ** metadata files and BPT creation.
     
     // == 0.8.2
-    // Ready.
+    // Slow writes of named graphs.  Sync issues.
     
     // ** Document concurrency.
     // ** Check assembler page for emphasise on creating a dataset.
