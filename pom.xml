@@ -146,12 +146,12 @@
         <executions> 
           <execution>
             <id>attach-sources</id>
-	    <!-- <phase>package</phase> package is the default -->
+            <!-- <phase>package</phase> package is the default -->
 
             <goals>
-	      <!-- Maven v2.2.0 jar-no-fork does not exists 
-		   contrary to the documentation
-	      -->
+              <!-- Maven v2.2.0 jar-no-fork does not exists 
+                   contrary to the documentation
+              -->
               <goal>jar</goal> 
             </goals>
           </execution>
@@ -180,8 +180,8 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name}</windowtitle>
-          <doctitle>${project.name}</doctitle>
+          <windowtitle>${project.name} ${prject.version}</windowtitle>
+          <doctitle>${project.name} ${prject.version}</doctitle>
           <!-- include com.hp.hpl.jena.query,com.hp.hpl.jena.update,com.hp.hpl.jena.query.larq -->
           <!-- Exclude the implementation -->
           <excludePackageNames>com.hp.hpl.jena.sparql.*</excludePackageNames>
@@ -206,20 +206,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+            <descriptor>assembly-testing.xml</descriptor>
+          </descriptors>
+        </configuration>
         <executions>
           <execution>
             <id>create-assembly</id>
             <!-- Better after package because of javadoc, source and test-jar-->
-	    <phase>verify</phase>
+            <phase>verify</phase>
             <goals>
-	      <goal>single</goal>
+              <goal>single</goal>
             </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>assembly.xml</descriptor>
-                <descriptor>assembly-testing.xml</descriptor>
-              </descriptors>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -261,39 +261,18 @@ build.time.txt=${build.time.txt}
             </goals>
           </execution>
           <!-- Another task, another execution -->
-	  <execution>
-	    <phase>package</phase>
-	    <configuration>
-              <tasks>
-		<delete dir="doc/javadoc"/>
-		<mkdir dir="doc/javadoc"/>
-		<unjar src="${project.build.directory}/${this.root}-javadoc.jar" 
-		       dest="doc/javadoc">
-		</unjar>
-	      </tasks>
-	    </configuration>
-	    <goals>
-	      <goal>run</goal>
-	    </goals>
-	  </execution>
-	    
         </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
-	<executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <configuration>
-              <outputDirectory>${project.build.directory}/lib2</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>false</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <outputDirectory>lib2</outputDirectory>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteSnapshots>false</overWriteSnapshots>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
       </plugin>
 
 

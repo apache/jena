@@ -11,8 +11,15 @@
     <format>zip</format>
   </formats>
 
-  <fileSets>
+  <dependencySets>
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>test</scope>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
 
+  <fileSets>
     <fileSet>
       <includes>
         <include>Copyright.txt</include>
@@ -22,23 +29,11 @@
       </includes>
     </fileSet>
 
-    <!-- lib/ -->
-    <fileSet>
-      <directory>lib</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-      <excludes>
-        <exclude>arq*.jar</exclude>
-      </excludes>
-    </fileSet>
-
+    <!-- More for the lib/ -->
     <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>${this.root}.jar</include>
         <include>${this.root}-tests.jar</include>
       </includes>
     </fileSet>
@@ -68,14 +63,10 @@
 
     <fileSet>
       <includes>
-	<include>test.sh</include>
+        <include>test.sh</include>
       </includes>
     </fileSet>
 
-    <!-- The javadoc had to be unpacked into the doc/ area
-	 so will be picked up here.
-    -->
-    
     <fileSet>
       <directory>doc</directory>
       <excludes>
@@ -84,6 +75,11 @@
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
       </excludes>
+    </fileSet>
+
+     <fileSet>
+      <directory>${project.build.directory}/apidocs</directory>
+      <outputDirectory>doc/javadoc</outputDirectory>
     </fileSet>
 
     <fileSet>

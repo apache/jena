@@ -8,13 +8,15 @@ package dev;
 
 public class DevARQ
 {
-	// ==== 2.7.1
-    // Then ready to go.  Is it 2.8.0?
-    // pom.xml -- assembly-testing
-    
-    // == Jena maven
-    // EarlReport to main code (other test support?)
-    // ??
+    // ==== 2.8.1
+    // --> Add to assembly, and don't copy lib/
+    //    <dependencySets>
+    //      <dependencySet>
+    //        <unpack>false</unpack>
+    //        <scope>test</scope>
+    //        <outputDirectory>lib</outputDirectory>
+    //      </dependencySet>
+    //    </dependencySets>
 
     // ==== ARQ
     // DescribeHandler.describe / named graphs (DescribeBNodeClosure)
@@ -32,13 +34,6 @@ public class DevARQ
     //   TransformFilterPlacement
     //   GraphStore API?
     
-    // == Build
-    // Multiple artifacts
-    // Build: no arq-extra anymore?  Too much hassle!
-    // Make artifacts then publish
-    // (pom and extra pom need rewrite rules).
-    // No sources or javadoc for arq-extra.
-
     // == Test
     // Convert test suite by manifest to JUnit4. JUnit4TestAdpter
     
@@ -54,8 +49,6 @@ public class DevARQ
     // Assign squashing : assign as rename. (assign ((?x ?y)))
     // Disjunction of equalities => union.
     
-    // SPARQL/Update - Sort out GraphStores/Datasets
-    
     // Initial bindings && Initial table (do as iterator of initial bindings)
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
     //   which can be simplified to a sequence.
@@ -70,7 +63,4 @@ public class DevARQ
     // ---- OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
-    
-    // == SSE
-    // Dev: check escapes in Literals and symbols in SSE (ParseSSEBase)
 }
