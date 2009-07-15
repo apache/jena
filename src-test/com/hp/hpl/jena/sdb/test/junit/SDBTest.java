@@ -18,7 +18,7 @@ public class SDBTest
     /** Create an HSQLDB-backed in-memory store for testing. */
     public static Store createInMemoryStore()
     {
-        SDBConnection conn = SDBFactory.createConnection("jdbc:hsqldb:mem", "sa", "") ;
+        SDBConnection conn = SDBFactory.createConnection("jdbc:hsqldb:mem:test", "sa", "") ;
         StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.HSQLDB) ;
         
         Store store = SDBFactory.connectStore(conn, desc) ;

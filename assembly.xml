@@ -42,13 +42,13 @@
       </includes>
     </fileSet>
 
-    <!-- But put sources and javadoc at the top level -->
+    <!-- Put sources at the top level -->
     <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>sdb-${project.version}-sources.jar</include>
-        <include>sdb-${project.version}-tests-sources.jar</include>
+        <include>${this.root}-sources.jar</include>
+        <include>${this.root}-tests-sources.jar</include>
       </includes>
     </fileSet>
 
@@ -82,6 +82,7 @@
         <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
+        <exclude>javadoc/**</exclude>
       </excludes>
     </fileSet>
 
