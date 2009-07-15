@@ -262,7 +262,7 @@ public class HttpQuery extends Params
                 StringBuffer x = new StringBuffer() ;
                 byte b[] = x.append(user).append(":").append(password).toString().getBytes("UTF-8") ;
                 String y = Base64.encodeBytes(b) ;
-                httpConnection.setRequestProperty("Authorization", y) ;
+                httpConnection.setRequestProperty("Authorization", "Basic "+y) ;
                 // Overwrite any password details we copied.
                 // Still leaves the copy in the HTTP connection.  But this only basic auth. 
                 for ( int i = 0 ; i < x.length() ; i++ ) x.setCharAt(i, '*') ;
