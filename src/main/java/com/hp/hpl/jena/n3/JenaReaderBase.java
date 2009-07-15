@@ -19,12 +19,12 @@ import com.hp.hpl.jena.util.FileUtils;
  * single worker function with model, UTF8 reader and visated base  
  *   
  * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+ * @version 	$Id: JenaReaderBase.java,v 1.2 2009-07-15 11:39:50 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader
 {
-	RDFErrorHandler errorHandler = null ;
+	protected RDFErrorHandler errorHandler = null ;
 	
 	public JenaReaderBase() {}
 
