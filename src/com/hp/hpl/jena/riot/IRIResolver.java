@@ -6,12 +6,15 @@
 
 package com.hp.hpl.jena.riot;
 
+import java.util.Iterator;
+
 import atlas.lib.Cache;
 import atlas.lib.CacheFactory;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** Package up IRI reolver functionality. 
@@ -184,14 +187,20 @@ public class IRIResolver
     }
     
     /**
-     * Print violations
+     * Print violations - convenience.
      * @param iri
      * @return iri
      */
     static private IRI exceptions2(IRI iri) {
         if (showExceptions && iri.hasViolation(false)) {
             try {
-                cwd.create(iri);
+                IRI iri2 = cwd.create(iri);
+                Iterator<Violation> vIter = iri2.violations(true) ;
+                for ( ; vIter.hasNext() ; )
+                {
+                    Violation v = vIter.next() ;
+                    System.err.println(v) ;
+                }
             } catch (IRIException e) {
                 throw new RiotException(e);
             }
