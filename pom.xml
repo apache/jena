@@ -28,6 +28,9 @@
     <url>http://jena.svn.sourceforge.net/viewvc/jena/SDB/</url>
   </scm>
 
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+  </properties>
   <dependencies>
 
     <dependency>
@@ -68,7 +71,7 @@
       <version>1.5.6</version>
     </dependency>
 
-     <dependency>
+    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.10</version>
@@ -77,17 +80,17 @@
 
     <!-- Choose your logging provider -->
     <!--
-    <dependency>
+      <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.5.6</version>
-    </dependency>
+      </dependency>
 
-    <dependency>
+      <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.12</version>
-    </dependency>
+      </dependency>
     -->
   </dependencies>
 
@@ -123,9 +126,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-	    <!-- Requires HSQL to be set in 
-		 store-list.ttl and store-list-simple.ttl
-	    -->
+            <!-- Requires HSQL to be set in 
+                 store-list.ttl and store-list-simple.ttl
+            -->
             <include>com/hp/hpl/jena/sdb/test/SDBTestAll.java</include>
           </includes>
         </configuration>
@@ -186,15 +189,16 @@
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
+            <descriptor>assembly-testing.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
           <execution>
             <id>create-assembly</id>
             <!-- Better after package because of javadoc, source and test-jar-->
-	    <phase>verify</phase>
+            <phase>verify</phase>
             <goals>
-	      <goal>single</goal>
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>

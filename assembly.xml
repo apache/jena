@@ -14,6 +14,14 @@
     <format>zip</format>
   </formats>
 
+  <dependencySets>
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>test</scope>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
+
   <fileSets>
 
     <fileSet>
@@ -27,22 +35,10 @@
 
     <!-- lib/ -->
     <fileSet>
-      <directory>lib</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-      <excludes>
-        <exclude>sdb*.jar</exclude>
-      </excludes>
-    </fileSet>
-
-    <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>sdb-${project.version}.jar</include>
-        <include>sdb-${project.version}-tests.jar</include>
+	<include>${this.root}-tests.jar</include>
       </includes>
     </fileSet>
 
@@ -52,7 +48,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>sdb-${project.version}-sources.jar</include>
-        <include>sdb-${project.version}-javadoc.jar</include>
+        <include>sdb-${project.version}-tests-sources.jar</include>
       </includes>
     </fileSet>
 
@@ -64,13 +60,13 @@
       <directory>bat</directory>
     </fileSet>
 
+    <fileSet>
+      <directory>Store</directory>
+    </fileSet>
+
     <!-- For testing the deployment -->
     <fileSet>
       <directory>testing</directory>
-    </fileSet>
-
-    <fileSet>
-      <directory>Store</directory>
     </fileSet>
 
     <fileSet>
@@ -89,6 +85,11 @@
       </excludes>
     </fileSet>
 
+    <fileSet>
+      <directory>${project.build.directory}/apidocs</directory>
+      <outputDirectory>doc/javadoc</outputDirectory>
+    </fileSet>
+    
     <fileSet>
       <directory>src-examples</directory>
     </fileSet>
