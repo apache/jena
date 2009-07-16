@@ -8,7 +8,7 @@
   <artifactId>iri</artifactId>
   <packaging>jar</packaging>
   <name>Jena IRI</name>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <description/>
   <url>http://jena.sf.net/iri</url>
 
@@ -51,9 +51,9 @@
     <testSourceDirectory>src-test</testSourceDirectory>
 
     <resources>
-      <resource>
-        <directory>resources</directory>
-      </resource>
+     <resource>
+       <directory>resources</directory>
+     </resource>
     </resources>
 
     <plugins>
@@ -63,7 +63,6 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
-          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
 
@@ -104,20 +103,29 @@
         </executions>
         <configuration>
           <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
+
       
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-3</version>
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
           </descriptors>
         </configuration>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <!-- Better after package because of javadoc, source and test-jar-->
+            <phase>verify</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
-
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -127,22 +135,21 @@
       </plugin>
       
     </plugins>
-
   </build>
   
   <distributionManagement>
-    <!--
     <repository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
+      <!--<url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
+      <url>file:tmp</url>
       <layout>default</layout>
     </repository>
--->
     <repository>
       <id>jena-repo</id>
       <name>Jena Repository</name>
-      <url>sftp://jena.hpl.hp.com/var/repo</url>
+      <!--<url>sftp://jena.hpl.hp.com/var/repo</url>-->
+      <url>file:tmp</url>
       <layout>default</layout>
     </repository>
   </distributionManagement>
