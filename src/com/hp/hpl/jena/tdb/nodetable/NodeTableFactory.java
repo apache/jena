@@ -23,9 +23,8 @@ public class NodeTableFactory
             this.indexBuilder = indexBuilder ; 
         }
         
-        public NodeTable create(FileSet node2Id, FileSet id2Node)
+        public NodeTable create(FileSet id2Node, FileSet node2Id)
         {
-            // NB switch in order
             return new NodeTableIndex(indexBuilder, id2Node, node2Id, SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
         }
     }
@@ -33,23 +32,23 @@ public class NodeTableFactory
     /** Regular node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
+        // The node table (id to node).
+        FileSet filesetNodeTable = null ;
+        if ( location != null )
+            filesetNodeTable = new FileSet(location, Names.nodeTable) ;
+        
         // The index of node to id
         FileSet filesetIdx = null ;
         if ( location != null )
             filesetIdx = new FileSet(location, Names.indexNode2Id) ;
         
-        FileSet filesetNodeTable = null ;
-        if ( location != null )
-            filesetNodeTable = new FileSet(location, Names.nodeTable) ;
-        
-        // The node table (id to node).
-        return  create(indexBuilder, filesetIdx, filesetNodeTable,
+        return  create(indexBuilder, filesetNodeTable, filesetIdx,
                        SystemTDB.Node2NodeIdCacheSize,
                        SystemTDB.NodeId2NodeCacheSize) ;
     }
 
     /** Custom node table */
-    public static NodeTable create(IndexBuilder indexBuilder, FileSet filesetIdx, FileSet filesetNodeTable,
+    public static NodeTable create(IndexBuilder indexBuilder, FileSet filesetNodeTable, FileSet filesetIdx,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         if ( filesetIdx.isMem() )

@@ -10,8 +10,12 @@ import com.hp.hpl.jena.tdb.base.file.FileSet;
 
 public interface NodeTableBuilder 
 {
-    public NodeTable create(FileSet node2Id, FileSet id2Node) ;
-    
+    /** Create a node table given a FileSet as the base 
+     * for the id-&gt;Node mapping 
+     * and a FileSet as the base 
+     * for the Node-&gt;Id mapping
+     */
+    public NodeTable create(FileSet id2Node, FileSet node2id) ;
 }
 
 /*

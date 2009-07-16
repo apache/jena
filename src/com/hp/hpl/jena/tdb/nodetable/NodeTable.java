@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 
  *  where Nodes can be staored and a NodeId allocated
- *  {@see NodeId}
+ *  @see NodeId
  */ 
 
 public interface NodeTable extends Sync, Closeable
