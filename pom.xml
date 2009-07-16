@@ -179,7 +179,7 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name} ${prject.version}</windowtitle>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
           <!-- include com.hp.hpl.jena.query,com.hp.hpl.jena.update,com.hp.hpl.jena.query.larq -->
           <!-- Exclude the implementation -->
