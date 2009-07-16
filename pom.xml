@@ -29,8 +29,11 @@
     <!--<connection>scm:cvs:pserver:anonymous@jena.cvs.sourceforge.net:/cvsroot/jena/iri</connection>-->
   </scm>
 
-  <dependencies>
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
@@ -51,9 +54,9 @@
     <testSourceDirectory>src-test</testSourceDirectory>
 
     <resources>
-     <resource>
-       <directory>resources</directory>
-     </resource>
+      <resource>
+        <directory>resources</directory>
+      </resource>
     </resources>
 
     <plugins>
@@ -68,26 +71,33 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions> 
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
             <include>com/hp/hpl/jena/iri/test/TestPackage.java</include>
           </includes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+          <!--
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+          -->
+        </executions>
       </plugin>
 
       <plugin>
@@ -102,11 +112,32 @@
           </execution>
         </executions>
         <configuration>
+          <version>true</version>
+          <show>public</show>
           <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${prject.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <bottom>Copyright &#169; 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
         </configuration>
       </plugin>
-
       
+      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -145,13 +176,13 @@
       <url>file:tmp</url>
       <layout>default</layout>
     </repository>
-    <repository>
+    <snapshotRepository>
       <id>jena-repo</id>
       <name>Jena Repository</name>
       <!--<url>sftp://jena.hpl.hp.com/var/repo</url>-->
       <url>file:tmp</url>
       <layout>default</layout>
-    </repository>
+    </snapshotRepository>
   </distributionManagement>
 
 </project>

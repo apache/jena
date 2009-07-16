@@ -1,0 +1,69 @@
+<assembly>
+  <!--<id>dist</id> Makes the name VER.zip -->
+  
+  <baseDirectory>IRI-${project.version}</baseDirectory>
+  <formats>
+    <!--
+    <format>tar.gz</format>
+    <format>tar.bz2</format>
+    -->
+    <format>zip</format>
+  </formats>
+
+  <dependencySets>
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>test</scope>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <includes>
+        <include>Copyright.txt</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    
+    <!--
+     <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>${this.root}-tests.jar</include>
+      </includes>
+    </fileSet>
+    -->
+
+     <!-- Put sources at the top level -->
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>${this.root}-sources.jar</include>
+        <!--<include>${this.root}-test-sources.jar</include>-->
+      </includes>
+    </fileSet>
+
+     <fileSet>
+      <directory>doc</directory>
+      <excludes>
+        <exclude>linkcheck</exclude>
+        <exclude>merge</exclude>
+        <exclude>produce</exclude>
+        <exclude>template.html</exclude>
+	<exclude>javadoc/**</exclude>
+        <exclude>**/_*/**</exclude>
+        <exclude>**/desktop.ini</exclude>
+      </excludes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.build.directory}/apidocs</directory>
+      <outputDirectory>doc/javadoc</outputDirectory>
+    </fileSet>
+    
+  </fileSets>
+  
+</assembly>
