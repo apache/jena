@@ -77,7 +77,7 @@
       </excludes>
     </fileSet>
 
-     <fileSet>
+    <fileSet>
       <directory>${project.build.directory}/apidocs</directory>
       <outputDirectory>doc/javadoc</outputDirectory>
     </fileSet>

@@ -147,7 +147,6 @@
           <execution>
             <id>attach-sources</id>
             <!-- <phase>package</phase> package is the default -->
-
             <goals>
               <!-- Maven v2.2.0 jar-no-fork does not exists 
                    contrary to the documentation
@@ -181,7 +180,7 @@
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${prject.version}</windowtitle>
-          <doctitle>${project.name} ${prject.version}</doctitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
           <!-- include com.hp.hpl.jena.query,com.hp.hpl.jena.update,com.hp.hpl.jena.query.larq -->
           <!-- Exclude the implementation -->
           <excludePackageNames>com.hp.hpl.jena.sparql.*</excludePackageNames>
