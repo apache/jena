@@ -14,6 +14,22 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NodeTableFactory
 {
+    private class NodeTableBuilderStd implements NodeTableBuilder 
+    {
+        private IndexBuilder indexBuilder ;
+
+        NodeTableBuilderStd(IndexBuilder indexBuilder)
+        {
+            this.indexBuilder = indexBuilder ; 
+        }
+        
+        public NodeTable create(FileSet node2Id, FileSet id2Node)
+        {
+            // NB switch in order
+            return new NodeTableIndex(indexBuilder, id2Node, node2Id, SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
+        }
+    }
+    
     /** Regular node table */
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {

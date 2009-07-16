@@ -6,26 +6,12 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
 
-/** Node table - conceptually a two way mapping of Node<->NodeId 
- *  where Nodes can be staored and a NodeId allocated
- *  {@see NodeId}
- */ 
-
-public interface NodeTable extends Sync, Closeable
+public interface NodeTableBuilder 
 {
-    /** Store the node in the node table (if not already present) and return the allocated Id. */
-    public NodeId getAllocateNodeId(Node node) ;
+    public NodeTable create(FileSet node2Id, FileSet id2Node) ;
     
-    /** Look up node and return the NodeId - return NodeId.NodeDoesNotExist if not found */
-    public NodeId getNodeIdForNode(Node node) ;
-    
-    /** Look up node id and return the Node - return null if not found */
-    public Node getNodeForNodeId(NodeId id) ;
 }
 
 /*
