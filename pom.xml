@@ -116,7 +116,7 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name} ${prject.version}</windowtitle>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
           <bottom>Copyright &#169; 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
         </configuration>
