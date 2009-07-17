@@ -39,4 +39,14 @@
         mf:result  <describe-05-results.rdf>
       ]
 
+      [  mf:name    "Describe 6" ;
+         mf:action
+            [ qt:query  <describe-06.rq> ;
+              qt:data        <data-0.ttl> ;
+              qt:graphData   <data-1.ttl> ;
+              qt:graphData   <data-2.ttl> ;
+            ] ;
+        mf:result  <describe-06-results.ttl>
+      ]
+
     ).

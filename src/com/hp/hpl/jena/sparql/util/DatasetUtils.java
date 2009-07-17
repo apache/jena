@@ -75,7 +75,6 @@ public class DatasetUtils
     public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList,
                                       FileManager fileManager, String baseURI)
     {
-        
         if ( fileManager == null )
             fileManager = FileManager.get() ;
         
@@ -90,13 +89,12 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(baseURI, sourceURI) ;
+                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
             }
         }
-            
         
         if ( namedSourceList != null )
         {
@@ -105,7 +103,7 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(baseURI, sourceURI) ;
+                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 Model m = GraphUtils.makeDefaultModel() ;

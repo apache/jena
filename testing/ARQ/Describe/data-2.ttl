@@ -1,0 +1,4 @@
+@prefix : <http://example/> .
+
+:x :p2 "x" .
+:x :p2 "y" .
