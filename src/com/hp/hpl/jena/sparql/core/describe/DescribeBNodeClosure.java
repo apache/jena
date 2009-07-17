@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core.describe;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.ARQConstants;
@@ -35,20 +33,42 @@ public class DescribeBNodeClosure implements DescribeHandler
         this.dataset = (Dataset)cxt.get(ARQConstants.sysCurrentDataset) ;
     }
 
+    private static Query query = QueryFactory.create("SELECT ?g { GRAPH ?g { ?s ?p ?o } }") ; 
+    
     // Check all named graphs
     public void describe(Resource r)
     {
         // Default model.
         Closure.closure(otherModel(r, dataset.getDefaultModel()), false, acc) ;
+
+        // Find all the named graphs in which this resource
+        // occurs as a subject.  Faster than iterating in the
+        // names of graphs in the case of very large numbers
+        // of graphs, few of which contain the resource, in
+        // some kind of persistent storage.
         
-        // Named graphs
-        for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; )
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        qsm.add("s", r) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm) ;
+        ResultSet rs = qExec.execSelect() ;
+        for ( ; rs.hasNext() ; )
         {
-            String name = iter.next();
-            Model model =  dataset.getNamedModel(name) ;
+            QuerySolution qs = rs.next() ;
+            String gName = qs.getResource("g").getURI() ;
+            Model model =  dataset.getNamedModel(gName) ;
             Resource r2 = otherModel(r, model) ;
             Closure.closure(r2, false, acc) ;
         }
+        
+//        // Named graphs
+//        for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; )
+//        {
+//            String name = iter.next();
+//            Model model =  dataset.getNamedModel(name) ;
+//            Resource r2 = otherModel(r, model) ;
+//            Closure.closure(r2, false, acc) ;
+//        }
+        
         Closure.closure(r, false, acc) ;
     }
 

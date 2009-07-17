@@ -62,7 +62,6 @@ public class ModDatasetGeneral extends ModDataset
         graphURLs = cmdLine.getValues(graphDecl) ;
         namedGraphURLs = cmdLine.getValues(namedGraphDecl) ;
         
-        
         if ( cmdLine.contains(lmapDecl) )
         {
             String lmapFile = cmdLine.getValue(lmapDecl) ;

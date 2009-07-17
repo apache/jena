@@ -414,7 +414,9 @@ public class CmdLineArgs extends CommandLineBase
             if ( argDecl.takesValue() )
             {
                 String val = getArg(i+1) ;
-                addArg(argStr, val) ;
+                // Use first name as the canonical one.
+                String x = argDecl.getKeyName() ;
+                addArg(x, val) ;
                 nextArgProcessed = true ;
             }
             else

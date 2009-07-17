@@ -49,7 +49,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StrUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class RunARQ
@@ -65,7 +64,12 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        System.out.println(Utils.nowAsXSDDateTimeString()) ;
+        String DIR = "testing/ARQ/Describe/" ;
+        arq.sparql.main("--data="+DIR+"data-0.ttl",
+                        "--named="+DIR+"data-1.ttl",
+                        "--named="+DIR+"data-2.ttl",
+                        "--query="+DIR+"describe-06.rq",
+                        "--results=TTL") ;
         System.exit(0) ;
         
         qparse("--file=Q.arq", "--print=op") ;
