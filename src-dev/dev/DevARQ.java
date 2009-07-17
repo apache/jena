@@ -9,17 +9,8 @@ package dev;
 public class DevARQ
 {
     // ==== 2.8.1
-    // --> Add to assembly, and don't copy lib/
-    //    <dependencySets>
-    //      <dependencySet>
-    //        <unpack>false</unpack>
-    //        <scope>test</scope>
-    //        <outputDirectory>lib</outputDirectory>
-    //      </dependencySet>
-    //    </dependencySets>
 
     // ==== ARQ
-    // DescribeHandler.describe / named graphs (DescribeBNodeClosure)
     // JMX
     //   Query count
     //   Last query
