@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.FileOps;
 
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
@@ -85,25 +86,27 @@ public class ThingBuilder
         {
             // Fresh location.
             metafile.setProperty(Names.keyVersion, TDB.VERSION) ;
-            //metafile.setProperty(Names.keyVersion, Utils.nowAsXSDDateTimeString()) ;
-            return createNew(location) ;
+            metafile.setProperty(Names.keyCreatedDate, Utils.nowAsXSDDateTimeString()) ;
+            locationMetadata(location) ;
         }
-
-        // Some files exists.
-        
-        // Existing location (has some files in it).
-        // Existing files, no metadata.
-        // Fake it as TDB 0.8.1 (which did not have metafiles
-        // If it's the wrong file format, things do badly wrong later.
-        
-        if ( ! metafile.hasProperty(Names.keyVersion) )
+        else
         {
-            metafile.setProperty(Names.keyVersion, "<=0.8.1") ;
-            metafile.flush() ;
+            // Existing location (has some files in it) but no metadata.
+            // Fake it as TDB 0.8.1 (which did not have metafiles)
+            // If it's the wrong file format, things do badly wrong later.
+            if ( ! metafile.hasProperty(Names.keyVersion) )
+            {
+                metafile.setProperty(Names.keyVersion, "<=0.8.1") ;
+                metafile.flush() ;
+            }
         }
+        // Now create:
 
         // ---- Node Table.
         NodeTable nodeTable = null ;
+        
+        // Make index of node to id: : Names.indexNode2Id
+        // Make index of id to node (data table): Names.nodeTable
         
         // ---- Triple table and quad table indexes.
         IndexBuilder dftIndexBuilder = null ;
@@ -175,20 +178,16 @@ public class ThingBuilder
         return null ;
     }
     
-    public static DatasetGraphTDB createNew(Location location)
+    public static void locationMetadata(Location location)
     {
         MetaFile metafile = location.getMetaFile() ;
         if ( metafile.existsMetaData() )
         {
-            String verString = metafile.getProperty(Names.keyVersion, "unknown") ;
+            String verString = metafile.getProperty(Names.keyVersion, TDB.VERSION) ;
             TDB.logInfo.debug("Location: "+location.toString()) ;
             TDB.logInfo.debug("Version:  "+verString) ;
+            metafile.flush() ;
         }
-        
-        // New createDatasetGraph(Location) 
-        
-        //return FactoryGraphTDB.createDatasetGraph(location) ;
-        return null ;
     }
     
     // Properties.

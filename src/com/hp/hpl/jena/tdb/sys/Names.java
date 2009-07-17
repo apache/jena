@@ -55,29 +55,30 @@ public class Names
 
     /** Name to indicate in-memory */ 
     public static final String memName                  = "--mem--" ;
+
     public static boolean isMem(String name)            { return memName.equals(name) ; }
     
     // ---- Names for Java properties in metadata files
     
     /* Metadata names - global */
-    private static String makeMetadataKey(String keyShortName)
+    private static String makeMetadataKey(String root, String keyShortName)
     { 
         if ( keyShortName.startsWith(".") )
-            return keyNS+keyShortName ;
+            return root+keyShortName ;
         else
-            return keyNS+"."+keyShortName ;
+            return root+"."+keyShortName ;
     }
 
     // Root names.
     public static final String keyNS                    = "tdb" ;
     public static final String keyNSBPlusTree           = "tdb.bptree" ;
-    
     // Location metadata
-    public static final String keyVersion               = makeMetadataKey("version") ;
+    public static final String keyVersion               = makeMetadataKey(keyNS, "version") ;
+    public static final String keyCreatedDate           = makeMetadataKey(keyNS, "createtimestamp") ;    
     
     // Index metadata
-    public static final String keyIndexType             = makeMetadataKey("indexType") ;
-    public static final String keyIndexFileVersion      = makeMetadataKey("indexFileVersion") ;
+    public static final String keyIndexType             = makeMetadataKey(keyNS, "indexType") ;
+    public static final String keyIndexFileVersion      = makeMetadataKey(keyNS, "indexFileVersion") ;
     
     // See also BPlusTreeParams for keyNSBPlusTree derived names.
     
