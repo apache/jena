@@ -17,7 +17,7 @@ public class TestPackage extends TestCase{
         rslt.addTest(TestExample.suite());
         rslt.addTest(TestMoreExamples.suite());
         rslt.addTest(MoreTests.suite());
-        
+        rslt.addTest(Additional.suite());
         return rslt;
     }
 }

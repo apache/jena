@@ -1,4 +1,4 @@
-package dev ;
+package com.hp.hpl.jena.iri.test ;
 
 import java.net.MalformedURLException;
 
@@ -15,30 +15,31 @@ import com.hp.hpl.jena.iri.IRIFactory;
  * [See end of file]
  */
 
-public class Report
+public class Additional
 {
+    // Test added in response to reports and bugs from 2009.
+    
     static public junit.framework.Test suite()
     {
-        return new JUnit4TestAdapter(Report.class) ;
+        return new JUnit4TestAdapter(Additional.class) ;
     }
     
-    @Test public void testcase() throws MalformedURLException
+    @Test public void relDotSlash1() throws MalformedURLException
     {
        IRIFactory f = IRIFactory.iriImplementation() ;
-       
-       // See ResolvedRelativeIRI.mergePathsRemoveDots
-       /*
-        * if (relPath.startsWith("./")) {
-                //return basePath + relPath.substring(2);
-                relPath = relPath.substring(2); //fix by marcus
-            }
-        */
-       
        IRI iri = f.construct("http://a/b/c/dddd;pppp?qqqqq") ;
        IRI iri2 = iri.resolve("./") ;
        test(iri2, "http://a/b/c/") ;
     }
     
+    @Test public void relDotSlash2() throws MalformedURLException
+    {
+       IRIFactory f = IRIFactory.iriImplementation() ;
+       IRI iri = f.construct("http://a/b/c/dddd;pppp?qqqqq") ;
+       IRI iri2 = iri.resolve("./foo") ;
+       test(iri2, "http://a/b/c/foo") ;
+    }
+
     
     private static void test(IRI iri, String iriStr) throws MalformedURLException
     {

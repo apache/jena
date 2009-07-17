@@ -136,22 +136,28 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
         StringBuffer output = new StringBuffer();
         if (slash!=-1)
             output.append(basePath.substring(0,slash+1));
-        if (base.dotsOK()&&rel.dotsOK()) {
+        if (base.dotsOK()&&rel.dotsOK())
+        {
             String relPath = rel.getRawPath();
-            if (relPath.startsWith("./")) {
-                return basePath + relPath.substring(2);
-            }
-            while (relPath.startsWith("../")) {
+
+            if (relPath.startsWith("./"))
+                relPath = relPath.substring(2);
+
+            while (relPath.startsWith("../"))
+            {
                 relPath = relPath.substring(3);
                 removeLastSeqment2(output);
             }
-            if (relPath.equals("..") ) {
+            
+            if (relPath.equals("..") )
+            {
                 relPath = "";
                 removeLastSeqment2(output);
             }
-            if (relPath.equals(".") ) {
+            
+            if (relPath.equals(".") )
                 relPath = "";
-            }
+
             output.append(relPath);
             return output.toString();
         } 
