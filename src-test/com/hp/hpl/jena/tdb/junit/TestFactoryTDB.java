@@ -21,21 +21,20 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 
 import com.hp.hpl.jena.query.Syntax;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
 
 public class TestFactoryTDB extends TestFactoryManifest
 {
     public static EarlReport report = null ;
     
-    public static void make(TestSuite ts, String manifestFile, String testRootName, TDBFactory.ImplFactory factory)
+    public static void make(TestSuite ts, String manifestFile, String testRootName, DatasetGraphMakerTDB factory)
     {
         // for each graph type do
         TestSuite ts2 = makeSuite(manifestFile, testRootName, factory) ;
         ts.addTest(ts2) ;
     }
     
-    public static TestSuite makeSuite(String manifestFile, String testRootName, TDBFactory.ImplFactory factory)
+    public static TestSuite makeSuite(String manifestFile, String testRootName, DatasetGraphMakerTDB factory)
     {
         TestFactoryTDB f = new TestFactoryTDB(testRootName, factory) ;
         TestSuite ts = f.process(manifestFile) ;
@@ -47,9 +46,9 @@ public class TestFactoryTDB extends TestFactoryManifest
     // Factory
     
     public String testRootName ;
-    private ImplFactory factory ;
+    private DatasetGraphMakerTDB factory ;
 
-    public TestFactoryTDB(String testRootName, TDBFactory.ImplFactory factory)
+    public TestFactoryTDB(String testRootName, DatasetGraphMakerTDB factory)
     {
         this.testRootName = testRootName ;
         this.factory = factory ;

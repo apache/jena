@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -52,6 +51,7 @@ import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 import com.hp.hpl.jena.util.FileManager;
 
 import dump.DumpIndex;
@@ -59,6 +59,38 @@ import dump.DumpNodes;
 
 public class RunTDB
 {
+//    public class NodeExtra extends Node
+//    {
+//
+//        /**
+//         * @param label
+//         */
+//        NodeExtra(Object label)
+//        {
+//            super(label) ;
+//        }
+//
+//        @Override
+//        public boolean equals(Object o)
+//        {
+//            return false ;
+//        }
+//
+//        @Override
+//        public boolean isConcrete()
+//        {
+//            return false ;
+//        }
+//
+//        @Override
+//        public Object visitWith(NodeVisitor v)
+//        {
+//            return null ;
+//        }
+//        
+//    }
+    
+    
     static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()
@@ -268,7 +300,7 @@ public class RunTDB
         String queryFile = dir+"merge-"+testNum+".rq" ;
         ResultSet rs = ResultSetFactory.load(dir+"merge-"+testNum+"-results.srx") ;
         
-        TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBFactory.memFactory) ;
+        TestCase t = new QueryTestTDB("Test", null, "uri", dftGraphs, namedGraphs, rs, queryFile, TDBMaker.memFactory) ;
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new TextListener2(System.out)) ;
         

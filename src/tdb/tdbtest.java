@@ -8,18 +8,16 @@ package tdb;
 
 import java.io.PrintStream;
 
-import atlas.junit.TextListener2;
-
 import junit.framework.TestSuite;
-
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+import atlas.junit.TextListener2;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Run test script suites */
 public class tdbtest
@@ -48,7 +46,7 @@ public class tdbtest
             out.printf("TDB v%s (Built: %s) %s\n", TDB.VERSION, TDB.BUILD_DATE, manifestFile) ;
 
         TestSuite ts = new TestSuite() ;
-        TestFactoryTDB.make(ts, manifestFile, "TDB-", TDBFactory.stdFactory) ;
+        TestFactoryTDB.make(ts, manifestFile, "TDB-", TDBMaker.stdFactory) ;
         
         JUnitCore runner = new org.junit.runner.JUnitCore() ;
         runner.addListener(new TextListener2(out)) ;

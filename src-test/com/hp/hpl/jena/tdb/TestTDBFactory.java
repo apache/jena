@@ -9,9 +9,10 @@ package com.hp.hpl.jena.tdb;
 import org.junit.Test;
 import atlas.test.BaseTest;
 
-import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 public class TestTDBFactory extends BaseTest
 {
@@ -24,19 +25,19 @@ public class TestTDBFactory extends BaseTest
     
     @Test public void factory2()
     {
-        ImplFactory f = TDBFactory.getImplFactory() ;
+        DatasetGraphMakerTDB f = TDBMaker.getImplFactory() ;
 
-        TDBFactory.clearDatasetCache() ;
+        TDBMaker.clearDatasetCache() ;
         DatasetGraphTDB dg0 = TDBFactory.createDatasetGraph(Location.mem()) ;
 
         // Uncached.
-        TDBFactory.setImplFactory(TDBFactory.uncachedFactory) ;
+        TDBMaker.setImplFactory(TDBMaker.uncachedFactory) ;
         DatasetGraphTDB dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
         DatasetGraphTDB dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
         assertNotSame(dg1, dg2) ;
         
         // Switch back to cached.
-        TDBFactory.setImplFactory(f) ;
+        TDBMaker.setImplFactory(f) ;
         DatasetGraphTDB dg3 = TDBFactory.createDatasetGraph(Location.mem()) ;
         assertNotSame(dg3, dg1) ;
         assertNotSame(dg3, dg2) ;

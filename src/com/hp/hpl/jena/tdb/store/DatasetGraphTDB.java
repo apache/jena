@@ -20,12 +20,12 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphBase;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 import com.hp.hpl.jena.update.GraphStore;
 
 /** TDB Dataset, updatable with SPARQL/Update */
@@ -140,7 +140,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
         quadTable = null ;
         prefixes = null ;
         
-        TDBFactory.releaseDataset(this) ;
+        TDBMaker.releaseDataset(this) ;
     }
 
     // --- GraphStore

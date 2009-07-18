@@ -32,7 +32,7 @@ public class Names
     /** Node file */
     public static final String extNodeData              = "dat" ;           // Extension of node files.
     
-    public static final String nodeTable                = "nodes" ;         // Node table
+    public static final String indexId2Node             = "nodes" ;         // Node table
     public static final String indexNode2Id             = "node2id";        // Node hash to id table
     
     //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
@@ -71,14 +71,19 @@ public class Names
 
     // Root names.
     public static final String keyNS                    = "tdb" ;
+    public static final String keyNSNode                = "tdb.node" ;
     public static final String keyNSBPlusTree           = "tdb.bptree" ;
-    // Location metadata
-    public static final String keyVersion               = makeMetadataKey(keyNS, "version") ;
-    public static final String keyCreatedDate           = makeMetadataKey(keyNS, "createtimestamp") ;    
     
-    // Index metadata
-    public static final String keyIndexType             = makeMetadataKey(keyNS, "indexType") ;
-    public static final String keyIndexFileVersion      = makeMetadataKey(keyNS, "indexFileVersion") ;
+    // Location metadata - in the directory wide metadata file.
+    public static final String kVersion               = makeMetadataKey(keyNS, "version") ;
+    public static final String kCreatedDate           = makeMetadataKey(keyNS, "createtimestamp") ;    
+    
+    // Node table metadata
+    public static final String kNodeTableType         = makeMetadataKey(keyNSNode, "type") ;
+    
+    // Index metadata - in the index metadata file.
+    public static final String kIndexType             = makeMetadataKey(keyNS, "indexType") ;
+    public static final String kIndexFileVersion      = makeMetadataKey(keyNS, "indexFileVersion") ;
     
     // See also BPlusTreeParams for keyNSBPlusTree derived names.
     

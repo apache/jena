@@ -35,7 +35,7 @@ public class NodeTableFactory
         // The node table (id to node).
         FileSet filesetNodeTable = null ;
         if ( location != null )
-            filesetNodeTable = new FileSet(location, Names.nodeTable) ;
+            filesetNodeTable = new FileSet(location, Names.indexId2Node) ;
         
         // The index of node to id
         FileSet filesetIdx = null ;
@@ -48,13 +48,14 @@ public class NodeTableFactory
     }
 
     /** Custom node table */
-    public static NodeTable create(IndexBuilder indexBuilder, FileSet filesetNodeTable, FileSet filesetIdx,
+    public static NodeTable create(IndexBuilder indexBuilder, 
+                                   FileSet fsId2Node, FileSet filesetNodetoId,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
-        if ( filesetIdx.isMem() )
+        if ( filesetNodetoId.isMem() )
             return NodeTableIndex.createMem(indexBuilder) ;
         
-        return new NodeTableIndex(indexBuilder, filesetIdx, filesetNodeTable, nodeToIdCacheSize, idToNodeCacheSize) ;
+        return new NodeTableIndex(indexBuilder, filesetNodetoId, fsId2Node, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
     public static NodeTable createMem(IndexBuilder indexBuilder)

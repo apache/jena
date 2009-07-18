@@ -35,6 +35,7 @@ import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 public class TDB
 {
@@ -82,7 +83,7 @@ public class TDB
      */
     public static void closedown()
     {
-        TDBFactory.clearDatasetCache() ;
+        TDBMaker.clearDatasetCache() ;
     }
     
     /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
@@ -141,6 +142,8 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
+        
+        
     
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
         

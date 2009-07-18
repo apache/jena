@@ -18,15 +18,20 @@ import com.hp.hpl.jena.tdb.sys.Names;
 public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableIndex(IndexBuilder indexBuilder, FileSet filesetIdx, FileSet filesetTable, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super() ;
         // Index.
-        Index nodeToId = indexBuilder.newIndex(filesetIdx, FactoryGraphTDB.nodeRecordFactory) ;
+        Index nodeToId = indexBuilder.newIndex(fsNodeToId, FactoryGraphTDB.nodeRecordFactory) ;
         // Node table.
-        String filename = filesetTable.filename(Names.extNodeData) ;
+        String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
+    }
+    
+    public NodeTableIndex(Index nodeToId, ObjectFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
+    {
+        super(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
     
     // Memory version - testing.

@@ -29,6 +29,7 @@ import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Testing the quad support for TDB */ 
 public class TestDatasetTDB extends BaseTest
@@ -59,7 +60,7 @@ public class TestDatasetTDB extends BaseTest
     @After public void after()
     {   
         graphLocation.release() ;
-        TDBFactory.clearDatasetCache() ;
+        TDBMaker.clearDatasetCache() ;
     }
     
     @Test public void dataset1()

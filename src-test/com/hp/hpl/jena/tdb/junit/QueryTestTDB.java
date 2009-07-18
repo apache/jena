@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
 
 public class QueryTestTDB extends EarlTestCase
 {
@@ -44,14 +44,14 @@ public class QueryTestTDB extends EarlTestCase
     final String queryFile ; 
     final ResultSet resultSet ;
     
-    final private ImplFactory factory ;
+    final private DatasetGraphMakerTDB factory ;
  
     // Track what's currently loaded in the GraphLocation
     private static List<String> currentDefaultGraphs = null ;
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
-    public QueryTestTDB(String testName, EarlReport report, TestItem item, TDBFactory.ImplFactory factory)
+    public QueryTestTDB(String testName, EarlReport report, TestItem item, DatasetGraphMakerTDB factory)
     {
         this(testName, report, item.getURI(), 
              item.getDefaultGraphURIs(), item.getNamedGraphURIs(), 
@@ -65,7 +65,7 @@ public class QueryTestTDB extends EarlTestCase
                         List<String> namedGraphs,
                         ResultSet rs,
                         String queryFile,
-                        TDBFactory.ImplFactory factory)
+                        DatasetGraphMakerTDB factory)
     {
         super(testName, uri, report) ;
         this.defaultGraphURIs = dftGraphs ;

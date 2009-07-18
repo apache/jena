@@ -10,8 +10,8 @@ import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Scripted test generation */
 
@@ -25,7 +25,7 @@ public class TestSuiteGraphTDB extends TestSuite
     private TestSuiteGraphTDB()
     {
         super("TDB-Scripts") ;
-        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBFactory.stdFactory) ;
+        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBMaker.stdFactory) ;
     }
 
     
