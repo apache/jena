@@ -18,6 +18,9 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public interface NodeTable extends Sync, Closeable
 {
+    static public final String type   = "dat" ; 
+    static public final String layout = "1" ;
+    
     /** Store the node in the node table (if not already present) and return the allocated Id. */
     public NodeId getAllocateNodeId(Node node) ;
     

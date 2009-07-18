@@ -22,8 +22,6 @@ import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
  */
 public class TDBMaker
 {
-    
-
     /** An ImplFactory that creates datasets in the usual way for TDB */
     public final static class ConcreteImplFactory implements DatasetGraphMakerTDB
     {

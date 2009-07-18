@@ -71,7 +71,8 @@ public class FileSet
         this.location = directory ;
         this.basename = basename ;
         String metaFileName = location.getPath(basename, Names.extMeta) ;
-        metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
+        //metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
+        metafile = location.getMetaFile() ;
     }
     
     

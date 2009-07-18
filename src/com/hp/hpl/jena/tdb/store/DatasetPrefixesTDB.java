@@ -41,6 +41,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
 
+    
     public static DatasetPrefixesTDB create(Location location) { return create(IndexBuilder.get(), location) ; }
     
     public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location)
@@ -61,11 +62,11 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         // Node table.
         FileSet filesetNodeTableIdx = null ;
         if ( location != null )
-            filesetNodeTableIdx = new FileSet(location, Names.indexPrefix2Id) ;
+            filesetNodeTableIdx = new FileSet(location, Names.prefixNode2Id) ;
         
         FileSet filesetNodeTable = null ;
         if ( location != null )
-            filesetNodeTable = new FileSet(location, Names.prefixNodeTable) ;
+            filesetNodeTable = new FileSet(location, Names.prefixId2Nodele) ;
         
         NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1) ;
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;

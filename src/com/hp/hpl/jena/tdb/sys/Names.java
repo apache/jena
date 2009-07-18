@@ -38,8 +38,8 @@ public class Names
     //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
 
     /** Prefixes file */
-    public static final String prefixNodeTable          = "prefixes" ;      // Prefix node table 
-    public static final String indexPrefix2Id           = "prefix2id";      // Prefix node table for index Node/hash->id
+    public static final String prefixId2Nodele          = "prefixes" ;      // Prefix node table 
+    public static final String prefixNode2Id            = "prefix2id";      // Prefix node table for index Node/hash->id
     public static final String indexPrefix              = "prefixIdx";      // Primary key on the prefixes table.
     
     /** Optimizer / stats */
@@ -60,30 +60,50 @@ public class Names
     
     // ---- Names for Java properties in metadata files
     
-    /* Metadata names - global */
-    private static String makeMetadataKey(String root, String keyShortName)
-    { 
-        if ( keyShortName.startsWith(".") )
-            return root+keyShortName ;
-        else
-            return root+"."+keyShortName ;
+    public static String makeKey(String root, String...elements)
+    { return makeName(root, elements) ; }
+    
+    public static String makeName(String root, String...elements)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        sb.append(root) ;
+        for ( String s : elements )
+        {
+            if ( ! s.startsWith(".") )
+                sb.append(".") ;
+            sb.append(s) ;
+        }
+        return sb.toString() ;
     }
-
+    
+    // Component elements.
+    public static final String elNode                 = "node" ;
+    public static final String elBPlusTree            = "bptree" ;
+    public static final String elIndex                = "index" ;
+    
+    public static final String elType                 = "type" ;
+    public static final String elLayout               = "layout" ;
+    public static final String elVersion              = "version" ;
+    public static final String elTimestamp            = "timestamp" ;
+    public static final String elCreated              = "created" ;
+    
     // Root names.
     public static final String keyNS                    = "tdb" ;
-    public static final String keyNSNode                = "tdb.node" ;
-    public static final String keyNSBPlusTree           = "tdb.bptree" ;
-    
+    public static final String keyNSNode                = makeName(keyNS, elNode) ;
+    public static final String keyNSBPlusTree           = makeName(keyNS, elBPlusTree) ;
+
     // Location metadata - in the directory wide metadata file.
-    public static final String kVersion               = makeMetadataKey(keyNS, "version") ;
-    public static final String kCreatedDate           = makeMetadataKey(keyNS, "createtimestamp") ;    
+    public static final String kVersion               = makeName(keyNS, elVersion) ;
+    public static final String kCreatedDate           = makeName(keyNS, elTimestamp) ;    
     
     // Node table metadata
-    public static final String kNodeTableType         = makeMetadataKey(keyNSNode, "type") ;
+    public static final String kNodeTableType         = makeName(keyNS, elNode, elType) ;
+    public static final String kNodeTableLayout       = makeName(keyNS, elNode, elLayout) ;
     
-    // Index metadata - in the index metadata file.
-    public static final String kIndexType             = makeMetadataKey(keyNS, "indexType") ;
-    public static final String kIndexFileVersion      = makeMetadataKey(keyNS, "indexFileVersion") ;
+    // Default index metadata - in the index metadata file.
+    
+    public static final String kIndexType             = makeName(keyNS, elIndex, elType) ;
+    public static final String kIndexFileLayout       = makeName(keyNS, elIndex, elLayout) ;
     
     // See also BPlusTreeParams for keyNSBPlusTree derived names.
     

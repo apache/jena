@@ -23,33 +23,22 @@ import com.hp.hpl.jena.tdb.sys.Names;
 /** Support for persistent metadata files */
 public class MetaFile implements Sync, Closeable
 {
-    // The magic name "--mem--" means in-memory only.
     private static Logger log = LoggerFactory.getLogger(MetaFile.class) ;
     private String metaFilename = null ;
     private Properties properties = null ;
     private String label = null ;
     private boolean changed = false ;
     
-    //Must call init(,) afterwards.
-    protected MetaFile()
-    {}
-    
     public MetaFile(String label, String fn)
     {
         this.label = label ;
         this.metaFilename = fn ;
-        if ( fn != null )
-            initMetaFile(label, fn) ;
-    }
-    
-    private void initMetaFile(String label, String fn)
-    {
-        close() ;
-        this.label = label ;
-        if ( fn.equals(Names.memName) )
+
+        if ( fn == null || Names.isMem(fn) )
+            // In-memory.
             return ;
         
-        // Make absolute (current directy may change later)
+        // Make absolute (current directory may change later)
         if ( ! fn.endsWith(Names.extMeta) )
             fn = fn+"."+Names.extMeta ;
         File f = new File(fn) ;

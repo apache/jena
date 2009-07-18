@@ -6,52 +6,64 @@
 
 package dev ;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import atlas.lib.ColumnMap ;
-import atlas.lib.FileOps ;
-import atlas.lib.NotImplemented ;
+import static com.hp.hpl.jena.tdb.TDB.logExec;
+import static com.hp.hpl.jena.tdb.TDB.logInfo;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import atlas.lib.ColumnMap;
+import atlas.lib.FileOps;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.IndexType ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndexBuilder ;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree ;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.IndexType;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexBuilder;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.QuadTable;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Makes things: datasets from locations, indexes */
 
 public class ThingBuilder implements DatasetGraphMakerTDB
 {
+    // TODO BlockSize for indexes/rangeIndexes
+    // TODO TDBFactoryGraph/ - this is a replacement.
+    // XXX IndexBuilder.get() and name of range index type.
+    // TODO Tests.
+    // TODO TDBMaker.ConcreteImplFactory
+    // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
+
+    
     // TDBFactory : machinary for the API (models, lots of different ways of
     // making things
     // --> factory.createDatasetGraph(Location) / factory.createDatasetGraph()
@@ -74,12 +86,12 @@ public class ThingBuilder implements DatasetGraphMakerTDB
     // ---- Impl interface
     public DatasetGraphTDB createDatasetGraph()
     {
-        return null ;
+        return buildDataset(Location.mem()) ;
     }
 
     public DatasetGraphTDB createDatasetGraph(Location location)
     {
-        return null ;
+        return buildDataset(location) ;
     }
 
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
@@ -87,16 +99,8 @@ public class ThingBuilder implements DatasetGraphMakerTDB
 
     // ---- Impl interface
 
-    // Assembler vs metafiles.
     public static DatasetGraphTDB buildDataset(Location location)
     {
-        // Process:
-        // Location Metadata
-        // Build node file
-        // Build indexes and tables
-        // Build prefixes
-        // Make the dataset
-
         MetaFile metafile = location.getMetaFile() ;
         if (metafile.existsMetaData())
         {
@@ -105,7 +109,7 @@ public class ThingBuilder implements DatasetGraphMakerTDB
             TDB.logInfo.debug("Version:  " + verString) ;
         }
 
-        // Any files at this location?
+        // ---- Any files at this location?
 
         if (!FileOps.existsAnyFiles(location.getDirectoryPath()))
         {
@@ -118,15 +122,16 @@ public class ThingBuilder implements DatasetGraphMakerTDB
             // Existing location (has some files in it) but no metadata.
             // Fake it as TDB 0.8.1 (which did not have metafiles)
             // If it's the wrong file format, things do badly wrong later.
-            if (!metafile.hasProperty(Names.kVersion)) metafile.setProperty(Names.kVersion, "<=0.8.1") ;
+            if (!metafile.hasProperty(Names.kVersion)) 
+                metafile.setProperty(Names.kVersion, "<=0.8.1") ;
         }
-        // Now create:
 
         // ---- Node Table.
-        NodeTable nodeTable = makeNodeTable(location, metafile) ;
+        NodeTable nodeTable = makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
 
         // ---- Triple table and quad table indexes.
-        IndexBuilder dftIndexBuilder = null ;
+        // IndexBuilder that groks
+        IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
 
         TupleIndex tripleIndexes[] = indexes(dftIndexBuilder, location, indexRecordTripleFactory,
                                              Names.primaryIndexTriples, Names.tripleIndexes) ;
@@ -136,18 +141,8 @@ public class ThingBuilder implements DatasetGraphMakerTDB
                                            Names.quadIndexes) ;
         QuadTable quadTable = new QuadTable(quadIndexes, indexRecordQuadFactory, nodeTable, location) ; ;
 
-        // Names.primaryIndexTriples / Names.tripleIndexes
-        // Names.primaryIndexQuads / Names.quadIndexes
-        // RecordFactory.indexRecordTripleFactory <--
-        // SystemTDB.LenIndexTripleRecord
-        // RecordFactory.indexRecordQuadFactory <-- SystemTDB.LenIndexQuadRecord
-
         // ---- Prefixes
-
-        // RecordFactory nodeRecordFactory <-- new RecordFactory(LenNodeHash,
-        // SizeOfNodeId) ;
-
-        DatasetPrefixStorage prefixes = makePrefixesTable(location) ;
+        DatasetPrefixStorage prefixes = makePrefixes(location) ;
 
         // ---- Create the DatasetGraph object
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location) ;
@@ -155,11 +150,6 @@ public class ThingBuilder implements DatasetGraphMakerTDB
         // Finalize
         metafile.flush() ;
         return dsg ;
-    }
-
-    private static ReorderTransformation chooseOptimizer(Location location)
-    {
-        return null ;
     }
 
     public static TupleIndex[] indexes(final IndexBuilder indexBuilder, final Location location,
@@ -194,43 +184,42 @@ public class ThingBuilder implements DatasetGraphMakerTDB
     }
 
     // ---- Make things.
-    // All the make* operations look for metadata relative to their fileset and
-    // decide what to do.
+    // All the make* operations look for metadata and decide what to do.
 
-    private static NodeTable makeNodeTable(Location location, MetaFile metafile)
+    private static NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node)
     {
-        String x = metafile.getProperty(Names.kNodeTableType) ;
+        if (location.isMem()) return NodeTableFactory.createMem(IndexBuilder.mem()) ;
+
+        String nodeTableType = location.getMetaFile().getProperty(Names.kNodeTableType) ;
 
         // NodeTableBuilder??
 
-        if (x != null)
+        if (nodeTableType != null)
         {
-            log.info("Explicit node table type: " + x + " (ignored)") ;
-            // Choose node tbale builder.
+            log.info("Explicit node table type: " + nodeTableType + " (ignored)") ;
+            // Choose node table builder.
         }
-
-        if (location.isMem()) return NodeTableFactory.createMem(IndexBuilder.mem()) ;
-
+        else
+        {
+            // No type given.  Fill it in.
+            location.getMetaFile().setProperty(Names.kNodeTableType, NodeTable.type) ;
+            location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTable.layout) ;
+        }
+        
         // -- make node to id mapping -- Names.indexNode2Id
-        // ** Metadata
-
-        FileSet fsIdToNode = new FileSet(location, Names.indexId2Node) ;
-        if (fsIdToNode.getMetaFile().existsMetaData())
-        {}
+      
+        FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
         ObjectFile objectFile = makeObjectFile(fsIdToNode) ;
-
 
         // -- make id to node mapping -- Names.indexId2Node
         // Make index of id to node (data table): Names.nodeTable
 
-        FileSet fsNodeToId = new FileSet(location, Names.indexNode2Id) ;
-        if (fsNodeToId.getMetaFile().existsMetaData())
-        {}
-        Index nodeToId = makeIndex(fsNodeToId) ;
-
+        FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
+        Index nodeToId = createIndex(fsNodeToId, nodeRecordFactory) ;
         
         // Make the node table using the components established above.
-        NodeTable nodeTable = new NodeTableBase(nodeToId, objectFile, SystemTDB.Node2NodeIdCacheSize,
+        NodeTable nodeTable = new NodeTableBase(nodeToId, objectFile, 
+                                                SystemTDB.Node2NodeIdCacheSize,
                                                 SystemTDB.NodeId2NodeCacheSize) ;
 
         return nodeTable ;
@@ -238,40 +227,26 @@ public class ThingBuilder implements DatasetGraphMakerTDB
 
     private static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
-        if ( fsIdToNode.getMetaFile().existsMetaData() )
-        {}
+        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
+        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
         
-        //XXXX
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objFile = FileFactory.createObjectFileDisk(filename);
-        
-        throw new NotImplemented("makeObjectFile") ;
+        return objFile ;
     }
 
-    private static Index makeIndex(FileSet fsIndex)
+    private static DatasetPrefixStorage makePrefixes(Location location)
     {
-        return makeRangeIndex(fsIndex) ;
+        // TODO Dependency Injection
+        return DatasetPrefixesTDB.create(location) ;
+//        
+//        NodeTable nodeTable =  makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
+//        TupleIndex prefixTupleIndex = 
+//        DatasetPrefixStorage prefixes = null ; //new DatasetPrefixesTDB(location, prefixTupleIndex, nodeTable) ; 
+//        return prefixes ;
+
     }
-
-    private static Index makeRangeIndex(FileSet fsIndex)
-    {
-        MetaFile metafile = fsIndex.getMetaFile() ;
-        String idxType = metafile.getProperty(Names.kIndexType) ;
-
-        throw new NotImplemented("makeRangeIndex") ;
-    }
-
-    private static DatasetPrefixStorage makePrefixesTable(Location location)
-    {
-        throw new NotImplemented("makePrefixesTable") ;
-    }
-
-    // Decide on an index builder.
-    private static IndexBuilder chooseIndexBuilder(Location location, String primary, String desc)
-    {
-        throw new NotImplemented("chooseIndexBuilder") ;
-    }
-
+    
     public static void locationMetadata(Location location)
     {
         MetaFile metafile = location.getMetaFile() ;
@@ -284,73 +259,106 @@ public class ThingBuilder implements DatasetGraphMakerTDB
         }
     }
 
-    // Properties.
-
-    // General:
-    // tdb.version=
-    // tdb.indexType=
-    // tdb.indexFileVersion=
-
-    // B+Tree:
-    // tdb.bptree.order=
-    // tdb.bptree.kLength=
-    // tdb.bptree.valueLength=
-    // tdb.bptree.blockSize=
-
-    // ExtHashTable
-    // tdb.exthash...
-
-    // Cluster
-    // tdb.cluster....
-
-    // IndexBuilder.createIndexBuilder(IndexType) is broken - fixed pairing.
-
-    // See SystemTDB.getIndexType()
-    // IndexBuilder.chooseIndexBuilder.
-    // Return IndexRangeFactory
-
-    public static RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory)
+    public static Index createIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        return createRangeIndex(fileset, SystemTDB.BlockSize, factory) ;
+        return chooseIndexBuilder(fileset).newIndex(fileset, recordFactory) ;
     }
-
-    public static RangeIndex createRangeIndex(FileSet fileset, int blockSize, RecordFactory factory)
+    
+    public static RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
     {
-        // This is the main worker function
-        // 1 - Decide if there is an index already at that location (metafile)
-        // 
-        MetaFile metafile = fileset.getMetaFile() ;
-        if (metafile == null) metafile = fileset.getLocation().getMetaFile() ;
+        // Block size control?
+        return chooseIndexBuilder(fileset).newRangeIndex(fileset, recordFactory) ;
+    }
+        // MESSY.
+        
+//        MetaFile metafile = fileset.getMetaFile() ;
+//        if (metafile == null) metafile = fileset.getLocation().getMetaFile() ;
+//
+//        String keyRoot = Names.makeName(Names.keyNS, fileset.getBasename(), Names.elIndex) ;
+//        String keyType = Names.makeName(keyRoot, Names.elType) ;
+//        String keyLayout = Names.makeName(keyRoot, Names.elLayout) ;
+//        
+//        
+//        // Anything already there?
+//        if (metafile.existsMetaData())
+//        {
+//            // Check version.
+//            String indexTypeStr = metafile.getProperty(keyType) ;
+//            String fileLayout = metafile.getProperty(keyLayout) ;
+//
+//            if (indexTypeStr != null)
+//            {
+//                IndexType indexType = IndexType.get(indexTypeStr) ;
+//                if (indexType == null) 
+//                    throw new TDBException("Unknown index type: '" + indexTypeStr + "'") ;
+//                log.debug("Index type: explicit setting: "+indexTypeStr) ;
+//                return chooseIndexBuilder(indexType).newRangeIndex(fileset, recordFactory) ;
+//            }
+//            // Metadata - no keyIndexType - default.
+//        }
+//
+//        // Default to B+Tree
+//        metafile.setProperty(keyType, IndexType.BPlusTree.getName()) ;
+//        IndexBuilder idxBuidler = chooseIndexBuilder(fileset) ;
+//        
+//        return createRangeIndex(fileset, idxBuilder, blockSize, recordFactory) ;
+//    }
 
-        // Anything already there?
-        if (metafile.existsMetaData())
+    // From TDBFactoryGraph
+    private static ReorderTransformation chooseOptimizer(Location location)
+    {
+        if ( location == null )
+            return ReorderLib.identity() ;
+        
+        ReorderTransformation reorder = null ;
+        if ( location.exists(Names.optStats) )
         {
-            // Check version.
-            String indexTypeStr = metafile.getProperty(Names.kIndexType) ;
-            String fileVersion = metafile.getProperty(Names.kIndexFileVersion) ;
-
-            if (indexTypeStr != null)
-            {
-                IndexType indexType = IndexType.get(indexTypeStr) ;
-                if (indexType == null) throw new TDBException("Unknown uindex type: '" + indexTypeStr + "'") ;
-                return chooseIndexBuilder(indexType).newRangeIndex(fileset, factory) ;
+            try {
+                reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
+                logInfo.info("Statistics-based BGP optimizer") ;  
+            } catch (SSEParseException ex) { 
+                log.warn("Error in stats file: "+ex.getMessage()) ;
+                reorder = null ;
             }
-            // Metadata - no keyIndexType - default.
         }
-
-        // No metadata or unrelated metadata. Create as if new (may attach to
-        // existing files).
-
-        // return chooseIndexBuilder(IndexType.BPlusTree).newRangeIndex(fileset,
-        // factory) ;
-
-        // No - call default.
-        return createNewRangeIndex(fileset, metafile, blockSize, factory) ;
+        
+        if ( reorder == null && location.exists(Names.optDefault) )
+        {
+            // Not as good but better than nothing.
+            reorder = ReorderLib.fixed() ;
+            logInfo.info("Fixed pattern BGP optimizer") ;  
+        }
+        
+        if ( location.exists(Names.optNone) )
+        {
+            reorder = ReorderLib.identity() ;
+            logInfo.info("Optimizer explicitly turned off") ;
+        }
+    
+        if ( reorder == null )
+            reorder = SystemTDB.defaultOptimizer ;
+        
+        if ( reorder == null )
+            logExec.warn("No BGP optimizer") ;
+        
+        return reorder ; 
     }
 
     // From IndexBuilder.
-    private static IndexBuilder chooseIndexBuilder(IndexType indexType)
+    private static IndexBuilder chooseIndexBuilder(FileSet fileset)
     {
+        String key = Names.makeKey(Names.keyNS, fileset.getBasename(), Names.elIndex, Names.elType) ;
+        String x = fileset.getMetaFile().getProperty(key) ;
+        
+        if ( x == null )
+        {
+            // TODO Remove duplication 
+            fileset.getMetaFile().setProperty(key, IndexType.BPlusTree.getName()) ;
+            return IndexBuilder.get() ;   // Default.
+        }
+
+        IndexType indexType = IndexType.get(x) ;
+
         switch (indexType)
         {
             case BTree : {
@@ -367,9 +375,28 @@ public class ThingBuilder implements DatasetGraphMakerTDB
                 return new IndexBuilder(idxFactory, idx) ;
             }
         }
-        throw new TDBException("Unrecognized index type: " + indexType) ;
+        throw new TDBException("Unrecognized index type: " + x) ;
     }
 
+    private static void checkMetadata(MetaFile metafile, String key, String expected)
+    {
+        String value = metafile.getProperty(key) ;
+        if ( value == null && expected == null ) return ;
+        if ( value == null && expected != null ) inconsistent(key, value, expected) ; 
+        if ( value != null && expected == null ) inconsistent(key, value, expected) ; 
+        if ( ! value.equals(expected) )          inconsistent(key, value, expected) ;
+        
+    }
+
+    private static void inconsistent(String key, String actual, String expected) 
+    {
+        String msg = String.format("Inconsistent: key=%s value=%s expected=%s", 
+                                   key, 
+                                   (actual==null?"<null>":actual),
+                                   (expected==null?"<null>":expected) ) ;
+        throw new TDBException(msg) ; 
+    }
+    
     public static RangeIndex createBPTree(FileSet fileset, MetaFile metafile, int order, int blockSize,
                                           RecordFactory factory)
     {
@@ -424,14 +451,14 @@ public class ThingBuilder implements DatasetGraphMakerTDB
         return null ;
     }
 
-    static private RangeIndex createNewRangeIndex(FileSet fileset, MetaFile metafile, int blockSize,
+    static private RangeIndex createBPTreeRangeIndex(FileSet fileset, MetaFile metafile, int blockSize,
                                                   RecordFactory factory)
     {
         int order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
 
         metafile.setProperty(Names.kIndexType, Names.currentIndexType) ;
-        metafile.setProperty(Names.kIndexFileVersion, Names.currentIndexFileVersion) ;
+        metafile.setProperty(Names.kIndexFileLayout, Names.currentIndexFileVersion) ;
         metafile.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
 
         params.addToMetaData(metafile) ;
