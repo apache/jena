@@ -55,7 +55,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Makes things: datasets from locations, indexes */
 
-public class ThingBuilder implements DatasetGraphMakerTDB
+public class NewSetup implements DatasetGraphMakerTDB
 {
     // TODO   getPropertyOrUpdateWithDefault
     // TODO BlockSize for indexes/rangeIndexes
@@ -81,7 +81,7 @@ public class ThingBuilder implements DatasetGraphMakerTDB
     public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    private static final Logger       log                      = LoggerFactory.getLogger(ThingBuilder.class) ;
+    private static final Logger       log                      = LoggerFactory.getLogger(NewSetup.class) ;
 
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
     // FactoryGraphTDB

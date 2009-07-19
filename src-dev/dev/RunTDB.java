@@ -105,11 +105,11 @@ public class RunTDB
     
     public static void main(String ... args) throws IOException
     {
-        ThingBuilder.buildDataset(new Location("tmp/DBX")) ;
+        NewSetup.buildDataset(new Location("tmp/DBX")) ;
         System.exit(0) ;
         
         FileSet fileset = new FileSet("tmp", "XYZ") ;
-        ThingBuilder.createRangeIndex(fileset, new RecordFactory(24,0)) ;
+        NewSetup.createRangeIndex(fileset, new RecordFactory(24,0)) ;
         System.exit(0) ;
         metadata() ;
         
