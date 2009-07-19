@@ -27,9 +27,12 @@
   <dependencies>
     <!-- rev="latest.integration" -->
 
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0"/>
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0" mvn:classifier="tests"/>
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0">
+      <artifact name="arq"/>
+      <artifact name="arq" mvn:classifier="tests"/>
+    </dependency>
     <!--
+      This works but does cause conflict messages (why?)
     <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0">
       <artifact name="arq" mvn:classifier="tests"/>
       <artifact name="arq" mvn:classifier="javadoc"/>
