@@ -252,15 +252,6 @@ public class ARQ
     /** The full name of the current ARQ version */   
     public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
    
-//    /** The major version number for this release of ARQ (ie '2' for ARQ 2.0) */
-//    public static final String MAJOR_VERSION = "@version-major@";
-//   
-//    /** The minor version number for this release of ARQ (ie '0' for ARQ 2.0) */
-//    public static final String MINOR_VERSION = "@version-minor@";
-//   
-//    /** The version status for this release of ARQ (eg '-beta1' or the empty string) */
-//    public static final String VERSION_STATUS = "@version-status@";
-   
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
 }
