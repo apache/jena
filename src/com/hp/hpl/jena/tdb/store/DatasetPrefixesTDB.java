@@ -47,9 +47,11 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location)
     { return new DatasetPrefixesTDB(indexBuilder, location) ; }
 
-    
     private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location)
     {
+        // REMOVE ON META
+        
+        // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
         // GPU index
         FileSet filesetGPU = null ;
@@ -66,10 +68,17 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         
         FileSet filesetNodeTable = null ;
         if ( location != null )
-            filesetNodeTable = new FileSet(location, Names.prefixId2Nodele) ;
+            filesetNodeTable = new FileSet(location, Names.prefixId2Node) ;
         
         NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1) ;
         nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
+    }
+
+    //---- DI version
+    
+    public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes)
+    {
+        this.nodeTupleTable = new NodeTupleTable(3, indexes, nodes) ;
     }
     
     private DatasetPrefixesTDB()

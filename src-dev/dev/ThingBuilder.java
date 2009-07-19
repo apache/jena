@@ -46,6 +46,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.QuadTable;
 import com.hp.hpl.jena.tdb.store.TripleTable;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
@@ -56,12 +57,14 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class ThingBuilder implements DatasetGraphMakerTDB
 {
+    // TODO   getPropertyOrUpdateWithDefault
     // TODO BlockSize for indexes/rangeIndexes
     // TODO TDBFactoryGraph/ - this is a replacement.
     // XXX IndexBuilder.get() and name of range index type.
     // TODO Tests.
     // TODO TDBMaker.ConcreteImplFactory
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
+    // TODO Check everywhere else for non-DI constructors.
 
     
     // TDBFactory : machinary for the API (models, lots of different ways of
@@ -73,10 +76,11 @@ public class ThingBuilder implements DatasetGraphMakerTDB
     // FactoryGraphTDB.createDatasetGraphMem(
 
     // ---- Record factories
-    public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ;
-    public final static RecordFactory indexRecordQuadFactory   = new RecordFactory(LenIndexQuadRecord, 0) ;
-    public final static RecordFactory nodeRecordFactory        = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
-
+    public final static RecordFactory indexRecordTripleFactory  = new RecordFactory(LenIndexTripleRecord, 0) ;
+    public final static RecordFactory indexRecordQuadFactory    = new RecordFactory(LenIndexQuadRecord, 0) ;
+    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
+    
     private static final Logger       log                      = LoggerFactory.getLogger(ThingBuilder.class) ;
 
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
@@ -142,7 +146,7 @@ public class ThingBuilder implements DatasetGraphMakerTDB
         QuadTable quadTable = new QuadTable(quadIndexes, indexRecordQuadFactory, nodeTable, location) ; ;
 
         // ---- Prefixes
-        DatasetPrefixStorage prefixes = makePrefixes(location) ;
+        DatasetPrefixStorage prefixes = makePrefixes(dftIndexBuilder, location) ;
 
         // ---- Create the DatasetGraph object
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location) ;
@@ -235,16 +239,12 @@ public class ThingBuilder implements DatasetGraphMakerTDB
         return objFile ;
     }
 
-    private static DatasetPrefixStorage makePrefixes(Location location)
+    private static DatasetPrefixStorage makePrefixes(IndexBuilder indexBuilder, Location location)
     {
-        // TODO Dependency Injection
-        return DatasetPrefixesTDB.create(location) ;
-//        
-//        NodeTable nodeTable =  makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
-//        TupleIndex prefixTupleIndex = 
-//        DatasetPrefixStorage prefixes = null ; //new DatasetPrefixesTDB(location, prefixTupleIndex, nodeTable) ; 
-//        return prefixes ;
-
+        TupleIndex prefixIndexes[] = indexes(indexBuilder, location, prefixNodeFactory, 
+                                             Names.primaryIndexPrefix, Names.prefixIndexes) ;
+        NodeTable nodeTable =  makeNodeTable(location, Names.prefixNode2Id, Names.prefixId2Node) ;
+        return new DatasetPrefixesTDB(prefixIndexes, nodeTable) ;
     }
     
     public static void locationMetadata(Location location)

@@ -17,6 +17,8 @@ public class Names
     public static final String primaryIndexQuads        = "GSPO" ; 
     public static final String[] quadIndexes            = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
     
+    public static final String primaryIndexPrefix       = "GPU" ;
+    public static final String[] prefixIndexes          = { primaryIndexPrefix } ;
     
     /** B+Trees - nodes file and records file */
     public static final String bptExt1                  = "idn" ;
@@ -38,7 +40,7 @@ public class Names
     //public static final String indexId2Node           = "id2node";        // Would be the Index for node(hash) to id  
 
     /** Prefixes file */
-    public static final String prefixId2Nodele          = "prefixes" ;      // Prefix node table 
+    public static final String prefixId2Node            = "prefixes" ;      // Prefix node table 
     public static final String prefixNode2Id            = "prefix2id";      // Prefix node table for index Node/hash->id
     public static final String indexPrefix              = "prefixIdx";      // Primary key on the prefixes table.
     
