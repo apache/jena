@@ -3,7 +3,7 @@
   <!-- TODO
      Pick out lifecycle cleanly.
        pre- post-
-
+       
 initialize - compile - gather - package - publish - package 
 main
   generate-sources 	

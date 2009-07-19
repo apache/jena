@@ -26,16 +26,23 @@
 
   <dependencies>
     <!-- rev="latest.integration" -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.7.0"/>
-    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.7.0"/>
+
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0"/>
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0" mvn:classifier="tests"/>
+    <!--
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0">
+      <artifact name="arq" mvn:classifier="tests"/>
+      <artifact name="arq" mvn:classifier="javadoc"/>
+      <artifact name="arq" mvn:classifier="sources"/>
+      <artifact name="arq" mvn:classifier="test-sources"/>
+      <artifact name="arq" ext="zip" mvn:classifier="tests"/>
+    </dependency>
+    -->
 
     <!-- Explicit - gets the javadoc and sources -->
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
-    <!-- <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.6.0"/> -->
-    
 
     <!-- Need Jena test code as well -->
-    <!-- <dependency org="com.hp.hpl.jena" name="jena" rev="2.7.0" conf="test,runtime,compile"/> -->
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
@@ -44,9 +51,9 @@
     <!-- Additional for development : logging implementation -->
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
-    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
+    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
     <!-- Java logging 
-    <dependency conf="dev->*"  org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
+    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
     -->
 
     <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"/> 

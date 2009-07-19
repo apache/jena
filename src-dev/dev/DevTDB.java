@@ -17,6 +17,10 @@ public class DevTDB
     // ** Check for tests of assembler and GraphTDB
     // Enable metadata? [later]
     
+    // ---- Build
+    // Sort out confs
+    // Lifecycle?
+    
     // ------
     // Properties on the readers
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
