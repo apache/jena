@@ -11,6 +11,10 @@ public class DevTDB
     // ** metadata files and BPT creation ==> NewSetup and DI
     
     // == 0.8.2
+    // ARQ bug and Metadata - only one file read!
+    
+    // Publish => release and upload the zip to maven area.
+    // IVY publish a zip
     
     // ** Document concurrency.
     // ** Check assembler page for emphasise on creating a dataset.

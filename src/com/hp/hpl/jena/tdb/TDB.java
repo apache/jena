@@ -142,11 +142,10 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
-        
-        
     
+        // This is called via a static initializer so before the setting of VERSION and BUILD_DATE
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
-        
+
         ARQ.init() ;
         AssemblerUtils.init() ;
         VocabTDB.init();

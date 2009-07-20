@@ -14,7 +14,7 @@
   <property name="version-major"        value="0"/>
   <property name="version-minor"        value="8"/>
   <property name="version-revision"     value="2"/>
-  <property name="version-status"       value="-dev"/>
+  <property name="version-status"       value="-RC-1"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
@@ -36,11 +36,11 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-publish, repo-local -->
-  <property name="publish.repo"     value="repo-local"/>
+  <property name="publish.repo"     value="repo-publish"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
-  <property name="build.metadata.file.src"     value="tdb-properties.xml"/>
+  <property name="build.metadata.file.src"     value="resources/tdb-properties.xml"/>
 
   <!-- Source code -->
   <path id="java.source.path.main">

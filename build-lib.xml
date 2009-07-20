@@ -138,7 +138,7 @@ deploy
 
   <!-- <property name="build.metadata.file"          value="unset"/> Set by system -->
   <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
-  <property name="build.metadata.file.src"      value="${src.dir}/${build.metadata.file}"/>
+  <property name="build.metadata.file.src"      value="resources/${build.metadata.file}"/>
 
   <!-- Testing -->
   <property name="reports.dir"            value="reports"/>
@@ -228,7 +228,7 @@ deploy
     </javac>
   </target>
 
-        <target name="build-properties" if="build.metadata.file">
+  <target name="build-properties" if="build.metadata.file">
     <delete file="${build.metadata.file.dest}"/>
     <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
       <filterset refid="filters.build.metadata"/>
