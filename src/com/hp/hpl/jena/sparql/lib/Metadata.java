@@ -8,71 +8,80 @@ package com.hp.hpl.jena.sparql.lib;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 import java.util.Properties;
 
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-/** Pluck data out of the ether - or failing that, read it from a properties file.
- *  Assumes the properties file is in the "right place" through configuration of
- *  the build or compile processes.
- * @author Andy Seaborne
+/** Simple wrapper for reading metadata, once, from a system resource.
+ *  Note that in some environments, it's tricky to get a class loader.  
  */
+
 public class Metadata
 {
-    static boolean initialized = false ; 
-    static Properties properties = null ;
+    List<String> resources = new ArrayList<String>() ;
+    Properties properties = new Properties() ;
     
-    private Metadata() {}
+    public Metadata() { }
     
-    static public void setMetadata(String resourceName)
+    public Metadata(String resourceName)
     {
-        resource = resourceName ;
+        this() ;
+        addMetadata(resourceName) ;
     }
     
-    static String resource = null ;
-    private static void init()
+    public void addMetadata(String resourceName)
     {
-        if ( resource == null )
-            throw new ARQException("No Java resource name for properties file") ;
-        
-        if ( ! initialized )
-        {
-            initialized = true ;
-            properties = new Properties() ;
-            
-            ClassLoader classLoader = SystemUtils.chooseClassLoader() ;
+        resources.add(resourceName) ;
+        read(properties, resourceName) ;
+    }
+    
+    // Protect all classloader choosing -- sometimes systems mess with even the system class loader.
+    private static void read(Properties properties, String resourceName)
+    {
+        // Armour-plate this - classloaders and using them can be blocked by some environments.
+        try { 
+            ClassLoader classLoader = null ;
+
+            try { classLoader = SystemUtils.chooseClassLoader() ; } catch (ARQException ex) {}
+
             if (classLoader == null)
-                classLoader = Metadata.class.getClassLoader();
+            {
+                try { classLoader = Metadata.class.getClassLoader(); } catch (ARQException ex) {}
+            }
 
             if ( classLoader == null )
             {
                 ALog.fatal(Metadata.class, "No classloader") ;
                 return ;
             }
-            
-            InputStream in = classLoader.getResourceAsStream(resource) ;
+
+            InputStream in = classLoader.getResourceAsStream(resourceName) ;
             if ( in == null )
                 //throw new ARQException("Failed to find the properties file") ;
                 // In development, there is no properties file.
                 return ;
-            try
-            {
-                properties.loadFromXML(in) ;
-            } 
+
+            try { properties.loadFromXML(in) ; } 
             catch (InvalidPropertiesFormatException ex)
             { throw new ARQException("Invalid properties file", ex) ; }
             catch (IOException ex)
             { throw new ARQException("Metadata ==> IOException", ex) ; }
         }
+        catch (Throwable ex)
+        {
+            ALog.fatal(Metadata.class, "Unexpected Thorwable", ex) ;
+            return ;
+        }
     }
+
+    public String get(String name) { return get(name, null) ; }
     
-    public static String get(String name) { return get(name, null) ; }
-    
-    public static String get(String name, String defaultValue)
+    public String get(String name, String defaultValue)
     {
-        init() ;
         if ( properties == null ) return defaultValue ;
         return properties.getProperty(name, defaultValue) ;
     }

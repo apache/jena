@@ -1,1 +1,1 @@
-SELECT * { ?x ?p "str" }
+SELECT * { ?x ?p "str" OPTIONAL { ?x ?q "fred" } }

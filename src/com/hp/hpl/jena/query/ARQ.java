@@ -201,12 +201,10 @@ public class ARQ
      * The method is public so any part of ARQ can call it.
      */
     
-    
     public static synchronized void init()
     { 
         if ( initialized )
             return ;
-        Metadata.setMetadata("com/hp/hpl/jena/sparql/arq-properties.xml") ;
         initialized = true ;
         globalContext = defaultSettings() ;
         StageBuilder.init() ;
@@ -246,14 +244,18 @@ public class ARQ
     /** The root package name for ARQ */   
     public static final String PATH = "com.hp.hpl.jena.sparql";
    
+    static private String metadataLocation = "com/hp/hpl/jena/sparql/arq-properties.xml" ;
+
+    static private Metadata metadata = new Metadata(metadataLocation) ;
+    
     /** The product name */   
     public static final String NAME = "ARQ";
    
     /** The full name of the current ARQ version */   
-    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
+    public static final String VERSION = metadata.get(PATH+".version", "unknown") ;
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
+    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 
