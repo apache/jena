@@ -144,9 +144,10 @@ public class TDB
         initialized = true ;
     
         // This is called via a static initializer so before the setting of VERSION and BUILD_DATE
+        ARQ.init() ;
+        // BUG: ARQ 2.8.0 and before: this overwrites the metadata.  Bad design. 
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
 
-        ARQ.init() ;
         AssemblerUtils.init() ;
         VocabTDB.init();
         QueryEngineTDB.register() ;
