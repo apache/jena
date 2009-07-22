@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NotEqual.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
+ * $Id: NotEqual.java,v 1.2 2009-07-22 08:29:39 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * Check that the two args are different. This uses a semantic equality test.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
+ * @version $Revision: 1.2 $ on $Date: 2009-07-22 08:29:39 $
  */
 public class NotEqual extends BaseBuiltin {
 
@@ -54,7 +54,7 @@ public class NotEqual extends BaseBuiltin {
         checkArgs(length, context);
         Node n1 = getArg(0, args, context);
         Node n2 = getArg(1, args, context);
-        if (Util.isNumeric(n1)) {
+        if (Util.isNumeric(n1) && Util.isNumeric(n2)) {
             return Util.compareNumbers(n1, n2) != 0;
         } else if (Util.isInstant(n1) && Util.isInstant(n2)) {
             return Util.compareInstants(n1, n2) != 0;
