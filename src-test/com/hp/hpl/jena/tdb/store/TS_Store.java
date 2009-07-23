@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
     , TestDataset.class
     // The script suite
     , TestSuiteGraphTDB.class
+    , Test_SPARQL_TDB.class
 } )
 public class TS_Store
 { 

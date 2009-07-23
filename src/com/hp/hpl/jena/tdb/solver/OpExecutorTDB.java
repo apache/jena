@@ -72,13 +72,14 @@ public class OpExecutorTDB extends OpExecutor
     {
         if ( ! isForTDB )
             return super.execute(opFilter, input) ;
-    
+        
         // (filter (bgp ...))
         if ( OpBGP.isBGP(opFilter.getSubOp()) )
         {
-            OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
+            // Still may be a TDB graph in a non-TDB dataset (e.g. a named model)
             GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-            return optimizeExecuteTriples(graph, input, opBGP.getPattern(), opFilter.getExprs(), execCxt) ;
+            OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
+            return executeBGP(graph, opBGP, input, opFilter.getExprs(), execCxt) ;
         }
         
         // (filter (quadpattern ...))
@@ -104,37 +105,43 @@ public class OpExecutorTDB extends OpExecutor
             return super.execute(opBGP, input) ;
         
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        return executeBGP(graph, opBGP, input, null, execCxt) ;
+       
+    }
+
+    @Override
+    protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
+    {
+        if ( ! isForTDB )
+            return super.execute(quadPattern, input) ;
+            
+    //        DatasetGraph dg = execCxt.getDataset() ;
+    //        if ( ! ( dg instanceof DatasetGraphTDB ) )
+    //            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
         
+        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
+        BasicPattern bgp = quadPattern.getBasicPattern() ;
+        Node gn = quadPattern.getGraphNode() ;
+        return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
+    }
+
+    /** Execute a BGP (and filters) on a TDB graph, which may be in default storage or it may be a named graph */ 
+    private static QueryIterator executeBGP(GraphTDB graph, OpBGP opBGP, QueryIterator input, ExprList exprs, 
+                                         ExecutionContext execCxt)
+    {
         // Is it the real default graph (normal route or explicitly named)?
         if ( ! isDefaultGraphStorage(graph.getGraphNode()))
         {
             // Not default storage - it's a named graph in storage. 
             DatasetGraphTDB ds = graph.getDataset() ;
-            return optimizeExecuteQuads(ds, input, graph.getGraphNode(), opBGP.getPattern(), null, execCxt) ;
+            return optimizeExecuteQuads(ds, input, graph.getGraphNode(), opBGP.getPattern(), exprs, execCxt) ;
         }
         
         // Execute a BGP on the real default graph
-        return optimizeExecuteTriples(graph, input, opBGP.getPattern(), null, execCxt) ;
+        return optimizeExecuteTriples(graph, input, opBGP.getPattern(), exprs, execCxt) ;
     }
 
-    @Override
-        protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
-        {
-            if ( ! isForTDB )
-                return super.execute(quadPattern, input) ;
-            
-    //        DatasetGraph dg = execCxt.getDataset() ;
-    //        if ( ! ( dg instanceof DatasetGraphTDB ) )
-    //            throw new InternalErrorException("Not a TDB backed dataset in quad pattern execution") ;
-            
-            DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-            BasicPattern bgp = quadPattern.getBasicPattern() ;
-            Node gn = quadPattern.getGraphNode() ;
-            return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
-        }
-
     /** Execute, with optimization, a basic graph pattern on the default graph storage */
-    /*public*/ 
     private static QueryIterator optimizeExecuteTriples(GraphTDB graph, QueryIterator input,
                                                         BasicPattern pattern, ExprList exprs,
                                                         ExecutionContext execCxt)

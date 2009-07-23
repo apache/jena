@@ -11,14 +11,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import atlas.iterator.Iter;
-import atlas.test.BaseTest;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import atlas.iterator.Iter;
+import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -26,7 +25,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
 import com.hp.hpl.jena.tdb.sys.TDBMaker;
@@ -101,8 +99,7 @@ public class TestDatasetTDB extends BaseTest
     {
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        // In-memory
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = graphLocation.getDataset() ;
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         assertFalse(ds.containsNamedModel(graphName)) ;
@@ -117,7 +114,7 @@ public class TestDatasetTDB extends BaseTest
     {
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = graphLocation.getDataset() ;
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
@@ -130,7 +127,6 @@ public class TestDatasetTDB extends BaseTest
         
         assertEquals(1, ds.asDatasetGraph().size()) ;
     }
-
 }
 
 /*
