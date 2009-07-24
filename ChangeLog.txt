@@ -1,6 +1,9 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.3
+
+
 ==== 0.8.2
 
 + TDB-backed graphs at the same location now use the shared dataset.
