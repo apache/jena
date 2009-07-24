@@ -109,7 +109,7 @@ public class Checker
 
     final private void checkURI(Node node)
     {
-        IRI iri = iriFactory.create(node.getURI()); // always works - no excpetions.
+        IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
         checkIRI(iri) ;
     }
 
@@ -123,6 +123,7 @@ public class Checker
         {
             Iterator<Violation> iter = iri.violations(true) ; 
             boolean errorSeen = false ;
+            boolean warningSeen = false ;
             
             // What to finally report.
             Violation vError = null ;
@@ -143,12 +144,19 @@ public class Checker
                     continue ;
                 }
                 
+                // Remember first.
                 if ( v.isError() )
                 {
                     errorSeen = true ;
                     if ( vError != null )
                         // Remember first error
                         vError = v ;
+                }
+                else
+                {
+                    warningSeen = true ;
+                    if ( vWarning != null )
+                        vWarning = v ;
                 }
                 
                 String msg = v.getShortMessage();
@@ -166,8 +174,18 @@ public class Checker
             }
             
             // and report our choosen error.
-            if ( errorSeen || warningsAreErrors )
-                handler.error("Bad IRI: "+iri) ;
+            if ( errorSeen || (warningsAreErrors && warningSeen) )
+            {
+                String msg = null ;
+                if ( vError != null ) msg = vError.getShortMessage() ;
+                if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
+                if ( msg == null )
+                    handler.error("Bad IRI: "+iri) ;
+                else
+                    handler.error("Bad IRI: "+iri+" : "+msg) ;
+                
+                
+            }
         }
     
     }

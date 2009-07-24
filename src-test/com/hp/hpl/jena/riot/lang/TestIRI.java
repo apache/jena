@@ -4,32 +4,54 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package com.hp.hpl.jena.riot.lang;
 
-import com.hp.hpl.jena.riot.lang.TestIRI;
-import com.hp.hpl.jena.riot.lang.TestLangNTriples;
-import com.hp.hpl.jena.riot.lang.TestLangTurtle;
-import com.hp.hpl.jena.riot.lang.TestSuiteTurtle;
-import com.hp.hpl.jena.riot.lang.TestTurtleInternal;
-import com.hp.hpl.jena.riot.tokens.TestTokenizer;
+import org.junit.Test;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.riot.Checker;
+import com.hp.hpl.jena.riot.ErrorHandler;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    , TestTurtleInternal.class
-    , TestLangNTriples.class
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-})
-
-public class TS_Riot
+public class TestIRI
 {
+    private static class ExFatal extends RuntimeException {} ;
+    private static class ExError extends RuntimeException {} ;
+    private static class ExWarning extends RuntimeException {} ;
+    
 
+    static ErrorHandler handler = new ErrorHandler()
+    {
+        public void error(String message)
+        { throw new ExError() ; }
+
+        public void fatalError(String message)
+        { throw new ExFatal() ; }
+
+        public void warning(String message)
+        { throw new ExWarning() ; }
+        
+    } ;
+    static Checker checker = new Checker(handler) ;
+    
+    static IRIFactory factory = IRIFactory.iriImplementation() ;
+    
+    @Test public void iri1()  { test("http://example/") ; }
+    @Test public void iri2()  { test("example") ; }             // Relative is OK to the checker
+    
+    @Test(expected=ExWarning.class) 
+    public void iriErr1()  { test("http:") ; }
+
+    @Test(expected=ExWarning.class) 
+    public void iriErr2()  { test("http:///::") ; }
+
+    
+    private void test(String uriStr)
+    {
+        IRI iri = factory.create(uriStr) ;
+        checker.checkIRI(iri) ;
+    }
+    
 }
 
 /*
