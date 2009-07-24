@@ -13,8 +13,8 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"        value="0"/>
   <property name="version-minor"        value="8"/>
-  <property name="version-revision"     value="2"/>
-  <property name="version-status"       value=""/>
+  <property name="version-revision"     value="3"/>
+  <property name="version-status"       value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
@@ -36,7 +36,7 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-publish, repo-local -->
-  <property name="publish.repo"     value="repo-publish"/>
+  <property name="publish.repo"     value="repo-local"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
