@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+ * $Id: TestTypedLiterals.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:40 $
+ * @version $Revision: 1.2 $ on $Date: 2009-07-27 09:13:36 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -108,7 +108,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Check we can create a literal of an unregistered java type without anything blowing up
         Object foo = new java.sql.Date(123456l);
-        LiteralLabel ll = new LiteralLabel(foo);
+        LiteralLabel ll = LiteralLabelFactory.create(foo);
         assertEquals(ll.getLexicalForm(), foo.toString());
     }
     
@@ -1074,12 +1074,12 @@ public class TestTypedLiterals extends TestCase {
      * Check parse/unparse loop.
      */
     public void doTestRoundTrip(String lex, RDFDatatype dt, boolean testeq) {
-        LiteralLabel ll = LiteralLabel.createLiteralLabel( lex, "", dt );
+        LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
         String lex2 = dt.unparse(ll.getValue());
         if (testeq) {
             assertEquals(lex, lex2);
         }
-        LiteralLabel ll2 = LiteralLabel.createLiteralLabel( lex2, "", dt );
+        LiteralLabel ll2 = LiteralLabelFactory.createLiteralLabel( lex2, "", dt );
         assertTrue( ll2.isWellFormed() );
     }
     

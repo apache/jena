@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: Util.java,v 1.2 2009-07-27 09:13:37 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+ * @version $Revision: 1.2 $ on $Date: 2009-07-27 09:13:37 $
  */
 public class Util {
 
@@ -170,7 +170,7 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return Node.createLiteral(new LiteralLabel(new Integer(value)));
+        return Node.createLiteral(LiteralLabelFactory.create(new Integer(value)));
     }
     
     /**
@@ -178,9 +178,9 @@ public class Util {
      */
     public static Node makeLongNode(long value) {
         if (value > Integer.MAX_VALUE) {
-            return Node.createLiteral(new LiteralLabel(new Long(value)));
+            return Node.createLiteral(LiteralLabelFactory.create(new Long(value)));
         } else {
-            return Node.createLiteral(new LiteralLabel(new Integer((int)value)));
+            return Node.createLiteral(LiteralLabelFactory.create(new Integer((int)value)));
         }
     }
     
@@ -188,7 +188,7 @@ public class Util {
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        return Node.createLiteral(new LiteralLabel(new Double(value)));
+        return Node.createLiteral(LiteralLabelFactory.create(new Double(value)));
     }
     
     /**

@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+ 	$Id: TestLiteralLabels.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 
 import junit.framework.*;
 
@@ -27,13 +28,13 @@ public class TestLiteralLabels extends GraphTestBase
     
     public void testHashCode()  
         {
-        LiteralLabel ll = new LiteralLabel( "test", "", null );
+        LiteralLabel ll = LiteralLabelFactory.create( "test", "", null );
         ll.hashCode();
         }
 
     public void testHashCode2() 
         {
-        LiteralLabel ll = new LiteralLabel( "test",  "", null );
+        LiteralLabel ll = LiteralLabelFactory.create( "test",  "", null );
         ll.hashCode();
         }    
     
@@ -62,16 +63,16 @@ public class TestLiteralLabels extends GraphTestBase
                 return false; 
                 }
             };
-        LiteralLabel A = new LiteralLabel( "17", "", d );
-        LiteralLabel B = new LiteralLabel( "17", "", null );
+        LiteralLabel A = LiteralLabelFactory.create( "17", "", d );
+        LiteralLabel B = LiteralLabelFactory.create( "17", "", null );
         assertFalse( A.sameValueAs( B ) );
         }
 
     // AFS
     public void testEquality1()
     {
-        LiteralLabel A = new LiteralLabel("xyz") ;
-        LiteralLabel B = new LiteralLabel("xyz") ;
+        LiteralLabel A = LiteralLabelFactory.create("xyz") ;
+        LiteralLabel B = LiteralLabelFactory.create("xyz") ;
         assertTrue(A.equals(B)) ;
         assertTrue(A.sameValueAs(B)) ;
         assertEquals(A.hashCode(), B.hashCode()) ;
@@ -79,24 +80,24 @@ public class TestLiteralLabels extends GraphTestBase
     
     public void testEquality2()
     {
-        LiteralLabel A = new LiteralLabel("xyz") ;
-        LiteralLabel B = new LiteralLabel("XYZ") ;
+        LiteralLabel A = LiteralLabelFactory.create("xyz") ;
+        LiteralLabel B = LiteralLabelFactory.create("XYZ") ;
         assertFalse(A.equals(B)) ;
         assertFalse(A.sameValueAs(B)) ;
     }
 
     public void testEquality3()
     {
-        LiteralLabel A = new LiteralLabel("xyz", "en-us") ;
-        LiteralLabel B = new LiteralLabel("xyz", "en-uk") ;
+        LiteralLabel A = LiteralLabelFactory.create("xyz", "en-us") ;
+        LiteralLabel B = LiteralLabelFactory.create("xyz", "en-uk") ;
         assertFalse(A.equals(B)) ;
         assertFalse(A.sameValueAs(B)) ;
     }
 
     public void testEquality4()
     {
-        LiteralLabel A = new LiteralLabel("xyz", "en-UK") ;
-        LiteralLabel B = new LiteralLabel("xyz", "en-uk") ;
+        LiteralLabel A = LiteralLabelFactory.create("xyz", "en-UK") ;
+        LiteralLabel B = LiteralLabelFactory.create("xyz", "en-uk") ;
         assertFalse(A.equals(B)) ;
         assertTrue(A.sameValueAs(B)) ;
     }

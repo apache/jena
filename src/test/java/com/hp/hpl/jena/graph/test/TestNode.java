@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+  $Id: TestNode.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -33,7 +33,7 @@ public class TestNode extends GraphTestBase
     
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
-    private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
+    private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
     private static final AnonId A = AnonId.create();
 
     public void testBlanks()
@@ -104,10 +104,10 @@ public class TestNode extends GraphTestBase
             {
             Node.cache( false );           
             AnonId id = AnonId.create();
-            LiteralLabel L2 = new LiteralLabel( id.toString(), "", false );
+            LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
             
-            LiteralLabel LLang1 = new LiteralLabel( "xyz", "en", null) ;
-            LiteralLabel LLang2 = new LiteralLabel( "xyz", "EN", null) ;
+            LiteralLabel LLang1 = LiteralLabelFactory.create( "xyz", "en", null) ;
+            LiteralLabel LLang2 = LiteralLabelFactory.create( "xyz", "EN", null) ;
             
             String U2 = id.toString();
             String N2 = id.toString();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.1 2009-06-29 08:55:44 castagna Exp $
+  $Id: Node.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -72,7 +73,7 @@ public abstract class Node {
         {
         if (lit == null) throw new NullPointerException
             ( "null for literals has been illegal since Jena 2.0" );
-        return createLiteral( new LiteralLabel( lit, lang, isXml ) ); 
+        return createLiteral( LiteralLabelFactory.create( lit, lang, isXml ) ); 
         }    
         
     /**
@@ -87,11 +88,11 @@ public abstract class Node {
      */
     public static Node createLiteral( String lex, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return createLiteral( LiteralLabel.createLiteralLabel( lex, lang, dtype ) ); }
+        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, lang, dtype ) ); }
     
     public static Node createUncachedLiteral( Object value, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return new Node_Literal( new LiteralLabel( value, lang, dtype ) ); }
+        { return new Node_Literal( LiteralLabelFactory.create( value, lang, dtype ) ); }
                                                    
     /**
         Visit a Node and dispatch on it to the appropriate method from the 

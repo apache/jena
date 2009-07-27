@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: NodeCreateUtils.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+ 	$Id: NodeCreateUtils.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
@@ -120,8 +121,8 @@ public class NodeCreateUtils
         String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
-            ? new LiteralLabel( content, langOrType, false )
-            : LiteralLabel.createLiteralLabel( content, "", Node.getType( pm.expandPrefix( langOrType ) ) )
+            ? LiteralLabelFactory.create( content, langOrType, false )
+            : LiteralLabelFactory.createLiteralLabel( content, "", Node.getType( pm.expandPrefix( langOrType ) ) )
             ;
         }
 

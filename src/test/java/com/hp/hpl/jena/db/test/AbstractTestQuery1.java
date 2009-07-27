@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.1 2009-06-29 08:55:54 castagna Exp $
+  $Id: AbstractTestQuery1.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -248,7 +248,7 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
 		boolean isRef = u.charAt(0) == 'U';
         return 
             isRef ? makeResource( u.substring(1) )
-            : Node.createLiteral( new LiteralLabel( expandLong( u ) ) );	
+            : Node.createLiteral( LiteralLabelFactory.create( expandLong( u ) ) );	
 	}
 
     protected String expandLong( String s )

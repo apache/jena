@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+  $Id: TestTriple.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,7 @@ package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
@@ -28,7 +29,7 @@ public class TestTriple extends GraphTestBase
                 
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
-    private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
+    private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
         
     public void testTripleEquals() {
         try {
@@ -36,7 +37,7 @@ public class TestTriple extends GraphTestBase
             
             // create some nodes to test
             AnonId id = AnonId.create();
-            LiteralLabel L2 = new LiteralLabel(id.toString(), "", false);
+            LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
             String U2 = id.toString();
             String N2 = id.toString();
             

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Now.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
+ * $Id: Now.java,v 1.2 2009-07-27 09:13:37 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -14,7 +14,7 @@ import java.util.Calendar;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * Bind the first arg to the current date time in the current locale and timezone.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class Now extends BaseBuiltin {
 
@@ -54,7 +54,7 @@ public class Now extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
-        Node now = Node.createLiteral( new LiteralLabel(new XSDDateTime(Calendar.getInstance())) );
+        Node now = Node.createLiteral( LiteralLabelFactory.create(new XSDDateTime(Calendar.getInstance())) );
         return env.bind(args[0], now);
     }
 }
