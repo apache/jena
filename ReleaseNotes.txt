@@ -2,7 +2,9 @@ Release Notes
 =============
 
 
-==== Jena 2.6.1
+==== Jena 2.6.2
+
++ Colapse LiteralLabel and Node_Literal. 
 
 + Maven-style codebase layout.
 
@@ -14,6 +16,8 @@ Release Notes
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:
   arq.jar, arq-extra.jar, lucene-core-2.3.1.jar, json.jar, stax-api-1.0.jar, wstx-asl-3.0.0.jar 
+
+(Jena 2.6.1 is an internal tag, not a release) 
 
 ==== Jena 2.6.0
 
