@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import com.hp.hpl.jena.n3.turtle.TurtleEventDump;
+import com.hp.hpl.jena.n3.turtle.Turtle2NTriples;
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
@@ -24,7 +24,13 @@ public class turtle
     /** Run the Turtle parser in debugging mode */  
     public static void main(String[] args)
     {
-
+        if ( args.length == 0 )
+        {
+            parse("http://example/BASE", System.in) ;
+            return ;
+        }
+        
+        
         for ( int i = 0 ; i < args.length ; i++ )
         {
             String fn = args[i] ;
@@ -50,16 +56,10 @@ public class turtle
     public static void parse(String baseURI, InputStream in)
     {
         Reader reader = FileUtils.asUTF8(in) ;
-        parseDebug(baseURI, reader) ;
-    }
-
-
-    public static void parseDebug(String baseURI, Reader reader)
-    {
-        // Nasty things happen if the reader is not UTF-8.
         try {
             TurtleParser parser = new TurtleParser(reader) ;
-            parser.setEventHandler(new TurtleEventDump()) ;
+            //parser.setEventHandler(new TurtleEventDump()) ;
+            parser.setEventHandler(new Turtle2NTriples(System.out)) ;
             parser.setBaseURI(baseURI) ;
             parser.parse() ;
         }
