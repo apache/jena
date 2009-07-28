@@ -1,0 +1,94 @@
+<!-- This is an example of the commplet list of dependences for ARQ -->
+
+<project>
+
+  <properties>
+    <!-- ${project.artifactId} -->
+    <this.name>arq</this.name>
+    <!-- ${project.version} -->
+    <this.version>2.8.0</this.version>
+  </properties>
+
+
+  <dependencies>
+
+    <!-- ======== -->
+
+    <!-- The main jar file -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+    </dependency>
+
+    <!-- Javadoc : should come with main jar -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <classifier>javadoc</classifier>
+      <type>jar</type>
+    </dependency>
+
+    <!-- Source code for the main jar  : should come with main jar -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <classifier>sources</classifier>
+      <type>jar</type>
+    </dependency>
+
+    <!-- ======== -->
+
+    <!-- The testing code as a jar file -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- The data files needed for tessing 
+         Unpack this file and place at "testing/"
+    -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <classifier>tests</classifier>
+      <type>zip</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Source code for the test jar : should come with test jar -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <classifier>sources</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- ======== -->
+
+    <!-- The distribution, as a zip file in maven -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <type>zip</type>
+    </dependency>
+
+    <!-- The POM -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>${this.name}</artifactId>
+      <version>${this.version}</version>
+      <type>pom</type>
+    </dependency>
+
+  </dependencies>
+</project>
