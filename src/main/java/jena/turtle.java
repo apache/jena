@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class turtle
 {
-    /** Run the Turtle parser in debugging mode */  
+    /** Run the Turtle parser - produce N-triples */
     public static void main(String[] args)
     {
         if ( args.length == 0 )
