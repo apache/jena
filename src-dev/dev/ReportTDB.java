@@ -1,18 +1,15 @@
 package dev;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.StringReader;
-
-import org.junit.Test;
-
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class ReportTDB
@@ -20,77 +17,72 @@ public class ReportTDB
     public static void main(String[] args) throws Exception
     {
         Dataset ds = TDBFactory.createDataset();
-
-        Model model = ds.getNamedModel("http://example.org/");
-
-        String rdf =
-            "@prefix ex: <http://example.org/ontology.owl#> . " +
-            "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . " +
-
-            "<http://event1/> a ex:Event . " +
-            "<http://event1/> ex:size 1 . " +
-
-            "<http://event2/> a ex:Event . " +
-            "<http://event2/> ex:size 5 . ";
-
-        model.read(new StringReader(rdf), null, "TURTLE");
-
-        String query =
-            "PREFIX ex: <http://example.org/ontology.owl#> " +
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-
-            "SELECT ?event WHERE { " +
-            "?event a ex:Event . " +
-            "?event ex:size ?size . " +
-            "FILTER (?size < 3) " +
-            "}";
-
-        ResultSet resultSet =
-            QueryExecutionFactory.create(QueryFactory.create(query),
-                                         model).execSelect();
-
-        ResultSetFormatter.out(resultSet) ;
-        //String uri = resultSet.nextSolution().getResource("event").getURI();
+        Model m1 = ds.getNamedModel("http://example/g1")  ;
+        
+        Graph g1 = ds.asDatasetGraph().getGraph(Node.createURI("http://example/g1")) ;
+        g1.add(SSE.parseTriple("(<x> <p> 1)")) ;
+        
+        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI("http://example/g2")) ;
+        g2.add(SSE.parseTriple("(<x> <p> 2)")) ;
+        Model m2 = ds.getNamedModel("http://example/g2")  ;
+        
+        TDB.sync(ds) ;
+        System.out.println(ds.containsNamedModel("http://example/g1")) ;
+        System.out.println(ds.asDatasetGraph().containsGraph(Node.createURI("http://example/g1"))) ;
+        //g1.getBulkUpdateHandler().removeAll() ;
+        //g1.delete(SSE.parseTriple("(<x> <p> 1)")) ;
+        m1.removeAll() ;
+        
+        System.out.println(ds.containsNamedModel("http://example/g1")) ;
+        System.out.println(ds.asDatasetGraph().containsGraph(Node.createURI("http://example/g1"))) ;
     }
-    
-    @Test
-    public void testTDBNamedModelWithFilterQuery() {
-        Dataset ds = TDBFactory.createDataset();
+        
+    public static void exec(Dataset ds) throws Exception
+    {
+        Query query = QueryFactory.create("SELECT * FROM NAMED <http://example/named> { ?s ?p ?o }"); 
+        
+        System.out.println("No union set") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.out.println("Per-exec union set true") ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.out.println("No union set") ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.out.println("Global union set true") ;
+        TDB.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.out.println("Per-exec union set false") ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, false) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.out.println("Global set false") ;
+        TDB.getContext().set(TDB.symUnionDefaultGraph, false) ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
 
-        Model model = ds.getNamedModel("http://example.org/");
+        System.out.println("Global unset") ;
+        TDB.getContext().remove(TDB.symUnionDefaultGraph) ;
+        qExec = QueryExecutionFactory.create(query, ds) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        
+        System.exit(0) ;
 
-        String rdf =
-            "@prefix ex: <http://example.org/ontology.owl#> . " +
-            "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . " +
-
-            "<http://event1/> a ex:Event . " +
-            "<http://event1/> ex:size 1 . " +
-
-            "<http://event2/> a ex:Event . " +
-            "<http://event2/> ex:size 5 . ";
-
-        model.read(new StringReader(rdf), null, "TURTLE");
-
-        String query =
-            "PREFIX ex: <http://example.org/ontology.owl#> " +
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-
-            "SELECT ?event WHERE { " +
-            "?event a ex:Event . " +
-            "?event ex:size ?size . " +
-            "FILTER (?size < 3) " +
-            "}";
-
-        ResultSet resultSet =
-            QueryExecutionFactory.create(QueryFactory.create(query),
-                                         model).execSelect();
-
-        assertThat(resultSet.hasNext(), is(true));
-
-        String uri = resultSet.nextSolution().getResource("event").getURI();
-        assertThat(uri, equalTo("http://event1/"));
-
-        assertThat(resultSet.hasNext(), is(false));
     }
 }
 

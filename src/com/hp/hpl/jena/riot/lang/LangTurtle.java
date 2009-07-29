@@ -205,7 +205,7 @@ public class LangTurtle extends LangBase
         String iriStr = tokenRaw().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
-        getChecker().checkIRI(iri) ;
+        if ( getChecker() != null ) getChecker().checkIRI(iri) ;
         prologue.getPrefixMap().add(prefix, iri) ;
         move() ;
         if ( VERBOSE ) log.info("@prefix "+prefix+":  "+iri.toString()) ;
@@ -217,7 +217,7 @@ public class LangTurtle extends LangBase
         String baseStr = tokenRaw().getImage() ;
         // CHECK
         IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
-        getChecker().checkIRI(baseIRI) ;
+        if ( getChecker() != null ) getChecker().checkIRI(baseIRI) ;
         
         if ( VERBOSE ) log.info("@base <"+baseIRI+">") ;
         move() ;
@@ -324,8 +324,9 @@ public class LangTurtle extends LangBase
         // Resolve
         // CHECK
         // This is the only place where Nodes are created for triples.
-        Node n = token().asNode() ; 
-        getChecker().check(n) ; 
+        Node n = token().asNode() ;
+        if ( getChecker() != null )
+            getChecker().check(n) ; 
         return n ;
     }
     

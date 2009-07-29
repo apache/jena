@@ -59,38 +59,6 @@ import dump.DumpNodes;
 
 public class RunTDB
 {
-//    public class NodeExtra extends Node
-//    {
-//
-//        /**
-//         * @param label
-//         */
-//        NodeExtra(Object label)
-//        {
-//            super(label) ;
-//        }
-//
-//        @Override
-//        public boolean equals(Object o)
-//        {
-//            return false ;
-//        }
-//
-//        @Override
-//        public boolean isConcrete()
-//        {
-//            return false ;
-//        }
-//
-//        @Override
-//        public Object visitWith(NodeVisitor v)
-//        {
-//            return null ;
-//        }
-//        
-//    }
-    
-    
     static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Iterator;
 
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;

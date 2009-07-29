@@ -10,8 +10,16 @@ public class DevTDB
 {
     // ** metadata files and BPT creation ==> NewSetup and DI
     
-    // == 0.8.2
-    // ARQ bug and Metadata - only one file read!
+    // FROM NAMED, FROM in a query to a TDB dataset
+    //  Currently, ignored (actually, loaded by QueryExecutionBase and ignored).
+    //  Swap to in-memory dataset?
+    
+    // RIOT: Checking in tokenizer and Turtle parser.  
+    // Need to cache in turtle parser.  Null checker.
+    // Resolution requires IRi so do checking there.  Raw mode (no resoltion)?
+    
+    // == 0.8.3
+
     
     // Publish => release and upload the zip to maven area.
     // IVY publish a zip
