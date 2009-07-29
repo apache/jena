@@ -1,7 +1,4 @@
 @prefix : <http://test/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:test
-rdfs:label """why escaped quotes in \"3-quoted\"
-strings ?"""@en .
-
+<http:> <illegal URI> "foo" .

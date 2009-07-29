@@ -25,19 +25,25 @@ public class ReportTDB
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI("http://example/g2")) ;
         g2.add(SSE.parseTriple("(<x> <p> 2)")) ;
         Model m2 = ds.getNamedModel("http://example/g2")  ;
-        
         TDB.sync(ds) ;
+        
+        execContains(ds) ;
+    }
+    
+    public static void execContains(Dataset ds) throws Exception
+    {       
         System.out.println(ds.containsNamedModel("http://example/g1")) ;
         System.out.println(ds.asDatasetGraph().containsGraph(Node.createURI("http://example/g1"))) ;
         //g1.getBulkUpdateHandler().removeAll() ;
         //g1.delete(SSE.parseTriple("(<x> <p> 1)")) ;
+        Model m1 = ds.getNamedModel("http://example/g1")  ;
         m1.removeAll() ;
         
         System.out.println(ds.containsNamedModel("http://example/g1")) ;
         System.out.println(ds.asDatasetGraph().containsGraph(Node.createURI("http://example/g1"))) ;
     }
         
-    public static void exec(Dataset ds) throws Exception
+    public static void execSymUnion(Dataset ds) throws Exception
     {
         Query query = QueryFactory.create("SELECT * FROM NAMED <http://example/named> { ?s ?p ?o }"); 
         
