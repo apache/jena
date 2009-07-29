@@ -69,9 +69,12 @@ public class DatasetImpl implements Dataset
     }
 
     public boolean containsNamedModel(String uri)
-    { 
-        if ( cache.containsKey(uri) )
-            return true ;
+    {
+        // Don't look in the cache - just ask the DSG which either caches graphs
+        // or asks the storage as needed. The significant case is whether an
+        // empty graph is contained in a dataset.  If it's pure quad storage,
+        // the answer is usually better as "no"; if it's an in-memory
+        // dataset the answer is "yes". 
         return dsg.containsGraph(Node.createURI(uri)) ;
     }
 
