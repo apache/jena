@@ -75,6 +75,21 @@ public class  BindingProject extends BindingBase
     {
         return projectionVars.size() ;
     }
+    
+    // NB is the projection and the binding don't overlap it is also empty. 
+    @Override
+    protected boolean isEmpty1()
+    {
+        if ( projectionVars.isEmpty() ) return true ;
+        if ( binding.isEmpty() ) return true ;
+        return false ;
+//        for ( Var v : projectionVars )
+//        {
+//            if ( binding.contains(v))  
+//                return false ;
+//        }
+//        return true ;
+    }
 }
 
 /*

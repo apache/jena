@@ -39,7 +39,8 @@ public class BindingMap extends BindingBase
     @Override
     protected int size1() { return map.size() ; }
     
-
+    @Override
+    protected boolean isEmpty1() { return map.isEmpty() ; }
     
     /** Iterate over all the names of variables.
      */

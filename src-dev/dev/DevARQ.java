@@ -9,7 +9,9 @@ package dev;
 public class DevARQ
 {
     // ==== 2.8.1
-
+    // Binding.isEmpty - implement with isEmpty1 not a size()
+    
+    
     // ==== ARQ
     // JMX
     //   Query count

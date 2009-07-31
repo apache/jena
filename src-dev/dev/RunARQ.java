@@ -64,13 +64,10 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        String DIR = "testing/ARQ/Describe/" ;
-        arq.sparql.main("--data="+DIR+"data-0.ttl",
-                        "--named="+DIR+"data-1.ttl",
-                        "--named="+DIR+"data-2.ttl",
-                        "--query="+DIR+"describe-06.rq",
-                        "--results=TTL") ;
-        System.exit(0) ;
+        
+        
+        execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
+
         
         qparse("--file=Q.arq", "--print=op") ;
         report() ;

@@ -40,6 +40,9 @@ public class Binding1 extends BindingBase
     @Override
     protected int size1() { return 1 ; }
     
+    @Override
+    protected boolean isEmpty1() { return false ; }
+    
     /** Iterate over all the names of variables.
      */
     @Override

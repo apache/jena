@@ -19,22 +19,18 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.op.OpService;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.PathLib;
 
 public class Substitute
 {
-    public static Op substitute(Op op, Binding b)
+    public static Op substitute(Op op, Binding binding)
     {
         // Want to avoid cost if the binding is empty 
         // but the empty test is not zero-cost on non-empty things.
      
-        if ( b instanceof BindingRoot )
-            // The root binding is empty.
-            return op ;
-        
-        return Transformer.transform(new OpSubstituteWorker(b), op) ;
+        if ( isNotNeeded(binding) ) return op ;
+        return Transformer.transform(new OpSubstituteWorker(binding), op) ;
     }
     
     public static Op substitute(Op op, Var var, Node node)
@@ -45,9 +41,7 @@ public class Substitute
     
     public static BasicPattern substitute(BasicPattern bgp, Binding binding)
     {
-        if ( binding instanceof BindingRoot )
-            // The root binding is empty.
-            return bgp ;
+        if ( isNotNeeded(binding) ) return bgp ;
         
         BasicPattern bgp2 = new BasicPattern() ;
         for ( Triple triple : bgp )
@@ -60,10 +54,19 @@ public class Substitute
     
     public static Triple substitute(Triple triple, Binding binding)
     {
-        Node s = substitute(triple.getSubject(), binding) ;
-        Node p = substitute(triple.getPredicate(), binding) ;
-        Node o = substitute(triple.getObject(), binding) ;
-        Triple t = new Triple(s, p, o) ;
+        if ( isNotNeeded(binding) ) return triple ;
+        
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        
+        Node s1 = substitute(s, binding) ;
+        Node p1 = substitute(p, binding) ;
+        Node o1 = substitute(o, binding) ;
+
+        Triple t = triple ;
+        if ( s1 != s || p1 != p || o1 != o )
+            t = new Triple(s1, p1, o1) ;
         return t ;
     }
 
@@ -72,6 +75,11 @@ public class Substitute
         return Var.lookup(b, n) ;
     }
 
+    private static boolean isNotNeeded(Binding b)
+    {
+        return b.isEmpty() ; 
+    }
+    
     // ----
     private static class OpSubstituteWorker extends TransformCopy
     {

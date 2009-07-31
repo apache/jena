@@ -96,7 +96,17 @@ abstract public class BindingBase implements Binding
     
     protected abstract int size1() ;
     
-    public boolean isEmpty() { return size() == 0 ; }
+    public boolean isEmpty() 
+    {
+        if ( ! isEmpty1() ) 
+            return false ;
+        if ( parent == null )
+            return true ;
+        return parent.isEmpty() ;
+    }
+    //{ return size() == 0 ; }
+    
+    protected abstract boolean isEmpty1() ;
     
     /** Test whether a name is bound to some object */
     public boolean contains(Var var)

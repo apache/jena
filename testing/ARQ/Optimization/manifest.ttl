@@ -79,6 +79,7 @@
         mf:result  <opt-equals-10.srx>
       ]
 
+    ## Assumes strict (no value equality) evaluation.
       [  mf:name    "opt-sameTerm-01" ;
          rdf:type   mfx:TestQuery ; 
          mf:action

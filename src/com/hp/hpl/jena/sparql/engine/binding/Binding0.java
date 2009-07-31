@@ -36,6 +36,9 @@ public class Binding0 extends BindingBase
     protected int size1() { return 0 ; }
     
     @Override
+    protected boolean isEmpty1() { return true ; }
+    
+    @Override
     public boolean contains1(Var var) { return false ; }
     
     @Override
