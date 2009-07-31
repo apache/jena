@@ -17,7 +17,7 @@
 	<classpathentry kind="lib" path="lib/junit-4.5.jar" sourcepath="src-other/junit-4.5-src.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_19"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.0-tests.jar" sourcepath="arq-2.8.0-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.0.jar" sourcepath="arq-2.8.0-sources.jar"/>
