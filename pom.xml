@@ -43,6 +43,7 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jenatest</artifactId>
       <version>2.6.0</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
