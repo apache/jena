@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabelImpl.java,v 1.1 2009-07-27 09:13:26 andy_seaborne Exp $
+  $Id: LiteralLabelImpl.java,v 1.2 2009-08-01 18:51:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -49,7 +49,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * equality. For plain literals it is not ignored. The lang of a
 	 * literal is fixed when it is created.
 	 */
-	final private String lang;
+	/*final*/ private String lang;
 
 	/**
 	 * Indicates whether this is a legal literal. The working groups requires
@@ -78,27 +78,33 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * @param dtype the type of the literal, null for old style "plain" literals
 	 * @throws DatatypeFormatException if lex is not a legal form of dtype
 	 */
-	LiteralLabelImpl(String lex, String lang, RDFDatatype dtype)
-		throws DatatypeFormatException {
-        lexicalForm = lex;
-		this.dtype = dtype;
-		this.lang = (lang == null ? "" : lang);
-		if (dtype == null) {
-			value = lex;
-		} else {
-			setValue(lex);
-		}
-        normalize();
+	LiteralLabelImpl(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException
+	{
+	    setLiteralLabel_1(lex, lang, dtype) ;
 	}
 
-	/**
-	 * Build a plain literal label from its lexical form. 
-	 * @param lex the lexical form of the literal
-	 * @param lang the optional language tag, only relevant for plain literals
-	 */
-	LiteralLabelImpl(String lex, String lang) {
-		this(lex, lang, null);
-	}
+	private void setLiteralLabel_1(String lex, String lang, RDFDatatype dtype)
+        throws DatatypeFormatException {
+        lexicalForm = lex;
+        this.dtype = dtype;
+        this.lang = (lang == null ? "" : lang);
+        if (dtype == null) {
+            value = lex;
+        } else {
+            setValue(lex);
+        }
+        normalize();
+    }
+	
+//	// NOT CALLED
+//	/**
+//	 * Build a plain literal label from its lexical form. 
+//	 * @param lex the lexical form of the literal
+//	 * @param lang the optional language tag, only relevant for plain literals
+//	 */
+//	LiteralLabelImpl(String lex, String lang) {
+//		this(lex, lang, null);
+//	}
 
 	/**
 	 * Build a typed literal label from its value form. If the value is a string we
@@ -109,8 +115,25 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * @param dtype the type of the literal, null for old style "plain" literals
 	 */
 	LiteralLabelImpl(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-		this.dtype = dtype;
-		this.lang = (lang == null ? "" : lang);
+	    setLiteralLabel_2(value, lang, dtype) ;
+	}
+	
+	/**
+	 * Build a typed literal label from its value form using
+	 * whatever datatype is currently registered as the the default
+	 * representation for this java class. No language tag is supplied.
+	 * @param value the literal value to encapsulate
+	 */
+	LiteralLabelImpl(Object value) {
+		//this(value, "", TypeMapper.getInstance().getTypeByValue(value));
+		setLiteralLabel_2(value, "", TypeMapper.getInstance().getTypeByValue(value));
+	}
+
+	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) throws DatatypeFormatException
+    {
+        // Constructor extraction: Preparation for moving into Node_Literal.
+        this.dtype = dtype;
+        this.lang = (language == null ? "" : language);
         if (value instanceof String) {
             String lex = (String)value;
             lexicalForm = lex;
@@ -120,7 +143,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
                 setValue(lex);
             }
         } else {
-		    this.value = (dtype == null) ? value : dtype.cannonicalise( value );
+            this.value = (dtype == null) ? value : dtype.cannonicalise( value );
         }
         
         normalize();
@@ -132,59 +155,35 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             if (JenaParameters.enableEagerLiteralValidation && !wellformed) {
                 throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
             }
-        }
-	}
+        } 
+    }
 
-	/**
-	 * Build a typed literal label supplying both value and lexical form.
-	 * The caller guarantees that the lexical form is legal, 
-	 * and the value corresponds. 
-	 * 
-	 * @param lex the lexical form of the literal
-	 * @param value the value of the literal
-	 * @param lang the optional language tag, only relevant for plain literals
-	 * @param dtype the type of the literal, null for old style "plain" literals
-	 */
-	LiteralLabelImpl(
-		String lex,
-		Object value,
-		String lang,
-		RDFDatatype dtype) {
-		this(value, lang, dtype);
-		this.lexicalForm = lex;
-	}
-
-	/**
-	 * Build a typed literal label from its value form using
-	 * whatever datatype is currently registered as the the default
-	 * representation for this java class. No language tag is supplied.
-	 * @param value the literal value to encapsulate
-	 */
-	LiteralLabelImpl(Object value) {
-		this(value, "", TypeMapper.getInstance().getTypeByValue(value));
-	}
-
-	/**
+    /**
 	 * Old style constructor. Creates either a plain literal or an
 	 * XMLLiteral.
 	 *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
 	
 	 */
 	LiteralLabelImpl(String s, String lg, boolean xml) {
-		this.lexicalForm = s;
-		this.lang = (lg == null ? "" : lg);
-		if (xml) {
-			// XML Literal
-			this.dtype = XMLLiteralType.theXMLLiteralType;
-			value = s;
-			wellformed = true;
-		} else {
-			// Plain literal
-			this.value = s;
-			this.dtype = null;
-		}
+	    setLiteralLabel_3(s, lg, xml) ;
 	}
 
+	private void setLiteralLabel_3(String s, String lg, boolean xml) {
+	    // Constructor extraction: Preparation for moving into Node_Literal.
+        this.lexicalForm = s;
+        this.lang = (lg == null ? "" : lg);
+        if (xml) {
+            // XML Literal
+            this.dtype = XMLLiteralType.theXMLLiteralType;
+            value = s;
+            wellformed = true;
+        } else {
+            // Plain literal
+            this.value = s;
+            this.dtype = null;
+        }
+    }
+	
 	/**
 	 * Internal function to set the object value from the lexical form.
 	 * Requires datatype to be set.

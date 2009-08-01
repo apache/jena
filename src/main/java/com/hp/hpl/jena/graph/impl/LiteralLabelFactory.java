@@ -38,22 +38,22 @@ public class LiteralLabelFactory
     }
 
 
-    /**
-     * Build a typed literal label supplying both value and lexical form.
-     * The caller guarantees that the lexical form is legal, 
-     * and the value corresponds. 
-     * 
-     * @param lex the lexical form of the literal
-     * @param value the value of the literal
-     * @param lang the optional language tag, only relevant for plain literals
-     * @param dtype the type of the literal, null for old style "plain" literals
-     */
-    public static LiteralLabel create(String lex,
-                                      Object value,
-                                      String lang,
-                                      RDFDatatype dtype) {
-        return new LiteralLabelImpl(lex, value, lang, dtype) ; 
-    }
+//    /**
+//     * Build a typed literal label supplying both value and lexical form.
+//     * The caller guarantees that the lexical form is legal, 
+//     * and the value corresponds. 
+//     * 
+//     * @param lex the lexical form of the literal
+//     * @param value the value of the literal
+//     * @param lang the optional language tag, only relevant for plain literals
+//     * @param dtype the type of the literal, null for old style "plain" literals
+//     */
+//    public static LiteralLabel create(String lex,
+//                                      Object value,
+//                                      String lang,
+//                                      RDFDatatype dtype) {
+//        return new LiteralLabelImpl(lex, value, lang, dtype) ; 
+//    }
 
     /**
      * Build a typed literal label from its value form using
