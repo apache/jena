@@ -64,8 +64,6 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        
-        
         execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
 
         
