@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.1 2009-06-29 08:55:42 castagna Exp $
+ * $Id: TestGenericRules.java,v 1.2 2009-08-02 15:06:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner.RuleMode;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -79,7 +80,7 @@ public class TestGenericRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestGenericRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestGenericRules( "testAddRemove2" ));
+//        suite.addTest(new TestGenericRules( "testFunctorLooping" ));
 //        return suite;
     }  
     
@@ -310,6 +311,34 @@ public class TestGenericRules extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, q, null), new Object[] {
                   new Triple(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
+              } );
+    }
+    
+    /**
+     * Test recursive rules involving functors
+     * May lock up in there is a bug.
+     */
+    public void testFunctorLooping() {
+        doTestFunctorLooping(GenericRuleReasoner.FORWARD_RETE);
+        doTestFunctorLooping(GenericRuleReasoner.HYBRID);
+    }
+    
+    /**
+     * Test recursive rules involving functors.
+     * May lock up in there is a bug.
+     * TODO: arrange test to run in a separate thread with a timeout
+     */
+    public void doTestFunctorLooping(RuleMode mode) {
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(a, r, b));
+        List<Rule> rules = Rule.parseRules( "[r0: (?x r ?y) -> (?x p func(?y)) ]" );        
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setRules(rules);
+        reasoner.setMode(mode);
+        
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, q, null), new Object[] {
               } );
     }
     

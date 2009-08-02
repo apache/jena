@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.2 2009-08-02 15:06:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -53,6 +53,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     
     /** The original rule set as supplied */
     private List<Rule> rules;
+    
+    /** Flag, if true then find results will be filtered to remove functors and illegal RDF */
+    public boolean filterFunctors = true;
     
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     protected boolean traceOn = false;
@@ -224,6 +227,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void addDeduction(Triple t) {
         getDeductionsGraph().add(t);
     }
+    
+    /**
+     * Set to true to cause functor-valued literals to be dropped from rule output.
+     * Default is true.
+     */
+    public void setFunctorFiltering(boolean param) {
+        filterFunctors = param;
+    }
    
     /**
      * Extended find interface used in situations where the implementator
@@ -238,6 +249,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     @Override
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
+        return findWithContinuation(pattern, continuation, true);
+    }
+    
+    /**
+     * Internals of findWithContinuation implementation which allows control
+     * over functor filtering.
+     */
+    private ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation, boolean filter) {
         checkOpen();
         if (!isPrepared) prepare();
         ExtendedIterator<Triple> result = null;
@@ -250,7 +269,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 result = fdata.findWithContinuation(pattern, FinderUtil.cascade(fdeductions, continuation) );
             }
         }
-        return result.filterDrop(Functor.acceptFilter);
+        if (filter && filterFunctors) {
+          return result.filterDrop(Functor.acceptFilter);
+        } else {
+            return result;
+        }
     }
    
     /** 
@@ -396,7 +419,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * where we are side-stepping the backward deduction step.
      */
     public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
-        return find(subject, predicate, object);
+        return findWithContinuation(new TriplePattern(subject, predicate, object), null, false);
     }
    
 

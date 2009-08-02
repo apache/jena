@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: GenericRuleReasoner.java,v 1.2 2009-08-02 15:06:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -363,6 +363,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         } else if (mode == FORWARD_RETE) {
                 graph = new RETERuleInfGraph(this, rules, schemaArg);
                 ((BasicForwardRuleInfGraph)graph).setTraceOn(traceOn);
+                ((BasicForwardRuleInfGraph)graph).setFunctorFiltering(filterFunctors);
         } else if (mode == BACKWARD) {
             graph = new LPBackwardRuleInfGraph(this, getBruleStore(), data, schemaArg);
             ((LPBackwardRuleInfGraph)graph).setTraceOn(traceOn);
