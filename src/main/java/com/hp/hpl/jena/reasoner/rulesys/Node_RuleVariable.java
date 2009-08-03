@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: Node_RuleVariable.java,v 1.2 2009-08-03 11:12:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-03 11:12:43 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */
@@ -45,17 +45,6 @@ public class Node_RuleVariable extends Node_Variable {
      * @param index the calculated index of this variable in the rule
      */
     public Node_RuleVariable(String label, int index) {
-        super(new VarLabel(label));
-        this.index = index;
-        this.value = this;
-    }
-         
-    /**
-     * Constructor
-     * @param label the text label for the variable
-     * @param index the calculated index of this variable in the rule
-     */
-    private Node_RuleVariable(VarLabel label, int index) {
         super(label);
         this.index = index;
         this.value = this;
@@ -141,29 +130,38 @@ public class Node_RuleVariable extends Node_Variable {
      * Clone the rule variable to allow multiple rule instaces to be active at the same time.
      */
     public Node_RuleVariable cloneNode() {
-        return new Node_RuleVariable((VarLabel)label, index);        
+        return new Node_RuleVariable(getName(), index);        
     }
     
     /** printable form */        
     @Override
     public String toString() {
-        String l = ((VarLabel)label).getLabel();
-        return (l == null) ? "*" : l;
+        if (getName() == null) return "*";
+        return "?" + getName();
     }
-    
-// Obsolete equality override this functionality has been moved into TriplePattern
-    
-//    /** Equality override - all rule variables are treated as equal
-//     *  to support easy variant matching. */
-//    public boolean equals(Object o) {
-//        return o instanceof Node_RuleVariable;
-//    }
-//        
-//    /** hash function override - all vars have same hash code to support fast
-//     *  search of variant tables */
-//    public int hashCode() {
-//        return 0xc3a7;
-//    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Node_RuleVariable) {
+            String name = getName();
+            if (name == null) {
+                return this == o;
+            } else {
+                return name.equals( ((Node_RuleVariable)o).getName() );
+            }
+        } else 
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String name = getName();
+        if (name == null) {
+            return 0xc3a7;
+        } else {
+            return name.hashCode();
+        }
+    }
 
     /**
      * Test that two nodes are semantically equivalent.
@@ -185,21 +183,6 @@ public class Node_RuleVariable extends Node_Variable {
             }
         } else {
             return n.sameValueAs(m);
-        }
-    }
-    
-    /** Inner class to wrap the label to ensure it is distinct from other usages */
-    static class VarLabel {
-        
-        /** The label being wrapped */
-        String label;
-        
-        VarLabel(String label ) {
-            this.label = label;
-        }
-        
-        public String getLabel() {
-            return label;
         }
     }
 
