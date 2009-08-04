@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+ * $Id: RETEConflictSet.java,v 1.2 2009-08-04 12:47:39 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class RETEConflictSet {
@@ -152,7 +152,9 @@ public class RETEConflictSet {
             Object hClause = rule.getHeadElement(i);
             if (hClause instanceof TriplePattern) {
                 Triple t = env.instantiate((TriplePattern) hClause);
-                if (!t.getSubject().isLiteral()) {
+                // Used to filter out triples with literal subjects
+                // but this is not necessary
+                // if (!t.getSubject().isLiteral()) {
                     // Only add the result if it is legal at the RDF level.
                     // E.g. RDFS rules can create assertions about literals
                     // that we can't record in RDF
@@ -169,7 +171,7 @@ public class RETEConflictSet {
                             engine.deleteTriple(t, true);
                         }
                     }
-                }
+              // }
             } else if (hClause instanceof Functor && isAdd) {
                 Functor f = (Functor)hClause;
                 Builtin imp = f.getImplementor();

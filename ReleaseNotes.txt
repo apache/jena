@@ -16,6 +16,8 @@ Release Notes
 Reasoners:
    o Fixed problems with pure forward rules generating functor values (fixed
      looping behaviour, fixed selective filtering of functors).
+   o Generalized rule reasoner to permit triples in subject position at
+     Graph level.
      
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.2 2009-08-02 15:06:55 der Exp $
+ * $Id: TestGenericRules.java,v 1.3 2009-08-04 12:47:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
+ * @version $Revision: 1.3 $ on $Date: 2009-08-04 12:47:40 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -331,15 +331,14 @@ public class TestGenericRules extends TestCase {
     public void doTestFunctorLooping(RuleMode mode) {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
-        List<Rule> rules = Rule.parseRules( "[r0: (?x r ?y) -> (?x p func(?y)) ]" );        
+        List<Rule> rules = Rule.parseRules( "(?x r ?y) -> (?x p func(?x)). (?x p ?y) -> (?x p func(?x))." );        
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(rules);
         reasoner.setMode(mode);
         
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, 
-              infgraph.find(null, q, null), new Object[] {
-              } );
+        // The p should have been asserted but is invisible
+        assertFalse( infgraph.contains(Node.ANY, p, Node.ANY) );
     }
     
     /**
