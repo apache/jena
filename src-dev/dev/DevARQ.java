@@ -9,8 +9,8 @@ package dev;
 public class DevARQ
 {
     // ==== 2.8.1
-    // Binding.isEmpty - implement with isEmpty1 not a size()
-    
+    // SELECT * and NOT EXISTS: don't look in the pattern for variables
+    // SELECT * { ?a :p ?v  NOT EXISTS { ?a :q ?w . FILTER(?v>23) } }
     
     // ==== ARQ
     // JMX

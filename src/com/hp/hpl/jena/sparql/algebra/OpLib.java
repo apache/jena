@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
-// NB Operations take and return nulls for convience.
+// NB Operations take and return nulls for convenience.
 
 public class OpLib
 {

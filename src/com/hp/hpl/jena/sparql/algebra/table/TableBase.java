@@ -6,21 +6,15 @@
 
 package com.hp.hpl.jena.sparql.algebra.table;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
 
 public abstract class TableBase implements Table
 {
@@ -36,38 +30,7 @@ public abstract class TableBase implements Table
 
     final public Table eval(Evaluator evaluator)  { return this ; }
     
-    // This is the SPARQL merge rule. 
-    protected static Binding merge(Binding bindingLeft, Binding bindingRight)
-    {
-        // Test to see if compatible: Iterate over variables in left
-        boolean matches = true ;
-        for ( Iterator<Var> vIter = bindingLeft.vars() ; vIter.hasNext() ; )
-        {
-            Var v = vIter.next();
-            Node nLeft  = bindingLeft.get(v) ; 
-            Node nRight = bindingRight.get(v) ;
-            
-            if ( nRight != null && ! nRight.equals(nLeft) )
-            {
-                matches = false ;
-                break ;
-            }
-        }
-        if ( ! matches ) 
-            return null ;
-        
-        // If compatible, merge. Iterate over variables in right but not in left.
-        Binding b = new BindingMap(bindingLeft) ;
-        for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
-        {
-            Var v = vIter.next();
-            Node n = bindingRight.get(v) ;
-            if ( ! bindingLeft.contains(v) )
-                b.add(v, n) ;
-        }
-        return b ;
-    }
-    
+   
     public void addBinding(Binding binding)
     { throw new UnsupportedOperationException("Table.add") ; }
     

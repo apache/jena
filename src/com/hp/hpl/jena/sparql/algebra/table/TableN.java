@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -68,8 +69,7 @@ public class TableN extends TableBase
         for ( Iterator<Binding> iter = rows.iterator() ; iter.hasNext() ; )
         {
             Binding bindingRight = iter.next() ;
-            
-            Binding r =  merge(bindingLeft, bindingRight) ;
+            Binding r =  Algebra.merge(bindingLeft, bindingRight) ;
             if ( r == null )
                 continue ;
             // This does the conditional part. Theta-join.

@@ -6,16 +6,22 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter;
@@ -146,6 +152,42 @@ public class Algebra
     {
         QueryEngineRef qe = new QueryEngineRef(op, ds, null) ;
         return qe.getPlan().iterator() ;
+    }
+    
+    // This is the SPARQL merge rule. 
+    public static Binding merge(Binding bindingLeft, Binding bindingRight)
+    {
+        // Test to see if compatible: Iterate over variables in left
+        boolean matches = compatible(bindingLeft, bindingRight) ;
+        
+        if ( ! matches ) 
+            return null ;
+        
+        // If compatible, merge. Iterate over variables in right but not in left.
+        Binding b = new BindingMap(bindingLeft) ;
+        for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
+        {
+            Var v = vIter.next();
+            Node n = bindingRight.get(v) ;
+            if ( ! bindingLeft.contains(v) )
+                b.add(v, n) ;
+        }
+        return b ;
+    }
+    
+    public static boolean compatible(Binding bindingLeft, Binding bindingRight)
+    {
+        // Test to see if compatible: Iterate over variables in left
+        for ( Iterator<Var> vIter = bindingLeft.vars() ; vIter.hasNext() ; )
+        {
+            Var v = vIter.next();
+            Node nLeft  = bindingLeft.get(v) ; 
+            Node nRight = bindingRight.get(v) ;
+            
+            if ( nRight != null && ! nRight.equals(nLeft) )
+                return false ;
+        }
+        return true ;
     }
 }
 

@@ -6,13 +6,16 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-/** Diff by materializing the RHS - this is not streamed */
+/** Diff by materializing the RHS - this is not streamed on the right */
 public class QueryIterDiff extends QueryIter2
 {
     Table tableRight ; 
@@ -21,7 +24,8 @@ public class QueryIterDiff extends QueryIter2
     public QueryIterDiff(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
         super(left, right, qCxt) ;
-        // Externalized right - share with join.
+        
+        // Materialized right.
         tableRight = TableFactory.create(getRight()) ;
         getRight().close();
     }
@@ -38,10 +42,22 @@ public class QueryIterDiff extends QueryIter2
         
         while ( getLeft().hasNext() )
         {
-            Binding b = getLeft().nextBinding() ;
-            if ( tableRight.contains(b) )
+            Binding bindingLeft = getLeft().nextBinding() ;
+            boolean accept = true ;
+            
+            for ( Iterator<Binding> iter = tableRight.iterator(null) ; iter.hasNext() ; )
             {
-                slot = b ; 
+                Binding bindingRight = iter.next() ;
+                if ( Algebra.compatible(bindingLeft, bindingRight) )
+                {
+                    accept = false ;
+                    break ;
+                }
+            }
+            
+            if ( accept )
+            {
+                slot = bindingLeft ; 
                 return true ;
             }
         }

@@ -64,6 +64,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        execQuerySSE("D.ttl", "Q.sse") ; 
+        
         execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
 
         
