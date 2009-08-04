@@ -78,8 +78,8 @@ public class JoinClassifier
         // which are also optional in the left side.
 
         // Two cases to consider::
-        // Case 1 : a variable in the RHS is optional (this is a join we are
-        // classifying).
+        // Case 1 : a variable in the RHS is optional 
+        //          (this is a join we are classifying).
         // Check no variables are optional on right if bound on the left (fixed
         // or optional)
         // Check no variables are optional on the left side, and optional on the
@@ -100,7 +100,6 @@ public class JoinClassifier
         // unfixed vars)
 
         boolean bad2 = SetUtils.intersectionP(vRightFilter, vLeftFixed) ;
-        if (print) System.err.println("bad2 = " + bad2) ;
         if (print) System.err.println("bad2 = " + bad2) ;
 
         // Linear if both intersections are empty.
