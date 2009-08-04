@@ -8,6 +8,9 @@ package dev;
 
 public class DevTDB
 {
+    // RIOT.out: NTriples writer.
+    // RIOT.out: NTriples +prefixing.
+    
     // ** metadata files and BPT creation ==> NewSetup and DI
     
     // FROM NAMED, FROM in a query to a TDB dataset
