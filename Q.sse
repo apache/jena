@@ -1,0 +1,18 @@
+(prefix ((:  <http://example/>))
+
+  (diff 
+    (bgp (?a :p ?v ))
+    (filter (> ?v 23)
+      (bgp (?a :q ?w)))
+    )
+  
+##      (filter (! (exists
+##                   (filter (> ?v 23)
+##                     (bgp (triple ?a :q ?w)))))
+##        (bgp (triple ?a :p ?v)))
+
+  )
+
+
+
+    

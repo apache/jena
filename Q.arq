@@ -1,9 +1,6 @@
-PREFIX  :        <http://example/>
-
+PREFIX : <http://example/>
 SELECT *
-{
- ?a :p1 ?b 
-    FILTER(?x > 5 )
- UNSAID { ?a :p2 ?c .  ?c :p3 ?b } 
- #?a :p1 ?b UNSAID { ?a :p2 ?c OPTIONAL { ?c :p3 ?b } }
+{ 
+    ?a :p ?v . 
+    NOT EXISTS { ?a :q ?w . FILTER(?v > 23) }
 }
