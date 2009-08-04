@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class NTriplesUtil
 {
-    // TODO - not a PrintStream because we only want ASCII
+    // TODO - Chnage to an OutputStream -- because we only want ASCII
     static public void triple(PrintStream out, Triple triple)
     {
         Node s = triple.getSubject() ;
