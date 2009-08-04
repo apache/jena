@@ -4,64 +4,68 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot.out;
 
-import atlas.event.Event;
-import atlas.event.EventListener;
-import atlas.event.EventManager;
-import atlas.event.EventType;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Iterator;
+
 import atlas.lib.Sink;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEvents;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-
-public abstract class SinkToGraph implements Sink<Triple>
+public class NTriplesWriter
 {
-    static final EventType startRead = new EventType("SinkToGraph.StartRead") ;
-    static final EventType finishRead = new EventType("SinkToGraph.FinishRead") ;
-    
-    protected final Graph graph ;
-    private EventListener el1 ;
-    private EventListener el2 ;
-
-    protected SinkToGraph(Graph g)
-    { 
-        this.graph = g ;
-        // Convert between the new global event system (EventManager)
-        // and old style Jena graph events.
-        el1 = new EventListener(){
-            //@Override
-            public void event(Object dest, Event event)
-            {
-                graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
-            }
-        } ;
-
-        el2 = new EventListener(){
-            //@Override
-            public void event(Object dest, Event event)
-            {
-                graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
-            }
-        } ;
-
-        EventManager.register(this, startRead, el1) ;
-        EventManager.register(this, finishRead, el2) ;
-
-    }
-
-    //@Override
-    public void flush() { }
-    
-    //@Override
-    public void close()
+    private static class SinkTripleOutput implements Sink<Triple>
     {
-        EventManager.unregister(this, startRead, el1) ;
-        EventManager.unregister(this, startRead, el2) ;
+        private PrintStream out ;
+
+        public SinkTripleOutput(PrintStream out) { this.out = out ; }
+        public SinkTripleOutput(OutputStream out)
+        { 
+            this.out = new PrintStream(out) ;
+        }
+        
+        public void flush()
+        {
+            out.flush();
+        }
+
+        public void send(Triple triple)
+        {
+            NTriplesUtil.triple(System.out, triple) ;
+        }
+
+        public void close()
+        {
+            out.flush();
+        }
+    }
+    
+    public static void write(PrintStream out, Graph graph)
+    {
+        Sink<Triple> sink = new SinkTripleOutput(out) ;
+        graphToSink(graph, sink) ;
     }
 
+    
+    private static void graphToSink(Graph graph, Sink<Triple> sink)
+    {
+        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        graphToSink(iter, sink) ;
+    }
+    
+    private static void graphToSink(Iterator<Triple> iter, Sink<Triple> sink)
+    {
+        for ( ; iter.hasNext() ; )
+        {
+            Triple triple = iter.next() ;
+            sink.send(triple) ;
+        }
+        sink.close();
+    }
 }
 
 /*
