@@ -1,5 +1,6 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, ;
+ * 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -28,12 +29,14 @@ import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -64,7 +67,25 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        execQuerySSE("D.ttl", "Q.sse") ; 
+	    execQuerySSE("D.ttl", "Q.sse") ; 
+    
+    
+        {
+        String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
+                                          "SELECT *",
+                                          "{",
+                                          "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
+                                          "}") ;
+        Query query = QueryFactory.create(queryString) ;
+        Op op = Algebra.compile(query) ;
+        
+        boolean b = JoinClassifier.isLinear((OpJoin)op) ;
+        
+        System.out.println(op) ;
+        System.out.println(b) ;
+        System.exit(0) ;
+        }
+        
         
         execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
 
