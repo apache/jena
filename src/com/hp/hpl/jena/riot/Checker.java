@@ -8,7 +8,8 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Iterator;
 
-import atlas.lib.CacheSetLRU;
+import atlas.lib.Cache;
+import atlas.lib.CacheFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -128,17 +129,18 @@ public class Checker
         violations(iri, handler, allowRelativeIRIs, warningsAreErrors) ;
     }
 
-    private CacheSetLRU<Node> cache = new CacheSetLRU<Node>(1000) ;
+    private Cache<Node, IRI> cache = CacheFactory.createSimpleCache(1000) ;
+    
     final private void checkURI(Node node)
     {
-        if ( cache != null && cache.contains(node) )
+        if ( cache != null && cache.containsKey(node) )
             return ;
         
         IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
         checkIRI(iri) ;
         // If OK, put in cache.
         if ( cache != null && ! iri.hasViolation(true) )
-            cache.add(node) ;
+            cache.put(node, iri) ;
     }
 
     /** Process violations on an IRI

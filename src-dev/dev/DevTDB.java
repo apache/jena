@@ -13,8 +13,6 @@ public class DevTDB
     // Graph ops <- GraphUtils.allNodes, GraphList
     // GNode?
     // G.listProperties(g, S), G.getProperty(g, S), G.getProperty(g, S, P) etc etc.Graph
-    // Lightweight cache c.f. NodeCache
-    
     
     // ** metadata files and BPT creation ==> NewSetup and DI
     

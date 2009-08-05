@@ -25,9 +25,14 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 public class OutputLangUtils
 {
     // This is FmtUtils but for writers
+    
+    // Make an object so it cna have per-instance flags
+    // ASCII vs UTF-8
+    // Abbreviate numbers or not.
+    
     private static boolean asciiOnly = true ;
 
-    static public void triple(Writer out, Triple triple, Prologue prologue)
+    static public void output(Writer out, Triple triple, Prologue prologue)
     {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
