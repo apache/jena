@@ -18,6 +18,11 @@ public class CacheFactory
     {
         return new CacheLRU<Key, T>(0.75f, maxSize) ;
     }
+    
+    public static <Key, T> Cache<Key, T> createSimpleCache(int size)
+    {
+        return new CacheSimple<Key, T>(size) ; 
+    }
 }
 
 /*
