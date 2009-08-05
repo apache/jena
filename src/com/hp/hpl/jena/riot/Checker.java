@@ -8,6 +8,8 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Iterator;
 
+import atlas.lib.CacheSetLRU;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
@@ -21,7 +23,26 @@ import com.hp.hpl.jena.shared.JenaException;
 public class Checker
 {
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
-    static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    //static IRIFactory iriFactory = IRIFactory.iriImplementation();
+    
+    /** The IRI checker setup - more than usual Jena but not full IRI. */
+    static IRIFactory iriFactory = new IRIFactory();
+    static {
+        // IRIFactory.iriImplementation() ...
+        iriFactory.useSpecificationIRI(true);
+        iriFactory.useSchemeSpecificRules("*",true);
+
+        //iriFactory.shouldViolation(false,true);
+
+        // Moderate it -- allow unwise chars and any scheme name.
+        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
+        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
+
+        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
+
+        iriFactory.create("");
+    }
     
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = true ;
@@ -107,10 +128,17 @@ public class Checker
         violations(iri, handler, allowRelativeIRIs, warningsAreErrors) ;
     }
 
+    private CacheSetLRU<Node> cache = new CacheSetLRU<Node>(1000) ;
     final private void checkURI(Node node)
     {
+        if ( cache != null && cache.contains(node) )
+            return ;
+        
         IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
         checkIRI(iri) ;
+        // If OK, put in cache.
+        if ( cache != null && ! iri.hasViolation(true) )
+            cache.add(node) ;
     }
 
     /** Process violations on an IRI
@@ -148,14 +176,14 @@ public class Checker
                 if ( v.isError() )
                 {
                     errorSeen = true ;
-                    if ( vError != null )
+                    if ( vError == null )
                         // Remember first error
                         vError = v ;
                 }
                 else
                 {
                     warningSeen = true ;
-                    if ( vWarning != null )
+                    if ( vWarning == null )
                         vWarning = v ;
                 }
                 

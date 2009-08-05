@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.riot.tokens;
 
-
 /** Various algorithms */
 public class TokenCheckerLib
 {
