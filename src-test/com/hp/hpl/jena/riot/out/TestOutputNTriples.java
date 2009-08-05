@@ -4,35 +4,33 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package com.hp.hpl.jena.riot.out;
 
-import com.hp.hpl.jena.riot.lang.TestIRI;
-import com.hp.hpl.jena.riot.lang.TestLangNTriples;
-import com.hp.hpl.jena.riot.lang.TestLangTurtle;
-import com.hp.hpl.jena.riot.lang.TestSuiteTurtle;
-import com.hp.hpl.jena.riot.lang.TestTurtleInternal;
-import com.hp.hpl.jena.riot.out.TestOutputNTriples;
-import com.hp.hpl.jena.riot.tokens.TestTokenizer;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import atlas.test.BaseTest;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    , TestTurtleInternal.class
-    , TestLangNTriples.class
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-    
-    , TestOutputNTriples.class
-})
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.riot.JenaWriterNTriples2;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
-public class TS_Riot
+public class TestOutputNTriples extends BaseTest
 {
-
+    Triple t1 = SSE.parseTriple("(<x> <p> 123)") ;
+    
+    @Test public void ntriples0()
+    {
+        Model m = ModelFactory.createDefaultModel() ;
+        m.getGraph().add(t1) ;
+        OutputStream out = new ByteArrayOutputStream() ;
+        RDFWriter w = new JenaWriterNTriples2() ;
+        w.write(m, out, null) ;
+    }
 }
 
 /*

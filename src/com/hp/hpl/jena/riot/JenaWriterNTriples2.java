@@ -6,33 +6,26 @@
 
 package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.riot.lang.TestIRI;
-import com.hp.hpl.jena.riot.lang.TestLangNTriples;
-import com.hp.hpl.jena.riot.lang.TestLangTurtle;
-import com.hp.hpl.jena.riot.lang.TestSuiteTurtle;
-import com.hp.hpl.jena.riot.lang.TestTurtleInternal;
-import com.hp.hpl.jena.riot.out.TestOutputNTriples;
-import com.hp.hpl.jena.riot.tokens.TestTokenizer;
+import java.io.Writer;
+import java.util.Iterator;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.riot.out.OutputLangUtils;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    , TestTurtleInternal.class
-    , TestLangNTriples.class
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-    
-    , TestOutputNTriples.class
-})
-
-public class TS_Riot
+public class JenaWriterNTriples2 extends JenaWriterBase
 {
-
+    @Override
+    protected void write(Graph graph, Writer out, String base)
+    {
+        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple triple = iter.next() ;
+            OutputLangUtils.output(out, triple, null) ;
+        }
+    }
 }
 
 /*

@@ -78,6 +78,12 @@ public final class BufferingWriter extends Writer
         return new BufferingWriter(new SinkChannel(out), size, size/2) ;
     }
     
+    /** Convenience operation to output to a Writer */
+    public static BufferingWriter create(OutputStream out, int size)
+    {
+        return new BufferingWriter(new SinkOutputStream(out), size, size/2) ;
+    }
+
     /** Create a buffering output stream of charcaters to a {@link atlas.lib.Sink} */
     public BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
     
