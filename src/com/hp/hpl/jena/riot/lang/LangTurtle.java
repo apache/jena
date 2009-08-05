@@ -91,6 +91,11 @@ public class LangTurtle extends LangBase
     private final boolean strict            = false ;
     
     private final Prologue prologue ;
+    
+    /** Provide access to the prologue.  
+     * Use with care.
+     */
+    public Prologue getPrologue()        { return prologue ; }
 
     /** Provide access to the prefix map.  
      * Note this parser uses a custom, lightweight prefix mapping implementation.

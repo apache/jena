@@ -6,6 +6,11 @@
 
 package com.hp.hpl.jena.riot;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 
 public class Prologue
 {
@@ -14,6 +19,23 @@ public class Prologue
 
     protected PrefixMap prefixMap = null ;
     protected IRIResolver resolver = null ;
+    
+    public static Prologue create(String base, PrefixMapping pmapping)
+    {
+        PrefixMap pmap = null ;
+        if ( pmapping != null )
+        {
+            pmap = new PrefixMap() ;
+            Map<String, String> x =  pmapping.getNsPrefixMap() ;
+            for ( Entry<String, String> e : x.entrySet() )
+                pmap.add(e.getKey(), e.getValue()) ;
+        }
+        
+        IRIResolver resolver = null ;
+        if ( base != null )
+            resolver = new IRIResolver(base) ;
+        return new Prologue(pmap, resolver) ;
+    }
     
     public Prologue() { prefixMap = new PrefixMap() ; }
     

@@ -16,19 +16,32 @@ import atlas.lib.Sink;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.riot.Prologue;
 
 /** A class that print triples, N-triples style */ 
 public class SinkTripleOutput implements Sink<Triple>
 {
     private CharsetEncoder encoder ;
-    
+    private Prologue prologue = null ;
     private BufferingWriter out ;
 
     public SinkTripleOutput(OutputStream outs)
     {
+        this(outs, null) ;
+    }
+    
+    public SinkTripleOutput(OutputStream outs, Prologue prologue)
+    {
         encoder = Chars.charsetUTF8.newEncoder() ;
         Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
         out = new BufferingWriter(dest) ;
+        setPrologue(prologue) ;
+    }
+    
+    // Need to do this later sometimes to sort out the plumbing.
+    public void setPrologue(Prologue prologue)
+    {
+        this.prologue = prologue ;
     }
     
     public void flush()
@@ -58,21 +71,21 @@ public class SinkTripleOutput implements Sink<Triple>
             if ( s.equals(lastS) )
                 out.output("*") ;
             else
-                OutputLangUtils.print(out, s) ;
+                OutputLangUtils.output(out, s, prologue) ;
             
             out.output(" ") ;
             
             if ( p.equals(lastP) )
                 out.output("*") ;
             else
-                OutputLangUtils.print(out, p) ;
+                OutputLangUtils.output(out, p, prologue) ;
     
             out.output(" ") ;
     
             if ( o.equals(lastO) )
                 out.output("*") ;
             else
-                OutputLangUtils.print(out, o) ;
+                OutputLangUtils.output(out, o, prologue) ;
             out.output(" .") ;
             out.output("\n") ;
             
@@ -83,11 +96,11 @@ public class SinkTripleOutput implements Sink<Triple>
         }
 
         // N-triples.
-        OutputLangUtils.print(out, s) ;
+        OutputLangUtils.output(out, s, prologue) ;
         out.output(" ") ;
-        OutputLangUtils.print(out, p) ;
+        OutputLangUtils.output(out, p, prologue) ;
         out.output(" ") ;
-        OutputLangUtils.print(out, o) ;
+        OutputLangUtils.output(out, o, prologue) ;
         out.output(" .") ;
         out.output("\n") ;
     }

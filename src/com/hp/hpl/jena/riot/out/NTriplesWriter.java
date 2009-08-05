@@ -14,12 +14,14 @@ import atlas.lib.Sink;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.riot.Prologue;
 
 public class NTriplesWriter
 {
     public static void write(PrintStream out, Graph graph)
     {
-        Sink<Triple> sink = new SinkTripleOutput(out) ;
+        Prologue prologue = Prologue.create(null,  graph.getPrefixMapping()) ;
+        Sink<Triple> sink = new SinkTripleOutput(out, prologue) ;
         graphToSink(graph, sink) ;
     }
 

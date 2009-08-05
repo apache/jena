@@ -8,11 +8,12 @@ package dev;
 
 public class DevTDB
 {
-    // RIOT.out: NTriples writer.
+    // RIOT.out: NTriples writer [DONE, not wrapped for Jena]
     // RIOT.out: NTriples +prefixing.
-    // Graph ops <- GraphUtils.allNodes, GraphList 
+    // Graph ops <- GraphUtils.allNodes, GraphList
+    // GNode?
     // G.listProperties(g, S), G.getProperty(g, S), G.getProperty(g, S, P) etc etc.Graph
-    
+    // Lightweight cache c.f. NodeCache
     
     
     // ** metadata files and BPT creation ==> NewSetup and DI

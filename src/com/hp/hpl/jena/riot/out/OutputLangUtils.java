@@ -8,18 +8,26 @@ package com.hp.hpl.jena.riot.out;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
 
 import atlas.io.OutputUtils;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.IRIRelativize;
+import com.hp.hpl.jena.riot.PrefixMap;
+import com.hp.hpl.jena.riot.Prologue;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
 /** Utilites for formatter output (N-Triples and Turtle formats) */
 public class OutputLangUtils
 {
+    // This is FmtUtils but for writers
     private static boolean asciiOnly = true ;
 
-    static public void triple(Writer out, Triple triple)
+    static public void triple(Writer out, Triple triple, Prologue prologue)
     {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
@@ -32,28 +40,22 @@ public class OutputLangUtils
 //        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
 //            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
       
-        print(out, s) ;
+        output(out, s, prologue) ;
         print(out," ") ;
-        print(out, p) ;
+        output(out, p, prologue) ;
         print(out," ") ;
-        print(out, o) ;
+        output(out, o, prologue) ;
         print(out," .") ;
         println(out) ;
     }
 
-    static public void print(Writer out,Node node)
+    static public void output(Writer out, Node node, Prologue prologue)
     {
         // NodeVisitor would be nice but don't want to create an object per static call. 
         
         if ( node.isURI() ) 
         { 
-            print(out,"<") ;
-            if ( asciiOnly )
-                // URIs can have non-ASCII characters.
-                outputEsc(out,node.getURI()) ;
-            else
-                print(out,node.getURI()) ;
-            print(out,">") ;
+            printIRI(out, node.getURI(), prologue) ;
             return ; 
         }
         if ( node.isBlank() )
@@ -64,6 +66,8 @@ public class OutputLangUtils
         }
         if ( node.isLiteral() )
         {
+            // TODO Do Turtle number abbreviates, controlled by a flag.
+            // So there are flags ==> make an object
             print(out,'"') ;
             outputEsc(out, node.getLiteralLexicalForm()) ;
             print(out,'"') ;
@@ -76,9 +80,8 @@ public class OutputLangUtils
 
             if ( node.getLiteralDatatypeURI() != null )
             {
-                print(out,"^^<") ;
-                print(out,node.getLiteralDatatypeURI()) ;
-                print(out,">") ;
+                print(out,"^^") ;
+                printIRI(out,node.getLiteralDatatypeURI(), prologue) ;
             }
             return ; 
         }
@@ -91,6 +94,116 @@ public class OutputLangUtils
         System.err.println("Illegal node: "+node) ;
     }
     
+    private static void printIRI(Writer out, String iriStr, Prologue prologue)
+    {
+        if ( prologue != null )
+        {
+            PrefixMap pmap = prologue.getPrefixMap() ;
+            if (  pmap != null )
+            {
+                String pname = prefixFor(iriStr, pmap) ;
+                if ( pname != null )
+                {
+                    print(out,pname) ;
+                    return ;
+                }
+            }
+            String base = prologue.getBaseURI() ; 
+            if ( base != null )
+            {
+                String x = abbrevByBase(iriStr, base) ;
+                if ( x != null )
+                    iriStr = x ;
+                // And drop through.
+            }
+        }
+        
+        print(out,"<") ;
+        // IRIs can have non-ASCII characters.
+        if ( asciiOnly )
+            outputEsc(out, iriStr) ;
+        else
+            print(out,iriStr) ;
+        print(out,">") ;
+    }
+
+    private static String prefixFor(String uri, PrefixMap mapping)
+    {
+        if ( mapping == null ) return null ;
+
+        String pname = mapping.abbreviate(uri) ;
+        if ( pname != null && checkValidPrefixName(pname) )
+            return pname ;
+        return null ;
+    }
+
+    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+    static public String abbrevByBase(String uri, String base)
+    {
+        if ( base == null )
+            return null ;
+        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI rel = baseIRI.relativize(uri, relFlags) ;
+        String r = null ;
+        try { r = rel.toASCIIString() ; }
+        catch (MalformedURLException  ex) { r = rel.toString() ; }
+        return r ;
+    }
+    
+    private static boolean checkValidPrefixName(String prefixedName)
+    {
+        // Split it to get the parts.
+        int i = prefixedName.indexOf(':') ;
+        if ( i < 0 )
+            throw new ARQInternalErrorException("Broken short form -- "+prefixedName) ;
+        String p = prefixedName.substring(0,i) ;
+        String x = prefixedName.substring(i+1) ; 
+        // Check legality
+        if ( checkValidPrefix(p) && checkValidLocalname(x) )
+            return true ;
+        return false ;
+    }
+    
+    private static boolean checkValidPrefix(String prefixStr)
+    {
+        if ( prefixStr.startsWith("_"))
+            // Should .equals?? 
+            return false ;
+        return checkValidLocalname(prefixStr) ;
+    }
+    
+    private static boolean checkValidLocalname(String localname)
+    {
+        if ( localname.length() == 0 )
+            return true ;
+        
+        for ( int idx = 0 ; idx < localname.length() ; idx++ )
+        {
+            char ch = localname.charAt(idx) ;
+            if ( ! validPNameChar(ch) )
+                return false ;
+        }
+        
+        // Test start and end - at least one character in the name.
+        
+        if ( localname.endsWith(".") )
+            return false ;
+        if ( localname.startsWith(".") )
+            return false ;
+        
+        return true ;
+    }
+    
+    private static boolean validPNameChar(char ch)
+    {
+        if ( Character.isLetterOrDigit(ch) ) return true ;
+        if ( ch == '.' )    return true ;
+        if ( ch == '-' )    return true ;
+        if ( ch == '_' )    return true ;
+        return false ;
+    }
+  
+
     private static void print(Writer out, String s)
     {
         try { out.append(s) ; } catch (IOException ex) {}

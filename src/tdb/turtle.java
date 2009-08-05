@@ -12,9 +12,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import atlas.io.PeekReader;
-import atlas.lib.Sink;
 
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
@@ -67,9 +65,14 @@ public class turtle
         {
             Reader r = FileUtils.asUTF8(in) ;
             PeekReader peekReader = PeekReader.make(r) ;
-            Sink<Triple> sink = new SinkTripleOutput(System.out) ; 
+            
+            SinkTripleOutput sink = new SinkTripleOutput(System.out) ; 
             Tokenizer tokenizer = new TokenizerText(peekReader) ;
             LangTurtle parser = new LangTurtle(baseURI, tokenizer, sink) ;
+            
+            // Don't do prefixing - it's N-triples.
+            //sink.setPrologue(parser.getPrologue()) ;
+            
             Checker checker = new Checker(null) ;
             parser.setChecker(checker) ;
             parser.parse();

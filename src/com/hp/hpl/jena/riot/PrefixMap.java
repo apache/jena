@@ -9,6 +9,7 @@ package com.hp.hpl.jena.riot;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
@@ -61,6 +62,19 @@ public class PrefixMap
     protected boolean _contains(String prefix)
     { 
         return prefixes.containsKey(prefix) ;
+    }
+    
+    /** Abbrevaite an IRI or retrn null */
+    public String abbreviate(String uriStr)
+    {
+        for ( Entry<String, IRI> e : prefixes.entrySet())
+        {
+            String prefix = e.getValue().toString() ;
+            
+            if ( uriStr.startsWith(prefix) )
+                return e.getKey()+":"+uriStr.substring(prefix.length()) ;
+        }
+        return null ;
     }
     
     /** Expand a prefix, return null if it can't be expanded */
