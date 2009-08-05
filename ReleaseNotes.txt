@@ -4,7 +4,6 @@ Release Notes
 
 ==== Jena 2.6.2
 
-+ Collapse LiteralLabel and Node_Literal. 
 
 + Maven-style codebase layout.
 
