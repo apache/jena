@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:45 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-08-05 15:52:23 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
+ * @version CVS $Id: OntProperty.java,v 1.2 2009-08-05 15:52:23 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -519,7 +519,7 @@ public interface OntProperty
      * <p>Answer the property that has declared itself to be the inverse of this property,
      * if any such property is defined.
      * If no such property is defined,
-     * return null.  If more than one inverse is defined, return an abritrary selection.</p>
+     * return null.  If more than one inverse is defined, return an arbitrary selection.</p>
      * <p>Note that this method is slightly different from {@link #getInverseOf}. Suppose that
      * we have:</p>
      * <pre>
