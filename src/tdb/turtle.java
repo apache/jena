@@ -73,6 +73,7 @@ public class turtle
             Checker checker = new Checker(null) ;
             parser.setChecker(checker) ;
             parser.parse();
+            sink.close() ;
         }
         
         public static void parseJavaCC(String baseURI, InputStream in)

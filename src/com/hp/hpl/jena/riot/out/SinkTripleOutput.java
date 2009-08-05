@@ -14,6 +14,7 @@ import atlas.io.BufferingWriter;
 import atlas.lib.Chars;
 import atlas.lib.Sink;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 /** A class that print triples, N-triples style */ 
@@ -35,10 +36,60 @@ public class SinkTripleOutput implements Sink<Triple>
         out.flush() ;
     }
 
+    private Node lastS = null ;
+    private Node lastP = null ;
+    private Node lastO = null ;
+    
     public void send(Triple triple)
     {
-        OutputLangUtils.triple(out, triple) ;
-        flush() ;
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        
+//        if ( ! ( s.isURI() || s.isBlank() ) )
+//            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
+//        if ( ! p.isURI() )
+//            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
+//        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
+//            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
+      
+        if ( false )
+        {
+            if ( s.equals(lastS) )
+                out.output("*") ;
+            else
+                OutputLangUtils.print(out, s) ;
+            
+            out.output(" ") ;
+            
+            if ( p.equals(lastP) )
+                out.output("*") ;
+            else
+                OutputLangUtils.print(out, p) ;
+    
+            out.output(" ") ;
+    
+            if ( o.equals(lastO) )
+                out.output("*") ;
+            else
+                OutputLangUtils.print(out, o) ;
+            out.output(" .") ;
+            out.output("\n") ;
+            
+            lastS = s ;
+            lastP = p ;
+            lastO = o ;
+            return ;
+        }
+
+        // N-triples.
+        OutputLangUtils.print(out, s) ;
+        out.output(" ") ;
+        OutputLangUtils.print(out, p) ;
+        out.output(" ") ;
+        OutputLangUtils.print(out, o) ;
+        out.output(" .") ;
+        out.output("\n") ;
     }
 
     public void close()
