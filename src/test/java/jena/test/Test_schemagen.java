@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:55 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-08-05 16:08:51 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.1 2009-06-29 08:55:55 castagna Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.2 2009-08-05 16:08:51 andy_seaborne Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -435,7 +435,7 @@ public class Test_schemagen
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
                              new String[] {".*private static final String SOURCE.*",
-                                           ".*ex:A *a *owl:Class.*"},
+                                            ".*ex:A *(a|rdf:type) *owl:Class.*"} ,
                              new String[] {} );
     }
 

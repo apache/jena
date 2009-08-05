@@ -4,6 +4,7 @@ Release Notes
 
 ==== Jena 2.6.2
 
++ N3 pretty writer now write Turtle (no use of "=" for owl:sameAs) 
 
 + Maven-style codebase layout.
 
