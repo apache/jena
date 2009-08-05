@@ -75,7 +75,8 @@ public class QueryExecUtils
         if ( op instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
-            vars = Var.varNames(OpVars.allVars(op)) ;
+            // The variables defined in patterns (not Filters, nor NOT EXISTS, nor ORDER BY)
+            vars = Var.varNames(OpVars.patternVars(op)) ;
 
         ResultSet results = ResultSetFactory.create(qIter, vars) ;
         outputResultSet(results, null, outputFormat) ;

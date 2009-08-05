@@ -12,6 +12,8 @@ public class DevARQ
     // SELECT * and NOT EXISTS: don't look in the pattern for variables
     // SELECT * { ?a :p ?v  NOT EXISTS { ?a :q ?w . FILTER(?v>23) } }
     
+    // http://jena.sourceforge.net/ARQ/arq-query-eval.html; mention graph.find approach.
+    
     // ==== ARQ
     // JMX
     //   Query count
