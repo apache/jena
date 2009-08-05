@@ -19,8 +19,9 @@ import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
+import com.hp.hpl.jena.riot.Checker;
 import com.hp.hpl.jena.riot.lang.LangTurtle;
-import com.hp.hpl.jena.riot.out.NTriplesUtil;
+import com.hp.hpl.jena.riot.out.SinkTripleOutput;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.riot.tokens.TokenizerText;
 import com.hp.hpl.jena.shared.JenaException;
@@ -29,7 +30,7 @@ import com.hp.hpl.jena.util.FileUtils;
 public class turtle
 {
         /** Run the Turtle parser - produce N-triples */
-        public static void main(String[] args)
+        public static void main(String... args)
         {
             if ( args.length == 0 )
             {
@@ -37,14 +38,12 @@ public class turtle
                 return ;
             }
             
-            
             for ( int i = 0 ; i < args.length ; i++ )
             {
                 String fn = args[i] ;
                 parse("http://base/", fn) ;
             }
         }        
-
 
         public static void parse(String baseURI, String filename)
         {
@@ -62,33 +61,18 @@ public class turtle
         public static void parse(String baseURI, InputStream in)
         {   
             parseRIOT(baseURI, in) ;
-            
         }
         
         public static void parseRIOT(String baseURI, InputStream in)
         {
             Reader r = FileUtils.asUTF8(in) ;
             PeekReader peekReader = PeekReader.make(r) ;
-            Sink<Triple> sink = new SinkTripleOutput() ; 
+            Sink<Triple> sink = new SinkTripleOutput(System.out) ; 
             Tokenizer tokenizer = new TokenizerText(peekReader) ;
             LangTurtle parser = new LangTurtle(baseURI, tokenizer, sink) ;
-            parser.setChecker(null) ;
+            Checker checker = new Checker(null) ;
+            parser.setChecker(checker) ;
             parser.parse();
-        }
-        
-        private static class SinkTripleOutput implements Sink<Triple>
-        {
-            public void flush()
-            {}
-
-            public void send(Triple triple)
-            {
-                NTriplesUtil.triple(System.out, triple) ;
-            }
-
-            public void close()
-            {}
-            
         }
         
         public static void parseJavaCC(String baseURI, InputStream in)

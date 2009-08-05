@@ -21,8 +21,6 @@ import org.junit.runners.Suite;
 public class TC_TDB
 { }
 
-
-
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.

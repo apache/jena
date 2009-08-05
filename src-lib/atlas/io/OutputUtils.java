@@ -4,21 +4,49 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.tokens;
+package atlas.io;
 
-public interface Checker
+import java.io.IOException;
+import java.io.Writer;
+
+import atlas.lib.BitsInt;
+import atlas.lib.Chars;
+
+public class OutputUtils
 {
-    public void checkBlankNode(String blankNodeLabel) ;
-    public void checkLiteralLang(String lexicalForm, String langTag) ;
-    public void checkLiteralDT(String lexicalForm, Token datatype) ;
-    public void checkString(String string) ;
-    public void checkURI(String uriStr) ;
-    public void checkNumber(String lexical, String datatypeURI) ;
-    public void checkVariable(String tokenImage) ;
-    public void checkDirective(int cntrlCode) ;
-    public void checkKeyword(String lexical) ;
-    public void checkPrefixedName(String prefixName, String localName) ;
-    public void checkControl(int code) ;
+    /** Print the number x in width hex chars.  x must fit */
+    public static void printHex(StringBuilder out, int x, int width)
+    {
+        for ( int i = width-1 ; i >= 0 ; i-- )
+            x = oneHex(out, x, i) ;
+    }
+
+    /** Print one hex digit of the numer */
+    public static int oneHex(StringBuilder out, int x, int i)
+    {
+        int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
+        char charHex = Chars.hexDigits[y] ;
+        out.append(charHex) ; 
+        return BitsInt.clear(x, 4*i, 4*i+4) ;
+    }
+    
+    /** Print the number x in width hex chars.  x must fit */
+    public static void printHex(Writer out, int x, int width)
+    {
+        for ( int i = width-1 ; i >= 0 ; i-- )
+            x = oneHex(out, x, i) ;
+    }
+
+    /** Print one hex digit of the numer */
+    public static int oneHex(Writer out, int x, int i)
+    {
+        int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
+        char charHex = Chars.hexDigits[y] ;
+        try { out.write(charHex) ; } catch (IOException ex) {} 
+        return BitsInt.clear(x, 4*i, 4*i+4) ;
+    }
+
+    
 }
 
 /*

@@ -10,6 +10,12 @@ public class DevTDB
 {
     // RIOT.out: NTriples writer.
     // RIOT.out: NTriples +prefixing.
+    // Checker - caching of IRIs
+    
+    // Graph ops <- GraphUtils.allNodes, GraphList 
+    // G.listProperties(g, S), G.getProperty(g, S), G.getProperty(g, S, P) etc etc.Graph
+    
+    
     
     // ** metadata files and BPT creation ==> NewSetup and DI
     

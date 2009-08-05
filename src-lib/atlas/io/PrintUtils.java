@@ -7,7 +7,6 @@
 package atlas.io;
 
 
-
 public class PrintUtils
 {
     // ---- Printable
@@ -17,8 +16,6 @@ public class PrintUtils
         f.output(buff) ;
         return buff.toString() ;
     }
-    
-
 }
 
 /*

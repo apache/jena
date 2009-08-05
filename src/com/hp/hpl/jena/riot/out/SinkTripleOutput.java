@@ -1,28 +1,53 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package atlas.io;
+package com.hp.hpl.jena.riot.out;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharsetEncoder;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestIndentedWriter.class
-    , TestPeekReader.class
-    , TestBufferingWriter.class
-    , TestPrintUtils.class
-} )
-public class TS_IO
+import atlas.io.BufferingWriter;
+import atlas.lib.Chars;
+import atlas.lib.Sink;
+
+import com.hp.hpl.jena.graph.Triple;
+
+/** A class that print triples, N-triples style */ 
+public class SinkTripleOutput implements Sink<Triple>
 {
+    private CharsetEncoder encoder ;
+    
+    private BufferingWriter out ;
 
+    public SinkTripleOutput(OutputStream outs)
+    {
+        encoder = Chars.charsetUTF8.newEncoder() ;
+        Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
+        out = new BufferingWriter(dest) ;
+    }
+    
+    public void flush()
+    {
+        out.flush() ;
+    }
+
+    public void send(Triple triple)
+    {
+        OutputLangUtils.triple(out, triple) ;
+        flush() ;
+    }
+
+    public void close()
+    {
+        flush();
+    }
 }
-
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

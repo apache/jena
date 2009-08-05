@@ -4,27 +4,46 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.tokens;
+package atlas.io;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-/** Various algorithms */
-public class CheckerLib
+import atlas.test.BaseTest;
+
+import org.junit.Test;
+
+public class TestPrintUtils extends BaseTest
 {
-    public boolean checkPrefixedName_CURIE()
+    @Test public void hex1()
     {
-        return false ;
+        String s = test(0,4) ;
+        assertEquals("0000", s) ;
+    }
+    
+    @Test public void hex2()
+    {
+        String s = test(1,8) ;
+        assertEquals("00000001", s) ;
     }
 
-    public boolean checkPrefixedName_XML()
+    @Test public void hex3()
     {
-        return false ;
+        String s = test(0xFF,2) ;
+        assertEquals("FF", s) ;
     }
 
-    public boolean checkPrefixedName_Trutle() 
+    private static String test(int value, int width)
     {
-        return false ;  
+        ByteArrayOutputStream x = new ByteArrayOutputStream() ;
+        Writer out = new OutputStreamWriter(x) ;
+        OutputUtils.printHex(out, value, width) ;
+        try { out.flush() ; } catch (IOException ex) {}
+        String s = x.toString() ;
+        return s ;
     }
-
 }
 
 /*

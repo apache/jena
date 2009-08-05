@@ -26,8 +26,11 @@ public class Chars
     
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
+    /** Java name for ASCII encoding */
+    private static final String encodingASCII    = "ascii" ;
     
-    private /*public*/ static final Charset utf8 = Charset.forName(encodingUTF8) ;
+    public static final Charset charsetUTF8 = Charset.forName(encodingUTF8) ;
+    public static final Charset charsetASCII = Charset.forName(encodingASCII) ;
     
     // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap.
     // Initial pool size. Any additional encoder/decoder are later
@@ -47,9 +50,9 @@ public class Chars
     }
 
     /** Create a UTF-8 encoder */
-    public static CharsetEncoder createEncoder() { return utf8.newEncoder() ; }
+    public static CharsetEncoder createEncoder() { return charsetUTF8.newEncoder() ; }
     /** Create a UTF-8 decoder */
-    public static CharsetDecoder createDecoder() { return utf8.newDecoder() ; }
+    public static CharsetDecoder createDecoder() { return charsetUTF8.newDecoder() ; }
 
     /** Get a UTF-8 encoder from the pool (null if pool empty) */ 
     public static CharsetEncoder getEncoder() { return encoders.get() ; }

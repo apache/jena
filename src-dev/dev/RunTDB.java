@@ -73,6 +73,10 @@ public class RunTDB
     
     public static void main(String ... args) throws IOException
     {
+        tdb.turtle.main("D.ttl") ;
+        System.exit(0) ;
+        
+        
         NewSetup.buildDataset(new Location("tmp/DBX")) ;
         System.exit(0) ;
         

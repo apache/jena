@@ -1,4 +1,11 @@
 @prefix : <http://test/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http:> <illegal URI> "foo" .
+<http://example/> <legal URI> 123 ;
+    <legalURIé> "foo" ;
+    :p "é" ;
+    :p "\u0020" ;
+    :p "\u0123" ;
+    :p "\uF123" ;
+.
+

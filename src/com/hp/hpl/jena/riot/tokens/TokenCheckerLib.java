@@ -6,53 +6,24 @@
 
 package com.hp.hpl.jena.riot.tokens;
 
-/** Do nothing checker */
-public class CheckerBase implements Checker
+
+/** Various algorithms */
+public class TokenCheckerLib
 {
+    public boolean checkPrefixedName_CURIE()
+    {
+        return false ;
+    }
 
-    //@Override
-    public void checkBlankNode(String blankNodeLabel)
-    {}
+    public boolean checkPrefixedName_XML()
+    {
+        return false ;
+    }
 
-    //@Override
-    public void checkControl(int code)
-    {}
-
-    //@Override
-    public void checkDirective(int cntrlCode)
-    {}
-
-    //@Override
-    public void checkKeyword(String lexical)
-    {}
-
-    //@Override
-    public void checkLiteralDT(String lexicalForm, Token datatype)
-    {}
-
-    //@Override
-    public void checkLiteralLang(String lexicalForm, String langTag)
-    {}
-
-    //@Override
-    public void checkNumber(String lexical, String datatypeURI)
-    {}
-
-    //@Override
-    public void checkPrefixedName(String prefixName, String localName)
-    {}
-
-    //@Override
-    public void checkString(String string)
-    {}
-
-    //@Override
-    public void checkURI(String uriStr)
-    {}
-
-    //@Override
-    public void checkVariable(String tokenImage)
-    {}
+    public boolean checkPrefixedName_Turtle() 
+    {
+        return false ;  
+    }
 
 }
 

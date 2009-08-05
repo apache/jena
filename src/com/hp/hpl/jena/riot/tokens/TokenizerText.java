@@ -35,7 +35,7 @@ public class TokenizerText implements Tokenizer
     private final StringBuilder sb = new StringBuilder() ;
     private final PeekReader reader ;
     private boolean finished = false ;
-    private Checker checker = null ; // new CheckerBase()  ;
+    private TokenChecker checker = null ; // new CheckerBase()  ;
     
     public TokenizerText(PeekReader reader)
     {
@@ -69,8 +69,8 @@ public class TokenizerText implements Tokenizer
     public void remove()
     { throw new UnsupportedOperationException() ; }
 
-    public Checker getChecker() { return checker ; }
-    public void setChecker(Checker checker) { this.checker = checker ; }
+    public TokenChecker getChecker() { return checker ; }
+    public void setChecker(TokenChecker checker) { this.checker = checker ; }
 
     // ---- Machinary
     

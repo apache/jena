@@ -20,7 +20,8 @@ import com.hp.hpl.jena.shared.JenaException;
 
 public class Checker
 {
-    static IRIFactory iriFactory = IRIFactory.jenaImplementation() ; //IRIFactory.iriImplementation();
+    //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
+    static IRIFactory iriFactory = IRIFactory.iriImplementation();
     
     private boolean allowRelativeIRIs = false ;
     private boolean warningsAreErrors = true ;

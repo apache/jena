@@ -6,15 +6,20 @@
 
 package com.hp.hpl.jena.riot.out;
 
-import java.io.PrintStream;
+import java.io.IOException;
+import java.io.Writer;
+
+import atlas.io.OutputUtils;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-public class NTriplesUtil
+/** Utilites for formatter output (N-Triples and Turtle formats) */
+public class OutputLangUtils
 {
-    // TODO - Change to an OutputStream -- because we only want ASCII
-    static public void triple(PrintStream out, Triple triple)
+    private static boolean asciiOnly = true ;
+
+    static public void triple(Writer out, Triple triple)
     {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
@@ -34,16 +39,20 @@ public class NTriplesUtil
         print(out, o) ;
         print(out," .") ;
         println(out) ;
-        out.flush() ;
-        
     }
 
-    static private void print(PrintStream out,Node node)
+    static public void print(Writer out,Node node)
     {
+        // NodeVisitor would be nice but don't want to create an object per static call. 
+        
         if ( node.isURI() ) 
         { 
             print(out,"<") ;
-            print(out,node.getURI()) ;
+            if ( asciiOnly )
+                // URIs can have non-ASCII characters.
+                outputEsc(out,node.getURI()) ;
+            else
+                print(out,node.getURI()) ;
             print(out,">") ;
             return ; 
         }
@@ -73,22 +82,28 @@ public class NTriplesUtil
             }
             return ; 
         }
+        if ( node.isVariable() )
+        {
+            print(out,'?') ;
+            print(out, node.getName()) ;
+            return ; 
+        }
         System.err.println("Illegal node: "+node) ;
     }
     
-    private static void print(PrintStream out, String s)
+    private static void print(Writer out, String s)
     {
-        out.print(s) ;
+        try { out.append(s) ; } catch (IOException ex) {}
     }
 
-    private static void print(PrintStream out, char ch)
+    private static void print(Writer out, char ch)
     {
-        out.print(ch) ;
+        try { out.append(ch) ; } catch (IOException ex) {}
     }
 
-    private static void println(PrintStream out)
+    private static void println(Writer out)
     {
-        out.println() ;
+        try { out.append("\n") ; } catch (IOException ex) {}
     }
 
     
@@ -121,7 +136,7 @@ public class NTriplesUtil
 //    }
     
     
-    static public void outputEsc(PrintStream out, String s)
+    static public void outputEsc(Writer out, String s)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
@@ -139,20 +154,20 @@ public class NTriplesUtil
             else if (c == '\f') print(out,"\\f");
             else if ( c >= 32 && c < 127 )
                 print(out,c);
+            else if ( !asciiOnly )
+                print(out,c);
             else
             {
-                // TODO Avoid string costs.
-                // Unsubtle.  Does not cover beyond 16 bits codepoints directly but 
-                // Java keeps these as surrogate pairs and will print as two \ u escapes. 
-                String hexstr = Integer.toHexString(c).toUpperCase();
-                int pad = 4 - hexstr.length();
-                print(out,"\\u");
-                for (; pad > 0; pad--)
-                    print(out,"0");
-                print(out,hexstr);
+                // Outside the charset range.
+                // Does not cover beyond 16 bits codepoints directly
+                // (i.e. \U escapes) but Java keeps these as surrogate
+                // pairs and will print as characters
+                print(out, "\\u") ;
+                OutputUtils.printHex(out, c, 4) ;
             }
         }
     }
+    
 }
 
 /*

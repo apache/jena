@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.riot.out;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
 
@@ -18,32 +17,6 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class NTriplesWriter
 {
-    private static class SinkTripleOutput implements Sink<Triple>
-    {
-        private PrintStream out ;
-
-        public SinkTripleOutput(PrintStream out) { this.out = out ; }
-        public SinkTripleOutput(OutputStream out)
-        { 
-            this.out = new PrintStream(out) ;
-        }
-        
-        public void flush()
-        {
-            out.flush();
-        }
-
-        public void send(Triple triple)
-        {
-            NTriplesUtil.triple(System.out, triple) ;
-        }
-
-        public void close()
-        {
-            out.flush();
-        }
-    }
-    
     public static void write(PrintStream out, Graph graph)
     {
         Sink<Triple> sink = new SinkTripleOutput(out) ;
