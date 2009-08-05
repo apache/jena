@@ -9,11 +9,7 @@
 package com.hp.hpl.jena.n3;
 
 
-/** Turtle writer.  It is actually an appropriately configured   
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3TurtleJenaWriter.java,v 1.2 2009-08-05 16:08:51 andy_seaborne Exp $
- */
+/** Turtle writer */
 
 
 
