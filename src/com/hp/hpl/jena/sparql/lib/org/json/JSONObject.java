@@ -351,12 +351,12 @@ public class JSONObject {
                             map.put(key, NULL);
                         } else if (result.getClass().isArray()) {
                             map.put(key, new JSONArray(result, includeSuperClass));
-                        } else if (result instanceof Collection) { 
+                        } else if (result instanceof Collection<?>) { 
                             // List or Set
                             @SuppressWarnings("unchecked")
                             Collection<Object> x = (Collection<Object>)result ;
                             map.put(key, new JSONArray(x, includeSuperClass));
-                        } else if (result instanceof Map) {
+                        } else if (result instanceof Map<?,?>) {
                             @SuppressWarnings("unchecked")
                             Map<String, Object> x = (Map<String, Object>)result ;
                             map.put(key, new JSONObject(x, includeSuperClass));
@@ -1473,12 +1473,12 @@ public class JSONObject {
                 value instanceof JSONArray) {
             return value.toString();
         }
-        if (value instanceof Map) {
+        if (value instanceof Map<?,?>) {
             @SuppressWarnings("unchecked")
             Map<String, Object> x = (Map<String, Object>)value ;
             return new JSONObject(x).toString();
         }
-        if (value instanceof Collection) {
+        if (value instanceof Collection<?>) {
             @SuppressWarnings("unchecked")
             Collection<Object> x = (Collection)value ;
             return new JSONArray(x).toString();
@@ -1531,12 +1531,12 @@ public class JSONObject {
         if (value instanceof JSONArray) {
             return ((JSONArray)value).toString(indentFactor, indent);
         }
-        if (value instanceof Map) {
+        if (value instanceof Map<?,?>) {
             @SuppressWarnings("unchecked")
             Map<String, Object> x = (Map<String, Object>)value ;
             return new JSONObject(x).toString(indentFactor, indent);
         }
-        if (value instanceof Collection) {
+        if (value instanceof Collection<?>) {
             @SuppressWarnings("unchecked")
             Collection<Object> x = (Collection)value ;
             return new JSONArray(x).toString(indentFactor, indent);

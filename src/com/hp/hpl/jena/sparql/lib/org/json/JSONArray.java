@@ -184,7 +184,7 @@ public class JSONArray {
 			Iterator<Object> iter = collection.iterator();;
 			while (iter.hasNext()) {
 			    Object o = iter.next();
-			    if (o instanceof Map) {
+			    if (o instanceof Map<?,?>) {
 			        @SuppressWarnings("unchecked")
 			        Map<String, Object> x = (Map<String, Object>)o ;
 			    	this.myArrayList.add(new JSONObject(x, includeSuperClass));
