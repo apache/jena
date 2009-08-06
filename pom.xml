@@ -270,7 +270,31 @@
             </goals>
           </execution>
         </executions>
+        <!-- Experimental: this is for publishing Jena artifacts as OSGi bundles -->
+        <!--
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+        -->
       </plugin>
+
+      <!-- Experimental: this is for publishing Jena artifacts as OSGi bundles -->
+      <!--
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+           </execution>
+        </executions>
+      </plugin>
+      -->
 
     </plugins>
 
@@ -344,6 +368,31 @@
     </plugins>
   
   </reporting>
+
+  <repositories>
+    <!-- jena-repo is mirrored to Maven central repository -->
+    <!--
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://jena.hpl.hp.com/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    -->
+    <!-- jena-repo-dev is where SNAPSHOTs are published -->  
+    <repository>
+      <id>jena-repo-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://jena.hpl.hp.com/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <!-- <downloadUrl>http://jena.hpl.hp.com/repo-dev</downloadUrl> -->
