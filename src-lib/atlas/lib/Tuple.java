@@ -86,7 +86,7 @@ public final class Tuple<T> implements Iterable<T>
     public boolean equals(Object other) 
     {
         if ( this == other ) return true ;
-        if ( ! ( other instanceof Tuple ) )
+        if ( ! ( other instanceof Tuple<?> ) )
             return false ;
         Tuple<?> x = (Tuple<?>)other ;
         if ( x.size() != this.size() )

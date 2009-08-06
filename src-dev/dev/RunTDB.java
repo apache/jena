@@ -26,7 +26,9 @@ import atlas.logging.Log;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.riot.JenaWriterNTriples2;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -73,6 +75,14 @@ public class RunTDB
     
     public static void main(String ... args) throws IOException
     {
+        {
+            TDB.init();
+            RDFWriter w = new JenaWriterNTriples2() ;
+            Model model = FileManager.get().loadModel("D.ttl") ;
+            w.write(model, System.out, null) ;
+            System.exit(0) ;
+        }
+
         tdb.turtle.main("D.ttl") ;
         System.exit(0) ;
         

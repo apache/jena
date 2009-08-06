@@ -389,7 +389,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     public static <T> Iter<T> iter(Iterator<T> iterator)
     { 
-        if ( iterator instanceof Iter )
+        if ( iterator instanceof Iter<?> )
             return (Iter<T>)iterator ;
         return new Iter<T>(iterator) ;
     }
