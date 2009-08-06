@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-08-05 15:52:23 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2009-08-06 12:49:16 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -23,23 +23,29 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import com.hp.hpl.jena.enhanced.EnhGraph;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
 import com.hp.hpl.jena.graph.impl.SimpleTransactionHandler;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.mem.faster.GraphMemFasterQueryHandler;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.impl.OntClassImpl;
-import com.hp.hpl.jena.ontology.impl.OntModelImpl;
-import com.hp.hpl.jena.ontology.impl.OntTestBase.OntTestCase;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
@@ -48,7 +54,10 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * <p>
