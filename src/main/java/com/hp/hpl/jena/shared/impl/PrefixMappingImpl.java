@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.1 2009-06-29 08:56:02 castagna Exp $
+  $Id: PrefixMappingImpl.java,v 1.2 2009-08-06 13:42:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -29,14 +29,16 @@ public class PrefixMappingImpl implements PrefixMapping
     protected boolean locked;
     
     public PrefixMappingImpl()
-        { prefixToURI = CollectionFactory.createHashedMap();
-        URItoPrefix = CollectionFactory.createHashedMap(); }
+        { 
+        prefixToURI = CollectionFactory.createHashedMap();
+        URItoPrefix = CollectionFactory.createHashedMap(); 
+        }
     
     protected void set( String prefix, String uri )
-    {
+        {
         prefixToURI.put(prefix, uri) ;
         URItoPrefix.put(uri, prefix) ;
-    }
+        }
     
     protected String get( String prefix )
         { return prefixToURI.get( prefix ); }
@@ -68,19 +70,16 @@ public class PrefixMappingImpl implements PrefixMapping
     protected void regenerateReverseMapping()
         {
         URItoPrefix.clear();
-        Iterator<Entry<String, String>> it = prefixToURI.entrySet().iterator();
-        while (it.hasNext())
-            {
-            Map.Entry<String, String> e = it.next();
+        for (Map.Entry<String, String> e: prefixToURI.entrySet())
             URItoPrefix.put( e.getValue(), e.getKey() );
-            } 
         }
         
     protected void checkUnlocked()
         { if (locked) throw new JenaLockedException( this ); }
         
     private void checkProper( String uri )
-        { // suppressed by popular demand. TODO consider optionality
+        { 
+        // suppressed by popular demand. TODO consider optionality
         // if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri );
         }
         
@@ -108,10 +107,8 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping withDefaultMappings( PrefixMapping other )
         {
         checkUnlocked();
-        Iterator<Entry<String, String>> it = other.getNsPrefixMap().entrySet().iterator();
-        while (it.hasNext())
+        for (Entry<String, String> e: other.getNsPrefixMap().entrySet())
             {
-            Entry<String, String> e = it.next();
             String prefix = e.getKey(), uri = e.getValue();
             if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
                 setNsPrefix( prefix, uri );
@@ -130,12 +127,8 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping setNsPrefixes( Map<String, String> other )
         {
         checkUnlocked();
-        Iterator<Entry<String, String>> it = other.entrySet().iterator();
-        while (it.hasNext())
-            {
-            Entry<String, String> e = it.next();
+        for (Entry<String, String> e: other.entrySet())
             setNsPrefix( e.getKey(), e.getValue() );
-            }
         return this;
         }
          
@@ -237,15 +230,13 @@ public class PrefixMappingImpl implements PrefixMapping
         Does a linear search of the entire prefixToURI, so not terribly efficient for large maps.
         
         @param uri the value to search for
-        @param true if the match can be any leading substring, false for exact match
+        @param partial true if the match can be any leading substring, false for exact match
         @return some entry (k, v) such that uri starts with v [equal for partial=false]
     */
     private Entry<String, String> findMapping( String uri, boolean partial )
         {
-        Iterator<Entry<String, String>> it = prefixToURI.entrySet().iterator();
-        while (it.hasNext())
+        for (Entry<String, String> e: prefixToURI.entrySet())
             {
-            Entry<String, String> e = it.next();
             String ss = e.getValue();
             if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) return e;
             } 
