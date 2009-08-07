@@ -21,6 +21,8 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class TestOutputNTriples extends BaseTest
 {
+    // Read a file, write it to a string, read it again.  Test for same. 
+    
     Triple t1 = SSE.parseTriple("(<x> <p> 123)") ;
     
     @Test public void ntriples0()

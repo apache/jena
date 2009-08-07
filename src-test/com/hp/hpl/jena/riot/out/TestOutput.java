@@ -34,26 +34,26 @@ public class TestOutput extends BaseTest
     
     @Test public void output_01()        { testStringForNode("<http://example/>") ; }
 
-    @Test public void output_02()        { testStringForNode("\"\"") ; }
+    @Test public void output_02()        { testStringForNode("''") ; }
     
-    @Test public void output_03()        { testStringForNode("\"abc\"@en") ; }
+    @Test public void output_03()        { testStringForNode("'abc'@en") ; }
     
-    @Test public void output_04()        { testStringForNode("\"abc\"^^<http://exmaple/dt>") ; }
+    @Test public void output_04()        { testStringForNode("'abc'^^<http://exmaple/dt>") ; }
     
-    @Test public void output_05()        { testStringForNode("\"é\"", "\"\\u00E9\"") ; }
+    @Test public void output_05()        { testStringForNode("'é'", "\"\\u00E9\"") ; }
 
+    @Test public void output_06()        { testStringForNode("'\\n\\t\\f'", "\"\\n\\t\\f\"") ; }
+    
     @Test public void output_10()        { testStringForNode("<http://example/>", ":", prologue) ; }
     
     @Test public void output_11()        { testStringForNode("<http://example/abc>", "x:bc", prologue) ; }
 
     @Test public void output_12()        { testStringForNode("123", "\"123\"^^xsd:integer", prologue) ; }
     
-
-    
     private static void testStringForNode(String nodeStr)
     {
-        testStringForNode(nodeStr, nodeStr) ;
-        
+        String expected = nodeStr.replace("'", "\"") ;
+        testStringForNode(nodeStr, expected) ;
     }
     
     private static void testStringForNode(String nodeStr, String expected)
