@@ -7,52 +7,50 @@
 
 package dev;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import arq.sparql;
-import arq.sse_query;
+import arq.sparql ;
+import arq.sse_query ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject;
-import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.QueryCheckException;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.WriterSSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuildException;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.StrUtils;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.QueryCheckException ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.sse.WriterSSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
 {
@@ -67,31 +65,42 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-	    execQuerySSE("D.ttl", "Q.sse") ; 
+      //QueryEngineMain.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref", 
+            "--data=D.ttl",
+            "-query=Q.arq" , 
+        } ;
+        
+        sparql.main(a) ;
     
+        System.out.println("Waiting (nearly) forever..."); 
+        Thread.sleep(Long.MAX_VALUE);
+        System.exit(0) ;
+
+	    
     
         {
-        String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
-                                          "SELECT *",
-                                          "{",
-                                          "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
-                                          "}") ;
-        Query query = QueryFactory.create(queryString) ;
-        Op op = Algebra.compile(query) ;
-        
-        boolean b = JoinClassifier.isLinear((OpJoin)op) ;
-        
-        System.out.println(op) ;
-        System.out.println(b) ;
-        System.exit(0) ;
+            String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
+                                                    "SELECT *",
+                                                    "{",
+                                                    "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
+                                                    "}") ;
+            Query query = QueryFactory.create(queryString) ;
+            Op op = Algebra.compile(query) ;
+
+            boolean b = JoinClassifier.isLinear((OpJoin)op) ;
+
+            System.out.println(op) ;
+            System.out.println(b) ;
+            System.exit(0) ;
         }
         
         
-        execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
-
-        
-        qparse("--file=Q.arq", "--print=op") ;
-        report() ;
+//        execQuery("D.ttl", "Q.rq") ; System.exit(0) ;
+//        qparse("--file=Q.arq", "--print=op") ;
+//        report() ;
         
         // "-Dcom.sun.management.jmxremote" needed for Java5
         // Efficiently do nothing.
@@ -138,14 +147,7 @@ public class RunARQ
 
     public static void report()
     {
-//        Model model=ModelFactory.createDefaultModel() ;
-//        
-//        model.write(System.out, "TTL") ;
-//        System.exit(0) ;
-        
         qparse("--print=op", "--print=query", "--file=Q.arq") ; 
-        // PathPrimary to be split into Unary and Primary.
-        // PathSequence, PathElt
         System.exit(0) ;
     }
     
@@ -270,14 +272,6 @@ public class RunARQ
         if ( ! op1.equals(op2) )
             throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
         
-    }
-    
-    private static void decompose(Op op)
-    {
-        Op opX = ((OpProject)op).getSubOp() ;
-        OpAssign opAssign = (OpAssign)opX ;
-        //System.out.print(opAssign) ;
-        System.out.println("Assign VarExprList: "+opAssign.getVarExprList()) ;
     }
     
     public static void fetch()

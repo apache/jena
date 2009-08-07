@@ -6,29 +6,29 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.lang.management.ManagementFactory ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
+import javax.management.InstanceAlreadyExistsException ;
+import javax.management.MBeanRegistrationException ;
+import javax.management.MBeanServer ;
+import javax.management.MalformedObjectNameException ;
+import javax.management.NotCompliantMBeanException ;
+import javax.management.ObjectName ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQException ;
 
 public class ARQMgt
 {
     static private Logger log = LoggerFactory.getLogger(ARQMgt.class) ;
     private static boolean initialized = false ;
     private static Map<ObjectName, Object> mgtObjects = new HashMap<ObjectName, Object>() ;
+    private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
     
     public static synchronized void init()
     {
@@ -39,44 +39,33 @@ public class ARQMgt
         String NS = ARQ.PATH ;
         
         add(NS+".system:type=ARQ", new ARQInfo()) ;
-        
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
-        
-        //add("com.example:type=Hello", new Hello()) ;
-        
-        
-        
-//        Map<String, Object> mgtObjects = new HashMap<String, Object>() ;
-//        mgtObjects.put("com.example:type=Hello", value)
-//        
-//        ObjectName name = new ObjectName("com.example:type=Hello"); 
-//        Hello mbean = new Hello();
-        for ( Entry<ObjectName, Object> entry : mgtObjects.entrySet() )
-        {
-            try {
-                log.debug("Register MBean: "+entry.getKey()) ;
-                mbs.registerMBean(entry.getValue(), entry.getKey());
-            } catch (NotCompliantMBeanException ex)
-            {
-                throw new ARQException("Failed to register '"+entry.getKey().getCanonicalName()+"': "+ex.getMessage(), ex) ;
-            } catch (InstanceAlreadyExistsException ex)
-            {
-                throw new ARQException("Failed to register '"+entry.getKey().getCanonicalName()+"': "+ex.getMessage(), ex) ;
-            } catch (MBeanRegistrationException ex)
-            {
-                throw new ARQException("Failed to register '"+entry.getKey().getCanonicalName()+"': "+ex.getMessage(), ex) ;
-            }
-        }
+        add(NS+".system:type=Context", new ContextMBean()) ;
     }
     
-    private static void add(String name, Object object)
+    public static void add(String name, Object bean)
     {
+        ObjectName objName = null ;
         try
+        { objName = new ObjectName(name) ; }
+        catch (MalformedObjectNameException ex)
+        {  throw new ARQException("Failed to create name '"+name+"': "+ex.getMessage(), ex) ; }
+        
+        try {
+            log.debug("Register MBean: "+objName) ;
+            mbs.registerMBean(bean, objName);
+            
+            // remember ...
+            mgtObjects.put(objName, bean) ;
+
+        } catch (NotCompliantMBeanException ex)
         {
-            mgtObjects.put(new ObjectName(name), object) ;
-        } catch (MalformedObjectNameException ex)
+            throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
+        } catch (InstanceAlreadyExistsException ex)
         {
-            throw new ARQException("Failed to create name '"+name+"': "+ex.getMessage(), ex) ;
+            throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
+        } catch (MBeanRegistrationException ex)
+        {
+            throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         }
     }
 }

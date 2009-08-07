@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.lib.Metadata;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
@@ -208,6 +209,7 @@ public class ARQ
         initialized = true ;
         globalContext = defaultSettings() ;
         StageBuilder.init() ;
+        ARQMgt.init() ;
     }
     
     /** Used by Jena assemblers for registration */ 

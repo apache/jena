@@ -6,22 +6,33 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-/** Details of a single query execution */
-public interface QueryExecMXBean
+/** Overall statistics from a query engine - one such per type of engine. */
+public interface QueryEngineMXBean
 {
-    /** State - what's it doing */
-    String getState() ;
+    /** Number of queries executed */
+    long getQueryCount() ; 
     
-    /** Query as a string */
-    String getQueryString() ;
+    /** Number of queries executed */
+    void setQueryCount(long count) ;
     
-    /** Point in time when query execution started */
-    String getQueryExecAt() ;
+    /** Last query seen, as a string */
+    String getLastQueryString() ;
 
-    /** Length of elapsed time (in microseconds) for query : -1 for unknown or unfinished */  
-    long getQueryExecTime() ;
+    /** Last query seen, as a string */
+    void setLastQueryString(String queryString) ;
     
-    // Something to hang subsystem details off of
+    /** Point in time when last query seen */
+    String getLastQueryExecAt() ;
+
+    /** Point in time when last query seen */
+    void setLastQueryExecAt(String timeStr) ;
+
+    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */  
+    long getLastQueryExecTime() ;
+
+    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */  
+    void setLastQueryExecTime(long millis) ;
+
 }
 
 /*

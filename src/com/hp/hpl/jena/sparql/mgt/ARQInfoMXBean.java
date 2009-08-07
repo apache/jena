@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
+import java.util.List ;
+
+
 public interface ARQInfoMXBean
 {
+    public String getName() ;
     public String getVersion() ;
     public String getBuildDate() ;
-    
+    public List<String> getGlobalContext() ;
 }
 
 /*

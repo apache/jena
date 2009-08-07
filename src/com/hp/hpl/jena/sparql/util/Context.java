@@ -216,6 +216,10 @@ public class Context
     
     /** Set of properties (as Symbols) currently defined */  
     public Set<Symbol> keys() { return context.keySet() ; }
+
+    /** Return the number of context items */ 
+    public int size() { return context.size() ; }
+
     
 //    @Override
 //    public int hashCode()
@@ -252,9 +256,8 @@ public class Context
     {
         String x = "" ;
         String sep = "" ;
-        for ( Iterator<Symbol> iter = keys().iterator() ; iter.hasNext() ; )
+        for ( Symbol s : keys() )
         {
-            Symbol s = iter.next();
             Object value = get(s) ;
             x = x + sep + s + " = " + value ;
             sep = "\n" ;

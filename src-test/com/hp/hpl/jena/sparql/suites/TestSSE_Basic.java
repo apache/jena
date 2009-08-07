@@ -85,6 +85,8 @@ public class TestSSE_Basic extends TestCase
         testNode("'''A\\tB'''", n) ;
     }
     
+    public void testLit_13() { testNode("'abc\\ndef'") ; }
+    
     public void testNum_1() { testNode("1") ; }
     public void testNum_2() { testNode("1.1") ; }
     public void testNum_3() { testNode("1.0e6") ; }
