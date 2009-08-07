@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-/** MBean for a conetxt object (which can change) */
+/** MBean for a context object (which can change) */
 public class ContextMBean implements DynamicMBean
 {
     private final Context context ;
@@ -24,11 +24,11 @@ public class ContextMBean implements DynamicMBean
         this.context = context ;
     }
 
-    private String getString(String name) { return context.getAsString(Symbol.create(name)) ; }
+    private Object get(String name) { return context.getAsString(Symbol.create(name)) ; }
     
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException
     {
-        return getString(attribute) ;
+        return get(attribute) ;
     }
 
     public AttributeList getAttributes(String[] attributes)
@@ -36,7 +36,7 @@ public class ContextMBean implements DynamicMBean
         AttributeList x = new AttributeList() ;
         for ( String k : attributes )
         {
-            Attribute a = new Attribute(k,  getString(k)) ; 
+            Attribute a = new Attribute(k,  get(k)) ; 
             x.add(a) ;
         }
         return x ;
@@ -52,8 +52,15 @@ public class ContextMBean implements DynamicMBean
         for ( Symbol sk : context.keys() )
         {
             // Not all are settable - only is string, boolean, integer.
+            Object obj = context.get(sk) ;
+            boolean settable = false ;
+            
+            if ( obj instanceof String ) settable = true ;
+            if ( obj instanceof Boolean ) settable = true ;
+            if ( obj instanceof Integer ) settable = true ;
+            
             MBeanAttributeInfo attr = new MBeanAttributeInfo(sk.getSymbol(), "java.lang.String", sk.getSymbol(),
-                                                             true, true, false) ;
+                                                             true, settable, false) ;
             attrInfo[idx++] = attr ;
         }
         
@@ -70,7 +77,7 @@ public class ContextMBean implements DynamicMBean
                                        attrInfo,
                                        null,        // Constructors
                                        null,        // Operations
-                                       null        // Notifications
+                                       null         // Notifications
                                         ) ;
         return info ;
     }
@@ -93,8 +100,15 @@ public class ContextMBean implements DynamicMBean
         for ( Object obj : attributes )
         {
             Attribute a = (Attribute)obj ;
+            
+            Object value = a.getValue() ;
+            Object oldValue = get(a.getName()) ;
+            
+            // Check type of old value.
+            //if ( oldValue instanceof Boolean )
+            
             try { setAttribute(a) ; } catch (Exception ex) {}
-            results.add(new Attribute( a.getName(), getString(a.getName()) )) ;
+            results.add(new Attribute( a.getName(), get(a.getName()) )) ;
         }
         
         return results ;
