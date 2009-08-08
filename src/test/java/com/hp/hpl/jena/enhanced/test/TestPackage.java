@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.1 2009-06-29 08:55:55 castagna Exp $
+  $Id: TestPackage.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -95,7 +95,7 @@ public class TestPackage extends GraphTestBase  {
      * View n as intf. This is supported iff rslt.
      */
     private static <X extends RDFNode> void miniAsSupports(String title, TestNode n, Class<X> intf, boolean rslt ) {
-        assertTrue(title +":sanity",n instanceof Polymorphic);
+        assertTrue(title +":sanity",n instanceof Polymorphic<?>);
         
         // It is always possible to view any node with any interface.
         TestNode as1 = (TestNode)((EnhNode)n).viewAs(intf);

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.1 2009-06-29 08:55:49 castagna Exp $
+  $Id: WrappedIterator.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -31,7 +31,7 @@ public class WrappedIterator<T> extends NiceIterator<T>
         wrap <code>it</code>.
     */
     public static <T> ExtendedIterator<T> create( Iterator<T> it )
-        { return it instanceof ExtendedIterator ? (ExtendedIterator<T>) it : new WrappedIterator<T>( it, false ); }
+        { return it instanceof ExtendedIterator<?> ? (ExtendedIterator<T>) it : new WrappedIterator<T>( it, false ); }
     
     /**
         Answer an ExtendedIterator wrapped round <code>it</code> which does not

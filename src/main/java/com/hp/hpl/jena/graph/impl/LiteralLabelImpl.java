@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabelImpl.java,v 1.2 2009-08-01 18:51:03 andy_seaborne Exp $
+  $Id: LiteralLabelImpl.java,v 1.3 2009-08-08 11:25:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -407,13 +407,17 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             && JenaParameters.enablePlainLiteralSameAsString;
         }
 
+    private int hash = 0 ;
 	/** 
      	Answer the hashcode of this literal, derived from its value if it's
         well-formed and otherwise its lexical form.
     */
 	@Override
     public int hashCode() {
-		return dtype == null ? getDefaultHashcode() : dtype.getHashCode( this );
+	    // Literal labels are immutable.
+	    if ( hash == 0 )
+	        hash = (dtype == null ? getDefaultHashcode() : dtype.getHashCode( this ));
+	    return hash ;
 	}
 
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelEvents.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: TestModelEvents.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -314,7 +314,7 @@ public class TestModelEvents extends ModelTestBase
         private Object comparable( Object x )
             {
             if (x instanceof Statement []) return Arrays.asList( (Statement []) x );
-            if (x instanceof Iterator) return iteratorToList( (Iterator<?>) x );
+            if (x instanceof Iterator<?>) return iteratorToList( (Iterator<?>) x );
             return x;
             }    
             

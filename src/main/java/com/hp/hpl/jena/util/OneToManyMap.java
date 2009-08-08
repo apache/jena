@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 08:55:47 $
- *               by   $Author: castagna $
+ * Last modified on   $Date: 2009-08-08 11:25:18 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.2 2009-08-08 11:25:18 andy_seaborne Exp $
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {
@@ -275,7 +275,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param m The map whose contents are to be copied into this map
      */
     public void putAll( Map<? extends From, ? extends To> m ) {
-        boolean many = (m instanceof OneToManyMap);
+        boolean many = (m instanceof OneToManyMap<?,?>);
         
         for (Iterator<? extends From> i = m.keySet().iterator(); i.hasNext(); ) {
             From key = i.next();
@@ -442,7 +442,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          * @return True if the given object is equal to this Map.Entry object.
          */
         @Override public boolean equals( Object x ) {
-            if (x instanceof java.util.Map.Entry) {
+            if (x instanceof java.util.Map.Entry<?,?>) {
                 Map.Entry<?,?> e1 = (Map.Entry<?,?>) x;
                 return (e1.getKey()==null ?
                                           m_key==null : e1.getKey().equals(m_key))  &&

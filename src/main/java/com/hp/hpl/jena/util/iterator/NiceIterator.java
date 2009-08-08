@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.1 2009-06-29 08:55:49 castagna Exp $
+  $Id: NiceIterator.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -135,7 +135,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
         tests [that were] scattered through the code.
     */
     public static void close( Iterator<?> it )
-        { if (it instanceof ClosableIterator) ((ClosableIterator<?>) it).close(); }
+        { if (it instanceof ClosableIterator<?>) ((ClosableIterator<?>) it).close(); }
    
     /**
      * An iterator over no elements.
