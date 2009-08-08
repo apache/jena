@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.mgt;
 
 import javax.management.* ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
@@ -17,18 +16,16 @@ public class ContextMBean implements DynamicMBean
 {
     private final Context context ;
     
-    public ContextMBean()       { this(ARQ.getContext()) ; }
-    
     public ContextMBean(Context context)
     { 
         this.context = context ;
     }
 
-    private Object get(String name) { return context.getAsString(Symbol.create(name)) ; }
+    private Object getAsString(String name) { return context.getAsString(Symbol.create(name)) ; }
     
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException
     {
-        return get(attribute) ;
+        return getAsString(attribute) ;
     }
 
     public AttributeList getAttributes(String[] attributes)
@@ -36,7 +33,7 @@ public class ContextMBean implements DynamicMBean
         AttributeList x = new AttributeList() ;
         for ( String k : attributes )
         {
-            Attribute a = new Attribute(k,  get(k)) ; 
+            Attribute a = new Attribute(k,  getAsString(k)) ; 
             x.add(a) ;
         }
         return x ;
@@ -102,13 +99,13 @@ public class ContextMBean implements DynamicMBean
             Attribute a = (Attribute)obj ;
             
             Object value = a.getValue() ;
-            Object oldValue = get(a.getName()) ;
+            Object oldValue = getAsString(a.getName()) ;
             
             // Check type of old value.
             //if ( oldValue instanceof Boolean )
             
             try { setAttribute(a) ; } catch (Exception ex) {}
-            results.add(new Attribute( a.getName(), get(a.getName()) )) ;
+            results.add(new Attribute( a.getName(), getAsString(a.getName()) )) ;
         }
         
         return results ;

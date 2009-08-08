@@ -6,23 +6,49 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-/** Overall statistics from a query engine - one such per type of engine. */
-public interface QueryEngineMXBean
+import java.util.concurrent.atomic.AtomicLong ;
+
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+public class QueryEngineInfo implements QueryEngineMXBean
 {
-    /** Number of queries executed */
-    long getQueryCount() ; 
+    // Has to be careful about concurrency.
+    // It is possible that the count may be momentarily wrong
+    // (reading longs is not atomic).
     
-    /** Last query seen, as a string */
-    String getLastQueryString() ;
+    private AtomicLong count = new AtomicLong(0) ;
+    public long getQueryCount()                 { return count.get() ; }
+    public void incQueryCount()                 { count.incrementAndGet() ; }
     
-    /** Last algebra expression seen, as a string */
-    String getLastAlgebra() ;
+    Query query = null ;
+    public String getLastQueryString()
+    { 
+        Query q = query ;    // Get once.
+        if ( q != null ) return q.toString() ;
+        // Sometimes an alegra expression is executited without a query.
+        return getLastAlgebra() ;
+    }
+    public void setLastQueryString(Query q)     { query = q ; }
 
-    /** Point in time when last query seen */
-    String getLastQueryExecAt() ;
+    private Op op = null ;
+    public String getLastAlgebra()
+    {
+        Op _op = op ;   // Get once.
+        return _op == null ? "none" : _op.toString() ;
+    }
+    public void setLastOp(Op op)                { this.op = op ; }
 
-//    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */  
-//    long getLastQueryExecTime() ;
+    private String timeSeen = "" ;
+    public String getLastQueryExecAt()          { return timeSeen ; }
+    public void setLastQueryExecAt()            { timeSeen = Utils.nowAsString() ; }
+
+//    private long lastExecTime ;
+//    public long getLastQueryExecTime()          { return lastExecTime ; }
+//    public void setLastQueryExecTime(long timeMillis)   { lastExecTime = timeMillis ; }
+    
+    
 }
 
 /*

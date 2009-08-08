@@ -6,15 +6,34 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-import java.util.List ;
 
-
-public interface ARQInfoMXBean
+public class SystemInfo implements SystemInfoMXBean
 {
-    public String getName() ;
-    public String getVersion() ;
-    public String getBuildDate() ;
-    public List<String> getGlobalContext() ;
+    private final String name ;
+    private final String version ;
+    private final String buildDate ;
+
+    public SystemInfo(String name, String version, String buildDate)
+    {
+        this.name = name ;
+        this.version = version ;
+        this.buildDate = buildDate ;
+    }
+    
+    public String getBuildDate()
+    {
+        return buildDate ;
+    }
+
+    public String getVersion()
+    {
+        return version ;
+    }
+
+    public String getName()
+    { 
+        return name ;
+    }
 }
 
 /*

@@ -20,8 +20,6 @@ public interface QueryExecMXBean
 
     /** Length of elapsed time (in microseconds) for query : -1 for unknown or unfinished */  
     long getQueryExecTime() ;
-    
-    // Something to hang subsystem details off of
 }
 
 /*

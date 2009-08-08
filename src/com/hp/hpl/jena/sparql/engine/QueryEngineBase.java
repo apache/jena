@@ -6,26 +6,24 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.graph.Graph;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.mgt.QueryEngineInfo ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /** Main part of a QueryEngine - somethign that takes responsibility for a complete query execution */ 
 public abstract class QueryEngineBase implements OpEval, Closeable
 {
+    public final static QueryEngineInfo queryEngineInfo = new QueryEngineInfo() ;
     // See also ExecutinContext.getDataset()
     protected DatasetGraph dataset = null ;
     protected Context context ;
@@ -97,7 +95,10 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         QueryIterator queryIterator = null ;
         if ( dataset != null )
             // Null means setting up but not executing a query.
-            queryIterator = eval(op, dataset, startBinding, context) ;
+            queryIterator = evaluate(op, dataset, startBinding, context) ;
+        else
+            // Bypass management interface
+            queryIterator = evaluateNoMgt(op, dataset, startBinding, context) ;
         // This could be an automagic iterator to catch close.
         return new PlanOp(getOp(), this, queryIterator) ;
     }
@@ -111,15 +112,26 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         return op ;
     }
     
-    public QueryIterator eval(Op op, Graph graph)
-    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext().copy()) ; }
+    // Record the query operation as it goes pass and call the actual worker
+    final
+    public QueryIterator evaluate(Op op, DatasetGraph dsg, Binding binding, Context context)
+    {
+        queryEngineInfo.incQueryCount() ;
+        queryEngineInfo.setLastQueryExecAt() ;
+        //queryEngineInfo.setLastQueryExecTime(-1) ;
+        queryEngineInfo.setLastQueryString((Query)context.get(ARQConstants.sysCurrentQuery)) ;
+        queryEngineInfo.setLastOp(op) ;
+        return eval(op, dsg, binding, context) ;
+    }
     
-    public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
-    { return eval(op, dsg, BindingRoot.create(), context) ; }
+    private QueryIterator evaluateNoMgt(Op op, DatasetGraph dsg, Binding binding, Context context)
+    {
+        return eval(op, dsg, binding, context) ;
+    }
     
-    abstract 
-    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
-    
+    abstract protected
+    QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
+
     public Op getOp() { return queryOp ; }
     
     public void close()

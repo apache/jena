@@ -6,17 +6,16 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public interface OpEval
 {
-    public QueryIterator eval(Op op, Graph graph) ;
-    public QueryIterator eval(Op op, DatasetGraph dsg, Context context) ;
-    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
+    //public QueryIterator evaluate(Op op, Graph graph) ;
+    //public QueryIterator evaluate(Op op, DatasetGraph dsg, Context context) ;
+    public QueryIterator evaluate(Op op, DatasetGraph dsg, Binding binding, Context context) ;
 }
 
 /*

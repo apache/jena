@@ -6,43 +6,11 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-import java.util.ArrayList ;
-import java.util.List ;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-
-public class ARQInfo implements ARQInfoMXBean
+public interface SystemInfoMXBean
 {
-
-    public String getBuildDate()
-    {
-        return ARQ.BUILD_DATE ;
-    }
-
-    public String getVersion()
-    {
-        return ARQ.VERSION ;
-    }
-
-    public String getName()
-    { 
-        return ARQ.arqIRI ;
-    }
-
-    public List<String> getGlobalContext()
-    {
-        List<String> result = new ArrayList<String>() ;
-        Context c = ARQ.getContext() ;
-        System.out.println(c) ;
-        for ( Symbol sym : c.keys() )
-        {
-            String x = c.getAsString(sym) ;
-            result.add(sym+"="+x) ;
-        }
-        return result ;
-    }
+    public String getName() ;
+    public String getVersion() ;
+    public String getBuildDate() ;
 }
 
 /*

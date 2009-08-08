@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineBase ;
 
 public class ARQMgt
 {
@@ -38,11 +39,12 @@ public class ARQMgt
         
         String NS = ARQ.PATH ;
         
-        add(NS+".system:type=ARQ", new ARQInfo()) ;
-        add(NS+".system:type=Context", new ContextMBean()) ;
+        register(NS+".system:type=SystemInfo", new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE)) ;
+        register(NS+".system:type=Context", new ContextMBean(ARQ.getContext())) ;
+        register(NS+".system:type=Engine", QueryEngineBase.queryEngineInfo) ;
     }
     
-    public static void add(String name, Object bean)
+    public static void register(String name, Object bean)
     {
         ObjectName objName = null ;
         try
