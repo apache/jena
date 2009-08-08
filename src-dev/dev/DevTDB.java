@@ -8,10 +8,17 @@ package dev;
 
 public class DevTDB
 {
-    // RIOT.out: NTriples writer [DONE, not wrapped for Jena]
-    // Graph ops <- GraphUtils.allNodes, GraphList
-    // GNode?
-    // G.listProperties(g, S), G.getProperty(g, S), G.getProperty(g, S, P) etc etc.Graph
+    // Node cache on 64bit machines needs to be bigger (much bigger?)
+    //  100K ==> ??
+    //   (Or use NIO somehow?)
+    
+    // Logging of explains 
+    //  To a separate file - example inlog4j.
+    
+    // FileMode, NodeCacheNode, ...
+    // 32 bit => Direct, small
+    // 64 bit => Mapped, large
+    // Cache stats counters (prep for JMX but useful now)
     
     // ** metadata files and BPT creation ==> NewSetup and DI
     
@@ -19,13 +26,12 @@ public class DevTDB
     //  Currently, ignored (actually, loaded by QueryExecutionBase and ignored).
     //  Swap to in-memory dataset?
     
-    // RIOT: Checking in tokenizer and Turtle parser.  
-    // Need to cache in turtle parser.  Null checker.
-    // Resolution requires IRi so do checking there.  Raw mode (no resoltion)?
-    
     // == 0.8.3
+    // Use ARQ 2.8.1 and enable management info.
+    // Monitoring caches
+    // NewSetup/DI
 
-    
+    // ----
     // Publish => release and upload the zip to maven area.
     // IVY publish a zip
     

@@ -6,35 +6,34 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec;
-import static com.hp.hpl.jena.tdb.TDB.logInfo;
-import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexQuads;
-import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexTriples;
-import static com.hp.hpl.jena.tdb.sys.Names.quadIndexes;
-import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import atlas.lib.ColumnMap;
+import static com.hp.hpl.jena.tdb.TDB.logInfo ;
+import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexQuads ;
+import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexTriples ;
+import static com.hp.hpl.jena.tdb.sys.Names.quadIndexes ;
+import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.lib.ColumnMap ;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexBuilder;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexBuilder ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Low-level factory for things TDB. See {@link com.hp.hpl.jena.tdb.TDBFactory} for the usual application API */
 public class FactoryGraphTDB
@@ -238,7 +237,7 @@ public class FactoryGraphTDB
             reorder = SystemTDB.defaultOptimizer ;
         
         if ( reorder == null )
-            logExec.warn("No BGP optimizer") ;
+            logInfo.warn("No BGP optimizer") ;
         
         return reorder ; 
     }

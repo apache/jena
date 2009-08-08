@@ -6,39 +6,42 @@
 
 package com.hp.hpl.jena.tdb;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.engine.main.QC;
-import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.lib.Metadata;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB;
-import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
-import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
+import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
+import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
+import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
+import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
+import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class TDB
 {
+    /** IRI for TDB */  
+    public static final String tdbIRI = "http://jena.hpl.hp.com/#tdb" ;
+    
     // Internal logging
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
@@ -142,11 +145,16 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
-    
-        // This is called via a static initializer so before the setting of VERSION and BUILD_DATE
+        
+        SystemTDB.init() ;
         ARQ.init() ;
         // BUG: ARQ 2.8.0 and before: this overwrites the metadata.  Bad design. 
         Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
+        
+        // Set management information.
+        // Needs ARQ > 2.8.0
+//        String NS = TDB.PATH ;
+//        ARQMgt.register(NS+".system:type=SystemInfo", new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE)) ;
 
         AssemblerUtils.init() ;
         VocabTDB.init();

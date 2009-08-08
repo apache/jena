@@ -95,6 +95,9 @@ public class SystemTDB
 
     private static Properties properties = readPropertiesFile() ;
 
+    // To make the class initialize
+    static public void init() {}
+    
     // -- Unsettable parameters
     
     /** Size, in bytes, of a block */
@@ -221,9 +224,6 @@ public class SystemTDB
     
     // --------
     // Tie to location but that means one instance per graph
-    // More in the context !
-    
-    // Combine with the TDB propertied (Metadata)
     
     public static final boolean is64bitSystem = determineIf64Bit() ;
 
@@ -271,8 +271,8 @@ public class SystemTDB
     
     private static FileMode determineFileMode()
     {
-        // Called very, very early, before --set might be seen.
-        // Hence delayed access above.
+        // Be careful that this is not called very, very early, before --set might be seen.
+        // Hence delayed access above in fileMode().
         
         String x = ARQ.getContext().getAsString(SystemTDB.symFileMode, "default") ;
 
