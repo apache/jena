@@ -1,92 +1,21 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.lib.cache;
 
-import atlas.lib.ActionKeyValue;
-import atlas.lib.Cache;
-
-public class CacheStats<Key,T> extends CacheWrapper<Key,T>
+public interface CacheStats
 {
-    // Overall statistics 
-    private long cacheEntries = 0 ;
-    private long cacheHits = 0 ;
-    private long cacheMisses = 0 ; 
-    private long cacheEjects = 0 ;
-
-    // ----
-    private class EjectMonitor implements ActionKeyValue<Key,T>
-    {
-     
-        private ActionKeyValue<Key, T> other ;
-
-        EjectMonitor(ActionKeyValue<Key,T> other) { this.other = other ; }
-
-        //@Override
-        public void apply(Key key, T thing)
-        { 
-            cacheEjects++ ;
-            if ( other != null )
-                other.apply(key, thing) ;
-        }
-    } ;
-    // ----
-
-    
-    public CacheStats(Cache<Key,T> cache)
-    { 
-        super(cache) ;
-        cache.setDropHandler(new EjectMonitor(null)) ;
-    }
-    
-    @Override synchronized
-    public T get(Key key)
-    { 
-        if ( cache.containsKey(key) )
-            cacheMisses ++ ;
-        else
-            cacheHits++ ;
-        return cache.get(key) ;
-    }
-    
-    @Override synchronized
-    public void put(Key key, T t)
-    {
-        T v = get(key) ;
-        if ( v == null )
-        {
-            cacheEntries++ ;
-            cache.put(key, v) ;
-            return ;
-        }
-        //if ( v.equals(t) ) { }
-        // Do it anyway to be consistent 
-        cache.put(key, v) ;
-    }
-    
-    @Override synchronized
-    public void remove(Key key)
-    {
-        if ( cache.containsKey(key) )
-            cacheEntries-- ;
-
-        // Do it anyway to be consistent
-        cache.remove(key) ;
-    }
-    
-    
-    @Override synchronized
-    public void setDropHandler(ActionKeyValue<Key,T> dropHandler)
-    {
-        cache.setDropHandler(new EjectMonitor(dropHandler)) ;
-    }
+    public long getCacheEntries() ;
+    public long getCacheHits() ;
+    public long getCacheMisses() ;
+    public long getCacheEjects() ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

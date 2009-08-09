@@ -22,8 +22,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 
 public class CacheSimple<K,V> implements Cache<K,V>
 {
-    
-    private final V[] cache ; 
+    private final V[] values ; 
     private final K[] keys ;
     private final int size ;
     private int currentSize = 0 ;
@@ -33,7 +32,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     { 
         @SuppressWarnings("unchecked")
         V[] x =  (V[])new Object[size] ;
-        cache = x ;
+        values = x ;
         
         @SuppressWarnings("unchecked")
         K[]  z =  (K[])new Object[size] ;
@@ -46,8 +45,9 @@ public class CacheSimple<K,V> implements Cache<K,V>
     //@Override
     public void clear()
     { 
-        Arrays.fill(cache, null) ;
+        Arrays.fill(values, null) ;
         Arrays.fill(keys, null) ;
+        // drop handler
         currentSize = 0 ;
     }
 
@@ -57,36 +57,64 @@ public class CacheSimple<K,V> implements Cache<K,V>
         return get(key) != null ;
     }
 
-    private final int index(K key) { return  (key.hashCode()&0x7fffffff) % size ; }
+    // Return key index : -(index+1) if the key does not match
+    private final int index(K key)
+    { 
+        int x = (key.hashCode()&0x7fffffff) % size ;
+        if ( keys[x] != null && keys[x].equals(key) )
+            return x ; 
+        return -x-1 ;
+    }
+    
+    private final int decode(int x)
+    { 
+        if ( x >= 0 ) return x ;
+        
+        // y = -x-1 ==> x = -y-1 
+        return -x-1 ;
+    }
     
     //@Override
     //public V getObject(K key, boolean exclusive)
     public V get(K key)
     {
-        return cache[index(key)] ;
+        int x = index(key) ;
+        if ( x < 0 )
+            return null ; 
+        return values[x] ;
     }
 
     //@Override
-    public void put(K key, V thing)
+    public V put(K key, V thing)
     {
         int x = index(key) ;
-        V old = cache[x] ;
-        if ( old != null )
+        V old = null ;
+        if ( x < 0 )
+            // New.
+            x = decode(x) ;
+        else
         {
+            old = values[x] ;
             if ( dropHandler != null )
                 dropHandler.apply(keys[x], old) ;
             currentSize-- ;
         }
         
-        cache[x] = thing ;
-        keys[x] = key ;
+        values[x] = thing ;
+        if ( thing == null )
+            //put(,null) is a remove.
+            keys[x] = null ;
+        else
+            keys[x] = key ;
         currentSize++ ;
+        return old ;
     }
 
     //@Override
-    public void remove(K key)
+    public boolean remove(K key)
     {
-        put(key, null) ;
+        V old = put(key, null) ;
+        return old != null ;
     }
 
     //@Override

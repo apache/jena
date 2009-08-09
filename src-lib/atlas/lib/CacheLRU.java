@@ -17,6 +17,7 @@ import java.util.Map;
 
 public class CacheLRU<K,V> implements Cache<K,V>
 {
+    // Use an internal class so we don't expose the full LinkedHashMap interface.
     private CacheImpl<K,V> cache ;
     
     public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
@@ -39,15 +40,16 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    public void put(K key, V thing)
+    public V put(K key, V thing)
     {
-        cache.put(key, thing) ;
+        return cache.put(key, thing) ;
     }
 
     //@Override
-    public void remove(K key)
+    public boolean remove(K key)
     {
-        cache.remove(key) ;
+        V old = cache.remove(key) ;
+        return old != null ;
     }
 
     //@Override

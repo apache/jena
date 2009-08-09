@@ -11,16 +11,26 @@ import java.util.Iterator;
 /** A cache */
 public interface Cache<Key, Value>
 {
+    /** Does the cache contain the key? */
     public boolean containsKey(Key key) ;
+    
+    /** Get from cache - or return return null */ 
     public Value get(Key key) ;
-    public void put(Key key, Value thing) ;
-    public void remove(Key key) ;
+    
+    /** Insert into from cache and return old value (or null if none) */
+    public Value put(Key key, Value thing) ;
+
+    /** Reove from cache - return true if key referenecd an entry */
+    public boolean remove(Key key) ;
+    
+    /** Iterate over all keys */ 
     public Iterator<Key> keys() ;
     
     public boolean isEmpty() ;
     public void clear() ;
     public long size() ;
     
+    /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
     public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
 }
 

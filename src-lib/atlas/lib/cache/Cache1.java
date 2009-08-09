@@ -17,6 +17,7 @@ import atlas.lib.Cache;
 /** A one-slot cache.*/
 public class Cache1<K, V> implements Cache<K,V>
 {
+    private ActionKeyValue<K, V> dropHandler = null ;
     private K cacheKey ;
     private V cacheValue ;
     
@@ -58,30 +59,44 @@ public class Cache1<K, V> implements Cache<K,V>
     }
 
     //@Override
-    public void put(K key, V thing)
+    public V put(K key, V thing)
     {
+        V old = cacheValue ;
         // Displaces any existing cached key/value pair
         cacheKey = key ;
         cacheValue = thing ;
+        
+        if ( old != null && old.equals(cacheValue) )
+            drop(key, old) ;
+        return old ;
     }
 
     //@Override
-    public void remove(K key)
+    public boolean remove(K key)
     {
-        if ( cacheKey == null ) return ;
+        if ( cacheKey == null ) return false ;
+        
         if ( cacheKey.equals(key) )
         {
-            cacheKey = key ;
-            cacheValue = null ;
+            drop(cacheKey, cacheValue) ;
+            clear() ;
+            return true ;
         }
+        return false ;
     }
 
     //@Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
     {
-        throw new UnsupportedOperationException();
+        this.dropHandler = dropHandler ;
     }
 
+    private void drop(K key, V thing)
+    {
+        if ( dropHandler != null )
+            dropHandler.apply(key, thing) ;
+    }
+    
     //@Override
     public long size()
     {

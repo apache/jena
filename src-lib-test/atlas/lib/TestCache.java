@@ -16,36 +16,91 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import atlas.iterator.Iter;
+import atlas.lib.cache.CacheStats ;
+import atlas.lib.cache.CacheStatsAtomic ;
+import atlas.lib.cache.CacheStatsSimple ;
 import atlas.test.BaseTest;
 
 @RunWith(Parameterized.class)
 public class TestCache extends BaseTest
 {
-    private static interface CacheMaker<K,V> { Cache<K,V> make() ; } 
+    // Test do not apply to cache1.
+    private static interface CacheMaker<K,V> { Cache<K,V> make(int size) ; String name() ; } 
 
     private static CacheMaker<Integer, Integer> simple = 
         new CacheMaker<Integer, Integer>()
-        { public Cache<Integer, Integer> make() { return CacheFactory.createSimpleCache(10) ; } } ;
-            
-     private static CacheMaker<Integer, Integer> standard = 
-         new CacheMaker<Integer, Integer>()
-         { public Cache<Integer, Integer> make() { return CacheFactory.createCache(10) ; } } ;
-    
+        { 
+        public Cache<Integer, Integer> make(int size) { return CacheFactory.createSimpleCache(size) ; }
+        public String name() { return "Simple" ; } 
+        } 
+    ;
+
+    private static CacheMaker<Integer, Integer> standard = 
+        new CacheMaker<Integer, Integer>()
+        {
+        public Cache<Integer, Integer> make(int size) { return CacheFactory.createCache(size) ; }
+        public String name() { return "Standard" ; } 
+        }
+    ;
+
+    private static CacheMaker<Integer, Integer> stats = 
+        new CacheMaker<Integer, Integer>()
+        {
+        public Cache<Integer, Integer> make(int size)
+        { 
+            Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
+            return new CacheStatsSimple<Integer, Integer>(c) ;
+        }
+        public String name() { return "Stats" ; }
+        }
+    ;
+
+    private static CacheMaker<Integer, Integer> statsAtomic = 
+        new CacheMaker<Integer, Integer>()
+        {
+        public Cache<Integer, Integer> make(int size)
+        { 
+            Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
+            return new CacheStatsAtomic<Integer, Integer>(c) ;
+        }
+        public String name() { return "StatsAtomic" ; }
+        }
+    ;
+           
     @Parameters
     public static Collection<Object[]> cacheMakers()
     {
-        return Arrays.asList(new Object[][] { { simple } , { standard } } ) ; 
+        return Arrays.asList(new Object[][] {
+//          { simple , 1 }
+
+                                              { simple , 10 }
+                                            , { simple , 2 } 
+                                            , { simple , 1 }
+                                            , { standard , 10 }
+                                            , { standard , 2 }
+                                            , { standard , 1 }
+                                            , { stats , 10 }
+                                            , { stats , 2 }
+                                            , { stats , 1 }
+                                            , { statsAtomic , 10 }
+                                            , { statsAtomic , 2 }
+                                            , { statsAtomic , 1 }
+                                            } ) ; 
     }
     
     Cache<Integer, Integer> cache ;
     CacheMaker<Integer,Integer> cacheMaker ;
+    int size ;
     
-    public TestCache(CacheMaker<Integer,Integer> cacheMaker)
+    
+    public TestCache(CacheMaker<Integer,Integer> cacheMaker, int size)
     {
         this.cacheMaker = cacheMaker ;
+        this.size = size ;
+        
     }
     
-    @Before public void before() { cache = cacheMaker.make() ; }
+    @Before public void before() { cache = cacheMaker.make(size) ; }
     
     @Test public void cache_00()
     {
@@ -55,28 +110,41 @@ public class TestCache extends BaseTest
     
     @Test public void cache_01()
     {
-        cache.put(7, 7) ;
+        Integer x = cache.put(7, 7) ;
         assertEquals(1, cache.size()) ;
+        assertNull(x) ;
         assertTrue(cache.containsKey(7)) ;
         assertEquals(Integer.valueOf(7), cache.get(7)) ;
     }
     
     @Test public void cache_02()
     {
-        cache.put(7, 7) ;
-        cache.put(8, 8) ;
-        assertEquals(2, cache.size()) ;
-        assertTrue(cache.containsKey(7)) ;
+        Integer x1 = cache.put(7, 7) ;
+        Integer x2 = cache.put(8, 8) ;
+        // Not true for Cache1.
+        if ( size > 2 )
+            assertEquals(2, cache.size()) ;
+        assertNull(x1) ;
+        if ( size > 2 )
+            assertNull(x2) ;
+        // else don't know.
+        
+        if ( size > 2 )
+            assertTrue(cache.containsKey(7)) ;
+        
+        if ( size > 2 )
+            assertEquals(Integer.valueOf(7), cache.get(7)) ;
+        
         assertTrue(cache.containsKey(8)) ;
-        assertEquals(Integer.valueOf(7), cache.get(7)) ;
         assertEquals(Integer.valueOf(8), cache.get(8)) ;
     }
     
     @Test public void cache_03()
     {
-        cache.put(7, 7) ;
-        cache.put(7, 18) ;
+        Integer x1 = cache.put(7, 7) ;
+        Integer x2 = cache.put(7, 18) ;
         assertEquals(1, cache.size()) ;
+        assertEquals(7, x2.intValue()) ;
         assertTrue(cache.containsKey(7)) ;
         assertEquals(Integer.valueOf(18), cache.get(7)) ;
     }
@@ -89,7 +157,27 @@ public class TestCache extends BaseTest
         assertEquals(1, x.size()) ;
         assertEquals(Integer.valueOf(7), x.get(0)) ;
     }
+    
+    @Test public void cache_05()
+    {
+        cache.clear() ;
+        cache.put(7, 77) ;
+        cache.clear() ;
+        assertEquals(0, cache.size()) ; 
+        assertTrue(cache.isEmpty()) ;
+    }
 
+    @Test public void stats_01()
+    {
+        cache.clear() ;
+        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
+        CacheStats cs = (CacheStats)cache ;
+        assertEquals(0,cs.getCacheEntries()) ;
+        assertEquals(0,cs.getCacheMisses()) ;
+        assertEquals(0,cs.getCacheHits()) ;
+        assertEquals(0,cs.getCacheEjects()) ;
+    }
+    
 }
 
 /*

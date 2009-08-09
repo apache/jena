@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
     , TestListUtils.class
     , TestSetUtils.class
     , TestCache.class
-    , TestCacheNG.class
+    , TestCacheStats.class
     , TestColumnMap.class
     , TestFileOps.class
     , TestStrUtils.class
