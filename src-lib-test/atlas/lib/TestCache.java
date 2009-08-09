@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import atlas.iterator.Iter;
-import atlas.lib.cache.CacheStats ;
 import atlas.lib.cache.CacheStatsAtomic ;
 import atlas.lib.cache.CacheStatsSimple ;
 import atlas.test.BaseTest;
@@ -167,17 +166,6 @@ public class TestCache extends BaseTest
         assertTrue(cache.isEmpty()) ;
     }
 
-    @Test public void stats_01()
-    {
-        cache.clear() ;
-        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
-        CacheStats cs = (CacheStats)cache ;
-        assertEquals(0,cs.getCacheEntries()) ;
-        assertEquals(0,cs.getCacheMisses()) ;
-        assertEquals(0,cs.getCacheHits()) ;
-        assertEquals(0,cs.getCacheEjects()) ;
-    }
-    
 }
 
 /*

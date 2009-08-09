@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicLong ;
 
 import atlas.lib.ActionKeyValue;
 import atlas.lib.Cache;
+import atlas.lib.CacheStats ;
 
 /** Capture statisics for a cache - this class is thread safe (you can read the stats while the cache is active) */ 
-public class CacheStatsAtomic<Key,T> extends CacheWrapper<Key,T> implements CacheStats 
+public class CacheStatsAtomic<Key,Value> extends CacheWrapper<Key,Value> implements CacheStats<Key,Value>
 {
     // Overall statistics 
     // AtomicLong?
@@ -27,16 +28,16 @@ public class CacheStatsAtomic<Key,T> extends CacheWrapper<Key,T> implements Cach
     private final AtomicLong cacheEjects  = new AtomicLong(0) ;
     
     // ----
-    private class EjectMonitor implements ActionKeyValue<Key,T>
+    private class EjectMonitor implements ActionKeyValue<Key,Value>
     {
      
-        private ActionKeyValue<Key, T> other ;
+        private ActionKeyValue<Key, Value> other ;
 
         // Wrap any real drop handler. 
-        EjectMonitor(ActionKeyValue<Key,T> other) { this.other = other ; }
+        EjectMonitor(ActionKeyValue<Key,Value> other) { this.other = other ; }
 
         //@Override
-        public void apply(Key key, T thing)
+        public void apply(Key key, Value thing)
         { 
             cacheEjects.getAndIncrement() ;
             if ( other != null )
@@ -46,16 +47,16 @@ public class CacheStatsAtomic<Key,T> extends CacheWrapper<Key,T> implements Cach
     // ----
 
     
-    public CacheStatsAtomic(Cache<Key,T> cache)
+    public CacheStatsAtomic(Cache<Key,Value> cache)
     { 
         super(cache) ;
         cache.setDropHandler(new EjectMonitor(null)) ;
     }
     
     @Override
-    public T get(Key key)
+    public Value get(Key key)
     { 
-        T x = cache.get(key) ;
+        Value x = cache.get(key) ;
         if ( x == null )
             cacheMisses.getAndIncrement() ;
         else
@@ -64,9 +65,9 @@ public class CacheStatsAtomic<Key,T> extends CacheWrapper<Key,T> implements Cach
     }
     
     @Override
-    public T put(Key key, T t)
+    public Value put(Key key, Value t)
     {
-        T v = cache.put(key, t) ;
+        Value v = cache.put(key, t) ;
         if ( v == null )
             // Was not there before
             cacheEntries.getAndIncrement() ;
@@ -90,7 +91,7 @@ public class CacheStatsAtomic<Key,T> extends CacheWrapper<Key,T> implements Cach
     }
     
     @Override
-    public void setDropHandler(ActionKeyValue<Key,T> dropHandler)
+    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler)
     {
         cache.setDropHandler(new EjectMonitor(dropHandler)) ;
     }

@@ -8,9 +8,10 @@ package atlas.lib.cache;
 
 import atlas.lib.ActionKeyValue;
 import atlas.lib.Cache;
+import atlas.lib.CacheStats ;
 
 /** Collect statistics for a cache - this class is not thread safe (@see{CacheStatsAtomic}) */ 
-public class CacheStatsSimple<Key,T> extends CacheWrapper<Key,T> implements CacheStats 
+public class CacheStatsSimple<Key,Value> extends CacheWrapper<Key,Value> implements CacheStats<Key, Value>
 {
     // Overall statistics 
     private long cacheEntries = 0 ;
@@ -19,15 +20,15 @@ public class CacheStatsSimple<Key,T> extends CacheWrapper<Key,T> implements Cach
     private long cacheEjects = 0 ;
 
     // ---- trap and count ejections.  Does not update the cache size
-    private class EjectMonitor implements ActionKeyValue<Key,T>
+    private class EjectMonitor implements ActionKeyValue<Key,Value>
     {
-        private ActionKeyValue<Key, T> other ;
+        private ActionKeyValue<Key, Value> other ;
 
         // Wrap any real drop handler. 
-        EjectMonitor(ActionKeyValue<Key,T> other) { this.other = other ; }
+        EjectMonitor(ActionKeyValue<Key,Value> other) { this.other = other ; }
 
         //@Override
-        public void apply(Key key, T thing)
+        public void apply(Key key, Value thing)
         { 
             cacheEjects++ ;
             if ( other != null )
@@ -37,14 +38,14 @@ public class CacheStatsSimple<Key,T> extends CacheWrapper<Key,T> implements Cach
     // ----
 
     
-    public CacheStatsSimple(Cache<Key,T> cache)
+    public CacheStatsSimple(Cache<Key,Value> cache)
     { 
         super(cache) ;
         cache.setDropHandler(new EjectMonitor(null)) ;
     }
     
     @Override
-    public T get(Key key)
+    public Value get(Key key)
     { 
         if ( cache.containsKey(key) )
             cacheMisses ++ ;
@@ -54,9 +55,9 @@ public class CacheStatsSimple<Key,T> extends CacheWrapper<Key,T> implements Cach
     }
     
     @Override
-    public T put(Key key, T value)
+    public Value put(Key key, Value value)
     {
-        T v = cache.put(key, value) ;
+        Value v = cache.put(key, value) ;
         if ( v == null )
             // Was not there before
             cacheEntries ++ ;
@@ -80,7 +81,7 @@ public class CacheStatsSimple<Key,T> extends CacheWrapper<Key,T> implements Cach
     }
     
     @Override
-    public void setDropHandler(ActionKeyValue<Key,T> dropHandler)
+    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler)
     {
         cache.setDropHandler(new EjectMonitor(dropHandler)) ;
     }

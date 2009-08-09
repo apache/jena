@@ -6,13 +6,12 @@
 
 package atlas.lib;
 
+import atlas.lib.cache.CacheLRU ;
 
+/** Cache set - tracks LRU of objects */
 public class CacheSetLRU<T>
 {
     //LinkHashSet does not have LRU support.
-    
-    //Action<T> dropHandler = null ;
-    
     static Object theOnlyValue = new Object() ;
     CacheLRU.CacheImpl<T, Object> cacheMap = null ;
     

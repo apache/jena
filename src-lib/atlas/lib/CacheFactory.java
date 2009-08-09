@@ -6,22 +6,33 @@
 
 package atlas.lib;
 
+import atlas.lib.cache.CacheLRU ;
+import atlas.lib.cache.CacheSimple ;
+import atlas.lib.cache.CacheStatsAtomic ;
+
 
 public class CacheFactory
 {
-    public static <Key, T> Cache<Key, T> createCache(int maxSize)
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
     {
         return createCache(0.75f, maxSize) ;
     }
     
-    public static <Key, T> Cache<Key, T> createCache(float loadFactor, int maxSize)
+    public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        return new CacheLRU<Key, T>(0.75f, maxSize) ;
+        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
     }
     
-    public static <Key, T> Cache<Key, T> createSimpleCache(int size)
+    public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
     {
-        return new CacheSimple<Key, T>(size) ; 
+        return new CacheSimple<Key, Value>(size) ; 
+    }
+    
+    public static <Key, Value> CacheStats<Key, Value> createStats(Cache<Key, Value> cache)
+    {
+        if ( cache instanceof CacheStats<?,?>)
+            return (CacheStats<Key, Value>) cache ;
+        return new CacheStatsAtomic<Key, Value>(cache) ;
     }
 }
 

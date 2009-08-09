@@ -4,122 +4,144 @@
  * [See end of file]
  */
 
-package atlas.lib;
+package atlas.lib.cache;
 
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
+import atlas.iterator.IteratorArray;
+import atlas.lib.ActionKeyValue ;
+import atlas.lib.Cache ;
+
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 
 
 /**
- * @author Andy Seaborne
+ * A simple fixed size cache thatuses the hash code to address a slot.
+ * Clash policy is to overwrite.
+ * No object cretion during lookup or insert.
  */
 
-public class CacheLRU<K,V> implements Cache<K,V>
+public class CacheSimple<K,V> implements Cache<K,V>
 {
-    // Use an internal class so we don't expose the full LinkedHashMap interface.
-    private CacheImpl<K,V> cache ;
+    private final V[] values ; 
+    private final K[] keys ;
+    private final int size ;
+    private int currentSize = 0 ;
+    private ActionKeyValue<K,V> dropHandler = null ;
     
-    public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
+    public CacheSimple(int size)
+    { 
+        @SuppressWarnings("unchecked")
+        V[] x =  (V[])new Object[size] ;
+        values = x ;
+        
+        @SuppressWarnings("unchecked")
+        K[]  z =  (K[])new Object[size] ;
+        keys = z ;
+        
+        this.size = size ;
+    }
+    
 
     //@Override
     public void clear()
-    { cache.clear() ; }
+    { 
+        Arrays.fill(values, null) ;
+        Arrays.fill(keys, null) ;
+        // drop handler
+        currentSize = 0 ;
+    }
 
     //@Override
     public boolean containsKey(K key)
     {
-        return cache.containsKey(key) ;
+        return get(key) != null ;
     }
 
+    // Return key index : -(index+1) if the key does not match
+    private final int index(K key)
+    { 
+        int x = (key.hashCode()&0x7fffffff) % size ;
+        if ( keys[x] != null && keys[x].equals(key) )
+            return x ; 
+        return -x-1 ;
+    }
+    
+    private final int decode(int x)
+    { 
+        if ( x >= 0 ) return x ;
+        
+        // y = -x-1 ==> x = -y-1 
+        return -x-1 ;
+    }
+    
     //@Override
     //public V getObject(K key, boolean exclusive)
     public V get(K key)
     {
-        return cache.get(key) ;
+        int x = index(key) ;
+        if ( x < 0 )
+            return null ; 
+        return values[x] ;
     }
 
     //@Override
     public V put(K key, V thing)
     {
-        return cache.put(key, thing) ;
+        int x = index(key) ;
+        V old = null ;
+        if ( x < 0 )
+            // New.
+            x = decode(x) ;
+        else
+        {
+            old = values[x] ;
+            if ( dropHandler != null )
+                dropHandler.apply(keys[x], old) ;
+            currentSize-- ;
+        }
+        
+        values[x] = thing ;
+        if ( thing == null )
+            //put(,null) is a remove.
+            keys[x] = null ;
+        else
+            keys[x] = key ;
+        currentSize++ ;
+        return old ;
     }
 
     //@Override
     public boolean remove(K key)
     {
-        V old = cache.remove(key) ;
+        V old = put(key, null) ;
         return old != null ;
     }
 
     //@Override
     public long size()
     {
-        return cache.size() ;
+        return currentSize ;
     }
 
     //@Override
     public Iterator<K> keys()
     {
-        return cache.keySet().iterator() ;
+        Iterator<K> iter = IteratorArray.create(keys) ;
+        return Iter.removeNulls(iter) ;
     }
 
     //@Override
     public boolean isEmpty()
     {
-        return cache.isEmpty() ;
+        return currentSize == 0 ;
     }
 
     /** Callback for entries when dropped from the cache */
     public void setDropHandler(ActionKeyValue<K,V> dropHandler)
     {
-        cache.setDropHandler(dropHandler) ;
-    }
-
-    public static class CacheImpl<K,V> extends LinkedHashMap<K, V>
-    {
-        // Use? ArrayBlockingQueue
-        int maxEntries ; 
-        ActionKeyValue<K,V> dropHandler = null ;
-    
-        public CacheImpl(int maxSize)
-        {
-            this(0.75f, maxSize) ;
-        }
-    
-        public CacheImpl(float loadFactor, int maxSize)
-        {
-            // True => Access order, which is what makes it LRU
-    
-            // Initial size is max size + slop, rounded up, for the load factor
-            // i.e. it allocate the space needed once at create time.
-    
-            super( Math.round(maxSize/loadFactor+0.5f)+1, loadFactor, true) ;
-            // which is also (int)Math.floor(a + 1f)
-            // and hence can be one larger than needed.  But safer than one less.
-            // +1 is the need for the added entry before the removing the "eldest"
-            maxEntries = maxSize ;
-    
-    
-        }
-    
-        /** Callback for entries when dropped from the cache */
-        public void setDropHandler(ActionKeyValue<K,V> dropHandler)
-        {
-            this.dropHandler = dropHandler ;
-        }
-    
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K,V> eldest) 
-        {
-            // Overshoots by one - the new entry is added, then this called.
-            // Initial capacity adjusted to allow for this.
-    
-            boolean b = ( size() > maxEntries ) ;
-            if ( b && dropHandler != null )
-                dropHandler.apply(eldest.getKey(), eldest.getValue()) ;
-            return b ;
-        }
+        this.dropHandler = dropHandler ;
     }
 }
 

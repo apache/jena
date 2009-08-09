@@ -4,9 +4,10 @@
  * [See end of file]
  */
 
-package atlas.lib.cache;
+package atlas.lib;
 
-public interface CacheStats
+/** A cache with some readable statistics */ 
+public interface CacheStats<K,V> extends Cache<K,V>
 {
     public long getCacheEntries() ;
     public long getCacheHits() ;
