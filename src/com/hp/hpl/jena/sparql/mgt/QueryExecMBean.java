@@ -6,11 +6,20 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-public interface SystemInfoMXBean
+/** Details of a single query execution */
+public interface QueryExecMBean
 {
-    public String getName() ;
-    public String getVersion() ;
-    public String getBuildDate() ;
+    /** State - what's it doing */
+    String getState() ;
+    
+    /** Query as a string */
+    String getQueryString() ;
+    
+    /** Point in time when query execution started */
+    String getQueryExecAt() ;
+
+    /** Length of elapsed time (in microseconds) for query : -1 for unknown or unfinished */  
+    long getQueryExecTime() ;
 }
 
 /*

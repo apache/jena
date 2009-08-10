@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.mgt;
 
 
-public class SystemInfo implements SystemInfoMXBean
+public class SystemInfo implements SystemInfoMBean
 {
     private final String name ;
     private final String version ;

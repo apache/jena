@@ -128,11 +128,7 @@ public class QueryTest extends EarlTestCase
     
     private static boolean doesQueryHaveDataset(Query query)
     {
-        boolean r = 
-            ( query.getGraphURIs() != null && query.getGraphURIs().size() > 0 )
-            || 
-            ( query.getNamedGraphURIs() != null && query.getNamedGraphURIs().size() > 0 ) ;
-        return r ;
+        return query.hasDatasetDescription() ;
     }
     
     private static Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs)

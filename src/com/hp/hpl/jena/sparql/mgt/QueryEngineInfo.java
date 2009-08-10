@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class QueryEngineInfo implements QueryEngineMXBean
+public class QueryEngineInfo implements QueryEngineInfoMBean
 {
     // Has to be careful about concurrency.
     // It is possible that the count may be momentarily wrong

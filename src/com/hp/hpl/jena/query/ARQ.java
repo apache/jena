@@ -189,58 +189,6 @@ public class ARQ
         context.set(filterPlacement,                true) ;
     }
     
-    // Force a call
-    static { init() ; }
-
-    private static boolean initialized = false ;
-
-
-    private static Context globalContext = null ;
-
-
-    /** Ensure things have started - applications do not need call this.
-     * The method is public so any part of ARQ can call it.
-     */
-    
-    public static synchronized void init()
-    { 
-        if ( initialized )
-            return ;
-        initialized = true ;
-        globalContext = defaultSettings() ;
-        StageBuilder.init() ;
-        ARQMgt.init() ;
-    }
-    
-    /** Used by Jena assemblers for registration */ 
-    public static void whenRequiredByAssembler( AssemblerGroup g )
-    {
-        AssemblerUtils.register(g) ;
-    }
-
-    private static Context defaultSettings()    
-    {
-        Context context = new Context() ;
-        setNormalMode(context) ;
-        return context ; 
-    }
-
-    public static Context getContext()
-    { 
-        ARQ.init() ;
-        return globalContext ;
-    }
-    
-    // Convenience call-throughs
-    public static void set(Symbol symbol, boolean value)  { getContext().set(symbol, value) ; }
-    public static void setTrue(Symbol symbol)             { getContext().setTrue(symbol) ; }
-    public static void setFalse(Symbol symbol)            { getContext().setFalse(symbol) ; }
-    public static void unset(Symbol symbol)               { getContext().unset(symbol) ; }
-    public static boolean isTrue(Symbol symbol)           { return getContext().isTrue(symbol) ; }
-    public static boolean isFalse(Symbol symbol)          { return getContext().isFalse(symbol) ; }
-    public static boolean isTrueOrUndef(Symbol symbol)    { return getContext().isTrueOrUndef(symbol) ; }
-    public static boolean isFalseOrUndef(Symbol symbol)   { return getContext().isFalseOrUndef(symbol) ; }
-
     // ----------------------------------
     
     /** The root package name for ARQ */   
@@ -258,6 +206,57 @@ public class ARQ
    
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
+    
+    private static boolean initialized = false ;
+
+    private static Context globalContext = null ;
+
+    /** Ensure things have started - applications do not need call this.
+     * The method is public so any part of ARQ can call it.
+     * Note the final static initializer call 
+     */
+    
+    public static synchronized void init()
+    { 
+        if ( initialized )
+            return ;
+        initialized = true ;
+        globalContext = defaultSettings() ;
+        StageBuilder.init() ;
+        ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
+    }
+    // Force a call
+    static { init() ; }
+    
+    /** Used by Jena assemblers for registration */ 
+    public static void whenRequiredByAssembler( AssemblerGroup g )
+    {
+        AssemblerUtils.register(g) ;
+    }
+
+    private static Context defaultSettings()    
+    {
+        Context context = new Context() ;
+        setNormalMode(context) ;
+        return context ; 
+    }
+
+    public static Context getContext()
+    { 
+        //ARQ.init() ;
+        return globalContext ;
+    }
+    
+    // Convenience call-throughs
+    public static void set(Symbol symbol, boolean value)  { getContext().set(symbol, value) ; }
+    public static void setTrue(Symbol symbol)             { getContext().setTrue(symbol) ; }
+    public static void setFalse(Symbol symbol)            { getContext().setFalse(symbol) ; }
+    public static void unset(Symbol symbol)               { getContext().unset(symbol) ; }
+    public static boolean isTrue(Symbol symbol)           { return getContext().isTrue(symbol) ; }
+    public static boolean isFalse(Symbol symbol)          { return getContext().isFalse(symbol) ; }
+    public static boolean isTrueOrUndef(Symbol symbol)    { return getContext().isTrueOrUndef(symbol) ; }
+    public static boolean isFalseOrUndef(Symbol symbol)   { return getContext().isFalseOrUndef(symbol) ; }
+
 }
 
 

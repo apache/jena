@@ -39,9 +39,13 @@ public class ARQMgt
         
         String NS = ARQ.PATH ;
         
-        register(NS+".system:type=SystemInfo", new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE)) ;
-        register(NS+".system:type=Context", new ContextMBean(ARQ.getContext())) ;
-        register(NS+".system:type=Engine", QueryEngineBase.queryEngineInfo) ;
+        SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
+        ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
+        QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
+        
+        register(NS+".system:type=SystemInfo", sysInfo) ;
+        register(NS+".system:type=Context", cxtBean) ;
+        register(NS+".system:type=Engine", qeInfo) ;
     }
     
     public static void register(String name, Object bean)
@@ -61,12 +65,15 @@ public class ARQMgt
 
         } catch (NotCompliantMBeanException ex)
         {
+            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         } catch (InstanceAlreadyExistsException ex)
         {
+            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         } catch (MBeanRegistrationException ex)
         {
+            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         }
     }
