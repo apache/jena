@@ -127,6 +127,13 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
+            if ( query.hasDatasetDescription() )
+            {
+                // Has a description - don't use the dataset, use the desription via an all-purpose query engine.
+                QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
+                return engine.getPlan() ;
+            }
+            
             QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
             return engine.getPlan() ;
         }
