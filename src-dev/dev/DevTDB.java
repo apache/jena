@@ -8,19 +8,19 @@ package dev;
 
 public class DevTDB
 {
-    // Node cache on 64bit machines needs to be bigger (much bigger?)
-    //  100K ==> ??
-    //   (Or use NIO somehow?)
-    
-    // Logging of explains 
-    //  To a separate file - example inlog4j.
-    
+    // == Misc
+    // Node cache on 64bit machines needs to be bigger or rebalence
     // FileMode, NodeCacheNode, ...
     // 32 bit => Direct, small
     // 64 bit => Mapped, large
     // Cache stats counters (prep for JMX but useful now)
     
-    // ** metadata files and BPT creation ==> NewSetup and DI
+    // == Moniroting
+    // Logging of explains 
+    //  To a separate file - example in log4j.
+    
+    // == Setup
+    // metadata files and BPT creation ==> NewSetup and DI
     
     // FROM NAMED, FROM in a query to a TDB dataset
     //  Currently, ignored (actually, loaded by QueryExecutionBase and ignored).
