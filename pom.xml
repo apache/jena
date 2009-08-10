@@ -291,7 +291,19 @@ build.time.txt=${build.time.txt}
          </plugins>
     -->
   </reporting>
-  
+
+  <repositories>
+    <repository>
+      <id>repo-jena-repo</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://jena.hpl.hp.com/repo-dev</url>
+      <snapshots>
+	<enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <distributionManagement>
     <downloadUrl>http://jena.hpl.hp.com/repo-dev</downloadUrl>
     <repository>
