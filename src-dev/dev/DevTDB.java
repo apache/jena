@@ -15,21 +15,20 @@ public class DevTDB
     // 64 bit => Mapped, large
     // Cache stats counters (prep for JMX but useful now)
     
-    // == Moniroting
+    // == Monitoring
+    // Assembler : TDB settings
     // Logging of explains 
     //  To a separate file - example in log4j.
+    // Combine with (ARQ-level?) query logging. 
     
     // == Setup
     // metadata files and BPT creation ==> NewSetup and DI
     
-    // FROM NAMED, FROM in a query to a TDB dataset
-    //  Currently, ignored (actually, loaded by QueryExecutionBase and ignored).
-    //  Swap to in-memory dataset?
-    
     // == 0.8.3
     // Use ARQ 2.8.1 and enable management info.
-    // Monitoring caches
+    //  JMX and monitoring caches
     // NewSetup/DI
+    // DatasetGraphTDB need labels.
 
     // ----
     // Publish => release and upload the zip to maven area.

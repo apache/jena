@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.solver;
 import static com.hp.hpl.jena.tdb.TDB.logExec;
 import atlas.lib.StrUtils;
 
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -17,23 +18,44 @@ import com.hp.hpl.jena.tdb.TDB;
 public class Explain
 {
 
-    public static void explain(Op op, Context context)
+    public static void explain(Query query, Context context)
+    {
+        explain("Query", query, context) ;
+    }
+    
+    public static void explain(String message, Query query, Context context)
     {
         if ( explaining(context) )
-            _explain("Execute", op.toString()) ;
+            _explain(message, query.toString()) ;
+    }
+    
+    public static void explain(Op op, Context context)
+    {
+        explain("Algebra", op, context) ;
+    }
+    
+    public static void explain(String message, Op op, Context context)
+    {
+        if ( explaining(context) )
+            _explain(message, op.toString()) ;
     }
 
     public static void explain(BasicPattern bgp, Context context)
     {
+        explain("BGP", bgp, context) ; 
+    }
+    
+    public static void explain(String message, BasicPattern bgp, Context context)
+    {
         if ( explaining(context) )
-            _explain("Execute", bgp.toString()) ;
+            _explain(message, bgp.toString()) ;
     }
 
-    private static void _explain(String reason, String explanation)
+    private static void _explain(String message, String explanation)
     {
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
-        explanation = reason+"\n"+explanation ;
+        explanation = message+"\n"+explanation ;
         _explain(explanation) ;
         //System.out.println(explanation) ;
     }

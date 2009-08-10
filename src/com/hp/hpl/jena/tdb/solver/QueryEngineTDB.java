@@ -64,6 +64,8 @@ public class QueryEngineTDB extends QueryEngineMain
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
+        Explain.explain("ALGEBRA", op, context) ;
+        
         // Top of execution of a query.
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
@@ -133,6 +135,8 @@ public class QueryEngineTDB extends QueryEngineMain
                 QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
                 return engine.getPlan() ;
             }
+            
+            Explain.explain("QUERY", query, context) ;
             
             QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
             return engine.getPlan() ;

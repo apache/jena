@@ -207,8 +207,7 @@ public class OpExecutorTDB extends OpExecutor
     /** Execute without modification of the op - does <b>not</b> apply special graph name translations */ 
     private static QueryIterator plainExecute(Op op, QueryIterator input, ExecutionContext execCxt)
     {
-        // -- Explain
-        Explain.explain(op, execCxt.getContext()) ;
+        Explain.explain("PlainExecute", op, execCxt.getContext()) ;
         
         // -- Execute
         // Switch to a non-reordring executor
