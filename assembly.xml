@@ -31,6 +31,7 @@
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
+        <include>jena-${project.version}.jar</include>
         <include>jena-${project.version}-tests.jar</include>
       </includes>
     </fileSet>

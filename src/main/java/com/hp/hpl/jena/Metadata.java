@@ -32,12 +32,7 @@ public class Metadata
     
     private Metadata() {}
     
-    static public void setMetadata ( String resourceName ) 
-    {
-        resource = resourceName ;
-    }
-    
-    static String resource = null ;
+    static String resource = "com/hp/hpl/jena/jena-properties.xml" ;
 
     private static void init() 
     {
