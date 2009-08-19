@@ -8,6 +8,15 @@ package dev;
 
 public class DevTDB
 {
+    // Node formt - SSE overhead.
+    
+    // == 0.8.3
+    // Use ARQ 2.8.1 and enable management info.
+    //  JMX and monitoring caches
+    // NewSetup/DI
+    // DatasetGraphTDB need labels.
+    // Assembler : TDB settings
+    
     // == Misc
     // Node cache on 64bit machines needs to be bigger or rebalence
     // FileMode, NodeCacheNode, ...
@@ -23,12 +32,6 @@ public class DevTDB
     
     // == Setup
     // metadata files and BPT creation ==> NewSetup and DI
-    
-    // == 0.8.3
-    // Use ARQ 2.8.1 and enable management info.
-    //  JMX and monitoring caches
-    // NewSetup/DI
-    // DatasetGraphTDB need labels.
 
     // ----
     // Publish => release and upload the zip to maven area.

@@ -14,6 +14,11 @@ public class Chars
 {
     private Chars() {}
     
+ // So also Bytes.hexDigits to get bytes.
+    final public static char[] digits10 = {
+        '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' , '9'
+    } ;
+    
     // So also Bytes.hexDigits to get bytes.
     final public static char[] hexDigits = {
         '0' , '1' , '2' , '3' , '4' , '5' , '6' , '7' , '8' ,

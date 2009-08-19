@@ -21,6 +21,7 @@ import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
 import atlas.junit.TextListener2 ;
+import atlas.lib.NumberUtils ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.* ;
@@ -72,9 +73,23 @@ public class RunTDB
 
     static { Log.setLog4j() ; }
  
+    public static void dwim(int x, int width)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        NumberUtils.formatInt(sb, x, width, true) ;
+        System.out.println(sb.toString()) ;
+    }
     
     public static void main(String ... args) throws IOException
     {
+        
+        {
+            dwim(1234, 4) ;
+            dwim(1234, 5) ;
+            dwim(-1234, 5) ;
+            System.exit(0) ;
+        }
+        
         {
             TDB.init();
             RDFWriter w = new JenaWriterNTriples2() ;
@@ -142,7 +157,6 @@ public class RunTDB
             System.out.println("====") ;
             System.exit(0) ;
         }
-        
         
         Location location = new Location("DB") ;
         

@@ -13,6 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import atlas.lib.BitsInt;
 import atlas.lib.BitsLong;
+import atlas.lib.NumberUtils ;
 
 import com.hp.hpl.jena.tdb.TDBException;
 
@@ -151,6 +152,70 @@ public class DateTimeNode
     }
 
     private static String unpack(long v, boolean isDateTime)
+    { return unpack_ALT(v, isDateTime) ; }
+    
+    // Avoid calls to String.format
+    private static String unpack_ALT(long v, boolean isDateTime)
+    {
+        // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
+        int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;
+        int months = (int)BitsLong.unpack(v, MONTH, MONTH+MONTH_LEN) ;
+        int days = (int)BitsLong.unpack(v, DAY, DAY+DAY_LEN) ;
+        
+        int hours = (int)BitsLong.unpack(v, HOUR, HOUR+HOUR_LEN) ;
+        int minutes = (int)BitsLong.unpack(v, MINUTES, MINUTES+MINUTES_LEN) ; 
+        int milliSeconds = (int)BitsLong.unpack(v, MILLI, MILLI+MILLI_LEN) ;
+        int sec = milliSeconds / 1000 ;
+        int fractionSec = milliSeconds % 1000 ;
+        
+        StringBuilder sb = new StringBuilder(50) ;
+        NumberUtils.formatUnsignedInt(sb, years, 4) ;
+        sb.append('-') ;
+        NumberUtils.formatUnsignedInt(sb, months, 2) ;
+        sb.append('-') ;
+        NumberUtils.formatUnsignedInt(sb, days, 2) ;
+        if ( isDateTime )
+        {
+            sb.append('T') ;
+            NumberUtils.formatUnsignedInt(sb, hours, 2) ;
+            sb.append(':') ;
+            NumberUtils.formatUnsignedInt(sb, minutes, 2) ;
+            sb.append(':') ;
+            NumberUtils.formatUnsignedInt(sb, sec, 2) ;
+        }
+        
+        // Formatting needed : int->any
+        if ( isDateTime && fractionSec != 0 )
+        {
+            sb.append(".") ;
+            NumberUtils.formatIntAny(sb, fractionSec) ;
+        }
+          
+        // tz in 15min units
+            
+        int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        if ( tz == TZ_Z )
+        {
+            sb.append("Z") ;
+            return sb.toString();
+        }
+        
+        if ( tz == TZ_NONE )
+            return sb.toString() ; 
+            
+        // Sign extend.
+        if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
+            tz = BitsInt.set(tz, TZ_LEN, 32) ;
+        
+        int tzH = tz/4 ;
+        int tzM = (tz%4)*15 ;
+        NumberUtils.formatSignedInt(sb, tzH, 2) ; // Sign always included.
+        sb.append(':') ;
+        NumberUtils.formatUnsignedInt(sb, tzM, 2) ;
+        return sb.toString();
+    }
+    
+    private static String unpack_OLD(long v, boolean isDateTime)
     {
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
         int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;

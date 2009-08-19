@@ -3,7 +3,9 @@ ChangeLog for TDB
 
 ==== 0.8.3
 
-+ Bg fix: If the query has a dataset description, this was ignored.  
++ Spped up basic processing of DateTime nodes (avoid using String.format to remake lexcial forms!) 
+
++ Bug fix: If the query has a dataset description, this was ignored.  
   Now if the query has a dataset description (FROM, FROM NAMED) then
   an in-memory query execution is done on the laoded files and the TDB
   dataset is ignored.
