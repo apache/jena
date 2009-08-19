@@ -17,7 +17,6 @@ import atlas.lib.NumberUtils ;
 
 import com.hp.hpl.jena.tdb.TDBException;
 
-
 public class DateTimeNode
 {
     // XXX ToDo 00:00:00 vs 24:00:00
@@ -151,11 +150,8 @@ public class DateTimeNode
         return unpack(v, false) ;
     }
 
-    private static String unpack(long v, boolean isDateTime)
-    { return unpack_ALT(v, isDateTime) ; }
-    
     // Avoid calls to String.format
-    private static String unpack_ALT(long v, boolean isDateTime)
+    private static String unpack(long v, boolean isDateTime)
     {
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
         int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;
