@@ -26,7 +26,7 @@ public class DateTimeNode
     // Layout:
     // Bits 56-63 : type
     
-    // Bits 49-55 (7 bits)  : timezone -- 15 min precision + special for Z
+    // Bits 49-55 (7 bits)  : timezone -- 15 min precision + special for Z and no timezone.
     // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years  (0 to 7999)
     // Bits 0-26  (27 bits) : time, to milliseconds 
 
@@ -34,8 +34,8 @@ public class DateTimeNode
     // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
 
     // Const-ize
-    static final int DATE_LEN = 22 ;    // 13
-    static final int TIME_LEN = 27 ;    // 5 + 6 + 16
+    static final int DATE_LEN = 22 ;    // 13 bits year, 4 bits month, 5 bits day => 22 bits
+    static final int TIME_LEN = 27 ;    // 5 bits hour + 6 bits minute + 16 bits seconds (to millisecond)
     
     static final int MILLI = 0 ;
     static final int MILLI_LEN = 16 ;
@@ -55,6 +55,7 @@ public class DateTimeNode
     
     static final int YEAR = TIME_LEN + MONTH_LEN + DAY_LEN ;
     static final int YEAR_LEN = 13 ;
+    
     
     static final int TZ = TIME_LEN + DATE_LEN ;
     static final int TZ_LEN = 7 ;
