@@ -13,13 +13,18 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpTable extends Op0
 {
-    private Table table ;
     public static OpTable unit()
     { return new OpTable(TableFactory.createUnit()) ; }
-    
+
     public static OpTable create(Table table)
     // Check for Unit-ness?
     { return new OpTable(table) ; }
+
+    public static OpTable empty()
+    // Check for Unit-ness?
+    { return new OpTable(TableFactory.createEmpty()) ; }
+    
+    private Table table ;
     
     private OpTable(Table table) { this.table = table ; }
     

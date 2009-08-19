@@ -1,6 +1,7 @@
 PREFIX : <http://example/>
 SELECT *
 { 
-    ?a :p ?v . 
-    NOT EXISTS { ?a :q ?w . FILTER(?v > 23) }
+    { ?a :p ?v . } UNION { SELECT * { ?s ?p ?o } LIMIT 1 }
+    
+#    NOT EXISTS { ?a :q ?w . FILTER(?v > 23) }
 }

@@ -133,20 +133,15 @@ public class AlgebraGenerator
         if ( el.getElements().size() == 1 )
         {
             Element subElt = el.getElements().get(0) ;
-            ElementGroup elg = (ElementGroup)subElt ;
-            return compileElement(elg) ;
+            return compileElement(subElt) ;
         }
         
         Op current = null ;
         
         for ( Element subElt: el.getElements() )
         {
-            ElementGroup elg = (ElementGroup)subElt ;
-            Op op = compileElement(elg) ;
-            if ( current == null )
-                current = op ;
-            else
-                current = new OpUnion(current, op) ;
+            Op op = compileElement(subElt) ;
+            current = union(current, op) ;
         }
         return current ;
     }
@@ -581,6 +576,14 @@ public class AlgebraGenerator
     protected Op sequence(Op current, Op newOp)
     {
         return OpSequence.create(current, newOp) ;
+    }
+    
+    protected Op union(Op current, Op newOp)
+    {
+        if ( current == null )
+            return newOp ;
+
+        return new OpUnion(current, newOp) ;
     }
     
     private void broken(String msg)

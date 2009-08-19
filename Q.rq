@@ -1,1 +1,14 @@
-SELECT * { ?x ?p "str" OPTIONAL { ?x ?q "fred" } }
+BASE <http://example/base>
+PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  scv:  <http://purl.org/NET/scovo#> 
+PREFIX  stats: <http://rdfstats.sourceforge.net/vocab/rdfstats#>  
+PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT  ?item WHERE
+ { ?item  rdf:type stats:SubjectHistogram ;
+      scv:dataset           _:b0 .
+	 _:b0   stats:sourceUrl       <file:testing/bsbm100-data.n3> .
+		?item  stats:rangeDimension  rdfs:Resource .}
+
+
