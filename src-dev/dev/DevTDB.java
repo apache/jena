@@ -8,7 +8,7 @@ package dev;
 
 public class DevTDB
 {
-    // Node formt - SSE overhead.
+    // Node format - SSE overhead.
     
     // == 0.8.3
     // Use ARQ 2.8.1 and enable management info.

@@ -43,6 +43,12 @@ public class VocabTDB
     public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex") ;
     public static final Property pNodeData          = Vocab.property(getURI(), "nodeData") ;
     
+    // Setting
+    public static final Property pSetting           = Vocab.property(getURI(), "setting") ;
+    public static final Property pName              = Vocab.property(getURI(), "name") ;
+    public static final Property pValue             = Vocab.property(getURI(), "value") ;
+    
+    
     private static boolean initialized = false ; 
     
     static { init() ; }
