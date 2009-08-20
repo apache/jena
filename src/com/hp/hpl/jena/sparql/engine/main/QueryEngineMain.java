@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -20,6 +21,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorTiming;
 import com.hp.hpl.jena.sparql.util.Context;
 
 public class QueryEngineMain extends QueryEngineBase
@@ -50,6 +52,8 @@ public class QueryEngineMain extends QueryEngineBase
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        if ( context.isTrue(ARQ.enableExecutionTimeLogging) )
+            qIter = QueryIteratorTiming.time(qIter) ;
         return qIter ;
     }
     

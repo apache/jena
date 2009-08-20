@@ -12,9 +12,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /**
- * This class provides the general machinary for iterators 
- * within the general-purpose query engine.
- *  This includes tracking open iterators.
+ * This class provides the general machinary for iterators. 
  * 
  * @author Andy Seaborne
  */

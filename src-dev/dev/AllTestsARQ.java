@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
 
-/** All tests - the main test suite and also teh examples tests */
+/** All tests - the main test suite and also the examples tests */
 public class AllTestsARQ extends TestSuite
 {
     static public TestSuite suite()

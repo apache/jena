@@ -55,6 +55,12 @@ public class ARQ
     public static final Symbol enablePropertyFunctions =
         ARQConstants.allocSymbol("enablePropertyFunctions") ;
 
+    /** Enable logging of execution timing. 
+     */
+
+    public static final Symbol enableExecutionTimeLogging =
+        ARQConstants.allocSymbol("enableExecutionTimeLogging") ;
+
     /** If true, XML result sets written will contain the graph bNode label
      *  See also inputGraphBNodeLabels
      */

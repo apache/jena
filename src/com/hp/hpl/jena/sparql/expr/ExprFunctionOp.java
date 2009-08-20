@@ -47,19 +47,6 @@ public abstract class ExprFunctionOp extends ExprFunction
     @Override
     public final NodeValue eval(Binding binding, FunctionEnv env)
     {
-
-//        System.out.println(binding) ;
-//        System.out.println(op) ;
-        
-        // Substitute. Needed?
-        //Op op2 = Substitute.substitute(op, binding) ;
-        
-//        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
-//        if ( opExec == null )
-//            throw new ARQInternalErrorException("No OpExec") ;
-//        // See if any matches
-        
-        // --- Move this to QC.???
         ExecutionContext execCxt = new ExecutionContext(env.getContext(),
                                                         env.getActiveGraph(),
                                                         env.getDataset(),
@@ -67,16 +54,11 @@ public abstract class ExprFunctionOp extends ExprFunction
                                                         ) ;
         QueryIterator qIter1 = new QueryIterSingleton(binding, execCxt) ;
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
-        
-        //qIter = new QueryIteratorLogging(qIter) ;
-        
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
-        
         // Call the per-operation functionality.
         NodeValue v = eval(binding, qIter, env) ;
         qIter.close() ;
-        //System.out.println(this.getClass().getSimpleName()+":"+v) ;
         return v ;
     }
     
