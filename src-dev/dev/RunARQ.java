@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -55,9 +56,10 @@ public class RunARQ
         nextDivider = divider ;
     }
     
+    static { ALog.setLog4j() ; }
+    
     public static void main(String[] argv) throws Exception
     {
-        ARQ.getContext().set(ARQ.enableExecutionTimeLogging, true) ; 
         execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
         divider() ;
     }
@@ -329,6 +331,8 @@ public class RunARQ
 
     private static void execQuery(String datafile, String queryfile)
     {
+        ARQ.getContext().set(ARQ.enableExecutionTimeLogging, true) ; 
+
         //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
