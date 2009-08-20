@@ -166,26 +166,26 @@ public class DateTimeNode
         int fractionSec = milliSeconds % 1000 ;
         
         StringBuilder sb = new StringBuilder(50) ;
-        NumberUtils.formatUnsignedInt(sb, years, 4) ;
+        NumberUtils.formatInt(sb, years, 4) ;
         sb.append('-') ;
-        NumberUtils.formatUnsignedInt(sb, months, 2) ;
+        NumberUtils.formatInt(sb, months, 2) ;
         sb.append('-') ;
-        NumberUtils.formatUnsignedInt(sb, days, 2) ;
+        NumberUtils.formatInt(sb, days, 2) ;
         if ( isDateTime )
         {
             sb.append('T') ;
-            NumberUtils.formatUnsignedInt(sb, hours, 2) ;
+            NumberUtils.formatInt(sb, hours, 2) ;
             sb.append(':') ;
-            NumberUtils.formatUnsignedInt(sb, minutes, 2) ;
+            NumberUtils.formatInt(sb, minutes, 2) ;
             sb.append(':') ;
-            NumberUtils.formatUnsignedInt(sb, sec, 2) ;
+            NumberUtils.formatInt(sb, sec, 2) ;
         }
         
         // Formatting needed : int->any
         if ( isDateTime && fractionSec != 0 )
         {
             sb.append(".") ;
-            NumberUtils.formatIntAny(sb, fractionSec) ;
+            NumberUtils.formatInt(sb, fractionSec) ;
         }
           
         // tz in 15min units
@@ -208,7 +208,7 @@ public class DateTimeNode
         int tzM = (tz%4)*15 ;
         NumberUtils.formatSignedInt(sb, tzH, 2) ; // Sign always included.
         sb.append(':') ;
-        NumberUtils.formatUnsignedInt(sb, tzM, 2) ;
+        NumberUtils.formatInt(sb, tzM, 2) ;
         return sb.toString();
     }
     

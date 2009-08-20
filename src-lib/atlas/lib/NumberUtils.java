@@ -8,75 +8,102 @@ package atlas.lib;
 
 public class NumberUtils
 {
-
-    // See java.lang.Integer.
-    final static int [] sizeTable = { 9, 99, 999, 9999, 99999, 999999, 9999999,
+    // Maximum length of a length 1,2,3,4...
+    private final static int [] maxTable = { 
+        9, 99, 999, 9999, 99999, 999999, 9999999,
         99999999, 999999999, Integer.MAX_VALUE };
 
-    /** Fast but basic integer to StringBuilder */
-    public static void formatIntAny(StringBuilder sb, int value) 
+    /** Fast, but basic, integer to StringBuilder */
+    public static void formatInt(StringBuilder sb, int value) 
     { 
-        int len = stringSize(value) ;
-        formatUnsignedInt(sb, value, len) ;
+        int len = length(value) ;
+        formatInt(sb, value, len, false) ;
+    }
+    
+    /** Fast, but basic, integer to StringBuilder : always signed */
+    public static void formatSignedInt(StringBuilder sb, int value) 
+    { 
+        int len = length(value) ;
+        if ( value >= 0 )
+            len++ ;
+        formatInt(sb, value, len, true) ;
     }
 
-    //Requires positive x
-    static int stringSize(int x) {
+    static int length(int x)
+    {
+        if ( x < 0 )
+            return length(-x)+1 ;
+        
         for (int i=0; ; i++)
-            if (x <= sizeTable[i])
+            if (x <= maxTable[i])
                 return i+1;
     }
 
-    /** Place a fixed width representation into the string buffer : always signed. The length does not include the sign. */ 
+    /** Place a fixed width representation of a non-negative int into the string buffer */ 
+    public static void formatInt(StringBuilder sb, int value, int width)
+    { 
+        formatInt(sb, value, width, false) ;
+    }
+    
+    /** Place a fixed width representation into the string buffer : always signed. */ 
     public static void formatSignedInt(StringBuilder sb, int value, int width) 
     { 
         formatInt(sb, value, width, true) ;
     }
 
-    /** Place a fixed width representation of a non-negative int into the string buffer */ 
-    public static void formatUnsignedInt(StringBuilder sb, int value, int width)
-    { 
-        formatInt(sb, value, width, false) ;
-    }
-    
     public static void formatInt(StringBuilder sb, int value, int width, boolean signAlways)
     {
-        char chars[] = new char[16] ;
         boolean negative = (value < 0 ) ;
         
         if ( negative )
         {
             value = -value ;
+            width -- ;
             sb.append('-') ;
         }
         else if ( signAlways )
+        {
+            width -- ;
             sb.append('+') ;
+        }
             
-        formatInt(chars, value, width) ;
+        char chars[] = new char[width] ;
+
+        formatUnsignedInt(chars, value, width) ;
         
+        // Append - the buffer was filled backwards. 
         for ( int i = 0 ; i < width ; i++ )
             // Un-backwards.
             sb.append(chars[width-1-i]) ;
     }
 
     // No checking.
-    private static int formatInt(char[] b, int x, int width)
+    private static int formatUnsignedInt(char[] b, int x, int width)
     {
+        // x >= 0 
         // Inserts chars backwards
         int idx = 0 ;
         while ( width > 0 )
         {
             int i = x%10 ;
             char ch = Chars.digits10[i] ;
-            x = x /10 ;
             b[idx] = ch ;
             width-- ;
             idx++ ;
+
+            x = x / 10 ;
+            if ( x == 0 )
+                break ;
         }
+        
+        if ( x != 0 )
+            throw new AtlasException("formatInt: overflow") ;
+        
         while ( width > 0 )
         {
             b[idx] = '0' ;
             idx++ ;
+            width-- ;
         }
         return width ;
     }
