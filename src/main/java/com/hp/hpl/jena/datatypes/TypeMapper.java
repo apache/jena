@@ -2,10 +2,10 @@
  * File:        TypeMapper.java
  * Created by:  Dave Reynolds
  * Created on:  07-Dec-02
- * 
+ *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TypeMapper.java,v 1.1 2009-06-29 08:55:50 castagna Exp $
+ * $Id: TypeMapper.java,v 1.2 2009-08-21 15:42:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -22,9 +22,9 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * The TypeMapper provides a global registry of known datatypes.
  * The datatypes can be retrieved by their URI or from the java class
  * that is used to represent them.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-21 15:42:01 $
  */
 
 // Added extended set of class mappings and getTypeByClass
@@ -44,12 +44,12 @@ public class TypeMapper {
     public static TypeMapper getInstance() {
         return theTypeMap;
     }
-    
+
     /**
      * The single global instance of the TypeMapper
      */
     private static TypeMapper theTypeMap;
-    
+
     /**
      * Static initializer. Adds builtin datatypes to the mapper.
      */
@@ -57,35 +57,37 @@ public class TypeMapper {
         theTypeMap = new TypeMapper();
         theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
-    }
-    
-    public TypeMapper() {
+
         // add primitive types
-        classToDT.put(float.class, classToDT.get(Float.class));
-        classToDT.put(double.class, classToDT.get(Double.class));
-        classToDT.put(int.class, classToDT.get(Integer.class));
-        classToDT.put(long.class, classToDT.get(Long.class));
-        classToDT.put(short.class, classToDT.get(Short.class));
-        classToDT.put(byte.class, classToDT.get(Byte.class));
-        classToDT.put(boolean.class, classToDT.get(Boolean.class));
+        theTypeMap.classToDT.put(float.class, theTypeMap.classToDT.get(Float.class));
+        theTypeMap.classToDT.put(double.class, theTypeMap.classToDT.get(Double.class));
+        theTypeMap.classToDT.put(int.class, theTypeMap.classToDT.get(Integer.class));
+        theTypeMap.classToDT.put(long.class, theTypeMap.classToDT.get(Long.class));
+        theTypeMap.classToDT.put(short.class, theTypeMap.classToDT.get(Short.class));
+        theTypeMap.classToDT.put(byte.class, theTypeMap.classToDT.get(Byte.class));
+        theTypeMap.classToDT.put(boolean.class, theTypeMap.classToDT.get(Boolean.class));
 
         // add missing character types
-        classToDT.put(char.class, classToDT.get(String.class));
-        classToDT.put(Character.class, classToDT.get(String.class));
+        theTypeMap.classToDT.put(char.class, theTypeMap.classToDT.get(String.class));
+        theTypeMap.classToDT.put(Character.class, theTypeMap.classToDT.get(String.class));
 
         // add mapping for URL class
-        classToDT.put(URL.class, classToDT.get(URI.class));        
+        theTypeMap.classToDT.put(URL.class, theTypeMap.classToDT.get(URI.class));
     }
-    
+
+    public TypeMapper() {
+   	 super();
+    }
+
 //=======================================================================
 // Variables
 
     /** Map from uri to datatype */
-    private HashMap<String, RDFDatatype> uriToDT = new HashMap<String, RDFDatatype>();
-    
+    private final HashMap<String, RDFDatatype> uriToDT = new HashMap<String, RDFDatatype>();
+
     /** Map from java class to datatype */
-    private HashMap<Class<?>, RDFDatatype> classToDT = new HashMap<Class<?>, RDFDatatype>();
-    
+    private final HashMap<Class<?>, RDFDatatype> classToDT = new HashMap<Class<?>, RDFDatatype>();
+
 //=======================================================================
 // Methods
 
@@ -93,14 +95,14 @@ public class TypeMapper {
     /**
      * Version of getTypeByName which will treat unknown URIs as typed
      * literals but with just the default implementation
-     * 
+     *
      * @param uri the URI of the desired datatype
      * @return Datatype the datatype definition
      * registered at uri, if there is no such registered type it
      * returns a new instance of the default datatype implementation, if the
      * uri is null it returns null (indicating a plain RDF literal).
      */
-    public RDFDatatype getSafeTypeByName(String uri) {
+    public RDFDatatype getSafeTypeByName(final String uri) {
         RDFDatatype dtype = uriToDT.get(uri);
         if (dtype == null) {
             if (uri == null) {
@@ -119,37 +121,37 @@ public class TypeMapper {
         }
         return dtype;
     }
-    
+
     /**
      * Lookup a known datatype. An unkown datatype or a datatype with uri null
      * will return null will mean that the value will be treated as a old-style plain literal.
-     * 
+     *
      * @param uri the URI of the desired datatype
      * @return Datatype the datatype definition of null if not known.
      */
-    public RDFDatatype getTypeByName(String uri) {
+    public RDFDatatype getTypeByName(final String uri) {
         return uriToDT.get(uri);
     }
-    
+
     /**
      * Method getTypeByValue. Look up a datatype suitable for representing
      * the given java value object.
-     * 
+     *
      * @param value a value instance to be represented
      * @return Datatype a datatype whose value space matches the java class
      * of <code>value</code>
      */
-    public RDFDatatype getTypeByValue(Object value) {
+    public RDFDatatype getTypeByValue(final Object value) {
         return classToDT.get(value.getClass());
     }
-    
+
     /**
-     * List all the known datatypes 
+     * List all the known datatypes
      */
     public Iterator<RDFDatatype> listTypes() {
         return uriToDT.values().iterator();
     }
-    
+
     /**
      * Look up a datatype suitable for representing instances of the
      * given Java class.
@@ -157,25 +159,25 @@ public class TypeMapper {
      * @param clazz a Java class to be represented
      * @return a datatype whose value space matches the given java class
      */
-    public RDFDatatype getTypeByClass(Class<?> clazz) {
+    public RDFDatatype getTypeByClass(final Class<?> clazz) {
         return classToDT.get(clazz);
     }
 
     /**
      * Register a new datatype
      */
-    public void registerDatatype(RDFDatatype type) {
+    public void registerDatatype(final RDFDatatype type) {
         uriToDT.put(type.getURI(), type);
-        Class<?> jc = type.getJavaClass();
+        final Class<?> jc = type.getJavaClass();
         if (jc != null) {
             classToDT.put(jc, type);
         }
     }
 
     // Temporary development code
-    public static void main(String[] args) {
-        for (Iterator<RDFDatatype> iter = theTypeMap.listTypes(); iter.hasNext();) {
-            RDFDatatype dt = iter.next();
+    public static void main(final String[] args) {
+        for (final Iterator<RDFDatatype> iter = theTypeMap.listTypes(); iter.hasNext();) {
+            final RDFDatatype dt = iter.next();
             System.out.println(" - " + dt);
         }
     }
