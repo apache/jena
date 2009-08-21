@@ -6,46 +6,48 @@
 
 package dev;
 
-import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
+import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes ;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.Arrays ;
+import java.util.List ;
 
-import junit.framework.TestCase;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import atlas.junit.TextListener2;
-import atlas.logging.Log;
+import junit.framework.TestCase ;
+import org.junit.runner.JUnitCore ;
+import org.junit.runner.Result ;
+import atlas.io.IndentedLineBuffer ;
+import atlas.junit.TextListener2 ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.tdb.TC_TDB;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.MetaFile;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.tdb.TC_TDB ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrMem ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.MetaFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
-import dump.DumpIndex;
+import dump.DumpIndex ;
 
 public class RunTDB
 {
@@ -60,24 +62,14 @@ public class RunTDB
 
     static { Log.setLog4j() ; }
 
-    public static void turtle2() throws IOException
-    {
-        // Also tdb.turtle.
-//        TDB.init();
-//        RDFWriter w = new JenaWriterNTriples2() ;
-//        Model model = FileManager.get().loadModel("D.ttl") ;
-//        w.write(model, System.out, null) ;
-//        System.exit(0) ;
-        
-        InputStream input = new FileInputStream("D.ttl") ;
-        JenaReaderTurtle2.parse(input) ;
-        System.out.println("END") ;
-        System.exit(0) ;
-
-    }
-    
     public static void main(String ... args) throws IOException
     {
+        {
+            //TDB.setExecutionLogging(true) ;
+            tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
+        }
+        
+        
         DumpIndex.dump(System.out, "DB", "SPO") ;
         System.exit(0) ;
         
@@ -94,6 +86,24 @@ public class RunTDB
     
    
     
+    public static void turtle2() throws IOException
+        {
+            // Also tdb.turtle.
+    //        TDB.init();
+    //        RDFWriter w = new JenaWriterNTriples2() ;
+    //        Model model = FileManager.get().loadModel("D.ttl") ;
+    //        w.write(model, System.out, null) ;
+    //        System.exit(0) ;
+            
+            InputStream input = new FileInputStream("D.ttl") ;
+            JenaReaderTurtle2.parse(input) ;
+            System.out.println("END") ;
+            System.exit(0) ;
+    
+        }
+
+
+
     static void metadata()
     {
         // Directory metadata files.

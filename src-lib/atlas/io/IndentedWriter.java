@@ -44,6 +44,8 @@ public class IndentedWriter
     private char padChar = ' ' ;
     private String padString = null ;
     
+    protected boolean flatMode = false ;
+    
     public IndentedWriter() { this(System.out, false) ; }
     
     // Temp: Adaption from old world to new -
@@ -144,7 +146,9 @@ public class IndentedWriter
     public void newline()
     {
         lineStart() ; 
-        write('\n') ;
+        
+        if ( ! flatMode )
+            write('\n') ;
         startingNewLine = true ;
         row++ ;
         column = 0 ;
@@ -241,15 +245,27 @@ public class IndentedWriter
         this.lineNumbers = lineNumbers ;
     }
     
+    /** Flat mode - print without NL, for a more compact representation - depends on caller */  
+    public boolean inFlatMode() { return flatMode ; }
+    public void setFlatMode(boolean flatMode) { this.flatMode = flatMode ; }
+    
     public char getPadChar()                { return padChar ; }
     public void setPadChar(char ch)         { this.padChar  = ch ; }
     public String getPadString()            { return padString ; }
     public void setPadString(String str)    { this.padString = str ; unitIndent = str.length(); }
 
-    public void incIndent(int x) { currentIndent += x ; }
     public void incIndent()      { incIndent(unitIndent) ; }
-    public void decIndent(int x) { currentIndent -= x ; }
+    public void incIndent(int x)
+    {
+        if (!flatMode) 
+            currentIndent += x ;
+    }
+
     public void decIndent() { decIndent(unitIndent) ; }
+    public void decIndent(int x) 
+    {
+        if (!flatMode) currentIndent -= x ;
+    }
     
     public void setUnitIndent(int x) { unitIndent = x ; }
     public int  getUnitIndent() { return unitIndent ; }
@@ -259,6 +275,15 @@ public class IndentedWriter
     
     private void lineStart()
     {
+        if ( flatMode )
+        {
+            if ( startingNewLine && row > 1 )
+                // Space between each line.
+                write(' ') ;
+            startingNewLine = false ;
+            return ;
+        }
+        
         // Need to do its just before we append anything, not after a NL,
         // so that a final blank does not cause a line number  
         if ( startingNewLine )

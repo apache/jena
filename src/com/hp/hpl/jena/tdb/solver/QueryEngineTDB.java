@@ -49,23 +49,26 @@ public class QueryEngineTDB extends QueryEngineMain
 
     
     private QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
-    { super(query, dataset, input, context) ; this.initialInput = input ; }
+    { 
+        super(query, dataset, input, context) ; 
+        this.initialInput = input ; 
+    }
     
     // Choose the algebra-level optimizations to invoke. 
     @Override
     protected Op modifyOp(Op op)
     { 
         op = Substitute.substitute(op, initialInput) ;
+        //Explain.explain("ALGEBRA", op, context) ;
         op = super.modifyOp(op) ;
         op = Algebra.toQuadForm(op) ;
+        Explain.explain("ALGEBRA", op, context) ;
         return op ;
     }
 
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
-        Explain.explain("ALGEBRA", op, context) ;
-        
         // Top of execution of a query.
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         

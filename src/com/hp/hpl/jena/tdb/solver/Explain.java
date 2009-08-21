@@ -6,18 +6,30 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec;
-import atlas.lib.StrUtils;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.TDB ;
 
 public class Explain
 {
-
+    //static IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
+    
+    // CHANGE ME.
+    static public final Logger    logExec    = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
+//    static public boolean explaining = false ;
+    // MOVE ME to  ARQConstants
+    public static final Symbol symLogExec = TDB.symLogExec ; //ARQConstants.allocSymbol("logExec") ;
+    
+    // ---- Query
+    
     public static void explain(Query query, Context context)
     {
         explain("Query", query, context) ;
@@ -26,8 +38,20 @@ public class Explain
     public static void explain(String message, Query query, Context context)
     {
         if ( explaining(context) )
-            _explain(message, query.toString()) ;
+        {
+            // One line.
+            // Careful - currently ARQ version needed
+            IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
+            iBuff.getIndentedWriter().setFlatMode(true) ;
+            query.serialize(iBuff.getIndentedWriter()) ;
+            String x = iBuff.asString() ;
+            
+            _explain(message, x) ;
+        }
     }
+    
+    
+    // ---- Algebra
     
     public static void explain(Op op, Context context)
     {
@@ -39,7 +63,9 @@ public class Explain
         if ( explaining(context) )
             _explain(message, op.toString()) ;
     }
-
+    
+    // ---- BGP
+    
     public static void explain(BasicPattern bgp, Context context)
     {
         explain("BGP", bgp, context) ; 
@@ -51,11 +77,16 @@ public class Explain
             _explain(message, bgp.toString()) ;
     }
 
-    private static void _explain(String message, String explanation)
+    // ----
+    
+    private static void _explain(String reason, String explanation)
     {
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
-        explanation = message+"\n"+explanation ;
+        if ( explanation.contains("\n") )
+            explanation = reason+"\n"+explanation ;
+        else
+            explanation = reason+" :: "+explanation ;
         _explain(explanation) ;
         //System.out.println(explanation) ;
     }
@@ -75,7 +106,7 @@ public class Explain
     
     public static boolean explaining(Context context)
     {
-        return context.isTrue(TDB.symLogExec) && logExec.isInfoEnabled() ;
+        return context.isTrue(symLogExec) && logExec.isInfoEnabled() ;
     }
 
 }

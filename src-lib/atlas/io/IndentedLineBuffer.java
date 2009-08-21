@@ -39,6 +39,8 @@ public class IndentedLineBuffer extends IndentedWriter
     // Names more usually used for a buffer.
     public void append(String fmt, Object... args) { printf(fmt, args) ; }
     public void append(char ch)  { print(ch) ;}
+    
+    public void clear() { sw.getBuffer().setLength(0) ; }
 }
 
 /*
