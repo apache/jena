@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -60,10 +61,32 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
+                                                "SELECT *",
+                                                "{",
+                                                "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
+                                                "}") ;
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(query) ;
+        //WriterOp.output(IndentedWriter.stdout, op) ;
+        //IndentedWriter.stdout.flush();
+        
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter iWriter = buff.getIndentedWriter() ;
+        iWriter.setFlatMode(true) ;
+        WriterOp.output(iWriter, op) ;
+        iWriter.flush() ;
+        String s = buff.asString() ;
+        System.out.println(s) ;
+        
+        
+        System.exit(0) ;
+        
         execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
         divider() ;
     }
 
+    
     private static void classify()
     {
         String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",

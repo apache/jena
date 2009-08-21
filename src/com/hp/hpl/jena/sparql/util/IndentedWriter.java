@@ -228,7 +228,7 @@ public class IndentedWriter
     {
         if ( flatMode )
         {
-            if ( startingNewLine && row > 0 )
+            if ( startingNewLine && row > 1 )
                 // Space between each line.
                 out.print(' ') ;
             startingNewLine = false ;

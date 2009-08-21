@@ -8,6 +8,11 @@ package dev;
 
 public class DevARQ
 {
+    // What's going on?
+    //   Special/documented loggers for external poking.
+    //   Integrate with TDB
+    //   
+    
     // ==== 2.8.1
     // SELECT * and NOT EXISTS: don't look in the pattern for variables
     // SELECT * { ?a :p ?v  NOT EXISTS { ?a :q ?w . FILTER(?v>23) } }

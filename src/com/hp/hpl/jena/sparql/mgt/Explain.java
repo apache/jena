@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.mgt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -18,25 +19,60 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class Explain
 {
+    // CHANGE ME.
     static public final Logger    logExec    = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
-    static public boolean      explaining = false ;
+//    static public boolean explaining = false ;
+    // MOVE ME to  ARQConstants
     public static final Symbol symLogExec = ARQConstants.allocSymbol("logExec") ;
+    
+    // ---- Query
+    
+    public static void explain(Query query, Context context)
+    {
+        explain("Query", query, context) ;
+    }
+    
+    public static void explain(String message, Query query, Context context)
+    {
+        if ( explaining(context) )
+            _explain(message, query.toString(), false) ;
+    }
+    
+    
+    // ---- Algebra
     
     public static void explain(Op op, Context context)
     {
-        if ( explaining(context) )
-            _explain("Execute", op.toString()) ;
+        explain("Algebra", op, context) ;
     }
-
+    
+    public static void explain(String message, Op op, Context context)
+    {
+        if ( explaining(context) )
+            _explain(message, op.toString(), false) ;
+    }
+    
+    // ---- BGP
+    
     public static void explain(BasicPattern bgp, Context context)
     {
+        explain("BGP", bgp, context) ; 
+    }
+    
+    public static void explain(String message, BasicPattern bgp, Context context)
+    {
         if ( explaining(context) )
-            _explain("Execute", bgp.toString()) ;
+            _explain(message, bgp.toString(), false) ;
     }
 
-    private static void _explain(String reason, String explanation)
+    // ----
+    
+    private static void _explain(String reason, String explanation, boolean oneLine)
     {
-        explanation = StrUtils.chop(explanation) ;
+        if ( oneLine )
+        {
+            //??
+        }
         
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
