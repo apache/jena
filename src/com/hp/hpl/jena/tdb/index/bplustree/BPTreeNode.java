@@ -1125,11 +1125,16 @@ public final class BPTreeNode extends BPTreePage
     
     public void dump()
     {
-        output(IndentedWriter.stdout) ;
-        IndentedWriter.stdout.ensureStartOfLine() ;
-        IndentedWriter.stdout.flush();
+        dump(IndentedWriter.stdout) ;
     }
 
+    public void dump(IndentedWriter out)
+    {
+        output(out) ;
+        out.ensureStartOfLine() ;
+        out.flush();
+    }
+    
     public String dumpToString()
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;

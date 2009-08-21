@@ -13,6 +13,7 @@ import static java.lang.String.format;
 
 import java.util.Iterator;
 
+import atlas.io.IndentedWriter;
 import atlas.iterator.Iter;
 
 import org.slf4j.Logger;
@@ -340,6 +341,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         root.dump() ;
     }
     
+    public void dump(IndentedWriter out)
+    {
+        root.dump(out) ;
+    }
+
     private static final boolean logging()
     {
         return BPlusTreeParams.logging(log) ;

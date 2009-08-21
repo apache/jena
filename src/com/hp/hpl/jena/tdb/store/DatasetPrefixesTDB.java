@@ -39,7 +39,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     private final NodeTupleTable nodeTupleTable ;
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
-    static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
+    public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
 
     
     public static DatasetPrefixesTDB create(Location location) { return create(IndexBuilder.get(), location) ; }

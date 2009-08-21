@@ -9,6 +9,8 @@ package dump;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 import atlas.io.PeekReader;
@@ -20,19 +22,65 @@ import com.hp.hpl.jena.riot.tokens.TokenType;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.riot.tokens.TokenizerText;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class DumpIndex
 {
+    
+    public static void dump(OutputStream w, String location, String name)
+    {
+
+        RecordFactory rf = null ;
+
+        if ( contains(name, Names.tripleIndexes) )
+            rf = FactoryGraphTDB.indexRecordTripleFactory ;
+        else if ( contains(name, Names.quadIndexes) )
+            rf = FactoryGraphTDB.indexRecordQuadFactory ;
+        else if ( contains(name, Names.prefixIndexes) )
+            rf = DatasetPrefixesTDB.factory ;
+        else if ( name.equals(Names.indexNode2Id) )
+            rf = FactoryGraphTDB.nodeRecordFactory ;
+
+        if ( rf == null )
+        {
+            System.err.printf("Can't determine the RecordFactory for %s\n", name) ;
+            return ;
+        }
+
+        try
+        {
+            PrintStream ps = new PrintStream(w, true, "UTF-8") ;
+            ps.println(rf) ;
+        } catch (UnsupportedEncodingException ex1) {}
+        
+        FileSet fs = IndexBuilder.filesetForIndex(new Location(location), name) ;
+        Index index = IndexBuilder.createIndex(fs, rf) ;
+        dump(w, index) ;
+    }
+
+    static private boolean contains(String x , String[] strings)
+    {
+        for ( String s: strings )
+        {
+            if ( s==null && x == null ) return true ;
+            if ( s.equals(x) ) return true ;
+        }
+        return false ;
+    }
+
+
     public static void dump(OutputStream w, Index index)
     {
         try
         {
-            // index.getName() ;
-            // Output name.
-            // Output sizes 
             RecordFactory f = index.getRecordFactory() ;
             
             // Buffer one line.

@@ -6,59 +6,46 @@
 
 package dev;
 
-import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes ;
+import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.util.Arrays ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
-import junit.framework.TestCase ;
-import org.junit.runner.JUnitCore ;
-import org.junit.runner.Result ;
-import atlas.junit.TextListener2 ;
-import atlas.lib.NumberUtils ;
-import atlas.logging.Log ;
+import junit.framework.TestCase;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import atlas.junit.TextListener2;
+import atlas.logging.Log;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.JenaWriterNTriples2 ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.tdb.TC_TDB ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrMem ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect ;
-import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.tdb.TC_TDB;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
-import dump.DumpIndex ;
-import dump.DumpNodes ;
+import dump.DumpIndex;
 
 public class RunTDB
 {
@@ -72,33 +59,26 @@ public class RunTDB
     }
 
     static { Log.setLog4j() ; }
- 
-    public static void dwim(int x, int width)
+
+    public static void turtle2() throws IOException
     {
-        StringBuilder sb = new StringBuilder() ;
-        NumberUtils.formatInt(sb, x, width, true) ;
-        System.out.println(sb.toString()) ;
+        // Also tdb.turtle.
+//        TDB.init();
+//        RDFWriter w = new JenaWriterNTriples2() ;
+//        Model model = FileManager.get().loadModel("D.ttl") ;
+//        w.write(model, System.out, null) ;
+//        System.exit(0) ;
+        
+        InputStream input = new FileInputStream("D.ttl") ;
+        JenaReaderTurtle2.parse(input) ;
+        System.out.println("END") ;
+        System.exit(0) ;
+
     }
     
     public static void main(String ... args) throws IOException
     {
-        
-        {
-            dwim(1234, 4) ;
-            dwim(1234, 5) ;
-            dwim(-1234, 5) ;
-            System.exit(0) ;
-        }
-        
-        {
-            TDB.init();
-            RDFWriter w = new JenaWriterNTriples2() ;
-            Model model = FileManager.get().loadModel("D.ttl") ;
-            w.write(model, System.out, null) ;
-            System.exit(0) ;
-        }
-
-        tdb.turtle.main("D.ttl") ;
+        DumpIndex.dump(System.out, "DB", "SPO") ;
         System.exit(0) ;
         
         
@@ -109,103 +89,10 @@ public class RunTDB
         NewSetup.createRangeIndex(fileset, new RecordFactory(24,0)) ;
         System.exit(0) ;
         metadata() ;
-        
-        if ( false )
-        {
-            InputStream input = new FileInputStream("D.ttl") ;
-            JenaReaderTurtle2.parse(input) ;
-            System.out.println("END") ;
-            System.exit(0) ;
-        }
-        
-        if ( false )
-        {
-            TDB.init();
-            Model model = ModelFactory.createDefaultModel() ;
-            model.read("file:D.ttl", null, "TTL") ;
-            model.write(System.out, "N-TRIPLES") ;
-            System.exit(0) ;
-        }
-        
-        //tdbquery("--query=container-1.rq") ;
-        
-        // ?s rdf:type/rdfs:subClassOf* ?o
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        
-//        Model m2 = TDBFactory.createModel() ;
-//        m2.add(m) ;
-//        m = m2 ;
-        
-        if ( false )
-        {
-            String qs = "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>" ;
-            qs = qs + "SELECT * {  ?s rdf:type/rdfs:subClassOf* ?o }" ;
-            Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
-            QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-            qExec.close() ;
-            System.exit(0) ;
-        }
-        
-
-        
-        //tdbquery("--tdb=tdb.ttl", "SELECT * {?s ?p ?o}") ;
-        if ( true )
-        {
-            TDB.init();
-            FileManager.get().loadModel("D.ttl").write(System.out, "TTL") ;
-            System.out.println("====") ;
-            System.exit(0) ;
-        }
-        
-        Location location = new Location("DB") ;
-        
-        if ( false )
-        {
-            ObjectFileDiskDirect f = new ObjectFileDiskDirect(location.getPath("nodes.dat")) ;
-            DumpNodes.dump(System.out, f) ;
-            System.out.flush();
-            System.exit(0) ;
-        }
-        
-        if ( false )
-        {
-            // Dump indexes
-//            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "SPO") ;
-//            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.indexRecordTripleFactory) ;
-            
-            // Better index factory operations.
-            // Metafiles remove the need for record facories other than first use.Node  
-            
-            //Index creations?
-            FileSet fs = IndexBuilder.filesetForIndex(new Location("DB"), "node2id") ;
-            Index index = IndexBuilder.createIndex(fs, FactoryGraphTDB.nodeRecordFactory) ;
-
-            boolean b = index.isEmpty() ;
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            DumpIndex.dump(out, index) ;
-            String x = new String(out.toByteArray()) ;
-            System.out.println(x) ;
-
-            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-            Index index2 = IndexBuilder.createIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
-            DumpIndex.reload(in, index2) ;
-            // Compare indexes.
-            for ( Iterator<Record> iter2 = index2.iterator() ; iter2.hasNext() ; )
-            {
-                Record r2 = iter2.next() ;
-                System.out.println(r2) ;
-            }
-            System.out.println() ;
-            DumpIndex.dump(out, index2) ;
-
-            System.out.flush();
-            System.exit(0) ;
-        }
-
         System.exit(0) ;
     }
+    
+   
     
     static void metadata()
     {
