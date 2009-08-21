@@ -52,7 +52,7 @@ public class ModSymbol implements ArgModuleGeneral
             String arg = iter.next();
             String[] frags = arg.split("=", 2) ;
             if ( frags.length != 2)
-                throw new RuntimeException("Can't split '"+arg+"'") ;
+                throw new RuntimeException("Can't split '"+arg+"' -- looking for '=' to separate name and value") ;
             
             String symbolName = frags[0] ;
             String value = frags[1] ;
