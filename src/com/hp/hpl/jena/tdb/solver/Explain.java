@@ -166,13 +166,14 @@ Document:
         if ( x instanceof String )
         {
             String s = (String)x ;
-            if ( s.equalsIgnoreCase("true") ) 
-                return true ;
-            if ( s.equalsIgnoreCase("info") ) return level.equals(InfoLevel.INFO) ;
+            if ( s.equalsIgnoreCase("info") )
+                return level.equals(InfoLevel.INFO) ;
             if ( s.equalsIgnoreCase("fine") ) 
                 return level.equals(InfoLevel.FINE) || level.equals(InfoLevel.INFO) ;
             if ( s.equalsIgnoreCase("all") )
                 // All levels.
+                return true ;
+            if ( s.equalsIgnoreCase("true") ) 
                 return true ;
         }
         
