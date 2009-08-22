@@ -19,8 +19,6 @@ public class Symbol
     
     protected Symbol(String symbol)
     { 
-        // Does interning a string cause there to be a permanently
-        // registered version?  
         if ( symbol == null )
             symbol = nilSymbolName ;
         else

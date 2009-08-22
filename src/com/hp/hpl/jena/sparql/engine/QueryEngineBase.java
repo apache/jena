@@ -76,8 +76,6 @@ public abstract class QueryEngineBase implements OpEval, Closeable
 //        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
         
         // Add VarAlloc for variables and bNodes (this is not the parse name). 
-        // 
-        
         // More added later e.g. query (if there is a query), algebra form (in setOp)
     }
     

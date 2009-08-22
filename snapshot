@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "For TDB, use ant ivy-setup-lib"
+exit 1
+
 MODULE="$@"
 #DEFAULT="TDB SDB Joseki3"
 DEFAULT="TDB"

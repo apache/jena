@@ -51,7 +51,6 @@ public class QueryIteratorTiming extends QueryIteratorWrapper
             timer.startTimer() ;
             milliseconds = NotFinished ;
         }
-
     }
 
     private void stop()

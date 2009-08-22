@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.util ;
 
 public interface Callback
 {
-
     public void event(Symbol property) ;
-
 }
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

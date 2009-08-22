@@ -10,10 +10,9 @@ public class DevARQ
 {
     // What's going on?
     //   Special/documented loggers for external poking.
-    //   Integrate with TDB
-    //   
+    //   In TDB first, then back port.
     
-    // ==== 2.8.1
+    // ==== 2.8.1 : Check:
     // SELECT * and NOT EXISTS: don't look in the pattern for variables
     // SELECT * { ?a :p ?v  NOT EXISTS { ?a :q ?w . FILTER(?v>23) } }
     
@@ -30,9 +29,6 @@ public class DevARQ
     
     // Improve PathLib.ungroundedPath
     // e.g. if first step is a URI, use this to seed the process
-    
-    //   TransformFilterPlacement
-    //   GraphStore API?
     
     // == Test
     // Convert test suite by manifest to JUnit4. JUnit4TestAdpter
@@ -51,7 +47,7 @@ public class DevARQ
     
     // Initial bindings && Initial table (do as iterator of initial bindings)
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
-    //   which can be simplified to a sequence.
+    //    which can be simplified to a sequence.
     //  Generate a sequence always? 
     
     // ---- [quad paths]
@@ -61,6 +57,4 @@ public class DevARQ
     // Dataset.sync, Dataset.close as well as GraphStore.sync, GraphStore.close.
 
     // ---- OpAssign - needs expression prepare (for function binding)?
-    // Other places using a VarExprList?
-    // Does prepare really matter if failure is defined as a false for evaluation?
 }

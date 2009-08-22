@@ -52,6 +52,7 @@ public class QueryEngineMain extends QueryEngineBase
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        // Need call back.
         if ( context.isTrue(ARQ.enableExecutionTimeLogging) )
             qIter = QueryIteratorTiming.time(qIter) ;
         return qIter ;
@@ -66,6 +67,12 @@ public class QueryEngineMain extends QueryEngineBase
     @Override
     protected Op modifyOp(Op op)
     { return Algebra.optimize(op, super.context) ; }
+    
+//    @Override
+//    public void close()
+//    { 
+//        super.close() ; 
+//    }
     
     // -------- Factory
     
