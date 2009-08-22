@@ -37,6 +37,10 @@ public class Explain
     /* Design:
      * Logger level: always INFO?
      * Per query: SYSTEM > EXEC (Query) > DETAIL (Algebra) > DEBUG (every BGP)
+     * 
+     * Control:
+     *   tdb:logExec = true (all), or enum
+     * 
 Document:
   Include setting different loggers etc for log4j.
      */
@@ -46,28 +50,16 @@ Document:
     // These are the per-execution levels.
     
     static enum InfoLevel
-    {   INFO, FINE, DETAILED
+    {   INFO, FINE, ALL
 //        @Override
 //        abstract public String toString() ;  
     }
-    
-//    /** General information : logging level : .info ; logger used TDB.logInfo  */
-//    public static Symbol INFO = Symbol.create("INFO") ;
-//
-//    /** general informtion + detailed information :logging level .debug */
-//    public static Symbol FINE = Symbol.create("FINE") ;
-//    
-//    /** general informtion + detailed information + fine-grain : logging level .trace */
-//    public static Symbol DETAILED = Symbol.create("DETAILED") ;
-    
-    //static IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-    
+
     // CHANGE ME.
     static public final Logger logExec = TDB.logExec ;
     static public final Logger logInfo = TDB.logInfo ;
     
-//    static public boolean explaining = false ;
-    // MOVE ME to  ARQConstants
+    // MOVE ME to ARQConstants
     public static final Symbol symLogExec = TDB.symLogExec ; //ARQConstants.allocSymbol("logExec") ;
     
     // ---- Query
@@ -79,7 +71,7 @@ Document:
     
     public static void explain(String message, Query query, Context context)
     {
-        if ( explaining(InfoLevel.INFO, context) )
+        if ( explaining(InfoLevel.INFO, logExec, context) )
         {
             // One line.
             // Careful - currently ARQ version needed
@@ -101,7 +93,7 @@ Document:
     
     public static void explain(String message, Op op, Context context)
     {
-        if ( explaining(InfoLevel.INFO, context) )
+        if ( explaining(InfoLevel.FINE, logExec, context) )
             _explain(logExec, message, op.toString()) ;
     }
     
@@ -114,7 +106,7 @@ Document:
     
     public static void explain(String message, BasicPattern bgp, Context context)
     {
-        if ( explaining(InfoLevel.INFO, context) )
+        if ( explaining(InfoLevel.ALL, logExec,context) )
             _explain(logExec, message, bgp.toString()) ;
     }
 
@@ -140,13 +132,13 @@ Document:
     // General information
     public static void explain(Context context, String message)
     {
-        if ( explaining(InfoLevel.INFO, context) )
+        if ( explaining(InfoLevel.INFO, logInfo, context) )
             _explain(logInfo, message) ;
     }
 
     public static void explain(Context context, String format, Object... args)
     {
-        if ( explaining(InfoLevel.INFO, context) )
+        if ( explaining(InfoLevel.INFO, logInfo, context) )
         {
             // Caveat: String.format is not cheap.
             String str = String.format(format, args) ;
@@ -154,10 +146,37 @@ Document:
         }
     }
     
-    public static boolean explaining(InfoLevel level, Context context)
+    public static boolean explaining(InfoLevel level, Logger logger, Context context)
     {
-        // Ignore level for now.
-        return context.isTrue(symLogExec) && logExec.isInfoEnabled() ;
+        if ( ! _explaining(level, context) ) return false ;
+        return logger.isInfoEnabled() ;
+        
+        
+    }
+    
+    private static boolean _explaining(InfoLevel level, Context context)
+    {
+        Object x = context.get(symLogExec, null) ;
+        if ( x == null )
+            return false ;
+        
+        // Enum equality.
+        if ( level.equals(x) ) return true ;
+        
+        if ( x instanceof String )
+        {
+            String s = (String)x ;
+            if ( s.equalsIgnoreCase("true") ) 
+                return true ;
+            if ( s.equalsIgnoreCase("info") ) return level.equals(InfoLevel.INFO) ;
+            if ( s.equalsIgnoreCase("fine") ) 
+                return level.equals(InfoLevel.FINE) || level.equals(InfoLevel.INFO) ;
+            if ( s.equalsIgnoreCase("all") )
+                // All levels.
+                return true ;
+        }
+        
+        return Boolean.TRUE.equals(x) ;
     }
 
 }
