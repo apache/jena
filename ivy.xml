@@ -26,35 +26,31 @@
 
   <dependencies>
     <!-- rev="latest.integration" -->
-
+    
+    <!-- We need the "tests" classifier but so we need to name all the bits we want. -->
     <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0">
       <artifact name="arq"/>
-      <artifact name="arq" mvn:classifier="tests"/>
-    </dependency>
-    <!--
-      This works but does cause conflict messages (why?)
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.0">
       <artifact name="arq" mvn:classifier="tests"/>
       <artifact name="arq" mvn:classifier="javadoc"/>
       <artifact name="arq" mvn:classifier="sources"/>
       <artifact name="arq" mvn:classifier="test-sources"/>
-      <artifact name="arq" ext="zip" mvn:classifier="tests"/>
+      <!--<artifact name="arq" ext="zip" mvn:classifier="tests"/>-->
     </dependency>
-    -->
 
-    <!-- Explicit - gets the javadoc and sources -->
+    <!-- Explicit - gets the javadoc and sources : As Jena depends on ARQ there is a (safe) conflict -->
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
 
     <!-- Need Jena test code as well -->
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.6"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="latest.intergration"/>
 
     <!-- Additional for development : logging implementation -->
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
-    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.6"/>
+    <!-- What the ivy for "scope"? -->
+    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="latest.intergration"/>
     <!-- Java logging 
     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
     -->

@@ -206,7 +206,7 @@ public class DateTimeNode
         
         int tzH = tz/4 ;
         int tzM = (tz%4)*15 ;
-        NumberUtils.formatSignedInt(sb, tzH, 2) ; // Sign always included.
+        NumberUtils.formatSignedInt(sb, tzH, 3) ; // Sign always included.
         sb.append(':') ;
         NumberUtils.formatInt(sb, tzM, 2) ;
         return sb.toString();

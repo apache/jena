@@ -1,7 +1,5 @@
 PREFIX : <http://example/>
 SELECT *
 { 
-  ?s ?p ?o .
-  ?s :notme ?o .
-  ?s :p ?o .
+  ?s ?p ?o . OPTIONAL { ?s :p ?o }
 }

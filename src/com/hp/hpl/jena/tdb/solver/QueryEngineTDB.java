@@ -76,29 +76,30 @@ public class QueryEngineTDB extends QueryEngineMain
         if ( context.isTrue(TDB.symUnionDefaultGraph) ) 
         {
             // Rewrite so that any explicitly named "default graph" is union graph.
-            Transform t = new TransformRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
+            Transform t = new TransformGraphRename(Quad.defaultGraphNodeGenerated, Quad.unionGraph)  ;
             op = Transformer.transform(t, op) ;
 
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
-            //ALog.info(this, "Union graph") ;
             ds.setDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
             dsg = ds ;
         }
-        
         return super.eval(op, dsg, input, context) ;
     }
+    
+    // Execution time (needs wiring to ARQ).
+    public long getMillis() { return -1 ; }
     
     static Transform graphNameChange = null ;
     
     // ---- Rewrite that looks for a fixed node as the graph name 
     // (in (graph) and (quad)) and changes it to another one.
-    static class TransformRename extends TransformCopy
+    static class TransformGraphRename extends TransformCopy
     { 
         private Node oldGraphName ;
         private Node newGraphName ;
 
-        public TransformRename(Node oldGraphName, Node newGraphName)
+        public TransformGraphRename(Node oldGraphName, Node newGraphName)
         {
             this.oldGraphName = oldGraphName ;
             this.newGraphName = newGraphName ;
@@ -109,7 +110,7 @@ public class QueryEngineTDB extends QueryEngineMain
         public Op transform(OpGraph opGraph, Op x)
         { 
             if ( opGraph.getNode().equals(oldGraphName) )
-                return new OpGraph(newGraphName, x) ;
+                opGraph = new OpGraph(newGraphName, x) ;
             return super.transform(opGraph, x) ;
         }
 
@@ -117,7 +118,7 @@ public class QueryEngineTDB extends QueryEngineMain
         public Op transform(OpQuadPattern opQuadPattern)
         {
             if ( opQuadPattern.getGraphNode().equals(oldGraphName) )
-                return new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern()) ;
+                opQuadPattern = new OpQuadPattern(newGraphName, opQuadPattern.getBasicPattern()) ;
             return super.transform(opQuadPattern) ;
         }
     } ;

@@ -7,7 +7,7 @@
 package dev;
 
 public enum FileType {
-    BPTree, BTREE, EXTHASH, DATA
+    BPTREE, BTREE, EXTHASH, DATA
 }
 
 /*

@@ -8,12 +8,14 @@ package dev;
 
 public class DevTDB
 {
-    // Node format - SSE overhead.
-    
     // == 0.8.3
-    // Use ARQ 2.8.1 and enable management info.
-    //  JMX and monitoring caches
+    // Node format - SSE overhead.
+    // Explain mode - See notes in class
     // NewSetup/DI
+    // Use ARQ 2.8.1 and enable management info.
+    //    Phase 1 : TDB details (cache sizes, constants etc)
+    //    Phase 2 : JMX and monitoring caches
+    
     // DatasetGraphTDB need labels.
     // Assembler : TDB settings
     

@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -18,12 +17,55 @@ import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
 
+/** Execution logging for query processing on a per query basis.
+ * This class provides an overlay on top of the system logging to provide
+ * control of log message down to a per query basis. The associated logging channel
+ * must also be enabled.  
+ * 
+ * An execution can detail the query, the algebra and every point at which the dataset is touched.
+ *  
+ *  Caution: logging can be a significant cost for small queries
+ *  because of disk or console output overhead.
+ *  
+ *  @see{TDB.logExec}
+ *  @see{TDB.setExecutionLogging}
+ */
+
 public class Explain
 {
+    // Logging: TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+    /* Design:
+     * Logger level: always INFO?
+     * Per query: SYSTEM > EXEC (Query) > DETAIL (Algebra) > DEBUG (every BGP)
+Document:
+  Include setting different loggers etc for log4j.
+     */
+
+    // Need per-query identifier.
+    
+    // These are the per-execution levels.
+    
+    static enum InfoLevel
+    {   INFO, FINE, DETAILED
+//        @Override
+//        abstract public String toString() ;  
+    }
+    
+//    /** General information : logging level : .info ; logger used TDB.logInfo  */
+//    public static Symbol INFO = Symbol.create("INFO") ;
+//
+//    /** general informtion + detailed information :logging level .debug */
+//    public static Symbol FINE = Symbol.create("FINE") ;
+//    
+//    /** general informtion + detailed information + fine-grain : logging level .trace */
+//    public static Symbol DETAILED = Symbol.create("DETAILED") ;
+    
     //static IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
     
     // CHANGE ME.
-    static public final Logger    logExec    = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
+    static public final Logger logExec = TDB.logExec ;
+    static public final Logger logInfo = TDB.logInfo ;
+    
 //    static public boolean explaining = false ;
     // MOVE ME to  ARQConstants
     public static final Symbol symLogExec = TDB.symLogExec ; //ARQConstants.allocSymbol("logExec") ;
@@ -37,7 +79,7 @@ public class Explain
     
     public static void explain(String message, Query query, Context context)
     {
-        if ( explaining(context) )
+        if ( explaining(InfoLevel.INFO, context) )
         {
             // One line.
             // Careful - currently ARQ version needed
@@ -46,10 +88,9 @@ public class Explain
             query.serialize(iBuff.getIndentedWriter()) ;
             String x = iBuff.asString() ;
             
-            _explain(message, x) ;
+            _explain(logExec, message, x) ;
         }
     }
-    
     
     // ---- Algebra
     
@@ -60,8 +101,8 @@ public class Explain
     
     public static void explain(String message, Op op, Context context)
     {
-        if ( explaining(context) )
-            _explain(message, op.toString()) ;
+        if ( explaining(InfoLevel.INFO, context) )
+            _explain(logExec, message, op.toString()) ;
     }
     
     // ---- BGP
@@ -73,13 +114,13 @@ public class Explain
     
     public static void explain(String message, BasicPattern bgp, Context context)
     {
-        if ( explaining(context) )
-            _explain(message, bgp.toString()) ;
+        if ( explaining(InfoLevel.INFO, context) )
+            _explain(logExec, message, bgp.toString()) ;
     }
 
     // ----
     
-    private static void _explain(String reason, String explanation)
+    private static void _explain(Logger logger, String reason, String explanation)
     {
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
@@ -87,25 +128,35 @@ public class Explain
             explanation = reason+"\n"+explanation ;
         else
             explanation = reason+" :: "+explanation ;
-        _explain(explanation) ;
+        _explain(logger, explanation) ;
         //System.out.println(explanation) ;
     }
     
-    private static void _explain(String explanation)
+    private static void _explain(Logger logger, String explanation)
     {
-        logExec.info(explanation) ;
+        logger.info(explanation) ;
     }
 
+    // General information
     public static void explain(Context context, String message)
     {
-        if ( explaining(context) )
-            _explain(message) ;
+        if ( explaining(InfoLevel.INFO, context) )
+            _explain(logInfo, message) ;
     }
 
-    
-    
-    public static boolean explaining(Context context)
+    public static void explain(Context context, String format, Object... args)
     {
+        if ( explaining(InfoLevel.INFO, context) )
+        {
+            // Caveat: String.format is not cheap.
+            String str = String.format(format, args) ;
+            _explain(logInfo, str) ;
+        }
+    }
+    
+    public static boolean explaining(InfoLevel level, Context context)
+    {
+        // Ignore level for now.
         return context.isTrue(symLogExec) && logExec.isInfoEnabled() ;
     }
 

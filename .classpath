@@ -6,20 +6,20 @@
 	<classpathentry kind="src" path="src-lib"/>
 	<classpathentry kind="src" path="src-lib-test"/>
 	<classpathentry kind="src" path="src-examples"/>
-	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
-	<classpathentry kind="lib" path="lib/iri.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.6.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.5.jar" sourcepath="src-other/junit-4.5-src.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.0-tests.jar" sourcepath="arq-2.8.0-test-sources.jar"/>
 	<classpathentry kind="lib" path="lib/arq-2.8.0.jar" sourcepath="arq-2.8.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="jena-src.zip"/>
-	<classpathentry kind="lib" path="lib/jenatest.jar" sourcepath="jena-src.zip"/>
+	<classpathentry kind="lib" path="lib/icu4j-3.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/iri-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/jena-2.6.0.jar" sourcepath="lib/jena-2.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jenatest-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar" sourcepath="lib/slf4j-api-1.5.8-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar" sourcepath="lib/slf4j-log4j12-1.5.8-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

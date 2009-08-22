@@ -17,7 +17,6 @@ import java.util.List ;
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
-import atlas.io.IndentedLineBuffer ;
 import atlas.junit.TextListener2 ;
 import atlas.logging.Log ;
 
@@ -28,7 +27,6 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
