@@ -6,8 +6,6 @@
 
 package dev;
 
-import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes ;
-
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -27,28 +25,19 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrMem ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 import dump.DumpIndex ;
 
 public class RunTDB
 {
+    static { Log.setLog4j() ; }
     static String divider = "----------" ;
     static String nextDivider = null ;
     static void divider()
@@ -58,19 +47,16 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    static { Log.setLog4j() ; }
 
     public static void main(String ... args) throws IOException
     {
-        {
-            //TDB.setExecutionLogging(true) ;
-            tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
+        //TDB.setExecutionLogging(true) ;
+        //tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
+        
+        if ( false ) {
+            DumpIndex.dump(System.out, "DB", "SPO") ;
+            System.exit(0) ;
         }
-        
-        
-        DumpIndex.dump(System.out, "DB", "SPO") ;
-        System.exit(0) ;
-        
         
         NewSetup.buildDataset(new Location("tmp/DBX")) ;
         System.exit(0) ;
@@ -78,70 +64,26 @@ public class RunTDB
         FileSet fileset = new FileSet("tmp", "XYZ") ;
         NewSetup.createRangeIndex(fileset, new RecordFactory(24,0)) ;
         System.exit(0) ;
-        metadata() ;
-        System.exit(0) ;
     }
-    
    
     
     public static void turtle2() throws IOException
-        {
-            // Also tdb.turtle.
-    //        TDB.init();
-    //        RDFWriter w = new JenaWriterNTriples2() ;
-    //        Model model = FileManager.get().loadModel("D.ttl") ;
-    //        w.write(model, System.out, null) ;
-    //        System.exit(0) ;
-            
-            InputStream input = new FileInputStream("D.ttl") ;
-            JenaReaderTurtle2.parse(input) ;
-            System.out.println("END") ;
-            System.exit(0) ;
-    
-        }
-
-
-
-    static void metadata()
     {
-        // Directory metadata files.
-        Location location = new Location("DB") ;
-        //FileSet fileSet = new FileSet(location, "XYZ") ;
-        //MetaFile metafile = fileSet.getMetaFile() ;
-        MetaFile metafile = location.getMetaFile() ;
-        
-        System.out.println("Exists meta? "+metafile.existsMetaData()) ;
-        metafile.setProperty("item1", "snork") ;
-        metafile.flush() ;
-        System.out.println("Exists meta? "+metafile.existsMetaData()) ;
-        System.out.println("----") ;
+        // Also tdb.turtle.
+        //        TDB.init();
+        //        RDFWriter w = new JenaWriterNTriples2() ;
+        //        Model model = FileManager.get().loadModel("D.ttl") ;
+        //        w.write(model, System.out, null) ;
+        //        System.exit(0) ;
 
-        
-        metafile.setProperty("item1", "snork") ;
-        metafile.flush() ;
-        
-        String mf = metafile.getFilename() ;
-        metafile = new MetaFile("label", mf) ;
-        System.out.println(metafile.getProperty("item1")) ;
-        System.out.println("----") ;
+        InputStream input = new FileInputStream("D.ttl") ;
+        JenaReaderTurtle2.parse(input) ;
+        System.out.println("END") ;
         System.exit(0) ;
+
     }
-    
-    private static GraphTDB setup()
-    {
-        // Setup a graph - for experimental alternatives.
-        BlockMgrMem.SafeMode = false ;
-        IndexBuilder indexBuilder = IndexBuilder.mem() ;
-        Location location = null ;
-        
-        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
-        
-        TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
-        ReorderTransformation transform = ReorderLib.identity() ;
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
-        GraphTDB g = new GraphTriplesTDB(null, table, prefixes) ;
-        return g ;
-    }
+
+
 
     public static void rewrite()
     {

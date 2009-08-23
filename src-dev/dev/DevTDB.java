@@ -27,9 +27,7 @@ public class DevTDB
     
     // == Monitoring
     // Assembler : TDB settings
-    // Logging of explains 
     //  To a separate file - example in log4j.
-    // Combine with (ARQ-level?) query logging. 
     
     // == Setup
     // metadata files and BPT creation ==> NewSetup and DI

@@ -57,6 +57,27 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NewSetup implements DatasetGraphMakerTDB
 {
+    // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
+    
+    // createDataset
+    
+    
+    
+    // for each index required:
+    
+    // IndexBuilder : old idea - bypass? 
+    
+    // makeNodeFile
+    // makeIndex (inject RangeIndex? or do downwards?)
+    
+    
+    // ** Base level opening:
+    // createBPTree
+    // createDataFile
+    
+    
+    
+    // Separate meta files on a per-file basis so just one index can be opened.
     // TODO   getPropertyOrUpdateWithDefault
     // TODO BlockSize for indexes/rangeIndexes
     // TODO TDBFactoryGraph/ - this is a replacement.
@@ -87,7 +108,7 @@ public class NewSetup implements DatasetGraphMakerTDB
     // FactoryGraphTDB
     // TDBFactory
 
-    // ---- Impl interface
+    // << Impl interface
     public DatasetGraphTDB createDatasetGraph()
     {
         return buildDataset(Location.mem()) ;
@@ -101,40 +122,18 @@ public class NewSetup implements DatasetGraphMakerTDB
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {}
 
-    // ---- Impl interface
+    // >> Impl interface
 
+    // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
-        MetaFile metafile = location.getMetaFile() ;
-        if (metafile.existsMetaData())
-        {
-            String verString = metafile.getProperty(Names.kVersion, "unknown") ;
-            TDB.logInfo.debug("Location: " + location.toString()) ;
-            TDB.logInfo.debug("Version:  " + verString) ;
-        }
-
-        // ---- Any files at this location?
-
-        if (!FileOps.existsAnyFiles(location.getDirectoryPath()))
-        {
-            // Fresh location.
-            metafile.setProperty(Names.kVersion, TDB.VERSION) ;
-            metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
-            locationMetadata(location) ;
-        } else
-        {
-            // Existing location (has some files in it) but no metadata.
-            // Fake it as TDB 0.8.1 (which did not have metafiles)
-            // If it's the wrong file format, things do badly wrong later.
-            if (!metafile.hasProperty(Names.kVersion)) 
-                metafile.setProperty(Names.kVersion, "<=0.8.1") ;
-        }
+        MetaFile metafile = locationMetadata(location) ;
 
         // ---- Node Table.
         NodeTable nodeTable = makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
 
         // ---- Triple table and quad table indexes.
-        // IndexBuilder that groks
+        // XXX Need a builder that groks metadata
         IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
 
         TupleIndex tripleIndexes[] = indexes(dftIndexBuilder, location, indexRecordTripleFactory,
@@ -247,16 +246,40 @@ public class NewSetup implements DatasetGraphMakerTDB
         return new DatasetPrefixesTDB(prefixIndexes, nodeTable) ;
     }
     
-    public static void locationMetadata(Location location)
+    public static MetaFile locationMetadata(Location location)
     {
         MetaFile metafile = location.getMetaFile() ;
+
         if (metafile.existsMetaData())
         {
-            String verString = metafile.getProperty(Names.kVersion, TDB.VERSION) ;
+            // Existing metadata
+            String verString = metafile.getProperty(Names.kVersion, "unknown") ;
             TDB.logInfo.debug("Location: " + location.toString()) ;
             TDB.logInfo.debug("Version:  " + verString) ;
+        }
+        else
+        {
+            // No metadata
+            //  ---- Any files at this location?
+
+            if ( ! FileOps.existsAnyFiles(location.getDirectoryPath()))
+            {
+                // No files - fresh location - insert current version.
+                metafile.setProperty(Names.kVersion, TDB.VERSION) ;
+                metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
+            } 
+            else
+            {
+                // Existing location (has some files in it) but no metadata.
+                // Fake it as TDB 0.8.1 (which did not have metafiles)
+                // If it's the wrong file format, things do badly wrong later.
+                metafile.setProperty(Names.kVersion, "<=0.8.1") ;
+                metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
+            }
+            // Write changes
             metafile.flush() ;
         }
+        return metafile ; 
     }
 
     public static Index createIndex(FileSet fileset, RecordFactory recordFactory)
