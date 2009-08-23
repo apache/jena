@@ -18,7 +18,10 @@ Reasoners:
      looping behaviour, fixed selective filtering of functors).
    o Generalized rule reasoner to permit triples in subject position at
      Graph level.
-     
+
+Core API:
+   o Fixed bug in comparison of dateTimes with fractional seconds
+        
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:
   arq.jar, arq-extra.jar, lucene-core-2.3.1.jar, json.jar, stax-api-1.0.jar, wstx-asl-3.0.0.jar 

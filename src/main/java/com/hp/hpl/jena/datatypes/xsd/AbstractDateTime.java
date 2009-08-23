@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.1 2009-06-29 08:56:03 castagna Exp $
+ * $Id: AbstractDateTime.java,v 1.2 2009-08-23 19:50:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,9 +21,9 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
+ * @version $Revision: 1.2 $ on $Date: 2009-08-23 19:50:24 $
  */
-public class AbstractDateTime {
+public class AbstractDateTime implements Comparable<AbstractDateTime> {
 
     /** The array of year/month etc values as ints */
     protected int[] data;
@@ -38,6 +38,9 @@ public class AbstractDateTime {
     //size for all objects must have the same fields:
     //CCYY, MM, DD, h, m, s, ms + timeZone
     protected final static int TOTAL_SIZE = 9;
+    
+    // The number of comparable values
+    protected final static int COMPARABLE_SUBSET = 6;
 
     /** constant to indicate a less than relationship from compare() */
     public static final short LESS_THAN     = -1;
@@ -68,6 +71,26 @@ public class AbstractDateTime {
     public int compare(AbstractDateTime other) {
         return compareDates(data, other.data, true);
     }
+    
+    /**
+     * Normal java comparison function. Treats INDETERMINATE as the same
+     * as equals. This is not strictly correct but seems like an appropriate
+     * way to handle partially ordered objects.
+     */
+    public int compareTo(AbstractDateTime o) {
+        switch (compare(o)) {
+        case EQUAL:
+        case INDETERMINATE:
+            return 0;
+        case LESS_THAN:
+            return -1;
+        case GREATER_THAN:
+            return 1;
+        }
+        return 0;
+    }
+   
+    
     
     /**
      * Convert fractional second representation to a simple float.
@@ -195,16 +218,34 @@ public class AbstractDateTime {
      */
     protected short compareOrder (int[] date1, int[] date2) {
 
-        for ( int i=0;i<TOTAL_SIZE;i++ ) {
-            if ( date1[i]<date2[i] ) {
+        short order;
+        for ( int i=0; i < COMPARABLE_SUBSET;i++ ) {
+            if (date1[i] < date2[i]) {
                 return -1;
-            }
-            else if ( date1[i]>date2[i] ) {
+            } else if (date1[i] > date2[i]) {
                 return 1;
             }
         }
+        // Compare subsecond components
+        int maxScale = Math.max(date1[msscale], date2[msscale]);
+        int ss1 = scale(date1[ms], date1[msscale], maxScale);
+        int ss2 = scale(date2[ms], date2[msscale], maxScale);
+        if (ss1 < ss2) {
+            return -1;
+        } else if (ss1 > ss2) {
+            return 1;
+        }
         return 0;
     }
+
+    /**
+     * Scale up a subsecond part to make comparable to another of the given scale
+     */
+    private int scale(int val, int scale, int targetScale) {
+        for (int i = scale; i < targetScale; i++) val *= 10;
+        return val;
+    }
+    
     /**
       * If timezone present - normalize dateTime  [E Adding durations to dateTimes]
       * Public to allow reuse with type objects.
@@ -340,7 +381,7 @@ public class AbstractDateTime {
     private void cloneDate (int[] finalValue, int[] tempDate) {
         System.arraycopy(finalValue, 0, tempDate, 0, TOTAL_SIZE);
     }
-   
+
 //  --------------------------------------------------------------------
 //  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
 //  --------------------------------------------------------------------
