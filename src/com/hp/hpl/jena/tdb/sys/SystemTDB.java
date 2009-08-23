@@ -124,7 +124,7 @@ public class SystemTDB
      *  Used for loading and for query preparation.
      */
     public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
-    /** Size of NodeId to NodeI cache.
+    /** Size of NodeId to Node cache.
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
      */

@@ -13,8 +13,7 @@ public class DevTDB
     // Explain mode - See notes in class
     // NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.
-    //    Phase 1 : TDB details (cache sizes, constants etc)
-    //    Phase 2 : JMX and monitoring caches
+    //    Phase 2 : Monitoring caches
     
     // DatasetGraphTDB need labels.
     // Assembler : TDB settings
