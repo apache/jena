@@ -58,33 +58,19 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class NewSetup implements DatasetGraphMakerTDB
 {
     /* Logical information goes in the location metafile. This includes
-     * dataset type, node table type and indexes expected.  But it does
+     * dataset type, NodeTable type and indexes expected.  But it does
      * not include how the particular files are realised.
      * 
-     * An index file has it's own .meta file saying that it is a B+tree
-     * and the individual node table files do the same.  This means we can
-     * open a single index or object file (e.g to dump).  
+     * A NodeTable is a pair of id->Node and Node->id mappings. 
+     * 
+     * An index file has it's own .meta file saying that it is a B+tree and
+     * the record size - everything needed to access it to build a RangeIndex.
+     * The individual node table files are the same.  This means we can
+     * open a single index or object file (e.g to dump) and it allows
+     * for changes both in implementation technology and in overall design. 
      */
     
     // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
-    
-    // createDataset
-    
-    
-    
-    // for each index required:
-    
-    // IndexBuilder : old idea - bypass? 
-    
-    // makeNodeFile
-    // makeIndex (inject RangeIndex? or do downwards?)
-    
-    
-    // ** Base level opening:
-    // createBPTree
-    // createDataFile
-    
-    
     
     // Separate meta files on a per-file basis so just one index can be opened.
     // TODO   getPropertyOrUpdateWithDefault

@@ -32,7 +32,6 @@ import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
