@@ -8,6 +8,8 @@ package atlas.logging;
 
 import java.io.File;
 
+import org.apache.log4j.PropertyConfigurator ;
+import org.apache.log4j.xml.DOMConfigurator ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,6 +157,15 @@ public class Log
             if ( f.exists() ) 
                 System.setProperty("log4j.configuration", "file:"+fn) ;
         }
+    }
+    
+    /** Set log4j properties (XML or properties file) */
+    public static void setLog4j(String filename)
+    {
+        if ( filename.toLowerCase().endsWith(".xml")) 
+            DOMConfigurator.configure(filename) ;
+        else
+            PropertyConfigurator.configure(filename) ;
     }
 }
 
