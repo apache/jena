@@ -18,6 +18,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
  */
 public interface ObjectFile
 {
+    public static final String type = "object" ;
     public NodeId write(String str) ;
     public String read(NodeId id) ;
     public List<String> all() ;

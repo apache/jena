@@ -82,6 +82,7 @@ public class Names
     public static final String elNode                 = "node" ;
     public static final String elBPlusTree            = "bptree" ;
     public static final String elIndex                = "index" ;
+    public static final String elObject               = "object" ;
     
     public static final String elType                 = "type" ;
     public static final String elLayout               = "layout" ;
@@ -101,6 +102,9 @@ public class Names
     // Node table metadata
     public static final String kNodeTableType         = makeName(keyNS, elNode, elType) ;
     public static final String kNodeTableLayout       = makeName(keyNS, elNode, elLayout) ;
+    
+    // Object file
+    public static final String kObjectTableType         = makeName(keyNS, elObject, elType) ;
     
     // Default index metadata - in the index metadata file.
     

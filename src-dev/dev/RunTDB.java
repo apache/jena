@@ -29,8 +29,11 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 import dump.DumpIndex ;
@@ -59,7 +62,11 @@ public class RunTDB
             System.exit(0) ;
         }
         
-        NewSetup.buildDataset(new Location("tmp/DBX")) ;
+        Location location = new Location("tmp/DBX") ;
+        location.getMetaFile().dump(System.out) ;
+        System.out.println();
+        //DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
+        NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ; 
         System.exit(0) ;
         
         FileSet fileset = new FileSet("tmp", "XYZ") ;

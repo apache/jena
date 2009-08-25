@@ -1,0 +1,22 @@
+======= http://jena.hpl.hp.com/wiki/TDB/Optimizer
+
+==Investigating what is going on==
+
+TDB can optionally log query execution details.  This is controlled by two setting: the logging level and a context setting.  Having two setting means it is possible to log some queries and not others.
+
+The logger used is called <code>com.hp.hpl.jena.tdb.exec</code>. Message are sent at level "info".  So for log4j, the following can be set in the log4j.properties file:
+
+ log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
+
+The context setting is for key (Java constant) <code>TDB.symLogExec</code>.  To set globally:
+
+ TDB.getContext().set(TDB.symLogExec,true) ;
+
+and it may also be set on an individual query execution using it's local context.
+  
+  QueryExecutiuon qExec = QueryExecutionFactory.create(...) ;
+  qExec.getContext().set(TDB.symLogExec,true) ;
+
+On the command lie:
+
+  tdbquery --set tdb:logExec=true --file <i>queryfile</i>

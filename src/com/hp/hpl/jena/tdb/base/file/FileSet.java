@@ -67,12 +67,18 @@ public class FileSet
     }
     
     private void initFileSet(Location directory, String basename)
+    { initFileSet(directory, basename, false) ; }
+    
+    
+    private void initFileSet(Location directory, String basename, boolean useLocationMetadata)
     {
         this.location = directory ;
         this.basename = basename ;
         String metaFileName = location.getPath(basename, Names.extMeta) ;
-        //metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
-        metafile = location.getMetaFile() ;
+        if ( useLocationMetadata )
+            metafile = location.getMetaFile() ;
+        else
+            metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
     }
     
     

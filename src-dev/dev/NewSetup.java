@@ -57,6 +57,15 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NewSetup implements DatasetGraphMakerTDB
 {
+    /* Logical information goes in the location metafile. This includes
+     * dataset type, node table type and indexes expected.  But it does
+     * not include how the particular files are realised.
+     * 
+     * An index file has it's own .meta file saying that it is a B+tree
+     * and the individual node table files do the same.  This means we can
+     * open a single index or object file (e.g to dump).  
+     */
+    
     // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
     
     // createDataset
@@ -189,19 +198,24 @@ public class NewSetup implements DatasetGraphMakerTDB
     // ---- Make things.
     // All the make* operations look for metadata and decide what to do.
 
-    private static NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node)
+    public static NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node)
     {
         if (location.isMem()) 
             return NodeTableFactory.createMem(IndexBuilder.mem()) ;
 
+            //?? Check the object file style for this location.
+//      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
+//      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
+
+        
         String nodeTableType = location.getMetaFile().getProperty(Names.kNodeTableType) ;
 
-        // NodeTableBuilder??
+        // NodeTableBuilder abstraction?
 
         if (nodeTableType != null)
         {
-            log.info("Explicit node table type: " + nodeTableType + " (ignored)") ;
-            // Choose node table builder.
+            if ( ! nodeTableType.equals(NodeTable.type))
+                log.info("Explicit node table type: " + nodeTableType + " (ignored)") ;
         }
         else
         {
@@ -210,21 +224,12 @@ public class NewSetup implements DatasetGraphMakerTDB
             location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTable.layout) ;
         }
         
-        // -- make node to id mapping -- Names.indexNode2Id
-      
+        // -- make id to node mapping -- Names.indexId2Node
         FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
-        MetaFile mf_IdToNode = fsIdToNode.getMetaFile() ;
-        if ( mf_IdToNode.existsMetaData() ) 
-        {
-            mf_IdToNode.dump(System.out) ;
-        }
-        
-        // Defaults.
-        
-        
         ObjectFile objectFile = makeObjectFile(fsIdToNode) ;
 
-        // -- make id to node mapping -- Names.indexId2Node
+        
+        // -- make node to id mapping -- Names.indexNode2Id
         // Make index of id to node (data table): Names.nodeTable
 
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
@@ -240,8 +245,12 @@ public class NewSetup implements DatasetGraphMakerTDB
 
     private static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
-        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
-        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
+        String objectTableType = ObjectFile.type ;
+        
+        checkOrSetMetadata(fsIdToNode.getMetaFile(), Names.kObjectTableType, objectTableType) ;
+        
+//        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
+//        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
         
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objFile = FileFactory.createObjectFileDisk(filename);
@@ -411,8 +420,37 @@ public class NewSetup implements DatasetGraphMakerTDB
         throw new TDBException("Unrecognized index type: " + x) ;
     }
 
+    // Get property - set the defaultvalue if not present.
+    private static String getOrSetDefault(MetaFile metafile, String key, String expected)
+    {
+        String x = metafile.getProperty(key) ;
+        if ( x == null )
+        {
+            metafile.setProperty(key, expected) ;
+            x = expected ;
+        }
+        return x ;
+    }
+    
+    // Check property is an expected value or set if missing
+    private static void checkOrSetMetadata(MetaFile metafile, String key, String expected)
+    {
+        String x = metafile.getProperty(key) ;
+        if ( x == null )
+        {
+            metafile.setProperty(key, expected) ;
+            return ; 
+        }
+        if ( x.equals(expected) )
+            return ;
+        
+        inconsistent(key, x, expected) ; 
+    }
+    
     private static void checkMetadata(MetaFile metafile, String key, String expected)
     {
+        //log.info("checkMetaData["+key+","+expected+"]") ;
+        
         String value = metafile.getProperty(key) ;
         if ( value == null && expected == null ) return ;
         if ( value == null && expected != null ) inconsistent(key, value, expected) ; 

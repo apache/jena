@@ -45,6 +45,8 @@ public class MetaFile implements Sync, Closeable
         File f = new File(fn) ;
         this.metaFilename = f.getAbsolutePath() ;
         // Does not load the details yet.
+        // JDI
+        ensureInit() ; 
     }
     
     private void ensureInit()
