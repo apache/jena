@@ -191,7 +191,8 @@ public class NewSetup implements DatasetGraphMakerTDB
 
     private static NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node)
     {
-        if (location.isMem()) return NodeTableFactory.createMem(IndexBuilder.mem()) ;
+        if (location.isMem()) 
+            return NodeTableFactory.createMem(IndexBuilder.mem()) ;
 
         String nodeTableType = location.getMetaFile().getProperty(Names.kNodeTableType) ;
 
@@ -212,6 +213,15 @@ public class NewSetup implements DatasetGraphMakerTDB
         // -- make node to id mapping -- Names.indexNode2Id
       
         FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
+        MetaFile mf_IdToNode = fsIdToNode.getMetaFile() ;
+        if ( mf_IdToNode.existsMetaData() ) 
+        {
+            mf_IdToNode.dump(System.out) ;
+        }
+        
+        // Defaults.
+        
+        
         ObjectFile objectFile = makeObjectFile(fsIdToNode) ;
 
         // -- make id to node mapping -- Names.indexId2Node

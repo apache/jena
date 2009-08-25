@@ -53,7 +53,8 @@ public class RunTDB
         //TDB.setExecutionLogging(true) ;
         //tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
         
-        if ( false ) {
+        if ( false )
+        {
             DumpIndex.dump(System.out, "DB", "SPO") ;
             System.exit(0) ;
         }

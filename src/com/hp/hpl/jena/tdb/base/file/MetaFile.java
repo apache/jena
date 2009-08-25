@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -171,6 +172,19 @@ public class MetaFile implements Sync, Closeable
         {
             log.error("Failed to load properties: "+metaFilename, ex) ;
         }
+    }
+    
+    /** Debugging */
+    public void dump(PrintStream output)
+    {
+        output.println("Metafile: "+metaFilename) ;
+        output.println("Label: "+label) ;
+        output.println("Status: "+(changed?"changed":"unchanged")) ;
+        
+        if ( properties != null )
+            properties.list(output) ;
+        else
+            output.println("#<null>") ;
     }
 
     //@Override
