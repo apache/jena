@@ -1,5 +1,9 @@
-PREFIX : <http://example/>
-SELECT *
-{ 
-  ?s ?p ?o . OPTIONAL { ?s :p ?o }
-}
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+
+    SELECT * WHERE {
+        ?resource dct:modified ?modified .
+        ?resource a skos:Concept .
+    }
+    ORDER BY DESC(?modified)
+    LIMIT 100
