@@ -9,14 +9,21 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
-    // Node format - SSE overhead.
     // Explain mode - See notes in class
-    // NewSetup/DI
-    // Use ARQ 2.8.1 and enable management info.
-    //    Phase 2 : Monitoring caches
+    // Don't print optimizer type when set at info level.
+    // Remove "warn" ?
     
-    // DatasetGraphTDB need labels.
-    // Assembler : TDB settings
+    // ** NewSetup/DI
+    // Use ARQ 2.8.1 and enable management info.
+    //    (later: Phase 2 : Monitoring caches)
+    // Node format - SSE overhead.
+    
+    // Investigate better record byte access.  Whole record?
+    // Investigate adding a PSO index (for paths to get sorted order)
+    // Investigate trackign sorted order in BGPs
+    // Cache tables.
+    
+    // Assembler : TDB settings : document.
     
     // == Misc
     // Node cache on 64bit machines needs to be bigger or rebalence

@@ -52,6 +52,8 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        tdbquery("--tdb=tdb.ttl", "--explain", "--file=Q.rq") ;
+        
         //TDB.setExecutionLogging(true) ;
         //tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
         
