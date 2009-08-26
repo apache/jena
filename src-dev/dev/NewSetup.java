@@ -57,6 +57,8 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NewSetup implements DatasetGraphMakerTDB
 {
+    private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
+
     /* Logical information goes in the location metafile. This includes
      * dataset type, NodeTable type and indexes expected.  But it does
      * not include how the particular files are realised.
@@ -72,19 +74,14 @@ public class NewSetup implements DatasetGraphMakerTDB
     
     // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
     
-    // Separate meta files on a per-file basis so just one index can be opened.
-    // TODO   getPropertyOrUpdateWithDefault
     // TODO BlockSize for indexes/rangeIndexes
     // TODO TDBFactoryGraph/ - this is a replacement.
-    // XXX IndexBuilder.get() and name of range index type.
+    // XXX IndexBuilder that understand metadata?
     // TODO Tests.
-    // TODO TDBMaker.ConcreteImplFactory
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
     // TODO Check everywhere else for non-DI constructors.
-
     
-    // TDBFactory : machinary for the API (models, lots of different ways of
-    // making things
+    // TDBFactory : machinary for the API (models, lots of different ways of making things)
     // --> factory.createDatasetGraph(Location) / factory.createDatasetGraph()
 
     // The main factory is ConcreteImplFactory
@@ -97,8 +94,6 @@ public class NewSetup implements DatasetGraphMakerTDB
     public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    private static final Logger       log                      = LoggerFactory.getLogger(NewSetup.class) ;
-
     // Sort out with IndexBuilder and ...tdb.index.factories.* when ready.
     // FactoryGraphTDB
     // TDBFactory
@@ -122,14 +117,71 @@ public class NewSetup implements DatasetGraphMakerTDB
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
+        // XXX Check names with "Names" - separate out? 
+        
+        /* ---- this.meta - the logcial structure of the dataset.
+         * 
+         * # Dataset design
+         * tdb.create.version=0.9           # TDB version that created this dataset originally.  0.8 for pre-meta.
+         * tdb.layout=v1                    # "version" for the design)
+         * tdb.type=standalone              # --> nodes-and-triples/quads
+         * tdb.created=                     # Informational timestamp of creation.
+         * 
+         * # Triple table
+         * # Changing the indexes does not automatically change the indexing on the dataset.
+         * tdb.indexes.triples.primary=SPO  # triple primary
+         * tdb.indexes.triples=SPO,POS,OSP  # triple table indexes
+         * 
+         * # Quad table.
+         * tdb.indexes.quads.primary=GSPO   # Quad table primary.
+         * tdb.indexes.quads=GSPO,GPOS,GOSP,SPOG,POSG,OSPG  # Quad indexes
+         *
+         * # Node table.
+         * tdb.nodetable.mappings=node2id,id2node
+         *
+         * and then for each file we have the concrete paramters for the file:
+         * 
+         * ---- An index
+         * 
+         * tdb.file.type=rangeindex        # Service provided.
+         * tdb.file.impl=bplustree         # Implementation
+         * tdb.file.impl.version=v1          
+         * 
+         * tdb.index.name=SPO
+         * tdb.index.order=SPO
+         *
+         * tdb.bpt.record=24,0
+         * (tdb.bpt.order=)
+         * tdb.bpt.blksize=
+         * 
+         * ---- An object file
+         *
+         * tdb.file.type=object
+         * tdb.file.impl=dat
+         * tdb.file.impl.version=v1
+         *
+         * tdb.object.encoding=sse
+         */ 
+        
         MetaFile metafile = locationMetadata(location) ;
+        
+        
+        
+        //checkOrSetMetadata(metafile, null, null)
+        
+        
+        // ---- Logical structure
 
-        // ---- Node Table.
+        // -- Node Table.
         NodeTable nodeTable = makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
 
-        // ---- Triple table and quad table indexes.
-        // XXX Need a builder that groks metadata
+        // -- Triple table
         IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
+        
+        
+        
+        // -- Quad Table
+        
 
         TupleIndex tripleIndexes[] = indexes(dftIndexBuilder, location, indexRecordTripleFactory,
                                              Names.primaryIndexTriples, Names.tripleIndexes) ;
@@ -150,6 +202,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         return dsg ;
     }
 
+    // XXX To do
     public static TupleIndex[] indexes(final IndexBuilder indexBuilder, final Location location,
                                        RecordFactory recordFactory, String primary, String[] descs)
     {
@@ -251,11 +304,15 @@ public class NewSetup implements DatasetGraphMakerTDB
         return new DatasetPrefixesTDB(prefixIndexes, nodeTable) ;
     }
     
+    /** Check and set default for the dataset design */
     public static MetaFile locationMetadata(Location location)
     {
-        MetaFile metafile = location.getMetaFile() ;
+        boolean newDataset = FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
 
-        if (metafile.existsMetaData())
+        MetaFile metafile = location.getMetaFile() ;
+        boolean isPreMetadata = false ;
+        
+        if (!newDataset && metafile.existsMetaData())
         {
             // Existing metadata
             String verString = metafile.getProperty(Names.kVersion, "unknown") ;
@@ -265,25 +322,38 @@ public class NewSetup implements DatasetGraphMakerTDB
         else
         {
             // No metadata
-            //  ---- Any files at this location?
+            // Either it's brand new (so set the defaults)
+            // or it's a pre-0.9 dataset (files exists)
 
-            if ( ! FileOps.existsAnyFiles(location.getDirectoryPath()))
+            if ( ! newDataset )
             {
-                // No files - fresh location - insert current version.
-                metafile.setProperty(Names.kVersion, TDB.VERSION) ;
-                metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
-            } 
-            else
-            {
-                // Existing location (has some files in it) but no metadata.
-                // Fake it as TDB 0.8.1 (which did not have metafiles)
-                // If it's the wrong file format, things do badly wrong later.
-                metafile.setProperty(Names.kVersion, "<=0.8.1") ;
-                metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
+                // Well-know name of the primary triples index.
+                boolean b = FileOps.exists(location.getPath("SPO.dat")) ;
+                if ( !b )
+                {
+                    log.error("Existing files but no metadata and not old-style fixed layout") ;
+                    throw new TDBException("Can't build dataset: "+location) ;
+                }
+                
+                isPreMetadata = true ;
             }
-            // Write changes
-            metafile.flush() ;
         }
+            
+        if ( newDataset )
+        {
+            // Defaults.
+        }
+        
+        if ( isPreMetadata )
+        {
+         // Existing location (has some files in it) but no metadata.
+            // Fake it as TDB 0.8.1 (which did not have metafiles)
+            // If it's the wrong file format, things do badly wrong later.
+            metafile.setProperty(Names.kVersion, "0.8") ;
+            metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
+        }
+            
+        metafile.flush() ;
         return metafile ; 
     }
 

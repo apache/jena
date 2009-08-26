@@ -70,6 +70,12 @@ public class FileOps
         return entries.length > 0 ;
     }
 
+    public static boolean exists(String path)
+    {
+        File f = new File(path) ;
+        return f.exists() ; 
+    }
+
     public static void ensureDir(String dirname)
     {
         File dir = new File(dirname) ;

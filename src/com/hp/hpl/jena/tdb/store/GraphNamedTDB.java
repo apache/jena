@@ -108,7 +108,7 @@ public class GraphNamedTDB extends GraphTDBBase
         if ( isDefaultGraph(graphNode) )
             // Default graph.
             return graphBaseFindWorker(getDataset().getTripleTable(), m) ;
-        // Union graph?
+        // Includes union graph
         return graphBaseFindWorker(getDataset(), graphNode, m) ;
     }
     

@@ -96,7 +96,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     public ReorderTransformation getTransform()     { return transform ; }
     
-    public DatasetPrefixStorage getPrefixes()            { return prefixes ; }
+    public DatasetPrefixStorage getPrefixes()       { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {
