@@ -49,10 +49,23 @@ Document:
     
     // These are the per-execution levels.
     
-    static enum InfoLevel
-    {   INFO, FINE, ALL
-//        @Override
-//        abstract public String toString() ;  
+    /** Information level for query execution. */
+    public static enum InfoLevel
+    {
+        /** Log each query */
+   
+        INFO { @Override public int level() { return 1 ; } } ,
+        
+        /** Log each query and it's algebra form after optimization */
+        FINE { @Override public int level() { return 2 ; } } ,
+        /** Log query, algebra and every database access (can be expensive) */
+        ALL { @Override public int level() { return 3 ; } } ,
+        /** No query execution logging. */
+        NONE { @Override public int level() { return -1 ; } }
+        
+        ;
+        
+        abstract public int level() ;
     }
 
     // CHANGE ME.
@@ -156,16 +169,27 @@ Document:
     
     private static boolean _explaining(InfoLevel level, Context context)
     {
+        if ( level == InfoLevel.NONE ) return false ;
+        
         Object x = context.get(symLogExec, null) ;
+        
         if ( x == null )
             return false ;
         
-        // Enum equality.
-        if ( level.equals(x) ) return true ;
+        // Enum level.
+        if ( level.level() == InfoLevel.NONE.level() ) return false ;
+
+        if ( x instanceof InfoLevel )
+        {
+            InfoLevel z = (InfoLevel)x ;
+            if ( z == InfoLevel.NONE ) return false ;
+            return ( z.level() >= level.level() ) ;
+        }
         
         if ( x instanceof String )
         {
             String s = (String)x ;
+            
             if ( s.equalsIgnoreCase("info") )
                 return level.equals(InfoLevel.INFO) ;
             if ( s.equalsIgnoreCase("fine") ) 
@@ -175,6 +199,9 @@ Document:
                 return true ;
             if ( s.equalsIgnoreCase("true") ) 
                 return true ;
+            if ( s.equalsIgnoreCase("none") ) 
+                return false ;
+
         }
         
         return Boolean.TRUE.equals(x) ;

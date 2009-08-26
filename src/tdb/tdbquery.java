@@ -13,6 +13,7 @@ import arq.cmdline.ModDataset;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.solver.Explain ;
 
 
 public class tdbquery extends arq.query
@@ -43,7 +44,7 @@ public class tdbquery extends arq.query
         if ( super.hasArg(argExplain) )
         {
             //Log.enable(TDB.logExec.getName(), "info") ;
-            TDB.setExecutionLogging(true) ;
+            TDB.setExecutionLogging(Explain.InfoLevel.ALL) ;
         }
     }
     

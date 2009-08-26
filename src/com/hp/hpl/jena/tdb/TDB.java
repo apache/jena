@@ -30,9 +30,11 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
+import com.hp.hpl.jena.tdb.solver.Explain ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
+import com.hp.hpl.jena.tdb.solver.Explain.InfoLevel ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
@@ -64,14 +66,39 @@ public class TDB
 
     /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
      * An appropriate logging configuration is also required.
+     * @deprecated Use setExecutionLogging(Explain.InfoLevel)}
      */
+    @Deprecated
     public static void setExecutionLogging(boolean state)
     {
+        if ( ! state )
+        {
+            TDB.getContext().unset(TDB.symLogExec) ;
+            return ;
+        }
+        
         TDB.getContext().set(TDB.symLogExec, state) ;
         if ( ! logExec.isInfoEnabled() )
             log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
     }
     
+    /** Set execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO.
+     * An appropriate logging configuration is also required.
+     */
+    public static void setExecutionLogging(Explain.InfoLevel infoLevel)
+    {
+        if ( InfoLevel.NONE.equals(infoLevel) )
+        {
+            TDB.getContext().unset(TDB.symLogExec) ;
+            return ;
+        }
+        
+        TDB.getContext().set(TDB.symLogExec, infoLevel) ;
+        if ( ! logExec.isInfoEnabled() )
+            log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
+    }
+    
+
     public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.
