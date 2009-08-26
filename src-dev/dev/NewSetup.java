@@ -119,7 +119,7 @@ public class NewSetup implements DatasetGraphMakerTDB
     {
         // XXX Check names with "Names" - separate out? 
         
-        /* ---- this.meta - the logcial structure of the dataset.
+        /* ---- this.meta - the logical structure of the dataset.
          * 
          * # Dataset design
          * tdb.create.version=0.9           # TDB version that created this dataset originally.  0.8 for pre-meta.
@@ -139,7 +139,7 @@ public class NewSetup implements DatasetGraphMakerTDB
          * # Node table.
          * tdb.nodetable.mappings=node2id,id2node
          *
-         * and then for each file we have the concrete paramters for the file:
+         * and then for each file we have the concrete parameters for the file:
          * 
          * ---- An index
          * 
