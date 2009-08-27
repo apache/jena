@@ -82,8 +82,8 @@ public abstract class FmtLayout2
     }
 
     // Excludes primary index.
-    protected static String[] quadIndexCols = { "(o, s, g)", "(p, o, g)", "(g, s, p)", "(g, p, o)", "(g, o, s)" } ;
-    protected static String[] quadIndexNames = {"ObjSubjGra",  "PredObjGra", "GraSubjPred", "GraPredObj", "GraObjSubj"} ;
+    protected static String[] quadIndexCols = { "(s, p, o)", "(p, o, s)", "(o, s, p)", "(g, p, o)", "(g, o, s)" } ;
+    protected static String[] quadIndexNames = {"SubjPredObj",  "PredObjSubj", "ObjSubjPred", "GraPredObj", "GraObjSubj"} ;
     
     // Override this if the syntax is a bit different 
     protected void addIndexesTableQuads()
