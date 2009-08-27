@@ -154,10 +154,9 @@ class VarFinder
             optDefines.addAll(rightUsage.optDefines) ;
             filterMentions.addAll(rightUsage.filterMentions) ;
             
-//            // Remove any definites that are in the optionals 
-//            // as, overall, they are definites 
-//            // Don't do this?
-//            optDefines.removeAll(leftUsage.defines) ;
+            // Remove any definites that are in the optionals 
+            // as, overall, they are definites 
+            optDefines.removeAll(leftUsage.defines) ;
 
             // And the associated filter.
             if ( opLeftJoin.getExprs() != null )

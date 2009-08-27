@@ -122,6 +122,15 @@ public class TestClassify extends TestCase
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ; }
     
     public void testClassify_LeftJoin_05()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x OPTIONAL { ?s ?p ?x } } }", true)  ; }
+
+    public void testClassify_LeftJoin_06()  // Note use of {{ }}
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { { ?s ?p ?o FILTER(?x) } } }", false)  ; }
+
+    public void testClassify_LeftJoin_07()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x1 OPTIONAL { ?s ?p ?x2 FILTER(?x) } } }", false)  ; }
+
+    public void testClassify_LeftJoin_10()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
         
     

@@ -46,7 +46,11 @@ public class LeftJoinClassifier
         VarFinder vf = new VarFinder(right) ;
         
         Set<Var> optRight = vf.getOpt() ;
+        //Set<Var> fixedRight = vf.getFixed() ;
         Set<Var> filterVarsRight = vf.getFilter() ; 
+        
+        boolean b1 = SetUtils.intersectionP(leftVars, optRight) ;
+        boolean b2 = SetUtils.intersectionP(leftVars, filterVarsRight) ;        
 
         // Safe for linear execution if there are no  
         return ! SetUtils.intersectionP(leftVars, optRight) && ! SetUtils.intersectionP(leftVars, filterVarsRight) ;

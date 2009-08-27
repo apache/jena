@@ -42,7 +42,7 @@ public class TransformJoinStrategy extends TransformCopy
     //public Op transform(OpSequence opSequence, List<Op> elts)
     
     @Override
-    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
+    public Op transform(OpLeftJoin opLeftJoin, Op opLeft, Op opRight)
     { 
       // Test whether we can do an indexed substitute into the right if possible.
       boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
@@ -54,8 +54,6 @@ public class TransformJoinStrategy extends TransformCopy
           // RHS execution so the expression is evaluated by moving it to be 
           // a filter over the RHS pattern. 
           
-          Op opLeft = opLeftJoin.getLeft() ;
-          Op opRight = opLeftJoin.getRight() ;
           if (opLeftJoin.getExprs() != null )
               opRight = OpFilter.filter(opLeftJoin.getExprs(), opRight) ;
           return new OpConditional(opLeft, opRight) ;

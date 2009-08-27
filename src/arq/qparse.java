@@ -64,7 +64,7 @@ public class qparse extends CmdARQ
         super.processModulesAndArgs() ;
         
         if ( contains(argDeclOpt) )
-            printOpt = printOp = true ;
+            printOpt = true ;
 
         for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
@@ -77,10 +77,10 @@ public class qparse extends CmdARQ
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
             else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
             else
-                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad.  opt") ;
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt") ;
         }
         
-        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan )
+        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt )
             printQuery = true ;
     }
 

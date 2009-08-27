@@ -23,11 +23,14 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -64,10 +67,20 @@ public class RunARQ
         String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
                                                 "SELECT *",
                                                 "{",
-                                                "   {:x :p ?x} { :y :q ?w OPTIONAL { ?w :r ?x2 }}" ,
+                                                "   ?s ?p1 ?x OPTIONAL { ?s ?p2 ?x OPTIONAL { ?s ?p3 ?x } }" ,
+                                                //"   ?s ?p ?x OPTIONAL { ?s ?p ?o FILTER(?x) }" ,
                                                 "}") ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query) ;
+        
+        boolean b = LeftJoinClassifier.isLinear((OpLeftJoin)op) ;
+        System.out.println(op) ;
+        System.out.println(b) ;
+        
+        Op op2 = Optimize.optimize(op, ARQ.getContext()) ;
+        System.out.println(op2) ;
+        System.exit(0) ;
+        
         //WriterOp.output(IndentedWriter.stdout, op) ;
         //IndentedWriter.stdout.flush();
         
