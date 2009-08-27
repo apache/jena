@@ -3,7 +3,7 @@ ChangeLog for TDB
 
 ==== 0.8.3
 
-+ Spped up basic processing of DateTime nodes (avoid using String.format to remake lexcial forms!) 
++ Speed up basic processing of DateTime nodes (avoid using String.format to remake lexcial forms!) 
 
 + Bug fix: If the query has a dataset description, this was ignored.  
   Now if the query has a dataset description (FROM, FROM NAMED) then
