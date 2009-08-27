@@ -67,11 +67,20 @@ public class Map2<K, V> implements Iterable<K>
         return iter1.append(map2.iterator()) ;
     }
     
+    public boolean isEmpty()
+    {
+        boolean x = map1.isEmpty() ;
+        if ( ! x ) return false ;
+        if ( map2 != null )
+            return map2.isEmpty() ;
+        return true ;
+    }
+    
     public int size()
     {
         int x = map1.size() ;
         if ( map2 != null )
-            x = map2.size();
+            x += map2.size();
         return x ;
     }
     

@@ -83,7 +83,6 @@ public class FileSet
             metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
     }
     
-    
     public Location getLocation()   { return location ; }
     public String getBasename()     { return basename ; }
     public MetaFile getMetaFile()   { return metafile ; }

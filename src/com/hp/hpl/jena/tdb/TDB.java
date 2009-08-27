@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
@@ -175,13 +177,11 @@ public class TDB
         
         SystemTDB.init() ;
         ARQ.init() ;
-        // BUG: ARQ 2.8.0 and before: this overwrites the metadata.  Bad design. 
-        Metadata.setMetadata("com/hp/hpl/jena/tdb/tdb-properties.xml") ;
         
         // Set management information.
         // Needs ARQ > 2.8.0
-//        String NS = TDB.PATH ;
-//        ARQMgt.register(NS+".system:type=SystemInfo", new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE)) ;
+        String NS = TDB.PATH ;
+        ARQMgt.register(NS+".system:type=SystemInfo", new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE)) ;
 
         AssemblerUtils.init() ;
         VocabTDB.init();
@@ -224,6 +224,10 @@ public class TDB
     
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
+    
+    static private String metadataLocation = "com/hp/hpl/jena/tdb/tdb-properties.xml" ;
+    static private Metadata metadata = new Metadata(metadataLocation) ;
+    
     /** The root package name for TDB */   
     public static final String PATH = "com.hp.hpl.jena.tdb";
 
@@ -232,19 +236,10 @@ public class TDB
     public static final String NAME = "TDB" ;
     
     /** The full name of the current TDB version */   
-    public static final String VERSION = Metadata.get(PATH+".version", "DEV") ;
-//   
-//    /** The major version number for this release of TDB (ie '2' for TDB 2.0) */
-//    public static final String MAJOR_VERSION = "@version-major@";
-//   
-//    /** The minor version number for this release of TDB (ie '0' for TDB 2.0) */
-//    public static final String MINOR_VERSION = "@version-minor@";
-//   
-//    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
-//    public static final String VERSION_STATUS = "@version-status@";
-//   
+    public static final String VERSION = metadata.get(PATH+".version", "DEV") ;
+
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
+    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
     
     // Final initialization 
     static {

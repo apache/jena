@@ -49,9 +49,15 @@ public class BindingTDB extends BindingBase
     
     /** Iterate over all the names of variables. */
     @Override
-    public Iterator<Var> vars1() 
+    protected Iterator<Var> vars1() 
     {
         return idBinding.iterator() ;
+    }
+
+    @Override
+    protected boolean isEmpty1()
+    {
+        return size1() == 0 ;
     }
 
     @Override
