@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,10 +185,26 @@ public class MetaFile implements Sync, Closeable
         output.println("Label: "+label) ;
         output.println("Status: "+(changed?"changed":"unchanged")) ;
         
-        if ( properties != null )
-            properties.list(output) ;
-        else
+        
+        
+        if ( properties == null )
+        {
             output.println("#<null>") ;
+            return ;
+        }
+        // properties.list() ;
+        SortedSet<Object> x = new TreeSet<Object>() ;
+        x.addAll(properties.keySet()) ;
+        
+        for ( Object k : x )
+        {
+            String key = (String)k ;
+            String value = properties.getProperty(key) ;
+            output.print(key) ;
+            output.print("=") ;
+            output.print(value) ;
+            output.println() ;
+        }
     }
 
     //@Override

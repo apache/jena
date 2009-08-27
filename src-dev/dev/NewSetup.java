@@ -163,7 +163,10 @@ public class NewSetup implements DatasetGraphMakerTDB
          * tdb.object.encoding=sse
          */ 
         
+        // Check and set defaults.
+        // On return, can just read the metadata key/value. 
         MetaFile metafile = locationMetadata(location) ;
+        metafile.dump(System.out) ;
         
         
         
@@ -307,6 +310,26 @@ public class NewSetup implements DatasetGraphMakerTDB
     /** Check and set default for the dataset design */
     public static MetaFile locationMetadata(Location location)
     {
+        /*
+        * # Dataset design
+        * tdb.create.version=0.9           # TDB version that created this dataset originally.  0.8 for pre-meta.
+        * tdb.layout=v1                    # "version" for the design)
+        * tdb.type=standalone              # --> nodes-and-triples/quads
+        * tdb.created=                     # Informational timestamp of creation.
+        * 
+        * # Triple table
+        * # Changing the indexes does not automatically change the indexing on the dataset.
+        * tdb.indexes.triples.primary=SPO  # triple primary
+        * tdb.indexes.triples=SPO,POS,OSP  # triple table indexes
+        * 
+        * # Quad table.
+        * tdb.indexes.quads.primary=GSPO   # Quad table primary.
+        * tdb.indexes.quads=GSPO,GPOS,GOSP,SPOG,POSG,OSPG  # Quad indexes
+        *
+        * # Node table.
+        * tdb.nodetable.mappings=node2id,id2node
+        */
+        
         boolean newDataset = FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
 
         MetaFile metafile = location.getMetaFile() ;
@@ -339,20 +362,37 @@ public class NewSetup implements DatasetGraphMakerTDB
             }
         }
             
+        // Ensure defaults.
+        
         if ( newDataset )
         {
-            // Defaults.
+            ensurePropertySet(metafile, "tdb.create.version", TDB.VERSION) ;
+            ensurePropertySet(metafile, "tdb.created", Utils.nowAsXSDDateTimeString()) ;
         }
         
         if ( isPreMetadata )
         {
-         // Existing location (has some files in it) but no metadata.
+            // Existing location (has some files in it) but no metadata.
             // Fake it as TDB 0.8.1 (which did not have metafiles)
             // If it's the wrong file format, things do badly wrong later.
-            metafile.setProperty(Names.kVersion, "0.8") ;
+            ensurePropertySet(metafile, "tdb.create.version", "0.8") ;
             metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
         }
             
+        ensurePropertySet(metafile, "tdb.layout", "v1") ;
+        ensurePropertySet(metafile, "tdb.type", "standalone") ;
+        
+        String layout = metafile.getProperty("tdb.layout") ;
+        
+        if ( layout.equals("v1") )
+        {
+            ensurePropertySet(metafile, "tdb.indexes.triples.primary", "SPO") ;
+            ensurePropertySet(metafile, "tdb.indexes.triples", "SPO,POS,OSP") ;
+            ensurePropertySet(metafile, "tdb.indexes.quads.primary", "GSPO") ;
+            ensurePropertySet(metafile, "tdb.indexes.quads", "GSPO,GPOS,GOSP,SPOG,POSG,OSPG") ;
+            ensurePropertySet(metafile, "tdb.nodetable.mappings", "node2id,id2node") ;
+        }
+        
         metafile.flush() ;
         return metafile ; 
     }
@@ -474,6 +514,11 @@ public class NewSetup implements DatasetGraphMakerTDB
             }
         }
         throw new TDBException("Unrecognized index type: " + x) ;
+    }
+
+    private static void ensurePropertySet(MetaFile metafile, String key, String expected)
+    {
+        getOrSetDefault(metafile, key, expected) ;
     }
 
     // Get property - set the defaultvalue if not present.

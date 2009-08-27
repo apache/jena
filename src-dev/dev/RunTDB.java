@@ -6,36 +6,34 @@
 
 package dev;
 
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.util.Arrays ;
-import java.util.List ;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
-import junit.framework.TestCase ;
-import org.junit.runner.JUnitCore ;
-import org.junit.runner.Result ;
-import atlas.junit.TextListener2 ;
-import atlas.logging.Log ;
+import junit.framework.TestCase;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import atlas.junit.TextListener2;
+import atlas.logging.Log;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.tdb.TC_TDB ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.tdb.TC_TDB;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
-import dump.DumpIndex ;
+import dump.DumpIndex;
 
 public class RunTDB
 {
@@ -52,10 +50,7 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
-        tdbquery("--tdb=tdb.ttl", "--explain", "--file=Q.rq") ;
-        
-        //TDB.setExecutionLogging(true) ;
-        //tdbquery("--tdb=tdb.ttl", "--file=Q.rq") ;
+        //tdbquery("--tdb=tdb.ttl", "--explain", "--file=Q.rq") ;
         
         if ( false )
         {
@@ -67,7 +62,9 @@ public class RunTDB
         location.getMetaFile().dump(System.out) ;
         System.out.println();
         //DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
-        NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ; 
+        // NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
+        NewSetup.locationMetadata(location) ;
+        location.getMetaFile().dump(System.out) ;
         System.exit(0) ;
         
         FileSet fileset = new FileSet("tmp", "XYZ") ;
