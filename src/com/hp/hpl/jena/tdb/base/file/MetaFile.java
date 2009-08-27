@@ -185,8 +185,6 @@ public class MetaFile implements Sync, Closeable
         output.println("Label: "+label) ;
         output.println("Status: "+(changed?"changed":"unchanged")) ;
         
-        
-        
         if ( properties == null )
         {
             output.println("#<null>") ;
