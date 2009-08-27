@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.ColumnMap;
 import atlas.lib.FileOps;
+import atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -137,7 +138,10 @@ public class NewSetup implements DatasetGraphMakerTDB
          * tdb.indexes.quads=GSPO,GPOS,GOSP,SPOG,POSG,OSPG  # Quad indexes
          *
          * # Node table.
-         * tdb.nodetable.mappings=node2id,id2node
+         * tdb.nodetable.mapping.node2id=node2id
+         * tdb.nodetable.mapping.id2node=id2node
+         *
+         * # Prefixes.
          *
          * and then for each file we have the concrete parameters for the file:
          * 
@@ -181,19 +185,38 @@ public class NewSetup implements DatasetGraphMakerTDB
             
         }
         
-        
         // ---- Logical structure
 
         // -- Node Table.
-        NodeTable nodeTable = makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
+        
+        String indexNode2Id = get(metafile, "tdb.nodetable.mapping.node2id") ;
+        String indexId2Node = get(metafile, "tdb.nodetable.mapping.id2node") ;
+        log.info("Object table: "+indexNode2Id+" - "+indexId2Node) ;
+        
+        NodeTable nodeTable = makeNodeTable(location, indexNode2Id, indexId2Node) ;
 
         // -- Triple table
-        IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
         
+        {
+            String primary = get(metafile, "tdb.indexes.triples.primary") ;
+            String indexes[] = getSplit(metafile, "tdb.indexes.triples") ;
+    
+            log.info("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        }
         
         
         // -- Quad Table
         
+        {
+            String primary = get(metafile, "tdb.indexes.quads.primary") ;
+            String indexes[] = getSplit(metafile, "tdb.indexes.quads") ;
+    
+            log.info("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        }
+
+        
+        // SWEEP
+        IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
 
         TupleIndex tripleIndexes[] = indexes(dftIndexBuilder, location, indexRecordTripleFactory,
                                              Names.primaryIndexTriples, Names.tripleIndexes) ;
@@ -375,11 +398,14 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         if ( layout.equals("v1") )
         {
-            ensurePropertySet(metafile, "tdb.indexes.triples.primary", "SPO") ;
-            ensurePropertySet(metafile, "tdb.indexes.triples", "SPO,POS,OSP") ;
-            ensurePropertySet(metafile, "tdb.indexes.quads.primary", "GSPO") ;
-            ensurePropertySet(metafile, "tdb.indexes.quads", "GSPO,GPOS,GOSP,SPOG,POSG,OSPG") ;
-            ensurePropertySet(metafile, "tdb.nodetable.mappings", "node2id,id2node") ;
+            ensurePropertySet(metafile, "tdb.indexes.triples.primary", Names.primaryIndexTriples) ;
+            ensurePropertySet(metafile, "tdb.indexes.triples", StrUtils.join(",", Names.tripleIndexes)) ;
+
+            ensurePropertySet(metafile, "tdb.indexes.quads.primary", Names.primaryIndexQuads) ;
+            ensurePropertySet(metafile, "tdb.indexes.quads", StrUtils.join(",", Names.quadIndexes)) ;
+            
+            ensurePropertySet(metafile, "tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
+            ensurePropertySet(metafile, "tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
         }
         
         metafile.flush() ;
@@ -505,6 +531,18 @@ public class NewSetup implements DatasetGraphMakerTDB
         throw new TDBException("Unrecognized index type: " + x) ;
     }
 
+    private static String get(MetaFile metafile, String key)
+    {
+        return metafile.getProperty(key) ;
+    }
+    
+    private static String[] getSplit(MetaFile metafile, String key)
+    {
+        return metafile.getProperty(key).split(",") ;
+    }
+
+
+    
     private static boolean propertyEquals(MetaFile metafile, String key, String value)
     {
         return metafile.getProperty(key).equals(value) ;
