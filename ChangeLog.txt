@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.1
 
++ Speed up processing of nested optionals.
+
 + Some JMX management exposed: Object names start "com.hp.hpl.jena.sparql". 
   Details include: system and version information, query execution count, 
     last query and the time execution started. 
