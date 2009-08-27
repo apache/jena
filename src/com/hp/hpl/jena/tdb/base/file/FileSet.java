@@ -67,8 +67,10 @@ public class FileSet
     }
     
     private void initFileSet(Location directory, String basename)
-    { initFileSet(directory, basename, false) ; }
-    
+    {
+        // Default - don't use the locations metadata 
+        initFileSet(directory, basename, false) ;
+    }
     
     private void initFileSet(Location directory, String basename, boolean useLocationMetadata)
     {
