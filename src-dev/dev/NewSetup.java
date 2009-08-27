@@ -166,11 +166,20 @@ public class NewSetup implements DatasetGraphMakerTDB
         // Check and set defaults.
         // On return, can just read the metadata key/value. 
         MetaFile metafile = locationMetadata(location) ;
-        metafile.dump(System.out) ;
         
-        
-        
-        //checkOrSetMetadata(metafile, null, null)
+        // Only support this so far.
+        if ( ! propertyEquals(metafile, "tdb.layout", "v1") )
+        {
+            log.error("Not marked as a v1 layout") ;
+            throw new TDBException("Wrong layout: "+metafile.getProperty("tdb.layout")) ;
+        }
+            
+        if ( propertyEquals(metafile, "tdb.type", "standalone") )
+        {
+            log.error("Not marked as a standalone type") ;
+            throw new TDBException("Wrong type: "+metafile.getProperty("tdb.type")) ;
+            
+        }
         
         
         // ---- Logical structure
@@ -310,26 +319,6 @@ public class NewSetup implements DatasetGraphMakerTDB
     /** Check and set default for the dataset design */
     public static MetaFile locationMetadata(Location location)
     {
-        /*
-        * # Dataset design
-        * tdb.create.version=0.9           # TDB version that created this dataset originally.  0.8 for pre-meta.
-        * tdb.layout=v1                    # "version" for the design)
-        * tdb.type=standalone              # --> nodes-and-triples/quads
-        * tdb.created=                     # Informational timestamp of creation.
-        * 
-        * # Triple table
-        * # Changing the indexes does not automatically change the indexing on the dataset.
-        * tdb.indexes.triples.primary=SPO  # triple primary
-        * tdb.indexes.triples=SPO,POS,OSP  # triple table indexes
-        * 
-        * # Quad table.
-        * tdb.indexes.quads.primary=GSPO   # Quad table primary.
-        * tdb.indexes.quads=GSPO,GPOS,GOSP,SPOG,POSG,OSPG  # Quad indexes
-        *
-        * # Node table.
-        * tdb.nodetable.mappings=node2id,id2node
-        */
-        
         boolean newDataset = FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
 
         MetaFile metafile = location.getMetaFile() ;
@@ -514,6 +503,11 @@ public class NewSetup implements DatasetGraphMakerTDB
             }
         }
         throw new TDBException("Unrecognized index type: " + x) ;
+    }
+
+    private static boolean propertyEquals(MetaFile metafile, String key, String value)
+    {
+        return metafile.getProperty(key).equals(value) ;
     }
 
     private static void ensurePropertySet(MetaFile metafile, String key, String expected)
