@@ -75,6 +75,9 @@ public class NodecSSE implements Nodec
         // Bytes -> String 
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
+        
+        // HARDCODE THIS
+        
         Node n = SSE.parseNode(str, pmap) ;
         if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
         {
