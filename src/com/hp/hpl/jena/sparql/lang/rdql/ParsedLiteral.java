@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 // Explict declaration of the Expr interface causes Eclipse to put it
 // in the type hierarchy directly which helps development.
 
-public class ParsedLiteral extends ExprNode implements ExprRDQL, RDQL_NodeValue
+public class ParsedLiteral extends ExprNodeRDQL implements ExprRDQL, RDQL_NodeValue
 {
     // Used to create resources and literals
 

@@ -16,11 +16,16 @@ import com.hp.hpl.jena.graph.query.Valuator;
 import com.hp.hpl.jena.graph.query.VariableIndexes;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.*;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingIndex;
-import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprBuild;
+import com.hp.hpl.jena.sparql.expr.ExprFunction;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.ExprVisitor;
+import com.hp.hpl.jena.sparql.expr.ExprWalker;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -28,21 +33,19 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A node that is a RDQL constraint expression that can be evaluated to true or false */
  
-abstract class ExprNode 
+abstract class ExprNodeRDQL 
     extends SimpleNode            // So it is parser generated
     implements
         Expression , Valuator     // Part of jena.graph.query.*
         , ExprRDQL                    // Part of the RDQL parser package
 {
-    public ExprNode(RDQLParser p, int i) { super(p, i); }
-    public ExprNode(int i) { super(i); }
+    public ExprNodeRDQL(RDQLParser p, int i) { super(p, i); }
+    public ExprNodeRDQL(int i) { super(i); }
 
 //    // Not a Expr (as in com.hp.hpl.jena.query.expr.Expr)
 //    public boolean isExpr() { return false ; }
 //    public com.hp.hpl.jena.query.expr.Expr getExpr() { return null ; }
 
-    
-    
     // -- The ARQ Expr interface
     
     public Expr copySubstitute(Binding binding) { return null ; }
@@ -51,7 +54,7 @@ abstract class ExprNode
 
     public Expr deepCopy() { return null ; }
 
-    public com.hp.hpl.jena.sparql.expr.NodeValue eval(Binding binding, FunctionEnv env)
+    public NodeValue eval(Binding binding, FunctionEnv env)
     { return null ; }
 
     public com.hp.hpl.jena.sparql.expr.NodeValue getConstant()
@@ -71,8 +74,7 @@ abstract class ExprNode
         throw new ARQInternalErrorException("Attempt to visit an RDQL expression") ;
     }
 
-
-    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
+    public boolean isSatisfied(Binding binding, FunctionEnv execCxt)
     {
         BindingIndex bInd = new BindingIndex(binding) ;
         VariableIndexes vi = bInd ;
@@ -122,7 +124,7 @@ abstract class ExprNode
             Expression e = getArg(i) ;
             if ( e != null )
             {
-                ExprNode ex = (ExprNode)e ;
+                ExprNodeRDQL ex = (ExprNodeRDQL)e ;
                 ex.varNamesMentioned(acc) ;
             }
         }
@@ -144,7 +146,7 @@ abstract class ExprNode
             Expression e = getArg(i) ;
             if ( e != null )
             {
-                ExprNode ex = (ExprNode)e ;
+                ExprNodeRDQL ex = (ExprNodeRDQL)e ;
                 ex.varsMentioned(acc) ;
             }
         }

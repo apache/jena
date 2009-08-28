@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Automatically generated class: Operator: LessThanOrEqual
  */
 
-public class Q_LessThanOrEqual extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_LessThanOrEqual extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

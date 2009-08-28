@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.query.Expression ;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class Q_UnaryMinus extends ExprNode implements ExprNumeric
+public class Q_UnaryMinus extends ExprNodeRDQL implements ExprNumeric
 {
     ExprRDQL expr ;
     private String printName = "unaryminus" ;

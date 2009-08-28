@@ -180,6 +180,8 @@ public class BuilderExpr
         dispatch.put(Tags.tagSameTerm, buildSameTerm) ;
         dispatch.put(Tags.tagDatatype, buildDatatype) ;
         dispatch.put(Tags.tagBound, buildBound) ;
+        dispatch.put(Tags.tagCoalesce, buildCoalesce) ;
+        dispatch.put(Tags.tagIf, buildConditional) ;
         dispatch.put(Tags.tagIRI, buildIRI) ;
         dispatch.put(Tags.tagURI, buildURI) ;
         dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
@@ -470,6 +472,27 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "bound: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_Bound(ex) ;
+        }
+    };
+
+    final protected Build buildCoalesce = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            ExprList exprs = buildExprListUntagged(list, 1) ;
+            return new E_Coalesce(exprs) ;
+        }
+    };
+
+    final protected Build buildConditional = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(4, list, "IF: wanted 3 arguments: got :"+list.size()) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            Expr ex3 = buildExpr(list.get(3)) ;
+            return new E_Conditional(ex1, ex2, ex3) ;
         }
     };
 

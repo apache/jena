@@ -8,37 +8,37 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-/** 
+/** SPARQL coalesce special form.
  * @author Andy Seaborne
  */
 
-public class E_Bound extends ExprFunction1
+public class E_Coalesce extends ExprFunctionN
 {
-    private static final String symbol = "bound" ;
-    boolean isBound = false ;
-
-    public E_Bound(Expr expr)
+    private static final String name = "coalesce" ;
+    
+    public E_Coalesce(ExprList args)
     {
-        super(expr, symbol) ;
-    }
-    
-    @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    { 
-		try {
-			expr.eval(binding, env) ;
-            return NodeValue.TRUE ;
-		} catch (VariableNotBoundException ex)
-		{
-			return NodeValue.FALSE ;
-		}
+        super(name, args) ;
     }
 
     @Override
-    public NodeValue eval(NodeValue x) { return NodeValue.TRUE ; }
+    public NodeValue eval(Binding binding, FunctionEnv env)
+    {
+        for ( Expr expr : super.getArgs() )
+        {
+            try { 
+                NodeValue nv = expr.eval(binding, env) ;
+                return nv ;
+            } catch (ExprEvalException ex) {}
+        }
+        return null ;
+    }
     
     @Override
-    public Expr copy(Expr expr) { return new E_Bound(expr) ; } 
+    protected Expr copy(ExprList newArgs)
+    {
+        return new E_Coalesce(newArgs) ;
+    }
 }
 
 /*

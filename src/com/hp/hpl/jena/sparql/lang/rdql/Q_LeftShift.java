@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Automatically generated class: Operator: LeftShift
  */
 
-public class Q_LeftShift extends ExprNode implements ExprRDQL, ExprNumeric
+public class Q_LeftShift extends ExprNodeRDQL implements ExprRDQL, ExprNumeric
 {
     ExprRDQL left ;
     ExprRDQL right ;

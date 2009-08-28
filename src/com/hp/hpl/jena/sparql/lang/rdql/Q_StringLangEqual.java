@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class Q_StringLangEqual extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_StringLangEqual extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

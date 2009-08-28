@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.lang.sparql.*;
+import com.hp.hpl.jena.sparql.lang.arq.* ;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -89,14 +89,14 @@ public class ExprUtils
     {
         try {
             Reader in = new StringReader(s) ;
-            SPARQLParser parser = new SPARQLParser(in) ;
+            ARQParser parser = new ARQParser(in) ;
             parser.setQuery(query) ;
             Expr expr = parser.Expression() ;
             
             if ( checkAllUsed )
             {
                 Token t = parser.getNextToken() ;
-                if ( t.kind != SPARQLParserTokenManager.EOF )
+                if ( t.kind != ARQParserTokenManager.EOF )
                     throw new QueryParseException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn,
                                                   t.beginLine, t.beginColumn) ;
             }

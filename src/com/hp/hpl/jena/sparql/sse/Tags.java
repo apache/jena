@@ -109,6 +109,8 @@ public class Tags
     public static final String tagSameTerm      = "sameterm" ;
     public static final String tagDatatype      = "datatype" ;
     public static final String tagBound         = "bound" ;
+    public static final String tagCoalesce      = "coalesce" ;
+    public static final String tagIf            = "if" ;
     public static final String tagIRI           = "isIRI" ;
     public static final String tagURI           = "isURI" ;
     public static final String tagIsBlank       = "isBlank" ;

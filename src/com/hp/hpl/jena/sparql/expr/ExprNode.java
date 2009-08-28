@@ -10,7 +10,6 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -26,10 +25,10 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
  
 public abstract class ExprNode implements Expr
 {
-    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
+    public boolean isSatisfied(Binding binding, FunctionEnv funcEnv)
     {
         try {
-            NodeValue v = eval(binding, execCxt) ;
+            NodeValue v = eval(binding, funcEnv) ;
             boolean b = XSDFuncOp.booleanEffectiveValue(v) ;
             return b ;
         }

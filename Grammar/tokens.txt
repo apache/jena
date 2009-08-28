@@ -85,7 +85,7 @@
 [<UNION>]      ::= 'UNION'
 [<OPTIONAL>]   ::= 'OPTIONAL'
 [<BOUND>]      ::= 'BOUND'
-[<COALESCE>]   ::= 'COLAESCE'
+[<COALESCE>]   ::= 'COALESCE'
 [<IF>]         ::= 'IF'
 [<STR>]        ::= 'STR'
 [<URI>]        ::= 'URI'

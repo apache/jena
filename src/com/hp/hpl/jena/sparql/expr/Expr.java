@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
@@ -26,10 +25,10 @@ public interface Expr
      *  Includes error propagtion and Effective Boolean Value rules.
      * 
      * @param binding   The bindings
-     * @param execCxt   ExecutionContext   
+     * @param execCxt   FunctionEnv   
      * @return  true or false
      */ 
-    public boolean isSatisfied(Binding binding, ExecutionContext execCxt) ;
+    public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
   
     // Coudl use ExprVars directly.
     public Set<Var>  getVarsMentioned() ;

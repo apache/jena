@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class Q_UnaryNot extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_UnaryNot extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     private String printName = "not";
     private String opSymbol  = "!";

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class Q_Var extends ExprNode implements ExprRDQL
+public class Q_Var extends ExprNodeRDQL implements ExprRDQL
 {
     String varName ;
     int index ;

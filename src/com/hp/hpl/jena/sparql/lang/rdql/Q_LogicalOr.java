@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Automatically generated class: Operator: LogicalOr
  */
 
-public class Q_LogicalOr extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_LogicalOr extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

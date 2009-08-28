@@ -1716,7 +1716,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
   final public Expr BuiltInCall() throws ParseException {
-                       Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;
+                       Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STR:
       jj_consume_token(STR);

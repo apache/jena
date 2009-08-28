@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Automatically generated class: Operator: GreaterThan
  */
 
-public class Q_GreaterThan extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_GreaterThan extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

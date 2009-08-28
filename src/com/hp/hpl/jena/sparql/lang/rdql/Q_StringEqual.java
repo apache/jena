@@ -11,7 +11,7 @@ import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class Q_StringEqual extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_StringEqual extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

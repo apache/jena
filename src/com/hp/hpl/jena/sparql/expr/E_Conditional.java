@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -8,41 +8,65 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-/** 
+/** IF(expr, expr, expr)
  * @author Andy Seaborne
- */
+ */ 
 
-public class E_Bound extends ExprFunction1
+public class E_Conditional extends ExprFunction
 {
-    private static final String symbol = "bound" ;
-    boolean isBound = false ;
-
-    public E_Bound(Expr expr)
+    private static final String printName = "if" ;
+    private Expr condition ;
+    private Expr thenExpr ;
+    private Expr elseExpr ;
+    
+    public E_Conditional(Expr condition, Expr thenExpr, Expr elseExpr)
     {
-        super(expr, symbol) ;
-    }
-    
-    @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    { 
-		try {
-			expr.eval(binding, env) ;
-            return NodeValue.TRUE ;
-		} catch (VariableNotBoundException ex)
-		{
-			return NodeValue.FALSE ;
-		}
+        super(printName) ;
+        this.condition = condition ;
+        this.thenExpr = thenExpr ;
+        this.elseExpr = elseExpr ;
     }
 
     @Override
-    public NodeValue eval(NodeValue x) { return NodeValue.TRUE ; }
-    
+    public Expr getArg(int i)
+    {
+        i = i-1 ;
+        if ( i == 0 ) return condition ;
+        if ( i == 1 ) return thenExpr ;
+        if ( i == 2 ) return elseExpr ;
+        return null ;
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_Bound(expr) ; } 
+    public int numArgs()
+    {
+        return 3 ;
+    }
+
+    @Override
+    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    {
+        Expr e1 = condition.copySubstitute(binding, foldConstants) ;
+        Expr e2 = thenExpr.copySubstitute(binding, foldConstants) ;
+        Expr e3 = elseExpr.copySubstitute(binding, foldConstants) ;
+        
+        return new E_Conditional(e1, e2, e3) ;
+    }
+
+    /** Special form evaluation (don't eval the arguments first) */
+    @Override
+    public NodeValue eval(Binding binding, FunctionEnv env)
+    {
+        NodeValue nv = condition.eval(binding, env) ;
+        if ( condition.isSatisfied(binding, env) )
+            return thenExpr.eval(binding, env) ;
+        else
+            return elseExpr.eval(binding, env) ;
+    }
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

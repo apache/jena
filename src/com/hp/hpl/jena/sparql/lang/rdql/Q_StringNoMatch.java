@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import java.util.regex.*;
 
-public class Q_StringNoMatch extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_StringNoMatch extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;

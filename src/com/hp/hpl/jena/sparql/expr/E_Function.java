@@ -30,20 +30,6 @@ public class E_Function extends ExprFunctionN
     private Function function = null ;
     private boolean functionBound = false ;
 
-//    public E_Function(String name, Expr arg)
-//    {
-//        super(symbol) ;
-//        this.name = name ;
-//        this.args = new ArrayList() ;
-//        args.add(arg) ;
-//    }
-    
-//    public E_Function(String functionIRI, List args)
-//    {
-//        super(name, args) ;
-//        this.functionIRI = functionIRI ; 
-//    }
-    
     public E_Function(String functionIRI, ExprList args)
     {
         super(name, args) ;

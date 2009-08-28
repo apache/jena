@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Automatically generated class: Operator: Equal
  */
 
-public class Q_Equal extends ExprNode implements ExprRDQL, ExprBoolean
+public class Q_Equal extends ExprNodeRDQL implements ExprRDQL, ExprBoolean
 {
     ExprRDQL left ;
     ExprRDQL right ;
