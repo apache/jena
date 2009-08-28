@@ -8,14 +8,7 @@ package dev;
 
 public class DevARQ
 {
-    // What's going on?
-    //   Special/documented loggers for external poking.
-    //   In TDB first, then back port.
-    
     // ==== 2.8.1 : Check:
-    // SELECT * and NOT EXISTS: don't look in the pattern for variables
-    // SELECT * { ?a :p ?v  NOT EXISTS { ?a :q ?w . FILTER(?v>23) } }
-    
     // http://jena.sourceforge.net/ARQ/arq-query-eval.html; mention graph.find approach.
     
     // ==== ARQ

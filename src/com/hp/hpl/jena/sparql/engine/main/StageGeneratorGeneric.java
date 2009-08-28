@@ -80,13 +80,13 @@ public class StageGeneratorGeneric implements StageGenerator
                                     QueryIterator input,
                                     ExecutionContext execCxt)
     {
-        boolean loggingExec = Explain.explaining(execCxt.getContext()) && Explain.logExec.isDebugEnabled() ;
-        if ( loggingExec ) Explain.logExec.debug(">>"+pattern) ;
+        
+        Explain.explain(pattern, execCxt.getContext()) ;
         
         if ( reorder != null )
         {
             pattern = reorder.reorder(pattern) ;
-            if ( loggingExec ) Explain.logExec.debug("->"+pattern) ;
+            Explain.explain("Reorder", pattern, execCxt.getContext()) ;
         }
 
         return execution.execute(pattern, input, execCxt) ; 

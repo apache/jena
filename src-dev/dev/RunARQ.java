@@ -66,7 +66,6 @@ public class RunARQ
     {
         
         arq.qexpr.main("coalesce(123)") ; System.exit(0) ;
-        
         String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
                                                 "SELECT *",
                                                 "{",
