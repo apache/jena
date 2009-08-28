@@ -116,8 +116,6 @@ public class Names
     // Current values
     public static final String currentIndexType         = IndexType.BPlusTree.getName() ;
     public static final String currentIndexFileVersion  = "v1" ;
-
-    
 }
 
 /*

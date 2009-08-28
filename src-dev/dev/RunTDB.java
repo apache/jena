@@ -27,10 +27,12 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 import dump.DumpIndex;
@@ -61,10 +63,18 @@ public class RunTDB
         Location location = new Location("tmp/DBX") ;
         location.getMetaFile().dump(System.out) ;
         System.out.println();
+        
         //DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
         // NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
         NewSetup.locationMetadata(location) ;
-        location.getMetaFile().dump(System.out) ;
+        //location.getMetaFile().dump(System.out) ;
+
+        FileSet fs = new FileSet(location, Names.indexId2Node) ;
+        ObjectFile objFile = NewSetup.makeObjectFile(fs) ;
+        System.out.println("==== Object file") ;
+        objFile.dump() ;
+        
+        
         System.exit(0) ;
         
         FileSet fileset = new FileSet("tmp", "XYZ") ;

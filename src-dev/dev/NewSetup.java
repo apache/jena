@@ -277,6 +277,17 @@ public class NewSetup implements DatasetGraphMakerTDB
         if (location.isMem()) 
             return NodeTableFactory.createMem(IndexBuilder.mem()) ;
 
+        /* Logical:
+         * # Node table.
+         * tdb.nodetable.mapping.node2id=node2id
+         * tdb.nodetable.mapping.id2node=id2node
+         * Physical:
+         * 
+         * Index file for node2id
+         * Cached direct lookup object file for id2node
+         * Encoding. 
+         */   
+        
             //?? Check the object file style for this location.
 //      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
 //      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
@@ -300,6 +311,9 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         // -- make id to node mapping -- Names.indexId2Node
         FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
+        //checkMetadata(fsIdToNode.getMetaFile(), /*Names.kNodeTableType,*/ NodeTable.type) ; 
+        
+        
         ObjectFile objectFile = makeObjectFile(fsIdToNode) ;
 
         
@@ -317,14 +331,21 @@ public class NewSetup implements DatasetGraphMakerTDB
         return nodeTable ;
     }
 
-    private static ObjectFile makeObjectFile(FileSet fsIdToNode)
+    public static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
-        String objectTableType = ObjectFile.type ;
+        /* Physical
+         * ---- An object file
+         * tdb.file.type=object
+         * tdb.file.impl=dat
+         * tdb.file.impl.version=v1
+         *
+         * tdb.object.encoding=sse 
+         */
         
-        checkOrSetMetadata(fsIdToNode.getMetaFile(), Names.kObjectTableType, objectTableType) ;
-        
-//        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
-//        checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
+        checkOrSetMetadata(fsIdToNode.getMetaFile(), "tdb.file.type", ObjectFile.type) ;
+        checkOrSetMetadata(fsIdToNode.getMetaFile(), "tdb.file.impl", "dat") ;
+        checkOrSetMetadata(fsIdToNode.getMetaFile(), "tdb.file.impl.version", "v1") ;
+        checkOrSetMetadata(fsIdToNode.getMetaFile(), "tdb.object.encoding", "sse") ;
         
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objFile = FileFactory.createObjectFileDisk(filename);

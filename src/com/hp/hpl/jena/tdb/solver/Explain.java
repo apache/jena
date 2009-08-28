@@ -53,9 +53,7 @@ Document:
     public static enum InfoLevel
     {
         /** Log each query */
-   
         INFO { @Override public int level() { return 1 ; } } ,
-        
         /** Log each query and it's algebra form after optimization */
         FINE { @Override public int level() { return 2 ; } } ,
         /** Log query, algebra and every database access (can be expensive) */
@@ -89,11 +87,11 @@ Document:
             // One line.
             // Careful - currently ARQ version needed
             IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-            iBuff.getIndentedWriter().setFlatMode(true) ;
+            //iBuff.getIndentedWriter().setFlatMode(true) ;
             query.serialize(iBuff.getIndentedWriter()) ;
             String x = iBuff.asString() ;
             
-            _explain(logExec, message, x) ;
+            _explain(logExec, message, x, true) ;
         }
     }
     
@@ -107,7 +105,7 @@ Document:
     public static void explain(String message, Op op, Context context)
     {
         if ( explaining(InfoLevel.FINE, logExec, context) )
-            _explain(logExec, message, op.toString()) ;
+            _explain(logExec, message, op.toString(), true) ;
     }
     
     // ---- BGP
@@ -120,16 +118,16 @@ Document:
     public static void explain(String message, BasicPattern bgp, Context context)
     {
         if ( explaining(InfoLevel.ALL, logExec,context) )
-            _explain(logExec, message, bgp.toString()) ;
+            _explain(logExec, message, bgp.toString(), false) ;
     }
 
     // ----
     
-    private static void _explain(Logger logger, String reason, String explanation)
+    private static void _explain(Logger logger, String reason, String explanation, boolean newlineAlways)
     {
         while ( explanation.endsWith("\n") || explanation.endsWith("\r") )
             explanation = StrUtils.chop(explanation) ;
-        if ( explanation.contains("\n") )
+        if ( newlineAlways || explanation.contains("\n") )
             explanation = reason+"\n"+explanation ;
         else
             explanation = reason+" :: "+explanation ;
