@@ -17,83 +17,76 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggSum implements AggregateFactory
+public class AggMax implements AggregateFactory
 {
-    // ---- SUM(?var)
+    // ---- MAX(?var)
     
     // ---- AggregatorFactory
     private Expr expr ;
 
-    public AggSum(Expr var) { this.expr = var ; } 
+    public AggMax(Expr var) { this.expr = var ; } 
 
     public Aggregator create()
     {
         // One per each time there is an aggregation.
-        return new AggSumWorker() ;
+        return new AggMaxWorker() ;
     }
     
-    // XQuery/XPath Functions&Operators suggests zero
-    // SQL suggests null.
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; // null 
+    private static final NodeValue noValuesToMin = null ; 
     
     // ---- Aggregator
-    class AggSumWorker extends AggregatorBase
+    class AggMaxWorker extends AggregatorBase
     {
-        public AggSumWorker()
+        public AggMaxWorker()
         {
             super() ;
         }
 
         @Override
-        public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
-        public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
+        public String toString() { return "max("+ExprUtils.fmtSPARQL(expr)+")" ; }
+        public String toPrefixString() { return "(max "+WriterExpr.asString(expr)+")" ; }
 
         @Override
         protected Accumulator createAccumulator()
         { 
-            return new AccSumVar() ;
+            return new AccMaxVar() ;
         }
         
         private final Expr getExpr() { return expr ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {
-            if ( ! ( other instanceof AggSumWorker ) )
+            if ( ! ( other instanceof AggMaxWorker ) )
                 return false ;
-            AggSumWorker agg = (AggSumWorker)other ;
+            AggMaxWorker agg = (AggMaxWorker)other ;
             return agg.getExpr().equals(getExpr()) ;
         } 
 
         
-        /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+        /* null is SQL-like. */ 
         @Override
-        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
+        public Node getValueEmpty()     { return null ; } 
     }
 
     // ---- Accumulator
-    class AccSumVar implements Accumulator
+    class AccMaxVar implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToSum ;
+        private NodeValue maxSoFar = null ;
         
-        public AccSumVar() {}
+        public AccMaxVar() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             try {
                 NodeValue nv = expr.eval(binding, functionEnv) ;
                 if ( nv.isNumber() )
-                {
-                    if ( total == noValuesToSum )
-                        total = nv ;
-                    else
-                        total = XSDFuncOp.add(nv, total) ;
-                }
+                    maxSoFar = (maxSoFar==null) ? nv : XSDFuncOp.max(maxSoFar, nv) ;
             } catch (ExprEvalException ex)
             {}
         }
         public NodeValue getValue()
-        { return total ; }
+        { return maxSoFar ; }
     }
 }
 

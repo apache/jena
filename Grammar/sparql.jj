@@ -81,7 +81,22 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Var v ; Expr expr ; }
+void SelectQuery() : { }
+{
+  Project()
+  ( DatasetClause() )*
+  WhereClause()
+  SolutionModifier()
+}
+
+void SubSelect() :{ }
+{
+  Project()
+  WhereClause()
+  SolutionModifier()
+}
+
+void Project() : { Var v ; Expr expr ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
@@ -98,9 +113,6 @@ void SelectQuery() : { Var v ; Expr expr ; }
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
   { allowAggregatesInExpressions = false ; }
-  ( DatasetClause() )*
-  WhereClause()
-  SolutionModifier()
 }
 
 void ConstructQuery() : { Template t ; }
@@ -722,7 +734,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
 
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
-
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
 
@@ -942,6 +953,9 @@ TOKEN [IGNORE_CASE] :
 
 // Expression operators
 | < BOUND: "bound" >
+| < COALESCE: "coalesce" >
+| < IF: "if" >
+
 | < STR: "str" >
 | < DTYPE: "datatype" >
 | < LANG: "lang" >

@@ -72,6 +72,7 @@
 [<STDDEV>]     ::= 'STDEV'
 
 [<SERVICE>]     ::=    'SERVICE'
+[<FETCH>]       ::=    'FETCH'
 [<EXISTS>]      ::=    'EXISTS'
 [<NOT>]         ::=    'NOT'
 [<NOTEXISTS>]   ::=    'NOT EXISTS'
@@ -84,6 +85,8 @@
 [<UNION>]      ::= 'UNION'
 [<OPTIONAL>]   ::= 'OPTIONAL'
 [<BOUND>]      ::= 'BOUND'
+[<COALESCE>]   ::= 'COLAESCE'
+[<IF>]         ::= 'IF'
 [<STR>]        ::= 'STR'
 [<URI>]        ::= 'URI'
 [<DTYPE>]      ::= 'DATATYPE'

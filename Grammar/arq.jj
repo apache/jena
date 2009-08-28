@@ -81,7 +81,22 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Var v ; Expr expr ; }
+void SelectQuery() : { }
+{
+  Project()
+  ( DatasetClause() )*
+  WhereClause()
+  SolutionModifier()
+}
+
+void SubSelect() :{ }
+{
+  Project()
+  WhereClause()
+  SolutionModifier()
+}
+
+void Project() : { Var v ; Expr expr ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
@@ -96,7 +111,7 @@ void SelectQuery() : { Var v ; Expr expr ; }
     |
       // Similar to GROUP BY - adds to a different VarExprList
       // Add BuiltInCall() & FunctionCall()
-      expr = AggExpression()
+      expr = Aggregate()
       { getQuery().addResultVar((Var)null, expr) ; }
     | expr = BuiltInCall() { getQuery().addResultVar((Var)null, expr) ; }
     | expr = FunctionCall() { getQuery().addResultVar((Var)null, expr) ; }
@@ -118,9 +133,6 @@ void SelectQuery() : { Var v ; Expr expr ; }
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
   { allowAggregatesInExpressions = false ; }
-  ( DatasetClause() )*
-  WhereClause()
-  SolutionModifier()
 }
 
 void ConstructQuery() : { Template t ; }
@@ -460,11 +472,8 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
   t = <LBRACE>
 
   (
-    {
-      startSubSelect() ; }
-    // Optional prologue
-    Prologue()
-    SelectQuery()
+    { startSubSelect() ; }
+    SubSelect()
     {
       Query q = endSubSelect(t.beginLine, t.beginColumn) ;
       el = new ElementSubQuery(q) ;
@@ -559,6 +568,7 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
   <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
+
 
 
 Element ServiceGraphPattern() : { Element el ; Node n ; }
@@ -1136,7 +1146,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = BooleanLiteral() { return asExpr(gn) ; }
   | gn = Var() { return asExpr(gn) ; }
 
-  | expr = AggExpression() { return expr ; }
+  | expr = Aggregate() { return expr ; }
 
   )
 }
@@ -1165,7 +1175,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
 
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
-
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
 
@@ -1217,74 +1226,53 @@ Expr NotExistsFunc() : { Element el ; }
    { return createExprNotExists(el) ; }
 }
 
-Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
-{
-    aggFactory = Aggregate()
-    { expr = getQuery().allocAggregate(aggFactory) ;
-      return expr ; }
-}
 
-AggregateFactory Aggregate() : { AggregateFactory agg ;
-                                 boolean distinct = false ;
-                                 Var v ; Token t ; }
+Expr Aggregate() : { AggregateFactory agg ;
+                     boolean distinct = false ;
+                     Expr expr ;
+                     Var v ; Token t ; }
 {
-   ( agg = AggregateCount() | agg = AggregateSum() )
-   { return agg ; }
-}
-
-AggregateFactory AggregateCount() : { AggregateFactory agg ;
-                                 boolean distinct = false ;
-                                 Var v ; Token t ; }
-{
-    t = <COUNT> <LPAREN>
-    {
-          if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                               t.beginLine, t.beginColumn) ;
-    }
-
-    ( <STAR> { agg = AggCount.get() ; }
-    | v = Var() { agg = new AggCountVar(v) ; }
-    | <DISTINCT>
-      ( <STAR> { agg = AggCountDistinct.get() ; }
-      | v = Var() { agg = new AggCountVarDistinct(v) ; }
-      )
-    )
+   ( t = <COUNT> <LPAREN>
+        ( <STAR> { agg = AggCount.get() ; }
+        | v = Var() { agg = new AggCountVar(v) ; }
+        | <DISTINCT>
+          ( <STAR> { agg = AggCountDistinct.get() ; }
+          | v = Var() { agg = new AggCountVarDistinct(v) ; }
+          )
+        )
     <RPAREN>
-    { return agg ; }
 
-// #if 0
-//   ( <AGG> <LPAREN> IRIref()
-//     { args = new ExprList() ; }
-//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-//     <RPAREN>
-//   |  <MIN>  BrackettedExpression()
-//   |  <MAX>  BrackettedExpression()
-//   |  <SUM>  BrackettedExpression()
-//   |  <AVG>  BrackettedExpression()
-//   |  <STDDEV> BrackettedExpression()
-// #endif
-//   )
-}
-
-AggregateFactory AggregateSum() :
-     { AggregateFactory agg ; Expr expr ; Token t ; }
-{
-   t = <SUM> <LPAREN>
-    {
-        if ( ! allowAggregatesInExpressions )
+   | t = <SUM> <LPAREN> expr = Expression() <RPAREN> { agg = new AggSum(expr) ; }
+   | t = <MIN> <LPAREN> expr = Expression() <RPAREN> { agg = new AggMin(expr) ; }
+   | t = <MAX> <LPAREN> expr = Expression() <RPAREN> { agg = new AggMax(expr) ; }
+   | t = <AVG> <LPAREN> expr = Expression() <RPAREN> { agg = new AggAvg(expr) ; }
+   )
+   {
+     if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
-                               t.beginLine, t.beginColumn) ;
-        allowAggregatesInExpressions = false ;
-    }
-     expr = Expression() <RPAREN>
-    {
-        allowAggregatesInExpressions = true ;
-        agg = new AggSum(expr) ;
-        return agg ;
-    }
+                                 t.beginLine, t.beginColumn) ;
+   }
+
+   { expr = getQuery().allocAggregate(agg) ;
+     return expr ; }
 }
 
+
+// AggregateFactory AggregateCount() : { AggregateFactory agg ;
+//                                       boolean distinct = false ;
+//                                       Var v ; Token t ; }
+// {
+//     t = <COUNT> <LPAREN> 
+//     ( <STAR>        { agg = AggCount.get() ; }
+//     | v = Var()     { agg = new AggCountVar(v) ; }
+//     | <DISTINCT> 
+//       ( <STAR>      { agg = AggCountDistinct.get() ; }
+//       | v = Var()   { agg = new AggCountVarDistinct(v) ; }
+//       )
+//     )
+//     <RPAREN>
+//     { return agg ; }
+// }
 
 
 
@@ -1494,6 +1482,9 @@ TOKEN [IGNORE_CASE] :
 
 // Expression operators
 | < BOUND: "bound" >
+| < COALESCE: "coalesce" >
+| < IF: "if" >
+
 | < STR: "str" >
 | < DTYPE: "datatype" >
 | < LANG: "lang" >

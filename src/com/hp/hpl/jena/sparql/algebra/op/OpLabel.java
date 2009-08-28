@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpLabel extends Op1
 {
-    // Beware : while this is a Op1, it have no sub operation.
+    // Beware : while this is a Op1, it might have no sub operation.
     // (label "foo") and (label "foo" (other ...)) are legal.
     // OpNull?
     

@@ -66,6 +66,8 @@ TOKENS
 | <UNION: "union">
 | <FILTER: "filter">
 | <BOUND: "bound">
+| <COALESCE: "coalesce">
+| <IF: "if">
 | <STR: "str">
 | <DTYPE: "datatype">
 | <LANG: "lang">
@@ -158,7 +160,9 @@ NON-TERMINALS
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses
-	SelectQuery	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) )+ | <STAR> ) ( DatasetClause )* WhereClause SolutionModifier
+	SelectQuery	:=	Project ( DatasetClause )* WhereClause SolutionModifier
+	SubSelect	:=	Project WhereClause SolutionModifier
+	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause

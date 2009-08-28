@@ -1,7 +1,6 @@
 PREFIX : <http://example/>
-SELECT *
+SELECT (min(?v) as ?min) (max(?v) as ?max) (sum(?v) as ?sum) (count(?v) as ?count)
 { 
-    { ?a :p ?v . } UNION { SELECT * { ?s ?p ?o } LIMIT 1 }
-    
-#    NOT EXISTS { ?a :q ?w . FILTER(?v > 23) }
+  ?x :p ?v 
 }
+GROUP BY ?x

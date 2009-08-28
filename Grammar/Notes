@@ -33,7 +33,7 @@ Run "jj2tokens sparql.jj > tokens.txt"
 Manually tidy, noting which to inline
 
 # this knowns which files to use
-jj2html > X.html 
+jj2html arq.txt tokens.txt 
 
 ============================
 

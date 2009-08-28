@@ -17,29 +17,29 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class AggSum implements AggregateFactory
+public class AggAvg implements AggregateFactory
 {
-    // ---- SUM(?var)
+    // ---- AVG(?var)
     
     // ---- AggregatorFactory
     private Expr expr ;
 
-    public AggSum(Expr var) { this.expr = var ; } 
+    public AggAvg(Expr var) { this.expr = var ; } 
 
     public Aggregator create()
     {
         // One per each time there is an aggregation.
-        return new AggSumWorker() ;
+        return new AggAvgWorker() ;
     }
     
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; // null 
+    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
     
     // ---- Aggregator
-    class AggSumWorker extends AggregatorBase
+    class AggAvgWorker extends AggregatorBase
     {
-        public AggSumWorker()
+        public AggAvgWorker()
         {
             super() ;
         }
@@ -51,32 +51,34 @@ public class AggSum implements AggregateFactory
         @Override
         protected Accumulator createAccumulator()
         { 
-            return new AccSumVar() ;
+            return new AccAvgVar() ;
         }
         
         private final Expr getExpr() { return expr ; }
         
         public boolean equalsAsExpr(Aggregator other)
         {
-            if ( ! ( other instanceof AggSumWorker ) )
+            if ( ! ( other instanceof AggAvgWorker ) )
                 return false ;
-            AggSumWorker agg = (AggSumWorker)other ;
+            AggAvgWorker agg = (AggAvgWorker)other ;
             return agg.getExpr().equals(getExpr()) ;
         } 
 
         
         /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
         @Override
-        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
+        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
     }
 
     // ---- Accumulator
-    class AccSumVar implements Accumulator
+    class AccAvgVar implements Accumulator
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToSum ;
+        private NodeValue total = noValuesToAvg ;
+        private int count = 0 ;
         
-        public AccSumVar() {}
+        
+        public AccAvgVar() {}
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
@@ -84,7 +86,7 @@ public class AggSum implements AggregateFactory
                 NodeValue nv = expr.eval(binding, functionEnv) ;
                 if ( nv.isNumber() )
                 {
-                    if ( total == noValuesToSum )
+                    if ( total == noValuesToAvg )
                         total = nv ;
                     else
                         total = XSDFuncOp.add(nv, total) ;
@@ -93,7 +95,11 @@ public class AggSum implements AggregateFactory
             {}
         }
         public NodeValue getValue()
-        { return total ; }
+        {
+            if ( count == 0 ) return noValuesToAvg ;
+            NodeValue nvCount = NodeValue.makeInteger(count) ;
+            return XSDFuncOp.divide(total, nvCount) ;
+        }
     }
 }
 
