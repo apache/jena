@@ -27,15 +27,15 @@
   <dependencies>
     <!-- rev="latest.integration" -->
     
-    <!-- We need the "tests" classifier but so we need to name all the bits we want. -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration">
+    <!-- We need the "tests" classifier but we then need to name all the bits we want. -->
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.1-SNAPSHOT">
       <artifact name="arq"/>
       <artifact name="arq" mvn:classifier="tests"/>
       <artifact name="arq" mvn:classifier="javadoc"/>
       <artifact name="arq" mvn:classifier="sources"/>
       <artifact name="arq" mvn:classifier="test-sources"/>
       <!--<artifact name="arq" ext="zip" mvn:classifier="tests"/>-->
-    </dependency>
+    </dependency>    
 
     <!-- Explicit - gets the javadoc and sources : As Jena depends on ARQ there is a (safe) conflict -->
     <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
