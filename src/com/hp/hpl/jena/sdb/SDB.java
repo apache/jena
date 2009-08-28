@@ -78,8 +78,6 @@ public class SDB
         // (It's better if there are no dependences but ...)
         initialized = true ;
         
-        Metadata.setMetadata("com/hp/hpl/jena/sdb/sdb-properties.xml") ;
-        
         // Better not to break up BGPs too much.
         ARQ.getContext().set(ARQ.filterPlacement, false) ;
         
@@ -134,6 +132,9 @@ public class SDB
 
     // ----------------------------------
     
+    static private String metadataLocation = "com/hp/hpl/jena/sdb/sdb-properties.xml" ;
+    static private Metadata metadata = new Metadata(metadataLocation) ;
+    
     /** The root package name for SDB */   
     public static final String PATH = "com.hp.hpl.jena.sdb";
    
@@ -141,19 +142,10 @@ public class SDB
     public static final String NAME = "SDB";
    
     /** The full name of the current ARQ version */   
-    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
-   
-//    /** The major version number for this release of SDB (ie '2' for SDB 2.0) */
-//    public static final String MAJOR_VERSION = "@version-major@";
-//   
-//    /** The minor version number for this release of SDB (ie '0' for SDB 2.0) */
-//    public static final String MINOR_VERSION = "@version-minor@";
-//   
-//    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
-//    public static final String VERSION_STATUS = "@version-status@";
+    public static final String VERSION = metadata.get(PATH+".version", "unknown") ;
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
+    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 /*
