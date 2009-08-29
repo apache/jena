@@ -162,7 +162,7 @@ public class FactoryGraphTDB
     public static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
-        return new TripleTable(indexes, indexRecordTripleFactory, nodeTable, location) ;
+        return new TripleTable(indexes, nodeTable, location) ;
     }
 
     // ---- All creation happens here
@@ -179,7 +179,7 @@ public class FactoryGraphTDB
                                              Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;
-        return new QuadTable(indexes, indexRecordQuadFactory, nodeTable, location) ;
+        return new QuadTable(indexes, nodeTable, location) ;
     }
     
     // ---- All creation happens here

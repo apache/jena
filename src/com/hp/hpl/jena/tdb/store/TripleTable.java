@@ -7,25 +7,21 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import atlas.iterator.NullIterator;
-import atlas.iterator.Transform;
-import atlas.lib.Tuple;
+import atlas.iterator.NullIterator ;
+import atlas.iterator.Transform ;
+import atlas.lib.Tuple ;
 
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.lib.TupleLib ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
 
 /** TripleTable - a collection of TupleIndexes for 3-tuples
@@ -39,7 +35,7 @@ public class TripleTable implements Sync, Closeable
 {
     final NodeTupleTable table ;
     
-    public TripleTable(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
+    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, Location location)
     {
         table = new NodeTupleTable(3, indexes, nodeTable) ;
     }

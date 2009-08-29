@@ -6,36 +6,44 @@
 
 package dev;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import junit.framework.TestCase;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import atlas.junit.TextListener2;
-import atlas.logging.Log;
+import junit.framework.TestCase ;
+import org.junit.runner.JUnitCore ;
+import org.junit.runner.Result ;
+import atlas.junit.TextListener2 ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.tdb.TC_TDB;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TC_TDB ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
-import dump.DumpIndex;
+import dump.DumpIndex ;
 
 public class RunTDB
 {
@@ -49,7 +57,6 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-
     public static void main(String ... args) throws IOException
     {
         //tdbquery("--tdb=tdb.ttl", "--explain", "--file=Q.rq") ;
@@ -60,25 +67,67 @@ public class RunTDB
             System.exit(0) ;
         }
         
+        setup() ;
+    }
+        
+    // How to test??
+    
+    public static void setup()
+    {
         Location location = new Location("tmp/DBX") ;
-        location.getMetaFile().dump(System.out) ;
-        System.out.println();
+//        location.getMetaFile().dump(System.out) ;
+//        System.out.println();
         
         //DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
         // NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id, Names.indexId2Node) ;
         NewSetup.locationMetadata(location) ;
         //location.getMetaFile().dump(System.out) ;
 
-        FileSet fs = new FileSet(location, Names.indexId2Node) ;
-        ObjectFile objFile = NewSetup.makeObjectFile(fs) ;
-        System.out.println("==== Object file") ;
-        objFile.dump() ;
         
+        if ( true )
+        {
+            NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
+            
+            divider() ;
+            TripleTable tt = NewSetup.makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
+            Iterator<Triple> iter1 = tt.find(null, null, null) ;
+            for ( ; iter1.hasNext() ; )
+                System.out.println(iter1.next()) ;
+
+            divider() ;
+
+            QuadTable qt = NewSetup.makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
+            Iterator<Quad> iter2 = qt.find(null, null, null, null ) ;
+            for ( ; iter2.hasNext() ; )
+                System.out.println(iter2.next()) ;
+            divider() ;
+            
+            
+        }
         
-        System.exit(0) ;
+        if ( false )
+        {
+            NodeTable nodeTable = NewSetup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
+            //NodeTable nodeTable = NewSetup.makeNodeTable(location, "N2ID" ,"ID2N") ;
+            Node n = SSE.parseNode("<http://test/ppp>") ;
+            NodeId nid = nodeTable.getAllocateNodeId(n) ;
+            System.out.println(nid) ;
+            nid = nodeTable.getAllocateNodeId(n) ;
+            System.out.println(nid) ;
+            nid = nodeTable.getAllocateNodeId(n) ;
+            nid = nodeTable.getAllocateNodeId(SSE.parseNode("1812")) ;
+            System.out.println(nid) ;
+        }
         
-        FileSet fileset = new FileSet("tmp", "XYZ") ;
-        NewSetup.createRangeIndex(fileset, new RecordFactory(24,0)) ;
+        if ( false )
+        {
+            FileSet fs = new FileSet(location, Names.indexId2Node) ;
+            ObjectFile objFile = NewSetup.makeObjectFile(fs) ;
+            System.out.println("==== Object file") ;
+            objFile.dump() ;
+        }
+        
+       
         System.exit(0) ;
     }
    
