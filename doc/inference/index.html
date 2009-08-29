@@ -1251,7 +1251,7 @@ class B = cardinality(P,1)</pre>
           or   [ <i>bare-rule</i> ]<br>	      or   [ ruleName : <i>bare-rule</i> ]
 
 <i>bare-rule</i> :=   <i>term</i>, ... <i>term</i> -&gt; <i>hterm</i>, ... <i>hterm</i>    // forward rule
-          or   <i>term</i>, ... <i>term</i> &lt;- <i>term</i>, ... <i>term   </i> // backward rule<i>
+          or   <i>bhterm</i> &lt;- <i>term</i>, ... <i>term   </i> // backward rule<i>
 
 hterm     :=   term
           </i>or   [<i> bare-rule </i>]<i>
@@ -1259,6 +1259,8 @@ hterm     :=   term
 term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple pattern
           or   (<i>node</i>, <i>node</i>, <i>functor</i>)        // extended triple pattern
           or   builtin(<i>node</i>, ... <i>node</i>)      // invoke procedural primitive
+
+<i>bhterm</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple pattern
 
 <i>functor</i>   :=   functorName(<i>node</i>, ... <i>node</i>)  // structured literal
 
@@ -1412,7 +1414,7 @@ triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
 <p>where &quot;triple/3&quot; is a hidden implicit predicate. Internally, this 
   transformation is not actually used, instead the rules are implemented directly.</p>
 <p>In addition, all the data in the raw model supplied to the engine is treated 
-  as ifit were a set of <code>triple(s,p,o)</code> facts which are prepended to 
+  as if it were a set of <code>triple(s,p,o)</code> facts which are prepended to 
   the front of the rule set. Again, the implementation does not actually work 
   that way but consults the source graph, with all its storage and indexing capabilities, 
   directly.</p>
@@ -1451,6 +1453,9 @@ triple(s1, p1, o1) :- triple(sb1, pb1, ob1), ...
 <p>When the inference Model is updated by adding or removing statements all tabled 
   results are discarded by an internal <code>reset()</code> and the next query 
   will rebuild the tabled results from scratch. <br>
+</p>
+<p>Note that backward rules can only have one consequent so that if writing rules that 
+might be run in either backward or forward mode then they should be limited to a single consequent each.
 </p>
 <p>[<a href="#rules">Rule index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
@@ -2062,7 +2067,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.39 2009-02-05 15:49:47 der Exp $</i>
+  Last modification: $Id: index.html,v 1.40 2009-08-29 12:26:19 der Exp $</i>
 </p>
 </body>
 </html>
