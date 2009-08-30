@@ -74,10 +74,15 @@ public class NewSetup implements DatasetGraphMakerTDB
      */
     
     // Check flushing of metafiles.
+    
+    // WRONG: makeNodeTable -- uses keys but used in nodetable and prefixes table.
+    
     // Sortout metadataLocation vs checkOrSetMetadata/getOPrSetDefault
     // Statics are a cascade of workers (only call directly with care!)
     
     // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
+    
+    
     // TODO Tests.
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
     // TODO Check everywhere else for non-DI constructors.
@@ -293,10 +298,16 @@ public class NewSetup implements DatasetGraphMakerTDB
         MetaFile metafile = location.getMetaFile() ;
     
         // The index using for Graph+Prefix => URI
-        String indexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
+        
+        // UGG 
+        
+        String XXindexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
         String primary = getOrSetDefault(metafile, "tdb.prefixes.primary", Names.primaryIndexPrefix) ;
         String x = getOrSetDefault(metafile, "tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
         String indexes[] = x.split(",") ;
+        
+        // WRONG - indexes[] become the file names
+        //  makeTupleIndexes(location, primary, indexes, filenames[]) ;
         
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes) ;
         if ( prefixIndexes.length != indexes.length )
