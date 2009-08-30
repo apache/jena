@@ -173,6 +173,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             nodeTupleTable.deleteRow(g, p, iter.next().get(2)) ;
     }
 
+    public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
+    
     /** Return a PrefixMapping for the unamed graph */
     //@Override
     public PrefixMapping getPrefixMapping()

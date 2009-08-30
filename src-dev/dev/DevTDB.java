@@ -12,6 +12,7 @@ public class DevTDB
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
+    // In prefix storage, the default graph is the graph name "" (problem with it's explicit name)? 
     
     // ** NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.

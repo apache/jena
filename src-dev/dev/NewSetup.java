@@ -8,7 +8,7 @@ package dev ;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec ;
 import static com.hp.hpl.jena.tdb.TDB.logInfo ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.* ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -46,6 +46,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
@@ -72,7 +73,9 @@ public class NewSetup implements DatasetGraphMakerTDB
      * for changes both in implementation technology and in overall design. 
      */
     
-    // Flushing of metefiles.
+    // Check flushing of metafiles.
+    // Sortout metadataLocation vs checkOrSetMetadata/getOPrSetDefault
+    // Statics are a cascade of workers (only call directly with care!)
     
     // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
     // TODO Tests.
@@ -118,6 +121,10 @@ public class NewSetup implements DatasetGraphMakerTDB
          * tdb.layout=v1                    # "version" for the design)
          * tdb.type=standalone              # --> nodes-and-triples/quads
          * tdb.created=                     # Informational timestamp of creation.
+         * tdb.nodeid.size=8                # Bytes (SizeOfNodeId)
+         * tdb.node.hashsize=16             # Bytes (LenNodeHash)
+         * tdb.record.triple=24             # LenIndexTripleRecord
+         * tdb.record.quad=32               # LenIndexQuadRecord
          * 
          * # Triple table
          * # Changing the indexes does not automatically change the indexing on the dataset.
@@ -131,8 +138,16 @@ public class NewSetup implements DatasetGraphMakerTDB
          * # Node table.
          * tdb.nodetable.mapping.node2id=node2id
          * tdb.nodetable.mapping.id2node=id2node
+         * tdb.nodetable.mapping.data=nodes
          *
          * # Prefixes.
+         *
+         * tdb.prefixes.index.file=prefixIdx
+         * tdb.prefixes.indexes=GPU
+         * tdb.prefixes.primary=GPU
+         * 
+         * tdb.prefixes.nodetable.mapping.node2id=prefixes
+         * tdb.prefixes.nodetable.mapping.id2node=id2prefix
          *
          * and then for each file we have the concrete parameters for the file:
          * 
@@ -145,7 +160,7 @@ public class NewSetup implements DatasetGraphMakerTDB
          * tdb.index.name=SPO
          * tdb.index.order=SPO
          *
-         * tdb.bpt.record=24,0
+         * tdb.bpt.record=24,0 or 32,0
          * (tdb.bpt.order=)
          * tdb.bpt.blksize=
          * 
@@ -156,10 +171,13 @@ public class NewSetup implements DatasetGraphMakerTDB
          * tdb.file.impl.version=v1
          *
          * tdb.object.encoding=sse
+         * 
          */ 
         
         // Check and set defaults.
         // On return, can just read the metadata key/value. 
+        
+        
         MetaFile metafile = locationMetadata(location) ;
         
         // Only support this so far.
@@ -168,6 +186,14 @@ public class NewSetup implements DatasetGraphMakerTDB
             
         if ( ! propertyEquals(metafile, "tdb.type", "standalone") )
             error("Not marked as a standalone type: "+metafile.getProperty("tdb.type")) ;
+
+        // Check expectations.
+        
+        checkOrSetMetadata(metafile, "tdb.nodeid.size", Integer.toString(SizeOfNodeId)) ;
+        checkOrSetMetadata(metafile, "tdb.node.hashsize", Integer.toString(LenNodeHash)) ;
+        
+        checkOrSetMetadata(metafile, "tdb.record.triple", Integer.toString(LenIndexTripleRecord)) ;
+        checkOrSetMetadata(metafile, "tdb.record.quad",   Integer.toString(LenIndexQuadRecord)) ;
         
         // ---------------------
         
@@ -177,6 +203,9 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         String indexNode2Id = get(metafile, "tdb.nodetable.mapping.node2id") ;
         String indexId2Node = get(metafile, "tdb.nodetable.mapping.id2node") ;
+        
+        String nodesdata = get(metafile, "tdb.nodetable.mapping.data") ;
+        
         log.info("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
         NodeTable nodeTable = makeNodeTable(location, indexNode2Id, indexId2Node) ;
@@ -184,20 +213,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         TripleTable tripleTable = makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
         QuadTable quadTable = makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
 
-        
-//        // SWEEP
-//        IndexBuilder dftIndexBuilder = IndexBuilder.get() ;
-//
-//        TupleIndex tripleIndexes[] = _indexes(dftIndexBuilder, location, indexRecordTripleFactory,
-//                                             Names.primaryIndexTriples, Names.tripleIndexes) ;
-//        TripleTable tripleTable = new TripleTable(tripleIndexes, indexRecordTripleFactory, nodeTable, location) ;
-//
-//        TupleIndex quadIndexes[] = _indexes(dftIndexBuilder, location, indexRecordQuadFactory, Names.primaryIndexQuads,
-//                                           Names.quadIndexes) ;
-//        QuadTable quadTable = new QuadTable(quadIndexes, indexRecordQuadFactory, nodeTable, location) ; ;
-
-        // ---- Prefixes
-        DatasetPrefixStorage prefixes = null ; //_makePrefixes(dftIndexBuilder, location) ;
+        DatasetPrefixStorage prefixes = makePrefixes(location) ;
 
         // ---- Create the DatasetGraph object
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location) ;
@@ -246,6 +262,58 @@ public class NewSetup implements DatasetGraphMakerTDB
     }
 
 
+    public static DatasetPrefixStorage makePrefixes(Location location)
+    {
+        /*
+         * tdb.prefixes.index.file=prefixIdx
+         * tdb.prefixes.indexes=GPU
+         * tdb.prefixes.primary=GPU
+         * 
+         * tdb.prefixes.nodetable.mapping.node2id=prefixes
+         * tdb.prefixes.nodetable.mapping.id2node=id2prefix
+    
+         * 
+         * Logical:
+         * 
+         * tdb.prefixes.index.file=prefixIdx
+         * tdb.prefixes.index=GPU
+         * tdb.prefixes.nodetable.mapping.node2id=prefixes
+         * tdb.prefixes.nodetable.mapping.id2node=id2prefix
+    
+         * 
+         * Physical:
+         * 
+         * It's a node table and an index (rangeindex)
+         * 
+         */
+        
+
+        // Some of this is also in locationMetadata.
+        
+        MetaFile metafile = location.getMetaFile() ;
+    
+        // The index using for Graph+Prefix => URI
+        String indexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
+        String primary = getOrSetDefault(metafile, "tdb.prefixes.primary", Names.primaryIndexPrefix) ;
+        String x = getOrSetDefault(metafile, "tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
+        String indexes[] = x.split(",") ;
+        
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        if ( prefixIndexes.length != indexes.length )
+            error("Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+        
+        // The nodetable.
+        String pnNode2Id = getOrSetDefault(metafile, "tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
+        String pnId2Node = getOrSetDefault(metafile, "tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
+        
+        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node)  ;
+        
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes) ; 
+        
+        log.info("Prefixes: "+x) ;
+        
+        return prefixes ;
+    }
 
     public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs)
     {
@@ -285,6 +353,11 @@ public class NewSetup implements DatasetGraphMakerTDB
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexName), rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
+    }
+    
+    private static Index makeIndex(Location location, String indexName, int dftKeyLength)
+    {
+        return makeRangeIndex(location, indexName, dftKeyLength) ;
     }
     
     private static RangeIndex makeRangeIndex(Location location, String indexName, int dftKeyLength)
@@ -336,7 +409,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         if ( order != calcOrder )
             error("Wrong order (" + order + "), calculated = "+calcOrder) ;
 
-        RangeIndex rIndex =  _createBPTree(fs, order, blkSize, recordFactory) ;
+        RangeIndex rIndex =  createBPTree(fs, order, blkSize, recordFactory) ;
         metafile.flush() ;
         return rIndex ;
     }
@@ -392,10 +465,7 @@ public class NewSetup implements DatasetGraphMakerTDB
          *    Encoding. 
          */   
         
-            //?? Check the object file style for this location.
-//      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableType, NodeTable.type) ; 
-//      checkMetadata(fsIdToNode.getMetaFile(), Names.kNodeTableLayout, NodeTable.layout) ;
-        
+        // WRONG
         String nodeTableType = location.getMetaFile().getProperty(Names.kNodeTableType) ;
 
         // NodeTableBuilder abstraction?
@@ -407,6 +477,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         }
         else
         {
+            // WRONG
             // No type given.  Fill it in.
             location.getMetaFile().setProperty(Names.kNodeTableType, NodeTable.type) ;
             location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTable.layout) ;
@@ -421,6 +492,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         // -- make node to id mapping -- Names.indexNode2Id
         // Make index of id to node (data table): Names.nodeTable
 
+        // WRONG - make index.
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         Index nodeToId = makeBPlusTree(fsNodeToId, nodeRecordFactory.keyLength(), nodeRecordFactory.valueLength()) ;
         
@@ -455,15 +527,6 @@ public class NewSetup implements DatasetGraphMakerTDB
         return objFile ;
     }
 
-    private static DatasetPrefixStorage _makePrefixes(IndexBuilder indexBuilder, Location location)
-    {
-//        TupleIndex prefixIndexes[] = _indexes(indexBuilder, location, prefixNodeFactory, 
-//                                             Names.primaryIndexPrefix, Names.prefixIndexes) ;
-//        NodeTable nodeTable =  makeNodeTable(location, Names.prefixNode2Id, Names.prefixId2Node) ;
-//        return new DatasetPrefixesTDB(prefixIndexes, nodeTable) ;
-        return null ;
-    }
-    
     /** Check and set default for the dataset design */
     public static MetaFile locationMetadata(Location location)
     {
@@ -531,7 +594,15 @@ public class NewSetup implements DatasetGraphMakerTDB
             
             ensurePropertySet(metafile, "tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
             ensurePropertySet(metafile, "tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
+            
+            ensurePropertySet(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
+            ensurePropertySet(metafile, "tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
+            ensurePropertySet(metafile, "tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
+            
         }
+        else
+            error("tdb.layout: expected v1") ;
+            
         
         metafile.flush() ;
         return metafile ; 
@@ -581,6 +652,35 @@ public class NewSetup implements DatasetGraphMakerTDB
 //        
 //        return createRangeIndex(fileset, idxBuilder, blockSize, recordFactory) ;
 //    }
+
+    public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
+                                          RecordFactory factory)
+    {
+        // ---- Checking
+        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specificied") ;
+        if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+        if (blockSize >= 0 && order >= 0)
+        {
+            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
+                                                                    + order2) ;
+        }
+    
+        // Iffy - does not allow for slop.
+        if (blockSize < 0 && order >= 0)
+        {
+            // Only in-memory.
+            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+        }
+    
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        String fnNodes = fileset.filename(Names.bptExt1) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.createFile(fnNodes, blockSize) ;
+        
+        String fnRecords = fileset.filename(Names.bptExt2) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.createFile(fnRecords, blockSize) ;
+        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+    }
 
     // From TDBFactoryGraph
     private static ReorderTransformation chooseOptimizer(Location location)
@@ -730,58 +830,6 @@ public class NewSetup implements DatasetGraphMakerTDB
     {
         log.error(msg) ;
         throw new TDBException(msg) ;
-    }
-    
-    public static RangeIndex _createBPTree(FileSet fileset, int order, int blockSize,
-                                          RecordFactory factory)
-    {
-        // ---- Checking
-        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specificied") ;
-        if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
-        if (blockSize >= 0 && order >= 0)
-        {
-            int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
-            if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
-                                                                    + order2) ;
-        }
-
-        // Iffy - does not allow for slop.
-        if (blockSize < 0 && order >= 0)
-        {
-            // Only in-memory.
-            blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
-        }
-
-        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        String fnNodes = fileset.filename(Names.bptExt1) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.createFile(fnNodes, blockSize) ;
-        
-        String fnRecords = fileset.filename(Names.bptExt2) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.createFile(fnRecords, blockSize) ;
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
-    }
-
-//    static private RangeIndex createBPTreeRangeIndex(FileSet fileset, MetaFile metafile, int blockSize,
-//                                                  RecordFactory factory)
-//    {
-//        int order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
-//        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-//
-//        metafile.setProperty(Names.kIndexType, Names.currentIndexType) ;
-//        metafile.setProperty(Names.kIndexFileLayout, Names.currentIndexFileVersion) ;
-//        metafile.setProperty(BPlusTreeParams.ParamBlockSize, blockSize) ;
-//
-//        params.addToMetaData(metafile) ;
-//        metafile.flush() ;
-//        return IndexBuilder.get().newRangeIndex(fileset, factory) ;
-//    }
-
-    static private NodeTable createNodeTable(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize,
-                                             int idToNodeCacheSize)
-    {
-        // Check metadata.
-
-        return new NodeTableBase(nodeToId, objectFile, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 }
 /*
