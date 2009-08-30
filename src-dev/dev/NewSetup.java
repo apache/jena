@@ -76,12 +76,11 @@ public class NewSetup implements DatasetGraphMakerTDB
     // Check flushing of metafiles.
     
     // WRONG: makeNodeTable -- uses keys but used in nodetable and prefixes table.
+    // NOW CREATES GPU.idn/GPU.dat
+    // XXX Add argument to makeTupleIndexes for index names.
     
-    // Sortout metadataLocation vs checkOrSetMetadata/getOPrSetDefault
-    // Statics are a cascade of workers (only call directly with care!)
-    
-    // Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
-    
+    // Sort out metadataLocation vs checkOrSetMetadata/getOPrSetDefault
+    // Naming of statics: Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
     
     // TODO Tests.
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
@@ -239,7 +238,7 @@ public class NewSetup implements DatasetGraphMakerTDB
             error("Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.info("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
-        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
             error("Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, location) ;
@@ -258,7 +257,7 @@ public class NewSetup implements DatasetGraphMakerTDB
             error("Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.info("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
-        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
             error("Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, location) ;
@@ -301,7 +300,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         // UGG 
         
-        String XXindexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
+        String indexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
         String primary = getOrSetDefault(metafile, "tdb.prefixes.primary", Names.primaryIndexPrefix) ;
         String x = getOrSetDefault(metafile, "tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
         String indexes[] = x.split(",") ;
@@ -309,7 +308,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         // WRONG - indexes[] become the file names
         //  makeTupleIndexes(location, primary, indexes, filenames[]) ;
         
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes) ;
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
             error("Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
@@ -326,7 +325,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         return prefixes ;
     }
 
-    public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs)
+    public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs, String[] filenames)
     {
         if ( primary.length() != 3 && primary.length() != 4 )
             error("Bad primary key length: "+primary.length()) ;
@@ -334,15 +333,12 @@ public class NewSetup implements DatasetGraphMakerTDB
         int indexRecordLen = primary.length()*NodeId.SIZE ;
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         for (int i = 0 ; i < indexes.length ; i++)
-            indexes[i] = makeTupleIndex(location, primary, descs[i], indexRecordLen) ;
+            indexes[i] = makeTupleIndex(location, primary, descs[i], filenames[i], indexRecordLen) ;
         return indexes ;
     }
     
-    private static TupleIndex makeTupleIndex(Location location, String primary, String indexName, int keyLength)
+    private static TupleIndex makeTupleIndex(Location location, String primary, String indexOrder, String indexName, int keyLength)
     {
-        if ( primary.length() != indexName.length() )
-            error("Bad index name length: primary="+primary+", index="+indexName) ;
-        
         /*
         * tdb.file.type=rangeindex        # Service provided.
         * tdb.file.impl=bplustree         # Implementation
@@ -362,7 +358,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         }
         
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength) ;
-        TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexName), rIndex.getRecordFactory(), rIndex) ;
+        TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
     }
     

@@ -17,30 +17,26 @@ import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
 import atlas.junit.TextListener2 ;
-import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -98,31 +94,37 @@ public class RunTDB
             DatasetPrefixStorage dps = dsg.getPrefixes() ;
             DatasetPrefixesTDB x = (DatasetPrefixesTDB)dps ;
             
-            dps.getPrefixMapping().setNsPrefix("", "http://example/blank") ;
-            //TDB.sync(x) ;
-            TDB.sync(dsg) ;
-                                               
-             
+//            System.out.println("Dump prefix tuple table") ;
+//            Iterator<Tuple<Node>> iter1 = x.getNodeTupleTable().find((Node)null, null, null) ;
+//            for ( ; iter1.hasNext() ; )
+//                System.out.println(iter1.next()) ;
+//            
+//            System.out.println("Dump prefix object table") ;
+//            ((NodeTableBase)x.getNodeTupleTable().getNodeTable()).getObjects().dump() ;
+//            
+//            System.out.println("Dump prefix index table") ;
+//            
+//            Iterator<Tuple<NodeId>> iter2 = x.getNodeTupleTable().getTupleTable().find(Tuple.create((NodeId)null,null,null)) ;
+//            System.out.println(Iter.asString(iter2)) ;
+
+            //Set<String> graphNames = dps.graphNames() ;
+            //System.out.println(graphNames) ;
+
+            divider() ;
+            Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
+            m.write(System.out, "TTL") ;
             
-            System.out.println("Dump prefix tuple table") ;
-            Iterator<Tuple<Node>> iter1 = x.getNodeTupleTable().find((Node)null, null, null) ;
-            for ( ; iter1.hasNext() ; )
-                System.out.println(iter1.next()) ;
-            
-            System.out.println("Dump prefix object table") ;
-            ((NodeTableBase)x.getNodeTupleTable().getNodeTable()).getObjects().dump() ;
-            
-            System.out.println("Dump prefix index table") ;
-            
-            Iterator<Tuple<NodeId>> iter2 = x.getNodeTupleTable().getTupleTable().find(Tuple.create((NodeId)null,null,null)) ;
-            System.out.println(Iter.asString(iter2)) ;
+            Iterator<Node> iter = dsg.listGraphNodes() ;
+            for ( ; iter.hasNext() ; )
+            {
+                Node n = iter.next();
+                divider() ;
+                Model nm = ModelFactory.createModelForGraph(dsg.getGraph(n)) ;
+                nm.write(System.out, "TTL") ;
+            }
             
             
-            //System.out.println(dps.getPrefixMapping()) ;
-            
-//            Set<String> x = dps.graphNames() ;
-//            System.out.println(x) ;
-            SSE.write(IndentedWriter.stdout, dsg) ;
+            //SSE.write(IndentedWriter.stdout, dsg) ;
             System.exit(0) ;
         }
         
