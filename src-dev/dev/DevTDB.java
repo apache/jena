@@ -12,7 +12,6 @@ public class DevTDB
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
-    // In prefix storage, the default graph is the graph name "" (problem with it's explicit name)? 
     
     // ** NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.
@@ -21,7 +20,7 @@ public class DevTDB
     
     // Investigate better record byte access.  Whole record?
     // Investigate adding a PSO index (for paths to get sorted order)
-    // Investigate trackign sorted order in BGPs
+    // Investigate tracking sorted order in BGPs
     // Cache tables.
     
     // Assembler : TDB settings : document.
@@ -32,6 +31,7 @@ public class DevTDB
     // 32 bit => Direct, small
     // 64 bit => Mapped, large
     // Cache stats counters (prep for JMX but useful now)
+    // Binary, not SSE.
     
     // == Monitoring
     // Assembler : TDB settings

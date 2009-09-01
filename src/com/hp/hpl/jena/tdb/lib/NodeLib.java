@@ -6,35 +6,34 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 
-import java.io.UnsupportedEncodingException;
-import java.security.DigestException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
+import java.io.UnsupportedEncodingException ;
+import java.security.DigestException ;
+import java.security.MessageDigest ;
+import java.security.NoSuchAlgorithmException ;
+import java.util.Iterator ;
 
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
-import atlas.lib.Bytes;
-import atlas.lib.StrUtils;
+import atlas.iterator.Iter ;
+import atlas.iterator.Transform ;
+import atlas.lib.Bytes ;
+import atlas.lib.StrUtils ;
 
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.Nodec;
-import com.hp.hpl.jena.tdb.nodetable.NodecSSE;
-import com.hp.hpl.jena.tdb.store.Hash;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeType;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.Nodec ;
+import com.hp.hpl.jena.tdb.nodetable.NodecSSE ;
+import com.hp.hpl.jena.tdb.store.Hash ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.NodeType ;
 
 public class NodeLib
 {
@@ -42,16 +41,14 @@ public class NodeLib
     
     private static Nodec nodec = new NodecSSE() ;
     
-    
-    // Charcters in IRIs that are illegal and cause SSE problems, but we wish to keep.
+    // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
-    public static String encode(Node node)  { return encode(node, null) ; }
+    public static String encode(Node node) { return encode(node, null) ; }
 
     public static String encode(Node node, PrefixMapping pmap)
     {
-        
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeLabel() ;
         if ( node.isURI() ) 
@@ -75,15 +72,23 @@ public class NodeLib
             s = s.substring(2) ;
             return Node.createAnon(new AnonId(s)) ;
         }
+
+        if ( s.startsWith("<") )
+        {
+            s = s.substring(1,s.length()-1) ;
+            s = StrUtils.decode(s, MarkerChar) ;
+            return Node.createURI(s) ;
+        }
         
         try {
+            // SSE invocation is expensive (??).
             Node n = SSE.parseNode(s, pmap) ;
-            if ( n.isURI() )
-            {
-                String x = StrUtils.decode(n.getURI(), MarkerChar) ;
-                if ( x != n.getURI() )
-                    n = Node.createURI(x) ;
-            }
+//            if ( n.isURI() )
+//            {
+//                String x = StrUtils.decode(n.getURI(), MarkerChar) ;
+//                if ( x != n.getURI() )
+//                    n = Node.createURI(x) ;
+//            }
             return n ;
         } catch (SSEParseException ex)
         {

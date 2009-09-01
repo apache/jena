@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -63,6 +64,16 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        String s = "<hello>" ;
+        s = s.substring(1,s.length()-1) ;
+        System.out.println(s) ;
+        
+        s = "_:blank" ;
+        s = s.substring(2) ;
+        System.out.println(s) ;
+        
+        System.exit(0) ;
+        
         //tdbquery("--tdb=tdb.ttl", "--explain", "--file=Q.rq") ;
         
         if ( false )
@@ -78,7 +89,7 @@ public class RunTDB
     
     public static void setup()
     {
-        Location location = new Location("tmp/DBX") ;
+        Location location = new Location("tmp/DBX2") ;
 //        location.getMetaFile().dump(System.out) ;
 //        System.out.println();
         
@@ -90,26 +101,9 @@ public class RunTDB
             
             DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
             
-            // BROKEN.
             DatasetPrefixStorage dps = dsg.getPrefixes() ;
             DatasetPrefixesTDB x = (DatasetPrefixesTDB)dps ;
             
-//            System.out.println("Dump prefix tuple table") ;
-//            Iterator<Tuple<Node>> iter1 = x.getNodeTupleTable().find((Node)null, null, null) ;
-//            for ( ; iter1.hasNext() ; )
-//                System.out.println(iter1.next()) ;
-//            
-//            System.out.println("Dump prefix object table") ;
-//            ((NodeTableBase)x.getNodeTupleTable().getNodeTable()).getObjects().dump() ;
-//            
-//            System.out.println("Dump prefix index table") ;
-//            
-//            Iterator<Tuple<NodeId>> iter2 = x.getNodeTupleTable().getTupleTable().find(Tuple.create((NodeId)null,null,null)) ;
-//            System.out.println(Iter.asString(iter2)) ;
-
-            //Set<String> graphNames = dps.graphNames() ;
-            //System.out.println(graphNames) ;
-
             divider() ;
             Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
             m.write(System.out, "TTL") ;
@@ -124,7 +118,7 @@ public class RunTDB
             }
             
             
-            //SSE.write(IndentedWriter.stdout, dsg) ;
+            SSE.write(IndentedWriter.stdout, dsg) ;
             System.exit(0) ;
         }
         
