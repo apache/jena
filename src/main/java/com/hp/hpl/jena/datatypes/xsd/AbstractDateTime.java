@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.2 2009-08-23 19:50:24 der Exp $
+ * $Id: AbstractDateTime.java,v 1.3 2009-09-01 08:24:41 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-23 19:50:24 $
+ * @version $Revision: 1.3 $ on $Date: 2009-09-01 08:24:41 $
  */
 public class AbstractDateTime implements Comparable<AbstractDateTime> {
 
@@ -218,7 +218,6 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
      */
     protected short compareOrder (int[] date1, int[] date2) {
 
-        short order;
         for ( int i=0; i < COMPARABLE_SUBSET;i++ ) {
             if (date1[i] < date2[i]) {
                 return -1;
