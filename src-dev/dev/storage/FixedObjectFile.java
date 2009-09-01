@@ -16,8 +16,17 @@ public interface FixedObjectFile extends Sync, Closeable
 {
     public static final String type = "fixedobject" ;
 
+    /** Write to the end of the current file and return the new object Id */
     public long write(ByteBuffer bytes) ;
+    
+    /** Write at the given id (which must exist or be one more than the largest id currently in use */  
+    public void write(long id, ByteBuffer bytes) ;
+    
+    /** Return the object at the slot specified */
     public ByteBuffer read(long id) ;
+    
+    /** Return the object at the slot specified */
+    public void read(long id, ByteBuffer bytes) ;
 
     public void sync(boolean force) ;
     public void close() ;

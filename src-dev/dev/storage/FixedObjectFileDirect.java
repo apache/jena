@@ -18,7 +18,9 @@ import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
 
-// Cache with segments.
+/** Direct fixed object file map.
+ *  Beware that small-sized object may become rather inefficient. 
+ */
 
 public class FixedObjectFileDirect extends FileBase implements FixedObjectFile 
 {
@@ -47,13 +49,21 @@ public class FixedObjectFileDirect extends FileBase implements FixedObjectFile
     public ByteBuffer read(long offset)
     {
         ByteBuffer bytes = ByteBuffer.allocate(objectSize) ;
-        read(offset, bytes) ;
+        _read(offset, bytes) ;
         return bytes ;
     }
 
-    public void read(long offset, ByteBuffer bytes)
+    public void read(long idx, ByteBuffer bytes)
     {
-        long x = offset*objectSize ;
+        if ( idx < 0 || idx > nextId )
+            throw new IllegalArgumentException("index out of range [0,"+nextId+"]"+idx) ;
+        _read(idx, bytes) ;
+    }
+
+    // Internal - no checking
+    private void _read(long idx, ByteBuffer bytes)
+    {
+        long x = idx*objectSize ;
         try
         {
             channel.position(x) ;
@@ -61,17 +71,32 @@ public class FixedObjectFileDirect extends FileBase implements FixedObjectFile
         } catch (IOException ex)
         { throw new FileException("FixedObjectFileDirect.read", ex) ; }
     }
-
+    
     public long write(ByteBuffer bytes)
     {
         long x = nextId ;
-        write(x, bytes) ;
+        _write(x, bytes) ;
         nextId++ ;
         return nextId ;
     }
     
     public void write(long idx, ByteBuffer bytes)
     {
+        if ( idx < 0 || idx > nextId )
+            throw new IllegalArgumentException("index out of range [0,"+nextId+"]"+idx) ;
+        _write(idx, bytes) ;
+    }
+    
+    // Internal - no checking
+    private void _write(long idx, ByteBuffer bytes)
+    {
+        if ( idx == nextId )
+        {
+            // Write to end of file.
+            write(bytes) ;
+            return ;
+        }
+        
         long nextByte = objectSize*idx ;
         try
         {
