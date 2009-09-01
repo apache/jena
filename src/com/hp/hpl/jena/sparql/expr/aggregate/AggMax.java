@@ -7,12 +7,10 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
@@ -80,8 +78,15 @@ public class AggMax implements AggregateFactory
         { 
             try {
                 NodeValue nv = expr.eval(binding, functionEnv) ;
-                if ( nv.isNumber() )
-                    maxSoFar = (maxSoFar==null) ? nv : XSDFuncOp.max(maxSoFar, nv) ;
+                if ( maxSoFar == null )
+                {
+                    maxSoFar = nv ;
+                    return ;
+                }
+                
+                int x = NodeValue.compareAlways(maxSoFar, nv) ;
+                if ( x > 0 )
+                    maxSoFar = nv ;
             } catch (ExprEvalException ex)
             {}
         }
