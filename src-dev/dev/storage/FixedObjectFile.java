@@ -1,60 +1,31 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package dev.storage;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
+import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.lib.Sync;
 
-public class FileBase implements Sync, Closeable
+/** A simple file structure */
+public interface FixedObjectFile extends Sync, Closeable
 {
-    public final String filename ;
-    public final FileChannel channel ;
-    public final RandomAccessFile out ;
+    public static final String type = "fixedobject" ;
 
-    public FileBase(String filename)
-    {
-        this.filename = filename ;
-        try {
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
-            out = new RandomAccessFile(filename, "rw") ;
-            channel = out.getChannel() ;
-        } catch (IOException ex) { throw new BlockException("Failed to create FileBase", ex) ; } 
-    }
+    public long write(ByteBuffer bytes) ;
+    public ByteBuffer read(long id) ;
 
-    //@Override
-    public void close()
-    {
-        try {
-            channel.close() ;
-        } catch (IOException ex)
-        { throw new FileException("FileBase.close", ex) ; }
-
-    }
-
-    //@Override
-    public void sync(boolean force)
-    {
-        try {
-            channel.force(true) ;
-        } catch (IOException ex)
-        { throw new FileException("FileBase.sync", ex) ; }
-    }
-
+    public void sync(boolean force) ;
+    public void close() ;
+    public void dump() ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

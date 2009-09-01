@@ -199,26 +199,19 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    //@Override
+    @Override
     public void close()
     {
         flushCache() ;
-        try {
-            channel.close() ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.close", ex) ; }
-
+        super.close() ;
     }
 
-    //@Override
+    @Override
     public void sync(boolean force)
     {
         if ( force )
             flushCache() ;
-//        try {
-//            channel.force(true) ;
-//        } catch (IOException ex)
-//        { throw new FileException("ObjectFile.sync", ex) ; }
+        super.sync(force) ;
     }
 
     

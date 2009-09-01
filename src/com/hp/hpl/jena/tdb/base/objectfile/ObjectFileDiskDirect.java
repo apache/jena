@@ -108,26 +108,6 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    //@Override
-    public void close()
-    {
-        try {
-            channel.close() ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.close", ex) ; }
-
-    }
-
-    //@Override
-    public void sync(boolean force)
-    {
-//        try {
-//            channel.force(true) ;
-//        } catch (IOException ex)
-//        { throw new FileException("ObjectFile.sync", ex) ; }
-    }
-
-    
     public List<String> all()
     {
         try { out.seek(0) ; } 
