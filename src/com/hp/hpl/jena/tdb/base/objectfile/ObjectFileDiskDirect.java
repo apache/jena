@@ -57,17 +57,24 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
         bb.position(4) ;
         Bytes.toByteBuffer(str, bb) ;
+        // Position moved from 4.
         int len = bb.position()-4 ;
         bb.limit(len+4) ;
         bb.putInt(0, len) ;     // Object length
         bb.position(0) ;
+        return writeBytes(bb) ;
+    }
         
+    // Write the buffer, from postion, to limit.
+    private long writeBytes(ByteBuffer bb)
+    {
         try {
             long location = filesize ;
             channel.position(location) ;    // ?????
             // write length
             int x = channel.write(bb) ;
-            if ( x != len+4 )
+            int len = bb.limit() ;
+            if ( x != len )
                 throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
             filesize = filesize+x ;
             return location ;
