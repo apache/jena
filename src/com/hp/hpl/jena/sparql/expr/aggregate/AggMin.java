@@ -88,7 +88,7 @@ public class AggMin implements AggregateFactory
                 }
                 
                 int x = NodeValue.compareAlways(minSoFar, nv) ;
-                if ( x < 0 )
+                if ( x > 0 )
                     minSoFar = nv ;
                 
                 if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;

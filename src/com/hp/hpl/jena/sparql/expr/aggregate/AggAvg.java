@@ -77,6 +77,7 @@ public class AggAvg implements AggregateFactory
         private NodeValue total = noValuesToAvg ;
         private int count = 0 ;
         
+        static final boolean DEBUG = true ;
         
         public AccAvgVar() {}
 
@@ -84,6 +85,8 @@ public class AggAvg implements AggregateFactory
         { 
             try {
                 NodeValue nv = expr.eval(binding, functionEnv) ;
+                
+                if ( DEBUG ) System.out.println("avg: "+nv) ;
                 
                 if ( nv.isNumber() )
                 {
@@ -93,6 +96,8 @@ public class AggAvg implements AggregateFactory
                     else
                         total = XSDFuncOp.add(nv, total) ;
                 }
+                if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
+
             } catch (ExprEvalException ex)
             {}
         }

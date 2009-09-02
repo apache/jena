@@ -88,7 +88,7 @@ public class AggMax implements AggregateFactory
                 }
                 
                 int x = NodeValue.compareAlways(maxSoFar, nv) ;
-                if ( x > 0 )
+                if ( x < 0 )
                     maxSoFar = nv ;
                 
                 if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
