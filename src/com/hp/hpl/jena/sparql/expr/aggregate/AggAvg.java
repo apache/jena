@@ -84,8 +84,10 @@ public class AggAvg implements AggregateFactory
         { 
             try {
                 NodeValue nv = expr.eval(binding, functionEnv) ;
+                
                 if ( nv.isNumber() )
                 {
+                    count++ ;
                     if ( total == noValuesToAvg )
                         total = nv ;
                     else

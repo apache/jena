@@ -74,6 +74,8 @@ public class AggMax implements AggregateFactory
         
         public AccMaxVar() {}
 
+        static final boolean DEBUG = true ;
+        
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             try {
@@ -81,12 +83,16 @@ public class AggMax implements AggregateFactory
                 if ( maxSoFar == null )
                 {
                     maxSoFar = nv ;
+                    if ( DEBUG ) System.out.println("max: init : "+nv) ;
                     return ;
                 }
                 
                 int x = NodeValue.compareAlways(maxSoFar, nv) ;
                 if ( x > 0 )
                     maxSoFar = nv ;
+                
+                if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
+                
             } catch (ExprEvalException ex)
             {}
         }

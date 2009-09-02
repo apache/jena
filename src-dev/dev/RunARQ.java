@@ -64,6 +64,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        execQuery("D.ttl", "Q.arq") ;
+        
         
         arq.qexpr.main("coalesce(123)") ; System.exit(0) ;
         String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
@@ -369,7 +371,7 @@ public class RunARQ
 
     private static void execQuery(String datafile, String queryfile)
     {
-        ARQ.getContext().set(ARQ.enableExecutionTimeLogging, true) ; 
+        //ARQ.getContext().set(ARQ.enableExecutionTimeLogging, true) ; 
 
         //QueryEngineMain.register() ;
         String a[] = new String[]{

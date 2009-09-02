@@ -73,6 +73,8 @@ public class AggMin implements AggregateFactory
         private NodeValue minSoFar = null ;
         
         public AccMinVar() {}
+        
+        static final boolean DEBUG = true ;
 
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
@@ -81,12 +83,17 @@ public class AggMin implements AggregateFactory
                 if ( minSoFar == null )
                 {
                     minSoFar = nv ;
+                    if ( DEBUG ) System.out.println("min: init : "+nv) ;
                     return ;
                 }
                 
                 int x = NodeValue.compareAlways(minSoFar, nv) ;
                 if ( x < 0 )
                     minSoFar = nv ;
+                
+                if ( DEBUG ) System.out.println("min: "+nv+" ==> "+minSoFar) ;
+
+                
             } catch (ExprEvalException ex)
             {}
         }
