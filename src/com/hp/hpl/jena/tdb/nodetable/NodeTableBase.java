@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.store.Hash;
@@ -26,10 +26,10 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class NodeTableBase implements NodeTable
 {
-    // Assumes an ObjectFile and an Indexer, which may be an Index but allows
+    // Assumes an StringFile and an Indexer, which may be an Index but allows
     // this to be overriden for a direct use of BDB.
 
-    protected ObjectFile objects ;
+    protected StringFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
@@ -44,17 +44,17 @@ public class NodeTableBase implements NodeTable
     protected NodeTableBase() {}
     
     // Combined into one constructor.
-    public NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableBase(Index nodeToId, StringFile stringFile, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this() ;
-        init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
+        init(nodeToId, stringFile, idToNodeCacheSize, idToNodeCacheSize) ;
     }
     
-    protected void init(Index nodeToId, ObjectFile objectFile,
+    protected void init(Index nodeToId, StringFile stringFile,
                         int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this.nodeHashToId = nodeToId ;
-        this.objects = objectFile;
+        this.objects = stringFile;
         if ( nodeToIdCacheSize > 0) 
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
         if ( idToNodeCacheSize > 0)
@@ -223,7 +223,7 @@ public class NodeTableBase implements NodeTable
     // -------- NodeId<->Node
     // Assumes NodeId inlining and caching has been handled.
     // Assumes synchronized (the caches wil be updated consistently)
-    // Only places for accessing the ObjectFile.
+    // Only places for accessing the StringFile.
     
     protected final NodeId writeNodeToTable(Node node)
     {
@@ -266,7 +266,7 @@ public class NodeTableBase implements NodeTable
             getObjects().sync(force) ;
     }
 
-    public ObjectFile getObjects()
+    public StringFile getObjects()
     {
         return objects;
     }

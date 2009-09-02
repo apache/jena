@@ -12,30 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import atlas.lib.Bytes;
-import atlas.lib.Pair;
 
-
-import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
- * @see ObjectFileDisk_DataIO
+ * @see StringFileDisk_DataIO
  * @author Andy Seaborne
  * @version $Id$
  */
 
-public class ObjectFileDiskWithCache extends FileBase implements ObjectFile 
+public class StringFileDiskDirect implements StringFile 
 {
-    // NOT USED - this is not faster.  It is more complicated. 
-    // Use better cache.
-    
     /* No synchronization - assumes that the caller has some appropriate lock
-     * because the combination of file and cache operations need to be thread safe.  
+     * because the combination of file and cache operations needs to be thread safe.  
      */
     private long filesize ;
+    private final FileBase file ;
 
     /*
      * Encoding: Simple for now:
@@ -43,149 +38,72 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
      *   UTF-8 bytes. 
      */
     
-    // Write cache.  
-    // 1 - Strings remembered that ar in the cache but not written yet 
-    // 2 - Accumulate a large buffer before writing  
-    // Seems to make a small difference?
-    int delayCacheSize = 100 ;
-    List<Pair<Long, String>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<Long, String>>(delayCacheSize)) ;
-    //ByteBuffer delayCache
-    ByteBuffer buffer = (delayCacheSize == -1 ? null : ByteBuffer.allocate(delayCacheSize*100) ) ;
-    long idAllocation ;
-
-    public ObjectFileDiskWithCache(String filename)
+    public StringFileDiskDirect(String filename)
     {
-        super(filename) ;
+        file = new FileBase(filename) ;
         try { 
-            filesize = out.length() ;
-            idAllocation = filesize ;
+            filesize = file.out.length() ;
         } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
     }
     
     // Write cache.  Strings written but not sent to disk. 
     // List<Pair<NodeId, String>>
     
+    //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
+    
     //@Override
     public long write(String str)
     { 
-        if ( delayCache != null && delayCache.size() >= delayCacheSize )
-            flushCache() ;
-        
         str = compress(str) ;
-        if ( buffer == null )
-            _writeNow(str) ;
-        
-        // Write to the buffer now.
-        
-        int max = 4+4*str.length() ;        // Worst case.
-        int x = buffer.position() ;
-        if ( x+max > buffer.limit() )
-        {
-            flushCache() ;
-            // Will never fit
-            if ( max > buffer.limit() )
-                return _writeNow(str) ;
-        }
-        
-        buffer.position(x+4) ;              // Space for length
-        Bytes.toByteBuffer(str, buffer) ;
-        int y = buffer.position() ;
-        int len = y-x-4 ;
-        buffer.position(x) ;
-        buffer.putInt(0, len) ;             // Object length
-        buffer.position(y) ;
-
-        long location = idAllocation ;
-        idAllocation = idAllocation + len+4 ;
-        
-        //int i = delayCache.size() ;
-        delayCache.add(new Pair<Long, String>(location, str)) ;
-        return location ; 
+        ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
+        bb.position(4) ;
+        Bytes.toByteBuffer(str, bb) ;
+        // Position moved from 4.
+        int len = bb.position()-4 ;
+        bb.limit(len+4) ;
+        bb.putInt(0, len) ;     // Object length
+        bb.position(0) ;
+        return writeBytes(bb) ;
     }
-    
-    private long _writeNow(String str)
+        
+    // Write the buffer, from postion, to limit.
+    private long writeBytes(ByteBuffer bb)
     {
-
         try {
             long location = filesize ;
-            ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;
-            bb.position(4) ;
-            Bytes.toByteBuffer(str, bb) ;
-            int len = bb.position()-4 ;
-            bb.limit(len+4) ;
-            bb.putInt(0, len) ;     // Object length
-            bb.position(0) ;
-            int x = channel.write(bb) ;
-            if ( x != bb.limit() )
-                throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
+            file.channel.position(location) ;    // ?????
+            // write length
+            int x = file.channel.write(bb) ;
+            int len = bb.limit() ;
+            if ( x != len )
+                throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
             filesize = filesize+x ;
             return location ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
     }
-
-    private void flushCache()
-    {
-        if ( delayCache == null )
-            return ;
-        // Convert to one big write.
-        long id = filesize ;
-        try {
-            // write length
-            buffer.flip() ;
-            long x = channel.write(buffer) ;
-            if ( x != (idAllocation-filesize) )
-                throw new FileException("ObjectFile.flushCache: Buffer length = "+(idAllocation-filesize)+" : actual write = "+x) ; 
-            filesize = idAllocation ;
-            buffer.clear() ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.write", ex) ; }
-
-        delayCache.clear() ;
-        buffer.clear() ;
-    }
     
     //@Override
     public String read(long id)
     {
-        // Check cache.
-        String x = null ;
-        if ( id > filesize )           // Cache
-            x = findInCache(id) ;
-        else
-        {
-            ByteBuffer bb = readBytes(id) ;
-            x = Bytes.fromByteBuffer(bb) ;
-        }
+        ByteBuffer bb = readBytes(id) ;
+        String x = Bytes.fromByteBuffer(bb) ;
         x = decompress(x) ;
         return x ;
-    }
-
-    private String findInCache(long id)
-    {
-        for ( Pair<Long, String> elt : delayCache )
-        {
-            long n = elt.car() ;
-            if ( n == id )
-                return elt.cdr();
-            if ( n <  id )
-                break ;
-        }
-        throw new TDBException("Asked for impossible NodeId: "+id) ;
     }
 
     private ByteBuffer readBytes(long loc)
     {
         try {
             ByteBuffer bb = ByteBuffer.allocate(4) ;
-            channel.position(loc) ;
-            int x = channel.read(bb) ;  // Updates position.
+            file.channel.position(loc) ;
+            int x = file.channel.read(bb) ;  // Updates position.
             if ( x != 4 )
                 throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
             int len = bb.getInt(0) ;
             bb = ByteBuffer.allocate(len) ;
-            channel.position(loc+4) ;
-            x = channel.read(bb) ;
+            file.channel.position(loc+4) ;
+            x = file.channel.read(bb) ;
             bb.position(0) ;
             bb.limit(len) ;
             if ( x != len )
@@ -195,25 +113,9 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         { throw new FileException("ObjectFile.read", ex) ; }
     }
     
-    @Override
-    public void close()
-    {
-        flushCache() ;
-        super.close() ;
-    }
-
-    @Override
-    public void sync(boolean force)
-    {
-        if ( force )
-            flushCache() ;
-        super.sync(force) ;
-    }
-
-    
     public List<String> all()
     {
-        try { out.seek(0) ; } 
+        try { file.out.seek(0) ; } 
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
         
         List<String> strings = new ArrayList<String>() ;
@@ -229,9 +131,24 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         return strings ;
     }
     
-    public void dump()
+
+    //@Override
+    public void close()
+    { file.close() ; }
+
+    //@Override
+    public void sync(boolean force)
+    { file.sync(force) ; }
+
+    
+    // ---- Dump
+    public void dump() { dump(handler) ; }
+
+    public interface DumpHandler { void handle(long fileIdx, String str) ; }  
+    
+    public void dump(DumpHandler handler)
     {
-        try { out.seek(0) ; } 
+        try { file.out.seek(0) ; } 
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
         
         long fileIdx = 0 ;
@@ -239,10 +156,20 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         {
             ByteBuffer bb = readBytes(fileIdx) ;
             String str = Bytes.fromByteBuffer(bb) ;
-            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
-            fileIdx = fileIdx + bb.limit() + 4 ; 
+            handler.handle(fileIdx, str) ;
+            fileIdx = fileIdx + bb.limit() + 4 ;
         }
     }
+    
+    static StringFileDiskDirect.DumpHandler handler = new StringFileDiskDirect.DumpHandler() {
+        //@Override
+        public void handle(long fileIdx, String str)
+        {
+            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
+        }
+    } ;
+    // ----
+ 
     
     // URI compression can be effective but literals are more of a problem.  More variety. 
     public final static boolean compression = false ; 

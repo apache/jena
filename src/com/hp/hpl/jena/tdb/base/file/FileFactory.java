@@ -6,23 +6,19 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskWithCache;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFileDiskDirect;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFileMem;
 
 public class FileFactory
 {
-    public static ObjectFile createObjectFileDisk(String filename)
+    public static StringFile createStringFileDisk(String filename)
     { 
-        if ( false )
-            // This is slightly faster and much more complicated. 
-            return new ObjectFileDiskWithCache(filename) ;
-        return new ObjectFileDiskDirect(filename) ;
+        return new StringFileDiskDirect(filename) ;
     }
 
-    public static ObjectFile createObjectFileMem()
-    { return new ObjectFileMem() ; }
+    public static StringFile createStringFileMem()
+    { return new StringFileMem() ; }
     
     public static PlainFile createPlainFileDisk(String filename)
     { return new PlainFilePersistent(filename) ; }

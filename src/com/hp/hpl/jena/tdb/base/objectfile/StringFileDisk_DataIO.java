@@ -28,13 +28,13 @@ import com.hp.hpl.jena.tdb.base.file.FileException;
  */
 
 // Currently historical
-/* public */ class ObjectFileDisk_DataIO implements ObjectFile
+/* public */ class StringFileDisk_DataIO implements StringFile
 {
     // Uses DataInput/DataOutput string encoding.
     private RandomAccessFile out ;
     private long filesize ;
 
-    ObjectFileDisk_DataIO(String filename)
+    StringFileDisk_DataIO(String filename)
     {
         try {
             // "rwd" - Syncs only the file contents

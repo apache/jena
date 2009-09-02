@@ -6,27 +6,23 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import java.nio.ByteBuffer ;
+
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.lib.Sync;
 
-/** A file for writing serialized objects to
- *  The file is currently "read/append"
- *  Allocates an id (actually the byte offset in the file)
- * @author Andy Seaborne
- * @version $Id$
+/** Temporary name.
  */
-public interface ObjectFile extends Sync, Closeable
+public interface ByteBufferFile extends Sync, Closeable
 {
-    // Better name is a StringFile.
-    // even better - put encoder over a byte object file.
-    
     public static final String type = "object" ;
-    public long write(String str) ;
-    public String read(long id) ;
-//    public List<String> all() ;
+    public long write(ByteBuffer str) ;
+    public ByteBuffer read(long id) ;
+    
+    /** Length, in bytes */
+    public long length() ;
     public void sync(boolean force) ;
     public void close() ;
-    public void dump() ;
 }
 
 /*

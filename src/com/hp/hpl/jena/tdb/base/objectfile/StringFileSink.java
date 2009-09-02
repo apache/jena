@@ -6,67 +6,17 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
-import atlas.lib.Bytes;
-
-/** A file for writing serialized objects to
- *  The file is currently "read/append"
- *  Allocates an id (actually the array index)
- *  Limited to 2billion nodes by array size being an int. :-)
- *  
- * @author Andy Seaborne
- */
-
-public class ObjectFileMem implements ObjectFile 
+/** For testing only */
+public class StringFileSink implements StringFile
 {
-    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
-
-    public ObjectFileMem()
-    {
-    }
+    long id = 0 ;
     
     //@Override
-    public long write(String str)
-    { 
-        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
-        Bytes.toByteBuffer(str, bb) ;
-        int len = bb.position() ;
-        bb.limit(len) ;
-        int x = buffers.size();
-        buffers.add(bb) ;
-        return x ;
-    }
-    
-    private ByteBuffer readBytes(long id)
-    { 
-        int x = (int)id ;
-        ByteBuffer bb = buffers.get(x) ;
-        bb.position(0) ;
-        ByteBuffer bb2 = ByteBuffer.allocate(bb.limit()) ;
-        bb2.put(bb) ;
-        bb2.position(0);
-        return bb2 ;
-    }
-
-    //@Override
-    public String read(long id)
-    {
-        ByteBuffer bb = readBytes(id) ;
-        return Bytes.fromByteBuffer(bb) ;
-    }
-    
     public List<String> all()
     {
-        List<String> strings = new ArrayList<String>() ;
-        for ( int i = 0 ; i < buffers.size(); i++ )
-        {
-            String str = read(i) ;
-            strings.add(str) ;
-        }
-        return strings ;
+        throw new UnsupportedOperationException() ;
     }
 
     //@Override
@@ -74,19 +24,23 @@ public class ObjectFileMem implements ObjectFile
     {}
 
     //@Override
-    public void sync(boolean force)
-    {}
-    
-    //@Override
-    public void dump()
+    public String read(long id)
     {
-        for ( int i = 0 ; i < buffers.size(); i++ )
-        {
-            String str = read(i) ;
-            System.out.printf("0x%08X : %s\n", i, str) ;
-        }
+        throw new UnsupportedOperationException() ;
     }
 
+    //@Override
+    public void sync(boolean force)
+    {}
+
+    //@Override
+    public long write(String str)
+    {
+        return ++id ;
+    }
+    
+    //@Override
+    public void dump() {}
 }
 
 /*

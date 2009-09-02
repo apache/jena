@@ -1,38 +1,34 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dump;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.io.OutputStream;
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.lib.Sync;
 
-import atlas.lib.StrUtils;
-
-import com.hp.hpl.jena.tdb.base.objectfile.StringFileDiskDirect;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFileDiskDirect.DumpHandler;
-
-public class DumpNodes
+/** A file for writing serialized strings to disk.
+ *  The file is currently "read/append"
+ *  Allocates an id (actually the byte offset in the file)
+ */
+public interface StringFile extends Sync, Closeable
 {
-    public static void dump(OutputStream w, StringFileDiskDirect f)
-    {
-        DumpHandler dh = new DumpHandler()
-        { 
-            //@Override
-            public void handle(long fileIdx, String str)
-            {
-                // Escape strings.
-                StrUtils.escapeString(str) ;
-                System.out.printf("0x%08X \'%s\'\n", fileIdx, str) ;
-            }
-        } ;
-        f.dump(dh) ;
-    }
+    // Better name is a StringFile.
+    // even better - put encoder over a byte object file.
+    
+    public static final String type = "object" ;
+    public long write(String str) ;
+    public String read(long id) ;
+//    public List<String> all() ;
+    public void sync(boolean force) ;
+    public void close() ;
+    public void dump() ;
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -169,7 +169,7 @@ public class RunTDB
         if ( false )
         {
             FileSet fs = new FileSet(location, Names.indexId2Node) ;
-            ObjectFile objFile = NewSetup.makeObjectFile(fs) ;
+            StringFile objFile = NewSetup.makeStringFile(fs) ;
             System.out.println("==== Object file") ;
             objFile.dump() ;
         }

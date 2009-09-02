@@ -11,16 +11,16 @@ import org.junit.Test;
 import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 
-public class TestObjectFile extends BaseTest
+public class TestStringFile extends BaseTest
 {
     @Test public void object_file_1()
     {
         String dir = ConfigTest.getTestingDir() ;
         clearDirectory(dir) ;
         Location loc = new Location(dir) ;
-        ObjectFile f = FileFactory.createObjectFileDisk(loc.getPath("xyz", "node")) ;
+        StringFile f = FileFactory.createStringFileDisk(loc.getPath("xyz", "node")) ;
         String x1 = "孫子兵法" ;
         String x2 = "abbbbbbc" ;
         

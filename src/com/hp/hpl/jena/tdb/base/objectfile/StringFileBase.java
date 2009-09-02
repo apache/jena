@@ -6,49 +6,31 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer ;
 
-import atlas.lib.Bytes;
+import atlas.lib.Bytes ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockException;
-import com.hp.hpl.jena.tdb.base.file.FileBase;
-import com.hp.hpl.jena.tdb.base.file.FileException;
-import com.hp.hpl.jena.tdb.lib.StringAbbrev;
+import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
- * @see ObjectFileDisk_DataIO
+ * @see StringFileDisk_DataIO
  * @author Andy Seaborne
  * @version $Id$
  */
 
-public class ObjectFileDiskDirect extends FileBase implements ObjectFile 
+public class StringFileBase implements StringFile
 {
-    /* No synchronization - assumes that the caller has some appropriate lock
-     * because the combination of file and cache operations need to be thread safe.  
-     */
-    private long filesize ;
-
+    private final ByteBufferFile file ;
     /*
      * Encoding: Simple for now:
      *   length (4 bytes)
      *   UTF-8 bytes. 
      */
     
-    public ObjectFileDiskDirect(String filename)
+    public StringFileBase(ByteBufferFile file)
     {
-        super(filename) ;
-        try { 
-            filesize = out.length() ;
-        } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
+        this.file = file ;
     }
-    
-    // Write cache.  Strings written but not sent to disk. 
-    // List<Pair<NodeId, String>>
-    
-    //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
     
     //@Override
     public long write(String str)
@@ -62,73 +44,26 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         bb.limit(len+4) ;
         bb.putInt(0, len) ;     // Object length
         bb.position(0) ;
-        return writeBytes(bb) ;
-    }
-        
-    // Write the buffer, from postion, to limit.
-    private long writeBytes(ByteBuffer bb)
-    {
-        try {
-            long location = filesize ;
-            channel.position(location) ;    // ?????
-            // write length
-            int x = channel.write(bb) ;
-            int len = bb.limit() ;
-            if ( x != len )
-                throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
-            filesize = filesize+x ;
-            return location ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.write", ex) ; }
+        return file.write(bb) ;
     }
     
     //@Override
     public String read(long id)
     {
-        ByteBuffer bb = readBytes(id) ;
+        ByteBuffer bb = file.read(id) ;
         String x = Bytes.fromByteBuffer(bb) ;
         x = decompress(x) ;
         return x ;
     }
 
-    private ByteBuffer readBytes(long loc)
-    {
-        try {
-            ByteBuffer bb = ByteBuffer.allocate(4) ;
-            channel.position(loc) ;
-            int x = channel.read(bb) ;  // Updates position.
-            if ( x != 4 )
-                throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
-            int len = bb.getInt(0) ;
-            bb = ByteBuffer.allocate(len) ;
-            channel.position(loc+4) ;
-            x = channel.read(bb) ;
-            bb.position(0) ;
-            bb.limit(len) ;
-            if ( x != len )
-                throw new FileException("ObjectFile.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
-            return bb ;
-        } catch (IOException ex)
-        { throw new FileException("ObjectFile.read", ex) ; }
-    }
-    
-    public List<String> all()
-    {
-        try { out.seek(0) ; } 
-        catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
-        
-        List<String> strings = new ArrayList<String>() ;
-        long x = 0 ;
-        while ( x < filesize )
-        {
-            ByteBuffer bb = readBytes(x) ;
-            String str = Bytes.fromByteBuffer(bb) ;
-            strings.add(str) ;
-            // Assumes magic.
-            x = x + bb.limit() + 4 ; 
-        }
-        return strings ;
-    }
+    //@Override
+    public void close()
+    { file.close() ; }
+
+    //@Override
+    public void sync(boolean force)
+    { file.sync(force) ; }
+
     
     // ---- Dump
     public void dump() { dump(handler) ; }
@@ -137,20 +72,17 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
     
     public void dump(DumpHandler handler)
     {
-        try { out.seek(0) ; } 
-        catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
-        
         long fileIdx = 0 ;
-        while ( fileIdx < filesize )
+        while ( true )
         {
-            ByteBuffer bb = readBytes(fileIdx) ;
+            ByteBuffer bb = file.read(fileIdx) ;
             String str = Bytes.fromByteBuffer(bb) ;
             handler.handle(fileIdx, str) ;
             fileIdx = fileIdx + bb.limit() + 4 ;
         }
     }
     
-    static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
+    static StringFileBase.DumpHandler handler = new StringFileBase.DumpHandler() {
         //@Override
         public void handle(long fileIdx, String str)
         {

@@ -33,8 +33,8 @@ import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFileSink;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.CountingSinkGraph;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -117,14 +117,14 @@ public class tdbperf extends CmdSub
             //NodeTable nodeTable = NodeTableFactory.createSink(indexBuilder, location) ;
             // Memory index, empty object file.
             
-            ObjectFile objectFile = new ObjectFileSink() ;
+            StringFile stringFile = new StringFileSink() ;
             RecordFactory nr = FactoryGraphTDB.nodeRecordFactory ;
             
             
             Index nodeToId = IndexBuilder.mem().newIndex(null, nr) ;
             NodeTable nodeTable =
                 //new NodeTableSink() ;
-                new NodeTableBase(nodeToId, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
+                new NodeTableBase(nodeToId, stringFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
 
             TripleTable tripleTable = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, Names.tripleIndexes) ; 
             QuadTable quadTable = FactoryGraphTDB.createQuadTable(indexBuilder, nodeTable, location, Names.quadIndexes) ; 

@@ -8,8 +8,8 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFileMem;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
@@ -25,11 +25,11 @@ public class NodeTableIndex extends NodeTableBase
         Index nodeToId = indexBuilder.newIndex(fsNodeToId, FactoryGraphTDB.nodeRecordFactory) ;
         // Node table.
         String filename = fsIdToNode.filename(Names.extNodeData) ;
-        ObjectFile objects = FileFactory.createObjectFileDisk(filename);
+        StringFile objects = FileFactory.createStringFileDisk(filename);
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
     
-    public NodeTableIndex(Index nodeToId, ObjectFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableIndex(Index nodeToId, StringFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
@@ -40,7 +40,7 @@ public class NodeTableIndex extends NodeTableBase
         super() ;
         Index nodeToId = factory.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
         
-        ObjectFile objects = new ObjectFileMem() ;
+        StringFile objects = new StringFileMem() ;
         init(nodeToId, objects, 100, 100) ;
     }
 
