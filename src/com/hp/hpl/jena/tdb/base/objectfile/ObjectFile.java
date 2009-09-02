@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** A file for writing serialized objects to
  *  The file is currently "read/append"
@@ -18,9 +17,12 @@ import com.hp.hpl.jena.tdb.store.NodeId;
  */
 public interface ObjectFile extends Sync, Closeable
 {
+    // Better name is a StringFile.
+    // even better - put encoder over a byte object file.
+    
     public static final String type = "object" ;
-    public NodeId write(String str) ;
-    public String read(NodeId id) ;
+    public long write(String str) ;
+    public String read(long id) ;
 //    public List<String> all() ;
     public void sync(boolean force) ;
     public void close() ;

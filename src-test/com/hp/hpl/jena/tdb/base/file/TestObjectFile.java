@@ -7,12 +7,11 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import static atlas.lib.FileOps.clearDirectory;
-import atlas.test.BaseTest;
 import org.junit.Test;
+import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class TestObjectFile extends BaseTest
 {
@@ -25,8 +24,8 @@ public class TestObjectFile extends BaseTest
         String x1 = "孫子兵法" ;
         String x2 = "abbbbbbc" ;
         
-        NodeId id1 = f.write(x1) ;
-        NodeId id2 = f.write(x2) ;
+        long id1 = f.write(x1) ;
+        long id2 = f.write(x2) ;
         
         assertNotEquals("Node Ids", id1, id2) ;
         
@@ -35,9 +34,8 @@ public class TestObjectFile extends BaseTest
 
         String y1 = f.read(id1) ;
         assertEquals("x1", x1, y1) ;
-
         
-        String y1a = f.read(NodeId.create(0)) ;
+        String y1a = f.read(0) ;
         assertEquals("x1a", x1, y1) ;
     }
     

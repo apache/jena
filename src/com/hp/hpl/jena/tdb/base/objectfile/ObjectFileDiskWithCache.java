@@ -20,7 +20,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
-import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  * @see ObjectFileDisk_DataIO
@@ -31,6 +30,7 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class ObjectFileDiskWithCache extends FileBase implements ObjectFile 
 {
     // NOT USED - this is not faster.  It is more complicated. 
+    // Use better cache.
     
     /* No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations need to be thread safe.  
@@ -48,7 +48,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     // 2 - Accumulate a large buffer before writing  
     // Seems to make a small difference?
     int delayCacheSize = 100 ;
-    List<Pair<NodeId, String>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<NodeId, String>>(delayCacheSize)) ;
+    List<Pair<Long, String>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<Long, String>>(delayCacheSize)) ;
     //ByteBuffer delayCache
     ByteBuffer buffer = (delayCacheSize == -1 ? null : ByteBuffer.allocate(delayCacheSize*100) ) ;
     long idAllocation ;
@@ -66,7 +66,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     // List<Pair<NodeId, String>>
     
     //@Override
-    public NodeId write(String str)
+    public long write(String str)
     { 
         if ( delayCache != null && delayCache.size() >= delayCacheSize )
             flushCache() ;
@@ -98,14 +98,12 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         long location = idAllocation ;
         idAllocation = idAllocation + len+4 ;
         
-        NodeId nodeId = NodeId.create(location) ;
-        
         //int i = delayCache.size() ;
-        delayCache.add(new Pair<NodeId, String>(nodeId, str)) ;
-        return nodeId ; 
+        delayCache.add(new Pair<Long, String>(location, str)) ;
+        return location ; 
     }
     
-    private NodeId _writeNow(String str)
+    private long _writeNow(String str)
     {
 
         try {
@@ -121,7 +119,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
             if ( x != bb.limit() )
                 throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
             filesize = filesize+x ;
-            return NodeId.create(location) ;
+            return location ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
     }
@@ -148,11 +146,11 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     }
     
     //@Override
-    public String read(NodeId id)
+    public String read(long id)
     {
         // Check cache.
         String x = null ;
-        if ( id.getId() > filesize )
+        if ( id > filesize )           // Cache
             x = findInCache(id) ;
         else
         {
@@ -163,21 +161,19 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         return x ;
     }
 
-    private String findInCache(NodeId id)
+    private String findInCache(long id)
     {
-        for ( Pair<NodeId, String> elt : delayCache )
+        for ( Pair<Long, String> elt : delayCache )
         {
-            NodeId n = elt.car() ;
-            if ( n.equals(id) )
+            long n = elt.car() ;
+            if ( n == id )
                 return elt.cdr();
-            if ( n.getId() <  elt.car().getId() )
+            if ( n <  id )
                 break ;
         }
         throw new TDBException("Asked for impossible NodeId: "+id) ;
     }
 
-    private ByteBuffer readBytes(NodeId id) { return readBytes(id.getId()) ; }
-    
     private ByteBuffer readBytes(long loc)
     {
         try {

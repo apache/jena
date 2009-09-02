@@ -228,13 +228,14 @@ public class NodeTableBase implements NodeTable
     protected final NodeId writeNodeToTable(Node node)
     {
         String s = encode(node) ;
-        return getObjects().write(s) ;
+        long x = getObjects().write(s) ;
+        return NodeId.create(x);
     }
     
 
     protected final Node readNodeByNodeId(NodeId id)
     {
-        String s = getObjects().read(id) ;
+        String s = getObjects().read(id.getId()) ;
         Node n = decode(s) ;
         return n ;
     }

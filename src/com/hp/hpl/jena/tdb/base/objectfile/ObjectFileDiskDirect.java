@@ -17,7 +17,6 @@ import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
-import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  * @see ObjectFileDisk_DataIO
@@ -52,7 +51,7 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
     //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
     
     //@Override
-    public NodeId write(String str)
+    public long write(String str)
     { 
         str = compress(str) ;
         ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
@@ -71,13 +70,13 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
             if ( x != len+4 )
                 throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
             filesize = filesize+x ;
-            return NodeId.create(location) ;
+            return location ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
     }
     
     //@Override
-    public String read(NodeId id)
+    public String read(long id)
     {
         ByteBuffer bb = readBytes(id) ;
         String x = Bytes.fromByteBuffer(bb) ;
@@ -85,8 +84,6 @@ public class ObjectFileDiskDirect extends FileBase implements ObjectFile
         return x ;
     }
 
-    private ByteBuffer readBytes(NodeId id) { return readBytes(id.getId()) ; }
-    
     private ByteBuffer readBytes(long loc)
     {
         try {

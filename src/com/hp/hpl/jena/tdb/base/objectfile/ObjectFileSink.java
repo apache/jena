@@ -8,8 +8,6 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.store.NodeId;
-
 /** For testing only */
 public class ObjectFileSink implements ObjectFile
 {
@@ -26,7 +24,7 @@ public class ObjectFileSink implements ObjectFile
     {}
 
     //@Override
-    public String read(NodeId id)
+    public String read(long id)
     {
         throw new UnsupportedOperationException() ;
     }
@@ -36,9 +34,9 @@ public class ObjectFileSink implements ObjectFile
     {}
 
     //@Override
-    public NodeId write(String str)
+    public long write(String str)
     {
-        return NodeId.create(++id) ;
+        return ++id ;
     }
     
     //@Override

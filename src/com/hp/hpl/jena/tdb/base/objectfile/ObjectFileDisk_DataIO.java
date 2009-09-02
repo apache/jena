@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileException;
-import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** A file for writing serialized objects to disk, using DataInput/DataOuput
  * but that limits it to 64K bytes encoded forms. 
@@ -46,22 +45,22 @@ import com.hp.hpl.jena.tdb.store.NodeId;
         } catch (IOException ex) { throw new BlockException("Failed to create ObjectFileDisk", ex) ; } 
     }
     
-    public NodeId write(String str)
+    public long write(String str)
     { 
         try {
             long id = filesize ;
             out.seek(filesize) ;
             out.writeUTF(str) ;     // Limited to 64Kbytes. 
             filesize = out.length();
-            return NodeId.create(id) ;
+            return id ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
     }
     
-    public String read(NodeId id)
+    public String read(long id)
     {
         try {
-            out.seek(id.getId()) ;
+            out.seek(id) ;
             String s = out.readUTF() ;
             return s ;
         } catch (IOException ex)
