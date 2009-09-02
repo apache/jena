@@ -1,2 +1,9 @@
-SELECT DISTINCT ?x { ?s ?p ?x }
+PREFIX :        <http://example/> 
+
+SELECT ?x ?t
+{
+   ?x a ?t 
+   OPTIONAL { ?x a ?t2 . FILTER(?t2 = :C) }
+   FILTER (!bound(?t2))
+}
 

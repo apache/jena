@@ -1,6 +1,8 @@
-@prefix :        <http://example/> .
+@base <http://example/> .
+@prefix rev: <http://example/rev/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
-:a1 :p 1 .
-:a1 :p 2 .
-:a2 :p 3 .
-:a2 :p "four" .
+<thing> rev:hasReview [ rev:rating 1.0 ] .
+<thing> rev:hasReview [ rev:rating 4 ] .
+<thing> rev:hasReview [ rev:rating "03" ] .
+<thing> rev:hasReview [ rev:rating "2.5"^^xsd:double ] .
