@@ -12,6 +12,7 @@ public class DevTDB
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
+    // Nodefile : NodeCodec
     
     // ** NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.
