@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.base.recordfile;
 
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.tdb.base.page.Page;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -20,12 +21,13 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class RecordBufferPage extends RecordBufferPageBase
 {
     // To Constants
+    // Offsets
 //    final public static int COUNT      = 0 ;
     final public static int LINK            = 4 ;
     final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ;
 
     private RecordBufferPageMgr pageMgr ;
-    private int link ;
+    private int link = Page.NO_ID ;
     
     public int getLink() { return link ; }
     
