@@ -77,7 +77,7 @@ public class AggAvg implements AggregateFactory
         private NodeValue total = noValuesToAvg ;
         private int count = 0 ;
         
-        static final boolean DEBUG = true ;
+        static final boolean DEBUG = false ;
         
         public AccAvgVar() {}
 

@@ -74,7 +74,7 @@ public class AggMax implements AggregateFactory
         
         public AccMaxVar() {}
 
-        static final boolean DEBUG = true ;
+        static final boolean DEBUG = false ;
         
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 

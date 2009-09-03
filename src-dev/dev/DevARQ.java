@@ -10,6 +10,8 @@ public class DevARQ
 {
     // ==== 2.8.1 : Check:
     // http://jena.sourceforge.net/ARQ/arq-query-eval.html; mention graph.find approach.
+    // De-duplicate aggregators.
+    // Document JMX.
     
     // ==== ARQ
     // JMX
