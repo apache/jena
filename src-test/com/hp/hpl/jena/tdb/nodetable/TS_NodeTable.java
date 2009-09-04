@@ -1,52 +1,25 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import java.nio.ByteBuffer;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-
-public class NodecBinary implements Nodec
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestCodec.class
+})
+public class TS_NodeTable
 {
-    private static byte codeNull        = 0 ;
-    private static byte codeURI         = 1 ;
-    private static byte codeBNode       = 2 ;
-    private static byte codeLiteral     = 3 ;
-    private static byte codeLiteralLang = 4 ;
-    private static byte codeLiteralDT   = 5 ;
-    
-    //@Override
-    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
-    {
-        return 0 ;
-    }
 
-    //@Override
-    public Node decode(ByteBuffer bb, PrefixMapping pmap)
-    {
-        return null ;
-    }
-    
-    private void encode(String s, ByteBuffer bb, int idx)
-    {
-    }
-
-    public ByteBuffer alloc(Node node)
-    {
-        return null ;
-    }
-
-    public void release(ByteBuffer bb)
-    {}
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -68,13 +68,16 @@ public class ByteBufferLib
         out.println();
     }
 
+    /** Copy of a ByteBuffer - the contents are copied (unlike ByteBuffer.duplicate) */
     final public static ByteBuffer duplicate(ByteBuffer bb)
     {
-        ByteBuffer bb2 = ByteBuffer.allocate(bb.capacity()) ;
+        ByteBuffer bb2 = ByteBuffer.allocate(bb.limit()-bb.position()) ;
         int x = bb.position() ;
-        bb.position(0) ;
         bb2.put(bb) ;
         bb.position(x) ;
+        
+        bb2.position(0) ;
+        bb2.limit(bb2.capacity()) ;
         return bb2 ;
     }
     

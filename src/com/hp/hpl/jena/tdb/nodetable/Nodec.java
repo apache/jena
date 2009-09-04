@@ -17,8 +17,12 @@ public interface Nodec
     /** Allocate a bytebuffer big enough for the node */ 
     public ByteBuffer alloc(Node node) ;
     
+    /** return an allocated ByteBuffer */
+    public void release(ByteBuffer bb) ;
+    
     /** Encode the node into the byte buffer, starting at the given offset. 
-     * @return Length of byte buffer used for the whol encoding.
+     * The ByteBuffer wil have positon/limit aroudn the space used on return.  
+     * @return Length of byte buffer used for the whole encoding.
      */ 
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap) ;
     

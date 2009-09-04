@@ -66,15 +66,12 @@ public class NodeLib
 
     public static long encodeStore(Node node, ObjectFile file)
     {
-        // This happens on loading.
-        // Either from a pool of large objects or calc from node.
-        // +4 for the length slot.
+        // Could use a pool of nodec each with one (large!) buffer.
+        // c.f. encoding strings.
         ByteBuffer bb = nodec.alloc(node) ;
         int len = nodec.encode(node, bb, null) ;
-        // Reset ByteBuffer.
-        bb.position(0) ;
-        bb.limit(len) ;
         long x = file.write(bb) ;
+        nodec.release(bb) ;
         return x ;
     }
 

@@ -6,16 +6,18 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import atlas.lib.Bytes;
-import atlas.lib.StrUtils;
+import atlas.lib.Bytes ;
+import atlas.lib.Pool ;
+import atlas.lib.PoolSync ;
+import atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.tdb.TDBException ;
 
 /** Simple encoder/decoder for nodes that uses the SSE string encoding.
  *  The encoding is a length (4 bytes) and a UTF-8 string.
@@ -33,13 +35,28 @@ public class NodecSSE implements Nodec
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
+    static int poolBufferSize = 1000 ; 
+    static int poolSize = 2 ;
+    static final private Pool<ByteBuffer> buffers = new PoolSync<ByteBuffer>() ;
+    static {
+        for ( int i = 0 ; i < poolSize ; i++ )
+            buffers.put(ByteBuffer.allocate(poolBufferSize)) ;
+    }
+    
     public NodecSSE() {}
     
     //@Override
     public ByteBuffer alloc(Node node)
     {
+        // No pool for the moment.
         // +4 for the length slot
         return ByteBuffer.allocate(4+maxLength(node)) ;
+    }
+    
+    public void release(ByteBuffer bb)
+    {
+//        // +4 for the length slot
+//        return ByteBuffer.allocate(4+maxLength(node)) ;
     }
     
     //@Override
@@ -47,7 +64,6 @@ public class NodecSSE implements Nodec
     {
         if ( node.isURI() ) 
         {
-            // IMPROVE.
             // Pesky spaces etc
             String x = StrUtils.encode(node.getURI(), MarkerChar, invalidIRIChars) ;
             if ( x != node.getURI() )
@@ -60,18 +76,21 @@ public class NodecSSE implements Nodec
         else 
             str = FmtUtils.stringForNode(node, pmap) ;
         
-        // String -> bytes
+        // String -> bytes, leave space for a length.
         bb.position(4) ;
         int x = Bytes.toByteBuffer(str, bb) ;
-        bb.position(0) ;
-        bb.putInt(x) ;      // Length in bytes
+        bb.putInt(0, x) ;       // Length in bytes
+        bb.position(0) ;        // Reset
+        bb.limit(x+4) ;         // The space we have used.
         return x+4 ;
     }
 
     //@Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
-        // Bytes -> String
+        // Get length : increments position
+        int len = bb.getInt() ;
+
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
 
@@ -101,10 +120,10 @@ public class NodecSSE implements Nodec
         {
             if ( node.getLiteralDatatypeURI() != null )
                 // The quotes and also space for ^^<>
-                return 2+maxLength(node.getLiteralLexicalForm())+maxLength(node.getLiteralDatatypeURI()) ;
+                return 6+maxLength(node.getLiteralLexicalForm())+maxLength(node.getLiteralDatatypeURI()) ;
             else if ( node.getLiteralLanguage() != null )
-                // The quotes and also space for @
-                return 3+maxLength(node.getLiteralLexicalForm()) ;
+                // The quotes and also space for @ (language tag is ASCII)
+                return 3+maxLength(node.getLiteralLexicalForm())+node.getLiteralLanguage().length() ;
             else
                 return 2+maxLength(node.getLiteralLexicalForm()) ;
         }
