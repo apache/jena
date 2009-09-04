@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase0;
 
 /** Value of pi */  
 
-class pi extends FunctionBase0
+public class pi extends FunctionBase0
 {
     static NodeValue value_pi = NodeValue.makeDouble(Math.PI) ;
     

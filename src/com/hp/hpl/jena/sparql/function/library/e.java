@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.function.FunctionBase0;
 
 /** Value of e */  
 
-class e extends FunctionBase0
+public class e extends FunctionBase0
 {
     static NodeValue value_e = NodeValue.makeDouble(Math.E) ;
     
