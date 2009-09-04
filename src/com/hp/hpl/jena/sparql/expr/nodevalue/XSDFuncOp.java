@@ -449,7 +449,7 @@ public class XSDFuncOp
     private static final int OP_FLOAT    = 40 ;
     
     // Classify the input arguments
-    // Preference is integer > decimal > float> double
+    // Preference is integer > decimal > float > double
     // Note the need for coordination with NodeValueTYPE isTYPE and getTYPE operations.
     
     public static int classifyNumeric(String fName, NodeValue nv1, NodeValue nv2)
