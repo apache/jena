@@ -24,13 +24,6 @@ public interface Nodec
     
     /** Decode the node from the byte buffer, starting at the given offset. */
     public Node decode(ByteBuffer bb, PrefixMapping pmap) ; 
-    
-    
-    
-    /** Simple encoder/decoder for nodes that uses the SSE string encoding.
-     */
-    public static Nodec nodecSSE = new NodecSSE() ;
- 
 }
 
 /*
