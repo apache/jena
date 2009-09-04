@@ -13,7 +13,8 @@ public class DevTDB
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
     // Nodefile : NodeCodec
-    //   In progress - see NodeLib.
+    //   NodeecSSE: decode.
+    // Better testing of (persistent) node table (without caching). 
     
     // ** NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.

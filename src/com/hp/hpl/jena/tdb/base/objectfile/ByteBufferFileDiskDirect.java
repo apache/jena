@@ -64,7 +64,7 @@ public class ByteBufferFileDiskDirect implements ByteBufferFile
                 throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
             int len = bb.getInt(0) ;
             bb = ByteBuffer.allocate(len) ;
-            file.channel.position(loc+4) ;
+            file.channel.position(loc+4) ; // Unnecessary.
             x = file.channel.read(bb) ;
             bb.position(0) ;
             bb.limit(len) ;

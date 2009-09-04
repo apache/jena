@@ -11,11 +11,11 @@ import java.nio.ByteBuffer;
 import atlas.lib.Bytes;
 import atlas.lib.StrUtils;
 
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.tdb.TDBException;
 
 /** Simple encoder/decoder for nodes that uses the SSE string encoding.
  *  The encoding is a length (4 bytes) and a UTF-8 string.
@@ -36,10 +36,18 @@ public class NodecSSE implements Nodec
     public NodecSSE() {}
     
     //@Override
-    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap)
+    public ByteBuffer alloc(Node node)
+    {
+        // +4 for the length slot
+        return ByteBuffer.allocate(4+maxLength(node)) ;
+    }
+    
+    //@Override
+    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
         if ( node.isURI() ) 
         {
+            // IMPROVE.
             // Pesky spaces etc
             String x = StrUtils.encode(node.getURI(), MarkerChar, invalidIRIChars) ;
             if ( x != node.getURI() )
@@ -51,31 +59,23 @@ public class NodecSSE implements Nodec
             str = "_:"+node.getBlankNodeLabel() ;
         else 
             str = FmtUtils.stringForNode(node, pmap) ;
-        if ( idx != 0 )
-        {
-            bb.position(idx) ;
-            bb = bb.slice() ;
-        }
+        
         // String -> bytes
-        // XXX Length issues
         bb.position(4) ;
-        Bytes.toByteBuffer(str, bb) ;
+        int x = Bytes.toByteBuffer(str, bb) ;
         bb.position(0) ;
-        bb.putInt(idx) ;
+        bb.putInt(x) ;      // Length in bytes
+        return x+4 ;
     }
 
     //@Override
-    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap)
+    public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
-        // XXX Length issues
-        int x = bb.getInt(idx) ;
-        // Get string.
-        bb.position(idx+4) ;
-        bb.limit();
-        // Bytes -> String 
+        // Bytes -> String
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
-        
+
+        // Do better: this is a key operation
         // HARDCODE THIS
         
         Node n = SSE.parseNode(str, pmap) ;
@@ -86,6 +86,40 @@ public class NodecSSE implements Nodec
                 n = Node.createURI(uri) ;
         }
         return n ;
+    }
+
+    // Over-estimate the length of the encoding.
+    private static int maxLength(Node node)
+    {
+        if ( node.isBlank() )
+            // "_:"
+            return 2+maxLength(node.getBlankNodeLabel()) ;    
+        if ( node.isURI() )
+            // "<>"
+            return 2+maxLength(node.getURI()) ;
+        if ( node.isLiteral() )
+        {
+            if ( node.getLiteralDatatypeURI() != null )
+                // The quotes and also space for ^^<>
+                return 2+maxLength(node.getLiteralLexicalForm())+maxLength(node.getLiteralDatatypeURI()) ;
+            else if ( node.getLiteralLanguage() != null )
+                // The quotes and also space for @
+                return 3+maxLength(node.getLiteralLexicalForm()) ;
+            else
+                return 2+maxLength(node.getLiteralLexicalForm()) ;
+        }
+        if ( node.isVariable() )
+            // "?"
+            return 1+maxLength(node.getName()) ;
+        throw new TDBException("Unrecognized node type: "+node) ;
+    }
+
+    private static int maxLength(String string)
+    {
+        // Very worse case for UTF-8 - and then some.
+        // Encoding every character as _XX or bad UTF-8 conversion (3 bytes)
+        // Max 3 bytes UTF-8 for up to 10FFFF (NB Java treats above 16bites as surrogate pairs only). 
+        return string.length()*3 ;
     }
 
 }

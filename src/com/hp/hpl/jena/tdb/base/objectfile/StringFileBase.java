@@ -62,6 +62,11 @@ public class StringFileBase implements StringFile
     public void sync(boolean force)
     { file.sync(force) ; }
 
+    public ByteBufferFile getByteBufferFile()
+    {
+        return file ;
+    }
+
     
     // ---- Dump
     public void dump() { dump(handler) ; }

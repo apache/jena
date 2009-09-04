@@ -21,17 +21,24 @@ public class NodecBinary implements Nodec
     private static byte codeLiteralDT   = 5 ;
     
     //@Override
-    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap)
-    {}
+    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
+    {
+        return 0 ;
+    }
 
     //@Override
-    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap)
+    public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
         return null ;
     }
     
     private void encode(String s, ByteBuffer bb, int idx)
     {
+    }
+
+    public ByteBuffer alloc(Node node)
+    {
+        return null ;
     }
 }
 

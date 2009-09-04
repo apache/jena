@@ -14,11 +14,18 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 /** Encode/decode for Nodes into bytes */
 public interface Nodec
 {
-    /** Encode the node into the byte buffer, starting at the given offset. */ 
-    public void encode(Node node, ByteBuffer bb, int idx, PrefixMapping pmap) ;
+    /** Allocate a bytebuffer big enough for the node */ 
+    public ByteBuffer alloc(Node node) ;
+    
+    /** Encode the node into the byte buffer, starting at the given offset. 
+     * @return Length of byte buffer used for the whol encoding.
+     */ 
+    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap) ;
     
     /** Decode the node from the byte buffer, starting at the given offset. */
-    public Node decode(ByteBuffer bb, int idx, PrefixMapping pmap) ; 
+    public Node decode(ByteBuffer bb, PrefixMapping pmap) ; 
+    
+    
     
     /** Simple encoder/decoder for nodes that uses the SSE string encoding.
      */

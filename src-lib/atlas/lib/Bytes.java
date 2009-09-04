@@ -212,7 +212,7 @@ public class Bytes
     }
 
     /** Encode a string into a ByteBuffer */
-    public static void toByteBuffer(CharSequence s, ByteBuffer bb)
+    public static int toByteBuffer(CharSequence s, ByteBuffer bb)
     {
         CharsetEncoder enc = Chars.getEncoder();
 
@@ -223,13 +223,15 @@ public class Bytes
         //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
         //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
 
-        toByteBuffer(s, bb, enc) ;
+        int x = toByteBuffer(s, bb, enc) ;
         Chars.putEncoder(enc) ;
+        return x ;
     }
     
     /** Encode a string into a ByteBuffer */
-    public static void toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc)
+    public static int toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc)
     {
+        int start = bb.position() ;
         CharBuffer cBuff = CharBuffer.wrap(s);
         CoderResult r = enc.encode(cBuff, bb, true) ;
         if ( r.isOverflow() )
@@ -238,6 +240,8 @@ public class Bytes
         if ( r.isOverflow() )
             throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (2)") ;
         enc.reset();
+        int finish = bb.position() ;
+        return finish-start ;
     }
     
     /** Decode a string into a ByteBuffer */

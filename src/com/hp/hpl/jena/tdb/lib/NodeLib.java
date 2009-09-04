@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.lib;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.objectfile.ByteBufferFile;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -38,29 +40,52 @@ import com.hp.hpl.jena.tdb.store.NodeType;
 
 public class NodeLib
 {
-    // ---- Node <->String
-    
     private static Nodec nodec = new NodecSSE() ;
     
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
+    // Used.
+    
     public static long encodeStore(Node node, StringFile file)
     {
-        String s = encode(node) ;
-        long x = file.write(s) ;
-        return x ;
+//        String s = encode(node) ;
+//        long x = file.write(s) ;
+//        return x ;
+        return encodeStore(node, file.getByteBufferFile()) ;
     }
 
     public static Node fetchDecode(long id, StringFile file)
     {
-        String s = file.read(id) ;
-        Node n = decode(s) ;
+//        String s = file.read(id) ;
+//        Node n = decode(s) ;
+//        return n ;
+        return fetchDecode(id, file.getByteBufferFile()) ;
+    }
+
+    public static long encodeStore(Node node, ByteBufferFile file)
+    {
+        // This happens on loading.
+        // Either from a pool of large objects or calc from node.
+        // +4 for the length slot.
+        ByteBuffer bb = nodec.alloc(node) ;
+        int len = nodec.encode(node, bb, null) ;
+        // Reset ByteBuffer.
+        bb.position(0) ;
+        bb.limit(len) ;
+        long x = file.write(bb) ;
+        return x ;
+    }
+
+    public static Node fetchDecode(long id, ByteBufferFile file)
+    {
+        ByteBuffer bb = file.read(id) ;
+        bb.position(0) ;
+        Node n = nodec.decode(bb, null) ;
         return n ;
     }
 
-    
     private static String encode(Node node) { return encode(node, null) ; }
 
     private static String encode(Node node, PrefixMapping pmap)

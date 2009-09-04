@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 public interface StringFile extends Sync, Closeable
 {
     // Better name is a StringFile.
-    // even better - put encoder over a byte object file.
+    // Even better - put encoder over a byte object file.
     
     public static final String type = "object" ;
     public long write(String str) ;
@@ -25,6 +25,10 @@ public interface StringFile extends Sync, Closeable
     public void sync(boolean force) ;
     public void close() ;
     public void dump() ;
+    
+    // Transition.
+    public ByteBufferFile getByteBufferFile() ;
+    
 }
 
 /*
