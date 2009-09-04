@@ -14,7 +14,7 @@ import atlas.logging.Log;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFileDiskDirect;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
@@ -33,6 +33,7 @@ public class tdbdump extends CmdSub
     static final String CMD_DATA =      "data" ; 
     static final String CMD_INDEX =     "index" ; 
     static final String CMD_NODES =     "nodes" ;
+    static final String CMD_PREFIXES =  "prefixes" ;
     
     protected tdbdump(String...argv)
     {
@@ -134,7 +135,7 @@ public class tdbdump extends CmdSub
             }
         }
         
-        static StringFileDiskDirect.DumpHandler handler = new StringFileDiskDirect.DumpHandler() {
+        static StringFile.DumpHandler handler = new StringFile.DumpHandler() {
             //@Override
             public void handle(long fileIdx, String str)
             {
@@ -145,7 +146,7 @@ public class tdbdump extends CmdSub
         private void execOne(String fn)
         {
             // Open the node file
-            StringFileDiskDirect f = (StringFileDiskDirect)FileFactory.createStringFileDisk(fn) ;
+            StringFile f = FileFactory.createStringFileDisk(fn) ;
             f.dump(handler) ;
         }
     }

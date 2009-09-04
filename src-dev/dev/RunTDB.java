@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.tdb.TC_TDB;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -87,30 +88,7 @@ public class RunTDB
 
         if ( true )
         {
-            
-            
             DatasetGraphTDB dsg = NewSetup.buildDataset(location) ;
-            
-            // BROKEN.
-            DatasetPrefixStorage dps = dsg.getPrefixes() ;
-            DatasetPrefixesTDB x = (DatasetPrefixesTDB)dps ;
-            
-//            System.out.println("Dump prefix tuple table") ;
-//            Iterator<Tuple<Node>> iter1 = x.getNodeTupleTable().find((Node)null, null, null) ;
-//            for ( ; iter1.hasNext() ; )
-//                System.out.println(iter1.next()) ;
-//            
-//            System.out.println("Dump prefix object table") ;
-//            ((NodeTableBase)x.getNodeTupleTable().getNodeTable()).getObjects().dump() ;
-//            
-//            System.out.println("Dump prefix index table") ;
-//            
-//            Iterator<Tuple<NodeId>> iter2 = x.getNodeTupleTable().getTupleTable().find(Tuple.create((NodeId)null,null,null)) ;
-//            System.out.println(Iter.asString(iter2)) ;
-
-            //Set<String> graphNames = dps.graphNames() ;
-            //System.out.println(graphNames) ;
-
             divider() ;
             Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
             m.write(System.out, "TTL") ;
@@ -125,7 +103,7 @@ public class RunTDB
             }
             
             
-            //SSE.write(IndentedWriter.stdout, dsg) ;
+            SSE.write(IndentedWriter.stdout, dsg) ;
             System.exit(0) ;
         }
         
@@ -169,7 +147,7 @@ public class RunTDB
         if ( false )
         {
             FileSet fs = new FileSet(location, Names.indexId2Node) ;
-            StringFile objFile = NewSetup.makeStringFile(fs) ;
+            StringFile objFile = new StringFile(NewSetup.makeObjectFile(fs)) ;
             System.out.println("==== Object file") ;
             objFile.dump() ;
         }

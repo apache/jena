@@ -6,19 +6,46 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import java.nio.ByteBuffer;
+import java.util.List;
 
-
-
-/** On disk string file
- * @see ByteBufferFileDiskDirect 
- */
-
-public class StringFileDiskDirect extends StringFileBase  
+/** For testing only */
+public class ObjectFileSink implements ObjectFile
 {
-    public StringFileDiskDirect(String filename)
+    long id = 0 ;
+    
+    //@Override
+    public List<String> all()
     {
-        super(new ByteBufferFileDiskDirect(filename)) ;
+        throw new UnsupportedOperationException() ;
     }
+
+    //@Override
+    public void close()
+    {}
+
+    //@Override
+    public ByteBuffer read(long id)
+    {
+        throw new UnsupportedOperationException() ;
+    }
+
+    //@Override
+    public void sync(boolean force)
+    {}
+
+    //@Override
+    public long write(ByteBuffer str)
+    {
+        return ++id ;
+    }
+    
+    //@Override
+    public void dump() {}
+
+    //@Override
+    public long length()
+    { return id ; }
 }
 
 /*

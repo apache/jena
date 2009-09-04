@@ -13,7 +13,7 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 
 /** Temporary name.
  */
-public interface ByteBufferFile extends Sync, Closeable
+public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
     public long write(ByteBuffer str) ;

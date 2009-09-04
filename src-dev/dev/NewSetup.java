@@ -6,51 +6,51 @@
 
 package dev ;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec ;
-import static com.hp.hpl.jena.tdb.TDB.logInfo ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import atlas.lib.ColumnMap ;
-import atlas.lib.FileOps ;
-import atlas.lib.StrUtils ;
+import static com.hp.hpl.jena.tdb.TDB.logExec;
+import static com.hp.hpl.jena.tdb.TDB.logInfo;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import atlas.lib.ColumnMap;
+import atlas.lib.FileOps;
+import atlas.lib.StrUtils;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
-import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.QuadTable;
+import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Makes things: datasets from locations, indexes */
 
@@ -383,10 +383,6 @@ public class NewSetup implements DatasetGraphMakerTDB
              throw new TDBException("Unknown index type: "+indexType) ;
          }
          RangeIndex rIndex =  makeBPlusTree(fs, dftKeyLength, dftValueLength) ;
-         
-         if ( rIndex.getRecordFactory().valueLength() != 0 )
-             error("Value length not zero: "+rIndex.getRecordFactory().valueLength()) ;
-         
          metafile.flush();
          return rIndex ;
     }
@@ -487,7 +483,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
         //checkMetadata(fsIdToNode.getMetaFile(), /*Names.kNodeTableType,*/ NodeTable.type) ; 
         
-        StringFile stringFile = makeStringFile(fsIdToNode) ;
+        ObjectFile stringFile = makeObjectFile(fsIdToNode) ;
         
         // -- make node to id mapping -- Names.indexNode2Id
         // Make index of id to node (data table)
@@ -501,7 +497,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         return nodeTable ;
     }
 
-    public static StringFile makeStringFile(FileSet fsIdToNode)
+    public static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
         /* Physical
          * ---- An object file
@@ -513,13 +509,13 @@ public class NewSetup implements DatasetGraphMakerTDB
          */
         
         MetaFile metafile = fsIdToNode.getMetaFile() ;
-        checkOrSetMetadata(metafile, "tdb.file.type", StringFile.type) ;
+        checkOrSetMetadata(metafile, "tdb.file.type", ObjectFile.type) ;
         checkOrSetMetadata(metafile, "tdb.file.impl", "dat") ;
         checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
         checkOrSetMetadata(metafile, "tdb.object.encoding", "sse") ;
         
         String filename = fsIdToNode.filename(Names.extNodeData) ;
-        StringFile objFile = FileFactory.createStringFileDisk(filename);
+        ObjectFile objFile = FileFactory.createObjectFileDisk(filename);
         metafile.flush();
         return objFile ;
     }

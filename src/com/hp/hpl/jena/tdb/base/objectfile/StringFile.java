@@ -6,29 +6,128 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
+import java.nio.ByteBuffer ;
 
-/** A file for writing serialized strings to disk.
- *  The file is currently "read/append"
- *  Allocates an id (actually the byte offset in the file)
+import atlas.lib.Bytes ;
+
+import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
+
+/** Wrap a {@link ObjectFile} with a string encoder/decoder.  
+ * Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  */
-public interface StringFile extends Sync, Closeable
+
+public class StringFile
 {
-    // Better name is a StringFile.
-    // Even better - put encoder over a byte object file.
+    protected final ObjectFile file ;
+    /*
+     * Encoding: Simple for now:
+     *   length (4 bytes)
+     *   UTF-8 bytes. 
+     */
     
-    public static final String type = "object" ;
-    public long write(String str) ;
-    public String read(long id) ;
-//    public List<String> all() ;
-    public void sync(boolean force) ;
-    public void close() ;
-    public void dump() ;
+    public StringFile(ObjectFile file)
+    {
+        this.file = file ;
+    }
     
-    // Transition.
-    public ByteBufferFile getByteBufferFile() ;
+    //@Override
+    public long write(String str)
+    { 
+        str = compress(str) ;
+        ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
+        bb.position(4) ;
+        Bytes.toByteBuffer(str, bb) ;
+        // Position moved from 4.
+        int len = bb.position()-4 ;
+        bb.limit(len+4) ;
+        bb.putInt(0, len) ;     // Object length
+        bb.position(0) ;
+        return file.write(bb) ;
+    }
     
+    //@Override
+    public String read(long id)
+    {
+        ByteBuffer bb = file.read(id) ;
+        String x = Bytes.fromByteBuffer(bb) ;
+        x = decompress(x) ;
+        return x ;
+    }
+
+    //@Override
+    public void close()
+    { file.close() ; }
+
+    //@Override
+    public void sync(boolean force)
+    { file.sync(force) ; }
+
+    public ObjectFile getByteBufferFile()
+    {
+        return file ;
+    }
+
+    
+    // ---- Dump
+    public void dump() { dump(handler) ; }
+
+    public interface DumpHandler { void handle(long fileIdx, String str) ; }  
+    
+    public void dump(DumpHandler handler)
+    {
+        long fileIdx = 0 ;
+        while ( true )
+        {
+            ByteBuffer bb = file.read(fileIdx) ;
+            String str = Bytes.fromByteBuffer(bb) ;
+            handler.handle(fileIdx, str) ;
+            fileIdx = fileIdx + bb.limit() + 4 ;
+        }
+    }
+    
+    static StringFile.DumpHandler handler = new StringFile.DumpHandler() {
+        //@Override
+        public void handle(long fileIdx, String str)
+        {
+            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
+        }
+    } ;
+    // ----
+ 
+    
+    // URI compression can be effective but literals are more of a problem.  More variety. 
+    public final static boolean compression = false ; 
+    private static StringAbbrev abbreviations = new StringAbbrev() ;
+    static {
+        abbreviations.add(  "rdf",      "<http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
+        abbreviations.add(  "rdfs",     "<http://www.w3.org/2000/01/rdf-schema#") ;
+        abbreviations.add(  "xsd",      "<http://www.w3.org/2001/XMLSchema#") ;
+        
+        // MusicBrainz
+        abbreviations.add(  "mal",      "<http://musicbrainz.org/mm-2.1/album/") ;
+        abbreviations.add(  "mt",       "<http://musicbrainz.org/mm-2.1/track/") ;
+        abbreviations.add(  "mar",      "<http://musicbrainz.org/mm-2.1/artist/") ;
+        abbreviations.add(  "mtr",      "<http://musicbrainz.org/mm-2.1/trmid/") ;
+        abbreviations.add(  "mc",       "<http://musicbrainz.org/mm-2.1/cdindex/") ;
+        
+        abbreviations.add(  "m21",      "<http://musicbrainz.org/mm/mm-2.1#") ;
+        abbreviations.add(  "dc",       "<http://purl.org/dc/elements/1.1/") ;
+        // DBPedia
+        abbreviations.add(  "r",        "<http://dbpedia/resource/") ;
+        abbreviations.add(  "p",        "<http://dbpedia/property/") ;
+    }
+    private String compress(String str)
+    {
+        if ( !compression || abbreviations == null ) return str ;
+        return abbreviations.abbreviate(str) ;
+    }
+
+    private String decompress(String x)
+    {
+        if ( !compression || abbreviations == null ) return x ;
+        return abbreviations.expand(x) ;
+    }
+
 }
 
 /*

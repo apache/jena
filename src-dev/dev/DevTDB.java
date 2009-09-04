@@ -13,7 +13,7 @@ public class DevTDB
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
     // Nodefile : NodeCodec
-    //   NodeecSSE: decode.
+    //   NodecSSE: decode.
     // Better testing of (persistent) node table (without caching). 
     
     // ** NewSetup/DI

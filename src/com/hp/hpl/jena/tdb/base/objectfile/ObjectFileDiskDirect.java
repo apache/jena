@@ -20,7 +20,7 @@ import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 
 /** Variable length ByteBuffer file on disk.  Read by id ; write is append-only */  
 
-public class ByteBufferFileDiskDirect implements ByteBufferFile 
+public class ObjectFileDiskDirect implements ObjectFile 
 {
     /* No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations needs to be thread safe.  
@@ -28,7 +28,7 @@ public class ByteBufferFileDiskDirect implements ByteBufferFile
     protected long filesize ;
     protected final FileBase file ;
 
-    public ByteBufferFileDiskDirect(String filename)
+    public ObjectFileDiskDirect(String filename)
     {
         file = new FileBase(filename) ;
         try { 
@@ -128,7 +128,7 @@ public class ByteBufferFileDiskDirect implements ByteBufferFile
         }
     }
     
-    static ByteBufferFileDiskDirect.DumpHandler handler = new ByteBufferFileDiskDirect.DumpHandler() {
+    static ObjectFileDiskDirect.DumpHandler handler = new ObjectFileDiskDirect.DumpHandler() {
         //@Override
         public void handle(long fileIdx, String str)
         {

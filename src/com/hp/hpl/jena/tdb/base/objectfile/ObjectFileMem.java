@@ -6,17 +6,65 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-/** In-memroy string file - for testing.
- * @see ByteBufferFileMem 
+import atlas.lib.ByteBufferLib;
+
+/** In-memory ByteBufferFile (for testing) - copies bytes in and out
+ * to ensure no implicit modification.  
  */
 
-public class StringFileMem extends StringFileBase  
+public class ObjectFileMem implements ObjectFile 
 {
-    public StringFileMem()
+    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
+    boolean closed = false ;
+
+    public ObjectFileMem(String label)
+    { }
+
+    public ObjectFileMem()
+    { }
+
+    
+    public long length()
     {
-        super(new ByteBufferFileMem()) ; 
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        return buffers.size() ;
     }
+
+    public ByteBuffer read(long id)
+    {
+        if ( id < 0 || id >= buffers.size() )
+            throw new IllegalArgumentException() ;
+        
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        
+        ByteBuffer bb1 = buffers.get((int)id) ;
+        ByteBuffer bb2 = ByteBufferLib.duplicate(bb1) ;
+        return bb2 ;
+    }
+
+    public long write(ByteBuffer bb)
+    {
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
+        buffers.add(bb2) ;
+        return buffers.size() ; 
+    }
+
+    public void sync(boolean force)
+    {}
+
+    public void close()
+    {
+        closed = true ;
+    }
+
 }
 
 /*

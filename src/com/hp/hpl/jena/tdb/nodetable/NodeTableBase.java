@@ -14,7 +14,7 @@ import atlas.lib.CacheSetLRU;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
@@ -26,7 +26,7 @@ public class NodeTableBase implements NodeTable
     // Assumes an StringFile and an Indexer, which may be an Index but allows
     // this to be overriden for a direct use of BDB.
 
-    protected StringFile objects ;
+    protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
@@ -41,17 +41,17 @@ public class NodeTableBase implements NodeTable
     protected NodeTableBase() {}
     
     // Combined into one constructor.
-    public NodeTableBase(Index nodeToId, StringFile stringFile, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this() ;
-        init(nodeToId, stringFile, idToNodeCacheSize, idToNodeCacheSize) ;
+        init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
     }
     
-    protected void init(Index nodeToId, StringFile stringFile,
+    protected void init(Index nodeToId, ObjectFile objectFile,
                         int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this.nodeHashToId = nodeToId ;
-        this.objects = stringFile;
+        this.objects = objectFile;
         if ( nodeToIdCacheSize > 0) 
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
         if ( idToNodeCacheSize > 0)
@@ -261,7 +261,7 @@ public class NodeTableBase implements NodeTable
             getObjects().sync(force) ;
     }
 
-    public StringFile getObjects()
+    public ObjectFile getObjects()
     {
         return objects;
     }

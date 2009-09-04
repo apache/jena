@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.objectfile.ByteBufferFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
@@ -64,7 +64,7 @@ public class NodeLib
         return fetchDecode(id, file.getByteBufferFile()) ;
     }
 
-    public static long encodeStore(Node node, ByteBufferFile file)
+    public static long encodeStore(Node node, ObjectFile file)
     {
         // This happens on loading.
         // Either from a pool of large objects or calc from node.
@@ -78,7 +78,7 @@ public class NodeLib
         return x ;
     }
 
-    public static Node fetchDecode(long id, ByteBufferFile file)
+    public static Node fetchDecode(long id, ObjectFile file)
     {
         ByteBuffer bb = file.read(id) ;
         bb.position(0) ;

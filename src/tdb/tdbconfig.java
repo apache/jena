@@ -20,9 +20,9 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFileDiskDirect;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
@@ -182,7 +182,7 @@ public class tdbconfig extends CmdSub
             for ( String x : args )
             {
                 System.out.println("**** Object File: "+x) ;
-                StringFile objs = new StringFileDiskDirect(x) ;
+                StringFile objs = FileFactory.createStringFileDisk(x) ;
                 objs.dump() ;
             }
         }
