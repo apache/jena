@@ -2,7 +2,9 @@ BASE <http://example/>
 PREFIX rev: <http://example/rev/>
 PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 
-SELECT (MIN(?rating) AS ?min) (MAX(?rating) AS ?max) (AVG(?rating) AS ?avg)
+SELECT (MIN(xsd:decimal(?rating)) AS ?min) 
+       (MAX(xsd:decimal(?rating)) AS ?max) 
+       (AVG(xsd:decimal(?rating)) AS ?avg)
 WHERE {
    <thing> rev:hasReview [ rev:rating ?rating ] .
 }
