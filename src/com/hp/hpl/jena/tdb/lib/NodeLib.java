@@ -6,34 +6,35 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 
-import java.io.UnsupportedEncodingException ;
-import java.security.DigestException ;
-import java.security.MessageDigest ;
-import java.security.NoSuchAlgorithmException ;
-import java.util.Iterator ;
+import java.io.UnsupportedEncodingException;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 
-import atlas.iterator.Iter ;
-import atlas.iterator.Transform ;
-import atlas.lib.Bytes ;
-import atlas.lib.StrUtils ;
+import atlas.iterator.Iter;
+import atlas.iterator.Transform;
+import atlas.lib.Bytes;
+import atlas.lib.StrUtils;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.Nodec ;
-import com.hp.hpl.jena.tdb.nodetable.NodecSSE ;
-import com.hp.hpl.jena.tdb.store.Hash ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.NodeType ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.Nodec;
+import com.hp.hpl.jena.tdb.nodetable.NodecSSE;
+import com.hp.hpl.jena.tdb.store.Hash;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeType;
 
 public class NodeLib
 {
@@ -45,9 +46,24 @@ public class NodeLib
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
-    public static String encode(Node node) { return encode(node, null) ; }
+    public static long encodeStore(Node node, StringFile file)
+    {
+        String s = encode(node) ;
+        long x = file.write(s) ;
+        return x ;
+    }
 
-    public static String encode(Node node, PrefixMapping pmap)
+    public static Node fetchDecode(long id, StringFile file)
+    {
+        String s = file.read(id) ;
+        Node n = decode(s) ;
+        return n ;
+    }
+
+    
+    private static String encode(Node node) { return encode(node, null) ; }
+
+    private static String encode(Node node, PrefixMapping pmap)
     {
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeLabel() ;
@@ -63,9 +79,9 @@ public class NodeLib
         return FmtUtils.stringForNode(node, pmap) ;
     }
 
-    public static Node decode(String s)     { return decode(s, null) ; }
+    private static Node decode(String s)     { return decode(s, null) ; }
     
-    public static Node decode(String s, PrefixMapping pmap)
+    private static Node decode(String s, PrefixMapping pmap)
     {
         if ( s.startsWith("_:") )   
         {

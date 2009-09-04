@@ -13,11 +13,11 @@ public class DevTDB
     // Don't print optimizer type when set at info level.
     // Remove "warn" ?
     // Nodefile : NodeCodec
+    //   In progress - see NodeLib.
     
     // ** NewSetup/DI
     // Use ARQ 2.8.1 and enable management info.
     //    (later: Phase 2 : Monitoring caches)
-    // Node format - SSE overhead.
     
     // Investigate better record byte access.  Whole record?
     // Investigate adding a PSO index (for paths to get sorted order)

@@ -6,21 +6,18 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
-import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash;
 import atlas.lib.Cache;
 import atlas.lib.CacheFactory;
 import atlas.lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.util.ALog;
-
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.store.Hash;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
@@ -223,21 +220,19 @@ public class NodeTableBase implements NodeTable
     // -------- NodeId<->Node
     // Assumes NodeId inlining and caching has been handled.
     // Assumes synchronized (the caches wil be updated consistently)
+    
     // Only places for accessing the StringFile.
     
     protected final NodeId writeNodeToTable(Node node)
     {
-        String s = encode(node) ;
-        long x = getObjects().write(s) ;
+        long x = NodeLib.encodeStore(node, getObjects()) ;
         return NodeId.create(x);
     }
     
 
     protected final Node readNodeByNodeId(NodeId id)
     {
-        String s = getObjects().read(id.getId()) ;
-        Node n = decode(s) ;
-        return n ;
+        return NodeLib.fetchDecode(id.getId(), getObjects()) ;
     }
     // -------- NodeId<->Node
 

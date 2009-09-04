@@ -19,7 +19,7 @@ public interface ByteBufferFile extends Sync, Closeable
     public long write(ByteBuffer str) ;
     public ByteBuffer read(long id) ;
     
-    /** Length, in bytes */
+    /** Length, in untis used by read/write for ids */
     public long length() ;
     public void sync(boolean force) ;
     public void close() ;

@@ -6,41 +6,65 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
-/** For testing only */
-public class StringFileSink implements StringFile
+import atlas.lib.ByteBufferLib;
+
+/** In-memory ByteBufferFile (for testing) - copies bytes in and out
+ * to ensure no implicit modification.  
+ */
+
+public class ByteBufferFileMem implements ByteBufferFile 
 {
-    long id = 0 ;
+    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
+    boolean closed = false ;
+
+    public ByteBufferFileMem(String label)
+    { }
+
+    public ByteBufferFileMem()
+    { }
+
     
-    //@Override
-    public List<String> all()
+    public long length()
     {
-        throw new UnsupportedOperationException() ;
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        return buffers.size() ;
     }
 
-    //@Override
-    public void close()
-    {}
-
-    //@Override
-    public String read(long id)
+    public ByteBuffer read(long id)
     {
-        throw new UnsupportedOperationException() ;
+        if ( id < 0 || id >= buffers.size() )
+            throw new IllegalArgumentException() ;
+        
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        
+        ByteBuffer bb1 = buffers.get((int)id) ;
+        ByteBuffer bb2 = ByteBufferLib.duplicate(bb1) ;
+        return bb2 ;
     }
 
-    //@Override
+    public long write(ByteBuffer bb)
+    {
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
+        buffers.add(bb2) ;
+        return buffers.size() ; 
+    }
+
     public void sync(boolean force)
     {}
 
-    //@Override
-    public long write(String str)
+    public void close()
     {
-        return ++id ;
+        closed = true ;
     }
-    
-    //@Override
-    public void dump() {}
+
 }
 
 /*

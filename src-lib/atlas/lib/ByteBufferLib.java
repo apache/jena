@@ -68,6 +68,16 @@ public class ByteBufferLib
         out.println();
     }
 
+    final public static ByteBuffer duplicate(ByteBuffer bb)
+    {
+        ByteBuffer bb2 = ByteBuffer.allocate(bb.capacity()) ;
+        int x = bb.position() ;
+        bb.position(0) ;
+        bb2.put(bb) ;
+        bb.position(x) ;
+        return bb2 ;
+    }
+    
     // For non-array versions : beware of overlaps.
     final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {

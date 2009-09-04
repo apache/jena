@@ -33,8 +33,9 @@ import com.hp.hpl.jena.sparql.util.graph.GraphSink;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.objectfile.ByteBufferFileSink;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFileSink;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFileBase;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.CountingSinkGraph;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -117,7 +118,7 @@ public class tdbperf extends CmdSub
             //NodeTable nodeTable = NodeTableFactory.createSink(indexBuilder, location) ;
             // Memory index, empty object file.
             
-            StringFile stringFile = new StringFileSink() ;
+            StringFile stringFile = new StringFileBase(new ByteBufferFileSink()) ;
             RecordFactory nr = FactoryGraphTDB.nodeRecordFactory ;
             
             

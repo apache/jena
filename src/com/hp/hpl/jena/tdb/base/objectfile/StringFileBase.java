@@ -12,15 +12,13 @@ import atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
-/** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
- * @see StringFileDisk_DataIO
- * @author Andy Seaborne
- * @version $Id$
+/** Wrap a {@link ByteBufferFile} with a string encoder/decoder.  
+ * Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  */
 
 public class StringFileBase implements StringFile
 {
-    private final ByteBufferFile file ;
+    protected final ByteBufferFile file ;
     /*
      * Encoding: Simple for now:
      *   length (4 bytes)
