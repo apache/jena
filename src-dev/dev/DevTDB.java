@@ -8,6 +8,8 @@ package dev;
 
 public class DevTDB
 {
+    // Finish/test NewSetup.
+    
     // == 0.8.3
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
