@@ -106,7 +106,7 @@ public class TDBMaker
         public DatasetGraphTDB createDatasetGraph()
         { 
             //return FactoryGraphTDB.createDatasetGraphMem() ;
-            return TDBSetup.buildDataset(Location.mem()) ;
+            return Setup.buildDataset(Location.mem()) ;
         }
 
         public void releaseDatasetGraph(DatasetGraphTDB dataset)

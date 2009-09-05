@@ -53,7 +53,7 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
 
-public class TDBSetup implements DatasetGraphMakerTDB
+public class Setup
 {
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     private static final Logger log = TDB.logInfo ;
@@ -71,21 +71,19 @@ public class TDBSetup implements DatasetGraphMakerTDB
      * for changes both in implementation technology and in overall design. 
      */
     
-    // Check WRONG 
-    // Check use of Names.k....
-    // Check flushing of metafiles.
-
-    // Sort out metadataLocation vs checkOrSetMetadata/getOPrSetDefault
     // Naming of statics: Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
     
     // IndexBuilder for metadata files. 
     
+    // TODO IndexFactory and IndexRangeFactory statics
+    // TODO IndexFactory and IndexRangeFactory with metadata testing.
     // TODO Tests.
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
     // TODO Check everywhere else for non-DI constructors.
+    // TDOD IndexFactory for  
     
     // Old code:
-    // Clearup.
+    // 
     // IndexBuilders.  Or add a new IndexBuilder that can make from meta files.
     
 
@@ -95,21 +93,7 @@ public class TDBSetup implements DatasetGraphMakerTDB
 //    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 //    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    // << Impl interface
-    public DatasetGraphTDB createDatasetGraph()
-    {
-        return buildDataset(Location.mem()) ;
-    }
-
-    public DatasetGraphTDB createDatasetGraph(Location location)
-    {
-        return buildDataset(location) ;
-    }
-
-    public void releaseDatasetGraph(DatasetGraphTDB dataset)
-    {}
-
-    // >> Impl interface
+ 
 
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
@@ -160,9 +144,9 @@ public class TDBSetup implements DatasetGraphMakerTDB
          * tdb.index.name=SPO
          * tdb.index.order=SPO
          *
-         * tdb.bpt.record=24,0 or 32,0
-         * (tdb.bpt.order=)
-         * tdb.bpt.blksize=
+         * tdb.bplustree.record=24,0 or 32,0
+         * (tdb.bplustree.order=)
+         * tdb.bplustree.blksize=
          * 
          * ---- An object file
          *
@@ -286,23 +270,16 @@ public class TDBSetup implements DatasetGraphMakerTDB
          * It's a node table and an index (rangeindex)
          * 
          */
-        
 
         // Some of this is also in locationMetadata.
         
         MetaFile metafile = location.getMetaFile() ;
     
         // The index using for Graph+Prefix => URI
-        
-        // UGG 
-        
         String indexPrefixes = getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
         String primary = getOrSetDefault(metafile, "tdb.prefixes.primary", Names.primaryIndexPrefix) ;
         String x = getOrSetDefault(metafile, "tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
         String indexes[] = x.split(",") ;
-        
-        // WRONG - indexes[] become the file names
-        //  makeTupleIndexes(location, primary, indexes, filenames[]) ;
         
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
@@ -392,22 +369,22 @@ public class TDBSetup implements DatasetGraphMakerTDB
         // ---- BPlusTree
         // Get parameters.
         /*
-         * tdb.bpt.record=24,0
-         * tdb.bpt.blksize=
-         * tdb.bpt.order=
+         * tdb.bplustree.record=24,0
+         * tdb.bplustree.blksize=
+         * tdb.bplustree.order=
          */
         
         MetaFile metafile = fs.getMetaFile() ;
-        RecordFactory recordFactory = makeRecordFactory(metafile, "tdb.bpt.record", dftKeyLength, dftValueLength) ;
+        RecordFactory recordFactory = makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
         
-        String blkSizeStr = getOrSetDefault(metafile, "tdb.bpt.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+        String blkSizeStr = getOrSetDefault(metafile, "tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
         int blkSize = parseInt(blkSizeStr, "Bad block size") ;
         
         // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
         // Does not set order.
         
         int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-        String orderStr = getOrSetDefault(metafile, "tdb.bpt.order", Integer.toString(calcOrder)) ;
+        String orderStr = getOrSetDefault(metafile, "tdb.bplustree.order", Integer.toString(calcOrder)) ;
         int order = parseInt(orderStr, "Bad order for B+Tree") ;
         if ( order != calcOrder )
             error("Wrong order (" + order + "), calculated = "+calcOrder) ;
@@ -617,41 +594,8 @@ public class TDBSetup implements DatasetGraphMakerTDB
 //        // Block size control?
 //        return chooseIndexBuilder(fileset).newRangeIndex(fileset, recordFactory) ;
 //    }
-        // MESSY.
-        
-//        MetaFile metafile = fileset.getMetaFile() ;
-//        if (metafile == null) metafile = fileset.getLocation().getMetaFile() ;
-//
-//        String keyRoot = Names.makeName(Names.keyNS, fileset.getBasename(), Names.elIndex) ;
-//        String keyType = Names.makeName(keyRoot, Names.elType) ;
-//        String keyLayout = Names.makeName(keyRoot, Names.elLayout) ;
-//        
-//        
-//        // Anything already there?
-//        if (metafile.existsMetaData())
-//        {
-//            // Check version.
-//            String indexTypeStr = metafile.getProperty(keyType) ;
-//            String fileLayout = metafile.getProperty(keyLayout) ;
-//
-//            if (indexTypeStr != null)
-//            {
-//                IndexType indexType = IndexType.get(indexTypeStr) ;
-//                if (indexType == null) 
-//                    throw new TDBException("Unknown index type: '" + indexTypeStr + "'") ;
-//                log.debug("Index type: explicit setting: "+indexTypeStr) ;
-//                return chooseIndexBuilder(indexType).newRangeIndex(fileset, recordFactory) ;
-//            }
-//            // Metadata - no keyIndexType - default.
-//        }
-//
-//        // Default to B+Tree
-//        metafile.setProperty(keyType, IndexType.BPlusTree.getName()) ;
-//        IndexBuilder idxBuidler = chooseIndexBuilder(fileset) ;
-//        
-//        return createRangeIndex(fileset, idxBuilder, blockSize, recordFactory) ;
-//    }
 
+    /** Knowing all the parameters, create a B+Tree */
     public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
                                           RecordFactory factory)
     {

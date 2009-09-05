@@ -17,7 +17,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
 public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
+    private NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         super() ;
         // Index.
@@ -28,10 +28,10 @@ public class NodeTableIndex extends NodeTableBase
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
     
-    public NodeTableIndex(Index nodeToId, ObjectFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
-    {
-        super(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
-    }
+//    private NodeTableIndex(Index nodeToId, ObjectFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
+//    {
+//        super(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
+//    }
     
     // Memory version - testing.
     private NodeTableIndex(IndexBuilder factory)
@@ -43,7 +43,7 @@ public class NodeTableIndex extends NodeTableBase
         init(nodeToId, objects, 100, 100) ;
     }
 
-    public static NodeTable createMem(IndexBuilder indexBuilder)
+    private static NodeTable createMem(IndexBuilder indexBuilder)
     {
         return new NodeTableIndex(indexBuilder) ;
     }

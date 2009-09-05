@@ -44,8 +44,9 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.TDBSetup ;
+import com.hp.hpl.jena.tdb.sys.Setup ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -65,7 +66,7 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
-        TDBMaker.setImplFactory(new TDBSetup()) ;
+        TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
         
         Dataset ds = TDBFactory.createDataset() ;
         FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
@@ -94,7 +95,7 @@ public class RunTDB
 
         if ( true )
         {
-            DatasetGraphTDB dsg = TDBSetup.buildDataset(location) ;
+            DatasetGraphTDB dsg = Setup.buildDataset(location) ;
             divider() ;
             Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
             m.write(System.out, "TTL") ;
@@ -115,18 +116,18 @@ public class RunTDB
         
         if ( false )
         {
-            TDBSetup.locationMetadata(location) ;
-            NodeTable nodeTable = TDBSetup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
+            Setup.locationMetadata(location) ;
+            NodeTable nodeTable = Setup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
             
             divider() ;
-            TripleTable tt = TDBSetup.makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
+            TripleTable tt = Setup.makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
             Iterator<Triple> iter1 = tt.find(null, null, null) ;
             for ( ; iter1.hasNext() ; )
                 System.out.println(iter1.next()) ;
 
             divider() ;
 
-            QuadTable qt = TDBSetup.makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
+            QuadTable qt = Setup.makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
             Iterator<Quad> iter2 = qt.find(null, null, null, null ) ;
             for ( ; iter2.hasNext() ; )
                 System.out.println(iter2.next()) ;
@@ -137,8 +138,8 @@ public class RunTDB
         
         if ( false )
         {
-            TDBSetup.locationMetadata(location) ;
-            NodeTable nodeTable = TDBSetup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
+            Setup.locationMetadata(location) ;
+            NodeTable nodeTable = Setup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
             //NodeTable nodeTable = NewSetup.makeNodeTable(location, "N2ID" ,"ID2N") ;
             Node n = SSE.parseNode("<http://test/ppp>") ;
             NodeId nid = nodeTable.getAllocateNodeId(n) ;
@@ -153,7 +154,7 @@ public class RunTDB
         if ( false )
         {
             FileSet fs = new FileSet(location, Names.indexId2Node) ;
-            StringFile objFile = new StringFile(TDBSetup.makeObjectFile(fs)) ;
+            StringFile objFile = new StringFile(Setup.makeObjectFile(fs)) ;
             System.out.println("==== Object file") ;
             objFile.dump() ;
         }

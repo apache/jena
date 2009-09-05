@@ -8,10 +8,7 @@ package dev;
 
 public class DevTDB
 {
-    // Finish/test NewSetup.
-    
-    // TDBSetup : statics only - move the factory elsewhere.
-    // TDBMaker.{ConcreteImplFactory,MemoryImplFactory} to use TDBSetup
+    // Finish/test TDBSetup.
 
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
@@ -19,6 +16,10 @@ public class DevTDB
 
     // ** TDBSetup to have IndexBuilder versions.
     //    IndexFactory with metadata handling.
+    
+    // ?? NodeTableBuilder
+    //  Non-DI: DatasetPrefixesTDB(IndexBuilder, Location)
+    //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)
     
     // == 0.8.3
     // Explain mode - See notes in class

@@ -1,26 +1,33 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.nodetable;
+package com.hp.hpl.jena.tdb.sys;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-public interface NodeTableBuilder 
+/** Always in-memory */
+public class DatasetGraphSetupMem implements DatasetGraphMakerTDB
 {
-    /** Create a node table given a FileSet as the base 
-     * for the id-&gt;Node mapping 
-     * and a FileSet as the base 
-     * for the Node-&gt;Id mapping
-     */
-    @Deprecated
-    public NodeTable create(FileSet id2Node, FileSet node2id) ;
+    public DatasetGraphTDB createDatasetGraph(Location location)
+    {
+        return createDatasetGraph() ;
+    }
+
+    public DatasetGraphTDB createDatasetGraph()
+    {
+        return Setup.buildDataset(Location.mem()) ;
+    }
+
+    public void releaseDatasetGraph(DatasetGraphTDB dataset)
+    {}
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

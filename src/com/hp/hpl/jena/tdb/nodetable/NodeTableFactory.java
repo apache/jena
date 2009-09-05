@@ -6,30 +6,35 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class NodeTableFactory
 {
-    private class NodeTableBuilderStd implements NodeTableBuilder 
-    {
-        private IndexBuilder indexBuilder ;
-
-        NodeTableBuilderStd(IndexBuilder indexBuilder)
-        {
-            this.indexBuilder = indexBuilder ; 
-        }
-        
-        public NodeTable create(FileSet id2Node, FileSet node2Id)
-        {
-            return new NodeTableIndex(indexBuilder, id2Node, node2Id, SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
-        }
-    }
+//    private class NodeTableBuilderStd implements NodeTableBuilder 
+//    {
+//        private IndexBuilder indexBuilder ;
+//
+//        NodeTableBuilderStd(IndexBuilder indexBuilder)
+//        {
+//            this.indexBuilder = indexBuilder ; 
+//        }
+//        
+//        public NodeTable create(FileSet id2Node, FileSet node2Id)
+//        {
+//            return new NodeTableIndex(indexBuilder, id2Node, node2Id, SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
+//        }
+//    }
     
     /** Regular node table */
+    @Deprecated
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
         // The node table (id to node).
@@ -49,18 +54,27 @@ public class NodeTableFactory
 
     /** Custom node table */
     public static NodeTable create(IndexBuilder indexBuilder, 
-                                   FileSet fsId2Node, FileSet filesetNodetoId,
+                                   FileSet fsIdToNode, FileSet fsNodeToId,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
-        if ( filesetNodetoId.isMem() )
-            return NodeTableIndex.createMem(indexBuilder) ;
+        if ( fsNodeToId.isMem() )
+        {
+            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
+            ObjectFile objects = FileFactory.createObjectFileMem() ;
+            return new NodeTableBase(nodeToId, objects, 100, 100) ;
+            //return NodeTableIndex.createMem(indexBuilder) ;
+        }
         
-        return new NodeTableIndex(indexBuilder, filesetNodetoId, fsId2Node, nodeToIdCacheSize, idToNodeCacheSize) ;
+        Index nodeToId = indexBuilder.newIndex(fsNodeToId, FactoryGraphTDB.nodeRecordFactory) ;
+        // Node table.
+        String filename = fsIdToNode.filename(Names.extNodeData) ;
+        ObjectFile objects = FileFactory.createObjectFileDisk(filename);
+        return new NodeTableBase(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
 
     public static NodeTable createMem(IndexBuilder indexBuilder)
     {
-        return NodeTableIndex.createMem(indexBuilder) ;
+        return create(indexBuilder, FileSet.mem(), FileSet.mem(), 100, 100) ;
     }
     
     public static NodeTable createSink(IndexBuilder indexBuilder, Location location)
