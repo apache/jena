@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHashMem;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** A policy holder for making indexes, range indexes, and data files.  */
+/** A policy holder for making indexes and range indexes.  */
  
 public class IndexBuilder
 {

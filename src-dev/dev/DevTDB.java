@@ -10,10 +10,15 @@ public class DevTDB
 {
     // Finish/test NewSetup.
     
+    // TDBSetup : statics only - move the factory elsewhere.
+    // TDBMaker.{ConcreteImplFactory,MemoryImplFactory} to use TDBSetup
+
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
-    //    (Currently in ...sys)
-    // TDBMaker.{ConcreteImplFactory,MemoryImplFactory} to use NewSetup
+    //    (Currently in ...sys...)
     //   Need to cope with junk files in directory (testing and non-clearance).
+
+    // ** TDBSetup to have IndexBuilder versions.
+    //    IndexFactory with metadata handling.
     
     // == 0.8.3
     // Explain mode - See notes in class

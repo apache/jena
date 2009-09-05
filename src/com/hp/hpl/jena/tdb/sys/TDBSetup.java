@@ -403,13 +403,16 @@ public class TDBSetup implements DatasetGraphMakerTDB
         String blkSizeStr = getOrSetDefault(metafile, "tdb.bpt.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
         int blkSize = parseInt(blkSizeStr, "Bad block size") ;
         
+        // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
+        // Does not set order.
+        
         int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
         String orderStr = getOrSetDefault(metafile, "tdb.bpt.order", Integer.toString(calcOrder)) ;
         int order = parseInt(orderStr, "Bad order for B+Tree") ;
         if ( order != calcOrder )
             error("Wrong order (" + order + "), calculated = "+calcOrder) ;
 
-        RangeIndex rIndex =  createBPTree(fs, order, blkSize, recordFactory) ;
+        RangeIndex rIndex = createBPTree(fs, order, blkSize, recordFactory) ;
         metafile.flush() ;
         return rIndex ;
     }
