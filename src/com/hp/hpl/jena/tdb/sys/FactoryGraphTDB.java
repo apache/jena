@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.sys;
 
 import static com.hp.hpl.jena.tdb.TDB.logInfo ;
 import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexQuads ;
@@ -32,12 +32,18 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Low-level factory for things TDB. See {@link com.hp.hpl.jena.tdb.TDBFactory} for the usual application API */
 public class FactoryGraphTDB
 {
+    // **** Much of this is superceeded by the newer factory for making datasets that manages metafiles. 
+    // Remains for testing using IndexBuilders
+    
     // For this class
     private static Logger log = LoggerFactory.getLogger(FactoryGraphTDB.class) ;
 
@@ -152,7 +158,7 @@ public class FactoryGraphTDB
     }
     
     /** Testing */
-    static TripleTable createTripleTableMem()
+    public static TripleTable createTripleTableMem()
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes) ;

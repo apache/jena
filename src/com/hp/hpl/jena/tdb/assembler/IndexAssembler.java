@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler

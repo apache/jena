@@ -11,7 +11,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 public class NodeTableIndex extends NodeTableBase

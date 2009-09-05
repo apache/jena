@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 public class DumpIndex

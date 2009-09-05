@@ -447,14 +447,14 @@ public class TestTokenizer extends BaseTest
         Token token2 = tokenizer.next() ;
         assertNotNull(token2) ;
         assertEquals(TokenType.SEMICOLON, token2.getType()) ;
-        assertNull(token2.getImage()) ;
+        assertEquals(";", token2.getImage()) ;
         assertNull(token2.getImage2()) ;
 
         assertTrue(tokenizer.hasNext()) ;
         Token token3 = tokenizer.next() ;
         assertNotNull(token3) ;
         assertEquals(TokenType.COMMA, token3.getType()) ;
-        assertNull(token3.getImage()) ;
+        assertEquals(",", token3.getImage()) ;
         assertNull(token3.getImage2()) ;
     }
 

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 
 /** The workhorse for TDB Factory - hides the internal operations from
  * the public interface (and javadoc) of TDBFactory for clarity.  
@@ -42,7 +41,7 @@ public class TDBMaker
     }
 
     /** An ImplFactory that creates datasets in the usual way for TDB and caches them
-     * baed on the location.  Asking for a dataset at a location will 
+     * based on the location.  Asking for a dataset at a location will 
      * return the same (cached) one. 
      */
     public final static class CachingImplFactory implements DatasetGraphMakerTDB
@@ -101,11 +100,14 @@ public class TDBMaker
     {
         //@Override
         public DatasetGraphTDB createDatasetGraph(Location location)
-        { return FactoryGraphTDB.createDatasetGraphMem() ; }
+        { return createDatasetGraph() ; }
     
         //@Override
         public DatasetGraphTDB createDatasetGraph()
-        { return FactoryGraphTDB.createDatasetGraphMem() ; }
+        { 
+            //return FactoryGraphTDB.createDatasetGraphMem() ;
+            return TDBSetup.buildDataset(Location.mem()) ;
+        }
 
         public void releaseDatasetGraph(DatasetGraphTDB dataset)
         {}
@@ -114,6 +116,7 @@ public class TDBMaker
     // ---- Implementation factories 
     /** Implementation factory for creation of datasets - uncached */ 
     public final static DatasetGraphMakerTDB uncachedFactory = new TDBMaker.ConcreteImplFactory() ;
+    //public final static DatasetGraphMakerTDB uncachedFactory = new TDBSetup() ;
     
     /** Implementation factory for cached creation of datasets */ 
     public final static DatasetGraphMakerTDB cachedFactory = new TDBMaker.CachingImplFactory(uncachedFactory) ;

@@ -38,6 +38,7 @@ public final class Token
 {
     private TokenType tokenType = null ;
     private String tokenImage = null ;
+    //private String tokenImage1 = null ;
     private String tokenImage2 = null ;
     private Token subToken = null ;     // A related token (used for datatype literals)
     public int cntrlCode = 0 ;
@@ -46,12 +47,14 @@ public final class Token
     
     public final TokenType getType() { return tokenType ; }
     public final String getImage()   { return tokenImage ; }
+    //public final String getImage1()  { return tokenImage1 ; }
     public final String getImage2()  { return tokenImage2 ; }
     public final int getCntrlCode()  { return cntrlCode ; }
     public final Token getSubToken() { return subToken ; }
     
     public final void setType(TokenType tokenType)    { this.tokenType = tokenType ; }
     public final void setImage(String tokenImage)     { this.tokenImage = tokenImage ; }
+    //public final void setImage1(String tokenImage1)   { this.tokenImage1 = tokenImage1 ; }
     public final void setImage2(String tokenImage2)   { this.tokenImage2 = tokenImage2 ; }
     public final void setCntrlCode(int cntrlCode)     { this.cntrlCode = cntrlCode ; }
     public final void setSubToken(Token subToken)     { this.subToken = subToken ; }

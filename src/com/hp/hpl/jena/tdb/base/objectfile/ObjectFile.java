@@ -16,10 +16,13 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
-    public long write(ByteBuffer str) ;
+    /** Write out the buffer - return the accessor number */ 
+    public long write(ByteBuffer buffer) ;
+
+    /** Read a buffer. */
     public ByteBuffer read(long id) ;
     
-    /** Length, in untis used by read/write for ids */
+    /** Length, in units used by read/write for ids */
     public long length() ;
     public void sync(boolean force) ;
     public void close() ;

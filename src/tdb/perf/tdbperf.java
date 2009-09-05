@@ -46,6 +46,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Tools to test performance.  Subcommand based. */

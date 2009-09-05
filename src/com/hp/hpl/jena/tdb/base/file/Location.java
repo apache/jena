@@ -53,7 +53,11 @@ public class Location
     static Location mem = new Location() ;
     static public Location mem() { return new Location(); } 
     
-    private Location() { pathname = Names.memName ; }
+    private Location()
+    {
+        pathname = Names.memName ;
+        metafile = new MetaFile(Names.memName, Names.memName) ;
+    }
     
     public Location(String rootname)
     { 

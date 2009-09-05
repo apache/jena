@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
+import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTesting;
 
 // Jena normal tests
 public class TestGraphBTreeMem extends AbstractTestGraphTDB
@@ -25,7 +25,7 @@ public class TestGraphBTreeMem extends AbstractTestGraphTDB
     
     // In-memory testing
     @Override
-    public Graph getGraph() { return GraphTDBFactoryTest.createBTreeMem() ; }
+    public Graph getGraph() { return GraphTDBFactoryTesting.createBTreeMem() ; }
 }
 
 /*

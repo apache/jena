@@ -6,17 +6,18 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException ;
+import java.nio.ByteBuffer ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import atlas.lib.Bytes;
+import atlas.lib.Bytes ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockException;
-import com.hp.hpl.jena.tdb.base.file.FileBase;
-import com.hp.hpl.jena.tdb.base.file.FileException;
-import com.hp.hpl.jena.tdb.lib.StringAbbrev;
+import com.hp.hpl.jena.tdb.base.block.BlockException ;
+import com.hp.hpl.jena.tdb.base.file.FileBase ;
+import com.hp.hpl.jena.tdb.base.file.FileException ;
+import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Variable length ByteBuffer file on disk.  Read by id ; write is append-only */  
 
@@ -36,18 +37,25 @@ public class ObjectFileDiskDirect implements ObjectFile
         } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
     }
     
+    private ByteBuffer lengthBuffer = ByteBuffer.allocate(SystemTDB.SizeOfInt) ;
+    
     //@Override
     public long write(ByteBuffer bb)
     {
         try {
+            // Write length
+            int len = bb.limit() - bb.position();
+            lengthBuffer.clear() ;
+            lengthBuffer.putInt(0, len) ;
+            
             long location = filesize ;
             file.channel.position(location) ;
-            // write length
-            int x = file.channel.write(bb) ;
-            int len = bb.limit() ;
-            if ( x != len )
-                throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
-            filesize = filesize+x ;
+            int x1 = file.channel.write(lengthBuffer) ;
+            int x2 = file.channel.write(bb) ;
+            if ( x2 != len )
+                throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x2) ;
+            
+            filesize = filesize+x1+x2 ;
             return location ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
@@ -57,17 +65,16 @@ public class ObjectFileDiskDirect implements ObjectFile
     public ByteBuffer read(long loc)
     {
         try {
-            ByteBuffer bb = ByteBuffer.allocate(4) ;
             file.channel.position(loc) ;
-            int x = file.channel.read(bb) ;  // Updates position.
+            lengthBuffer.position(0) ;
+            int x = file.channel.read(lengthBuffer) ;  // Updates position.
             if ( x != 4 )
                 throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
-            int len = bb.getInt(0) ;
-            bb = ByteBuffer.allocate(len) ;
-            file.channel.position(loc+4) ; // Unnecessary.
+            int len = lengthBuffer.getInt(0) ;
+            ByteBuffer bb = ByteBuffer.allocate(len) ;
+            //file.channel.position(loc+4) ; // Unnecessary.
             x = file.channel.read(bb) ;
-            bb.position(0) ;
-            bb.limit(len) ;
+            bb.flip() ;
             if ( x != len )
                 throw new FileException("ObjectFile.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
             return bb ;

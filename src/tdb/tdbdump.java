@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 
 public class tdbdump extends CmdSub
 {
@@ -33,7 +33,6 @@ public class tdbdump extends CmdSub
     static final String CMD_DATA =      "data" ; 
     static final String CMD_INDEX =     "index" ; 
     static final String CMD_NODES =     "nodes" ;
-    static final String CMD_PREFIXES =  "prefixes" ;
     
     protected tdbdump(String...argv)
     {
@@ -123,7 +122,7 @@ public class tdbdump extends CmdSub
         @Override
         protected String getSummary()
         {
-            return "tdbdump nodes INDEX" ;
+            return "tdbdump nodes FILE..." ;
         }
 
         @Override

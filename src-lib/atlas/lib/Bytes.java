@@ -6,14 +6,13 @@
 
 package atlas.lib;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
+import java.io.UnsupportedEncodingException ;
+import java.nio.ByteBuffer ;
+import java.nio.ByteOrder ;
+import java.nio.CharBuffer ;
+import java.nio.charset.CharsetDecoder ;
+import java.nio.charset.CharsetEncoder ;
+import java.nio.charset.CoderResult ;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java)
@@ -211,7 +210,7 @@ public class Bytes
         }
     }
 
-    /** Encode a string into a ByteBuffer */
+    /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
     public static int toByteBuffer(CharSequence s, ByteBuffer bb)
     {
         CharsetEncoder enc = Chars.getEncoder();
@@ -228,18 +227,20 @@ public class Bytes
         return x ;
     }
     
-    /** Encode a string into a ByteBuffer */
+    /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
     public static int toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc)
     {
         int start = bb.position() ;
         CharBuffer cBuff = CharBuffer.wrap(s);
+        enc.reset();
         CoderResult r = enc.encode(cBuff, bb, true) ;
         if ( r.isOverflow() )
             throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (1)") ;
         r = enc.flush(bb) ;
         if ( r.isOverflow() )
             throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (2)") ;
-        enc.reset();
+//        if ( r.isUnderflow() )
+//            throw new InternalErrorException("Bytes.toByteBuffer: encode underflow") ;
         int finish = bb.position() ;
         return finish-start ;
     }
@@ -260,21 +261,17 @@ public class Bytes
     {
         if ( bb.remaining() == 0 )
             return "" ;
-        
-        try
-        {
-            CharBuffer cBuff = dec.decode(bb) ;
-            // No need to flush - the packaged form decode(ByteBuffer) does that. 
-//            CoderResult r = dec.flush(cBuff) ;  // If no bytes, crashes here (illegal state).
-//            if ( r == CoderResult.OVERFLOW )
-//                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
-            dec.reset() ;
-            // Yuk - another copy.
-            return cBuff.toString() ;
-        } catch (CharacterCodingException ex)
-        {
-            throw new InternalErrorException("Bytes:fromByteBuffer: character encoding error in buffer") ; 
-        }
+
+        dec.reset();
+        CharBuffer cBuff = CharBuffer.allocate(bb.remaining()) ;
+        CoderResult r = dec.decode(bb, cBuff, true) ;
+        if ( r.isOverflow() )
+            throw new InternalErrorException("fromByteBuffer: decode overflow (1)") ;
+        r = dec.flush(cBuff) ;
+        if ( r.isOverflow() )
+            throw new InternalErrorException("fromByteBuffer: decode overflow (2)") ;
+        cBuff.flip();
+        return cBuff.toString() ;
     }
 
     /** Return a hex string representing the bytes, zero padded to length of byte array. */

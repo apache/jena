@@ -41,7 +41,9 @@ public class ByteBufferLib
 
     public static void print(PrintStream out, ByteBuffer byteBuffer)
     {
-        out.printf("ByteBuffer[pos=%d lim=%d cap=%d]",byteBuffer.position(), byteBuffer.limit(), byteBuffer.capacity()) ;
+        byteBuffer = byteBuffer.duplicate() ;
+        
+        out.printf("ByteBuffer[pos=%d lim=%d cap=%d]", byteBuffer.position(), byteBuffer.limit(), byteBuffer.capacity()) ;
         
         // Print bytes.
         int i = 0 ;
@@ -50,7 +52,7 @@ public class ByteBufferLib
         {
             if ( i%20 == 0 )
                 out.println() ;
-            out.printf(" 0x%02X", byteBuffer.get(i)) ;
+            out.printf(" 0x%02X", byteBuffer.get(i)) ;  // Does not move position
         }
         if ( i < byteBuffer.limit() )
         {

@@ -12,11 +12,12 @@ import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Place to put various "making" explicitly for testing */
 
-public class GraphTDBFactoryTest
+public class GraphTDBFactoryTesting
 {
     /** Create a graph backed with storage at a location using and BTree (not B+Tree) indexes (testing) */
     public static GraphTriplesTDB createBTree(Location location)

@@ -21,12 +21,13 @@ public interface Nodec
     public void release(ByteBuffer bb) ;
     
     /** Encode the node into the byte buffer, starting at the given offset. 
-     * The ByteBuffer wil have positon/limit aroudn the space used on return.  
+     * The ByteBuffer will have position/limit around the space used on return, <b>without a length code<b>.
+     *   
      * @return Length of byte buffer used for the whole encoding.
      */ 
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap) ;
     
-    /** Decode the node from the byte buffer, starting at the given offset. */
+    /** Decode the node from the byte buffer. The ByteBuffer position shoudl be the start of the encoding (no binary length for example) */
     public Node decode(ByteBuffer bb, PrefixMapping pmap) ; 
 }
 

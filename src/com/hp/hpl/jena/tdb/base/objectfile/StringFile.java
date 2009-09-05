@@ -34,14 +34,9 @@ public class StringFile
     public long write(String str)
     { 
         str = compress(str) ;
-        ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
-        bb.position(4) ;
-        Bytes.toByteBuffer(str, bb) ;
-        // Position moved from 4.
-        int len = bb.position()-4 ;
-        bb.limit(len+4) ;
-        bb.putInt(0, len) ;     // Object length
-        bb.position(0) ;
+        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
+        int len = Bytes.toByteBuffer(str, bb) ;
+        bb.flip() ;
         return file.write(bb) ;
     }
     

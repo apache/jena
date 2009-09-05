@@ -44,6 +44,8 @@ public class Chars
     public static final char CH_HASH         = '#' ;
     public static final char CH_PLUS         = '+' ;
     public static final char CH_MINUS        = '-' ;
+    public static final char CH_SLASH        = '/' ;
+    public static final char CH_RSLASH       = '\\' ;
 }
 
 /*

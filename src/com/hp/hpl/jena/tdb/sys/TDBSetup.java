@@ -4,59 +4,59 @@
  * [See end of file]
  */
 
-package dev ;
+package com.hp.hpl.jena.tdb.sys ;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec;
-import static com.hp.hpl.jena.tdb.TDB.logInfo;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import atlas.lib.ColumnMap;
-import atlas.lib.FileOps;
-import atlas.lib.StrUtils;
+import static com.hp.hpl.jena.tdb.TDB.logExec ;
+import static com.hp.hpl.jena.tdb.TDB.logInfo ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.MetaFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.QuadTable;
-import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import java.io.File ;
+
+import org.slf4j.Logger ;
+import atlas.lib.ColumnMap ;
+import atlas.lib.FileOps ;
+import atlas.lib.StrUtils ;
+
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.MetaFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
 
-public class NewSetup implements DatasetGraphMakerTDB
+public class TDBSetup implements DatasetGraphMakerTDB
 {
-    private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
+    //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
+    private static final Logger log = TDB.logInfo ;
 
     /* Logical information goes in the location metafile. This includes
      * dataset type, NodeTable type and indexes expected.  But it does
@@ -206,7 +206,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         String nodesdata = get(metafile, "tdb.nodetable.mapping.data") ;
         
-        log.info("Object table: "+indexNode2Id+" - "+indexId2Node) ;
+        log.debug("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
         NodeTable nodeTable = makeNodeTable(location, indexNode2Id, indexId2Node) ;
 
@@ -232,7 +232,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         if ( indexes.length != 3 )
             error("Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.info("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        log.debug("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
@@ -251,7 +251,7 @@ public class NewSetup implements DatasetGraphMakerTDB
 
         if ( indexes.length != 6 )
             error("Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.info("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
+        log.debug("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
@@ -316,7 +316,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes) ; 
         
-        log.info("Prefixes: "+x) ;
+        log.debug("Prefixes: "+x) ;
         
         return prefixes ;
     }
@@ -470,7 +470,7 @@ public class NewSetup implements DatasetGraphMakerTDB
         if (nodeTableType != null)
         {
             if ( ! nodeTableType.equals(NodeTable.type))
-                log.info("Explicit node table type: " + nodeTableType + " (ignored)") ;
+                log.debug("Explicit node table type: " + nodeTableType + " (ignored)") ;
         }
         else
         {
@@ -523,7 +523,7 @@ public class NewSetup implements DatasetGraphMakerTDB
     /** Check and set default for the dataset design */
     public static MetaFile locationMetadata(Location location)
     {
-        boolean newDataset = ! FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
+        boolean newDataset = location.isMem() || ! FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
 
         MetaFile metafile = location.getMetaFile() ;
         boolean isPreMetadata = false ;
@@ -545,9 +545,12 @@ public class NewSetup implements DatasetGraphMakerTDB
             {
                 // Well-know name of the primary triples index.
                 boolean b = FileOps.exists(location.getPath("SPO.dat")) ;
-                if ( b )
+                if ( !b )
                 {
                     log.error("Existing files but no metadata and not old-style fixed layout") ;
+                    File d = new File(location.getDirectoryPath()) ;
+                    File[] entries = d.listFiles() ;
+                    log.error(entries.toString()) ;
                     throw new TDBException("Can't build dataset: "+location) ;
                 }
                 
@@ -800,7 +803,7 @@ public class NewSetup implements DatasetGraphMakerTDB
     
     private static void checkMetadata(MetaFile metafile, String key, String expected)
     {
-        //log.info("checkMetaData["+key+","+expected+"]") ;
+        //log.debug("checkMetaData["+key+","+expected+"]") ;
         
         String value = metafile.getProperty(key) ;
         if ( value == null && expected == null ) return ;

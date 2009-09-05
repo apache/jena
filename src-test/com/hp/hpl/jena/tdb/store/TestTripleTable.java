@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 
 public class TestTripleTable extends BaseTest
 {

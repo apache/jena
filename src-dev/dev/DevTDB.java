@@ -10,6 +10,11 @@ public class DevTDB
 {
     // Finish/test NewSetup.
     
+    // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
+    //    (Currently in ...sys)
+    // TDBMaker.{ConcreteImplFactory,MemoryImplFactory} to use NewSetup
+    //   Need to cope with junk files in directory (testing and non-clearance).
+    
     // == 0.8.3
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
@@ -41,32 +46,17 @@ public class DevTDB
     // Assembler : TDB settings
     //  To a separate file - example in log4j.
     
-    // == Setup
-    // metadata files and BPT creation ==> NewSetup and DI
-
     // ----
     // Publish => release and upload the zip to maven area.
     // IVY publish a zip
     
     // ** Document concurrency.
-    // ** Check assembler page for emphasise on creating a dataset.
-    // ** Check for tests of assembler and GraphTDB
-    // Enable metadata? [later]
-    
-    // ---- Build
-    // Sort out confs
-    // Lifecycle?
     
     // ------
     // Properties on the readers
     // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
     //    Assumes variable length records
     //    Need better var index support first
-    
-    // BDB-JE? BlockMgr as index?
-    
-    // Document concurrency 
-    // Graph.getLock in Jena?  Share with dataset.
     
     // ==== RIOT
     // ** Connect the errorhandler set via JenaReaderbase to the one used by RIOT-Turtle/RIOT-NTriples.

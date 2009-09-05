@@ -74,12 +74,18 @@ public class TestCodec extends BaseTest
     @Test public void nodec_uri_01()    { test ("<>") ; }
     @Test public void nodec_uri_02()    { test ("<http://example/>") ; }
     
+    
     private void test(String sseString)
     {
         //Nodec nodec = new NodecSSE() ;
         Node n = SSE.parseNode(sseString) ;
         ByteBuffer bb = nodec.alloc(n) ;
         int x = nodec.encode(n, bb, null) ;
+        
+        int bbLen = bb.limit()-bb.position();
+        assertEquals(bbLen, x) ;
+        assertEquals(0, bb.position()) ;
+        
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
         nodec.release(bb) ;
         

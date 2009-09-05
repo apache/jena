@@ -49,8 +49,7 @@ public class NodecSSE implements Nodec
     public ByteBuffer alloc(Node node)
     {
         // No pool for the moment.
-        // +4 for the length slot
-        return ByteBuffer.allocate(4+maxLength(node)) ;
+        return ByteBuffer.allocate(maxLength(node)) ;
     }
     
     public void release(ByteBuffer bb)
@@ -70,27 +69,24 @@ public class NodecSSE implements Nodec
                 node = Node.createURI(x) ; 
         }
         
+        // Node->String
         String str ;
         if ( node.isBlank() )
             str = "_:"+node.getBlankNodeLabel() ;
         else 
             str = FmtUtils.stringForNode(node, pmap) ;
         
-        // String -> bytes, leave space for a length.
-        bb.position(4) ;
+        // String -> bytes
         int x = Bytes.toByteBuffer(str, bb) ;
-        bb.putInt(0, x) ;       // Length in bytes
-        bb.position(0) ;        // Reset
-        bb.limit(x+4) ;         // The space we have used.
-        return x+4 ;
+        bb.position(0) ;        // Around the space used
+        bb.limit(x) ;           // The space we have used.
+        return x ;
     }
 
     //@Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
-        // Get length : increments position
-        int len = bb.getInt() ;
-
+        // Byte -> String
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
 

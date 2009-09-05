@@ -54,7 +54,7 @@ public class ObjectFileMem implements ObjectFile
             throw new IllegalStateException("Closed") ;
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
         buffers.add(bb2) ;
-        return buffers.size() ; 
+        return buffers.size()-1 ; 
     }
 
     public void sync(boolean force)
