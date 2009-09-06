@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 
-/** A buffering writer, send output to a channel (WrityeablByteChannel)
+/** A buffering writer, send output to a channel (WriteableByteChannel)
  *  (and own methods which do not throw checked exceptions).
  *  Only supports UTF-8. 
  *  <p>
