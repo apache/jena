@@ -6,15 +6,15 @@
 
 package atlas.io;
 
-import atlas.io.PeekReader;
-import atlas.test.BaseTest;
+import org.junit.Test ;
+import atlas.test.BaseTest ;
 
-import org.junit.Test;
-
-public class TestPeekReader extends BaseTest
+public abstract class AbstractTestPeekReader extends BaseTest
 {
     static int INIT_LINE = PeekReader.INIT_LINE ;
     static int INIT_COL = PeekReader.INIT_COL ;
+    
+    abstract PeekReader make(String contents, int size) ;
     
     @Test public void read0()
     {
@@ -220,20 +220,13 @@ public class TestPeekReader extends BaseTest
         for ( int i = 0 ; i < contents.length(); i++ )
         {
             int x = r.readChar() ;
-            assertEquals(contents.charAt(i),x) ;
+            assertEquals("\""+contents+"\" -- Index "+i+" Expected:'"+contents.charAt(i)+"' Got: '"+(char)x+"'", contents.charAt(i), x) ;
         }
         assertTrue(r.eof()) ;
     }
     
     private PeekReader make(String contents)
     { return make(contents, 2) ; }
-    
-    
-    private PeekReader make(String contents, int size)
-    {
-        return PeekReader.make(contents, size) ;
-    }
-    
 }
 
 /*

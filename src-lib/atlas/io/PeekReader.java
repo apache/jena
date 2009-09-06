@@ -6,21 +6,15 @@
 
 package atlas.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.CharsetDecoder;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-import atlas.lib.AtlasException;
-import atlas.lib.Chars;
-
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** Parsing-centric reader.
- *  <p>Faster than using BufferedReader, sometimes a lot faster when
+ *  <p>Faster than using BufferedReader, sometimes a lot faster, when
  *  tokenizing is the critical performance point.
  *  </p>
  *  <p>Supports a line and column
@@ -31,32 +25,25 @@ import com.hp.hpl.jena.util.FileUtils;
  */ 
 
 
-public final class PeekReader extends Reader
+public abstract class PeekReader extends Reader
 {
     // Does buffering here instead of using a BufferedReader help?
     // YES.  A lot (Java6).
     
-    // Possibly because BufferedReader internally are synchronized, possibly
-    // because this is so stripped down the JIT does a better job.
+    // Possibly because BufferedReader internally uses synchronized,
+    // even on getting a singe character.  Thisis not only an unnecessary cost
+    // but also possibly because it stops the JIT doing a better job.
     // **** read(char[]) is a loop of single char operations.
     
-    private static final int CB_SIZE       = 16 * 1024 ;
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte CHAR0 = (char)0 ;
     static final int  EOF = -1 ;
     static final int  UNSET = -2 ;
     
-    private final char[] chars ;            // CharBuffer?
-    
     private char[] pushbackChars ;
-    private int idxPushback ;
+    private int idxPushback ;                   // Index into pushbackChars: points to next pushBack. -1 => none.
     
-    private int buffLen ;
-    private int idx ;
-
-    private int currChar = UNSET ;
-
-    private Source source;
+    private int currChar = UNSET ;              // Next character to return when reading forwards.
     private long posn ;
     
     public static final int INIT_LINE = 1 ;
@@ -65,69 +52,24 @@ public final class PeekReader extends Reader
     private long colNum ;
     private long lineNum ;
     
-    // Local adapter/encapsulation
-    private interface Source
-    { 
-        int fill(char[] array) ;
-        void close() ; 
-    }
-    
-    static final class SourceReader implements Source
-    {
-        final Reader reader ;
-        SourceReader(Reader r) { reader = r ; }
-        
-        //@Override
-        public void close()
-        { 
-            try { reader.close() ; } catch (IOException ex) { exception(ex) ; } 
-        }
-        
-        //@Override
-        public int fill(char[] array)
-        {
-            try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
-        }
-    }
-    
-    static final class SourceChannel implements Source
-    {
-        final ReadableByteChannel channel ;
-        CharsetDecoder decoder = Chars.createDecoder() ;
-        SourceChannel(ReadableByteChannel r) { channel = r ; }
-        
-        //@Override
-        public void close()
-        { 
-            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
-        }
-        
-        //@Override
-        public int fill(char[] array)
-        {
-            // Encoding foo.
-//             Bytes
-//             
-//            ByteBuffer b = ByteBuffer.wrap(null) ;
-//            
-//            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
-            return -1 ;
-        }
-    }
+    // ---- static construction methods.
     
     public static PeekReader make(Reader r)
     {
-        // StringReader special?
         if ( r instanceof PeekReader )
             return (PeekReader)r ;
 //        if ( r instanceof BufferedReader )
 //            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
             
-        return new PeekReader(new SourceReader(r)) ;
+        return new PeekReaderSource(r) ;
     }
     
-    public static void exception(IOException ex)
-    { throw new AtlasException(ex) ; }
+    public static PeekReader make(Reader r, int bufferSize)
+    {
+        if ( r instanceof PeekReader )
+            return (PeekReader)r ;
+        return new PeekReaderSource(r, bufferSize) ;
+    }
 
     public static PeekReader makeUTF8(InputStream in) 
     {
@@ -135,40 +77,32 @@ public final class PeekReader extends Reader
         return make(r) ;
     }
     
-    private PeekReader(Source in)
+    public static PeekReader make(String string)
     {
-        this(in, CB_SIZE, PUSHBACK_SIZE) ;
+        return new PeekReaderCharSequence(string) ;
     }
     
-    /** Testing */
-    public static PeekReader make(String x)         { return make(x, CB_SIZE) ; }
-    static PeekReader make(String x, int buffSize)
-    { return new PeekReader(new SourceReader(new StringReader(x)), buffSize, PUSHBACK_SIZE) ; }
-    
-    private PeekReader(Source in, int buffSize, int pushBackSize)
+    protected PeekReader()
     {
-        this.chars = new char[buffSize];
-        this.buffLen = 0 ;
-        this.idx = 0 ; 
-        
-        this.pushbackChars = new char[pushBackSize] ; 
+        this.pushbackChars = new char[PUSHBACK_SIZE] ; 
         this.idxPushback = -1 ;
         
-        this.source = in;
         this.colNum = INIT_COL ;
         this.lineNum = INIT_LINE ;
         this.posn = 0 ;
         
-        // We start at charcater "-1", i.e. just before thr file starts.
+        // We start at character "-1", i.e. just before the file starts.
         // Advance always so that the peek character is valid (is character 0) 
         // Returns the character before the file starts (i.e. UNSET).
-        
-        //OPPS - means we read char.
-//        oneChar() ;    
-//        if ( currChar == UNSET )
-//            setCurrChar(EOF) ;
     }
 
+//    public static PeekReader test(String x)         { return new PeekReaderSource(new StringReader(x)) ; }
+//    
+//    // A bit slow in that it copies out of the string into the intermediate char array.
+//    // But happens in one block operations when less than buffer size.
+//    static PeekReader make(String x, int buffSize)
+//    { return new PeekReaderSource(new StringReader(x), buffSize) ; }
+    
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }
@@ -178,6 +112,9 @@ public final class PeekReader extends Reader
     //---- Do not access currChar except with peekChar/setCurrChar.
     public int peekChar()
     { 
+        if ( idxPushback >= 0 )
+            return pushbackChars[idxPushback] ;
+        
         // If not started ... delayed initialization.
         if ( currChar == UNSET )
             init() ;
@@ -190,7 +127,7 @@ public final class PeekReader extends Reader
         currChar = ch ;
     }
     
-    public int readChar()               { return oneChar() ; }
+    public int readChar()               { return nextChar() ; }
     
     /** push back a character : does not alter underlying position, line or column counts*/  
     public void pushbackChar(int ch)    { unreadChar(ch) ; }
@@ -199,7 +136,7 @@ public final class PeekReader extends Reader
     @Override
     public void close() throws IOException
     {
-        source.close() ;
+        closeInput() ;
     }
 
     @Override
@@ -229,6 +166,10 @@ public final class PeekReader extends Reader
 
     public final boolean eof()   { return peekChar() == EOF ; }
 
+    //protected abstract void init() ;
+    protected abstract int advance() ;
+    protected abstract void closeInput() ;
+
     // ----------------
     // The methods below are the only ones to manipulate the character buffers.
     // Other methods may read the state of variables.
@@ -251,46 +192,56 @@ public final class PeekReader extends Reader
         
         idxPushback++ ;
         pushbackChars[idxPushback] = (char)ch ;
-        setCurrChar(ch) ;
     }
     
     private void init()
     {
-        fillAndAdvance() ; 
+        advanceAndSet() ;
         if ( currChar == UNSET )
             setCurrChar(EOF) ;
     }
 
-    // Ensure the buffer is not empty, or boolean eof is set
-    private void fillAndAdvance()
+    private void advanceAndSet() 
     {
-        if ( idx >= buffLen )
-            // Points outsize the array.  Refill it 
-            fillArray() ;
-        
-        // Advance one character.
-        if ( buffLen >= 0 )
-        {
-            // Advance the lookahead character
-            setCurrChar(chars[idx]) ;
-            idx++ ;
-        }  
-        else
-            // Buffer empty, end of stream.
-            setCurrChar(EOF) ;
+        int ch = advance() ;
+        setCurrChar(ch) ;
     }
-
-    private int fillArray()
-    {
-        int x = source.fill(chars) ;
-        idx = 0 ;
-        buffLen = x ;   // Maybe -1
-        return x ;
-    }
+    
+//    /** Move forward one character and return it.
+//     * Ensure the buffer is not empty, or boolean eof is set
+//     */
+//    private int _advance()
+//    {
+//        if ( idx >= buffLen )
+//            // Points outsize the array.  Refill it 
+//            _fillArray() ;
+//        
+//        // Advance one character.
+//        if ( buffLen >= 0 )
+//        {
+//            char ch = chars[idx] ;
+//            // Advance the lookahead character
+//            idx++ ;
+//            return ch ;
+//        }  
+//        else
+//            // Buffer empty, end of stream.
+//            return EOF ;
+//    }
+//
+//    private int _fillArray()
+//    {
+//        int x = source.fill(chars) ;
+//        idx = 0 ;
+//        buffLen = x ;   // Maybe -1
+//        return x ;
+//    }
     
     // Invariants.
     // currChar is either chars[idx-1] or pushbackChars[idxPushback]
-    private int oneChar()
+    
+    /** Return the next character, moving on one place and resetting the peek character */ 
+    private int nextChar()
     {
         int ch = peekChar() ;
         if ( ch == EOF )
@@ -298,11 +249,10 @@ public final class PeekReader extends Reader
         
         if ( idxPushback >= 0 )
         {
-            replayPushback() ;
+            ch = replayPushback() ;
             return ch ;
         }
 
-        fillAndAdvance() ;
         posn++ ;
         
         if (ch == '\n')
@@ -312,28 +262,32 @@ public final class PeekReader extends Reader
         } 
         else
             colNum++;
+        
+        advanceAndSet() ;
         return ch ;
     }
 
-    private void replayPushback()
+    private int replayPushback()
     {
-        idxPushback-- ;
         if ( idxPushback >=0 )
         {
+            // Simple case : theer are more charcaters in the pushback buffer after this one. 
             char ch2 = pushbackChars[idxPushback] ;
-            setCurrChar(ch2) ;
-            return ;
+            idxPushback-- ;
+            return ch2 ;
         }
+
+        throw new IllegalStateException() ;
         
-        // Push back buffer empty.
-        // Next char is from chars[] which must have yielded a
-        // characater and idx >= 1 or the stream was zero chars (idx <= 0)
-        int nextCurrChar = EOF ;
-        
-        if ( idx-1 >= 0 )
-            // Had been a read.
-            nextCurrChar = chars[idx-1] ;
-        setCurrChar(nextCurrChar) ;
+//        // Push back buffer empty.
+//        // Next char is from chars[] which must have yielded a
+//        // character and idx >= 1 or the stream was zero chars (idx <= 0)
+//        int nextCurrChar = EOF ;
+//
+//        if ( idx-1 >= 0 )
+//            // Had been a read.
+//            nextCurrChar = chars[idx-1] ;
+//        setCurrChar(nextCurrChar) ;
     }
 }
 

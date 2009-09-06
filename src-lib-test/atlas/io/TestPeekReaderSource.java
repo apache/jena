@@ -1,29 +1,26 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.StringReader ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestIndentedWriter.class
-    , TestPeekReaderSource.class
-    , TestPeekReaderCharSequence.class
-    , TestBufferingWriter.class
-    , TestPrintUtils.class
-} )
-public class TS_IO
+public class TestPeekReaderSource extends AbstractTestPeekReader
 {
-
+    @Override
+    PeekReader make(String contents, int size)
+    {
+        // Very carefuly ensure this is not a string-based PeekReader
+        StringReader r = new StringReader(contents) ;
+        return PeekReader.make(r, size) ;
+    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

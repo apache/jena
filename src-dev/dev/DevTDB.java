@@ -8,18 +8,24 @@ package dev;
 
 public class DevTDB
 {
-    // Finish/test TDBSetup.
-
+    // --- Setup
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
     //   Need to cope with junk files in directory (testing and non-clearance).
-
     // ** TDBSetup to have IndexBuilder versions.
     //    IndexFactory with metadata handling.
     
     // ?? NodeTableBuilder
     //  Non-DI: DatasetPrefixesTDB(IndexBuilder, Location)
     //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)
+    
+    // RIOT
+    // PeekReader abstraction for strings.
+    //   Nodec - tokenize the string (or from ByteBuffer?)
+    // Abstract  
+    //   unreadChar(int), init(), fillAndAdvance(), fillArray(), oneChar(), replayPushback()
+    // PeekReaderSource
+    // PeekReaderString
     
     // == 0.8.3
     // Explain mode - See notes in class

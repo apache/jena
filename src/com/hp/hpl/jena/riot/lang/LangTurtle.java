@@ -6,24 +6,26 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import atlas.event.Event;
-import atlas.event.EventManager;
-import atlas.iterator.PeekIterator;
-import atlas.lib.Sink;
+import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.event.Event ;
+import atlas.event.EventManager ;
+import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.riot.*;
-import com.hp.hpl.jena.riot.tokens.Token;
-import com.hp.hpl.jena.riot.tokens.TokenType;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-
-import com.hp.hpl.jena.sparql.core.NodeConst;
-import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.IRIResolver ;
+import com.hp.hpl.jena.riot.PrefixMap ;
+import com.hp.hpl.jena.riot.Prologue ;
+import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.tokens.Token ;
+import com.hp.hpl.jena.riot.tokens.TokenType ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.vocabulary.OWL ;
 
 public class LangTurtle extends LangBase
 {
@@ -84,7 +86,6 @@ public class LangTurtle extends LangBase
     private static String KW_LOG_IMPLIES    = "=>" ;
     private static String KW_TRUE           = "true" ;
     private static String KW_FALSE          = "false" ;
-
     
     private static final boolean VERBOSE    = false ;
     private static final boolean CHECKING   = true ;
@@ -103,8 +104,6 @@ public class LangTurtle extends LangBase
      */
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    private final Tokenizer tokens ;
-    private final PeekIterator<Token> peekIter ;
     private final Sink<Triple> sink ;
     
 //    public LangTurtle(Tokenizer tokens)
@@ -114,14 +113,12 @@ public class LangTurtle extends LangBase
     
     public LangTurtle(String baseURI, Tokenizer tokens, Sink<Triple> sink)
     { 
-        super(new Checker(null), null) ;
-        this.tokens = tokens ;
-        this.peekIter = new PeekIterator<Token>(tokens) ;
+        super(new Checker(null), null, tokens) ;
         this.sink = sink ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
-    public void parse()
+    public final void parse()
     {
         EventManager.send(sink, new Event(RIOT.startRead, null)) ;
         while(moreTokens())
@@ -149,7 +146,7 @@ public class LangTurtle extends LangBase
                     break ;
                 if ( lookingAt(DOT) )
                 {
-                    move() ;
+                    nextToken() ;
                     continue ;
                 }
                 if ( peekPredicate() )
@@ -158,7 +155,7 @@ public class LangTurtle extends LangBase
                     expectEndOfTriples() ;
                     continue ;
                 }
-                exception("Unexpected token : %s", token()) ;
+                exception("Unexpected token : %s", tokenResolve()) ;
             }
 
             // TriplesSameSubject -> Term PropertyListNotEmpty 
@@ -169,15 +166,15 @@ public class LangTurtle extends LangBase
                 if ( VERBOSE ) log.info("<< triples") ;
                 continue ;
             }
-            exception("Out of place: %s", token()) ;
+            exception("Out of place: %s", tokenResolve()) ;
         }
         EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
     }
     
     private void directive()
     {
-        String x = token().getImage() ;
-        move() ;
+        String x = tokenResolve().getImage() ;
+        nextToken() ;
         
         if ( x.equals("base") )
         {
@@ -200,32 +197,32 @@ public class LangTurtle extends LangBase
     {
         // Raw - unresolved prefix name.
         if ( ! lookingAt(PREFIXED_NAME) )
-            exception("@prefix requires a prefix (found '"+tokenRaw()+"')") ;
-        if ( tokenRaw().getImage2().length() != 0 )
-            exception("@prefix requires a prefix and no suffix (found '"+tokenRaw()+"')") ;
-        String prefix = tokenRaw().getImage() ;
-        move() ;
+            exception("@prefix requires a prefix (found '"+peekToken()+"')") ;
+        if ( peekToken().getImage2().length() != 0 )
+            exception("@prefix requires a prefix and no suffix (found '"+peekToken()+"')") ;
+        String prefix = peekToken().getImage() ;
+        nextToken() ;
         if ( ! lookingAt(IRI) )
-            exception("@prefix requires an IRI (found '"+token()+"')") ;
-        String iriStr = tokenRaw().getImage() ;
+            exception("@prefix requires an IRI (found '"+tokenResolve()+"')") ;
+        String iriStr = peekToken().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
         if ( getChecker() != null ) getChecker().checkIRI(iri) ;
         prologue.getPrefixMap().add(prefix, iri) ;
-        move() ;
+        nextToken() ;
         if ( VERBOSE ) log.info("@prefix "+prefix+":  "+iri.toString()) ;
         expect("Prefix directive not terminated by a dot", DOT) ;
     }
 
     private void directiveBase()
     {
-        String baseStr = tokenRaw().getImage() ;
+        String baseStr = peekToken().getImage() ;
         // CHECK
         IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
         if ( getChecker() != null ) getChecker().checkIRI(baseIRI) ;
         
         if ( VERBOSE ) log.info("@base <"+baseIRI+">") ;
-        move() ;
+        nextToken() ;
         
         expect("Base directive not terminated by a dot", DOT) ;
         prologue.setBaseURI(new IRIResolver(baseIRI)) ;
@@ -236,9 +233,9 @@ public class LangTurtle extends LangBase
     {
         Node subject = node() ;
         if ( subject == null )
-            exception("Not recognized: expected directive or triples: %s", token().text()) ;
+            exception("Not recognized: expected directive or triples: %s", tokenResolve().text()) ;
         
-        move() ;
+        nextToken() ;
         predicateObjectList(subject) ;
         expectEndOfTriples() ;
     }
@@ -264,7 +261,7 @@ public class LangTurtle extends LangBase
             if ( ! lookingAt(SEMICOLON) )
                 break ;
             // list continues - move over the ";"
-            move() ;
+            nextToken() ;
             if ( ! peekPredicate() )
                 // Trailing (pointless) SEMICOLON, no following predicate/object list.
                 break ;
@@ -275,7 +272,7 @@ public class LangTurtle extends LangBase
     private void predicateObjectItem(Node subject)
     {
         Node predicate = predicate() ;
-        move() ;
+        nextToken() ;
         objectList(subject, predicate) ;
     }
     
@@ -287,7 +284,7 @@ public class LangTurtle extends LangBase
     {
         if ( lookingAt(TokenType.KEYWORD) )
         {
-            String image = tokenRaw().getImage() ;
+            String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
             if ( !strict && image.equals(KW_SAME_AS) )
@@ -306,7 +303,7 @@ public class LangTurtle extends LangBase
     {
         if ( lookingAt(TokenType.KEYWORD) )
         {
-            String image = tokenRaw().getImage() ;
+            String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return true ;
             if ( !strict && image.equals(KW_SAME_AS) )
@@ -329,7 +326,7 @@ public class LangTurtle extends LangBase
         // Resolve
         // CHECK
         // This is the only place where Nodes are created for triples.
-        Node n = token().asNode() ;
+        Node n = tokenResolve().asNode() ;
         if ( getChecker() != null )
             getChecker().check(n) ; 
         return n ;
@@ -348,7 +345,7 @@ public class LangTurtle extends LangBase
             if ( ! lookingAt(COMMA) )
                 break ;
             // list continues - move over the ","
-            move() ;
+            nextToken() ;
         }
     }
 
@@ -359,7 +356,7 @@ public class LangTurtle extends LangBase
         if ( lookingAt(NODE) )
         {
             Node n = node() ;
-            move() ;
+            nextToken() ;
             return n ; 
         }
 
@@ -367,8 +364,8 @@ public class LangTurtle extends LangBase
         if ( lookingAt(TokenType.KEYWORD) )
         {
             // Location independent node words
-            String image = tokenRaw().getImage() ;
-            move() ;
+            String image = peekToken().getImage() ;
+            nextToken() ;
             if ( image.equals(KW_TRUE) )
                 return NodeConst.nodeTrue ;
             if ( image.equals(KW_FALSE) )
@@ -398,13 +395,13 @@ public class LangTurtle extends LangBase
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception("Unrecognized: "+token()) ;
+        exception("Unrecognized: "+tokenResolve()) ;
         return null ;
     }
     
     private Node triplesBlankNode()
     {
-        move() ;        // Skip [
+        nextToken() ;        // Skip [
         Node subject = Node.createAnon() ;
 
         if ( peekPredicate() )
@@ -423,7 +420,7 @@ public class LangTurtle extends LangBase
     
     private Node triplesList()
     {
-        move() ;
+        nextToken() ;
         Node lastCell = null ;
         Node listHead = null ;
         
@@ -434,7 +431,7 @@ public class LangTurtle extends LangBase
             
             if ( lookingAt(RPAREN) ) 
             {
-                move(); 
+                nextToken(); 
                 break ;
             }
             
@@ -467,21 +464,28 @@ public class LangTurtle extends LangBase
         emit(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
         return listHead ;
     }
-    
-    // ---- Wrapping the peekIter.
-    
-    private final Token tokenRaw()
+   
+    private void emit(Node subject, Node predicate, Node object)
     {
-        // Avoid repeating.
-        if ( eof() ) return tokenEOF ;
-        return peekIter.peek() ;
+        if ( CHECKING )
+        {
+            if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
+                exception("Subject is not a URI or blank node") ;
+            if ( predicate == null || ( ! predicate.isURI() ) )
+                exception("Predicate not a URI") ;
+            if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
+                exception("Object is not a URI, blank node or literal") ;
+        }
+        Triple t = new Triple(subject, predicate, object) ;
+        if ( VERBOSE ) 
+            log.info(PrintingSink.strForTriple(t)) ;
+        sink.send(new Triple(subject, predicate, object)) ;
     }
     
-    private final Token token()
+    private Token tokenResolve()
     {
-        return convert(tokenRaw()) ;
+        return convert(peekToken()) ;
     }
-
     
     private Token convert(Token token)
     {
@@ -509,100 +513,6 @@ public class LangTurtle extends LangBase
         return token ;
     }
     
-    // Set when we get to EOF to record line/col of the EOF.
-    private Token tokenEOF = null ;
-
-    private boolean eof()
-    {
-        if ( tokenEOF != null )
-            return true ;
-        
-        if ( ! moreTokens() )
-        {
-            tokenEOF = new Token(tokens.getLine(), tokens.getColumn()) ;
-            return true ;
-        }
-        return false ;
-    }
-
-    private boolean moreTokens() 
-    {
-        return peekIter.hasNext() ;
-    }
-    
-    // See triplesNode
-    private boolean lookingAt(TokenType tokenType)
-    {
-        if ( eof() )
-            return tokenType == EOF ;
-        if ( tokenType == NODE )
-            return tokenRaw().isNode() ;
-//        if ( tokenType == KEYWORD )
-//        {
-//            String image = tokenRaw().getImage() ;
-//            if ( image.equals(KW_TRUE) )
-//                return true ;
-//            if ( image.equals(KW_FALSE) )
-//                return true ;
-//            return false ; 
-//        }
-        // NB IRIs and PREFIXED_NAMEs
-        return tokenRaw().hasType(tokenType) ;
-    }
-    
-    private Token move()
-    {
-        if ( eof() )
-        {
-            if ( VERBOSE ) log.info("Move: EOF") ;
-            return tokenEOF ;
-        }
-        
-        Token t = peekIter.next() ;
-        if ( VERBOSE ) log.info("Move: " + t) ;
-        return t ;
-    }
-    
-    private void expectOrEOF(String msg, TokenType tokenType)
-    {
-        // DOT or EOF
-        if ( eof() )
-            return ;
-        expect(msg, tokenType) ;
-    }
-    
-    private void expect(String msg, TokenType ttype)
-    {
-        if ( ! lookingAt(ttype) )
-            exception(msg) ;
-        move() ;
-    }
-
-    private void exception(String msg, Object... args)
-    { 
-        exceptionDirect(String.format(msg, args), tokenRaw().getLine(), tokenRaw().getColumn()) ;
-    }
-
-    private void exceptionDirect(String msg, long line, long col)
-    { throw new ParseException(msg, line, col) ; }
-    
-    private void emit(Node subject, Node predicate, Node object)
-    {
-        if ( CHECKING )
-        {
-            if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-                exception("Subject is not a URI or blank node") ;
-            if ( predicate == null || ( ! predicate.isURI() ) )
-                exception("Predicate not a URI") ;
-            if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-                exception("Object is not a URI, blank node or literal") ;
-        }
-        Triple t = new Triple(subject, predicate, object) ;
-        if ( VERBOSE ) 
-            log.info(PrintingSink.strForTriple(t)) ;
-        sink.send(new Triple(subject, predicate, object)) ;
-    }
-
 }
 
 /*

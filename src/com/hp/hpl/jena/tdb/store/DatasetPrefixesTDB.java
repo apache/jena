@@ -42,15 +42,16 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
 
     
+    @Deprecated
     public static DatasetPrefixesTDB create(Location location) { return create(IndexBuilder.get(), location) ; }
     
+    @Deprecated
     public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location)
     { return new DatasetPrefixesTDB(indexBuilder, location) ; }
 
+    @Deprecated
     private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location)
     {
-        // REMOVE ON META
-        
         // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
         // GPU index

@@ -6,21 +6,22 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import atlas.event.Event;
-import atlas.event.EventManager;
-import atlas.iterator.PeekIterator;
-import atlas.lib.Sink;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.event.Event ;
+import atlas.event.EventManager ;
+import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.riot.*;
-import com.hp.hpl.jena.riot.tokens.Token;
-import com.hp.hpl.jena.riot.tokens.TokenType;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.ErrorHandlerLogger ;
+import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.tokens.Token ;
+import com.hp.hpl.jena.riot.tokens.TokenType ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 
 /** N-Triples parser, with both push and pull interfaces.
  * <ul>
@@ -36,14 +37,9 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
     
     public static final boolean STRICT = false ;
     
-    private final Tokenizer tokens ;
-    private final PeekIterator<Token> peekIter ;
-
     public LangNTriples(Tokenizer tokens)
     { 
-        super(null, new ErrorHandlerLogger(messageLog)) ;
-        this.tokens = tokens ;
-        this.peekIter = new PeekIterator<Token>(tokens) ;
+        super(null, new ErrorHandlerLogger(messageLog), tokens) ;
     }
     
     /** Method to parse the whole stream of triples, sending each to the sink */ 
@@ -58,11 +54,14 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
         EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
     }
 
+    // Assumes no syntax errors.
+    //@Override
     public boolean hasNext()
     {
-        return peekIter.hasNext() ;
+        return super.moreTokens() ;
     }
     
+    //@Override
     public Triple next()
     {
         return parseOne() ;
@@ -128,19 +127,6 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
             
         return o.asNode() ;
     }
-
-    private Token nextToken()
-    {
-        if ( ! peekIter.hasNext() )
-            exception("Unexpected end of file", tokens.getLine(), tokens.getColumn()) ;
-        return peekIter.next() ;
-    }
-    
-    private void exception(String msg, long lineNum, long colNum, Object... args)
-    { throw new ParseException(String.format(msg, args), lineNum, colNum) ; }
-    
-    private void exception(String msg, Token token, Object... args)
-    { throw new ParseException(String.format(msg, args), token.getLine(), token.getColumn()) ; }
 }
 
 /*

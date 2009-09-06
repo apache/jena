@@ -62,7 +62,6 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
-        // This fails when run in the complete test suite, but not run individually. 
         prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
         prefixes.close();

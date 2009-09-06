@@ -6,25 +6,127 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import com.hp.hpl.jena.riot.Checker;
-import com.hp.hpl.jena.riot.ErrorHandler;
+import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
+import atlas.iterator.PeekIterator ;
 
-public class LangBase implements LangRIOT
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.ErrorHandler ;
+import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.tokens.Token ;
+import com.hp.hpl.jena.riot.tokens.TokenType ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+
+/** Stream of tokens, that can be seen as Nodes */
+public abstract class LangBase implements LangRIOT
 {
     private Checker checker = null ;
     private ErrorHandler errorHandler = null ;
+
+    protected final Tokenizer tokens ;
+    private final PeekIterator<Token> peekIter ;
     
-    public LangBase(Checker check, ErrorHandler errorHandler)
+    public LangBase(Checker check, ErrorHandler errorHandler, Tokenizer tokens)
     {
         setChecker(check) ;
         setErrorHandler(errorHandler) ;
+        this.tokens = tokens ;
+        this.peekIter = new PeekIterator<Token>(tokens) ;
+
     }
     
+    //@Override
     public Checker getChecker()                 { return checker ; }
+    //@Override
     public void    setChecker(Checker checker)  { this.checker = checker ; }
     
+    //@Override
     public ErrorHandler getErrroHandler()       { return errorHandler ; }
+    //@Override
     public void setErrorHandler(ErrorHandler handler) { this.errorHandler = handler  ; }
+    
+    
+    // ---- Managing tokens.
+    
+    protected final Token peekToken()
+    {
+        // Avoid repeating.
+        if ( eof() ) return tokenEOF ;
+        return peekIter.peek() ;
+    }
+    
+    // Set when we get to EOF to record line/col of the EOF.
+    private Token tokenEOF = null ;
+
+    protected final boolean eof()
+    {
+        if ( tokenEOF != null )
+            return true ;
+        
+        if ( ! moreTokens() )
+        {
+            tokenEOF = new Token(tokens.getLine(), tokens.getColumn()) ;
+            return true ;
+        }
+        return false ;
+    }
+
+    protected final boolean moreTokens() 
+    {
+        return peekIter.hasNext() ;
+    }
+    
+    protected final boolean lookingAt(TokenType tokenType)
+    {
+        if ( eof() )
+            return tokenType == EOF ;
+        if ( tokenType == NODE )
+            return peekToken().isNode() ;
+//        if ( tokenType == KEYWORD )
+//        {
+//            String image = tokenRaw().getImage() ;
+//            if ( image.equals(KW_TRUE) )
+//                return true ;
+//            if ( image.equals(KW_FALSE) )
+//                return true ;
+//            return false ; 
+//        }
+        // NB IRIs and PREFIXED_NAMEs
+        return peekToken().hasType(tokenType) ;
+    }
+    
+    protected final Token nextToken()
+    {
+        if ( eof() )
+            return tokenEOF ;
+        
+        Token t = peekIter.next() ;
+        return t ;
+    }
+    
+    protected final void expectOrEOF(String msg, TokenType tokenType)
+    {
+        // DOT or EOF
+        if ( eof() )
+            return ;
+        expect(msg, tokenType) ;
+    }
+    
+    protected final void expect(String msg, TokenType ttype)
+    {
+        if ( ! lookingAt(ttype) )
+            exception(msg) ;
+        nextToken() ;
+    }
+
+    protected final void exception(String msg, Object... args)
+    { 
+        exceptionDirect(String.format(msg, args), peekToken().getLine(), peekToken().getColumn()) ;
+    }
+
+    protected final void exceptionDirect(String msg, long line, long col)
+    { throw new ParseException(msg, line, col) ; }
+ 
 }
 
 /*
