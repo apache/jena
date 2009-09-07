@@ -3,6 +3,8 @@ ChangeLog for TDB
 
 ==== 0.8.3
 
++ Speed up refomring nodes from the on-disk representation.
++ (From ARQ) Speed up complex nested optionals.  BSBM now works on all thier dataset sizes.
 + Speed up basic processing of DateTime nodes (avoid using String.format to remake lexcial forms!) 
 
 + Bug fix: If the query has a dataset description, this was ignored.  

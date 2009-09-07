@@ -6,27 +6,22 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import atlas.lib.Bytes ;
-import atlas.lib.Pool ;
-import atlas.lib.PoolSync ;
-import atlas.lib.StrUtils ;
+import atlas.io.PeekReader;
+import atlas.lib.Bytes;
+import atlas.lib.Pool;
+import atlas.lib.PoolSync;
+import atlas.lib.StrUtils;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.riot.tokens.Tokenizer;
+import com.hp.hpl.jena.riot.tokens.TokenizerText;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.tdb.TDBException;
 
-/** Simple encoder/decoder for nodes that uses the SSE string encoding.
- *  The encoding is a length (4 bytes) and a UTF-8 string.
- *  
- *  Note that this is not compatible with UTF-8 strings written with
- *  the standard Java mechanism {@link java.io.DataInput DataInput}/
- *  {@link java.io.DataOutput DataOutput} because they are limited to
- *  64K bytes of UTF-8 data (2 byte length code).
- */
+/** Simple encoder/decoder for nodes that uses the SSE string encoding. */
 
 public class NodecSSE implements Nodec
 {
@@ -86,14 +81,21 @@ public class NodecSSE implements Nodec
     //@Override
     public Node decode(ByteBuffer bb, PrefixMapping pmap)
     {
+        // Ideally, this would be straight from the byte buffer.
+        // But currently we go bytes -> string -> node 
+
         // Byte -> String
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
-
-        // Do better: this is a key operation
-        // HARDCODE THIS
+        // -- Old - expensive.
+        // Node n = SSE.parseNode(str) ;
         
-        Node n = SSE.parseNode(str, pmap) ;
+        PeekReader r = PeekReader.make(str) ;
+        Tokenizer tokenizer = new TokenizerText(r) ;
+        Node n =  tokenizer.next().asNode() ;
+        if ( n == null )
+            throw new TDBException("Not a node: "+str) ;
+        
         if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
         {
             String uri = StrUtils.decode(n.getURI(), '_') ;
