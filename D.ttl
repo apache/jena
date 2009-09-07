@@ -5,10 +5,11 @@
 
 <http://example/> <legalURI> 123 ;
     <legalURIé> "foo" ;
-    :p "é" ;
+#    :p "é" ;
     :p "\u0020" ;
     :p "\u0123" ;
     :p "\uF123" ;
+    :p "New test" ;
 .
 
 

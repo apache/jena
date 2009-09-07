@@ -11,6 +11,7 @@ public class DevTDB
     // --- Setup
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
+    // Use of Location.mem results in files created!
     //   Need to cope with junk files in directory (testing and non-clearance).
     // ** TDBSetup to have IndexBuilder versions.
     //    IndexFactory with metadata handling.
@@ -20,12 +21,7 @@ public class DevTDB
     //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)
     
     // RIOT
-    // PeekReader abstraction for strings.
-    //   Nodec - tokenize the string (or from ByteBuffer?)
-    // Abstract  
-    //   unreadChar(int), init(), fillAndAdvance(), fillArray(), oneChar(), replayPushback()
-    // PeekReaderSource
-    // PeekReaderString
+    // Node reader.
     
     // == 0.8.3
     // Explain mode - See notes in class
