@@ -14,6 +14,7 @@ import arq.sse_query;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -64,6 +65,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        report() ; System.exit(0) ;
+        
         execQuery("D.ttl", "Q.arq") ;
         
         
@@ -140,8 +143,28 @@ public class RunARQ
 
     public static void report()
     {
-        qparse("--print=op", "--print=query", "--file=Q.arq") ; 
-        System.exit(0) ;
+        String sparqlQuery = StrUtils.strjoinNL(
+                  "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                  "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                  "PREFIX  pre:   <http://example/>",        
+                  "SELECT ?x WHERE { ?x rdf:type ?class . ?class rdfs:subClassOf pre:myClass . }"); 
+        Model model = ModelFactory.createDefaultModel() ;
+
+        while (true) {
+            Query query = QueryFactory.create(sparqlQuery, Syntax.syntaxSPARQL);
+            QueryExecution exec = QueryExecutionFactory.create(QueryFactory.create(query), model);
+            ResultSet result = exec.execSelect();
+
+                
+            while (result.hasNext()) {
+                // do something
+            }
+            result = null;
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) { }
+        }
     }
     
     public static void check(Query query, boolean optimizeAlgebra)
