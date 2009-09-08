@@ -32,21 +32,23 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
      */
     
 
-    private Location location = null ;
+    //private Location location = null ;
     
-    public NodeTableAssembler()                     { this.location = new Location(".") ; }
-    public NodeTableAssembler(Location location)    { this.location = location ; }
+    //public NodeTableAssembler()                     { this.location = new Location(".") ; }
+    //public NodeTableAssembler(Location location)    { this.location = location ; }
+    
+    public NodeTableAssembler()                     { }
     
     @Override
     public NodeTable open(Assembler a, Resource root, Mode mode)
     {
         String location = getAsStringValue(root, pNodeIndex) ;
-        if ( location != null )
-            return NodeTableFactory.create(IndexBuilder.get(), new Location(location)) ;
-        
-        String nodeIndex = getAsStringValue(root, pNodeIndex) ;
-        String nodeData = getAsStringValue(root, pNodeData) ;
-        
+//        if ( location != null )
+//            return NodeTableFactory.create(IndexBuilder.get(), new Location(location)) ;
+//        
+//        String nodeIndex = getAsStringValue(root, pNodeIndex) ;
+//        String nodeData = getAsStringValue(root, pNodeData) ;
+//        
         throw new AssemblerException(root, "Split location index/data file not yet implemented") ; 
     }
 }

@@ -8,10 +8,17 @@ package dev;
 
 public class DevTDB
 {
+    // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
+    // At least, specific documentation.
+    
     // --- Setup
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
+
     // Use of Location.mem results in files created!
+    //   Metadone but what about the rest?
+    //   FileFactory and IndexBuiolder need to be Location.mem sensitive.
+
     //   Need to cope with junk files in directory (testing and non-clearance).
     // ** TDBSetup to have IndexBuilder versions.
     //    IndexFactory with metadata handling.
@@ -19,9 +26,6 @@ public class DevTDB
     // ?? NodeTableBuilder
     //  Non-DI: DatasetPrefixesTDB(IndexBuilder, Location)
     //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)
-    
-    // RIOT
-    // Node reader.
     
     // == 0.8.3
     // Explain mode - See notes in class

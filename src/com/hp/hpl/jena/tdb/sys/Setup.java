@@ -161,7 +161,6 @@ public class Setup
         // Check and set defaults.
         // On return, can just read the metadata key/value. 
         
-        
         MetaFile metafile = locationMetadata(location) ;
         
         // Only support this so far.
@@ -523,6 +522,7 @@ public class Setup
 
             if ( ! newDataset )
             {
+                // PROBLEM.
                 // Well-know name of the primary triples index.
                 boolean b = FileOps.exists(location.getPath("SPO.dat")) ;
                 if ( !b )

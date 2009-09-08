@@ -29,18 +29,17 @@ public class FileSet
     private Location location ;
     private String basename ;
     private MetaFile metafile ;
+    
+    private boolean isInMemory ;
 
     /** FileSet for "in-memory" */
     public static FileSet mem()
     {
-        FileSet fs = new FileSet() ;
-        fs.location = Location.mem() ;
-        fs.basename = "mem" ;
-        fs.metafile = new MetaFile("mem", Names.memName) ;
+        FileSet fs = new FileSet(Location.mem(), "mem" ) ;
         return fs ;
     }
 
-    private FileSet() {}        // Uninitialized.
+    //private FileSet() {}        // Uninitialized.
 
     
     /** Create a FileSet given Location (directory) and name within the directory */  
@@ -76,7 +75,19 @@ public class FileSet
     {
         this.location = directory ;
         this.basename = basename ;
-        String metaFileName = location.getPath(basename, Names.extMeta) ;
+        
+        isInMemory = location.isMem() ;
+
+        if ( isInMemory )
+        {
+            if ( useLocationMetadata )
+                metafile = location.getMetaFile() ;
+            else
+                metafile = new MetaFile("Fileset: memory", Names.memName) ;
+            return ;
+        }
+        
+        String metaFileName = location.getPath(basename, Names.extMeta) ; // **** MEMORY
         if ( useLocationMetadata )
             metafile = location.getMetaFile() ;
         else
@@ -92,18 +103,20 @@ public class FileSet
         return location.isMem() ;
     }
 
-    public RandomAccessFile openReadOnly(String ext)
-    {
-        return open(ext, "r") ;
-    }
-    
-    public RandomAccessFile open(String ext)
-    {
-        return open(ext, "rw") ;
-    }
-        
+//    public RandomAccessFile openReadOnly(String ext)
+//    {
+//        return open(ext, "r") ;
+//    }
+//    
+//    public RandomAccessFile open(String ext)
+//    {
+//        return open(ext, "rw") ;
+//    }
+//        
     public boolean exists(String ext)
     {
+        if ( isInMemory )
+            return true ;
         String fn = filename(ext) ;
         File f = new File(fn) ;
         if ( f.isDirectory() )
@@ -122,22 +135,22 @@ public class FileSet
         return location.getPath(basename, ext) ;
     }
     
-    public RandomAccessFile open(String ext, String mode)
-    {
-        // "rwd" - Syncs only the file contents
-        // "rws" - Syncs the file contents and metadata
-        // "rw" -
-        try {
-            RandomAccessFile out = new RandomAccessFile(filename(ext), mode) ;
-            return out ;
-        } catch (IOException ex) { throw new FileException("Failed to open file", ex) ; } 
-    }
-    
-    public FileChannel openChannel(String ext)
-    {
-        RandomAccessFile out = open(ext, "rw") ;
-        return out.getChannel() ;
-    }
+//    public RandomAccessFile open(String ext, String mode)
+//    {
+//        // "rwd" - Syncs only the file contents
+//        // "rws" - Syncs the file contents and metadata
+//        // "rw" -
+//        try {
+//            RandomAccessFile out = new RandomAccessFile(filename(ext), mode) ;
+//            return out ;
+//        } catch (IOException ex) { throw new FileException("Failed to open file", ex) ; } 
+//    }
+//    
+//    public FileChannel openChannel(String ext)
+//    {
+//        RandomAccessFile out = open(ext, "rw") ;
+//        return out.getChannel() ;
+//    }
 }
 
 /*

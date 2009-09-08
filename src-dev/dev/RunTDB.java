@@ -70,18 +70,11 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
-        PeekReader r = PeekReader.make("<http://example/>") ;
-        Tokenizer tokenizer = new TokenizerText(r) ;
-        Node n = tokenizer.next().asNode() ;
-        System.out.println(FmtUtils.stringForNode(n)) ;
-        System.exit(0) ;
-        
-        
         TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
-        
         Dataset ds = TDBFactory.createDataset() ;
-        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
-        ds.getDefaultModel().write(System.out, "TTL") ;
+        
+//        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+//        ds.getDefaultModel().write(System.out, "TTL") ;
         System.exit(0) ;
         
         if ( false )
