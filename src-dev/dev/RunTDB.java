@@ -16,7 +16,6 @@ import java.util.List ;
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
-import atlas.io.PeekReader;
 import atlas.junit.TextListener2 ;
 import atlas.logging.Log ;
 
@@ -26,14 +25,11 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -52,7 +48,6 @@ import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.Setup ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
-import com.hp.hpl.jena.util.FileManager ;
 
 import dump.DumpIndex ;
 

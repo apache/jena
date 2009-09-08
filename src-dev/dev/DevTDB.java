@@ -16,7 +16,9 @@ public class DevTDB
     //    (Currently in ...sys...)
 
     // Use of Location.mem results in files created!
-    //   Metadone but what about the rest?
+    //   Meta done but what about the rest?
+    // Opening filesets needs to pass in a file set (to FileFactory, BlockMgr factory etc) 
+    //   or ask the file set (bit that is too late)
     //   FileFactory and IndexBuiolder need to be Location.mem sensitive.
 
     //   Need to cope with junk files in directory (testing and non-clearance).

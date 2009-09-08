@@ -6,16 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.file ;
 
-import java.io.*;
-import java.nio.channels.FileChannel;
+import java.io.File ;
 
-import atlas.lib.FileOps;
-import atlas.lib.Tuple;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.lib.FileOps ;
+import atlas.lib.Tuple ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Naming, access and metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).

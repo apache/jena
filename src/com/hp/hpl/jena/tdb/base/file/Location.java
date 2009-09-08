@@ -51,6 +51,7 @@ public class Location
     private MetaFile metafile = null ; 
     
     static Location mem = new Location() ;
+    // Every mem()is a fresh location and importantly fresh metadata.
     static public Location mem() { return new Location(); } 
     
     private Location()
