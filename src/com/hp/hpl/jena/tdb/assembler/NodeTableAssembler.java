@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pNodeData;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pNodeIndex;
 
 import com.hp.hpl.jena.assembler.Assembler;
@@ -15,10 +14,7 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
