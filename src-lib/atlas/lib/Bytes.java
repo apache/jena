@@ -286,7 +286,7 @@ public class Bytes
         for ( int i = start ; i < finish ; i++ )
         {
             byte b = bytes[i] ;
-            int hi = b >> 4 ;
+            int hi = (b & 0xF0) >> 4 ;
             int lo = b & 0xF ;
             sw.append(Chars.hexDigits[hi]) ;
             sw.append(Chars.hexDigits[lo]) ;

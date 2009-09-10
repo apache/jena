@@ -10,8 +10,11 @@ public class DevTDB
 {
     // Compressor
     // IndexBuilder understanding index type name
-    //    Registry<T,V>("bplustree", IndexBuilder)
+    //    Registry<String->T>("bplustree", IndexBuilder)
     // Tuning for low memory / 32 bit - smaller fixed caches
+
+    // BlockMgr/IndexBuilder for various technologies.
+    
     
     // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
     // At least, specific documentation.
