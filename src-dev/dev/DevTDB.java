@@ -8,6 +8,11 @@ package dev;
 
 public class DevTDB
 {
+    // Compressor
+    // IndexBuilder understanding index type name
+    //    Registry<T,V>("bplustree", IndexBuilder)
+    // Tuning for low memory / 32 bit - smaller fixed caches
+    
     // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
     // At least, specific documentation.
     
