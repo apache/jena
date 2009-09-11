@@ -288,6 +288,7 @@ public class Bytes
             byte b = bytes[i] ;
             int hi = (b & 0xF0) >> 4 ;
             int lo = b & 0xF ;
+            if ( i != start ) sw.append(' ') ;
             sw.append(Chars.hexDigits[hi]) ;
             sw.append(Chars.hexDigits[lo]) ;
         }
