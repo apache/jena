@@ -38,6 +38,27 @@ public class QuerySolutionMap extends QuerySolutionBase
     @Override
     public Iterator<String> varNames()                   { return map.keySet().iterator() ; }
     
+    /** Add all of the solutions from one QuerySolutionMap into this QuerySolutionMap */
+    public void addAll(QuerySolutionMap other)
+    { 
+        map.putAll(other.map);
+    }
+
+    /** Add all of the solutions from one QuerySolution into this QuerySolutionMap */
+    public void addAll(QuerySolution other)
+    { 
+        Iterator<String> iter = other.varNames() ;
+        for ( ; iter.hasNext(); )
+        {
+            String vName = iter.next() ;
+            RDFNode rdfNode = other.get(vName) ; 
+            map.put(vName, rdfNode);
+        }
+    }
+
+    /** Clear this QuerySolutionMap */
+    public void clear() { map.clear(); }
+    
     @Override
     public String toString()
     {

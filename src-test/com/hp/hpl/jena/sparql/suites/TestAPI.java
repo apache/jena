@@ -91,6 +91,22 @@ public class TestAPI extends TestCase
 //        execRegexTest(2, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x', 'i')}") ;
 //    }
 
+    public void testInitialBindings0()
+    {
+        QuerySolutionMap smap1 = new QuerySolutionMap() ;
+        QuerySolutionMap smap2 = new QuerySolutionMap() ;
+        smap1.add("o", m.createLiteral("y1"));
+        smap2.addAll(smap1) ;
+        assertTrue(smap2.contains("o")) ;
+        smap2.clear() ;
+        assertFalse(smap2.contains("o")) ;
+        assertTrue(smap1.contains("o")) ;
+        
+        QuerySolutionMap smap3 = new QuerySolutionMap() ;
+        smap2.addAll((QuerySolution)smap1) ;
+        assertTrue(smap2.contains("o")) ;
+    }
+    
     public void testInitialBindings1()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
