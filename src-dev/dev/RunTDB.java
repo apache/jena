@@ -10,8 +10,10 @@ import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Arrays ;
+import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Map ;
 
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
@@ -33,9 +35,16 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.MetaFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
@@ -47,6 +56,8 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.Setup ;
+import com.hp.hpl.jena.tdb.sys.SetupUtils ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 import dump.DumpIndex ;
@@ -67,22 +78,109 @@ public class RunTDB
     {
         TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
         Dataset ds = TDBFactory.createDataset("tmp/DBX") ;
-        
-//        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
-//        ds.getDefaultModel().write(System.out, "TTL") ;
+
+        //        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+        //        ds.getDefaultModel().write(System.out, "TTL") ;
         System.exit(0) ;
-        
+
         if ( false )
         {
             DumpIndex.dump(System.out, "DB", "SPO") ;
             System.exit(0) ;
         }
-        
+
         setup() ;
     }
-        
+
+    // Switching on index type to build.
+    // Replaces IndexFactory.
     
-    // How to test??
+    interface RangeIndexMaker
+    {
+        public RangeIndex createRangeIndex(FileSet fileset) ;
+    }
+    
+    static class Registry<T>
+    {
+        private Map<String, T> entries = new HashMap<String, T>() ;
+        public T get(String x) { return entries.get(x) ; }
+        public void put(String x, T entry) { entries.put(x, entry) ; }
+    }
+    
+    static Registry<RangeIndexMaker> registry = new Registry<RangeIndexMaker>() ;
+    
+    class RangeIndexM implements RangeIndexMaker
+    {
+
+        public RangeIndex createRangeIndex(FileSet fileset)
+        {
+            MetaFile metafile = fileset.getMetaFile() ;
+            String filetype = metafile.getProperty("tdb.file.type", "rangeindex") ;
+            String impl = metafile.getProperty("tdb.file.impl", "bplustree") ;
+            RangeIndexMaker rim = registry.get(impl) ;
+            if ( rim == null )
+                SetupUtils.error(null, "No such implementation: "+impl) ;
+            return rim.createRangeIndex(fileset) ;
+        }
+        
+    }
+    
+    static class RangeIndexM_BPT implements RangeIndexMaker
+    {
+        static int dftKeyLength = 24 ;
+        static int dftValueLength = 0 ;
+        
+        public RangeIndex createRangeIndex(FileSet fileset)
+        {
+            MetaFile metafile = fileset.getMetaFile() ;
+            RecordFactory recordFactory = Setup.makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
+            
+            String blkSizeStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+            int blkSize = SetupUtils.parseInt(blkSizeStr, "Bad block size") ;
+            
+            // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
+            // Does not set order.
+            
+            int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+            String orderStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.order", Integer.toString(calcOrder)) ;
+            int order = SetupUtils.parseInt(orderStr, "Bad order for B+Tree") ;
+            if ( order != calcOrder )
+                SetupUtils.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+
+            RangeIndex rIndex = createBPTree(fileset, order, blkSize, recordFactory) ;
+            metafile.flush() ;
+            return rIndex ;
+        }
+        
+        /** Knowing all the parameters, create a B+Tree */
+        public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
+                                              RecordFactory factory)
+        {
+            // ---- Checking
+            if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
+            if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (blockSize >= 0 && order >= 0)
+            {
+                int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+                if (order != order2) throw new IllegalArgumentException("Wrong order (" + order + "), calculated = "
+                                                                        + order2) ;
+            }
+        
+            // Iffy - does not allow for slop.
+            if (blockSize < 0 && order >= 0)
+            {
+                // Only in-memory.
+                blockSize = BPlusTreeParams.calcBlockSize(order, factory) ;
+            }
+        
+            BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize) ;
+            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize) ;
+            return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+        }
+
+        
+    }
     
     public static void setup()
     {

@@ -10,7 +10,7 @@ public class DevTDB
 {
     // Compressor
 
-    // IndexBuilder understanding index type name
+    // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     
     // Tuning for low memory / 32 bit - smaller fixed caches

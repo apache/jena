@@ -21,11 +21,10 @@ import com.hp.hpl.jena.tdb.index.mem.Index3;
 import com.hp.hpl.jena.tdb.index.mem.IterFunc;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
+/** In-mmeory structures and indexing. */
 public class TupleIndexMem implements TupleIndex
 {
-
-    // Index by first element only.
-    //private Map<NodeId, List<Tuple<NodeId>>> index = new HashMap<NodeId, List<Tuple<NodeId>>>();
+    // Not used.
     private Index3<NodeId, NodeId, NodeId, Tuple<NodeId>> index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
     private ColumnMap colMap ;
     private int tupleLength ;
