@@ -108,14 +108,21 @@ public class RunTDB
     }
     
     static Registry<RangeIndexMaker> registry = new Registry<RangeIndexMaker>() ;
+    static {
+        registry.put("bplustree", new RangeIndexM_BPT()) ;
+    }
+    
+    
     
     class RangeIndexM implements RangeIndexMaker
     {
-
         public RangeIndex createRangeIndex(FileSet fileset)
         {
             MetaFile metafile = fileset.getMetaFile() ;
             String filetype = metafile.getProperty("tdb.file.type", "rangeindex") ;
+            if ( filetype.equals("rangeindex") )
+                SetupUtils.error(null, "Expected a range index for '"+"tdb.file.type"+"' got:"+filetype) ;
+            
             String impl = metafile.getProperty("tdb.file.impl", "bplustree") ;
             RangeIndexMaker rim = registry.get(impl) ;
             if ( rim == null )
@@ -127,7 +134,7 @@ public class RunTDB
     
     static class RangeIndexM_BPT implements RangeIndexMaker
     {
-        static int dftKeyLength = 24 ;
+        static int dftKeyLength = 24 ;  // RISKY - not always true.
         static int dftValueLength = 0 ;
         
         public RangeIndex createRangeIndex(FileSet fileset)

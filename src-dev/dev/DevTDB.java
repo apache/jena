@@ -9,7 +9,8 @@ package dev;
 public class DevTDB
 {
     // Compressor
-
+    // SetupUtils - move into metafile?
+    
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     

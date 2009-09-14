@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.sys;
 
 import org.slf4j.Logger ;
 
+import atlas.logging.Log ;
+
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
 
@@ -84,7 +86,8 @@ public class SetupUtils
 
     public static void error(Logger log, String msg)
     {
-        log.error(msg) ;
+        if ( log != null )
+            log.error(msg) ;
         throw new TDBException(msg) ;
     }
 
