@@ -600,7 +600,7 @@ public class Setup
                                           RecordFactory factory)
     {
         // ---- Checking
-        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specificied") ;
+        if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
         if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
         if (blockSize >= 0 && order >= 0)
         {
@@ -617,11 +617,8 @@ public class Setup
         }
     
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        String fnNodes = fileset.filename(Names.bptExt1) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.createFile(fnNodes, blockSize) ;
-        
-        String fnRecords = fileset.filename(Names.bptExt2) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.createFile(fnRecords, blockSize) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize) ;
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
 

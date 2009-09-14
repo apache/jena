@@ -9,13 +9,12 @@ package dev;
 public class DevTDB
 {
     // Compressor
+
     // IndexBuilder understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
+    
     // Tuning for low memory / 32 bit - smaller fixed caches
 
-    // BlockMgr/IndexBuilder for various technologies.
-    
-    
     // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
     // At least, specific documentation.
     
@@ -23,16 +22,6 @@ public class DevTDB
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
 
-    // Use of Location.mem results in files created!
-    //   Meta done but what about the rest?
-    // Opening filesets needs to pass in a file set (to FileFactory, BlockMgr factory etc) 
-    //   or ask the file set (bit that is too late)
-    //   FileFactory and IndexBuiolder need to be Location.mem sensitive.
-
-    //   Need to cope with junk files in directory (testing and non-clearance).
-    // ** TDBSetup to have IndexBuilder versions.
-    //    IndexFactory with metadata handling.
-    
     // ?? NodeTableBuilder
     //  Non-DI: DatasetPrefixesTDB(IndexBuilder, Location)
     //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)

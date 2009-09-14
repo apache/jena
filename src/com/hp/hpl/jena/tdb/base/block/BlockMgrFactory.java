@@ -9,11 +9,20 @@ package com.hp.hpl.jena.tdb.base.block;
 import java.io.File;
 
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 public class BlockMgrFactory
 {
+    public static BlockMgr create(FileSet fileSet, String ext, int blockSize)
+    {
+        if ( fileSet.isMem() )
+            return createMem(fileSet.filename(ext), blockSize) ;
+        else
+            return createFile(fileSet.filename(ext), blockSize) ;
+    }
+    
     /** Create an in-memory block manager */ 
     public static BlockMgr createMem(String indexName, int blockSize)
     {

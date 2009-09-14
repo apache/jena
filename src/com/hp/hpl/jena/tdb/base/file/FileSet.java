@@ -15,7 +15,7 @@ import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.tdb.sys.Names ;
 
-/** Naming, access and metadata management to a collection of related files
+/** Naming metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
  */
 public class FileSet

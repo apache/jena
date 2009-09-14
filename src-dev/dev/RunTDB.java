@@ -66,7 +66,7 @@ public class RunTDB
     public static void main(String ... args) throws IOException
     {
         TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDBFactory.createDataset("tmp/DBX") ;
         
 //        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
 //        ds.getDefaultModel().write(System.out, "TTL") ;
