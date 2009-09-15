@@ -19,14 +19,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.PropertyUtils;
 
-import com.hp.hpl.jena.graph.query.Expression.Util;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.sys.Names;
 
-/** Support for persistent metadata files */
+/** Abstraction and many convenience operations on metadata. 
+ * Metadata is recorded in Java properties style - not RDF - because it's relative to the file or context used.
+ * Keys and values are always strings.
+ */
 public class MetaFile implements Sync, Closeable
 {
     private static Logger log = LoggerFactory.getLogger(MetaFile.class) ;
@@ -35,6 +37,11 @@ public class MetaFile implements Sync, Closeable
     private String label = null ;
     private boolean changed = false ;
     
+    /** Create a MetaFile
+     *  
+     * @param label     Convenience label.
+     * @param fn        On disk filename @link{Names.mem} for in-memory
+     */
     public MetaFile(String label, String fn)
     {
         this.label = label ;
@@ -64,6 +71,7 @@ public class MetaFile implements Sync, Closeable
         }
     }
     
+    /** Does this metafile exist on disk? (In-memory MetaFiles always exist) */
     public boolean existsMetaData()
     {
         if ( isMem() )
@@ -75,57 +83,75 @@ public class MetaFile implements Sync, Closeable
     }
     
     public String getFilename()         { return metaFilename ; } 
-    
+
+    /** Test for the presence of a property */
     public boolean hasProperty(String key)
     {
         return _getProperty(key, null) != null ;
     }
 
+    /** Get the property value or null. */
     public String getProperty(String key)
     {
         return _getProperty(key, null) ;
     }
     
+    /** Get the property value or return supplied default. */
     public String getProperty(String key, String defaultString)
     {
         return _getProperty(key, defaultString) ;
     }
 
+    /** Get the property value and parse as an integer */
     public int getPropertyAsInteger(String key)
     {
         return Integer.parseInt(_getProperty(key, null)) ;
     }
     
-//    public String[] getPropertySplit(String key)
-//    {
-//        String str = getProperty(key) ;
-//        if ( str == null )
-//            return null ;
-//        return str.split(",") ;
-//    }
-//    
-//    public String[] getPropertySplit(String key, String defaultString)
-//    {
-//        String str = getProperty(key, defaultString) ;
-//        return str.split(",") ;
-//    }
+    /** Get the property value and parse as an integer or return default value. */
+    public int getPropertyAsInteger(String key, int defaultValue)
+    {
+        String x = getProperty(key) ;
+        if ( x == null )
+            return defaultValue ;
+        return Integer.parseInt(x) ;
+    }
 
+    /** Get property as a string and split on ",". */
+    public String[] getPropertySplit(String key)
+    {
+        String str = getProperty(key) ;
+        if ( str == null )
+            return null ;
+        return str.split(",") ;
+    }
     
+    /** Get property as a string and split on ",", using the default string if not present in the MetaFile. */
+    public String[] getPropertySplit(String key, String defaultString)
+    {
+        String str = getProperty(key, defaultString) ;
+        return str.split(",") ;
+    }
+    
+    /** Set property */
     public void setProperty(String key, String value)
     {
         _setProperty(key, value) ;
     }
     
+    /** Set property, turning integer into a string. */
     public void setProperty(String key, int value)
     {
         _setProperty(key, Integer.toString(value)) ;
     }
     
+    /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(String key, String value)
     {
         return Utils.equals(getProperty(key), value) ;
     }
 
+    /** Set property if not already set. */
     public void ensurePropertySet(String key, String expected)
     {
         getOrSetDefault(key, expected) ;
@@ -158,6 +184,7 @@ public class MetaFile implements Sync, Closeable
         inconsistent(key, x, expected) ; 
     }
 
+    /** Check property has teh vakue given - throw exception if not. */
     public void checkMetadata(String key, String expected)
     {
         String value = getProperty(key) ;
@@ -166,22 +193,22 @@ public class MetaFile implements Sync, Closeable
             inconsistent(key, value, expected) ;
     }
 
-    public static void inconsistent(String key, String actual, String expected) 
+    private static void inconsistent(String key, String actual, String expected) 
     {
         String msg = String.format("Inconsistent: key=%s value=%s expected=%s", 
                                    key, 
                                    (actual==null?"<null>":actual),
                                    (expected==null?"<null>":expected) ) ;
-        throw new TDBException(msg) ; 
+        throw new MetaFileException(msg) ; 
     }
     
+    /** Clear all properties. */
     public void clear()
     {
-        ensureInit() ;
-        properties.clear() ;
+        _clear() ;
     }
 
-    // All get/set access through these two operations
+    // ---- All get/set access through these  operations
     private String _getProperty(String key, String dft)
     {
         ensureInit() ;
@@ -195,10 +222,20 @@ public class MetaFile implements Sync, Closeable
         changedEvent() ;
     }
     
+    /** Clear all properties. */
+    private void _clear()
+    {
+        ensureInit() ;
+        properties.clear() ;
+        changedEvent() ;
+    }
+
     private void changedEvent() { changed = true ; }
- 
+    // ----
+    
     private boolean isMem() { return Names.isMem(metaFilename) ; }
     
+    /** Write to backing file if changed */
     public void flush()
     {
         if ( ! changed )
@@ -288,6 +325,11 @@ public class MetaFile implements Sync, Closeable
         metaFilename = null ;
         properties = null ;
 
+    }
+
+    private static class MetaFileException extends TDBException
+    {
+        MetaFileException(String msg) { super(msg) ; }
     }
 
 }
