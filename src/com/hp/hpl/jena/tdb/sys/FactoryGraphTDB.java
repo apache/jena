@@ -183,9 +183,11 @@ public class FactoryGraphTDB
     /** Create or connect a TDB dataset (graph-level) */
     private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphIndexDesc, String[] quadIndexDesc)
     {
+        @SuppressWarnings("deprecation")
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc) ;
+        @SuppressWarnings("deprecation")
         DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
         return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
     }

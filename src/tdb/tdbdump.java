@@ -6,6 +6,8 @@
 
 package tdb;
 
+import java.util.List ;
+
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
@@ -128,9 +130,12 @@ public class tdbdump extends CmdSub
         @Override
         protected void exec()
         {
-            for ( String fn: super.getPositional() )
+            List<String> args = positionals ;
+            for ( String x : args )
             {
-                execOne(fn) ;
+                System.out.println("**** File: "+x) ;
+                StringFile objs = FileFactory.createStringFileDisk(x) ;
+                objs.dump(handler) ;
             }
         }
         
@@ -142,12 +147,6 @@ public class tdbdump extends CmdSub
             }
         } ;
         
-        private void execOne(String fn)
-        {
-            // Open the node file
-            StringFile f = FileFactory.createStringFileDisk(fn) ;
-            f.dump(handler) ;
-        }
     }
 }
 

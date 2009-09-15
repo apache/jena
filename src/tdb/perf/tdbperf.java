@@ -6,48 +6,33 @@
 
 package tdb.perf;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
+import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
+import java.io.InputStream ;
+import java.util.Arrays ;
+import java.util.List ;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import tdb.cmdline.CmdSub ;
+import tdb.cmdline.CmdTDB ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModVersion ;
+import atlas.lib.ColumnMap ;
+import atlas.lib.SinkCounting ;
+import atlas.lib.Tuple ;
 
-import tdb.cmdline.CmdSub;
-import tdb.cmdline.CmdTDB;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModVersion;
-import atlas.lib.ColumnMap;
-import atlas.lib.SinkCounting;
-import atlas.lib.Tuple;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.riot.IRIResolver;
-import com.hp.hpl.jena.sparql.util.Timer;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.graph.GraphSink;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileSink;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.graph.CountingSinkGraph;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexMem;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.riot.IRIResolver ;
+import com.hp.hpl.jena.sparql.util.Timer ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphSink ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.graph.CountingSinkGraph ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexMem ;
+import com.hp.hpl.jena.tdb.store.BulkLoader ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -104,41 +89,12 @@ public class tdbperf extends CmdSub
             b.load(Arrays.asList(args)) ;
             System.exit(0) ;
         }
-            
-        private static GraphTDB setup1()
+
+        private GraphTDB setup1()
         {
-            // Setup a graph - for experimental alternatives.
-            BlockMgrMem.SafeMode = false ;
-            IndexBuilder indexBuilder = IndexBuilder.mem() ;
-            Location location = null ;
-
-            //NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+            return null ;
+        }
             
-            // Empty index and node file
-            //NodeTable nodeTable = NodeTableFactory.createSink(indexBuilder, location) ;
-            // Memory index, empty object file.
-            
-            ObjectFile objectFile = new ObjectFileSink() ;
-            RecordFactory nr = FactoryGraphTDB.nodeRecordFactory ;
-            
-            
-            Index nodeToId = IndexBuilder.mem().newIndex(null, nr) ;
-            NodeTable nodeTable =
-                //new NodeTableSink() ;
-                new NodeTableBase(nodeToId, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
-
-            TripleTable tripleTable = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, Names.tripleIndexes) ; 
-            QuadTable quadTable = FactoryGraphTDB.createQuadTable(indexBuilder, nodeTable, location, Names.quadIndexes) ; 
-            
-            
-            ReorderTransformation transform = ReorderLib.identity() ;
-            DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
-            
-            DatasetGraphTDB ds = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location) ;
-            
-            // ??? null: see FactoryGraphTDB._createGraph
-            return new GraphTriplesTDB(ds, tripleTable, prefixes) ;
-        } 
     }
     
     static class SubParse //extends CmdTDB

@@ -96,18 +96,9 @@ public class RunTDB
     
     interface RangeIndexMaker
     {
+        // No record factory - no details of range expected.
         public RangeIndex createRangeIndex(FileSet fileset) ;
     }
-    
-//    static class Registry<T>
-//    {
-//        private Map<String, T> entries = new HashMap<String, T>() ;
-//        public T get(String x) { return entries.get(x) ; }
-//        public void put(String x, T entry) { entries.put(x, entry) ; }
-//    }
-    
-    
-    
     
     static class Registries
     {
@@ -139,8 +130,13 @@ public class RunTDB
     
     static class RangeIndexM_BPT implements RangeIndexMaker
     {
-        static int dftKeyLength = 24 ;  // RISKY - not always true.
-        static int dftValueLength = 0 ;
+        int dftKeyLength = 0;
+        int dftValueLength = 0 ;
+        
+//        public RangeIndexM_BPT(int dftKeyLength)
+//        {
+//            this.dftKeyLength = dftKeyLength ;
+//        }
         
         public RangeIndex createRangeIndex(FileSet fileset)
         {

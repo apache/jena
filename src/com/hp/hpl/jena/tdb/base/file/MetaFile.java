@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Comparator ;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -31,11 +32,13 @@ import com.hp.hpl.jena.tdb.sys.Names;
  */
 public class MetaFile implements Sync, Closeable
 {
+    private static Comparator<String> comparator = new ComparatorKeys() ;
     private static Logger log = LoggerFactory.getLogger(MetaFile.class) ;
     private String metaFilename = null ;
     private Properties properties = null ;
     private String label = null ;
     private boolean changed = false ;
+    private boolean closed = false ;
     
     /** Create a MetaFile
      *  
@@ -65,7 +68,7 @@ public class MetaFile implements Sync, Closeable
     { 
         if ( properties == null )
         {
-            properties = new Properties() ;
+            properties = new SortedProperties(comparator) ;
             if ( metaFilename != null )
                 loadProperties() ;
         }
@@ -322,11 +325,21 @@ public class MetaFile implements Sync, Closeable
     public void close()
     {
         flush() ;
+        closed = true ;
         metaFilename = null ;
         properties = null ;
 
     }
 
+    private static class ComparatorKeys implements Comparator<String>
+    {
+        public int compare(String o1, String o2)
+        {
+            return - o1.compareTo(o2) ;
+        }
+        
+    }
+    
     private static class MetaFileException extends TDBException
     {
         MetaFileException(String msg) { super(msg) ; }

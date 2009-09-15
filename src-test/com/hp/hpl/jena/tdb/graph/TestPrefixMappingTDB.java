@@ -52,6 +52,7 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
     }
     
     // Persistent.
+    @SuppressWarnings("deprecation")
     @Test public void persistent1()
     {
         String dir = ConfigTest.getTestingDir() ;
@@ -61,6 +62,7 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
+        
         
         prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;

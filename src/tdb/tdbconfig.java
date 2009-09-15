@@ -7,25 +7,26 @@
 package tdb;
 
 
-import java.util.List;
-import java.util.Map;
+import java.util.List ;
+import java.util.Map ;
 
-import tdb.cmdline.CmdSub;
-import tdb.cmdline.CmdTDB;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModVersion;
-import atlas.io.IndentedWriter;
+import tdb.cmdline.CmdSub ;
+import tdb.cmdline.CmdTDB ;
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModVersion ;
+import atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Setup ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -84,7 +85,7 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             Location location = getLocation() ;
-            DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(location) ; 
+            DatasetPrefixStorage prefixes = Setup.makePrefixes(location) ; 
             for ( String gn : prefixes.graphNames() )
             {
                 System.out.println("Graph: "+gn) ;
