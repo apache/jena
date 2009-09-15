@@ -56,7 +56,6 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.Setup ;
-import com.hp.hpl.jena.tdb.sys.SetupUtils ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
@@ -100,18 +99,24 @@ public class RunTDB
         public RangeIndex createRangeIndex(FileSet fileset) ;
     }
     
-    static class Registry<T>
+//    static class Registry<T>
+//    {
+//        private Map<String, T> entries = new HashMap<String, T>() ;
+//        public T get(String x) { return entries.get(x) ; }
+//        public void put(String x, T entry) { entries.put(x, entry) ; }
+//    }
+    
+    
+    
+    
+    static class Registries
     {
-        private Map<String, T> entries = new HashMap<String, T>() ;
-        public T get(String x) { return entries.get(x) ; }
-        public void put(String x, T entry) { entries.put(x, entry) ; }
+        static Map<String, RangeIndexMaker> regIndexMakers = new HashMap<String, RangeIndexMaker>() ;
+        static 
+        {
+            regIndexMakers.put("bplustree", new RangeIndexM_BPT()) ;
+        }
     }
-    
-    static Registry<RangeIndexMaker> registry = new Registry<RangeIndexMaker>() ;
-    static {
-        registry.put("bplustree", new RangeIndexM_BPT()) ;
-    }
-    
     
     
     class RangeIndexM implements RangeIndexMaker
@@ -121,12 +126,12 @@ public class RunTDB
             MetaFile metafile = fileset.getMetaFile() ;
             String filetype = metafile.getProperty("tdb.file.type", "rangeindex") ;
             if ( filetype.equals("rangeindex") )
-                SetupUtils.error(null, "Expected a range index for '"+"tdb.file.type"+"' got:"+filetype) ;
+                Setup.error(null, "Expected a range index for '"+"tdb.file.type"+"' got:"+filetype) ;
             
             String impl = metafile.getProperty("tdb.file.impl", "bplustree") ;
-            RangeIndexMaker rim = registry.get(impl) ;
+            RangeIndexMaker rim = Registries.regIndexMakers.get(impl) ;
             if ( rim == null )
-                SetupUtils.error(null, "No such implementation: "+impl) ;
+                Setup.error(null, "No such implementation: "+impl) ;
             return rim.createRangeIndex(fileset) ;
         }
         
@@ -142,17 +147,17 @@ public class RunTDB
             MetaFile metafile = fileset.getMetaFile() ;
             RecordFactory recordFactory = Setup.makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
             
-            String blkSizeStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
-            int blkSize = SetupUtils.parseInt(blkSizeStr, "Bad block size") ;
+            String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+            int blkSize = Setup.parseInt(blkSizeStr, "Bad block size") ;
             
             // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
             // Does not set order.
             
             int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-            String orderStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.order", Integer.toString(calcOrder)) ;
-            int order = SetupUtils.parseInt(orderStr, "Bad order for B+Tree") ;
+            String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
+            int order = Setup.parseInt(orderStr, "Bad order for B+Tree") ;
             if ( order != calcOrder )
-                SetupUtils.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+                Setup.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
             RangeIndex rIndex = createBPTree(fileset, order, blkSize, recordFactory) ;
             metafile.flush() ;

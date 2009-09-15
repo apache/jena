@@ -10,6 +10,7 @@ public class DevTDB
 {
     // Compressor
     // SetupUtils - move into metafile?
+    // B+Tree checking utility.
     
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)

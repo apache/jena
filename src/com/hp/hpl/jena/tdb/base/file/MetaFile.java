@@ -19,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.PropertyUtils;
 
+import com.hp.hpl.jena.graph.query.Expression.Util;
 import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.sys.Names;
 
@@ -93,6 +96,21 @@ public class MetaFile implements Sync, Closeable
         return Integer.parseInt(_getProperty(key, null)) ;
     }
     
+//    public String[] getPropertySplit(String key)
+//    {
+//        String str = getProperty(key) ;
+//        if ( str == null )
+//            return null ;
+//        return str.split(",") ;
+//    }
+//    
+//    public String[] getPropertySplit(String key, String defaultString)
+//    {
+//        String str = getProperty(key, defaultString) ;
+//        return str.split(",") ;
+//    }
+
+    
     public void setProperty(String key, String value)
     {
         _setProperty(key, value) ;
@@ -101,6 +119,60 @@ public class MetaFile implements Sync, Closeable
     public void setProperty(String key, int value)
     {
         _setProperty(key, Integer.toString(value)) ;
+    }
+    
+    public boolean propertyEquals(String key, String value)
+    {
+        return Utils.equals(getProperty(key), value) ;
+    }
+
+    public void ensurePropertySet(String key, String expected)
+    {
+        getOrSetDefault(key, expected) ;
+    }
+
+    /** Get property or the default value - also set the default value if not present */
+    public String getOrSetDefault(String key, String expected)
+    {
+        String x = getProperty(key) ;
+        if ( x == null )
+        {
+            setProperty(key, expected) ;
+            x = expected ;
+        }
+        return x ;
+    }
+    
+    /** Check property is an expected value or set if missing */
+    public void checkOrSetMetadata(String key, String expected)
+    {
+        String x = getProperty(key) ;
+        if ( x == null )
+        {
+            setProperty(key, expected) ;
+            return ; 
+        }
+        if ( x.equals(expected) )
+            return ;
+        
+        inconsistent(key, x, expected) ; 
+    }
+
+    public void checkMetadata(String key, String expected)
+    {
+        String value = getProperty(key) ;
+        
+        if ( ! Utils.equals(value, value) )
+            inconsistent(key, value, expected) ;
+    }
+
+    public static void inconsistent(String key, String actual, String expected) 
+    {
+        String msg = String.format("Inconsistent: key=%s value=%s expected=%s", 
+                                   key, 
+                                   (actual==null?"<null>":actual),
+                                   (expected==null?"<null>":expected) ) ;
+        throw new TDBException(msg) ; 
     }
     
     public void clear()

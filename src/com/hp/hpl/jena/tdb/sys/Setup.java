@@ -164,19 +164,19 @@ public class Setup
         MetaFile metafile = locationMetadata(location) ;
         
         // Only support this so far.
-        if ( ! SetupUtils.propertyEquals(metafile, "tdb.layout", "v1") )
-            SetupUtils.error(log, "Excepted 'v1': Wrong layout: "+metafile.getProperty("tdb.layout")) ;
+        if ( ! metafile.propertyEquals("tdb.layout", "v1") )
+            Setup.error(log, "Excepted 'v1': Wrong layout: "+metafile.getProperty("tdb.layout")) ;
             
-        if ( ! SetupUtils.propertyEquals(metafile, "tdb.type", "standalone") )
-            SetupUtils.error(log, "Not marked as a standalone type: "+metafile.getProperty("tdb.type")) ;
+        if ( ! metafile.propertyEquals("tdb.type", "standalone") )
+            Setup.error(log, "Not marked as a standalone type: "+metafile.getProperty("tdb.type")) ;
 
         // Check expectations.
         
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.nodeid.size", Integer.toString(SizeOfNodeId)) ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.node.hashsize", Integer.toString(LenNodeHash)) ;
+        metafile.checkOrSetMetadata("tdb.nodeid.size", Integer.toString(SizeOfNodeId)) ;
+        metafile.checkOrSetMetadata("tdb.node.hashsize", Integer.toString(LenNodeHash)) ;
         
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.record.triple", Integer.toString(LenIndexTripleRecord)) ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.record.quad",   Integer.toString(LenIndexQuadRecord)) ;
+        metafile.checkOrSetMetadata("tdb.record.triple", Integer.toString(LenIndexTripleRecord)) ;
+        metafile.checkOrSetMetadata("tdb.record.quad",   Integer.toString(LenIndexQuadRecord)) ;
         
         // ---------------------
         
@@ -184,10 +184,10 @@ public class Setup
 
         // -- Node Table.
         
-        String indexNode2Id = SetupUtils.get(metafile, "tdb.nodetable.mapping.node2id") ;
-        String indexId2Node = SetupUtils.get(metafile, "tdb.nodetable.mapping.id2node") ;
+        String indexNode2Id = metafile.getProperty("tdb.nodetable.mapping.node2id") ;
+        String indexId2Node = metafile.getProperty("tdb.nodetable.mapping.id2node") ;
         
-        String nodesdata = SetupUtils.get(metafile, "tdb.nodetable.mapping.data") ;
+        String nodesdata = metafile.getProperty("tdb.nodetable.mapping.data") ;
         
         log.debug("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
@@ -209,17 +209,17 @@ public class Setup
     public static TripleTable makeTripleTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
     {
         MetaFile metafile = location.getMetaFile() ;
-        String primary = SetupUtils.getOrSetDefault(metafile, "tdb.indexes.triples.primary", dftPrimary) ;
-        String x = SetupUtils.getOrSetDefault(metafile, "tdb.indexes.triples", StrUtils.strjoin(",",dftIndexes)) ;
+        String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
+        String x = metafile.getOrSetDefault("tdb.indexes.triples", StrUtils.strjoin(",",dftIndexes)) ;
         String indexes[] = x.split(",") ;
         
         if ( indexes.length != 3 )
-            SetupUtils.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
+            Setup.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
-            SetupUtils.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
+            Setup.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, location) ;
         metafile.flush() ;
         return tripleTable ;
@@ -228,17 +228,17 @@ public class Setup
     public static QuadTable makeQuadTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
     {
         MetaFile metafile = location.getMetaFile() ; 
-        String primary = SetupUtils.getOrSetDefault(metafile, "tdb.indexes.quads.primary", dftPrimary) ;
-        String x = SetupUtils.getOrSetDefault(metafile, "tdb.indexes.quads", StrUtils.strjoin(",",dftIndexes)) ;
+        String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
+        String x = metafile.getOrSetDefault("tdb.indexes.quads", StrUtils.strjoin(",",dftIndexes)) ;
         String indexes[] = x.split(",") ;
 
         if ( indexes.length != 6 )
-            SetupUtils.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
+            Setup.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
-            SetupUtils.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
+            Setup.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, location) ;
         metafile.flush() ;
         return quadTable ;
@@ -275,18 +275,18 @@ public class Setup
         MetaFile metafile = location.getMetaFile() ;
     
         // The index using for Graph+Prefix => URI
-        String indexPrefixes = SetupUtils.getOrSetDefault(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
-        String primary = SetupUtils.getOrSetDefault(metafile, "tdb.prefixes.primary", Names.primaryIndexPrefix) ;
-        String x = SetupUtils.getOrSetDefault(metafile, "tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
+        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", Names.indexPrefix) ;
+        String primary = metafile.getOrSetDefault("tdb.prefixes.primary", Names.primaryIndexPrefix) ;
+        String x = metafile.getOrSetDefault("tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
         String indexes[] = x.split(",") ;
         
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
-            SetupUtils.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+            Setup.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
         // The nodetable.
-        String pnNode2Id = SetupUtils.getOrSetDefault(metafile, "tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
-        String pnId2Node = SetupUtils.getOrSetDefault(metafile, "tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
+        String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
+        String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
         
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node)  ;
         
@@ -300,7 +300,7 @@ public class Setup
     public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs, String[] filenames)
     {
         if ( primary.length() != 3 && primary.length() != 4 )
-            SetupUtils.error(log, "Bad primary key length: "+primary.length()) ;
+            Setup.error(log, "Bad primary key length: "+primary.length()) ;
 
         int indexRecordLen = primary.length()*NodeId.SIZE ;
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
@@ -320,8 +320,8 @@ public class Setup
         FileSet fs = new FileSet(location, indexName) ;
         // Physical
         MetaFile metafile = fs.getMetaFile() ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.file.type", "rangeindex") ;
-        String indexType = SetupUtils.getOrSetDefault(metafile, "tdb.file.impl", "bplustree") ;
+        metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
+        String indexType = metafile.getOrSetDefault("tdb.file.impl", "bplustree") ;
         //checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
         if ( ! indexType.equals("bplustree") )
         {
@@ -350,8 +350,8 @@ public class Setup
          FileSet fs = new FileSet(location, indexName) ;
          // Physical
          MetaFile metafile = fs.getMetaFile() ;
-         SetupUtils.checkOrSetMetadata(metafile, "tdb.file.type", "rangeindex") ;
-         String indexType = SetupUtils.getOrSetDefault(metafile, "tdb.file.impl", "bplustree") ;
+         metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
+         String indexType = metafile.getOrSetDefault("tdb.file.impl", "bplustree") ;
          //checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
          if ( ! indexType.equals("bplustree") )
          {
@@ -376,17 +376,17 @@ public class Setup
         MetaFile metafile = fs.getMetaFile() ;
         RecordFactory recordFactory = makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
         
-        String blkSizeStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
-        int blkSize = SetupUtils.parseInt(blkSizeStr, "Bad block size") ;
+        String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
+        int blkSize = Setup.parseInt(blkSizeStr, "Bad block size") ;
         
         // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
         // Does not set order.
         
         int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
-        String orderStr = SetupUtils.getOrSetDefault(metafile, "tdb.bplustree.order", Integer.toString(calcOrder)) ;
-        int order = SetupUtils.parseInt(orderStr, "Bad order for B+Tree") ;
+        String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
+        int order = Setup.parseInt(orderStr, "Bad order for B+Tree") ;
         if ( order != calcOrder )
-            SetupUtils.error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+            Setup.error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
         RangeIndex rIndex = createBPTree(fs, order, blkSize, recordFactory) ;
         metafile.flush() ;
@@ -400,21 +400,21 @@ public class Setup
         if ( keyLenDft >= 0 && valLenDft >= 0 )
         {
             String dftRecordStr = keyLenDft+","+valLenDft ;
-            recSizeStr = SetupUtils.getOrSetDefault(metafile, keyName, dftRecordStr) ;
+            recSizeStr = metafile.getOrSetDefault(keyName, dftRecordStr) ;
         }
         else
-            recSizeStr = SetupUtils.get(metafile, keyName) ;
+            recSizeStr = metafile.getProperty(keyName) ;
         
         if ( recSizeStr == null )
-            SetupUtils.error(log, "Failed to get a record factory description from "+keyName) ;
+            Setup.error(log, "Failed to get a record factory description from "+keyName) ;
         
         
         String[] recordLengths = recSizeStr.split(",") ;
         if ( recordLengths.length != 2 )
-            SetupUtils.error(log, "Bad record length: "+recSizeStr) ;
+            Setup.error(log, "Bad record length: "+recSizeStr) ;
 
-        int keyLen = SetupUtils.parseInt(recordLengths[0], "Bad key length ("+recSizeStr+")") ;
-        int valLen = SetupUtils.parseInt(recordLengths[1], "Bad value length ("+recSizeStr+")") ;
+        int keyLen = Setup.parseInt(recordLengths[0], "Bad key length ("+recSizeStr+")") ;
+        int valLen = Setup.parseInt(recordLengths[1], "Bad value length ("+recSizeStr+")") ;
         
         return new RecordFactory(keyLen, valLen) ;
     }
@@ -479,10 +479,10 @@ public class Setup
          */
         
         MetaFile metafile = fsIdToNode.getMetaFile() ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.file.type", ObjectFile.type) ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.file.impl", "dat") ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
-        SetupUtils.checkOrSetMetadata(metafile, "tdb.object.encoding", "sse") ;
+        metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
+        metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
+        metafile.checkOrSetMetadata("tdb.file.impl.version", "v1") ;
+        metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
         
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objFile = FileFactory.createObjectFileDisk(filename);
@@ -533,8 +533,8 @@ public class Setup
         
         if ( newDataset )
         {
-            SetupUtils.ensurePropertySet(metafile, "tdb.create.version", TDB.VERSION) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.created", Utils.nowAsXSDDateTimeString()) ;
+            metafile.ensurePropertySet("tdb.create.version", TDB.VERSION) ;
+            metafile.ensurePropertySet("tdb.created", Utils.nowAsXSDDateTimeString()) ;
         }
         
         if ( isPreMetadata )
@@ -542,33 +542,33 @@ public class Setup
             // Existing location (has some files in it) but no metadata.
             // Fake it as TDB 0.8.1 (which did not have metafiles)
             // If it's the wrong file format, things do badly wrong later.
-            SetupUtils.ensurePropertySet(metafile, "tdb.create.version", "0.8") ;
+            metafile.ensurePropertySet("tdb.create.version", "0.8") ;
             metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
         }
             
-        SetupUtils.ensurePropertySet(metafile, "tdb.layout", "v1") ;
-        SetupUtils.ensurePropertySet(metafile, "tdb.type", "standalone") ;
+        metafile.ensurePropertySet("tdb.layout", "v1") ;
+        metafile.ensurePropertySet("tdb.type", "standalone") ;
         
         String layout = metafile.getProperty("tdb.layout") ;
         
         if ( layout.equals("v1") )
         {
-            SetupUtils.ensurePropertySet(metafile, "tdb.indexes.triples.primary", Names.primaryIndexTriples) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.indexes.triples", StrUtils.join(",", Names.tripleIndexes)) ;
+            metafile.ensurePropertySet("tdb.indexes.triples.primary", Names.primaryIndexTriples) ;
+            metafile.ensurePropertySet("tdb.indexes.triples", StrUtils.join(",", Names.tripleIndexes)) ;
 
-            SetupUtils.ensurePropertySet(metafile, "tdb.indexes.quads.primary", Names.primaryIndexQuads) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.indexes.quads", StrUtils.join(",", Names.quadIndexes)) ;
+            metafile.ensurePropertySet("tdb.indexes.quads.primary", Names.primaryIndexQuads) ;
+            metafile.ensurePropertySet("tdb.indexes.quads", StrUtils.join(",", Names.quadIndexes)) ;
             
-            SetupUtils.ensurePropertySet(metafile, "tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
+            metafile.ensurePropertySet("tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
+            metafile.ensurePropertySet("tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
             
-            SetupUtils.ensurePropertySet(metafile, "tdb.prefixes.index.file", Names.indexPrefix) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
-            SetupUtils.ensurePropertySet(metafile, "tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
+            metafile.ensurePropertySet("tdb.prefixes.index.file", Names.indexPrefix) ;
+            metafile.ensurePropertySet("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
+            metafile.ensurePropertySet("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
             
         }
         else
-            SetupUtils.error(log, "tdb.layout: expected v1") ;
+            Setup.error(log, "tdb.layout: expected v1") ;
             
         
         metafile.flush() ;
@@ -651,6 +651,19 @@ public class Setup
             logExec.warn("No BGP optimizer") ;
         
         return reorder ; 
+    }
+
+    public static void error(Logger log, String msg)
+    {
+        if ( log != null )
+            log.error(msg) ;
+        throw new TDBException(msg) ;
+    }
+
+    public static int parseInt(String str, String messageBase)
+    {
+        try { return Integer.parseInt(str) ; }
+        catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
     }
 }
 /*
