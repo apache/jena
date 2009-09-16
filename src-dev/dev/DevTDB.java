@@ -8,87 +8,45 @@ package dev;
 
 public class DevTDB
 {
+    // == 0.8.3
+    // Explain mode - See notes in class
+    // Don't print optimizer type when set at info level.
+    // ?? Properties to RDF using <> :property "value"
+
+    // ** Every datasets takes a confiuration copied from the globals, not read directly.
+    // Default.
+    
     // Compressor
-    // SetupUtils - move into metafile?
     // B+Tree checking utility.
     
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     
-    // Tuning for low memory / 32 bit - smaller fixed caches
-
+    // Tuning for low memory / 32 bit - smaller fixed caches - configurable
+    
     // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
     // At least, specific documentation.
     
     // --- Setup
-    // Check supressed deprecations and switch to Setup.*
-    // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
-    //    (Currently in ...sys...)
+    // Check surpressed deprecations and switch to Setup.*
 
-    // ?? NodeTableBuilder
-    //  Non-DI: DatasetPrefixesTDB(IndexBuilder, Location)
-    //  Non-DI: NodeTableFactory.create(IndexBuilder, Location)
-    
-    // == 0.8.3
-    // Explain mode - See notes in class
-    // Don't print optimizer type when set at info level.
-    // Remove "warn" ?
-    // Nodefile : NodeCodec
-    //   NodecSSE: decode.
-    // Better testing of (persistent) node table (without caching). 
-    
-    // ** NewSetup/DI
-    // Use ARQ 2.8.1 and enable management info.
-    //    (later: Phase 2 : Monitoring caches)
-    
-    // Investigate better record byte access.  Whole record?
-    // Investigate adding a PSO index (for paths to get sorted order)
-    // Investigate tracking sorted order in BGPs
-    // Cache tables.
-    
+    // Investigate tracking sorted order in BGPs (+PSO index?)
     // Assembler : TDB settings : document.
     
     // == Misc
     // Node cache on 64bit machines needs to be bigger or rebalence
-    // FileMode, NodeCacheNode, ...
-    // 32 bit => Direct, small
-    // 64 bit => Mapped, large
     // Cache stats counters (prep for JMX but useful now)
-    // Binary, not SSE.
-    
-    // == Monitoring
-    // Assembler : TDB settings
-    //  To a separate file - example in log4j.
-    
-    // ----
-    // Publish => release and upload the zip to maven area.
-    // IVY publish a zip
     
     // ** Document concurrency.
     
-    // ------
-    // Properties on the readers
-    // NodeTable as ( Index<Node, NodeID>, Index<NodeId, Node> )
-    //    Assumes variable length records
-    //    Need better var index support first
-    
     // ==== RIOT
     // ** Connect the errorhandler set via JenaReaderbase to the one used by RIOT-Turtle/RIOT-NTriples.
+    // Properties on the readers
     // Error handler, not exceptions, in Turtle.
     //   Check for continuation.
+    // TriG
     
     // == tdbdump && tdbrestore
-    // FileSetMetadata - const names in sys.Names (currently in BPlusTreeParams)
-    // See IndexFactoryBPlusTree.createRangeIndex
-    // See BPlusTreeParams.readMeta
-
-    // NodeLib.encode/decode ==> swap to a Nodec
-
-    // Version of BufferingWriter that works on OutputStreams.
-
-    // Quad loader; dataset merge.
-    // Dataset management??
-    
     // ---- Optimizer
     //   The disjunction/UNION rewrite (ARQ)
     
