@@ -21,6 +21,7 @@ public class DevTDB
     // At least, specific documentation.
     
     // --- Setup
+    // Check supressed deprecations and switch to Setup.*
     // Tests - but keep old FactoryGraphTDB while it handles alternatives indexes.
     //    (Currently in ...sys...)
 
