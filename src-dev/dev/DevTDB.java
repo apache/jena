@@ -10,7 +10,8 @@ public class DevTDB
 {
     // == 0.8.3
     // s/.meta/.prop/
-    // Properties global for dataset creation. 
+    // Properties global for dataset creation.
+    
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
     // ?? Properties to RDF using <> :property "value"
