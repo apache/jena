@@ -6,13 +6,13 @@
 
 package atlas.lib;
 
-import java.io.UnsupportedEncodingException ;
-import java.nio.ByteBuffer ;
-import java.nio.ByteOrder ;
-import java.nio.CharBuffer ;
-import java.nio.charset.CharsetDecoder ;
-import java.nio.charset.CharsetEncoder ;
-import java.nio.charset.CoderResult ;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java)
@@ -39,6 +39,14 @@ public class Bytes
         for ( int i = 0 ; i < bb.capacity(); i++ )
             System.out.printf("0x%02X ",bb.get(i)) ;
         // Comes out hight to low : 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 
+    }
+    
+    public static byte[] copyOf(byte[] bytes)
+    {
+        // Java6: Arrays.copyOf(bytes, bytes.length)
+        byte[] newByteArray = new byte[bytes.length] ;
+        System.arraycopy(bytes, 0, newByteArray, 0, bytes.length) ;
+        return newByteArray ;
     }
     
     final public static byte[] hexDigits = {

@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import atlas.lib.PropertyUtils;
+import atlas.logging.Log;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -31,6 +32,8 @@ public class SystemTDB
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
+    
+    // ---- Constants that can't be changed without invalidating on-disk data.  
     
     /** Size, in bytes, of a Java long */
     public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
@@ -86,6 +89,7 @@ public class SystemTDB
     private static final String propertyFileKey1    = tdbPropertyRoot+".settings" ;
     private static final String propertyFileKey2    = tdbSymbolPrefix+":settings" ;
 
+    // XXX Change
     private static String propertyFileName = null ;
     static {
         propertyFileName = System.getProperty(propertyFileKey1) ;
@@ -97,8 +101,6 @@ public class SystemTDB
 
     // To make the class initialize
     static public void init() {}
-    
-    // -- Unsettable parameters
     
     /** Size, in bytes, of a block */
     public static final int BlockSize               = 8*1024 ; // intValue("BlockSize", 8*1024) ;
@@ -114,8 +116,10 @@ public class SystemTDB
     
     // -- Settable parameters
 
+    public static Properties global = new Properties() ;
+    
     /** Size, in bytes, of a segment (used for memory mapped files) */
-    public static final int SegmentSize             = intValue("SegmentSize", 8*1024*1024) ;
+    public static final int SegmentSize             = 8*1024*1024 ; // intValue("SegmentSize", 8*1024*1024) ;
     
     // ---- Cache sizes (within the JVM)
     
@@ -124,6 +128,7 @@ public class SystemTDB
      *  Used for loading and for query preparation.
      */
     public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
+
     /** Size of NodeId to Node cache.
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
@@ -151,11 +156,11 @@ public class SystemTDB
     public static boolean Checking = false ;       // This isn't used enough!
 
     // BDB related.
-    public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;
+    //public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;
     
     public static void panic(Class<?> clazz, String string)
     {
-        org.slf4j.LoggerFactory.getLogger(clazz).error(string) ;
+        Log.fatal(clazz, string) ;
         throw new TDBException(string) ;
     }
     
@@ -177,7 +182,6 @@ public class SystemTDB
     
     private static int intValue(String prefix, String name, int defaultValue)
     {
-        
         if ( ! prefix.endsWith(".") )
             name = prefix+"."+name ;
         else
@@ -192,6 +196,7 @@ public class SystemTDB
         
         if ( properties == null )
             return defaultValue ;
+
         String x = properties.getProperty(name) ;
         if ( x == null )
             return defaultValue ; 

@@ -4,18 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package atlas.lib;
 
 import java.util.* ;
 
 /** Sorted output */
-public class SortedProperties extends Properties
+public class PropertiesSorted extends Properties
 {
     private Comparator<String> comparator = null ;
     
     //public SortedProperties() { super() ; }
     
-    public SortedProperties(Comparator<String> comparator)
+    public PropertiesSorted(Comparator<String> comparator)
     { 
         super() ;
         this.comparator = comparator ;

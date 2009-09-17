@@ -6,50 +6,51 @@
 
 package com.hp.hpl.jena.tdb.sys ;
 
-import static com.hp.hpl.jena.tdb.TDB.logExec ;
-import static com.hp.hpl.jena.tdb.TDB.logInfo ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
+import static com.hp.hpl.jena.tdb.TDB.logExec;
+import static com.hp.hpl.jena.tdb.TDB.logInfo;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 
-import java.io.File ;
+import java.io.File;
+import java.util.Properties;
 
-import org.slf4j.Logger ;
-import atlas.lib.ColumnMap ;
-import atlas.lib.FileOps ;
-import atlas.lib.StrUtils ;
+import org.slf4j.Logger;
+import atlas.lib.ColumnMap;
+import atlas.lib.FileOps;
+import atlas.lib.StrUtils;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
+import com.hp.hpl.jena.tdb.base.file.FileSet;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.MetaFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.QuadTable;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 
 /** Makes things: datasets from locations, indexes */
 
@@ -57,7 +58,7 @@ public class Setup
 {
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     static final Logger log = TDB.logInfo ;
-
+    
     /* Logical information goes in the location metafile. This includes
      * dataset type, NodeTable type and indexes expected.  But it does
      * not include how the particular files are realised.
@@ -98,6 +99,28 @@ public class Setup
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
+        /** Semi-global
+         * TODO
+         * tdb.cache.node2id.size=100000
+         * tdb.cache.id2node.size=100000
+         * tdb.cache.blockwrite.size=2000
+         * tdb.cache.blockread.size=10000
+         * tdb.synctick=100000
+
+    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", 100*1000) ;
+    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
+    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
+    public static final int SyncTick                = intValue("SyncTick", 100*1000) ;
+         */
+        
+        Properties properties = new Properties() ;
+        properties.setProperty("Node2NodeIdCacheSize",  Integer.toString(SystemTDB.Node2NodeIdCacheSize)) ;
+        properties.setProperty("NodeId2NodeCacheSize",  Integer.toString(SystemTDB.NodeId2NodeCacheSize)) ;
+        properties.setProperty("BlockWriteCacheSize",   Integer.toString(SystemTDB.BlockWriteCacheSize)) ;
+        properties.setProperty("BlockReadCacheSize",    Integer.toString(SystemTDB.BlockReadCacheSize)) ;
+        properties.setProperty("SyncTick",              Integer.toString(SystemTDB.SyncTick)) ;
+        
         /* ---- this.meta - the logical structure of the dataset.
          * 
          * # Dataset design
@@ -320,7 +343,10 @@ public class Setup
         FileSet fs = new FileSet(location, indexName) ;
         // Physical
         MetaFile metafile = fs.getMetaFile() ;
+        
         metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
+        metafile.checkOrSetMetadata("tdb.file.indexorder", indexOrder) ;
+        
         String indexType = metafile.getOrSetDefault("tdb.file.impl", "bplustree") ;
         //checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
         if ( ! indexType.equals("bplustree") )
@@ -329,7 +355,7 @@ public class Setup
             throw new TDBException("Unknown index type: "+indexType) ;
         }
         
-        // Value part fi null (zero length)
+        // Value part is null (zero length)
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;

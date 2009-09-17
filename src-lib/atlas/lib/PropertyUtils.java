@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class PropertyUtils
@@ -37,6 +38,73 @@ public class PropertyUtils
         // Warning - not UTF-8 safe.
         properties.store(fos, str) ;
     }
+    
+    public static int getPropertyAsInteger(Properties properties, String key, int defaultValue)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+            return defaultValue ;
+        return Integer.parseInt(x) ;
+    }
+    
+    
+    /** Test whether a property has a value.  Null tests equal to not present. */
+    public boolean propertyEquals(Properties properties, String key, String value)
+    {
+        return Utils.equals(properties.getProperty(key), value) ;
+    }
+
+    /** Set property if not already set. */
+    public void ensurePropertySet(Properties properties, String key, String expected)
+    {
+        getOrSetDefault(properties, key, expected) ;
+    }
+
+    /** Get property or the default value - also set the default value if not present */
+    public String getOrSetDefault(Properties properties, String key, String expected)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+        {
+            properties.setProperty(key, expected) ;
+            x = expected ;
+        }
+        return x ;
+    }
+    
+    /** Check property is an expected value or set if missing */
+    public void checkOrSetProperty(Properties properties, String key, String expected)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+        {
+            properties.setProperty(key, expected) ;
+            return ; 
+        }
+        if ( x.equals(expected) )
+            return ;
+        
+        inconsistent(properties, key, x, expected) ; 
+    }
+
+    /** Check property has teh vakue given - throw exception if not. */
+    public void checkMetadata(Properties properties, String key, String expected)
+    {
+        String value = properties.getProperty(key) ;
+        
+        if ( ! Utils.equals(value, value) )
+            inconsistent(properties, key, value, expected) ;
+    }
+
+    private void inconsistent(Properties properties, String key, String actual, String expected)
+    {
+        String msg = String.format("Inconsistent: key=%s value=%s expected=%s", 
+                                   key, 
+                                   (actual==null?"<null>":actual),
+                                   (expected==null?"<null>":expected) ) ;
+        throw new AtlasException(msg) ; 
+    }
+
 
 }
 

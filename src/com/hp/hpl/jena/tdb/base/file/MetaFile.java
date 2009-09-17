@@ -11,13 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Comparator ;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import atlas.lib.PropertiesSorted;
 import atlas.lib.PropertyUtils;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
@@ -68,7 +69,7 @@ public class MetaFile implements Sync, Closeable
     { 
         if ( properties == null )
         {
-            properties = new SortedProperties(comparator) ;
+            properties = new PropertiesSorted(comparator) ;
             if ( metaFilename != null )
                 loadProperties() ;
         }
@@ -281,6 +282,7 @@ public class MetaFile implements Sync, Closeable
         // if ( metaFilename == null )
         InputStream in = null ;
         try { 
+            //  Copes with UTF-8 for Java5. 
             PropertyUtils.loadFromFile(properties, metaFilename) ;
         }
         catch (FileNotFoundException ex) {} 
