@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -242,8 +243,22 @@ public class MetaFile implements Sync, Closeable
     /** Write to backing file if changed */
     public void flush()
     {
+        if ( log.isDebugEnabled() )
+            log.debug("Flush metadata ("+changed+"): "+this.label) ;
         if ( ! changed )
             return ;
+        
+        
+        if ( log.isDebugEnabled() )
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+            PrintStream ps = new PrintStream(out) ;
+            properties.list(ps) ;
+            ps.flush() ;
+            log.debug("\n"+out.toString()) ;
+        }
+        
+        //properties.list(System.out) ;
         
         saveProperties() ;
         changed = false ;

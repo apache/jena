@@ -49,10 +49,7 @@ public class Names
     public static final String optDefault               = "fixed.opt";      // Currently, it's just the presence of this file that matters.
     public static final String optNone                  = "none.opt"; 
     
-//    /** Properties information for a FileGroup*/ 
-//    public static final String metaData             = "info" ;
-    
-    public static final String extMeta                  = "meta" ;
+    public static final String extMeta                  = "info" ;
     public static final String directoryMetafile        = "this" ;          // Root name of the directory for a metafile.  
 
     /** Name to indicate in-memory */ 

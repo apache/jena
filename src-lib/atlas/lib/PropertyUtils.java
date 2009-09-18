@@ -37,6 +37,7 @@ public class PropertyUtils
 //        //properties.store(w, "Metadata: "+str) ;   // Java6.
         // Warning - not UTF-8 safe.
         properties.store(fos, str) ;
+        fos.flush() ;
     }
     
     public static int getPropertyAsInteger(Properties properties, String key, int defaultValue)

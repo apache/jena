@@ -6,12 +6,10 @@
 
 package com.hp.hpl.jena.tdb.sys ;
 
+import static atlas.lib.PropertyUtils.* ;
 import static com.hp.hpl.jena.tdb.TDB.logExec;
 import static com.hp.hpl.jena.tdb.TDB.logInfo;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.*;
 
 import java.io.File;
 import java.util.Properties;
@@ -94,8 +92,12 @@ public class Setup
 //    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 //    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
- 
-
+    static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
+    static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
+    static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
+    static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
+    static final String pSyncTick                   = "tdb.synctick" ;
+    
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
@@ -106,20 +108,16 @@ public class Setup
          * tdb.cache.blockwrite.size=2000
          * tdb.cache.blockread.size=10000
          * tdb.synctick=100000
-
-    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
-    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", 100*1000) ;
-    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
-    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
-    public static final int SyncTick                = intValue("SyncTick", 100*1000) ;
          */
         
         Properties properties = new Properties() ;
-        properties.setProperty("Node2NodeIdCacheSize",  Integer.toString(SystemTDB.Node2NodeIdCacheSize)) ;
-        properties.setProperty("NodeId2NodeCacheSize",  Integer.toString(SystemTDB.NodeId2NodeCacheSize)) ;
-        properties.setProperty("BlockWriteCacheSize",   Integer.toString(SystemTDB.BlockWriteCacheSize)) ;
-        properties.setProperty("BlockReadCacheSize",    Integer.toString(SystemTDB.BlockReadCacheSize)) ;
-        properties.setProperty("SyncTick",              Integer.toString(SystemTDB.SyncTick)) ;
+        properties.setProperty(pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
+        properties.setProperty(pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
+        properties.setProperty(pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
+        properties.setProperty(pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
+        properties.setProperty(pSyncTick,              Integer.toString(SyncTick)) ;
+        
+        getPropertyAsInteger(properties, "SyncTick", SystemTDB.SyncTick) ;
         
         /* ---- this.meta - the logical structure of the dataset.
          * 
@@ -162,7 +160,7 @@ public class Setup
          * 
          * tdb.file.type=rangeindex        # Service provided.
          * tdb.file.impl=bplustree         # Implementation
-         * tdb.file.impl.version=v1          
+         * tdb.file.impl.version=bplustree-v1          
          * 
          * tdb.index.name=SPO
          * tdb.index.order=SPO
@@ -175,7 +173,7 @@ public class Setup
          *
          * tdb.file.type=object
          * tdb.file.impl=dat
-         * tdb.file.impl.version=v1
+         * tdb.file.impl.version=dat-v1
          *
          * tdb.object.encoding=sse
          * 
@@ -337,7 +335,7 @@ public class Setup
         /*
         * tdb.file.type=rangeindex        # Service provided.
         * tdb.file.impl=bplustree         # Implementation
-        * tdb.file.impl.version=v1          
+        * tdb.file.impl.version=bplustree-v1          
         */
 
         FileSet fs = new FileSet(location, indexName) ;
@@ -347,17 +345,10 @@ public class Setup
         metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
         metafile.checkOrSetMetadata("tdb.file.indexorder", indexOrder) ;
         
-        String indexType = metafile.getOrSetDefault("tdb.file.impl", "bplustree") ;
-        //checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
-        if ( ! indexType.equals("bplustree") )
-        {
-            log.error("Unknown index type: "+indexType) ;
-            throw new TDBException("Unknown index type: "+indexType) ;
-        }
-        
         // Value part is null (zero length)
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), rIndex.getRecordFactory(), rIndex) ;
+        metafile.flush() ;
         return tupleIndex ;
     }
     
@@ -371,19 +362,19 @@ public class Setup
         /*
          * tdb.file.type=rangeindex        # Service provided.
          * tdb.file.impl=bplustree         # Implementation
-         * tdb.file.impl.version=v1          
+         * tdb.file.impl.version=bplustree-v1          
          */
          FileSet fs = new FileSet(location, indexName) ;
          // Physical
          MetaFile metafile = fs.getMetaFile() ;
          metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
          String indexType = metafile.getOrSetDefault("tdb.file.impl", "bplustree") ;
-         //checkOrSetMetadata(metafile, "tdb.file.impl.version", "v1") ;
          if ( ! indexType.equals("bplustree") )
          {
              log.error("Unknown index type: "+indexType) ;
              throw new TDBException("Unknown index type: "+indexType) ;
          }
+         metafile.checkOrSetMetadata("tdb.file.impl.version", "bplustree-v1") ;
          RangeIndex rIndex =  makeBPlusTree(fs, dftKeyLength, dftValueLength) ;
          metafile.flush();
          return rIndex ;
@@ -499,7 +490,7 @@ public class Setup
          * ---- An object file
          * tdb.file.type=object
          * tdb.file.impl=dat
-         * tdb.file.impl.version=v1
+         * tdb.file.impl.version=dat-v1
          *
          * tdb.object.encoding=sse 
          */
@@ -507,7 +498,7 @@ public class Setup
         MetaFile metafile = fsIdToNode.getMetaFile() ;
         metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
         metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
-        metafile.checkOrSetMetadata("tdb.file.impl.version", "v1") ;
+        metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
         metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
         
         String filename = fsIdToNode.filename(Names.extNodeData) ;
