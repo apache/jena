@@ -29,6 +29,7 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.*;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.Setup;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
@@ -39,12 +40,17 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
+    protected final int syncPoint ;
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
         super() ;
         this.dataset = dataset ; 
         this.graphNode = graphName ;
+        syncPoint = dataset.getConfigValueAsInt(Setup.pSyncTick, SystemTDB.SyncTick) ;
+        if ( syncPoint > 0 )
+            this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
+        this.getEventManager().register(new UpdateListener(this)) ;
     }
     
     /** Reorder processor - may be null, for "none" */

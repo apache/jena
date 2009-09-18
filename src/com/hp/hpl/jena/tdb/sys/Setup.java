@@ -92,11 +92,11 @@ public class Setup
 //    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 //    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
-    static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
-    static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
-    static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
-    static final String pSyncTick                   = "tdb.synctick" ;
+    public static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
+    public static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
+    public static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
+    public static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
+    public static final String pSyncTick                   = "tdb.synctick" ;
     
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
@@ -115,9 +115,8 @@ public class Setup
         properties.setProperty(pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
         properties.setProperty(pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
         properties.setProperty(pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
-        properties.setProperty(pSyncTick,              Integer.toString(SyncTick)) ;
         
-        getPropertyAsInteger(properties, "SyncTick", SystemTDB.SyncTick) ;
+        properties.setProperty(pSyncTick,              Integer.toString(SyncTick)) ;
         
         /* ---- this.meta - the logical structure of the dataset.
          * 
@@ -220,7 +219,7 @@ public class Setup
         DatasetPrefixStorage prefixes = makePrefixes(location) ;
 
         // ---- Create the DatasetGraph object
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, properties) ;
 
         // Finalize
         metafile.flush() ;

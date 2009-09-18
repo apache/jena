@@ -21,10 +21,7 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
-import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that projects a graph from a quad table */
@@ -43,18 +40,13 @@ public class GraphNamedTDB extends GraphTDBBase
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName) 
     {
         super(dataset, graphName) ;
-        
+
         this.quadTable = dataset.getQuadTable() ;
         
         if ( graphName == null )
             throw new TDBException("GraphNamedTDB: Null graph name") ; 
         if ( ! graphName.isURI() )
             throw new TDBException("GraphNamedTDB: Graph name not a URI") ; 
-        
-        int syncPoint = SystemTDB.SyncTick ;
-        if ( syncPoint > 0 )
-            this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
-        this.getEventManager().register(new UpdateListener(this)) ;
     }
 
 //    @Override

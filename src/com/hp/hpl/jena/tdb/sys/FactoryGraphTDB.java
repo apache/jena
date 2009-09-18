@@ -189,7 +189,7 @@ public class FactoryGraphTDB
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc) ;
         @SuppressWarnings("deprecation")
         DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location) ;
-        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location) ;
+        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location, null) ;
     }
 
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)

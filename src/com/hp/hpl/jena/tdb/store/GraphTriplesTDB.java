@@ -17,10 +17,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
-import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
-import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** A graph implementation that uses a triple table - free-standing graph or deafult graph of dataset */
@@ -36,14 +33,8 @@ public class GraphTriplesTDB extends GraphTDBBase
                            DatasetPrefixStorage prefixes)
     {
         super(dataset, null) ;
-        
         this.tripleTable = tripleTable ;
         this.prefixes = prefixes ;
-        
-        int syncPoint = SystemTDB.SyncTick ;
-        if ( syncPoint > 0 )
-            this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
-        this.getEventManager().register(new UpdateListener(this)) ;
     }
     
     @Override

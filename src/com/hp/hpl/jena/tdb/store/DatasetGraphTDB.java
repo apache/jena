@@ -8,9 +8,11 @@ package com.hp.hpl.jena.tdb.store;
 
 
 import java.util.Iterator;
+import java.util.Properties;
 
 import atlas.iterator.Iter;
 import atlas.iterator.Transform;
+import atlas.lib.PropertyUtils;
 import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -37,20 +39,22 @@ public class DatasetGraphTDB extends DatasetGraphBase
     private DatasetPrefixStorage prefixes ;
     private final ReorderTransformation transform ;
     private final Location location ;
+    private final Properties config ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
-                           ReorderTransformation transform, Location location)
+                           ReorderTransformation transform, Location location, Properties config)
     {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.transform = transform ;
         this.prefixes = prefixes ;
         this.location = location ;
+        this.config = config ;
     }
     
     public DatasetGraphTDB duplicate()
     {
-        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location) ;
+        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
@@ -86,6 +90,25 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public GraphTDB getGraphTDB(Node graphNode)
     {
         return (GraphTDB)getGraph(graphNode) ;
+    }
+
+    public Properties getConfig()
+    {
+        return config ;
+    }
+    
+    public String getConfigValue(String key)
+    {
+        if ( config == null )
+            return null ;
+        return config.getProperty(key) ;
+    }
+    
+    public int getConfigValueAsInt(String key, int dftValue)
+    {
+        if ( config == null )
+            return dftValue ;
+        return PropertyUtils.getPropertyAsInteger(config, key, dftValue) ;
     }
 
     @Override

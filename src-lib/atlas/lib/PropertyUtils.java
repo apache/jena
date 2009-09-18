@@ -40,6 +40,14 @@ public class PropertyUtils
         fos.flush() ;
     }
     
+    public static int getPropertyAsInteger(Properties properties, String key)
+    {
+        String x = properties.getProperty(key) ;
+        if ( x == null )
+            throw new AtlasException("No such property key: "+key) ;
+        return Integer.parseInt(x) ;
+    }
+    
     public static int getPropertyAsInteger(Properties properties, String key, int defaultValue)
     {
         String x = properties.getProperty(key) ;

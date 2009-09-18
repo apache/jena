@@ -34,7 +34,7 @@ public class TestMetaFile extends BaseTest
         assertFalse(new File(testfileMeta).exists()) ;
         f.setProperty("key", "value") ;
         f.flush() ;
-        assertTrue(new File(testfileMeta).exists()) ;
+        assertTrue(new File(f.getFilename()).exists()) ;
     }
     
     @Test public void meta2()
