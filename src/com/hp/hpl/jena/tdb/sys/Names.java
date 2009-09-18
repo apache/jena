@@ -91,28 +91,36 @@ public class Names
     public static final String keyNS                    = "tdb" ;
     public static final String keyNSNode                = makeName(keyNS, elNode) ;
     public static final String keyNSBPlusTree           = makeName(keyNS, elBPlusTree) ;
-
+    
     // Location metadata - in the directory wide metadata file.
     public static final String kVersion               = makeName(keyNS, elVersion) ;
     public static final String kCreatedDate           = makeName(keyNS, elTimestamp) ;    
-    
+
     // Node table metadata
     public static final String kNodeTableType         = makeName(keyNS, elNode, elType) ;
     public static final String kNodeTableLayout       = makeName(keyNS, elNode, elLayout) ;
-    
-    // Object file
-    public static final String kObjectTableType         = makeName(keyNS, elObject, elType) ;
-    
-    // Default index metadata - in the index metadata file.
-    
-    public static final String kIndexType             = makeName(keyNS, elIndex, elType) ;
-    public static final String kIndexFileLayout       = makeName(keyNS, elIndex, elLayout) ;
+
+//    // Object file
+//    public static final String kObjectTableType         = makeName(keyNS, elObject, elType) ;
+//    
+//    // Default index metadata - in the index metadata file.
+//    
+//    public static final String kIndexType             = makeName(keyNS, elIndex, elType) ;
+//    public static final String kIndexFileLayout       = makeName(keyNS, elIndex, elLayout) ;
     
     // See also BPlusTreeParams for keyNSBPlusTree derived names.
     
-    // Current values
-    public static final String currentIndexType         = IndexType.BPlusTree.getName() ;
-    public static final String currentIndexFileVersion  = "v1" ;
+//    // Current values
+//    public static final String currentIndexType         = IndexType.BPlusTree.getName() ;
+//    public static final String currentIndexFileVersion  = "v1" ;
+
+    // Property strings - Setup
+    
+    public static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
+    public static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
+    public static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
+    public static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
+    public static final String pSyncTick                   = "tdb.synctick" ;
 }
 
 /*

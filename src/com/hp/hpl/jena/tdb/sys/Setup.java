@@ -92,12 +92,6 @@ public class Setup
 //    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 //    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
-    public static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
-    public static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
-    public static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
-    public static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
-    public static final String pSyncTick                   = "tdb.synctick" ;
-    
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
@@ -111,12 +105,12 @@ public class Setup
          */
         
         Properties properties = new Properties() ;
-        properties.setProperty(pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
-        properties.setProperty(pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
-        properties.setProperty(pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
-        properties.setProperty(pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
+        properties.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
+        properties.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
+        properties.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
+        properties.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
         
-        properties.setProperty(pSyncTick,              Integer.toString(SyncTick)) ;
+        properties.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
         
         /* ---- this.meta - the logical structure of the dataset.
          * 
