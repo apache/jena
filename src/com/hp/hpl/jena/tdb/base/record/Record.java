@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.base.record;
 
 import static java.lang.String.format;
+import static atlas.lib.Bytes.compare;
 
 import java.util.Arrays;
 
@@ -193,24 +194,19 @@ public class Record //implements Comparable<Record>
         return true ;
     }
     
-    static int compare(byte[] x1, byte[] x2)
-    {
-//        if ( Checking )
+//    private static int compare(byte[] x1, byte[] x2)
+//    {
+//        for ( int i = 0 ; i < x1.length ; i++ )
 //        {
-//            if ( x1.length != x2.length )
-//                throw new RecordException(format("Keys of different lengths (%d, %d)", x1.length, x2.length)) ;
+//            byte b1 = x1[i] ;
+//            byte b2 = x2[i] ;
+//            if ( b1 == b2 )
+//                continue ;
+//            // Treat as unsigned values in the bytes. 
+//            return (b1&0xFF) - (b2&0xFF) ;  
 //        }
-        for ( int i = 0 ; i < x1.length ; i++ )
-        {
-            byte b1 = x1[i] ;
-            byte b2 = x2[i] ;
-            if ( b1 == b2 )
-                continue ;
-            // Treat as unsigned values in the bytes. 
-            return (b1&0xFF) - (b2&0xFF) ;  
-        }
-        return  0 ;
-    }
+//        return  0 ;
+//    }
 
 }
 /*

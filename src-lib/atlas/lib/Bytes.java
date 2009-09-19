@@ -41,6 +41,26 @@ public class Bytes
         // Comes out hight to low : 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 
     }
     
+    /** Compare two byte arrays which may be of different lengths */ 
+    public static int compare(byte[] x1, byte[] x2)
+    {
+        int n = Math.min(x1.length, x2.length) ;
+        
+        for ( int i = 0 ; i < n ; i++ )
+        {
+            byte b1 = x1[i] ;
+            byte b2 = x2[i] ;
+            if ( b1 == b2 )
+                continue ;
+            // Treat as unsigned values in the bytes. 
+            return (b1&0xFF) - (b2&0xFF) ;  
+        }
+
+        return x1.length - x2.length ;
+    }
+
+
+    
     public static byte[] copyOf(byte[] bytes)
     {
         // Java6: Arrays.copyOf(bytes, bytes.length)

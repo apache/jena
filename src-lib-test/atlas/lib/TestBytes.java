@@ -118,6 +118,23 @@ public class TestBytes extends BaseTest
         assertEquals(0xA1A2A3A4A5A6A7A8L,i2) ;
     }
 
+    @Test public void compare1()    { compare(0, new byte[]{}, new byte[]{}) ; }
+    @Test public void compare2()    { compare(+1, new byte[]{1}, new byte[]{}) ; }
+    @Test public void compare3()    { compare(-1, new byte[]{1}, new byte[]{1,2}) ; }
+
+    @Test public void compare4()    { compare(+1, new byte[]{1,3}, new byte[]{1,2}) ; }
+    @Test public void compare5()    { compare(+1, new byte[]{1,3}, new byte[]{1,2,3}) ; }
+    @Test public void compare6()    { compare(-1, new byte[]{1,2}, new byte[]{1,2,3}) ; }
+    
+    private static void compare(int expected, byte[] b1, byte[] b2)
+    {
+        int x = Bytes.compare(b1, b2) ;
+        if ( x > 0 && expected > 0 ) return ;
+        if ( x == 0 && expected == 0 ) return ;
+        if ( x < 0 && expected < 0 ) return ;
+        fail("Does not compare: "+Bytes.asHex(b1)+" :: "+Bytes.asHex(b2)) ;
+    }
+    
     private static void codec(String str)
     {
         ByteBuffer bb = ByteBuffer.allocate(16) ; 
