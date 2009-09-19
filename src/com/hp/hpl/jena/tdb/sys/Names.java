@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import com.hp.hpl.jena.tdb.index.IndexType;
-
 /** Names of things in TDB */
 public class Names
 {

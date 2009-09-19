@@ -10,8 +10,9 @@ public class DevTDB
 {
     // == 0.8.3
     // s/.meta/.prop/? 
-    // ** Properties global for dataset creation.
-    // See metedata stuff in BPlusTreeParams
+    // Const for names.
+    // See metadata stuff in BPlusTreeParams
+    // Test.
     
     // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.

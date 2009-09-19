@@ -42,14 +42,16 @@ public class IndexFactoryExtHash implements IndexFactory
         PlainFile dictionary = FileFactory.createPlainFileDisk(fnDictionary) ;
         
         String fnBuckets = fileset.filename(Names.extHashBucketExt) ;
-        BlockMgr mgr =  BlockMgrFactory.createFile(fnBuckets, blockSize) ;
+        BlockMgr mgr =  createBlockMgr(fnBuckets, blockSize) ;
         ExtHash eHash = new ExtHash(dictionary, recordFactory, mgr) ;
         return eHash ;
     }
     
     protected BlockMgr createBlockMgr(String filename, int blockSize)
     {
-        return BlockMgrFactory.createFile(filename, blockSize) ;
+        return BlockMgrFactory.createFile(filename, blockSize, 
+                                          SystemTDB.BlockReadCacheSize,
+                                          SystemTDB.BlockWriteCacheSize) ;
     }
 }
 

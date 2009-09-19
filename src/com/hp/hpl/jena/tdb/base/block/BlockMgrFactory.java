@@ -15,12 +15,12 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BlockMgrFactory
 {
-    public static BlockMgr create(FileSet fileSet, String ext, int blockSize)
+    public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
         if ( fileSet.isMem() )
             return createMem(fileSet.filename(ext), blockSize) ;
         else
-            return createFile(fileSet.filename(ext), blockSize) ;
+            return createFile(fileSet.filename(ext), blockSize, readBlockCacheSize, writeBlockCacheSize) ;
     }
     
     /** Create an in-memory block manager */ 
@@ -33,14 +33,14 @@ public class BlockMgrFactory
     }
     
     /** Create a BlockMgr backed by a file */
-    public static BlockMgr createFile(String filename, int blockSize)
+    public static BlockMgr createFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
         switch ( SystemTDB.fileMode() )
         {
             case mapped:
                 return createMMapFile(filename, blockSize) ;
             case direct:
-                return createStdFile(filename, blockSize) ;
+                return createStdFile(filename, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
         }
         throw new TDBException("Unknown file mode: "+SystemTDB.fileMode()) ;
     }        
@@ -52,7 +52,7 @@ public class BlockMgrFactory
     }
     
     /** Create a Block Manager using direct access (and a cache) */
-    public static BlockMgr createStdFile(String filename, int blockSize)
+    public static BlockMgr createStdFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
         BlockMgr blockMgr = new BlockMgrDirect(filename, blockSize) ;
         String fn = filename ;
@@ -61,7 +61,7 @@ public class BlockMgrFactory
         if ( j > 0 )
             fn = filename.substring(j+1) ;
         
-        blockMgr = new BlockMgrCache(fn, SystemTDB.BlockReadCacheSize, SystemTDB.BlockWriteCacheSize, blockMgr) ;
+        blockMgr = new BlockMgrCache(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
         return blockMgr ;
     }
     

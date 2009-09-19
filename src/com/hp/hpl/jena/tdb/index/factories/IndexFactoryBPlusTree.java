@@ -62,7 +62,9 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
     
     protected BlockMgr createBlockMgr(String filename, int blockSize)
     {
-        return BlockMgrFactory.createFile(filename, blockSize) ;
+        return BlockMgrFactory.createFile(filename, blockSize, 
+                                          SystemTDB.BlockReadCacheSize,
+                                          SystemTDB.BlockWriteCacheSize) ;
     }
 }
 

@@ -19,6 +19,11 @@ public class RecordFactory
 
     public RecordFactory(int keyLength, int valueLength)
     {
+        if ( keyLength <= 0 )
+            throw new IllegalArgumentException("Bad key length: "+keyLength) ;
+        if ( valueLength < 0 )
+            throw new IllegalArgumentException("Bad value length: "+valueLength) ;
+
         this.keyLength = keyLength ;
         this.valueLength = valueLength ;
         this.slotLen = keyLength + (valueLength>0 ? valueLength : 0 ) ;

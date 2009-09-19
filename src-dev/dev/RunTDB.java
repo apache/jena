@@ -11,7 +11,6 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Arrays ;
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -21,38 +20,25 @@ import org.junit.runner.Result ;
 import atlas.junit.TextListener2 ;
 import atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.Setup ;
@@ -87,8 +73,6 @@ public class RunTDB
             DumpIndex.dump(System.out, "DB", "SPO") ;
             System.exit(0) ;
         }
-
-        setup() ;
     }
 
     // Switching on index type to build.
@@ -105,6 +89,7 @@ public class RunTDB
         static Map<String, RangeIndexMaker> regIndexMakers = new HashMap<String, RangeIndexMaker>() ;
         static 
         {
+            // Needs remo
             regIndexMakers.put("bplustree", new RangeIndexM_BPT()) ;
         }
     }
@@ -130,18 +115,24 @@ public class RunTDB
     
     static class RangeIndexM_BPT implements RangeIndexMaker
     {
-        int dftKeyLength = 0;
-        int dftValueLength = 0 ;
+        private int readCacheSize ;
+        private int writeCacheSize ;
         
-//        public RangeIndexM_BPT(int dftKeyLength)
-//        {
-//            this.dftKeyLength = dftKeyLength ;
-//        }
+        public RangeIndexM_BPT()
+        {
+            this(SystemTDB.BlockReadCacheSize, SystemTDB.BlockWriteCacheSize) ;
+        }
+        
+        public RangeIndexM_BPT(int readCacheSize, int writeCacheSize)
+        {
+            this.readCacheSize = readCacheSize ;
+            this.writeCacheSize = writeCacheSize ;
+        }
         
         public RangeIndex createRangeIndex(FileSet fileset)
         {
             MetaFile metafile = fileset.getMetaFile() ;
-            RecordFactory recordFactory = Setup.makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
+            RecordFactory recordFactory = Setup.makeRecordFactory(metafile, "tdb.bplustree.record", -1, -1) ;
             
             String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
             int blkSize = Setup.parseInt(blkSizeStr, "Bad block size") ;
@@ -155,13 +146,15 @@ public class RunTDB
             if ( order != calcOrder )
                 Setup.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
-            RangeIndex rIndex = createBPTree(fileset, order, blkSize, recordFactory) ;
+            RangeIndex rIndex = createBPTree(fileset, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
             metafile.flush() ;
             return rIndex ;
         }
         
         /** Knowing all the parameters, create a B+Tree */
-        public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
+        public static RangeIndex createBPTree(FileSet fileset, int order, 
+                                              int blockSize,
+                                              int readBlockCacheSize, int writeBlockCacheSize,
                                               RecordFactory factory)
         {
             // ---- Checking
@@ -182,92 +175,15 @@ public class RunTDB
             }
         
             BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize) ;
-            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize) ;
+            BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, 
+                                                          readBlockCacheSize, writeBlockCacheSize) ;
+            BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, 
+                                                            readBlockCacheSize, writeBlockCacheSize) ;
             return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
         }
 
         
     }
-    
-    public static void setup()
-    {
-        Location location = new Location("tmp/DBX") ;
-//        location.getMetaFile().dump(System.out) ;
-//        System.out.println();
-        
-        //location.getMetaFile().dump(System.out) ;
-
-        if ( true )
-        {
-            DatasetGraphTDB dsg = Setup.buildDataset(location) ;
-            divider() ;
-            Model m = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
-            m.write(System.out, "TTL") ;
-            
-            Iterator<Node> iter = dsg.listGraphNodes() ;
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next();
-                divider() ;
-                Model nm = ModelFactory.createModelForGraph(dsg.getGraph(n)) ;
-                nm.write(System.out, "TTL") ;
-            }
-            
-            
-            SSE.write(IndentedWriter.stdout, dsg) ;
-            System.exit(0) ;
-        }
-        
-        if ( false )
-        {
-            Setup.locationMetadata(location) ;
-            NodeTable nodeTable = Setup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
-            
-            divider() ;
-            TripleTable tt = Setup.makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
-            Iterator<Triple> iter1 = tt.find(null, null, null) ;
-            for ( ; iter1.hasNext() ; )
-                System.out.println(iter1.next()) ;
-
-            divider() ;
-
-            QuadTable qt = Setup.makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
-            Iterator<Quad> iter2 = qt.find(null, null, null, null ) ;
-            for ( ; iter2.hasNext() ; )
-                System.out.println(iter2.next()) ;
-            divider() ;
-            
-            
-        }
-        
-        if ( false )
-        {
-            Setup.locationMetadata(location) ;
-            NodeTable nodeTable = Setup.makeNodeTable(location, Names.indexNode2Id ,Names.indexId2Node) ;
-            //NodeTable nodeTable = NewSetup.makeNodeTable(location, "N2ID" ,"ID2N") ;
-            Node n = SSE.parseNode("<http://test/ppp>") ;
-            NodeId nid = nodeTable.getAllocateNodeId(n) ;
-            System.out.println(nid) ;
-            nid = nodeTable.getAllocateNodeId(n) ;
-            System.out.println(nid) ;
-            nid = nodeTable.getAllocateNodeId(n) ;
-            nid = nodeTable.getAllocateNodeId(SSE.parseNode("1812")) ;
-            System.out.println(nid) ;
-        }
-        
-        if ( false )
-        {
-            FileSet fs = new FileSet(location, Names.indexId2Node) ;
-            StringFile objFile = new StringFile(Setup.makeObjectFile(fs)) ;
-            System.out.println("==== Object file") ;
-            objFile.dump() ;
-        }
-        
-       
-        System.exit(0) ;
-    }
-   
     
     public static void turtle2() throws IOException
     {

@@ -6,49 +6,57 @@
 
 package com.hp.hpl.jena.tdb.sys ;
 
-import static atlas.lib.PropertyUtils.* ;
-import static com.hp.hpl.jena.tdb.TDB.logExec;
-import static com.hp.hpl.jena.tdb.TDB.logInfo;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.*;
+import static com.hp.hpl.jena.tdb.TDB.logExec ;
+import static com.hp.hpl.jena.tdb.TDB.logInfo ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.BlockReadCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.BlockWriteCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SyncTick ;
 
-import java.io.File;
-import java.util.Properties;
+import java.io.File ;
+import java.util.Properties ;
 
-import org.slf4j.Logger;
-import atlas.lib.ColumnMap;
-import atlas.lib.FileOps;
-import atlas.lib.StrUtils;
+import org.slf4j.Logger ;
+import atlas.lib.ColumnMap ;
+import atlas.lib.FileOps ;
+import atlas.lib.PropertyUtils ;
+import atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.MetaFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.QuadTable;
-import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.MetaFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
 
@@ -74,12 +82,9 @@ public class Setup
     
     // IndexBuilder for metadata files. 
     
-    // TODO IndexFactory and IndexRangeFactory statics
-    // TODO IndexFactory and IndexRangeFactory with metadata testing.
     // TODO Tests.
     // TODO remove constructors (e.g. DatasetPrefixesTDB) that encapsulate the choices).  DI!
     // TODO Check everywhere else for non-DI constructors.
-    // TDOD IndexFactory for  
     
     // Old code:
     // 
@@ -92,25 +97,30 @@ public class Setup
 //    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 //    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
     
+    
+    /**  The JVM-wide parameters (these can change without a chnage to on-disk structure) */ 
+    public final static Properties globalConfig = new Properties() ;
+    static {
+        globalConfig.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
+        globalConfig.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
+        globalConfig.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
+        globalConfig.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
+        globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
+    }
+
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
         /** Semi-global
          * TODO
-         * tdb.cache.node2id.size=100000
+         * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
          * tdb.cache.id2node.size=100000
          * tdb.cache.blockwrite.size=2000
          * tdb.cache.blockread.size=10000
          * tdb.synctick=100000
          */
         
-        Properties properties = new Properties() ;
-        properties.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
-        properties.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
-        properties.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
-        properties.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
-        
-        properties.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
+        Properties config = globalConfig ;
         
         /* ---- this.meta - the logical structure of the dataset.
          * 
@@ -205,22 +215,28 @@ public class Setup
         
         log.debug("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
-        NodeTable nodeTable = makeNodeTable(location, indexNode2Id, indexId2Node) ;
+        
+        NodeTable nodeTable = makeNodeTable(location, 
+                                            indexNode2Id,
+                                            SystemTDB.Node2NodeIdCacheSize,
+                                            indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
 
-        TripleTable tripleTable = makeTripleTable(location, nodeTable, Names.primaryIndexTriples, Names.tripleIndexes) ;
-        QuadTable quadTable = makeQuadTable(location, nodeTable, Names.primaryIndexQuads, Names.quadIndexes) ;
+        TripleTable tripleTable = makeTripleTable(location, config, nodeTable, 
+                                                  Names.primaryIndexTriples, Names.tripleIndexes) ;
+        QuadTable quadTable = makeQuadTable(location, config, nodeTable,
+                                            Names.primaryIndexQuads, Names.quadIndexes) ;
 
-        DatasetPrefixStorage prefixes = makePrefixes(location) ;
+        DatasetPrefixStorage prefixes = makePrefixes(location, config) ;
 
         // ---- Create the DatasetGraph object
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, properties) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, config) ;
 
         // Finalize
         metafile.flush() ;
         return dsg ;
     }
 
-    public static TripleTable makeTripleTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
+    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
     {
         MetaFile metafile = location.getMetaFile() ;
         String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
@@ -231,7 +247,7 @@ public class Setup
             Setup.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
-        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
+        TupleIndex tripleIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
             Setup.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, location) ;
@@ -239,7 +255,7 @@ public class Setup
         return tripleTable ;
     }
     
-    public static QuadTable makeQuadTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
+    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes)
     {
         MetaFile metafile = location.getMetaFile() ; 
         String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
@@ -250,7 +266,7 @@ public class Setup
             Setup.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
-        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
+        TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
             Setup.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, location) ;
@@ -259,7 +275,7 @@ public class Setup
     }
 
 
-    public static DatasetPrefixStorage makePrefixes(Location location)
+    public static DatasetPrefixStorage makePrefixes(Location location, Properties config)
     {
         /*
          * tdb.prefixes.index.file=prefixIdx
@@ -294,7 +310,7 @@ public class Setup
         String x = metafile.getOrSetDefault("tdb.prefixes.indexes", StrUtils.strjoin(",",Names.prefixIndexes)) ;
         String indexes[] = x.split(",") ;
         
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, config, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
             Setup.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
@@ -302,7 +318,8 @@ public class Setup
         String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
         String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
         
-        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node)  ;
+        // No cache - the prefix mapping is a cache
+        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1)  ;
         
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes) ; 
         
@@ -311,7 +328,7 @@ public class Setup
         return prefixes ;
     }
 
-    public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs, String[] filenames)
+    public static TupleIndex[] makeTupleIndexes(Location location, Properties config, String primary, String[] descs, String[] filenames)
     {
         if ( primary.length() != 3 && primary.length() != 4 )
             Setup.error(log, "Bad primary key length: "+primary.length()) ;
@@ -319,11 +336,14 @@ public class Setup
         int indexRecordLen = primary.length()*NodeId.SIZE ;
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         for (int i = 0 ; i < indexes.length ; i++)
-            indexes[i] = makeTupleIndex(location, primary, descs[i], filenames[i], indexRecordLen) ;
+            indexes[i] = makeTupleIndex(location, config, primary, descs[i], filenames[i], indexRecordLen) ;
         return indexes ;
     }
     
-    private static TupleIndex makeTupleIndex(Location location, String primary, String indexOrder, String indexName, int keyLength)
+    private static TupleIndex makeTupleIndex(Location location,
+                                             Properties config,
+                                             String primary, String indexOrder, String indexName,
+                                             int keyLength)
     {
         /*
         * tdb.file.type=rangeindex        # Service provided.
@@ -338,19 +358,26 @@ public class Setup
         metafile.checkOrSetMetadata("tdb.file.type", "rangeindex") ;
         metafile.checkOrSetMetadata("tdb.file.indexorder", indexOrder) ;
         
+        int readCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockReadCacheSize) ;
+        int writeCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pBlockWriteCacheSize) ;
+        
         // Value part is null (zero length)
-        RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0) ;
+        RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0, readCacheSize, writeCacheSize) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), rIndex.getRecordFactory(), rIndex) ;
         metafile.flush() ;
         return tupleIndex ;
     }
     
-    private static Index makeIndex(Location location, String indexName, int dftKeyLength, int dftValueLength)
+    private static Index makeIndex(Location location, String indexName, 
+                                   int dftKeyLength, int dftValueLength, 
+                                   int readCacheSize,int writeCacheSize)
     {
-        return makeRangeIndex(location, indexName, dftKeyLength, dftValueLength) ;
+        return makeRangeIndex(location, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
     }
     
-    private static RangeIndex makeRangeIndex(Location location, String indexName, int dftKeyLength, int dftValueLength)
+    private static RangeIndex makeRangeIndex(Location location, String indexName, 
+                                             int dftKeyLength, int dftValueLength,
+                                             int readCacheSize,int writeCacheSize)
     {
         /*
          * tdb.file.type=rangeindex        # Service provided.
@@ -368,12 +395,13 @@ public class Setup
              throw new TDBException("Unknown index type: "+indexType) ;
          }
          metafile.checkOrSetMetadata("tdb.file.impl.version", "bplustree-v1") ;
-         RangeIndex rIndex =  makeBPlusTree(fs, dftKeyLength, dftValueLength) ;
+         
+         RangeIndex rIndex =  makeBPlusTree(fs, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
          metafile.flush();
          return rIndex ;
     }
     
-    private static RangeIndex makeBPlusTree(FileSet fs, int dftKeyLength, int dftValueLength)
+    private static RangeIndex makeBPlusTree(FileSet fs, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
     {
         // ---- BPlusTree
         // Get parameters.
@@ -398,7 +426,7 @@ public class Setup
         if ( order != calcOrder )
             Setup.error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
-        RangeIndex rIndex = createBPTree(fs, order, blkSize, recordFactory) ;
+        RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
         metafile.flush() ;
         return rIndex ;
     }
@@ -429,7 +457,9 @@ public class Setup
         return new RecordFactory(keyLen, valLen) ;
     }
     
-    public static NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node)
+    public static NodeTable makeNodeTable(Location location,
+                                          String indexNode2Id, int nodeToIdCacheSize,
+                                          String indexId2Node, int idToNodeCacheSize)
     {
         if (location.isMem()) 
             return NodeTableFactory.createMem(IndexBuilder.mem()) ;
@@ -467,12 +497,13 @@ public class Setup
         
         // -- make node to id mapping -- Names.indexNode2Id
         // Make index of id to node (data table)
-        Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId) ;
+        
+        // No caching at the index level - we use the internal caches of the node table.
+        Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
         
         // -- Make the node table using the components established above.
-        NodeTable nodeTable = new NodeTableBase(nodeToId, stringFile, 
-                                                SystemTDB.Node2NodeIdCacheSize,
-                                                SystemTDB.NodeId2NodeCacheSize) ;
+        NodeTable nodeTable = new NodeTableBase(nodeToId, stringFile,
+                                                nodeToIdCacheSize, idToNodeCacheSize) ;
 
         return nodeTable ;
     }
@@ -597,7 +628,9 @@ public class Setup
 //    }
 
     /** Knowing all the parameters, create a B+Tree */
-    public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
+    public static RangeIndex createBPTree(FileSet fileset, int order, 
+                                          int blockSize,
+                                          int readCacheSize, int writeCacheSize,
                                           RecordFactory factory)
     {
         // ---- Checking
@@ -618,8 +651,8 @@ public class Setup
         }
     
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
 
