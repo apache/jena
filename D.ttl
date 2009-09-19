@@ -1,9 +1,17 @@
-@base <http://example/> .
-@prefix rev: <http://example/rev/> .
-@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example/> .
 
-<thing> rev:hasReview [ rev:rating 1.0 ] .
-<thing> rev:hasReview [ rev:rating 4 ] .
-<thing> rev:hasReview [ rev:rating "03" ] .
-<thing> rev:hasReview [ rev:rating "3" ] .
-<thing> rev:hasReview [ rev:rating "2.5"^^xsd:double ] .
+<i1> :product_name "Widget 1" ;
+     :region       "EAST" ;
+     :units        100 .
+
+<i2> :product_name "Widget 2" ;
+     :region       "EAST" ;
+     :units        20 .
+
+<i3> :product_name "Widget 1" ;
+     :region       "WEST" ;
+     :units        100 .
+
+<i4> :product_name "Widget 2" ;
+     :region       "WEST" ;
+     :units        80 .
