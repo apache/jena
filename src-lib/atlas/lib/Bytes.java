@@ -59,7 +59,10 @@ public class Bytes
         return x1.length - x2.length ;
     }
 
-
+    public static int compare(byte b1, byte b2)
+    {
+        return (b1&0xFF) - (b2&0xFF) ;  
+    }
     
     public static byte[] copyOf(byte[] bytes)
     {
