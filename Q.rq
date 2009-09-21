@@ -1,9 +1,10 @@
+BASE <http://example/>
 PREFIX :        <http://example/> 
+PREFIX v:      <http://www.w3.org/2001/vcard-rdf/3.0#>
+PREFIX rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?x ?t
+SELECT ?x
 {
-   ?x a ?t 
-   OPTIONAL { ?x a ?t2 . FILTER(?t2 = :C) }
-   FILTER (!bound(?t2))
+    <#me> v:tel [ a v:Home ; rdf:value "123456789" ] .
 }
 
