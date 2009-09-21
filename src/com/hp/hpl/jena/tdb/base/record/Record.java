@@ -7,9 +7,10 @@
 package com.hp.hpl.jena.tdb.base.record;
 
 import static java.lang.String.format;
-import static atlas.lib.Bytes.compare;
 
 import java.util.Arrays;
+
+import atlas.lib.Bytes;
 
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -148,17 +149,17 @@ public class Record //implements Comparable<Record>
     public static int compareByKey(Record record1, Record record2)
     {
         checkKeyCompatible(record1, record2) ;
-        return compare(record1.key, record2.key) ; 
+        return Bytes.compare(record1.key, record2.key) ; 
     }
     
     public static int compareByKeyValue(Record record1, Record record2)
     {
         checkCompatible(record1, record2) ;
-        int x = compare(record1.key, record2.key) ;
+        int x = Bytes.compare(record1.key, record2.key) ;
         if ( x == 0 )
         {
             if ( record1.value != null )
-                x = compare(record1.value, record2.value) ;
+                x = Bytes.compare(record1.value, record2.value) ;
         }
         return x ;
     }

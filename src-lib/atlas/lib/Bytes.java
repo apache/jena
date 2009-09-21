@@ -23,6 +23,8 @@ public class Bytes
 {
     private Bytes() {}
     
+    // Binary search - see atlas.lib.Alg
+    
     // http://en.wikipedia.org/wiki/Endianness
     // Java is, by default, network order (big endian)
     // i.e what you get from ByteBuffer.allocate/.allocateDirect();
@@ -59,7 +61,7 @@ public class Bytes
         return x1.length - x2.length ;
     }
 
-    public static int compare(byte b1, byte b2)
+    public static int compareByte(byte b1, byte b2)
     {
         return (b1&0xFF) - (b2&0xFF) ;  
     }
