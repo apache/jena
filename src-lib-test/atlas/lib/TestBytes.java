@@ -126,6 +126,28 @@ public class TestBytes extends BaseTest
     @Test public void compare5()    { compare(+1, new byte[]{1,3}, new byte[]{1,2,3}) ; }
     @Test public void compare6()    { compare(-1, new byte[]{1,2}, new byte[]{1,2,3}) ; }
     
+    byte[] bytes = { 1, 2, 3, 4, 5, 6 } ;
+    
+    @Test public void slice1()
+    {
+        byte[] x = Bytes.copyOf(bytes) ;
+        assertArrayEquals(bytes, x) ;
+    }
+    
+    @Test public void slice3()
+    {
+        byte[] x = Bytes.copyOf(bytes,3) ;
+        byte[] y = new byte[]{4,5,6} ;
+        assertArrayEquals(y, x) ;
+    }
+    
+    @Test public void slice2()
+    {
+        byte[] x = Bytes.copyOf(bytes,3,2) ;
+        byte[] y = new byte[]{4,5} ;
+        assertArrayEquals(y, x) ;
+    }
+    
     private static void compare(int expected, byte[] b1, byte[] b2)
     {
         int x = Bytes.compare(b1, b2) ;
