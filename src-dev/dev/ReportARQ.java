@@ -8,6 +8,9 @@ package dev;
 
 import java.io.OutputStream;
 
+import org.junit.Test;
+
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.StrUtils;
@@ -16,9 +19,45 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.vocabulary.OWL;
 
 public class ReportARQ
 {
+    @Test
+    public void testNOTEXISTSWithBoundVariable() {
+
+        Model model = ModelFactory.createDefaultModel();
+        model.read("file:D.ttl", "TTL") ;
+        //model.read("http://topquadrant.com/temp/usersForTestCases.owl");
+        
+        //op is null from E_Exists
+        
+        String queryString =
+            "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+            "SELECT * \n" +
+            "WHERE { \n" +
+            "    ?cls a owl:Class ." +
+            "    NOT EXISTS { \n" +
+            "        ?cls rdfs:label ?y . \n" +
+            "    }\n" +
+            "}";
+        
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
+
+        QuerySolutionMap map = new QuerySolutionMap();
+        map.add("this", OWL.Thing);
+        qexec.setInitialBinding(map);
+        
+        ResultSet rs = qexec.execSelect();
+        while(rs.hasNext()) {
+            QuerySolution qs = rs.nextSolution();
+            System.out.println("Result: " + qs);
+        }
+    }
+
+    
     public static void main(String[] argv) throws Exception
     {
         Model model=ModelFactory.createDefaultModel() ;

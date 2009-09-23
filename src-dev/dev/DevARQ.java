@@ -12,6 +12,7 @@ public class DevARQ
     // http://jena.sourceforge.net/ARQ/arq-query-eval.html; mention graph.find approach.
     // De-duplicate aggregator code.
     // Document JMX.
+    // Run ref engine and main engine in a test - remove ref only tests
     
     // ==== ARQ
     // JMX

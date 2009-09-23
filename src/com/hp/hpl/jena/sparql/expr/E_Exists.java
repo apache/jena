@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 public class E_Exists extends ExprFunctionOp
 {
     private static final String symbol = "exists" ;
-    private Op op ;
 
     public E_Exists(Op op)
     {
@@ -38,7 +37,7 @@ public class E_Exists extends ExprFunctionOp
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         // Does not pass down fold constants.  Oh well.
-        Op op2 = Substitute.substitute(op, binding) ;
+        Op op2 = Substitute.substitute(getOp(), binding) ;
         return new E_Exists(getElement(), op2) ;
     }
 
