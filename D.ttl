@@ -1,17 +1,4 @@
-@prefix : <http://example/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<i1> :product_name "Widget 1" ;
-     :region       "EAST" ;
-     :units        100 .
-
-<i2> :product_name "Widget 2" ;
-     :region       "EAST" ;
-     :units        20 .
-
-<i3> :product_name "Widget 1" ;
-     :region       "WEST" ;
-     :units        100 .
-
-<i4> :product_name "Widget 2" ;
-     :region       "WEST" ;
-     :units        80 .
+[] a owl:Class .

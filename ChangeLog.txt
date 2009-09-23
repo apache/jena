@@ -3,11 +3,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.1
 
-+ Speed up processing of nested optionals.
++ Speed up processing of nested optionals.  Greatly speeds up BSBM with TDB.
 
 + Some JMX management exposed: Object names start "com.hp.hpl.jena.sparql". 
   Details include: system and version information, query execution count, 
-    last query and the time execution started. 
+    last query and the time execution started.
 
 ==== ARQ 2.8.0
 

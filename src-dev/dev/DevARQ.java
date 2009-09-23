@@ -14,6 +14,8 @@ public class DevARQ
     // Document JMX.
     // Run ref engine and main engine in a test - remove ref only tests
     
+    // ?? OpAsQuery - optimized algebra op
+    
     // ==== ARQ
     // JMX
     //   Query count

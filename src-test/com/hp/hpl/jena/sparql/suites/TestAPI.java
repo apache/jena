@@ -7,10 +7,12 @@
 package com.hp.hpl.jena.sparql.suites;
 
 import junit.framework.*;
+import org.junit.Test;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.vocabulary.OWL;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
@@ -28,23 +30,20 @@ public class TestAPI extends TestCase
     
     private static final String ns = "http://example/ns#" ;
     
-    Model m = null ;
-    
-    
-    @Override
-    public void setUp()
-    {
-        m = GraphUtils.makeJenaDefaultModel() ;
-        Resource r1 = m.createResource() ;
-        
-        Property p1 = m.createProperty(ns+"p1") ;
-        Property p2 = m.createProperty(ns+"p1") ;
-        Property p3 = m.createProperty(ns+"p1") ;
-        
+    static Model m = GraphUtils.makeJenaDefaultModel() ;
+    static Resource r1 = m.createResource() ;
+    static Property p1 = m.createProperty(ns+"p1") ;
+    static Property p2 = m.createProperty(ns+"p2") ;
+    static Property p3 = m.createProperty(ns+"p3") ;
+    static  {
         m.add(r1, p1, "x1") ;
         m.add(r1, p2, "X2") ; // NB Capital
         m.add(r1, p3, "y1") ;
     }
+    
+    @Override
+    public void setUp()
+    {}
 
     @Override
     public void tearDown()
@@ -138,6 +137,37 @@ public class TestAPI extends TestCase
         assertTrue("Initial setting not set correctly now", qs.getLiteral("z").getLexicalForm().equals("zzz")) ;
         qExec.close() ;
     }
+    
+    @Test
+    public void testInitialBindings4()
+    {
+        // Test derived from report by Holger Knublauch
+        String queryString =
+            "PREFIX : <"+ns+">\n" +
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+            "SELECT * \n" +
+            "WHERE { \n" +
+            "    ?x :p1 ?z ." +
+            "    NOT EXISTS { \n" +
+            "        ?x rdfs:label ?z . \n" +
+            "    }\n" +
+            "}";
+        
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        QueryExecution qexec = QueryExecutionFactory.create(query, m);
+
+        QuerySolutionMap map = new QuerySolutionMap();
+        map.add("this", OWL.Thing);
+        qexec.setInitialBinding(map);
+        
+        ResultSet rs = qexec.execSelect();
+        while(rs.hasNext()) {
+            QuerySolution qs = rs.nextSolution();
+            //System.out.println("Result: " + qs);
+        }
+        qexec.close() ;
+    }
+    
     
 //    // Execute a test both with and without regex optimization enabled
 //    // Check the number of results

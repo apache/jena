@@ -20,13 +20,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementOptional;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementUnion;
+import com.hp.hpl.jena.sparql.syntax.*;
 
 /** Convert an Op expression in SPARQL syntax, that is, the reverse of algebra generation */   
 public class OpAsQuery
@@ -99,9 +93,9 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpPropFunc") ;
         }
         
-        
         public void visit(OpSequence opSequence)
         {
+            // 
             throw new ARQNotImplemented("OpSequence") ;
         }
         
@@ -227,8 +221,13 @@ public class OpAsQuery
         }
 
         public void visit(OpService opService)
-        { throw new ARQNotImplemented("OpService") ; }
-
+        { 
+            // Hmm - if the subnode has been optimized, we may fail.
+            Op op = opService.getSubOp() ;
+            Element x = asElement(opService.getSubOp()) ; 
+            Element elt = new ElementService(opService.getService(), x) ;
+        }
+        
         public void visit(OpDatasetNames dsNames)
         { throw new ARQNotImplemented("OpDatasetNames") ; }
 
@@ -246,11 +245,17 @@ public class OpAsQuery
         { throw new ARQNotImplemented("OpNull") ; }
 
         public void visit(OpLabel opLabel)
-        { throw new ARQNotImplemented("OpLabel") ; }
+        { /* No action */ }
 
         public void visit(OpAssign opAssign)
-        { throw new ARQNotImplemented("OpAssign") ; }
-
+        { 
+            for ( Var v : opAssign.getVarExprList().getVars() )
+            {
+                Element elt = new ElementAssign(v, opAssign.getVarExprList().getExpr(v)) ;
+                ElementGroup g = currentGroup() ;
+                g.addElement(elt) ;
+            }
+        }
         public void visit(OpList opList)
         { /* No action */ }
 
