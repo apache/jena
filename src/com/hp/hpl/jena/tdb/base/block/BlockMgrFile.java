@@ -107,7 +107,14 @@ public abstract class BlockMgrFile extends BlockMgrBase
     {
         // Access to numFileBlocks not synchronized - it's only a check
         if ( id < 0 || id >= numFileBlocks )
-            throw new BlockException(format("BlockMgrFile: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
+        {
+            // Do it properly!
+            synchronized(this)
+            {
+                if ( id < 0 || id >= numFileBlocks )
+                    throw new BlockException(format("BlockMgrFile: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
+            }
+        }
     }
     
     final protected void check(int id, ByteBuffer bb)
