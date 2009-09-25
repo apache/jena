@@ -12,6 +12,7 @@ public class DevTDB
     // s/.meta/.prop/? 
     // Const for names.
     // See metadata stuff in BPlusTreeParams
+    // Document concurrency.
     // Test.
     
     // Explain mode - See notes in class
@@ -42,7 +43,7 @@ public class DevTDB
     // Node cache on 64bit machines needs to be bigger or rebalence
     // Cache stats counters (prep for JMX but useful now)
     
-    // ** Document concurrency.
+    
     
     // ==== RIOT
     // ** Connect the errorhandler set via JenaReaderbase to the one used by RIOT-Turtle/RIOT-NTriples.
