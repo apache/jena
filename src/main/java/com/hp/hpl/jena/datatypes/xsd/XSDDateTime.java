@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.1 2009-06-29 08:56:03 castagna Exp $
+ * $Id: XSDDateTime.java,v 1.2 2009-09-25 09:58:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
+ * @version $Revision: 1.2 $ on $Date: 2009-09-25 09:58:14 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -134,8 +134,9 @@ public class XSDDateTime extends AbstractDateTime {
         data[AbstractDateTime.h] = cal.get(Calendar.HOUR_OF_DAY);
         data[AbstractDateTime.m] = cal.get(Calendar.MINUTE);
         data[AbstractDateTime.s] = cal.get(Calendar.SECOND);
-        data[AbstractDateTime.ms] = cal.get(Calendar.MILLISECOND);
-        data[AbstractDateTime.msscale] = 3;
+        int ms = cal.get(Calendar.MILLISECOND);
+        data[AbstractDateTime.ms] = ms;
+        data[AbstractDateTime.msscale] = (ms == 0) ? 0 : 3;
         data[AbstractDateTime.utc] = 'Z';
         return data;
     }

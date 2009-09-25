@@ -5,14 +5,23 @@
  * 
  * (c) Copyright 2009, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestDateTime.java,v 1.1 2009-08-23 19:50:35 der Exp $
+ * $Id: TestDateTime.java,v 1.2 2009-09-25 09:58:14 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.graph.test;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Calendar;
+
 import com.hp.hpl.jena.datatypes.xsd.AbstractDateTime;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,7 +32,7 @@ import junit.framework.TestSuite;
  * TestTypedLiterals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestDateTime extends TestCase {
     /**
@@ -83,6 +92,30 @@ public class TestDateTime extends TestCase {
         assertEquals( time5.compareTo(time6), AbstractDateTime.LESS_THAN);
         assertEquals( time6.compareTo(time7), AbstractDateTime.LESS_THAN);
         assertEquals( time7.compareTo(time8), AbstractDateTime.LESS_THAN);
+
+    }
+    
+    public void testRoundTripping() {
+        Model m = ModelFactory.createDefaultModel();
+        Property startTime = m.createProperty("http://jena.hpl.hp.com/test#startTime");
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        Literal xsdlit0 = m.createTypedLiteral(cal);
+
+        Resource event = m.createResource();
+        event.addProperty(startTime, xsdlit0);
+
+        StringWriter sw = new StringWriter();
+        m.write(sw);
+        StringReader reader = new StringReader(sw.toString());
+        Model m1 = ModelFactory.createDefaultModel();
+        m1.read(reader, null);
+
+        assertTrue( m.isIsomorphicWith(m1) );
+
+        Literal xsdlit1 = m1.listStatements().next().getObject().as(Literal.class);
+        assertEquals(xsdlit0, xsdlit1);
 
     }
 }

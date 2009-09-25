@@ -20,7 +20,8 @@ Reasoners:
      Graph level.
 
 Core API:
-   o Fixed bug in comparison of dateTimes with fractional seconds
+   o Fixed bug in comparison of dateTimes with fractional seconds and with 
+     round-tripping from calendars
         
 ARQ: removed from Jena development
   The following jars have been removed from the lib/ directory - they are only used by ARQ:
