@@ -66,6 +66,13 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        {
+            Query q = QueryFactory.create("SELECT * { SERVICE <uri> { LET ( ?x := 90 ) }  } ", Syntax.syntaxARQ) ;
+            Op op = Algebra.compile(q) ;
+            Query q2 = OpAsQuery.asQuery(op) ;
+            System.out.println(q2) ;
+            System.exit(0) ;
+        }
         qexpr.main("fn:round(1)") ; System.exit(0) ; 
         
         report() ; System.exit(0) ;

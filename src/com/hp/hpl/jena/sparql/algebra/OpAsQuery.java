@@ -226,6 +226,7 @@ public class OpAsQuery
             Op op = opService.getSubOp() ;
             Element x = asElement(opService.getSubOp()) ; 
             Element elt = new ElementService(opService.getService(), x) ;
+            currentGroup().addElement(elt) ;
         }
         
         public void visit(OpDatasetNames dsNames)
