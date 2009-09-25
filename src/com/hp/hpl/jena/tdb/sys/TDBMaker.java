@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -21,105 +17,13 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
  */
 public class TDBMaker
 {
-    /** An ImplFactory that creates datasets in the usual way for TDB */
-    public final static class ConcreteImplFactory implements DatasetGraphMakerTDB
-    {
-        //@Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
-        { 
-            if ( location.isMem() )
-                return createDatasetGraph() ;
-            return FactoryGraphTDB.createDatasetGraph(location) ;
-        }
-    
-        //@Override
-        public DatasetGraphTDB createDatasetGraph()
-        { return FactoryGraphTDB.createDatasetGraphMem() ; }
-
-        public void releaseDatasetGraph(DatasetGraphTDB dataset)
-        {}
-    }
-
-    /** An ImplFactory that creates datasets in the usual way for TDB and caches them
-     * based on the location.  Asking for a dataset at a location will 
-     * return the same (cached) one. 
-     */
-    public final static class CachingImplFactory implements DatasetGraphMakerTDB
-    {
-        private static Logger log = LoggerFactory.getLogger(CachingImplFactory.class) ;
-        private DatasetGraphMakerTDB factory1 ;
-        private Map<String, DatasetGraphTDB> cache = new HashMap<String, DatasetGraphTDB>() ;
-    
-        public CachingImplFactory(DatasetGraphMakerTDB factory)
-        { this.factory1 = factory ; }
-        
-        // Uncached currently
-        //@Override
-        public DatasetGraphTDB createDatasetGraph()    { return factory1.createDatasetGraph() ; }
-    
-        //@Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
-        {
-            //if ( location.isMem() )
-            // The named in-memory location.  This is cacheable.
-            
-            String absPath = location.getDirectoryPath() ;
-            DatasetGraphTDB dg = cache.get(absPath) ;
-            if ( dg == null )
-            {
-                dg = factory1.createDatasetGraph(location) ;
-                log.debug("Add to dataset cache: "+absPath) ;
-                cache.put(absPath, dg) ;
-            }
-            else
-                log.debug("Reuse from dataset cache: "+absPath) ;
-            return dg ;
-        }
-    
-        public void flush() { cache.clear() ; }
-
-        public void releaseDatasetGraph(DatasetGraphTDB dataset)
-        {
-            Location location = dataset.getLocation() ; 
-            if ( location == null /*|| location.isMem()*/ )
-                return ;
-            
-            String absPath = location.getDirectoryPath() ;
-            
-            if ( ! cache.containsKey(absPath) )
-                if ( ! absPath.equals(Names.memName) )
-                    // Don't worry if a dataset in-memory is cached or not.
-                    log.warn("Not a cached location: "+absPath) ;
-            log.debug("Remove from dataset cache: "+absPath) ;
-            cache.remove(absPath) ;
-        } 
-    }
-
-    /** ImplFactory for many in-memory datasets. Mainly for testing. */ 
-    public final static class MemoryImplFactory implements DatasetGraphMakerTDB
-    {
-        //@Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
-        { return createDatasetGraph() ; }
-    
-        //@Override
-        public DatasetGraphTDB createDatasetGraph()
-        { 
-            //return FactoryGraphTDB.createDatasetGraphMem() ;
-            return Setup.buildDataset(Location.mem()) ;
-        }
-
-        public void releaseDatasetGraph(DatasetGraphTDB dataset)
-        {}
-    }
-
     // ---- Implementation factories 
     /** Implementation factory for creation of datasets - uncached */ 
-    public final static DatasetGraphMakerTDB uncachedFactory = new TDBMaker.ConcreteImplFactory() ;
-    //public final static DatasetGraphMakerTDB uncachedFactory = new TDBSetup() ;
+    //public final static DatasetGraphMakerTDB uncachedFactory = new TDBMakerFactoryGraph() ;
+    public final static DatasetGraphMakerTDB uncachedFactory = new DatasetGraphSetup() ;
     
     /** Implementation factory for cached creation of datasets */ 
-    public final static DatasetGraphMakerTDB cachedFactory = new TDBMaker.CachingImplFactory(uncachedFactory) ;
+    public final static DatasetGraphMakerTDB cachedFactory = new CachingTDBMaker(uncachedFactory) ;
 
     // Caching by location.
     private static boolean CACHING = true ;
@@ -132,7 +36,8 @@ public class TDBMaker
                                                            uncachedFactory ;
 
     /** In-memory datasets */
-    public final static DatasetGraphMakerTDB memFactory = new TDBMaker.MemoryImplFactory() ;
+    //public final static DatasetGraphMakerTDB memFactory = new TDBMakerFactoryGraphMem() ;
+    public final static DatasetGraphMakerTDB memFactory = new DatasetGraphSetupMem() ;
 
     // ----
     
@@ -142,8 +47,8 @@ public class TDBMaker
     /** Clear any TDB dataset cache */
     public static void clearDatasetCache()
     {
-        if ( factory instanceof TDBMaker.CachingImplFactory )
-            ((TDBMaker.CachingImplFactory)factory).flush();
+        if ( factory instanceof CachingTDBMaker )
+            ((CachingTDBMaker)factory).flush();
     }
     
     /** Release a dataset from any caching */

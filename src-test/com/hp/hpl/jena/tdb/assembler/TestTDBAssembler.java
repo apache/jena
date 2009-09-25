@@ -14,6 +14,7 @@ import atlas.lib.FileOps;
 import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -76,7 +77,14 @@ public class TestTDBAssembler extends BaseTest
     @Test public void createGraphEmbed()
     {
         String f = dirAssem+"/tdb-graph-embed.ttl" ;
-        Object thing = AssemblerUtils.build( f, JA.Model) ;
+        Object thing = null ;
+        try { thing = AssemblerUtils.build( f, JA.Model) ; }
+        catch (AssemblerException e)
+        { 
+            e.getCause().printStackTrace(System.err) ;
+            throw e ;
+        }
+        
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
         
@@ -104,9 +112,17 @@ public class TestTDBAssembler extends BaseTest
         testGraph(dirAssem+"/tdb-graph-ref-dataset.ttl",false) ;
     }
 
-    private static void testGraph(String assemblerFile, boolean named)
+    private static void testGraph(String assemblerFile, boolean named) 
     {
-        Object thing = AssemblerUtils.build( assemblerFile, VocabTDB.tGraphTDB) ;
+        Object thing = null ;
+        try { thing = AssemblerUtils.build( assemblerFile, VocabTDB.tGraphTDB) ; }
+        catch (AssemblerException e)
+        { 
+            e.getCause().printStackTrace(System.err) ;
+            throw e ;
+        }
+
+
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
         

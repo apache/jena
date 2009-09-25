@@ -18,7 +18,6 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SyncTick ;
 
-import java.io.File ;
 import java.util.Properties ;
 
 import org.slf4j.Logger ;
@@ -548,25 +547,26 @@ public class Setup
         }
         else
         {
-            // No metadata
+            // Not new ?, no metadata
             // Either it's brand new (so set the defaults)
             // or it's a pre-0.9 dataset (files exists)
 
             if ( ! newDataset )
             {
+                // Well-known name of the primary triples index.
+                isPreMetadata = FileOps.exists(location.getPath("SPO.idn")) ;
                 // PROBLEM.
-                // Well-know name of the primary triples index.
-                boolean b = FileOps.exists(location.getPath("SPO.dat")) ;
-                if ( !b )
-                {
-                    log.error("Existing files but no metadata and not old-style fixed layout") ;
-                    File d = new File(location.getDirectoryPath()) ;
-                    File[] entries = d.listFiles() ;
-                    log.error(entries.toString()) ;
-                    throw new TDBException("Can't build dataset: "+location) ;
-                }
-                
-                isPreMetadata = true ;
+//                boolean b = FileOps.exists(location.getPath("SPO.idn")) ;
+//                if ( !b )
+//                {
+//                    log.error("Existing files but no metadata and not old-style fixed layout: "+location.getDirectoryPath()) ;
+//                    File d = new File(location.getDirectoryPath()) ;
+//                    File[] entries = d.listFiles() ;
+//                    for ( File f : d.listFiles()  )
+//                        log.error("File: "+f.getName()) ;
+//                    throw new TDBException("Can't build dataset: "+location) ;
+//                }
+//                isPreMetadata = true ;
             }
         }
             

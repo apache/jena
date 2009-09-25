@@ -77,7 +77,7 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
             //TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
             TDB.getContext().set(SystemTDB.symFileMode, "direct") ;
         }
-        String DB = ConfigTest.getTestingDir() ;
+        String DB = ConfigTest.getTestingDirDB() ;
         FileOps.clearDirectory(DB) ;
         {
             // Create new DB (assuming it's empty now)

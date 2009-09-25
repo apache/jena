@@ -6,8 +6,7 @@
 
 package atlas.lib;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.File ;
 
 public class FileOps
 {
@@ -50,16 +49,11 @@ public class FileOps
     public static void clearDirectory(String dir)
     {
         File d = new File(dir) ;
-        
-        FilenameFilter filter = new FilenameFilter(){
-            //@Override
-            public boolean accept(File dir, String name)
-            {
-                return name.matches(".*\\..*") ;
-            }} ;
-            
-        for ( File f : d.listFiles(filter))
-            delete(f, false) ;
+        for ( File f : d.listFiles())
+        {
+            if ( f.isFile() )
+                delete(f, false) ;
+        }
     }
 
     /** See if there are any files in this directory */ 

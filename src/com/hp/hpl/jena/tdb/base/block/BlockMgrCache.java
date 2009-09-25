@@ -189,7 +189,8 @@ public class BlockMgrCache extends BlockMgrWrapper
     @Override
     public void close()
     {
-        log("close ("+writeCache.size()+" blocks)") ;
+        if ( writeCache != null )
+            log("close ("+writeCache.size()+" blocks)") ;
         syncFlush(true) ;
         super.close() ;
     }

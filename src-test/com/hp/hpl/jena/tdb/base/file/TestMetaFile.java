@@ -15,11 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class TestMetaFile extends BaseTest
 {
     static String testfile = ConfigTest.getTestingDir()+"/file" ;
-    static String testfileMeta = ConfigTest.getTestingDir()+"/file.meta" ;
+    static String testfileMeta = ConfigTest.getTestingDir()+"/file."+Names.extMeta ;
     
     @Before public void before()
     {

@@ -66,6 +66,7 @@ public class Location
         if ( rootname.equals(Names.memName) )
         {
             pathname = Names.memName ;
+            metafile = new MetaFile(Names.memName, Names.memName) ;
             return ;
         }
         

@@ -24,7 +24,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDir())) ;
+        graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDirDB())) ;
         graphLocation.release() ;
         graphLocation.clearDirectory() ;
         graphLocation.createGraph() ;

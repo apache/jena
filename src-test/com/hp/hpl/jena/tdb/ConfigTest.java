@@ -11,17 +11,30 @@ import atlas.lib.FileOps;
 public class ConfigTest
 {
     private static final String testingDir = "tmp/testing" ;
+    private static final String testingDirDB = "tmp/testing/DB" ;
     
     static boolean initialized = false ; 
     
-    public static final String getTestingDir()
+    private static void init()
     {
         if ( ! initialized )
         {
             FileOps.ensureDir("tmp") ;
             FileOps.ensureDir(testingDir) ;
+            FileOps.ensureDir(testingDirDB) ;
         }
+    }
+    
+    public static final String getTestingDir()
+    {
+        init() ;
         return testingDir ;
+    }
+    
+    public static final String getTestingDirDB()
+    {
+        init() ;
+        return testingDirDB ;
     }
     
 }
