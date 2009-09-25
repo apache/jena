@@ -18,6 +18,7 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SyncTick ;
 
+import java.io.IOException ;
 import java.util.Properties ;
 
 import org.slf4j.Logger ;
@@ -110,17 +111,6 @@ public class Setup
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
-        /** Semi-global
-         * TODO
-         * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
-         * tdb.cache.id2node.size=100000
-         * tdb.cache.blockwrite.size=2000
-         * tdb.cache.blockread.size=10000
-         * tdb.synctick=100000
-         */
-        
-        Properties config = globalConfig ;
-        
         /* ---- this.meta - the logical structure of the dataset.
          * 
          * # Dataset design
@@ -184,7 +174,25 @@ public class Setup
         // Check and set defaults.
         // On return, can just read the metadata key/value. 
         
+        /* Semi-global
+         * TODO
+         * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
+         * tdb.cache.id2node.size=100000
+         * tdb.cache.blockwrite.size=2000
+         * tdb.cache.blockread.size=10000
+         * tdb.synctick=100000
+         */
+        
+        String propertiesFile = "tdb.properties" ; 
         MetaFile metafile = locationMetadata(location) ;
+        Properties config = globalConfig ;
+        
+        if ( location.exists(propertiesFile) )
+        {
+            Properties here = new Properties(config) ;
+            try { PropertyUtils.loadFromFile(here, propertiesFile) ; }
+            catch (IOException ex) { throw new TDBException(ex) ; } 
+        }
         
         // Only support this so far.
         if ( ! metafile.propertyEquals("tdb.layout", "v1") )
