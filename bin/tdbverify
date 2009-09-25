@@ -9,5 +9,4 @@ export TDBROOT=$PWD
 
 source "$TDBROOT/bin/tdb_init"
 
-# Set classpath directly - must be in the root directory
 exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.$TDB_CMD" "$@"
