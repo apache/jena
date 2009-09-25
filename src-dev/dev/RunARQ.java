@@ -9,6 +9,7 @@ package dev;
 
 import java.util.Iterator;
 
+import arq.qexpr;
 import arq.sparql;
 import arq.sse_query;
 
@@ -65,6 +66,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        qexpr.main("fn:round(1)") ; System.exit(0) ; 
+        
         report() ; System.exit(0) ;
         
         execQuery("D.ttl", "Q.arq") ;

@@ -73,6 +73,7 @@ public class StandardFunctions
         add(registry, xfn+"abs", abs.class) ;
         add(registry, xfn+"ceiling", ceiling.class) ;
         add(registry, xfn+"floor", floor.class) ;
+        add(registry, xfn+"round", round.class) ;
         
         // fn:compare/2 and /3 and provide collation argument
         //    Locale locale = new Locale(String language, String country)
