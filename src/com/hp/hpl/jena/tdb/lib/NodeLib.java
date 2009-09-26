@@ -6,37 +6,30 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.security.DigestException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
+import java.io.UnsupportedEncodingException ;
+import java.nio.ByteBuffer ;
+import java.security.DigestException ;
+import java.security.MessageDigest ;
+import java.security.NoSuchAlgorithmException ;
+import java.util.Iterator ;
 
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
-import atlas.lib.Bytes;
-import atlas.lib.StrUtils;
+import atlas.iterator.Iter ;
+import atlas.iterator.Transform ;
+import atlas.lib.Bytes ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.Nodec;
-import com.hp.hpl.jena.tdb.nodetable.NodecSSE;
-import com.hp.hpl.jena.tdb.store.Hash;
-import com.hp.hpl.jena.tdb.store.NodeId;
-import com.hp.hpl.jena.tdb.store.NodeType;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.Nodec ;
+import com.hp.hpl.jena.tdb.nodetable.NodecSSE ;
+import com.hp.hpl.jena.tdb.store.Hash ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.NodeType ;
 
 public class NodeLib
 {
@@ -83,110 +76,54 @@ public class NodeLib
         return n ;
     }
 
-    private static String encode(Node node) { return encode(node, null) ; }
-
-    private static String encode(Node node, PrefixMapping pmap)
-    {
-        if ( node.isBlank() )
-            return "_:"+node.getBlankNodeLabel() ;
-        if ( node.isURI() ) 
-        {
-            // Pesky spaces
-            //throw new TDBException("Space found in URI: "+node) ;
-            String x = StrUtils.encode(node.getURI(), '_', invalidIRIChars) ;
-            if ( x != node.getURI() )
-                node = Node.createURI(x) ; 
-        }
-        
-        return FmtUtils.stringForNode(node, pmap) ;
-    }
-
-    private static Node decode(String s)     { return decode(s, null) ; }
-    
-    private static Node decode(String s, PrefixMapping pmap)
-    {
-        if ( s.startsWith("_:") )   
-        {
-            s = s.substring(2) ;
-            return Node.createAnon(new AnonId(s)) ;
-        }
-
-        if ( s.startsWith("<") )
-        {
-            s = s.substring(1,s.length()-1) ;
-            s = StrUtils.decode(s, MarkerChar) ;
-            return Node.createURI(s) ;
-        }
-        
-        try {
-            // SSE invocation is expensive (??).
-            Node n = SSE.parseNode(s, pmap) ;
-//            if ( n.isURI() )
-//            {
-//                String x = StrUtils.decode(n.getURI(), MarkerChar) ;
-//                if ( x != n.getURI() )
-//                    n = Node.createURI(x) ;
-//            }
-            return n ;
-        } catch (SSEParseException ex)
-        {
-            ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
-            throw ex ;
-        }
-    }
-    
-    // ----
-    
-//    /** Get the triples in the form of a List<Triple> */
-//    public static List<Triple> tripleList(BasicPattern pattern)
+    // OLD CODE
+//    // Use nodec's
+//    private static String encode(Node node) { return encode(node, null) ; }
+//
+//    private static String encode(Node node, PrefixMapping pmap)
 //    {
-//        return tripleList(pattern.getList()) ;
+//        if ( node.isBlank() )
+//            return "_:"+node.getBlankNodeLabel() ;
+//        if ( node.isURI() ) 
+//        {
+//            // Pesky spaces
+//            //throw new TDBException("Space found in URI: "+node) ;
+//            String x = StrUtils.encode(node.getURI(), '_', invalidIRIChars) ;
+//            if ( x != node.getURI() )
+//                node = Node.createURI(x) ; 
+//        }
+//        
+//        return FmtUtils.stringForNode(node, pmap) ;
 //    }
+//
+//    private static Node decode(String s)     { return decode(s, null) ; }
 //    
-//    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
-//    public static List<Triple> tripleList(List<?> triples)
+//    private static Node decode(String s, PrefixMapping pmap)
 //    {
-//        @SuppressWarnings("unchecked")
-//        List<Triple> x = (List<Triple>)triples ;
-//        return x ;
-//    }
-    
-//    /** Get the triples in the form of a List<Triple> */
-//    public static List<Quad> quadList(OpQuadPattern opQuad)
-//    {
-//        return quadList(opQuad.getQuads()) ;
-//    }
-//    
-//    /** Get the triples in the form of a List<Triple> */
-//    public static List<Quad> quadList(QuadPattern pattern)
-//    {
-//        return quadList(pattern.getList()) ;
+//        if ( s.startsWith("_:") )   
+//        {
+//            s = s.substring(2) ;
+//            return Node.createAnon(new AnonId(s)) ;
+//        }
+//
+//        if ( s.startsWith("<") )
+//        {
+//            s = s.substring(1,s.length()-1) ;
+//            s = StrUtils.decode(s, MarkerChar) ;
+//            return Node.createURI(s) ;
+//        }
+//        
+//        try {
+//            // SSE invocation is expensive (??).
+//            Node n = SSE.parseNode(s, pmap) ;
+//            return n ;
+//        } catch (SSEParseException ex)
+//        {
+//            ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
+//            throw ex ;
+//        }
 //    }
 
-//    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
-//    public static List<Quad> quadList(List<?> quads)
-//    {
-//        @SuppressWarnings("unchecked")
-//        List<Quad> x = (List<Quad>)quads ;
-//        return x ;
-//    }
-//    
-//    /** Cast a list (known to be nodes, e.g. from Java 1.4) to a List<Node> */
-//    public static List<Node> nodeList(List<?> nodes)
-//    {
-//        @SuppressWarnings("unchecked")
-//        List<Node> x = (List<Node>)nodes ;
-//        return x ;
-//    }
-//    
-//    /** Cast a list (known to be vars, e.g. from Java 1.4) to a List<Var> */
-//    public static List<Var> varList(List<?> vars)
-//    {
-//        @SuppressWarnings("unchecked")
-//        List<Var> x = (List<Var>)vars ;
-//        return x ;
-//    }
-    
     public static Hash hash(Node n)
     { 
         Hash h = new Hash(LenNodeHash) ;

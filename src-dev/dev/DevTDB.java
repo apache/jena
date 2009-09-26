@@ -13,38 +13,29 @@ public class DevTDB
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
     // See metadata stuff in BPlusTreeParams
-    // Document concurrency.
+    // Document
+    //   concurrency  []
+    //   Settings     []
+    //   Explain mode [DONE]
     // Test.
     
-    // Explain mode - See notes in class
     // Don't print optimizer type when set at info level.
-    // ?? Properties to RDF using <> :property "value"
 
-    // ** Every datasets takes a confiuration copied from the globals, not read directly.
-    // Default.
-    
-    // Compressor
+    // ----
     // B+Tree checking utility.
     
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     
-    // Tuning for low memory / 32 bit - smaller fixed caches - configurable
-    
     // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
     // At least, specific documentation.
     
     // --- Setup
-    // Check surpressed deprecations and switch to Setup.*
+    // Check supressed deprecations and switch to Setup.*
 
-    // Investigate tracking sorted order in BGPs (+PSO index?)
-    // Assembler : TDB settings : document.
-    
     // == Misc
     // Node cache on 64bit machines needs to be bigger or rebalence
     // Cache stats counters (prep for JMX but useful now)
-    
-    
     
     // ==== RIOT
     // ** Connect the errorhandler set via JenaReaderbase to the one used by RIOT-Turtle/RIOT-NTriples.
