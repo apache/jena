@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ClosableIterator.java,v 1.1 2009-06-29 08:55:49 castagna Exp $
+  $Id: ClosableIterator.java,v 1.2 2009-09-28 13:47:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -13,22 +13,25 @@ import java.util.Iterator;
     should be free'd as soon as possible, eg large structures which can be discarded
     early, or external resources such as database cursors.
 <p>
-    Users of ClosableIterators (and thus of ExtendedIterator) should close the iterator
-    when they are done with it, whether because they have found a desired element
-    or because they have reached the end. If they do not, resources may leak or be
-    reclaimed unpredictably or much later than convenient.
+    Users of ClosableIterators (and thus of ExtendedIterator) should close the 
+    iterator if they are done with it before it is exhausted (ie hasNext() is still
+     true).If they do not, resources may leak or be reclaimed unpredictably or 
+     much later than convenient. It is unnecessary but harmless to close the
+     iterator once it has become exhausted. [<b>note</b>: previous versions
+     of this documention specified a close regardless of exhaustion, but this
+     was never the contract applied internally.]
 <p>
     Implementors are encouraged to dispose of resources as soon as is convenient.
  
     @author bwm
-    @version $Id: ClosableIterator.java,v 1.1 2009-06-29 08:55:49 castagna Exp $
+    @version $Id: ClosableIterator.java,v 1.2 2009-09-28 13:47:59 chris-dollin Exp $
  */
 
 public interface ClosableIterator<T> extends Iterator<T> 
     {
     /** 
-        Close the iterator. Other oeprations on this iterator may now throw an exception. A
-        ClosableIterator may be closed as many times as desired - the subsequent
+        Close the iterator. Other operations on this iterator may now throw an exception. 
+        A ClosableIterator may be closed as many times as desired - the subsequent
         calls do nothing.
     */
     public void close();
