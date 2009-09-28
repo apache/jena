@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAndThen.java,v 1.1 2009-06-29 08:55:59 castagna Exp $
+ 	$Id: TestAndThen.java,v 1.2 2009-09-28 13:27:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -42,8 +42,19 @@ public class TestAndThen extends ModelTestBase
         assertEquals( aToI, iteratorToList( LRX ) );
         }
     
+    public void testClosingConcatenationClosesRemainingIterators()
+        {
+        LoggingClosableIterator<String> L = new LoggingClosableIterator<String>( iteratorOfStrings( "only" ) );
+        LoggingClosableIterator<String> M = new LoggingClosableIterator<String>( iteratorOfStrings( "single" ) );
+        LoggingClosableIterator<String> R = new LoggingClosableIterator<String>( iteratorOfStrings( "it" ) );
+        ExtendedIterator<String> cat = L.andThen( M ).andThen( R );
+        cat.next();
+        cat.close();
+        assertTrue( "middle iterator should have been closed", M.isClosed() );
+        assertTrue( "final iterator should have been closed", R.isClosed() );
+        }
+    
     }
-
 
 /*
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

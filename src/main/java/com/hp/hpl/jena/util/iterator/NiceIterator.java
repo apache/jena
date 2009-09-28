@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
+  $Id: NiceIterator.java,v 1.3 2009-09-28 13:27:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -73,8 +73,8 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     
     public static <T> ExtendedIterator<T> andThen( final Iterator<T> a, final Iterator<? extends T> b )
         {
-        final List<Iterator<? extends T>> L = new ArrayList<Iterator<? extends T>>( 2 );
-        L.add( b );
+        final List<Iterator<? extends T>> pending = new ArrayList<Iterator<? extends T>>( 2 );
+        pending.add( b );
         return new NiceIterator<T>()
             {
             private int index = 0;
@@ -83,9 +83,16 @@ public class NiceIterator<T> implements ExtendedIterator<T>
             
             @Override public boolean hasNext()
                 { 
-                while (current.hasNext() == false && index < L.size())
-                    current = L.get( index++ );
+                while (current.hasNext() == false && index < pending.size()) current = advance();
                 return current.hasNext();
+                }
+
+            private Iterator< ? extends T> advance()
+                {
+                Iterator< ? extends T> result = pending.get( index );
+                pending.set( index, null );
+                index += 1;
+                return result;
                 }
                 
             @Override public T next()
@@ -94,14 +101,15 @@ public class NiceIterator<T> implements ExtendedIterator<T>
             @Override public void close()
                 {
                 close( current );
-                for (int i = index; i < L.size(); i += 1) close( L.get(i) );
+                for (int i = index; i < pending.size(); i += 1) close( pending.get(i) );
+                pending.clear();
                 }
                 
             @Override public void remove()
                 { current.remove(); }
             
             @Override public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other )
-                { L.add( other ); 
+                { pending.add( other ); 
                 return this; }
             };
         }
