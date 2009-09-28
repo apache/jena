@@ -14,8 +14,9 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names;
 
-public class NodeTableIndex extends NodeTableBase
+public final class NodeTableIndex extends NodeTableBase
 {
+    // Dead code - only udes by old FactoryGraph.
     // Disk version
     private NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
@@ -27,11 +28,6 @@ public class NodeTableIndex extends NodeTableBase
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
     }
-    
-//    private NodeTableIndex(Index nodeToId, ObjectFile objects, int nodeToIdCacheSize, int idToNodeCacheSize)
-//    {
-//        super(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
-//    }
     
     // Memory version - testing.
     private NodeTableIndex(IndexBuilder factory)
