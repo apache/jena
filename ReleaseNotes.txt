@@ -4,6 +4,11 @@ Release Notes
 
 ==== Jena 2.6.2
 
++ Resource.addLiteral() now has an overload that takes a Literal object
+  and uses it as the statement object unaltered. (Previously such a Literal
+  would be treated as an Object and converted to a String literal, oops).
+  Similarly model.addLiteral() has a Literal overloading.
+
 + N3 pretty writer now write Turtle (no use of "=" for owl:sameAs) 
 
 + Maven-style codebase layout.
