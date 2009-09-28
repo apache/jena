@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.3 2009-09-28 10:45:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -144,6 +144,9 @@ public class ModelCom
 
     @Deprecated public Model addLiteral( Resource s, Property p, Object o )  
         { return add( s, p, asObject( o ) ); }
+
+    public Model addLiteral( Resource s, Property p, Literal o )  
+        { return add( s, p, o ); }
     
     private RDFNode asObject( Object o )
         { return o instanceof RDFNode ? (RDFNode) o : createTypedLiteral( o ); }

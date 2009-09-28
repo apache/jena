@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+  $Id: ResourceImpl.java,v 1.2 2009-09-28 10:45:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:32 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-09-28 10:45:11 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -226,11 +226,18 @@ public class ResourceImpl extends EnhNode implements Resource {
         m.add( this, p, m.createTypedLiteral( o ) );
         return this;
         }
-
-    public Resource addProperty(Property p, RDFNode o) {
+    
+    public Resource addLiteral( Property p, Literal o )
+        {
         mustHaveModel().add( this, p, o );
         return this;
-    }
+        }
+
+    public Resource addProperty( Property p, RDFNode o ) 
+        {
+        mustHaveModel().add( this, p, o );
+        return this;
+        }
 
     public boolean hasProperty(Property p)  {
         return mustHaveModel().contains( this, p );

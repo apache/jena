@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralsInModel.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+ 	$Id: TestLiteralsInModel.java,v 1.2 2009-09-28 10:45:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -55,6 +55,14 @@ public class TestLiteralsInModel extends ModelTestBase
         m.addLiteral( X, P, 99L );
         assertTrue( m.contains( X, P, m.createTypedLiteral( 99L ) ) );
         assertTrue( m.containsLiteral( X, P, 99L ) );
+        }
+    
+    public void testAddWithLiteralObject()
+        {
+        Literal lit = m.createLiteral( "spoo" );
+        m.addLiteral( X, P, lit );
+        assertTrue( m.contains( X, P, lit ) );
+        assertTrue( m.containsLiteral( X, P, lit ) );
         }
     
     public void testAddWithIntObject()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.2 2009-06-29 18:42:06 andy_seaborne Exp $
+  $Id: TestResourceImpl.java,v 1.3 2009-09-28 10:45:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -170,6 +170,15 @@ public class TestResourceImpl extends ModelTestBase
         Resource r = m.createResource();
         r.addLiteral( RDF.value, z );
         assertEquals( m.createTypedLiteral( z ), r.getProperty( RDF.value ).getLiteral() );
+        }
+    
+    public void testAddLiteralPassesLiteralUnmodified()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        Literal lit = m.createLiteral( "spoo" );
+        r.addLiteral( RDF.value, lit );
+        assertTrue( "model should contain unmodified literal", m.contains( null, RDF.value, lit ) );       
         }
     
     public void testHasTypedPropertyObject()
