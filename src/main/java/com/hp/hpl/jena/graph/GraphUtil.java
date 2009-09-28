@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphUtil.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
+  $Id: GraphUtil.java,v 1.2 2009-09-28 13:29:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,9 +9,7 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
-    An ad-hoc collection of useful code for graphs; starting with findAll, which
-    is graph-specific, and extending to iteratorToSet and iteratorToList, which
-    are here because they are used in tests and in the bulk update handlers.
+    An ad-hoc collection of useful code for graphs; starting with findAll.
  	@author kers
 */
 public class GraphUtil
