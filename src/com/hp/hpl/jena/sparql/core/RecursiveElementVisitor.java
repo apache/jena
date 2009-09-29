@@ -87,7 +87,7 @@ public class RecursiveElementVisitor implements ElementVisitor
     
     // ---- 
     
-    public RecursiveElementVisitor() { this.visitor = new ElementVisitorBase() ; }
+    private RecursiveElementVisitor() { this.visitor = new ElementVisitorBase() ; }
     
     public RecursiveElementVisitor(ElementVisitor visitor) { this.visitor = visitor ; }
     
