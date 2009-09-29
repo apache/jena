@@ -14,16 +14,16 @@ public interface Cache<Key, Value>
     /** Does the cache contain the key? */
     public boolean containsKey(Key key) ;
     
-    /** Get from cache - or return return null */ 
+    /** Get from cache - or return null.  Implementations hsoudl state whether they are thread-safe. */ 
     public Value get(Key key) ;
     
     /** Insert into from cache and return old value (or null if none) */
     public Value put(Key key, Value thing) ;
 
-    /** Reove from cache - return true if key referenecd an entry */
+    /** Remove from cache - return true if key referenecd an entry */
     public boolean remove(Key key) ;
     
-    /** Iterate over all keys */ 
+    /** Iterate over all keys. Iteratring over the keys requires the caller be thread-safe. */ 
     public Iterator<Key> keys() ;
     
     public boolean isEmpty() ;
