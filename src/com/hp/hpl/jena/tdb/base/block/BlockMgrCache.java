@@ -206,6 +206,9 @@ public class BlockMgrCache extends BlockMgrWrapper
             Integer[] ids = new Integer[(int)N] ;
 
             // Choose ... and it's in order.
+            // Single writer (sync is a write operation MRSW)
+            // Iterating is safe.
+            
             Iterator<Integer> iter = writeCache.keys() ;
             if ( iter.hasNext() )
                 didSync = true ;

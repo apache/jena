@@ -44,24 +44,29 @@ public class CacheSetLRU<T>
 
     }
     
+    //@Override
+    synchronized
     public void add(T e)
     {
         cacheMap.put(e, theOnlyValue) ;
     }
 
 
+    synchronized
     public void clear()
     { 
         cacheMap.clear() ;
     }
 
 
+    synchronized
     public boolean contains(T obj)
     {
         return cacheMap.containsKey(obj) ;
     }
 
 
+    synchronized
     public boolean isEmpty()
     {
         return cacheMap.isEmpty() ;
@@ -74,12 +79,14 @@ public class CacheSetLRU<T>
 //    }
 
 
+    synchronized
     public void remove(T obj)
     {
         cacheMap.remove(obj);
     }
 
 
+    synchronized
     public long size()
     {
         return cacheMap.size() ;
