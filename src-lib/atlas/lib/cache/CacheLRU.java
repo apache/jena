@@ -38,7 +38,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    //public V getObject(K key, boolean exclusive)
     synchronized
     public V get(K key)
     {
