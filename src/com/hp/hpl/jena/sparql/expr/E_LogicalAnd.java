@@ -5,10 +5,9 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 /**
  * @author Andy Seaborne
@@ -68,8 +67,17 @@ public class E_LogicalAnd extends ExprFunction2
     @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
-        // Revisit
-        throw new ARQInternalErrorException("Can't do that to "+this.getClass()) ;
+        // Evaluation only happens as part of copySubstitute.
+        // Proper evaluation is a special form as above.
+        
+        if ( ! x.isBoolean() )
+            throw new ExprEvalException("Not a boolean: "+x) ;    
+        if ( ! y.isBoolean() )
+            throw new ExprEvalException("Not a boolean: "+y) ;    
+        
+        boolean boolX = x.getBoolean() ;
+        boolean boolY = y.getBoolean() ;
+        return NodeValue.makeBoolean( boolX && boolY ) ;
     }
     
     @Override

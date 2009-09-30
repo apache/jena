@@ -1,10 +1,12 @@
-BASE <http://example/>
-PREFIX :        <http://example/> 
-PREFIX v:      <http://www.w3.org/2001/vcard-rdf/3.0#>
-PREFIX rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example/>
 
-SELECT ?x
-{
-    <#me> v:tel [ a v:Home ; rdf:value "123456789" ] .
+SELECT *
+WHERE {
+?instance a :Person .
+?instance rdfs:label ?label .
+FILTER fn:starts-with(?label, "A") .
+?instance rdf:type ?type .
 }
-

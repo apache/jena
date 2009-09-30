@@ -128,7 +128,7 @@ public class ARQ
     
     /** 
      *  Context key controlling whether the main query engine moves filters to the "best" place.
-     *  Default is "true" - filte rplacement is done.
+     *  Default is "true" - filter placement is done.
      */  
     public static final Symbol filterPlacement = ARQConstants.allocSymbol("filterPlacement") ;
    

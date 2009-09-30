@@ -14,6 +14,9 @@ public class DevARQ
     // Document JMX.
     // Run ref engine and main engine in a test - remove ref only tests
     
+    // ** Think - logicalX. if passed two values, then evaluate anyway.
+    // Is constant folding really worth the hassle? 
+    
     // ?? OpAsQuery - optimized algebra op
     
     // ==== ARQ

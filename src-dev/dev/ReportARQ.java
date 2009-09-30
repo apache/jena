@@ -6,54 +6,44 @@
 
 package dev;
 
-import org.junit.Test;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.StrUtils;
-import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 public class ReportARQ
 {
     @Test
-    public void testNOTEXISTSWithBoundVariable() {
-
-        Model model = ModelFactory.createDefaultModel();
-        model.read("file:D.ttl", "TTL") ;
-        //model.read("http://topquadrant.com/temp/usersForTestCases.owl");
+    public void testSubExpr()
+    {
+        PrefixMapping pmap = PrefixMapping.Factory.create()  ;
+        pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
+        pmap.setNsPrefix("", "http://example/") ;
+        pmap.setNsPrefix("ex", "http://example/ns#") ;
         
-        //op is null from E_Exists
+        String exprStr = "true || ?x" ; 
         
-        String queryString =
-            "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT * \n" +
-            "WHERE { \n" +
-            "    ?cls a owl:Class ." +
-            "    NOT EXISTS { \n" +
-            "        ?cls rdfs:label ?y . \n" +
-            "    }\n" +
-            "}";
+        Expr expr1 = ExprUtils.parse(exprStr, pmap) ;
+        System.out.println(expr1) ;
         
-        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        QueryExecution qexec = QueryExecutionFactory.create(query, model);
-
-        QuerySolutionMap map = new QuerySolutionMap();
-        map.add("this", OWL.Thing);
-        qexec.setInitialBinding(map);
-        
-        ResultSet rs = qexec.execSelect();
-        while(rs.hasNext()) {
-            QuerySolution qs = rs.nextSolution();
-            System.out.println("Result: " + qs);
-        }
+        Binding b = new Binding1(null, Var.alloc("x"), NodeValue.TRUE.asNode()) ;
+        Expr expr2 = expr1.copySubstitute(b , true) ;
+        System.out.println(expr2) ;
     }
 
     
