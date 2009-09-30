@@ -14,9 +14,7 @@ import atlas.lib.ActionKeyValue ;
 import atlas.lib.Cache ;
 
 
-/** This class is not thread-safe. Add a synchroization wrapper ({@see CacheFcatory.createSyc)} 
- * @author Andy Seaborne
- */
+/** This class is not thread-safe. Add a synchronization wrapper if needed (@link{CacheFcatory.createSync)}  */
 
 public class CacheLRU<K,V> implements Cache<K,V>
 {

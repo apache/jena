@@ -61,6 +61,8 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        TDBFactory.createDataset();
+        
         TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
         Dataset ds = TDBFactory.createDataset("tmp/DBX") ;
 

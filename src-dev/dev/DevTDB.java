@@ -21,9 +21,8 @@ public class DevTDB
     //   Explain mode [DONE]
     // Test.
     
+    // Rethink.check cache synchronization. 
     // TestCacheSet
-    //    Remove sync from CacheLRU, use a sync wrapper.
-    //    Remove sync wrapper, sync in BlockMgrCache.
     // Check node table use of caches
     
     
