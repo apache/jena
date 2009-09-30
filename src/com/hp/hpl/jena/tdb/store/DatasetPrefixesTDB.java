@@ -17,6 +17,7 @@ import atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -107,6 +108,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Set <String> x = new HashSet<String>() ;
         for ( ; iter.hasNext() ; )
             x.add(iter.next().get(0).getURI()) ;
+        Iter.close(iter) ;
         return x ;
     }
     
@@ -119,6 +121,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( ! iter.hasNext() )
             return null ;
         Node uri = iter.next().get(2) ;
+        Iter.close(iter) ;
         return uri.getURI() ; 
     }
 
@@ -131,6 +134,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( ! iter.hasNext() )
             return null ;
         Node prefix = iter.next().get(1) ;
+        Iter.close(iter) ;
         return prefix.getLiteralLexicalForm()  ;
     }
 
@@ -147,6 +151,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             String uri = t.get(2).getURI() ;
             map.put(prefix, uri) ;
         }
+        Iter.close(iter) ;
         return map ;
     }
     
@@ -162,6 +167,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
             String uri = t.get(2).getURI() ;
             pmap.setNsPrefix(prefix, uri) ;
         }
+        Iter.close(iter) ;
     }
     
     //@Override
@@ -172,6 +178,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         while ( iter.hasNext() )
             nodeTupleTable.deleteRow(g, p, iter.next().get(2)) ;
+        Iter.close(iter) ;
     }
 
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }

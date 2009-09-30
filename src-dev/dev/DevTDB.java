@@ -21,6 +21,12 @@ public class DevTDB
     //   Explain mode [DONE]
     // Test.
     
+    // TestCacheSet
+    //    Remove sync from CacheLRU, use a sync wrapper.
+    //    Remove sync wrapper, sync in BlockMgrCache.
+    // Check node table use of caches
+    
+    
     // Don't print optimizer type when set at info level.
 
     // ----

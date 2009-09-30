@@ -14,7 +14,7 @@ import atlas.lib.ActionKeyValue ;
 import atlas.lib.Cache ;
 
 
-/**
+/** This class is not thread-safe. Add a synchroization wrapper ({@see CacheFcatory.createSyc)} 
  * @author Andy Seaborne
  */
 
@@ -26,33 +26,28 @@ public class CacheLRU<K,V> implements Cache<K,V>
     public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
 
     //@Override
-    synchronized
     public void clear()
     { cache.clear() ; }
 
     //@Override
-    synchronized
     public boolean containsKey(K key)
     {
         return cache.containsKey(key) ;
     }
 
     //@Override
-    synchronized
     public V get(K key)
     {
         return cache.get(key) ;
     }
 
     //@Override
-    synchronized
     public V put(K key, V thing)
     {
         return cache.put(key, thing) ;
     }
 
     //@Override
-    synchronized
     public boolean remove(K key)
     {
         V old = cache.remove(key) ;
@@ -60,7 +55,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     //@Override
-    synchronized
     public long size()
     {
         return cache.size() ;
@@ -68,21 +62,18 @@ public class CacheLRU<K,V> implements Cache<K,V>
 
     //@Override
     // NB Access the iterator must be thread-aware. 
-    synchronized
     public Iterator<K> keys()
     {
         return cache.keySet().iterator() ;
     }
 
     //@Override
-    synchronized
     public boolean isEmpty()
     {
         return cache.isEmpty() ;
     }
 
     /** Callback for entries when dropped from the cache */
-    synchronized
     public void setDropHandler(ActionKeyValue<K,V> dropHandler)
     {
         cache.setDropHandler(dropHandler) ;

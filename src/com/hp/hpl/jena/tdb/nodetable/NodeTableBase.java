@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.nodetable;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash;
 import atlas.lib.Cache;
 import atlas.lib.CacheFactory;
-import atlas.lib.CacheSetLRU;
+import atlas.lib.CacheSet;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -35,7 +35,7 @@ public class NodeTableBase implements NodeTable
     
     // A small cache of "known unknowns" to speed up searching for impossible things.   
     // Cache update needed on NodeTable changes because a node may become "known"
-    protected CacheSetLRU<Node> notPresent ;
+    protected CacheSet<Node> notPresent ;
 
     // Delayed construction - must call init explicitly.
     protected NodeTableBase() {}
@@ -56,7 +56,7 @@ public class NodeTableBase implements NodeTable
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
         if ( idToNodeCacheSize > 0)
             id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
-        notPresent = new CacheSetLRU<Node>(100) ;
+        notPresent = CacheFactory.createCacheSet(100) ;
     }
 
     // ---- Public interface for Node <==> NodeId

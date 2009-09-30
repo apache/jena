@@ -7,8 +7,11 @@
 package atlas.lib;
 
 import atlas.lib.cache.CacheLRU ;
+import atlas.lib.cache.CacheSetLRU;
+import atlas.lib.cache.CacheSetSync;
 import atlas.lib.cache.CacheSimple ;
 import atlas.lib.cache.CacheStatsAtomic ;
+import atlas.lib.cache.CacheSync;
 
 
 public class CacheFactory
@@ -34,6 +37,27 @@ public class CacheFactory
             return (CacheStats<Key, Value>) cache ;
         return new CacheStatsAtomic<Key, Value>(cache) ;
     }
+
+    public static <Key, Value> Cache<Key, Value> createSync(Cache<Key, Value> cache)
+    {
+        if ( cache instanceof CacheSync<?,?>)
+            return cache ;
+        return new CacheSync<Key, Value>(cache) ;
+    }
+
+    
+    public static <Obj> CacheSet<Obj> createCacheSet(int size)
+    {
+        return new CacheSetLRU<Obj>(size) ;
+    }
+
+    public static <Obj> CacheSet<Obj> createSync(CacheSet<Obj> cache)
+    {
+        if ( cache instanceof CacheSetSync<?>)
+            return cache ;
+        return new CacheSetSync<Obj>(cache) ;
+    }
+
 }
 
 /*

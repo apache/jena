@@ -1,18 +1,43 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.recordfile;
+package atlas.lib.cache;
 
-public class RecordFile
+import atlas.lib.CacheSet;
+
+public class CacheSetSync<T> implements CacheSet<T>
 {
-    private RecordFile() {}
+    private CacheSet<T> cache ;
+
+    public CacheSetSync(CacheSet<T> cache){ this.cache = cache ; }
+    
+    //@Overview
+    synchronized public void add(T e)               { cache.add(e) ; }
+
+    //@Overview
+    synchronized public void clear()                { cache.clear() ; }
+
+    //@Overview
+    synchronized public boolean contains(T obj)     { return cache.contains(obj) ; }
+
+    //@Overview
+    synchronized
+    public boolean isEmpty()                        { return cache.isEmpty() ; }
+
+    //@Overview
+    synchronized
+    public void remove(T obj)                       { cache.remove(obj) ; }
+
+    //@Overview
+    synchronized
+    public long size()                              { return cache.size() ; } 
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

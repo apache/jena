@@ -4,12 +4,14 @@
  * [See end of file]
  */
 
-package atlas.lib;
+package atlas.lib.cache;
 
-import atlas.lib.cache.CacheLRU ;
+import atlas.lib.Action;
+import atlas.lib.ActionKeyValue;
+import atlas.lib.CacheSet;
 
 /** Cache set - tracks LRU of objects */
-public class CacheSetLRU<T>
+public class CacheSetLRU<T> implements CacheSet<T>
 {
     //LinkHashSet does not have LRU support.
     static Object theOnlyValue = new Object() ;

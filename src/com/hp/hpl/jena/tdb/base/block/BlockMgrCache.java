@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Caching block manager - this is an LRU cache */
-public class BlockMgrCache extends BlockMgrWrapper
+public class BlockMgrCache extends BlockMgrSync
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
     // Read cache
@@ -41,10 +41,12 @@ public class BlockMgrCache extends BlockMgrWrapper
         //logging = log.isInfoEnabled() && indexName.startsWith("LOG") ;
         
         readCache = CacheFactory.createCache(readSlots) ;
+        //readCache = CacheFactory.createSync(readCache) ; // Sync
         
         if ( writeSlots > 0 )
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
+            //writeCache = CacheFactory.createSync(writeCache) ; // Sync
             writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
                 //@Override
                 public void apply(Integer id, ByteBuffer bb)
@@ -74,12 +76,14 @@ public class BlockMgrCache extends BlockMgrWrapper
 //    }
     
     @Override
+    synchronized
     public ByteBuffer get(int id)
     {
         return fetchEntry(id, false) ;
     }
 
     @Override
+    synchronized
     public ByteBuffer getSilent(int id)
     {
         return fetchEntry(id, true) ;    
@@ -121,6 +125,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     }
 
     @Override
+    synchronized
     public void put(int id, ByteBuffer block)
     {
         log("Put   : %d", id) ;
@@ -135,6 +140,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     }
     
     @Override
+    synchronized
     public void freeBlock(int id)
     {
         log("Free  : %d", id) ;
@@ -149,8 +155,9 @@ public class BlockMgrCache extends BlockMgrWrapper
 //    { 
 //        sync() ; 
 //    }
-    
+
     @Override
+    synchronized
     public void sync(boolean force)
     {
         if ( true )
@@ -187,6 +194,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     }
     
     @Override
+    synchronized
     public void close()
     {
         if ( writeCache != null )
