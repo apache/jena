@@ -6,19 +6,18 @@
 
 package dev;
 
-import java.io.OutputStream;
-
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.StrUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.vocabulary.OWL;
 
 public class ReportARQ
@@ -60,22 +59,36 @@ public class ReportARQ
     
     public static void main(String[] argv) throws Exception
     {
-        Model model=ModelFactory.createDefaultModel() ;
-        String requete=StrUtils.strjoinNL("PREFIX : <http://www.owl-ontologies.com/Ontology1239120737.owl#>",
-                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
-                                          "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
-                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                                          "INSERT DATA { :etud1 :APourNom 'Saleh' .",
-                                          "              :etud1 :APourLogin 'saleh' .",
-                                          "              :etud1 :APourPWD 'saleh' . }") ;
-        GraphStore graphstore=GraphStoreFactory.create();
-        graphstore.setDefaultGraph(model.getGraph());
-        UpdateRequest updaterequest=UpdateFactory.create(requete);
-        UpdateAction.execute(updaterequest, graphstore);
+        String qs = StrUtils.strjoinNL("PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                                       "PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>",
+                                       "PREFIX : <http://example/>",
+                                       "SELECT *" ,
+                                       "WHERE {" ,
+//                                       "    ?instance a :Person .",
+//                                       "    ?instance rdfs:label ?label .",
+//                                       "    {",
+                                       "        LET (?lab := ?label) .",
+                                       "         FILTER fn:starts-with(?lab, \"A\") .",
+//                                       "    }",
+                                       "} ") ; 
+        Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
+        Op op1 = Algebra.compile(query) ;
 
-        OutputStream path = System.out ;
-        model.write(path, "RDF/XML-ABBREV");
-        System.out.println("OK");
+        Op op1a = Substitute.substitute(op1, Var.alloc("label"), SSE.parseNode("'aa'")) ;
+        System.out.println(op1a) ;
+        System.exit(0) ;
+        
+        
+        System.out.println(op1) ;
+        Op op2 = Algebra.optimize(op1) ;
+        System.out.println(op2) ;
+        
+        Op op2a = Substitute.substitute(op2, Var.alloc("label"), SSE.parseNode("'aa'")) ;
+        System.out.println(op2a) ;
+        
+        Optimize.noOptimizer() ;
+        Op op3 = Algebra.optimize(op1) ;
+        System.out.println(op3) ;
         System.exit(0) ;
     }
 }
