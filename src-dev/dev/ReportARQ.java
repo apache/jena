@@ -11,19 +11,12 @@ import org.junit.Test ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 public class ReportARQ
