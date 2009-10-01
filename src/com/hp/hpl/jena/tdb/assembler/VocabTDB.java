@@ -73,7 +73,7 @@ public class VocabTDB
         assemblerClass(g, tNodeTable,         new NodeTableAssembler()) ;
     }
     
-    private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
+    public static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
     {
         if ( g == null )
             g = Assembler.general ;
