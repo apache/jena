@@ -29,35 +29,24 @@ import com.hp.hpl.jena.sparql.util.StrUtils ;
 public class ReportARQ
 {
     @Test
-    public void testSubExpr()
+    public void test()
     {
-        PrefixMapping pmap = PrefixMapping.Factory.create()  ;
-        pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
-        pmap.setNsPrefix("", "http://example/") ;
-        pmap.setNsPrefix("ex", "http://example/ns#") ;
-        
-        String exprStr = "true || ?x" ; 
-        
-        Expr expr1 = ExprUtils.parse(exprStr, pmap) ;
-        System.out.println(expr1) ;
-        
-        Binding b = new Binding1(null, Var.alloc("x"), NodeValue.TRUE.asNode()) ;
-        Expr expr2 = expr1.copySubstitute(b , true) ;
-        System.out.println(expr2) ;
     }
 
     
     public static void main(String[] argv) throws Exception
     {
+        // Test case needed.
         String qs = StrUtils.strjoinNL("PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
                                        "PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>",
                                        "PREFIX : <http://example/>",
                                        "SELECT *" ,
                                        "WHERE {" ,
 //                                       "    ?instance a :Person .",
-//                                       "    ?instance rdfs:label ?label .",
+                                       "    ?instance rdfs:label ?label .",
 //                                       "    {",
-                                       "        LET (?lab := ?label) .",
+//                                       "        LET (?lab := ?label) .",
+                                       "        LET (?label := ?label) .",
                                        "         FILTER fn:starts-with(?lab, \"A\") .",
 //                                       "    }",
                                        "} ") ; 

@@ -6,16 +6,23 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.path.PathLib;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.path.PathLib ;
 
 public class Substitute
 {
@@ -142,9 +149,24 @@ public class Substitute
         @Override
         public Op transform(OpAssign opAssign, Op subOp)
         { 
-            //opAssign.getVarExprList()
+            // Order?
+            VarExprList varExprList2 = new VarExprList() ;
+            for ( Var v : opAssign.getVarExprList().getVars() )
+            {
+//                if ( binding.contains(v))
+//                    // Already bound. No need to do anything because the 
+//                    // logical assignment will test value.  
+//                    continue ;
+                Expr expr = opAssign.getVarExprList().getExpr(v) ;
+                expr = expr.copySubstitute(binding, true) ;
+                varExprList2.add(v, expr) ;
+            }
             
-            return super.transform(opAssign, subOp) ;
+            if ( varExprList2.isEmpty() )
+                return subOp ;
+            
+            return OpAssign.assign(subOp, varExprList2) ;
+            //return super.transform(opAssign, subOp) ;
         }
         
         // The expression?
