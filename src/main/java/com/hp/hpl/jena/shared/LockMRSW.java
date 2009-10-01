@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *  <ul>
  *   
  * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.1 2009-06-29 08:55:34 castagna Exp $
+ * @version     $Id: LockMRSW.java,v 1.2 2009-10-01 21:59:51 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 
@@ -88,7 +88,7 @@ public class LockMRSW implements Lock
             if ( log.isDebugEnabled() )
                 log.debug(Thread.currentThread().getName()+" << enterCS: promotion attempt: "+report(state)) ;
             
-            throw new JenaException("enterCriticalSection: Write lock request while holding read lock - potential deadlock");
+            throw new JenaException("enterCriticalSection: Write lock request while holding read lock - potential deadlock"+report(state));
         }
         
         // Trying to get a read lock after a write lock - get a write lock instead.
@@ -157,7 +157,7 @@ public class LockMRSW implements Lock
             
             // No lock held.
             
-            throw new JenaException("leaveCriticalSection: No lock held ("+Thread.currentThread().getName()+")") ;
+            throw new JenaException("leaveCriticalSection: No lock held ("+Thread.currentThread().getName()+") "+report(state)) ;
         } finally 
         {
             if ( log.isDebugEnabled() )
@@ -165,6 +165,7 @@ public class LockMRSW implements Lock
         }
     }
     
+    synchronized
     private String report(LockState state)
     {
         StringBuffer sb = new StringBuffer() ;
