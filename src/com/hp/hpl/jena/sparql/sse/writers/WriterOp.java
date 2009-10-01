@@ -98,7 +98,7 @@ public class WriterOp
     }        
     
     
-    private static class OpWriterWorker implements OpVisitor
+    public static class OpWriterWorker implements OpVisitor
     {
         private IndentedWriter out ;
         private SerializationContext sContext ;
