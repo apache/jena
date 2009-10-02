@@ -24,8 +24,6 @@ public class Transformer
     /** Set the current transformer - use with care */
     public static void set(Transformer value) { Transformer.singleton = value; }
     
-    static boolean noDupIfSame = true ;
-    
     public static Op transform(Transform transform, Op op)
     { return get().transformation(transform, op, null, null) ; }
     
@@ -38,7 +36,7 @@ public class Transformer
     {
         if ( op == null )
         {
-            ALog.warn(Transformer.class, "Attempt to transform a null Op - ignored") ;
+            ALog.warn(this, "Attempt to transform a null Op - ignored") ;
             return op ;
         }
 
@@ -50,6 +48,8 @@ public class Transformer
     }
     
     protected Transformer() { }
+    
+    protected static boolean noDupIfSame = true ;
     
     private static final 
     class TransformApply extends OpVisitorByType
