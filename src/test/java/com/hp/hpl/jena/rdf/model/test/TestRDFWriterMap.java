@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestRDFWriterMap.java,v 1.1 2009-09-28 10:45:11 chris-dollin Exp $
+ 	$Id: TestRDFWriterMap.java,v 1.2 2009-10-02 12:50:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -75,7 +75,12 @@ public class TestRDFWriterMap extends JenaTestBase
                 {
                 Class<RDFWriter> old = map.get( lang );
                 Class<?> c = Class.forName( className );
-                if (RDFWriter.class.isAssignableFrom( c )) map.put( lang, (Class<RDFWriter>) c );
+                if (RDFWriter.class.isAssignableFrom( c ))
+                {
+                    @SuppressWarnings("unchecked")
+                    Class<RDFWriter> x = (Class<RDFWriter>)c ;
+                    map.put( lang, x );
+                }
                 return old == null ? null : old.getName();
                 }
             catch (ClassNotFoundException e)
