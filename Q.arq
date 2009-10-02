@@ -1,10 +1,15 @@
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX  foaf:   <http://xmlns.com/foaf/0.1/> 
+PREFIX my: <> 
 
-SELECT ?person
-WHERE 
+SELECT ?result 
+WHERE {
+    OPTIONAL{
+        ?this my:x ?number .
+        ?result my:a ?number .
+    }
+OPTIONAL
 {
-    ?person rdf:type  foaf:Person .
-    NOT EXISTS { ?person foaf:name ?name }
+   FILTER(!bound(?number))
+       ?this my:y ?acct .
+       ?result my:b ?acct .
 }
-
+} LIMIT 1

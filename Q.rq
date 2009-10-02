@@ -1,12 +1,19 @@
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX : <http://example/>
-
-SELECT *
+PREFIX my: <> 
+SELECT ?result 
 WHERE {
-?instance a :Person .
-?instance rdfs:label ?label .
-FILTER fn:starts-with(?label, "A") .
-?instance rdf:type ?type .
+{
+    SELECT ?result ?number 
+    {
+        ?this my:x ?number .
+        ?result my:a ?number .
+    } LIMIT 1
+}
+OPTIONAL
+{
+   FILTER(!bound(?number))
+   { SELECT ?result {
+       ?this my:y ?acct .
+       ?result my:b ?acct .
+    } LIMIT 1
+   }
 }

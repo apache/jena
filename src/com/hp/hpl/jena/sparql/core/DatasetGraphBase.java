@@ -20,10 +20,10 @@ import com.hp.hpl.jena.sparql.lib.Cache;
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {
-    private Lock lock = null ;
+    private final Lock lock = new LockMRSW() ;
     protected Graph defaultGraph = null ;
     
-    private boolean caching = true ;
+    private final boolean caching = true ;
     private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
     abstract protected void _close() ;
@@ -31,14 +31,6 @@ abstract public class DatasetGraphBase implements DatasetGraph
     abstract protected Graph _createDefaultGraph() ;
     abstract protected boolean _containsGraph(Node graphNode) ;
     
-    //@Override
-    public final void close()
-    {
-        defaultGraph = null ;
-        namedGraphs.clear() ;
-        _close() ;
-    }
-
     //@Override
     public boolean containsGraph(Node graphNode)
     {
@@ -78,9 +70,14 @@ abstract public class DatasetGraphBase implements DatasetGraph
     //@Override
     public Lock getLock()
     {
-        if ( lock == null )
-            lock = new LockMRSW() ;
         return lock ;
+    }
+    //@Override
+    public final void close()
+    {
+        defaultGraph = null ;
+        namedGraphs.clear() ;
+        _close() ;
     }
 
 //    @Override
