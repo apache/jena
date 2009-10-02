@@ -156,7 +156,7 @@ public class Util extends Object {
      else
          return s;
      }
-    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\r\t]]|\uFFFF|\uFFFE" );
+    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\t]]|\uFFFF|\uFFFE" );
     /**
         Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by
         their corresponding entity references. 
@@ -180,12 +180,13 @@ public class Util extends Object {
                 result.append( s.substring( start, m.start() ) );
                 char ch = s.charAt( m.start() );
                 switch ( ch )
-                    {
+                {
+                    case '\r': result.append( "&#xD;" ); break;
                     case '<': result.append( "&lt;" ); break;
                     case '&': result.append( "&amp;" ); break;
                     case '>': result.append( "&gt;" ); break;
                     default: throw new CannotEncodeCharacterException( ch, "XML" );
-                    }
+                }
                 start = m.end();
                 } while (m.find( start ));
             result.append( s.substring( start ) );

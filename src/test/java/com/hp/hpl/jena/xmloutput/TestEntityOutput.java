@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestEntityOutput.java,v 1.1 2009-07-04 16:41:34 andy_seaborne Exp $
+ 	$Id: TestEntityOutput.java,v 1.2 2009-10-02 12:59:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -118,6 +118,19 @@ public class TestEntityOutput extends ModelTestBase
     	Model m2 = createMemModel();
     	m2.read(r,"http://example.org/");
     	assertIsoModels("showDoctypeDeclaration problem", m, m2);
+    }
+    
+    public void testCRinLiterals() throws IOException 
+    {
+        Model m = createMemModel();
+        Resource r = m.createResource("http://example/r") ;
+        Property p = m.createProperty("http://example/p") ;
+        m.add(r, p, "abc\r\nxyz") ;
+        StringWriter w = new StringWriter();
+        m.write(w) ;
+        Model m2 = createMemModel();
+        m2.read(new StringReader(w.toString()), null) ;
+        assertTrue(m.isIsomorphicWith(m2)) ;
     }
 
     private void testCatchesBadEntity( String bad )

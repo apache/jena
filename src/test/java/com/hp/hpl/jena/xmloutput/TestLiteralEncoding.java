@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralEncoding.java,v 1.1 2009-07-04 16:41:34 andy_seaborne Exp $
+ 	$Id: TestLiteralEncoding.java,v 1.2 2009-10-02 12:59:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -44,6 +44,10 @@ public class TestLiteralEncoding extends ModelTestBase
         assertEquals( "a&amp;b&gt;c", Util.substituteEntitiesInElementContent( "a&b>c" ) );
         assertEquals( "a&amp;b&lt;c", Util.substituteEntitiesInElementContent( "a&b<c" ) );
     //
+        // Encoding in content output : protect CR but raw NL is fine. 
+        assertEquals( "&#xD;", Util.substituteEntitiesInElementContent( "\r" ) );
+        assertEquals( "\n", Util.substituteEntitiesInElementContent( "\n" ) );
+    //
         assertEquals( "", Util.substituteStandardEntities( "" ) );
         assertEquals( "&lt;", Util.substituteStandardEntities( "<" ) );
         assertEquals( "&gt;", Util.substituteStandardEntities( ">" ) );
@@ -55,16 +59,6 @@ public class TestLiteralEncoding extends ModelTestBase
         assertEquals( "&#9;", Util.substituteStandardEntities( "\t" ) );
     //
         assertEquals( "a&lt;b&amp;c&gt;d", Util.substituteStandardEntities( "a<b&c>d" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
-        assertEquals( "", Util.substituteStandardEntities( "" ) );
         }
     
     public void testLexicalEncodingException(String lang)
