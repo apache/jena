@@ -16,12 +16,25 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 public class Transformer
 {
+    private static Transformer singleton = new Transformer();
+    
+    /** Get the current transformer */
+    public static Transformer get() { return singleton; }
+    
+    /** Set the current transformer - use with care */
+    public static void set(Transformer value) { Transformer.singleton = value; }
+    
     static boolean noDupIfSame = true ;
     
     public static Op transform(Transform transform, Op op)
-    { return transform(transform, op, null, null) ; }
+    { return get().transformation(transform, op, null, null) ; }
     
     public static Op transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        return get().transformation(transform, op, beforeVisitor, afterVisitor) ;
+    }
+    
+    protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
@@ -36,7 +49,7 @@ public class Transformer
         
     }
     
-    private Transformer() { }
+    protected Transformer() { }
     
     private static final 
     class TransformApply extends OpVisitorByType
