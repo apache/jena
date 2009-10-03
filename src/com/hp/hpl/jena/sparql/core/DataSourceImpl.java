@@ -29,6 +29,14 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 public class DataSourceImpl implements DataSource
 {
+    /* 
+     * synchronization: The ARQ policy is MRSW so read operations here
+     * that cause internal datastructure changes need protecting to ensure
+     * multiple read access does not corrupt those structures.  
+     * Write operations (add/remove models) do not because there
+     * should be only one writer by contract.
+     */
+
     protected DataSourceGraph dsg = null ;
     private Map<Graph, Model> cache = new HashMap<Graph, Model>() ;      
 
@@ -103,7 +111,7 @@ public class DataSourceImpl implements DataSource
     public void setDefaultModel(Model model)
     { 
         removeFromCache(dsg.getDefaultGraph()) ;
-        cache.put(model.getGraph(), model) ;
+        addToCache(model) ;
         dsg.setDefaultGraph(model.getGraph()) ;
     }
 
@@ -113,7 +121,7 @@ public class DataSourceImpl implements DataSource
         return dsg.containsGraph(n) ;
     }
 
-    // How to share with DatasetImpl
+    // Don't look in the cahe - go direct to source
     public Iterator<String> listNames()
     { 
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
@@ -129,6 +137,7 @@ public class DataSourceImpl implements DataSource
         cache = null ;
     }
 
+    synchronized
     private void removeFromCache(Graph graph)
     {
         if ( graph == null )
@@ -136,11 +145,13 @@ public class DataSourceImpl implements DataSource
         cache.remove(graph) ;
     }
 
+    synchronized
     private void addToCache(Model model)
     {
         cache.put(model.getGraph(), model) ;
     }
 
+    synchronized
     private Model graph2model(Graph graph)
     { 
         Model model = cache.get(graph) ;

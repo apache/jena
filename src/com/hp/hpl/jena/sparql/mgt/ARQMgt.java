@@ -11,6 +11,7 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import javax.management.InstanceAlreadyExistsException ;
+import javax.management.InstanceNotFoundException ;
 import javax.management.MBeanRegistrationException ;
 import javax.management.MBeanServer ;
 import javax.management.MalformedObjectNameException ;
@@ -57,9 +58,14 @@ public class ARQMgt
         {  throw new ARQException("Failed to create name '"+name+"': "+ex.getMessage(), ex) ; }
         
         try {
+            // unregister to avoid classloader games?
+            if ( mbs.isRegistered(objName) )
+            {
+                try { mbs.unregisterMBean(objName); }
+                catch (InstanceNotFoundException ex) {}
+            }
             log.debug("Register MBean: "+objName) ;
             mbs.registerMBean(bean, objName);
-            
             // remember ...
             mgtObjects.put(objName, bean) ;
 

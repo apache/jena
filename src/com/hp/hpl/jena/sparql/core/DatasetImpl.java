@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 public class DatasetImpl implements Dataset
 {
+    //Synchronization: need to protect the cache
+    
     protected DatasetGraph dsg = null ;
     
     // A small cache so that calls getDefaultModel()/getNamedModel() are
@@ -47,9 +49,12 @@ public class DatasetImpl implements Dataset
     /** Return the default model */
     public Model getDefaultModel() 
     { 
-        if ( defaultModel == null )
-            defaultModel = graph2model(dsg.getDefaultGraph()) ;
-        return defaultModel ;
+        synchronized(this)
+        {
+            if ( defaultModel == null )
+                defaultModel = graph2model(dsg.getDefaultGraph()) ;
+            return defaultModel ;
+        }
     }
 
     public Lock getLock() { return dsg.getLock() ; }
@@ -59,13 +64,17 @@ public class DatasetImpl implements Dataset
     /** Return a model for the named graph - repeated calls so not guarantee to return the same Java object */
     public Model getNamedModel(String uri)
     { 
-        Model m = cache.get(uri) ;
-        if ( m == null )
+        // synchronized because we need to read and possible update the cache atomically 
+        synchronized(this)
         {
-            m = graph2model(dsg.getGraph(Node.createURI(uri))) ;
-            cache.put(uri, m) ;
+            Model m = cache.get(uri) ;
+            if ( m == null )
+            {
+                m = graph2model(dsg.getGraph(Node.createURI(uri))) ;
+                cache.put(uri, m) ;
+            }
+            return m ;
         }
-        return m ;
     }
 
     public boolean containsNamedModel(String uri)
