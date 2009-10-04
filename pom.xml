@@ -9,7 +9,7 @@
     <version-major>2</version-major>
     <version-minor>6</version-minor>
     <version-revision>2</version-revision>
-    <version-status>-SNAPSHOT</version-status>
+    <version-status>-RC-1</version-status>
   </properties>
 
   <groupId>com.hp.hpl.jena</groupId>
@@ -377,14 +377,16 @@
       <name>Jena repo</name>
       <!-- scp does not work (TERM not set !!) -->
       <!-- <url>sftp://jena.hpl.hp.com/var/repo</url> -->
-      <url>file:tmp</url>
+      <!-- RC's to snapshot repo -->
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
+      <!-- <url>file:tmp</url> -->
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!--<url>sftp://jena.hpl.hp.com/var/repo-dev</url>-->
-      <url>file:tmp</url>
+      <url>sftp://jena.hpl.hp.com/var/repo-dev</url>
+      <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
