@@ -58,7 +58,10 @@ public class ARQMgt
         {  throw new ARQException("Failed to create name '"+name+"': "+ex.getMessage(), ex) ; }
         
         try {
-            // unregister to avoid classloader games?
+            // Unregister to avoid classloader problems.
+            // A previous load of this class wil have registered something
+            // with the object name. Remove it - copes with reloading.
+            // (Does not cope with multiple loads running in parallel.)
             if ( mbs.isRegistered(objName) )
             {
                 try { mbs.unregisterMBean(objName); }
