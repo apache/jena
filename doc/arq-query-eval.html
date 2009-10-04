@@ -19,6 +19,17 @@
         to add application specific code. The <a href="lucene-arq.html">free text search</a>
         capabilities, using Apache Lucene, are provided via a property function. Custom
         filter functions and property functions should be used where possible.</p>
+	<p>
+        Jena itself can be extended by providing a new implementation of the
+		<code>Graph</code> interface. This can be used to encapsulate specific 
+		specialised storage and also for wrapping non-RDF sources to look like 
+		RDF. Theer is a common implementation framework provided by <code>
+		GraphBase</code> so only one operation, the <code>find</code> method, 
+		needs to be written for a read-only data source. Basic find works well 
+		is many cases, and the whole Jena API will be able to use the extension.&nbsp; 
+		For higher SPARQL performance, ARQ can be extended at the
+		<a href="#StageGenerator">basic graph matching</a> or
+		<a href="#OpExecutor">algebra level</a>.</p>
     <p>
         Applications writers who extend ARQ at the query execution level should be prepared
         to work with the source code for ARQ for specific details and for finding code to
@@ -27,7 +38,7 @@
     <ul>
         <li><a href="#Overview">Overview of ARQ Query Processing</a></li>
         <li><a href="#mainQueryEngine">The Main Query Engine</a></li>
-        <li><a href="#stageGenerator">Graph matching and a custom StageGenerator</a></li>
+        <li><a href="#StageGenerator">Graph matching and a custom StageGenerator</a></li>
         <li><a href="#OpExecutor">OpExecutor</a></li>
         <li><a href="#quads">Quads</a></li>
         <li><a href="#mixedDatasets">Mixed Graph Implementation Datasets</a></li>
@@ -241,7 +252,7 @@ op = Transformer.transform(someTransform, op) ;</pre>
     <p>
         The standard <code>OpExecutor</code> invokes the stage generator mechanism to match
         a basic graph pattern.</p>
-    <h2 id="stageGenerator">
+	<h2 id="StageGenerator">
         Graph matching and a custom StageGenerator</h2>
     <p>
         The correct point to hook into ARQ for just extending basic graph pattern matching

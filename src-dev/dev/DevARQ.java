@@ -9,18 +9,16 @@ package dev;
 public class DevARQ
 {
     // ==== 2.8.1 : Check:
-    // http://jena.sourceforge.net/ARQ/arq-query-eval.html; mention graph.find approach.
+
+    // ==== Document IF/COLLASCE
+    // Add int() ?
+    
     // De-duplicate aggregator code.
-    // Document JMX.
     // Run ref engine and main engine in a test - remove ref only tests
-    
-    // ** Think - logicalX. if passed two values, then evaluate anyway.
-    // Is constant folding really worth the hassle? 
-    
-    // ?? OpAsQuery - optimized algebra op
     
     // ==== ARQ
     // JMX
+    //   Document
     //   Query count
     //   Last query
     //   (list of queries)
