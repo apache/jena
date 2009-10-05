@@ -75,10 +75,13 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         //@Override
         public RecordBufferPage fromByteBuffer(ByteBuffer byteBuffer)
         {
-            int count = byteBuffer.getInt(COUNT) ;
-            int linkId = byteBuffer.getInt(LINK) ;
-            RecordBufferPage rb = new RecordBufferPage(NO_ID, linkId, byteBuffer, factory, pageMgr, count) ;
-            return rb ;
+            synchronized (byteBuffer)
+            {
+                int count = byteBuffer.getInt(COUNT) ;
+                int linkId = byteBuffer.getInt(LINK) ;
+                RecordBufferPage rb = new RecordBufferPage(NO_ID, linkId, byteBuffer, factory, pageMgr, count) ;
+                return rb ;
+            }
         }
 
         //@Override

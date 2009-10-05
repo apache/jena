@@ -115,16 +115,19 @@ final class BTreePageMgr
         }
 
         //@Override
-        public BTreeNode fromByteBuffer(ByteBuffer bb)
+        public BTreeNode fromByteBuffer(ByteBuffer byteBuffer)
         {
-            // Must call from a context that is single threaded for reading.
-            int x = bb.getInt(0) ;
-            BlockType type = getType(x) ;
+            synchronized (byteBuffer)
+            {
+                // Must call from a context that is single threaded for reading.
+                int x = byteBuffer.getInt(0) ;
+                BlockType type = getType(x) ;
 
-            if ( type != BlockType.BTREE_BRANCH && type != BlockType.RECORD_BLOCK )
-                throw new BTreeException("Wrong block type: "+type) ; 
-            int count = decCount(x) ;
-            return overlay(btree, bb, (type==BlockType.RECORD_BLOCK), count) ;
+                if ( type != BlockType.BTREE_BRANCH && type != BlockType.RECORD_BLOCK )
+                    throw new BTreeException("Wrong block type: "+type) ; 
+                int count = decCount(x) ;
+                return overlay(btree, byteBuffer, (type==BlockType.RECORD_BLOCK), count) ;
+            }
         }
 
         //@Override

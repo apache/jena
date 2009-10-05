@@ -147,15 +147,18 @@ public final class BPTreeNodeMgr
         }
 
         //@Override
-        public BPTreeNode fromByteBuffer(ByteBuffer bb)
+        public BPTreeNode fromByteBuffer(ByteBuffer byteBuffer)
         {
-            int x = bb.getInt(0) ;
-            BlockType type = getType(x) ;
-            
-            if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
-                throw new BTreeException("Wrong block type: "+type) ; 
-            int count = decCount(x) ;
-            return overlay(bpTree, bb, (type==BPTREE_LEAF), count) ;
+            synchronized (byteBuffer)
+            {
+                int x = byteBuffer.getInt(0) ;
+                BlockType type = getType(x) ;
+                
+                if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
+                    throw new BTreeException("Wrong block type: "+type) ; 
+                int count = decCount(x) ;
+                return overlay(bpTree, byteBuffer, (type==BPTREE_LEAF), count) ;
+            }
         }
 
         //@Override

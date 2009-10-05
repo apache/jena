@@ -72,15 +72,18 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
         //@Override
         public HashBucket fromByteBuffer(ByteBuffer byteBuffer)
         {
-            // Be safe - one reader only.
-            // But it is likely that the caller needs to also
-            // perform internal updates so syncrhoized on
-            // the bytebuffer here is not enough.
-            int count = byteBuffer.getInt(COUNT) ;
-            int hash = byteBuffer.getInt(TRIE) ;
-            int hashLen = byteBuffer.getInt(BITLEN) ;
-            HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, byteBuffer, factory, pageMgr, count) ;
-            return bucket ;
+            synchronized (byteBuffer)
+            {
+                // Be safe - one reader only.
+                // But it is likely that the caller needs to also
+                // perform internal updates so syncrhoized on
+                // the bytebuffer here is not enough.
+                int count = byteBuffer.getInt(COUNT) ;
+                int hash = byteBuffer.getInt(TRIE) ;
+                int hashLen = byteBuffer.getInt(BITLEN) ;
+                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, byteBuffer, factory, pageMgr, count) ;
+                return bucket ;
+            }
         }
 
         //@Override
