@@ -22,12 +22,9 @@ public class DevTDB
     // Test.
     
     // Rethink.check cache synchronization (byteBuffer)
-    // RecordBufferPageMgr
-    // BPTreeNodeMgr
-    // BTreeNodeMgr
-    // HashBucketMgr
-    // Why/what does the sync in fromByteBuffer do?
-    // Why not BlockConvert.get on block mgr
+    //   RecordBufferPageMgr / BPTreeNodeMgr / BTreeNodeMgr / HashBucketMgr -> fromByteBuffer
+    //   Why/what does the sync in fromByteBuffer do?
+    // Why not BlockConverter.get on block mgr?  Hhow many blockMgrs are there?
 
     
     // TestCacheSet
