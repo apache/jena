@@ -4,14 +4,14 @@
  * [See end of file]
  */
 
-package atlas.lib.cache;
+package com.hp.hpl.jena.sparql.lib.cache;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import atlas.iterator.IteratorArray;
-import atlas.lib.ActionKeyValue ;
-import atlas.lib.Cache ;
+import com.hp.hpl.jena.sparql.lib.iterator.IteratorArray;
+import com.hp.hpl.jena.sparql.lib.ActionKeyValue ;
+import com.hp.hpl.jena.sparql.lib.Cache ;
 
 import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 

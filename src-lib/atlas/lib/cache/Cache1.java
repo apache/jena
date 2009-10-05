@@ -4,20 +4,20 @@
  * [See end of file]
  */
 
-package atlas.lib.cache;
+package com.hp.hpl.jena.sparql.lib.cache;
 
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import atlas.iterator.SingletonIterator;
-import atlas.lib.ActionKeyValue;
-import atlas.lib.Cache;
+import com.hp.hpl.jena.sparql.lib.ActionKeyValue ;
+import com.hp.hpl.jena.sparql.lib.Cache ;
+import com.hp.hpl.jena.sparql.lib.iterator.SingletonIterator ;
 
 
 /** A one-slot cache.*/
 public class Cache1<K, V> implements Cache<K,V>
 {
-    private ActionKeyValue<K, V> dropHandler = null ;
+    private com.hp.hpl.jena.sparql.lib.ActionKeyValue<K, V> dropHandler = null ;
     private K cacheKey ;
     private V cacheValue ;
     
