@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib.cache;
+package atlas.lib.cache;
 
 import java.util.concurrent.atomic.AtomicLong ;
 
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
-import com.hp.hpl.jena.sparql.lib.Cache;
-import com.hp.hpl.jena.sparql.lib.CacheStats ;
+import atlas.lib.ActionKeyValue;
+import atlas.lib.Cache;
+import atlas.lib.CacheStats ;
 
 /** Capture statisics for a cache - this class is thread safe (you can read the stats while the cache is active) */ 
 public class CacheStatsAtomic<Key,Value> extends CacheWrapper<Key,Value> implements CacheStats<Key,Value>
