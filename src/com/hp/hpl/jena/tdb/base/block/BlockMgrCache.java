@@ -41,12 +41,12 @@ public class BlockMgrCache extends BlockMgrSync
         //logging = log.isInfoEnabled() && indexName.startsWith("LOG") ;
         
         readCache = CacheFactory.createCache(readSlots) ;
-        //readCache = CacheFactory.createSync(readCache) ; // Sync
+        //readCache = CacheFactory.createSync(readCache) ; // Sync - must ensure this further out.
         
         if ( writeSlots > 0 )
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            //writeCache = CacheFactory.createSync(writeCache) ; // Sync
+            //writeCache = CacheFactory.createSync(writeCache) ; // Sync - must ensure this further out.
             writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
                 //@Override
                 public void apply(Integer id, ByteBuffer bb)
