@@ -6,18 +6,58 @@
 
 package com.hp.hpl.jena.sparql.lib;
 
+import com.hp.hpl.jena.sparql.lib.cache.CacheLRU ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSetLRU ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSetSync ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSimple ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheStatsAtomic ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSync ;
+
 
 public class CacheFactory
 {
-    public static <Key, T> Cache<Key, T> createCache(int maxSize)
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
     {
         return createCache(0.75f, maxSize) ;
     }
     
-    public static <Key, T> Cache<Key, T> createCache(float loadFactor, int maxSize)
+    public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        return new CacheLRU<Key, T>(0.75f, maxSize) ;
+        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
     }
+    
+    public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
+    {
+        return new CacheSimple<Key, Value>(size) ; 
+    }
+    
+    public static <Key, Value> CacheStats<Key, Value> createStats(Cache<Key, Value> cache)
+    {
+        if ( cache instanceof CacheStats<?,?>)
+            return (CacheStats<Key, Value>) cache ;
+        return new CacheStatsAtomic<Key, Value>(cache) ;
+    }
+
+    public static <Key, Value> Cache<Key, Value> createSync(Cache<Key, Value> cache)
+    {
+        if ( cache instanceof CacheSync<?,?>)
+            return cache ;
+        return new CacheSync<Key, Value>(cache) ;
+    }
+
+    
+    public static <Obj> CacheSet<Obj> createCacheSet(int size)
+    {
+        return new CacheSetLRU<Obj>(size) ;
+    }
+
+    public static <Obj> CacheSet<Obj> createSync(CacheSet<Obj> cache)
+    {
+        if ( cache instanceof CacheSetSync<?>)
+            return cache ;
+        return new CacheSetSync<Obj>(cache) ;
+    }
+
 }
 
 /*

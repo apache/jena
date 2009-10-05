@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.lib.Cache;
-import com.hp.hpl.jena.sparql.lib.CacheLRU;
+import com.hp.hpl.jena.sparql.lib.CacheFactory ;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 /** Wrapper around a DatasetGraph. See also DataSourceImpl.
@@ -33,7 +33,8 @@ public class DatasetImpl implements Dataset
     // cheap when used repeatedly in code.  This is not an excuse for
     // DatasetGraph not to cache if appropriate for the storage technology.
     private Model defaultModel = null ;
-    private Cache<String, Model> cache = new CacheLRU<String, Model>(0.75f, 20) ;      
+    // read synchronised in this class, not need for a sync wrapper.
+    private Cache<String, Model> cache = CacheFactory.createCache(0.75f, 20) ;      
 
     public DatasetImpl(Model model)
     {

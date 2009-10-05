@@ -24,6 +24,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     protected Graph defaultGraph = null ;
     
     private final boolean caching = true ;
+    // read synchronised in this class, not need for a sync wrapper.
     private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
     abstract protected void _close() ;
@@ -47,8 +48,11 @@ abstract public class DatasetGraphBase implements DatasetGraph
         if ( ! caching )
             return _createDefaultGraph() ;
         
-        if ( defaultGraph == null )
-            defaultGraph = _createDefaultGraph() ;
+        synchronized(this)
+        {   // MRSW - need to create and update the cache atomically.
+            if ( defaultGraph == null )
+                defaultGraph = _createDefaultGraph() ;
+        }
         return defaultGraph ;
     }
 
@@ -58,13 +62,16 @@ abstract public class DatasetGraphBase implements DatasetGraph
         if ( ! caching )
             return _createNamedGraph(graphNode) ;
 
-        Graph graph = namedGraphs.get(graphNode) ;
-        if ( graph == null )
-        {
-            graph = _createNamedGraph(graphNode) ;
-            namedGraphs.put(graphNode, graph) ;
+        synchronized(this)
+        {   // MRSW - need to create and update the cache atomically.
+            Graph graph = namedGraphs.get(graphNode) ;
+            if ( graph == null )
+            {
+                graph = _createNamedGraph(graphNode) ;
+                namedGraphs.put(graphNode, graph) ;
+            }
+            return graph ;
         }
-        return graph ;
     }
 
     //@Override
