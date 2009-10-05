@@ -83,6 +83,7 @@ class RecordRangeIterator implements Iterator<Record>
                 return false ;
             }
             
+            // ** Sync
             currentPage = pageMgr.get(link) ;
             countBlocks++ ;
             currentIdx = 0 ;

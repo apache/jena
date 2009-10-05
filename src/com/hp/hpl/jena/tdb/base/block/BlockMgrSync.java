@@ -47,13 +47,6 @@ public class BlockMgrSync implements BlockMgr
 
     //@Override
     synchronized
-    public ByteBuffer getSilent(int id)
-    {
-        return blockMgr.getSilent(id) ;
-    }
-
-    //@Override
-    synchronized
     public void put(int id, ByteBuffer block)
     {
         blockMgr.put(id, block) ;

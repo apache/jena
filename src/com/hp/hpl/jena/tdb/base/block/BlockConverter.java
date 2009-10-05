@@ -15,10 +15,17 @@ import com.hp.hpl.jena.tdb.base.page.PageBase;
 public class BlockConverter<T extends PageBase>
 {
     public interface Converter<T>
-    { 
-        T fromByteBuffer(ByteBuffer byteBuffer) ;
-        ByteBuffer toByteBuffer(T t) ;
-        T createFromByteBuffer(ByteBuffer bb, BlockType bType) ;
+    {
+        /* Synchronization: The fromByteBuffer() operation must either be called
+         * from a situation where it is safe against multiple readers
+         * or the implementation coverter must provide multiple-reader safty.
+         * 
+         * toByteBuffer and createFromByteBuffer are writer-operations, hence
+         * single writer policy applies. 
+         */ 
+        public T fromByteBuffer(ByteBuffer byteBuffer) ;
+        public ByteBuffer toByteBuffer(T t) ;
+        public T createFromByteBuffer(ByteBuffer bb, BlockType bType) ;
     }
     
     private BlockMgr blockMgr ;
@@ -47,22 +54,16 @@ public class BlockConverter<T extends PageBase>
         return newThing ;
     }
     
-    /** Fetch a block and make a T */
+    /** Fetch a block and make a T : must be called single-reader */
     public T get(int id)
     {
-        ByteBuffer bb = blockMgr.get(id) ;
-        T newThing = pageFactory.fromByteBuffer(bb) ;
-        newThing.setId(id) ;
-        return newThing ;
-    }
-    
-    /** Get but never log (e.g. in debugging code) */
-    public T getSilent(int id)
-    { 
-        ByteBuffer bb = blockMgr.getSilent(id) ;
-        T newThing = pageFactory.fromByteBuffer(bb) ;
-        newThing.setId(id) ;
-        return newThing ;
+        synchronized (blockMgr)
+        {
+            ByteBuffer bb = blockMgr.get(id) ;
+            T newThing = pageFactory.fromByteBuffer(bb) ;
+            newThing.setId(id) ;
+            return newThing ;
+        }
     }
 
     public void put(int id, T page)

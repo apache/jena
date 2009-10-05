@@ -41,10 +41,14 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
     @Override
     public RecordBufferPage get(int id)
     {
-        RecordBufferPage rbp = super.get(id) ;
-        rbp.setPageMgr(this) ;
-        // Link and Count are in the block and got done by the converter.
-        return rbp ;
+        synchronized(this) 
+        {
+            // Must call in single reader for the context.
+            RecordBufferPage rbp = super.get(id) ;
+            rbp.setPageMgr(this) ;
+            // Link and Count are in the block and got done by the converter.
+            return rbp ;
+        }
     }
     
     private static class Block2RecordBufferPage implements Converter<RecordBufferPage>

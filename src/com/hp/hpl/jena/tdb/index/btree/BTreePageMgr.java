@@ -61,23 +61,14 @@ final class BTreePageMgr
     }
     
     /** Fetch a block */
-    public BTreeNode get(int id, int parent) { return _get(id, parent, true) ; } 
-    
-    /** Fetch a block */
-    public BTreeNode getSilent(int id, int parent) { return _get(id, parent, false) ; }
-    
-    private BTreeNode _get(int id, int parent, boolean logged)
+    public BTreeNode get(int id, int parent)
     {
-        ByteBuffer bb = (logged) ? blockMgr.get(id) :  blockMgr.getSilent(id) ;
-//        BTreeNode n = wrapExisting(btree, id, bb, parent) ;
-//        return n ;
-        
+        ByteBuffer bb = blockMgr.get(id) ;
         BTreeNode n = converter.fromByteBuffer(bb) ;
         n.id = id ;
         n.parent = parent ;
         return n ;
     }
-    
 
     public void put(BTreeNode node)
     {
@@ -126,6 +117,7 @@ final class BTreePageMgr
         //@Override
         public BTreeNode fromByteBuffer(ByteBuffer bb)
         {
+            // Must call from a context that is single threaded for reading.
             int x = bb.getInt(0) ;
             BlockType type = getType(x) ;
 

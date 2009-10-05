@@ -79,21 +79,8 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public ByteBuffer get(int id)
     {
-        return fetchEntry(id, false) ;
-    }
-
-    @Override
-    synchronized
-    public ByteBuffer getSilent(int id)
-    {
-        return fetchEntry(id, true) ;    
-    }
-    
-    // A ByteBuffer may be in the read cache or the write cache - 
-    // it can be just in the write cache because the read cache is finite.
-
-    private ByteBuffer fetchEntry(int id, boolean silent)
-    {
+        // A ByteBuffer may be in the read cache or the write cache - 
+        // it can be just in the write cache because the read cache is finite.
         ByteBuffer bb = readCache.get(id) ;
         if ( bb != null )
         {
@@ -115,11 +102,7 @@ public class BlockMgrCache extends BlockMgrSync
         
         cacheMisses++ ;
         log("Miss  : %d", id) ;
-        
-        if ( silent )
-            bb = super.getSilent(id) ;
-        else
-            bb = super.get(id) ;
+        bb = super.get(id) ;
         readCache.put(id, bb) ;
         return bb ;
     }

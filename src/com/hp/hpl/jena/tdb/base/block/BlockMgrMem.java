@@ -105,20 +105,6 @@ public class BlockMgrMem extends BlockMgrBase
     }
 
     //@Override
-    public ByteBuffer getSilent(int id)
-    {
-        check(id) ;
-        ByteBuffer bb = blocks.get(id) ;
-        if ( bb == null )
-            throw new BlockException("Null block: "+id) ;
-        if ( bb == FreeBlock )
-            throw new BlockException("Free block: "+id) ;
-        if ( safeModeThisMgr )
-            bb = replicate(bb) ;
-        return bb ;
-    }
-    
-    //@Override
     public boolean valid(int id)
     {
         if ( id >= blocks.size() )

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase;
 
-/** A HashBucket is ia record buffer, with space to it's hash value and the bit length */  
+/** A HashBucket is a record buffer, with space store it's hash value and the bit length */  
 
 public final class HashBucket extends RecordBufferPageBase
 {

@@ -42,12 +42,6 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     //@Override
-    public ByteBuffer getSilent(int id)
-    {
-        return blockMgr.getSilent(id) ;
-    }
-
-    //@Override
     public void put(int id, ByteBuffer block)
     {
         blockMgr.put(id, block) ;

@@ -63,7 +63,7 @@ public class BlockMgrMapped extends BlockMgrFile
     {
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("allocateBuffer(%d)", id)) ;
-        ByteBuffer bb = getSilent(id) ;
+        ByteBuffer bb = get(id) ;
         bb.position(0) ;
         if ( false )
         {
@@ -83,17 +83,8 @@ public class BlockMgrMapped extends BlockMgrFile
         checkIfClosed() ;
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("get(%d)", id)) ;
-        return getSilent(id) ;
-    }
-
-    //@Override
-    public ByteBuffer getSilent(int id)
-    {
-        check(id) ;
-        checkIfClosed() ;
         return getByteBuffer(id) ;
     }
-
     
     private ByteBuffer getByteBuffer(int id)
     {
@@ -135,7 +126,7 @@ public class BlockMgrMapped extends BlockMgrFile
     // Even for MultipleReader this needs to be sync'ed.
     private MappedByteBuffer allocSegment(int seg)
     {
-        // Auxiliary function for getSilent - which holds the lock needed here.
+        // Auxiliary function for get - which holds the lock needed here.
         // The MappedByteBuffer must be sliced and reset once found/allocated
         // so as not to mess up the underlying MappedByteBuffer in segments[].
         

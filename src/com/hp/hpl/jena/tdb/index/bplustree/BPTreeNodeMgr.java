@@ -28,13 +28,13 @@ public final class BPTreeNodeMgr
 
     private BPlusTree bpTree ;
     private BlockMgr blockMgr ;
-    private Block2BTreeNode converter ;
+    private Block2BPTreeNode converter ;
 
     public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
     {
         this.bpTree = bpTree ;
         this.blockMgr = blockMgr ;
-        this.converter = new Block2BTreeNode() ;
+        this.converter = new Block2BPTreeNode() ;
     }
    
     public BlockMgr getBlockMgr() { return blockMgr ; } 
@@ -93,17 +93,9 @@ public final class BPTreeNodeMgr
     }
     
     /** Fetch a block */
-    public BPTreeNode get(int id, int parent) { return _get(id, parent, true) ; } 
-    
-    /** Fetch a block */
-    public BPTreeNode getSilent(int id, int parent) { return _get(id, parent, false) ; }
-    
-    private BPTreeNode _get(int id, int parent, boolean logged)
+    public BPTreeNode get(int id, int parent)
     {
-        ByteBuffer bb = (logged) ? blockMgr.get(id) :  blockMgr.getSilent(id) ;
-//        BTreeNode n = wrapExisting(btree, id, bb, parent) ;
-//        return n ;
-        
+        ByteBuffer bb = blockMgr.get(id) ;
         BPTreeNode n = converter.fromByteBuffer(bb) ;
         n.setId(id) ;
         n.parent = parent ;
@@ -146,7 +138,7 @@ public final class BPTreeNodeMgr
     
     // Using a BlockConverter interally.
     
-    private class Block2BTreeNode implements BlockConverter.Converter<BPTreeNode>
+    private class Block2BPTreeNode implements BlockConverter.Converter<BPTreeNode>
     {
         //@Override
         public BPTreeNode createFromByteBuffer(ByteBuffer bb, BlockType bType)
@@ -159,7 +151,7 @@ public final class BPTreeNodeMgr
         {
             int x = bb.getInt(0) ;
             BlockType type = getType(x) ;
-
+            
             if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
                 throw new BTreeException("Wrong block type: "+type) ; 
             int count = decCount(x) ;

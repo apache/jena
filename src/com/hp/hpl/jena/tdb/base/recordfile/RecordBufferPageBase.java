@@ -56,8 +56,7 @@ public class RecordBufferPageBase extends PageBase //implements Page
     protected RecordBufferPageBase(int id, int offset, 
                                    ByteBuffer byteBuffer, RecordFactory factory,
                                    int count)
-    {   // This code know the alignment of the records in the ByteBuffer.
-        // Move to Block2RecordBufferPage
+    {   // This code knows the alignment of the records in the ByteBuffer.
         super(id, byteBuffer) ;
         this.headerLength = FIELD_LENGTH+offset ;        // NB +4 for the count field
         byteBuffer.position(headerLength) ;

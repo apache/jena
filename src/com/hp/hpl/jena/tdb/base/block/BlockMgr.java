@@ -34,9 +34,6 @@ public interface BlockMgr extends Sync, Closeable
     /** Fetch a block */
     public ByteBuffer get(int id);
     
-    /** Get but never log (e.g. in debugging code) */
-    public ByteBuffer getSilent(int id);
-
     /** Block is no longer being worked on - do not use after this call - get() it again */ 
     public void put(int id, ByteBuffer block);
 

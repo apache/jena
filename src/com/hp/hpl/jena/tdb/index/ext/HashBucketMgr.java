@@ -61,6 +61,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
         //@Override
         public HashBucket createFromByteBuffer(ByteBuffer bb, BlockType blkType)
         {
+            // No need to additionally sync - this is a triggered by write operations so only one writer.
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
@@ -71,6 +72,10 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
         //@Override
         public HashBucket fromByteBuffer(ByteBuffer byteBuffer)
         {
+            // Be safe - one reader only.
+            // But it is likely that the caller needs to also
+            // perform internal updates so syncrhoized on
+            // the bytebuffer here is not enough.
             int count = byteBuffer.getInt(COUNT) ;
             int hash = byteBuffer.getInt(TRIE) ;
             int hashLen = byteBuffer.getInt(BITLEN) ;
@@ -81,6 +86,7 @@ public class HashBucketMgr extends BlockConverter<HashBucket>
         //@Override
         public ByteBuffer toByteBuffer(HashBucket bucket)
         {
+            // No need to additionally sync - this is a triggered by write operations so only one writer.
             int count = bucket.getRecordBuffer().size() ;
             bucket.setCount(count) ;
             bucket.getBackingByteBuffer().putInt(COUNT, bucket.getCount()) ;

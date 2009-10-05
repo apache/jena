@@ -30,6 +30,7 @@ public class NodeTableBase implements NodeTable
     protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
+    // See synchronization in _retrieveNodeByNodeId and _idForNode
     protected Cache<Node, NodeId> node2id_Cache = null ;
     protected Cache<NodeId, Node> id2node_Cache = null ;
     
@@ -212,6 +213,7 @@ public class NodeTableBase implements NodeTable
             node2id_Cache.put(node, id) ;
         if ( id2node_Cache != null )
             id2node_Cache.put(id, node) ;
+        // Remove if previously marked "not present"
         if ( notPresent.contains(node) )
             notPresent.remove(node) ;
     }

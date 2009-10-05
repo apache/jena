@@ -88,10 +88,13 @@ public class RecordFactory
         byte[] key = new byte[keyLength] ;
         byte[] value = (hasValue() ? new byte[valueLength] :null ) ;
         
-        bb.position(idx*slotLen) ;
-        bb.get(key, 0, keyLength) ;
-        if ( value != null )
-            bb.get(value, 0, valueLength) ;
+        synchronized(bb)
+        {
+            bb.position(idx*slotLen) ;
+            bb.get(key, 0, keyLength) ;
+            if ( value != null )
+                bb.get(value, 0, valueLength) ;
+        }
         return create(key, value) ;
     }
     

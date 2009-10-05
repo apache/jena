@@ -36,14 +36,6 @@ final public class BPTreeRecordsMgr
         return bRec ;
     }
     
-    // No logging.
-    public BPTreeRecords getSilent(int id)
-    {
-        RecordBufferPage rbp =  rBuffPageMgr.getSilent(id) ;
-        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
-        return bRec ;
-    }
-    
     //public RecordBufferPageMgr getRecordBufferPageMgr() { return  rBuffPageMgr ; }
     
     public void put(BPTreeRecords bRec)

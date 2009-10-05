@@ -45,14 +45,6 @@ public class BlockMgrDirect extends BlockMgrFile
         return getByteBuffer(id) ;
     }
 
-    //@Override
-    public ByteBuffer getSilent(int id)
-    {
-        check(id) ;
-        checkIfClosed() ;
-        return getByteBuffer(id) ;
-    }
-    
     private ByteBuffer getByteBuffer(int id)
     {
         try {

@@ -125,16 +125,6 @@ public final class BPTreeNode extends BPTreePage
             return bpTree.getNodeManager().get(subId, this.id) ;
     }
     
-    private BPTreePage getSilent(int idx)
-    {
-        int subId = ptrs.get(idx) ;
-        if ( isLeaf )
-            return bpTree.getRecordsMgr().getSilent(subId) ;
-        else
-            return bpTree.getNodeManager().getSilent(subId, this.id) ;
-    }
-    
-    
     // ---------- Public calls.
     // None of these are called recursively.
 
@@ -1150,7 +1140,7 @@ public final class BPTreeNode extends BPTreePage
         for ( int i = 0 ; i < count+1 ; i++ )
         {
             out.println();
-            BPTreePage page = getSilent(i) ;
+            BPTreePage page = get(i) ;
             page.output(out) ;
             
         }

@@ -1297,7 +1297,7 @@ public class BTreeNode
             for ( int i = 0 ; i < count+1 ; i++ )
             {
                 int c = ptrs.get(i) ;
-                BTreeNode n = pageMgr.getSilent(c, id) ;
+                BTreeNode n = pageMgr.get(c, id) ;
                 n.dump(out, level) ;
             }
     }
@@ -1424,7 +1424,7 @@ public class BTreeNode
             Record max1 = max ;
             if ( ! pageMgr.valid(ptrs.get(i)) )
                 error("Node: %d: Dangling ptr in block @%d :: %s", id, i, this) ;
-            BTreeNode n = pageMgr.getSilent(ptrs.get(i), id) ;
+            BTreeNode n = pageMgr.get(ptrs.get(i), id) ;
             if ( i == 0 ) 
                 max1 = records.get(0) ;
             else if ( i == count )

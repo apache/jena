@@ -21,7 +21,14 @@ public class DevTDB
     //   Explain mode [DONE]
     // Test.
     
-    // Rethink.check cache synchronization. 
+    // Rethink.check cache synchronization.
+    // RecordBufferPageMgr
+    // BPTreeNodeMgr
+    // BTreeNodeMgr
+    // HashBucketMgr
+    // Why/what does the sync in fromByteBuffer do?
+
+    
     // TestCacheSet
     // Check node table use of caches
     
