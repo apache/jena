@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.mgt;
 
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.tdb.TDB ;
 
 public class TDBMgt
@@ -14,10 +16,9 @@ public class TDBMgt
     {
         String NS = TDB.PATH ;
         
-//        SystemInfo sysInfo = new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE) ;
-//        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
-//        ARQMgt.register(NS+".system2:type=SystemInfo", new TDBSystemInfo()) ; 
-        
+        SystemInfo sysInfo = new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
+        ARQMgt.register(NS+".system2:type=SystemInfo", new TDBSystemInfo()) ; 
     }
 }
 
