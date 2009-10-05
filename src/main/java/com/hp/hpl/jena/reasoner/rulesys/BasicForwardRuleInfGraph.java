@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.2 2009-08-02 15:06:55 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.3 2009-10-05 17:12:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
+ * @version $Revision: 1.3 $ on $Date: 2009-10-05 17:12:33 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -44,6 +44,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     
     /** The set of deduced triples, this is in addition to base triples in the fdata graph */
     protected FGraph fdeductions;
+    
+    /** A safe wrapped version of the deductions graph used for reporting getDeductions */
+    protected Graph safeDeductions;
     
     /** Reference to any schema graph data bound into the parent reasoner */
     protected Graph schemaGraph;
@@ -385,7 +388,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public Graph getDeductionsGraph() {
         prepare();
-        return fdeductions.getGraph();
+        return safeDeductions; 
     }
    
     /** 
@@ -398,11 +401,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             Graph dg = fdeductions.getGraph();
             if (dg != null) {
                 // Reuse the old graph in order to preserve any listeners
-                dg.getBulkUpdateHandler().removeAll();
+                safeDeductions.getBulkUpdateHandler().removeAll();
                 return dg;
             }
         }
-        return Factory.createGraphMem( style );
+        Graph dg = Factory.createGraphMem( style ); 
+//        safeDeductions = new SafeGraph( dg );
+        safeDeductions = dg;  // Temporary patch during checkin
+        return dg;
     }
     
     /**
