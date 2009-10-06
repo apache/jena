@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  * <a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support email list</a>.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
  */
 public class OntTools
 {

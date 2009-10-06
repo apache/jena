@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.1 2009-06-29 08:55:56 castagna Exp $
+  $Id: Polymorphic.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -12,7 +12,7 @@ package com.hp.hpl.jena.enhanced;
  * 
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
- *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (tidying up and comments)
+ *         <a href="mailto:ian_dickinson@users.sourceforge.net">Ian Dickinson</a> (tidying up and comments)
  */
 public abstract class Polymorphic<T> {
     

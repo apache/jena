@@ -2,15 +2,15 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       ian_dickinson@users.sourceforge.net
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Aug-2003
  * Filename           $RCSfile: Main.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-03-17 10:53:41 $
+ * Last modified on   $Date: 2009-10-06 13:04:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -36,8 +36,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * </p>
  *
  * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.2 2009-03-17 10:53:41 ian_dickinson Exp $
+ *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
+ * @version CVS $Id: Main.java,v 1.3 2009-10-06 13:04:44 ian_dickinson Exp $
  */
 public class Main {
     // Constants

@@ -33,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
  * Unit tests for experimental ontology tools class.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian.dickinson@hp.com">email</a>)
+ * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
  */
 public class TestOntTools
     extends TestCase

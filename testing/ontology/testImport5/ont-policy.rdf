@@ -18,8 +18,8 @@
 <!--
     Test case: specify an alternative for testImport4/b.owl
 
-	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-policy.rdf,v 1.1 2003-03-25 11:05:55 ian_dickinson Exp $
+	Author: Ian Dickinson, mailto:ian_dickinson@users.sourceforge.net
+	CVS:    $Id: ont-policy.rdf,v 1.2 2009-10-06 13:04:44 ian_dickinson Exp $
 -->
 
 <OntologySpec>

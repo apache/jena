@@ -2,16 +2,16 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       ian_dickinson@users.sourceforge.net
  * Package            @package@
  * Web site           @website@
  * Created            21-Jan-2005
  * Filename           $RCSfile: TestOneToManyMap.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-06-29 18:42:05 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2009-10-06 13:04:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -37,8 +37,8 @@ import junit.framework.TestCase;
  * Unit tests for one-to-many map
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $)
+ * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
+ * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.2 2009-10-06 13:04:44 ian_dickinson Exp $)
  */
 public class TestOneToManyMap 
     extends TestCase
