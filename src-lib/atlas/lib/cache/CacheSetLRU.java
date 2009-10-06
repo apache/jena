@@ -4,11 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib.cache ;
+package atlas.lib.cache;
 
-import com.hp.hpl.jena.sparql.lib.Action ;
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue ;
-import com.hp.hpl.jena.sparql.lib.CacheSet ;
+import atlas.lib.Action ;
+import atlas.lib.ActionKeyValue ;
+import atlas.lib.CacheSet ;
 
 
 /** Cache set - tracks LRU of objects */

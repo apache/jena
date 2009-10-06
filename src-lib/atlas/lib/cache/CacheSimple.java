@@ -4,15 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib.cache ;
+package atlas.lib.cache;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Arrays ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
-import com.hp.hpl.jena.sparql.lib.Cache;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.lib.iterator.IteratorArray;
+import atlas.iterator.Iter ;
+import atlas.iterator.IteratorArray ;
+import atlas.lib.ActionKeyValue ;
+import atlas.lib.Cache ;
 
 /**
  * A simple fixed size cache thatuses the hash code to address a slot.

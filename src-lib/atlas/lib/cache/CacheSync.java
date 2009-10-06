@@ -4,13 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib.cache ;
-
+package atlas.lib.cache;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
-import com.hp.hpl.jena.sparql.lib.Cache;
+import atlas.lib.ActionKeyValue;
+import atlas.lib.Cache;
 
 public class CacheSync<Key, T> implements Cache<Key, T>
 {

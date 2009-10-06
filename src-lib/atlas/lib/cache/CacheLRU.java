@@ -4,14 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lib.cache ;
+package atlas.lib.cache;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue ;
-import com.hp.hpl.jena.sparql.lib.Cache ;
+import atlas.lib.ActionKeyValue ;
+import atlas.lib.Cache ;
 
 
 /** This class is not thread-safe. Add a synchronization wrapper if needed (@link{CacheFcatory.createSync)}  */
