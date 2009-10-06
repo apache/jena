@@ -4,11 +4,12 @@
  * [See end of file]
  */
 
-package atlas.lib.cache;
+package com.hp.hpl.jena.sparql.lib.cache ;
 
-import atlas.lib.ActionKeyValue;
-import atlas.lib.Cache;
-import atlas.lib.CacheStats ;
+
+import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
+import com.hp.hpl.jena.sparql.lib.Cache;
+import com.hp.hpl.jena.sparql.lib.CacheStats ;
 
 /** Collect statistics for a cache - this class is not thread safe (@see{CacheStatsAtomic}) */ 
 public class CacheStatsSimple<Key,Value> extends CacheWrapper<Key,Value> implements CacheStats<Key, Value>

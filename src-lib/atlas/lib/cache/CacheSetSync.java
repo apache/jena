@@ -4,9 +4,9 @@
  * [See end of file]
  */
 
-package atlas.lib.cache;
+package com.hp.hpl.jena.sparql.lib.cache ;
 
-import atlas.lib.CacheSet ;
+import com.hp.hpl.jena.sparql.lib.CacheSet ;
 
 public class CacheSetSync<T> implements CacheSet<T>
 {
