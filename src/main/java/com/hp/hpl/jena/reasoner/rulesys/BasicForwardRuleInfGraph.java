@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.3 2009-10-05 17:12:33 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.4 2009-10-06 07:59:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2009-10-05 17:12:33 $
+ * @version $Revision: 1.4 $ on $Date: 2009-10-06 07:59:55 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -384,6 +384,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     
     /**
      * Return the Graph containing all the static deductions available so far.
+     * Will force a prepare.
      */
     @Override
     public Graph getDeductionsGraph() {
@@ -394,7 +395,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** 
      * Create the graph used to hold the deductions. Can be overridden
      * by subclasses that need special purpose graph implementations here.
-     * Assumes the graph underlying fdeductions can be reused if present. 
+     * Assumes the graph underlying fdeductions and associated SafeGraph
+     * wrapper can be reused if present thus enabling preservation of
+     * listeners. 
      */
     protected Graph createDeductionsGraph() {
         if (fdeductions != null) {
@@ -406,17 +409,19 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             }
         }
         Graph dg = Factory.createGraphMem( style ); 
-//        safeDeductions = new SafeGraph( dg );
-        safeDeductions = dg;  // Temporary patch during checkin
+        safeDeductions = new SafeGraph( dg );
         return dg;
     }
     
     /**
      * Return the Graph containing all the static deductions available so far.
-     * Does not trigger a prepare action.
+     * Does not trigger a prepare action. Returns a SafeWrapper and so
+     * can be used for update (thus triggering listeners) but not
+     * for access to generalized triples
      */
     public Graph getCurrentDeductionsGraph() {
-        return fdeductions.getGraph();
+        return safeDeductions;
+//        return fdeductions.getGraph();
     }
     
     /**

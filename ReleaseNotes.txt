@@ -22,7 +22,8 @@ Reasoners:
    o Fixed problems with pure forward rules generating functor values (fixed
      looping behaviour, fixed selective filtering of functors).
    o Generalized rule reasoner to permit triples in subject position at
-     Graph level.
+     Graph level. Returned InfGraph and deductions graphs are safe but
+     getRawGraph on deductions graph will return generalized graph.
 
 Core API:
    o Fixed bug in comparison of dateTimes with fractional seconds and with 

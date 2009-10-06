@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2009, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestSafeModel.java,v 1.1 2009-10-05 17:12:23 der Exp $
+ * $Id: TestSafeModel.java,v 1.2 2009-10-06 07:59:55 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -37,7 +37,7 @@ import junit.framework.TestSuite;
  * cases will return a SafeModel 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestSafeModel  extends TestCase {
     
@@ -74,8 +74,6 @@ public class TestSafeModel  extends TestCase {
         InfModel inf = ModelFactory.createInfModel(reasoner, base);
         TestUtil.assertIteratorValues(this, inf.listStatements(), new Statement[]{asserted});
         
-        /**
-         * Commented out to enable safe checkin
         Model deductions = inf.getDeductionsModel();
         TestUtil.assertIteratorValues(this, deductions.listStatements(), new Statement[]{});
         
@@ -87,7 +85,6 @@ public class TestSafeModel  extends TestCase {
         TestUtil.assertIteratorValues(this, 
                 rawGraph.find(Node.ANY, Node.ANY, Node.ANY), 
                 new Triple[]{deduction});
-        */
     }
 
 }
