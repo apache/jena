@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.lib.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException;
 
-/** PeeKIterator - is one slot ahead from the wrapped iterator */ 
+/** PeekIterator - is one slot ahead from the wrapped iterator */ 
 public class PeekIterator<T> implements Iterator<T>
 {
 
@@ -44,10 +44,19 @@ public class PeekIterator<T> implements Iterator<T>
         return true ;
     }
 
+    /** Peek the next element or throw NoSuchElementException */
     public T peek()
     {
         if ( finished )
             throw new NoSuchElementException() ;
+        return slot ;
+    }
+    
+    /** Peek the next element or return null */
+    public T peekOrNull()
+    {
+        if ( finished )
+            return null  ;
         return slot ;
     }
     

@@ -12,6 +12,7 @@ import java.util.*;
 import com.hp.hpl.jena.sparql.lib.Action;
 import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
 
+
 public class Iter<T> implements Iterable<T>, Iterator<T>
 {
     // First part : the static function library.

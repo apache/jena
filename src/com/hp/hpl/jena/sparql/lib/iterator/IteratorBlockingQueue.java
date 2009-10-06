@@ -1,30 +1,66 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.lib.iterator;
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.concurrent.BlockingQueue;
 
-import com.hp.hpl.jena.sparql.lib.ActionKeyValue;
+/** Iterator over a blocking queue until queue end seen */
 
-
-public class MapUtils
+public class IteratorBlockingQueue<T> implements Iterator<T>
 {
-     // Map specific operations
+    private BlockingQueue<T> queue ;
+    private boolean finished = false ;
+    private T slot = null ;
+    private T endMarker ; 
+
+    public IteratorBlockingQueue(BlockingQueue<T> queue, T endMarker) { this.queue = queue ; this.endMarker = endMarker ; }
     
-    public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action)
+    //@Override
+    public boolean hasNext()
     {
-        for ( Map.Entry<K,V> entry : map.entrySet() )
-            action.apply(entry.getKey(), entry.getValue()) ;
+        if ( finished ) return false ;
+        if ( slot != null ) return true ;
+        try
+        {
+            slot = queue.take() ;
+            if ( slot == endMarker )
+            {
+                finished = true ;
+                slot = null ;
+                return false ;
+            }
+            return true ;
+            
+        } catch (InterruptedException ex)
+        {
+            ex.printStackTrace();
+            
+        }
+        return false ;
     }
+
+    //@Override
+    public T next()
+    {
+        if ( ! hasNext() )
+            throw new NoSuchElementException() ;
+        T item = slot ;
+        slot = null ;
+        return item ;
+    }
+
+    //@Override
+    public void remove()
+    { throw new UnsupportedOperationException() ; }
 }
-
-
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

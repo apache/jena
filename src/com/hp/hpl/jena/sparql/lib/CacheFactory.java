@@ -7,11 +7,11 @@
 package com.hp.hpl.jena.sparql.lib;
 
 import com.hp.hpl.jena.sparql.lib.cache.CacheLRU ;
-import com.hp.hpl.jena.sparql.lib.cache.CacheSetLRU ;
-import com.hp.hpl.jena.sparql.lib.cache.CacheSetSync ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSetLRU;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSetSync;
 import com.hp.hpl.jena.sparql.lib.cache.CacheSimple ;
 import com.hp.hpl.jena.sparql.lib.cache.CacheStatsAtomic ;
-import com.hp.hpl.jena.sparql.lib.cache.CacheSync ;
+import com.hp.hpl.jena.sparql.lib.cache.CacheSync;
 
 
 public class CacheFactory
