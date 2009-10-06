@@ -9,11 +9,10 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
-    // Check use of CacheLRU - shoudl it be sync'ed or make it teh callers responsibility?
-    // NB get operations must be write-safe.
     // Const for names.
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
+
     // See metadata stuff in BPlusTreeParams
     // Document
     //   concurrency  []
@@ -30,12 +29,14 @@ public class DevTDB
     // TestCacheSet
     // Check node table use of caches
     
+    // Separate out atlas properly.
     
     // Don't print optimizer type when set at info level.
 
     // ----
     // B+Tree checking utility.
-    
+    // Dataset checking utility.
+
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     
