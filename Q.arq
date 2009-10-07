@@ -1,15 +1,3 @@
-PREFIX my: <> 
-
-SELECT ?result 
-WHERE {
-    OPTIONAL{
-        ?this my:x ?number .
-        ?result my:a ?number .
-    }
-OPTIONAL
-{
-   FILTER(!bound(?number))
-       ?this my:y ?acct .
-       ?result my:b ?acct .
-}
-} LIMIT 1
+SELECT (?x+?y  AS ?z)
+{ ?x ?p ?y }
+ORDER BY ?p

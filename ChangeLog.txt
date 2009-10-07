@@ -7,7 +7,7 @@ ChangeLog for ARQ
    + substitution in NOT EXISTS
    + substitution in assignment
    + constant folding and logical special forms
-   + bad lock allocation (only occurs under very high load)  
+   + bad lock allocation (only occurs under very high load)
 
 + Speed up processing of nested optionals.  Greatly speeds up BSBM with TDB.
 

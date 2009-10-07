@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.Test ;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.junit.TestFactoryManifest;
-import com.hp.hpl.jena.util.junit.TestUtils;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DataFormat ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
+import com.hp.hpl.jena.util.junit.TestUtils ;
+
 
 public class QueryTestSuiteFactory extends TestFactoryManifest
 {
