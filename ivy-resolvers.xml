@@ -2,9 +2,9 @@
   <resolvers>
     <chain name="resolver-chain" returnFirst="true">
       <!-- Jena development repository : not sync'ed with maven central -->
-      <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/>
+      <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true" useMavenMetadata="false"/>
       <!-- Jena publish repository, sync'ed to maven central -->
-      <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true"/>
+      <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true" useMavenMetadata="false"/>
       <ibiblio name="ibiblio" m2compatible="true" />
     </chain>
   </resolvers>

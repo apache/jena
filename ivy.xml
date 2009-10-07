@@ -50,13 +50,13 @@
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
-    <dependency org="org.slf4j" name="slf4j-api" rev="latest.intergration"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.8"/>
 
     <!-- Additional for development : logging implementation -->
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
     <!-- What the ivy for "scope"? -->
-    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="latest.intergration"/>
+    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.8"/>
     <!-- Java logging 
     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
     -->
