@@ -20,8 +20,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
+import com.hp.hpl.jena.sparql.lib.iterator.IteratorTruncate ;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.sparql.util.iterator.IteratorTruncate;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
 

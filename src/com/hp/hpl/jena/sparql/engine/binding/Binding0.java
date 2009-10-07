@@ -9,11 +9,9 @@ import java.util.* ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.iterator.NullIterator;
+import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
 
 /** Special purpose binding for nothing. 
- * 
- * @author   Andy Seaborne
  */
 
 public class Binding0 extends BindingBase

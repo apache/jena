@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.iterator.SingletonIterator;
+import com.hp.hpl.jena.sparql.lib.iterator.SingletonIterator;
 
 
 /** Special purpose binding for adding just one name/value slot. 

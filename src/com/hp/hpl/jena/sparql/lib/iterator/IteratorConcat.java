@@ -22,6 +22,16 @@ public class IteratorConcat<T> implements Iterator<T>
     private Iterator<T> current = null ;
     boolean finished = false ;
     
+    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
+    {
+        if (iter2 == null) return iter1 ;
+        if (iter1 == null) return iter2 ;
+        IteratorConcat<T> c = new IteratorConcat<T>() ;
+        c.add(iter1) ;
+        c.add(iter2) ;
+        return c ;
+    }
+    
     public void add(Iterator<T> iter) { iterators.add(iter) ; }
     
     //@Override

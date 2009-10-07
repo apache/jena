@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.LockMRSW;
 
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.sparql.util.iterator.NullIterator;
+import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
 
 import com.hp.hpl.jena.query.Dataset;
 

@@ -25,8 +25,8 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.iterator.NullIterator;
-import com.hp.hpl.jena.sparql.util.iterator.SingletonIterator;
+import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
+import com.hp.hpl.jena.sparql.lib.iterator.SingletonIterator;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply

@@ -4,40 +4,66 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util.iterator;
+package com.hp.hpl.jena.sparql.lib.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
+/** Iterate while a condition return true, then stop */
+public class IteratorTruncate<T> implements Iterator<T>
 {
-    private T thing = null ;
-    private boolean yielded = false ;
-    
-    public SingletonIterator(T thing) { this.thing = thing ; }
-    
+    static public interface Test { boolean accept(Object object) ; }
+    private Test test ;
+    private T slot = null ;
+    private boolean active = true ;
+    private Iterator<T> iter ;
+
+    public IteratorTruncate (Test test, Iterator<T> iter)
+    { this.test = test ; this.iter = iter ; }
+
     public boolean hasNext()
     {
-        return ! yielded ;
+        if ( ! active ) return false ;
+        if ( slot != null )
+            return true ;
+
+        if ( ! iter.hasNext() )
+        {
+            active = false ;
+            return false ;
+        }
+
+        slot = iter.next() ;
+        if ( test.accept(slot) )
+            return true ;
+        // Once the test goes false, no longer yield anything.
+        NiceIterator.close(iter) ;
+        active = false ;
+        iter = null ;
+        slot = null ;
+        return false ;
     }
 
     public T next()
     {
-        if ( yielded )
-            throw new NoSuchElementException("SingletonIterator.next") ;
-        yielded = true ;
-        return thing ;
+        if ( ! hasNext() )
+            throw new NoSuchElementException("IteratorTruncate.next") ;    
+        T x = slot ;
+        slot = null ;
+        return x ;
     }
 
     public void remove()
-    { throw new NoSuchElementException("SingletonIterator.remove") ;}
+    { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
 
-    public Iterator<T> iterator()
-    {
-        return this ;
-    }
+    public void close()
+    { if ( iter != null ) NiceIterator.close(iter) ; }
 
 }
+
+
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP

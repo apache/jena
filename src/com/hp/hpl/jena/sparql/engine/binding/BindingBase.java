@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.iterator.IteratorConcat;
+import com.hp.hpl.jena.sparql.lib.iterator.IteratorConcat;
 
 /** Machinary encapsulating a mapping from a name to a value.
  * 
