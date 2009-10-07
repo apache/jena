@@ -24,6 +24,7 @@ Reasoners:
    o Generalized rule reasoner to permit triples in subject position at
      Graph level. Returned InfGraph and deductions graphs are safe but
      getRawGraph on deductions graph will return generalized graph.
+   o Fixed handling of unbound groups in regex.
 
 Core API:
    o Fixed bug in comparison of dateTimes with fractional seconds and with 

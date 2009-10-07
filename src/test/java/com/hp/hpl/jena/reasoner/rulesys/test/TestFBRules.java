@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.1 2009-06-29 08:55:42 castagna Exp $
+ * $Id: TestFBRules.java,v 1.2 2009-10-07 14:35:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
+ * @version $Revision: 1.2 $ on $Date: 2009-10-07 14:35:39 $
  */
 public class TestFBRules extends TestCase {
     
@@ -902,6 +902,25 @@ public class TestFBRules extends TestCase {
         TestUtil.assertIteratorValues(this, infgraph.find(null, r, null),
                 new Triple[] {
                 new Triple(n1, r, Node.createLiteral("bar")),
+                });
+    }
+    
+    /**
+     * Test regex handling of null groups
+     */
+    public void testRegexNulls() {
+        String rules =  
+            "[r2: (?x p ?y) regex(?y, '((Boys)|(Girls))(.*)', ?m1, ?m2, ?m3, ?m4) ->  (?x q ?m2) (?x r ?m3) (?x s ?m4) ] \n" +
+            "";
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, Node.createLiteral("Girls44")) );
+        InfGraph infgraph = createInfGraph(rules, data);
+        infgraph.prepare();
+        TestUtil.assertIteratorValues(this, infgraph.getDeductionsGraph().find(null, null, null),
+                new Triple[] {
+            new Triple(n1, q, Node.createLiteral("")),
+            new Triple(n1, r, Node.createLiteral("Girls")),
+            new Triple(n1, s, Node.createLiteral("44")),
                 });
     }
     

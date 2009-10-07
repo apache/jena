@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Regex.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
+ * $Id: Regex.java,v 1.2 2009-10-07 14:35:39 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -58,7 +58,8 @@ public class Regex extends BaseBuiltin {
             // bind any capture groups
             BindingEnvironment env = context.getEnv();
             for (int i = 0; i < Math.min(length-2, m.groupCount()); i++) {
-                Node match = Node.createLiteral( m.group(i+1) );
+                String gm = m.group(i+1);
+                Node match =  (gm != null) ? Node.createLiteral( gm ) : Node.createLiteral("");
                 if ( !env.bind(args[i+2], match) ) return false;
             }
         }
