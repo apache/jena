@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 
-import com.hp.hpl.jena.n3.turtle.test.TurtleTestVocab;
+import com.hp.hpl.jena.n3.turtle.TurtleTestVocab;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery;

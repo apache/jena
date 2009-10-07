@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
-import com.hp.hpl.jena.n3.turtle.test.TurtleTestVocab;
+import com.hp.hpl.jena.n3.turtle.TurtleTestVocab ;
 
 @RunWith(AllTests.class)
 public class TestSuiteTurtle extends TestSuite

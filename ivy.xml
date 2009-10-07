@@ -28,7 +28,7 @@
     <!-- rev="latest.integration" -->
     
     <!-- We need the "tests" classifier but we then need to name all the bits we want. -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.1-SNAPSHOT">
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.1-RC-1">
       <artifact name="arq"/>
       <artifact name="arq" mvn:classifier="tests"/>
       <artifact name="arq" mvn:classifier="javadoc"/>
@@ -38,9 +38,15 @@
     </dependency>    
 
     <!-- Explicit - gets the javadoc and sources : As Jena depends on ARQ there is a (safe) conflict -->
-    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.0"/>
+    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.2-RC-1">
+      <artifact name="jena"/>
+      <artifact name="jena" mvn:classifier="tests"/>
+      <artifact name="jena" mvn:classifier="javadoc"/>
+      <artifact name="jena" mvn:classifier="sources"/>
+      <artifact name="jena" mvn:classifier="test-sources"/>
+    </dependency>
 
-    <!-- Need Jena test code as well -->
+    <!-- Need Jena test code as well? -->
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>

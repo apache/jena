@@ -453,7 +453,7 @@ deploy
     -->
   </target>
 
-  <target name="ivy-resolve" depends="ivy-resolve-report"/>
+  <target name="ivy-resolve" depends="ivy-resolve-report" description="Resolve dependences"/>
 
   <target name="ivy-resolve-report" depends="ivy-init">
     <ivy:resolve conf="main"
