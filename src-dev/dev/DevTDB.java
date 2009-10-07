@@ -9,6 +9,9 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
+    // Check versions (ivy.xml and tdb.pom) 
+    
+    
     // Const for names.
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
