@@ -7,67 +7,63 @@
 package atlas.iterator;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
-import atlas.lib.DS;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-
-/** Iterator of Iterators */
-
-public class IteratorConcat<T> implements Iterator<T>
+/** Iterate while a condition return true, then stop */
+public class IteratorTruncate<T> implements Iterator<T>
 {
-    private List<Iterator<T>> iterators = DS.list(); 
-    int idx = -1 ;
-    private Iterator<T> current = null ;
-    boolean finished = false ;
-    
-    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
-    {
-        if (iter2 == null) return iter1 ;
-        if (iter1 == null) return iter2 ;
-        IteratorConcat<T> c = new IteratorConcat<T>() ;
-        c.add(iter1) ;
-        c.add(iter2) ;
-        return c ;
-    }
- 
-    public void add(Iterator<T> iter) { iterators.add(iter) ; }
-    
-    //@Override
+    static public interface Test { boolean accept(Object object) ; }
+    private Test test ;
+    private T slot = null ;
+    private boolean active = true ;
+    private Iterator<T> iter ;
+
+    public IteratorTruncate (Test test, Iterator<T> iter)
+    { this.test = test ; this.iter = iter ; }
+
     public boolean hasNext()
     {
-        if ( finished )
-            return false ;
-
-        if ( current != null && current.hasNext() )
+        if ( ! active ) return false ;
+        if ( slot != null )
             return true ;
-        
-        while ( idx < iterators.size()-1 )
+
+        if ( ! iter.hasNext() )
         {
-            idx++ ;
-            current = iterators.get(idx) ;
-            if ( current.hasNext() )
-                return true ;
-            // Nothing here - move on.
-            current = null ;
+            active = false ;
+            return false ;
         }
-        // idx has run off the end.
+
+        slot = iter.next() ;
+        if ( test.accept(slot) )
+            return true ;
+        // Once the test goes false, no longer yield anything.
+        NiceIterator.close(iter) ;
+        active = false ;
+        iter = null ;
+        slot = null ;
         return false ;
     }
 
-    //@Override
     public T next()
     {
-        if ( ! hasNext() ) throw new NoSuchElementException() ; 
-        return current.next();
+        if ( ! hasNext() )
+            throw new NoSuchElementException("IteratorTruncate.next") ;    
+        T x = slot ;
+        slot = null ;
+        return x ;
     }
 
-    //@Override
     public void remove()
-    { throw new UnsupportedOperationException() ; }
+    { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
+
+    public void close()
+    { if ( iter != null ) NiceIterator.close(iter) ; }
 
 }
+
+
 
 /*
  * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
