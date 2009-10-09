@@ -73,6 +73,7 @@ public class RunARQ
             System.out.println(q2) ;
             System.exit(0) ;
         }
+        
         qexpr.main("fn:round(1)") ; System.exit(0) ; 
         
         report() ; System.exit(0) ;
