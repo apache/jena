@@ -10,7 +10,7 @@
   <name>TDB</name>
   <version>@VERSION@</version>
   <description/>
-  <url>http://jena.sf.net/TDB</url>
+  <url>http://openjena.org/TDB</url>
 
   <organization>
     <name>Hewlett-Packard</name>

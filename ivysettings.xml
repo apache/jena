@@ -1,15 +1,13 @@
 <ivysettings>
   <properties file="${ivy.settings.dir}/ivysettings.properties" />
 
-  <settings defaultResolver="resolver-chain"/>
-
   <property name="sftp.root" value="repo-dev/com/hp/hpl/jena" override="false"/>
 
   <!-- Resolvers used for getting our dependencies -->
   <include file="${ivy.settings.dir}/ivy-resolvers.xml" />
 
-  <!-- Publishing resolvers -->
   <resolvers>
+    <!-- Where to publish -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="repo-local" >
        <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>
@@ -17,16 +15,21 @@
     </filesystem>
 
     <!-- User environment variables to find user/key -->
-    <sftp name="repo-publish" host="jena.hpl.hp.com" 
+    <sftp name="repo-publish" host="openjena.org" 
 	  user="${ivy.user}" keyFile="${ivy.keyfile}">
       <ivy      pattern="${sftp.root}/[module]/[revision]/ivy.xml"/>
       <artifact pattern="${sftp.root}/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </sftp>
 
   </resolvers>
+
+  <settings defaultResolver="resolver-chain"/>
+
+  <!--
   <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
+  -->
 </ivysettings>
