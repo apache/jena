@@ -45,6 +45,9 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpSequence opSequence)
     { visitN(opSequence) ; }
     
+    public void visit(OpDisjunction opDisjunction)
+    { visitN(opDisjunction) ; }
+    
     public void visit(OpLeftJoin opLeftJoin)
     { visit2(opLeftJoin) ; }
 

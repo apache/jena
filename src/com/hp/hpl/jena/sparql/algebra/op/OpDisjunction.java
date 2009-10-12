@@ -1,32 +1,28 @@
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.List;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A "sequence" is a join-like operation where it is know that the 
- * the output of one step can be fed into the input of the next 
- * (that is, no scoping issues arise). 
- * 
- * @author Andy Seaborne
+/** N-way disjunction.
+ *  OpUnion remains as the strict SPARQL algebra operator.
  */
-
-public class OpSequence extends OpN
+public class OpDisjunction extends OpN
 {
-    public static OpSequence create() { return new OpSequence() ; } 
+    public static OpDisjunction create() { return new OpDisjunction() ; }
     
     public static Op create(Op left, Op right)
-    { 
+    {
         // Avoid stages of nothing
         if ( left == null && right == null )
             return null ;
@@ -35,55 +31,62 @@ public class OpSequence extends OpN
             return right ;
         if ( right == null )
             return left ;
-        // If left already an OpSequence ... maybe?
-        if ( left instanceof OpSequence )
+
+        if ( left instanceof OpDisjunction )
         {
-            OpSequence opSequence = (OpSequence)left ;
-            opSequence.add(right) ;
-            return opSequence ; 
+            OpDisjunction opDisjunction = (OpDisjunction)left ;
+            opDisjunction.add(right) ;
+            return opDisjunction ; 
         }
-//        if ( right instanceof OpSequence )
+        
+//        if ( right instanceof OpDisjunction )
 //        {
-//            OpSequence opSequence = (OpSequence)right ;
+//            OpDisjunction opSequence = (OpDisjunction)right ;
 //            // Add front.
-//            opSequence.getElements().add(0, left) ;
-//            return opSequence ; 
+//            opDisjunction.getElements().add(0, left) ;
+//            return opDisjunction ; 
 //        }
         
-        OpSequence stage = new OpSequence() ;
+        OpDisjunction stage = new OpDisjunction() ;
         stage.add(left) ;
         stage.add(right) ;
         return stage ;
     }
-    
-    private OpSequence()           { super() ; }
-    private OpSequence(List<Op> elts)  { super(elts) ; }
-    
-    public String getName() { return Tags.tagSequence ; }
 
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    private OpDisjunction(List<Op> elts) { super(elts) ; }
+    private OpDisjunction() { super() ; }
+    
+    public String getName() { return Tags.tagDisjunction ; }
+    
+    public void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
+    //{ throw new ARQNotImplemented("OpDisjunction.visit") ; }
+
     
     @Override
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op instanceof OpSequence) ) return false ;
-        OpSequence other = (OpSequence) op ;
+        OpDisjunction other = (OpDisjunction) op ;
         return super.equalsSubOps(other, labelMap) ;
     }
 
+    
+    
     @Override
     public Op apply(Transform transform, List<Op> elts)
     { return transform.transform(this, elts) ; }
+    //{ throw new ARQNotImplemented("OpDisjunction.apply") ; }
 
     @Override
     public Op copy(List<Op> elts)
     {
-        return new OpSequence(elts) ; 
+        return new OpDisjunction(elts) ; 
     }
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

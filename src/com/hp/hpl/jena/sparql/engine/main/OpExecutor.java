@@ -186,6 +186,14 @@ public class OpExecutor
         return qIter ;
     }
     
+    // Pass iterator from one step directly into the next.
+    protected QueryIterator execute(OpDisjunction opDisjunction, QueryIterator input)
+    {
+        QueryIterator cIter = new QueryIterUnion(input, opDisjunction.getElements(), execCxt) ;
+        return cIter ;
+    }
+
+    
     protected QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         QueryIterator left = executeOp(opLeftJoin.getLeft(), input) ;

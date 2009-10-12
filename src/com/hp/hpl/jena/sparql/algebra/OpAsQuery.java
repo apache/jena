@@ -95,10 +95,14 @@ public class OpAsQuery
         
         public void visit(OpSequence opSequence)
         {
-            // 
             throw new ARQNotImplemented("OpSequence") ;
         }
         
+        public void visit(OpDisjunction opDisjunction)
+        {
+            throw new ARQNotImplemented("OpDisjunction") ;
+        }
+
         private ElementTriplesBlock process(BasicPattern pattern)
         {
             ElementTriplesBlock e = new ElementTriplesBlock() ;

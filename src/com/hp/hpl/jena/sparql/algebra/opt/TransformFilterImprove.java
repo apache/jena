@@ -11,12 +11,12 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-/** Improvements to filters that do not chnage the rest of the tree 
- * (so, fo rexample, not filter replacement or equality/assignment
+/** Improvements to filters that do not change the rest of the tree 
+ * (so, for example, not filter replacement or equality/assignment
  *  which both do change the sub opof the filter).  
  * 
  * Currently:
- * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) 9as an expr list).
+ * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
  *    via multiple elements of the exprList of the OpFilter.
  *    This allows them to be placed independently.
  * 

@@ -294,21 +294,38 @@ public class BuilderOp
         }
     } ;
 
+    // Add all the operations from the list to the OpN
+    final private void addOps(OpN op, ItemList list)
+    {
+        for ( int i = 1 ; i < list.size() ; i++ )
+        {
+            Op sub = build(list, i) ;
+            op.add(sub) ;
+        }
+    }
+
     final protected Build buildSequence = new Build()
     {
         public Op make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(2, list, "Sequence") ;
             OpSequence op = OpSequence.create() ;
-            for ( int i = 1 ; i < list.size() ; i++ )
-            {
-                Op sub = build(list, i) ;
-                op.add(sub) ;
-            }
+            addOps(op, list) ;
             return op ;
         }
     } ;
     
+    final protected Build buildDisjunction = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLengthAtLeast(2, list, "Disjunction") ;
+            OpDisjunction op = OpDisjunction.create() ;
+            addOps(op, list) ;
+            return op ;
+        }
+    } ;
+
     final protected Build buildLeftJoin = new Build()
     {
         public Op make(ItemList list)

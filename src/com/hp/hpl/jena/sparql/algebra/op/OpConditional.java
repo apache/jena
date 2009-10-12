@@ -12,7 +12,8 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-/** Conditional execution - works with streamed execution, primarily.
+/** Conditional execution - works with streamed execution and is known to safe to
+ *  evaluate that way (no issues from nested optionals). 
  *  For each element in the input stream, 
  *  execute the expression (i.e. index-join it to the element
  *  in the input stream).  If it matches, return those results.
@@ -20,8 +21,10 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  *    
  * @author Andy Seaborne
  */
-public class OpConditional extends Op2 //Op1
+public class OpConditional extends Op2 //OpN??
 {
+    // Extends to OpN with a series of optionals.
+    
     public OpConditional(Op left, Op right)
     {
         super(left, right) ;

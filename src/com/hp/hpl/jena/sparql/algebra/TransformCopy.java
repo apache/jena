@@ -37,11 +37,14 @@ public class TransformCopy implements Transform
     public Op transform(OpService opService, Op x)                  { return xform(opService, x) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
-    public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
     public Op transform(OpDiff opDiff, Op left, Op right)           { return xform(opDiff, left, right) ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
     public Op transform(OpConditional opCond, Op left, Op right)    { return xform(opCond, left, right) ; }
+
+    public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
+    public Op transform(OpDisjunction opDisjunction, List<Op> elts)     { return xform(opDisjunction, elts) ; }
+
     
     public Op transform(OpExt opExt)                                { return opExt ; }
     

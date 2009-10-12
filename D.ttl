@@ -1,4 +1,10 @@
+@prefix : <http://example/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-[] a owl:Class .
+:x1 :p :x2 .
+:x2 :q :x3 .
+
+:x3 :p :x4 .
+:x4 :q :x5 .
+

@@ -61,8 +61,17 @@ public class TransformEqualityFilter extends TransformCopy
         return op ;
     }
     
-    // Return null for "no change"
-    private Op processFilter(Expr e, Op subOp)
+    /** Return an optimized filter for equality expressions */
+    public static Op processFilterOrOpFilter(Expr e, Op subOp)
+    {
+        Op op2 = processFilter(e, subOp) ;
+        if ( op2 == null )
+            op2 = OpFilter.filter(e, subOp) ;
+        return op2 ;
+    }
+    
+    /** Return null for "no change" */
+    public static Op processFilter(Expr e, Op subOp)
     {
         // Rewrites: 
         // FILTER ( ?x = :x ) for IRIs and bNodes, not literals 

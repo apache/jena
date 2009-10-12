@@ -107,6 +107,20 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpDisjunction opDisjunction)
+    {
+        // Evaluation is as a concatentation of alternatives 
+        Table table = TableFactory.createEmpty() ;
+        
+        for ( Iterator<Op> iter = opDisjunction.iterator() ; iter.hasNext() ; )
+        {
+            Op op = iter.next() ;
+            Table eltTable = eval(op) ;
+            table = evaluator.union(table, eltTable) ;
+        }
+        push(table) ;
+    }
+    
     public void visit(OpLeftJoin opLeftJoin)
     {
         Table left = eval(opLeftJoin.getLeft()) ;

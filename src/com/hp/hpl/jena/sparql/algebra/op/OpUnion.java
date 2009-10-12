@@ -14,6 +14,14 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpUnion extends Op2
 {
+    public static Op create(Op left, Op right)
+    {
+        if ( left == null )
+            return right ;
+
+        return new OpUnion(left, right) ;
+    }
+    
     public OpUnion(Op left, Op right) { super(left, right) ; }
     
     @Override

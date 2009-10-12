@@ -38,6 +38,7 @@ public interface Transform
     
     // OpN
     public Op transform(OpSequence opSequence, List<Op> elts) ;
+    public Op transform(OpDisjunction opDisjunction, List<Op> elts) ;
 
     // Extensions
     public Op transform(OpExt opExt) ;

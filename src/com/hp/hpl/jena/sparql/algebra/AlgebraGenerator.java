@@ -580,10 +580,7 @@ public class AlgebraGenerator
     
     protected Op union(Op current, Op newOp)
     {
-        if ( current == null )
-            return newOp ;
-
-        return new OpUnion(current, newOp) ;
+        return OpUnion.create(current, newOp) ;
     }
     
     private void broken(String msg)

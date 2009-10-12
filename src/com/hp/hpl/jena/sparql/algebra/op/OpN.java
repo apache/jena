@@ -28,7 +28,8 @@ public abstract class OpN extends OpBase
     public abstract Op copy(List<Op> elts) ;
     
 
-    public boolean sameAs(OpN op, NodeIsomorphismMap labelMap)
+    // Tests the sub-elements for equalTo.
+    protected boolean equalsSubOps(OpN op, NodeIsomorphismMap labelMap)
     {
         Iterator<Op> iter1 = elements.listIterator() ;
         Iterator<Op> iter2 = op.elements.listIterator() ;

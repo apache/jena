@@ -1,3 +1,6 @@
-SELECT (?x+?y  AS ?z)
-{ ?x ?p ?y }
-ORDER BY ?p
+PREFIX : <http://example/>
+
+SELECT *
+{
+  ?x (:p/:q)+ ?y .
+}

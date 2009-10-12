@@ -34,6 +34,7 @@ public class TransformBase implements Transform
     public Op transform(OpConditional opCond, Op left, Op right)    { return opCond ; } 
     
     public Op transform(OpSequence opSequence, List<Op> elts)       { return opSequence ; }
+    public Op transform(OpDisjunction opDisjunction, List<Op> elts) { return opDisjunction ; }
 
     public Op transform(OpExt opExt)                        { return opExt ; }
     public Op transform(OpNull opNull)                      { return opNull ; }

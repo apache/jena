@@ -29,14 +29,18 @@ public interface OpVisitor
     
     // Op2
     public void visit(OpJoin opJoin) ;
-    public void visit(OpSequence opSequence) ;
     public void visit(OpLeftJoin opLeftJoin) ;
     public void visit(OpDiff opDiff) ;
     public void visit(OpUnion opUnion) ;
     
     public void visit(OpConditional opCondition) ;
-    public void visit(OpExt opExt) ;
+    
+    // OpN
+    public void visit(OpSequence opSequence) ;
+    public void visit(OpDisjunction opDisjunction) ;
 
+    public void visit(OpExt opExt) ;
+    
     // OpModifier
     public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;
