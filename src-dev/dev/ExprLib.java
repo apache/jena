@@ -6,10 +6,100 @@
 
 package dev;
 
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.E_Equals ;
+import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprFunction2 ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+
 public class ExprLib
 {
-    // isSafeEquality
-    // for TransformEqualityFilter and disjunction
+    /** Decide whether an expression is safe for using a a graph substitution.
+     * Need to be careful about value-like tests when the graph is not 
+     * matched in a value fashion.
+     */
+
+    public static boolean isSafeEquality(Expr expr)
+    { 
+        return isSafeEquality(expr, false, false) ;
+    }
+    
+    /**
+     * @param graphHasStringEquality    True if the graph triple matching equates xsd:string and plain literal
+     * @param graphHasNumercialValueEquality    True if the graph triple matching equates numeric values
+     */
+    
+    public static boolean isSafeEquality(Expr expr, boolean graphHasStringEquality, boolean graphHasNumercialValueEquality) 
+    {
+        if ( !(expr instanceof E_Equals) && !(expr instanceof E_SameTerm) )
+            return false ;
+
+        // Corner case: sameTerm is false for string/plain literal, 
+        // but true in the graph. 
+        
+        ExprFunction2 eq = (ExprFunction2)expr ;
+        Expr left = eq.getArg1() ;
+        Expr right = eq.getArg2() ;
+        Var var = null ;
+        NodeValue constant = null ;
+
+        if ( left.isVariable() && right.isConstant() )
+        {
+            var = left.asVar() ;
+            constant = right.getConstant() ;
+        }
+        else if ( right.isVariable() && left.isConstant() )
+        {
+            var = right.asVar() ;
+            constant = left.getConstant() ;
+        }
+
+        // Not between a variable and a constant
+        if ( var == null || constant == null )
+            return false ;
+
+        // Corner case: sameTerm is false for string/plain literal, 
+        // but true in the graph for graph matching.
+        
+        // A better test would consider the XSD type. 
+
+        if ( ! constant.isLiteral() )
+            // URIs, bNodes.
+            return true ;
+        
+        if (expr instanceof E_SameTerm)
+        {
+            // If strict, don't risk constants that are string literals.
+            if ( ARQ.isStrictMode() )
+            {
+                if ( graphHasStringEquality ) return true ;
+                return ! constant.isString() ;
+            }
+            // A bit more lax.
+            return ! constant.isString() ;
+        }
+        
+        // Final check for "=" where a FILTER = can do value matching when the graph does not.
+        if ( expr instanceof E_Equals )
+        {
+            // Value based filter, not value based graph.
+            if ( ARQ.isStrictMode() )
+            {
+                if ( graphHasStringEquality && graphHasNumercialValueEquality )
+                    return true ;
+                return ! constant.isLiteral() ;
+            }
+            // A bit more lax.
+            if ( constant.isNumber() ) return graphHasNumercialValueEquality ;
+            if ( constant.isString() ) return graphHasStringEquality ;
+            return true ;
+        }
+        throw new ARQInternalErrorException() ;
+    }
+    
     
 }
 
