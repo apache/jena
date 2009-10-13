@@ -67,7 +67,7 @@ public class ExprLib
         // A better test would consider the XSD type. 
 
         if ( ! constant.isLiteral() )
-            // URIs, bNodes.
+            // URIs, bNodes.  Any bNode will have come from a substitution - not legal syntax in filters
             return true ;
         
         if (expr instanceof E_SameTerm)
@@ -75,8 +75,12 @@ public class ExprLib
             // If strict, don't risk constants that are string literals.
             if ( ARQ.isStrictMode() )
             {
-                if ( graphHasStringEquality ) return true ;
-                return ! constant.isString() ;
+                if ( graphHasStringEquality ) 
+                    return false ;
+                if ( graphHasNumercialValueEquality )
+                    return false ;
+                // Not a string or no string mangling
+                return ! constant.isString() || ! graphHasStringEquality ;
             }
             // A bit more lax.
             return ! constant.isString() ;
@@ -88,9 +92,11 @@ public class ExprLib
             // Value based filter, not value based graph.
             if ( ARQ.isStrictMode() )
             {
+                // equals same as graph matching.
                 if ( graphHasStringEquality && graphHasNumercialValueEquality )
                     return true ;
-                return ! constant.isLiteral() ;
+                // else don't risk literals.
+                return false ;
             }
             // A bit more lax.
             if ( constant.isNumber() ) return graphHasNumercialValueEquality ;

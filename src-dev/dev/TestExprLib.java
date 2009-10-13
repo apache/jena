@@ -17,7 +17,7 @@ public class TestExprLib
 {
     @Test public void safeEquality_01()     { testSafeEquality("123", false) ;}
     @Test public void safeEquality_02()     { testSafeEquality("sameTerm(?x, <x>)", true) ;}
-//    @Test public void safeEquality_03()     { testSafeEquality("123", false) ;}
+    //@Test public void safeEquality_03()     { testSafeEquality("", false) ;}
 //    @Test public void safeEquality_04()     { testSafeEquality("123", false) ;}
 //    @Test public void safeEquality_05()     { testSafeEquality("123", false) ;}
 //    @Test public void safeEquality_06()     { testSafeEquality("123", false) ;}
