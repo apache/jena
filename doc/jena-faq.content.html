@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.13 2008-12-28 19:32:36 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.14 2009-10-13 11:42:05 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -90,9 +90,9 @@ Schema, what do I do?</a></li>
 </ul>
 
 <h3>SPARQL and query processing</h3>
-<p>See the <a href="http://jena.sourceforge.net/ARQ/documentation.html">ARQ documentation</a> and
-<a href="http://jena.sourceforge.net/ARQ/FAQ.html">ARQ FAQ</a>. See also the
-<a href="http://jena.sourceforge.net/ARQ/">ARQ web site</a> for new versions of
+<p>See the <a href="http://openjena.org/ARQ/documentation.html">ARQ documentation</a> and
+<a href="http://openjena.org/ARQ/FAQ.html">ARQ FAQ</a>. See also the
+<a href="http://openjena.org/ARQ/">ARQ web site</a> for new versions of
 ARQ.</p>
 <ul>
   <li><a href="#sparql-0">How do I do test for substrings of literals?</a></li>
@@ -346,11 +346,11 @@ Schema, what do I do? </strong>
     The easiest way to do this is to define your rule set. You can use the
     <code>@include</code> directive at the top of your rules to include the RDFS (or OWL) rules
     first. Then create a 
-    <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a>
+    <a href="javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a>
     which you can use to build an InfModel such as an
-    <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModel.html">OntModel</a> (by attaching the
-    reasoner to your <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>).
-    See <a href="http://jena.sourceforge.net/inference/index.html#RULEconfiguration">GenericRuleReasoner
+    <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html">OntModel</a> (by attaching the
+    reasoner to your <a href="javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>).
+    See <a href="inference/index.html#RULEconfiguration">GenericRuleReasoner
     configuration</a> for an example of how to parse custom rules.
     </p>
 
@@ -601,11 +601,11 @@ call <a href="javadoc/com/hp/hpl/jena/shared/PrefixMapping.html#setNsPrefix(java
 on your model to assign your preferred prefix to a given URI.</p>
 
 <h3>SPARQL and query processing</h3>
-<p>See the <a href="http://jena.sourceforge.net/ARQ/Tutorial/index.html">SPARQL Tutorial</a></p>
+<p>See the <a href="http://openjena.org/ARQ/Tutorial/index.html">SPARQL Tutorial</a></p>
 
 <p id="sparql-0"><strong>Q: How do I do test substrings of literals?</strong><br>
 <strong>A:</strong> SPARQL provides REGEX.
-See the <a href="http://jena.sourceforge.net/ARQ/FAQ.html">ARQ FAQ</a> for details.<p>&nbsp;</p>
+See the <a href="http://openjena.org/ARQ/FAQ.html">ARQ FAQ</a> for details.<p>&nbsp;</p>
 
 </div><!-- end #content -->
 </div> <!-- end #main -->

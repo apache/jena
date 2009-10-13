@@ -7,7 +7,7 @@
 
   <groupId>com.hp.hpl.jena</groupId>
   <artifactId>jena</artifactId>
-  <version>2.6.2-RC-2</version>
+  <version>2.6.2</version>
   <packaging>jar</packaging>
 
   <name>Jena</name>
@@ -36,57 +36,64 @@
   </organization>
   
    <dependencies>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <version>2.8.1</version>
-      <scope>runtime</scope>
-    </dependency>
+     <!-- 
+       Runtime scope also means it must be available at test time.  But Jena
+       does not depend on ARQ for testing and this creates a loop when ARQ and
+       Jena move version together that we can't break.
+     -->
+     <!--
+     <dependency>
+       <groupId>com.hp.hpl.jena</groupId>
+       <artifactId>arq</artifactId>
+       <version>2.8.1</version>
+       <scope>runtime</scope>
+     </dependency>
+     -->
 
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>iri</artifactId>
-      <version>0.7</version>
-    </dependency>
+     <dependency>
+       <groupId>com.hp.hpl.jena</groupId>
+       <artifactId>iri</artifactId>
+       <version>0.7</version>
+     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.5.6</version>
-    </dependency>
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+       <version>1.5.6</version>
+     </dependency>
 
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <version>3.4.4</version>
-    </dependency>
+     <dependency>
+       <groupId>com.ibm.icu</groupId>
+       <artifactId>icu4j</artifactId>
+       <version>3.4.4</version>
+     </dependency>
 
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
-    </dependency>
+     <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>2.7.1</version>
+     </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.5</version>
-      <scope>test</scope>
-    </dependency>
+     <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>4.5</version>
+       <scope>test</scope>
+     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.5.6</version>
-      <scope>runtime</scope>
-    </dependency>
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
+       <version>1.5.6</version>
+       <scope>runtime</scope>
+     </dependency>
 
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.13</version>
-      <scope>runtime</scope>
-    </dependency>
+     <dependency>
+       <groupId>log4j</groupId>
+       <artifactId>log4j</artifactId>
+       <version>1.2.13</version>
+       <scope>runtime</scope>
+     </dependency>
 
   </dependencies>
   
@@ -220,14 +227,17 @@
               <tasks>
                 <mkdir dir="${basedir}/target"/>
                 <tstamp>
-                  <format property="build-time" pattern="yyyy-MM-dd'T'HH:mm:ss.S"/>
+                  <format property="build-time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build-time.txt" pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
+		<echo message="version=${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
                 <copy file="src/main/resources/jena-properties.xml" toFile="${basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
                   <filterset>
                     <filter token="NAME" value="${project.name}"/>
                     <filter token="WEBSITE" value="${project.url}"/>
                     <filter token="VERSION" value="${project.version}"/>
-                    <filter token="BUILD_TIME_XSD" value="${build-time}"/>
+                    <filter token="BUILD_TIME_XSD" value="${build-time.xsd}"/>
                   </filterset>
                 </copy>
               </tasks>
