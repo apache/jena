@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
 import com.hp.hpl.jena.sparql.expr.E_LogicalOr ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 /**Filter disjunction.
  * Merge with TransformFilterImprove
@@ -27,9 +28,13 @@ public class TransformFilterDisjunction extends TransformCopy
 {
     public TransformFilterDisjunction() {}
     
+    // TODO Equality only.
+    
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
     {
+        //ExprUtils.isSubstitutionSafe
+        
         ExprList exprList = opFilter.getExprs() ;
         // If disjunction, rewrite to union.
         if ( exprList.size() == 1 )
@@ -52,20 +57,6 @@ public class TransformFilterDisjunction extends TransformCopy
         if ( !( expr instanceof E_LogicalOr ) )
             return null ;
 
-        if ( false )
-        {
-            // Partial.
-            E_LogicalOr exprOr = (E_LogicalOr)expr ;
-            Expr e1 =  exprOr.getArg1() ;
-            Expr e2 =  exprOr.getArg2() ;
-
-            Op opLeft =  TransformEqualityFilter.processFilterOrOpFilter(e1, subOp) ;
-            Op opRight = TransformEqualityFilter.processFilterOrOpFilter(e2, subOp) ;
-            // And optimize opLeft and opRight e.g. assignments.  
-            Op op2 = OpUnion.create(opLeft, opRight) ;
-            return op2 ;
-        }
-        
         List<Expr> exprList = explodeDisjunction(null, expr) ;
         // Need op UnionN?
         if ( exprList == null )

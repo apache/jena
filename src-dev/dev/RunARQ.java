@@ -67,14 +67,16 @@ public class RunARQ
         {
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 
-                                                    "SELECT *",
+                                                    "SELECT DISTINCT ?s",
                                                     "{",
                                                     "    ?s ?p ?o",
                                                     "    FILTER(?s = :x1 || ?s = :x2 || ?s = :x3)",
+                                                    //"    FILTER(?o = :x2 )",
                                                     "}") ;
-                                                    
+            // Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             Op op = Algebra.compile(q) ;
+            op = Optimize.optimize(op, ARQ.getContext()) ;
             System.out.println(op) ;
             //Not yet active.
             op = Transformer.transform(new TransformFilterDisjunction(), op) ;

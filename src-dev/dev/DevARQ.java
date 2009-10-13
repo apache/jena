@@ -11,7 +11,7 @@ public class DevARQ
     // ==== 2.8.1 : Check:
 
     // ==== Document IF/COLLASCE
-    // Add int() ?
+    // Enable OpDisjunction.
     
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
@@ -40,9 +40,7 @@ public class DevARQ
 
     // === Optimization
     // Amalgamation: BGPs,Quads, Sequences.
-    // TransformEqualityFilter ==> disjunctions as well.
     // Assign squashing : assign as rename. (assign ((?x ?y)))
-    // Disjunction of equalities => union.
     
     // Initial bindings && Initial table (do as iterator of initial bindings)
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern

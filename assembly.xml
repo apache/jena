@@ -74,6 +74,8 @@
         <exclude>template.html</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
+	<!-- javadoc done separately below -->
+        <exclude>javadoc/**</exclude>
       </excludes>
     </fileSet>
 

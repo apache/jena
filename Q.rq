@@ -1,19 +1,7 @@
-PREFIX my: <> 
-SELECT ?result 
-WHERE {
+PREFIX : <> 
+
+SELECT *
 {
-    SELECT ?result ?number 
-    {
-        ?this my:x ?number .
-        ?result my:a ?number .
-    } LIMIT 1
+   ?s ?p ?o . FILTER(?s = :x1 || ?s = :x2 )
 }
-OPTIONAL
-{
-   FILTER(!bound(?number))
-   { SELECT ?result {
-       ?this my:y ?acct .
-       ?result my:b ?acct .
-    } LIMIT 1
-   }
-}
+ 

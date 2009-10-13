@@ -6,39 +6,42 @@
   <artifactId>arq-app</artifactId>
   <packaging>jar</packaging>
   <name>ARQ Application</name>
+  <properties>
+    <arq-version>2.8.1</arq-version>
+  </properties>
 
 
   <dependencies>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <classifier>javadoc</classifier>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <classifier>sources</classifier>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <classifier>tests</classifier>
       <type>zip</type>
       <scope>test</scope>
@@ -46,13 +49,13 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <type>zip</type>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <classifier>test-sources</classifier>
       <type>jar</type>
       <scope>test</scope>
@@ -60,7 +63,7 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <classifier>sources</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -68,7 +71,7 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
-      <version>2.8.0</version>
+      <version>${arq-version}</version>
       <type>pom</type>
     </dependency>
 
