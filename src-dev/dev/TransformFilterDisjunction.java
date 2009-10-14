@@ -6,19 +6,17 @@
 
 package dev;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
-import com.hp.hpl.jena.sparql.expr.E_LogicalOr ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter;
+import com.hp.hpl.jena.sparql.expr.E_LogicalOr;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /**Filter disjunction.
  * Merge with TransformFilterImprove
@@ -27,8 +25,6 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 public class TransformFilterDisjunction extends TransformCopy
 {
     public TransformFilterDisjunction() {}
-    
-    // TODO Equality only.
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
@@ -39,7 +35,6 @@ public class TransformFilterDisjunction extends TransformCopy
         // If disjunction, rewrite to union.
         if ( exprList.size() == 1 )
         {
-            // Need to iterate on LHS and RHS.
             Expr expr = exprList.get(0) ;
             Op op2 = expandDisjunction(expr, subOp) ;
             if ( op2 != null )
@@ -52,13 +47,16 @@ public class TransformFilterDisjunction extends TransformCopy
         return super.transform(opFilter, subOp) ;
     }
     
+    // Todo:
+    // 1 - convert TransformEqualityFilter to use ExprLib for testing.
+    // 2 - Scan for safe equality filters in disjunction.
+    
     public static Op expandDisjunction(Expr expr, Op subOp)
     {
         if ( !( expr instanceof E_LogicalOr ) )
             return null ;
 
         List<Expr> exprList = explodeDisjunction(null, expr) ;
-        // Need op UnionN?
         if ( exprList == null )
             return null ;
         

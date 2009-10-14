@@ -17,6 +17,12 @@ public class TestExprLib
 {
     @Test public void safeEquality_01()     { testSafeEquality("123", false) ;}
     @Test public void safeEquality_02()     { testSafeEquality("sameTerm(?x, <x>)", true) ;}
+    @Test public void safeEquality_03()     { testSafeEquality("sameTerm(<x>, ?x)", true) ;}
+
+    @Test public void safeEquality_04()     { testSafeEquality("?x = <x>", true) ;}
+    @Test public void safeEquality_05()     { testSafeEquality("<x> = ?x", true) ;}
+    
+    
     //@Test public void safeEquality_03()     { testSafeEquality("", false) ;}
 //    @Test public void safeEquality_04()     { testSafeEquality("123", false) ;}
 //    @Test public void safeEquality_05()     { testSafeEquality("123", false) ;}
@@ -31,13 +37,13 @@ public class TestExprLib
     private static void testSafeEquality(String string, boolean b)
     {
         Expr expr = ExprUtils.parse(string) ;
-        assertEquals(b, ExprLib.isSafeEquality(expr)) ;
+        assertEquals(b, ExprLib.isAssignmentSafeEquality(expr)) ;
     }
     
     private static void testSafeEquality(String string, boolean b, boolean graphString, boolean graphNumber)
     {
         Expr expr = ExprUtils.parse(string) ;
-        assertEquals(b, ExprLib.isSafeEquality(expr, graphString, graphNumber)) ;
+        assertEquals(b, ExprLib.isAssignmentSafeEquality(expr, graphString, graphNumber)) ;
     }
 
 }

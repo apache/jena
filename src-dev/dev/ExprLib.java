@@ -22,9 +22,9 @@ public class ExprLib
      * matched in a value fashion.
      */
 
-    public static boolean isSafeEquality(Expr expr)
+    public static boolean isAssignmentSafeEquality(Expr expr)
     { 
-        return isSafeEquality(expr, false, false) ;
+        return isAssignmentSafeEquality(expr, false, false) ;
     }
     
     /**
@@ -32,7 +32,7 @@ public class ExprLib
      * @param graphHasNumercialValueEquality    True if the graph triple matching equates numeric values
      */
     
-    public static boolean isSafeEquality(Expr expr, boolean graphHasStringEquality, boolean graphHasNumercialValueEquality) 
+    public static boolean isAssignmentSafeEquality(Expr expr, boolean graphHasStringEquality, boolean graphHasNumercialValueEquality) 
     {
         if ( !(expr instanceof E_Equals) && !(expr instanceof E_SameTerm) )
             return false ;
