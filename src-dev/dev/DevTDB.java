@@ -36,6 +36,9 @@ public class DevTDB
     // Separate out atlas properly.
     
     // Don't print optimizer type when set at info level.
+    
+    // Special case
+    // <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
 
     // ----
     // B+Tree checking utility.
