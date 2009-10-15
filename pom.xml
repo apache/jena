@@ -38,14 +38,14 @@
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
-      <version>2.6.2-RC-2</version>
+      <version>2.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
       <type>test-jar</type>
-      <version>2.6.2-RC-1</version>
+      <version>2.6.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -312,7 +312,18 @@ build.time.txt=${build.time.txt}
   </reporting>
 
  <repositories>
+
     <!-- jena-repo is mirrored to Maven central repository -->
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
     <!-- jena-repo-dev is where SNAPSHOTs and RCs are published -->  
     <repository>
       <id>repo-jena-dev</id>
@@ -331,9 +342,12 @@ build.time.txt=${build.time.txt}
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!--<url>sftp://openjena.org/var/repo</url>-->
+
+      <!-- <url>sftp://openjena.org/var/repo</url> -->
+
       <!-- Because RC's aren't snapshots -->
       <url>sftp://openjena.org/var/repo-dev</url>
+
       <!--<url>file:tmp</url>-->
       <layout>default</layout>
     </repository> 
