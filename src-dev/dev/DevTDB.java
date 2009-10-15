@@ -29,6 +29,10 @@ public class DevTDB
     //   Why/what does the sync in fromByteBuffer do?
     // Why not BlockConverter.get on block mgr?  Hhow many blockMgrs are there?
 
+    // **** Inlining as shared
+    // + BDB + V : share this!
+    // NodeTableBase <- make this independend of index and objectfile and just the inline code.
+
     
     // TestCacheSet
     // Check node table use of caches
