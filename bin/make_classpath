@@ -25,7 +25,7 @@ ETCDIR="$DIRROOT/etc"
 
 CYGWIN=0
 SEP=':'
-if [ "$(uname -o)" = "Cygwin" ]
+if [ "$OSTYPE" = "cygwin" ]
 then
     CYGWIN=1
     SEP=';'
