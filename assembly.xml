@@ -16,7 +16,6 @@
   </dependencySets>
 
   <fileSets>
-
     <fileSet>
       <includes>
         <include>copyright.txt</include>
@@ -24,6 +23,19 @@
         <include>readme.html</include>
         <include>README.txt</include>
         <include>ReleaseNotes.txt</include>
+      </includes>
+    </fileSet>
+
+    <!-- lib directory -->
+    <!-- copy the ARQ dependences not copied by the dependencySet above -->
+    <fileSet>
+      <directory>${project.basedir}/lib</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>arq-*</include>
+        <include>lucene-*</include>
+        <include>stax-api-*</include>
+        <include>wstx-asl-*</include>
       </includes>
     </fileSet>
 
