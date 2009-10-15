@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public final class NodeTableIndex extends NodeTableBase
 {
-    // Dead code - only udes by old FactoryGraph.
+    // Dead code - only used by old FactoryGraph.
     // Disk version
     private NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
