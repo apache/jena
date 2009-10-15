@@ -15,7 +15,7 @@ public class NodeValueString extends NodeValue
     // A plain string - no lang tag, no datatype.
     // If there is a lang tag, the node in the super class handled it.
     
-    String string ; 
+    private String string ; 
     
     public NodeValueString(String str)         { string = str ; } 
     public NodeValueString(String str, Node n) { super(n) ; string = str ; }

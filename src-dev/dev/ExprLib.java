@@ -6,7 +6,6 @@
 
 package dev;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.E_Equals ;
@@ -61,48 +60,30 @@ public class ExprLib
         if ( var == null || constant == null )
             return false ;
 
-        // Corner case: sameTerm is false for string/plain literal, 
-        // but true in the graph for graph matching.
-        
-        // A better test would consider the XSD type. 
-
         if ( ! constant.isLiteral() )
             // URIs, bNodes.  Any bNode will have come from a substitution - not legal syntax in filters
             return true ;
         
         if (expr instanceof E_SameTerm)
         {
-            // If strict, don't risk constants that are string literals.
-            if ( ARQ.isStrictMode() )
-            {
-                if ( graphHasStringEquality ) 
-                    return false ;
-                if ( graphHasNumercialValueEquality )
-                    return false ;
-                // Not a string or no string mangling
-                return ! constant.isString() || ! graphHasStringEquality ;
-            }
-            // A bit more lax.
-            return ! constant.isString() ;
+            if ( graphHasStringEquality && constant.isString() ) 
+                // Graph is not same term
+                return false ;
+            if ( graphHasNumercialValueEquality && constant.isNumber() )
+                return false ;
+            return true ;
         }
         
         // Final check for "=" where a FILTER = can do value matching when the graph does not.
         if ( expr instanceof E_Equals )
         {
-            // Value based filter, not value based graph.
-            if ( ARQ.isStrictMode() )
-            {
-                // equals same as graph matching.
-                if ( graphHasStringEquality && graphHasNumercialValueEquality )
-                    return true ;
-                // else don't risk literals.
+            if ( ! graphHasStringEquality && constant.isString() )
                 return false ;
-            }
-            // A bit more lax.
-            if ( constant.isNumber() ) return graphHasNumercialValueEquality ;
-            if ( constant.isString() ) return graphHasStringEquality ;
+            if ( ! graphHasNumercialValueEquality && constant.isNumber() )
+                return false ;
             return true ;
         }
+        // Unreachable.
         throw new ARQInternalErrorException() ;
     }
     

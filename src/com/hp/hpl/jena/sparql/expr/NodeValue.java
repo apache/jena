@@ -89,8 +89,8 @@ public abstract class NodeValue extends ExprNode
     private static RefBoolean enableRomanNumerals = new RefBoolean(ARQ.enableRomanNumerals, false) ;
     //private static RefBoolean strictSPARQL = new RefBoolean(ARQ.strictSPARQL, false) ;
     
-    public static final BigInteger IntegerZERO = new BigInteger("0") ; // Java-1.5 :: BigInteger.ZERO ;
-    public static final BigDecimal DecimalZERO = new BigDecimal("0") ; // Java-1.5 :: BigDecimal.ZERO ;
+    public static final BigInteger IntegerZERO = BigInteger.ZERO ;
+    public static final BigDecimal DecimalZERO = BigDecimal.ZERO ;
 
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;

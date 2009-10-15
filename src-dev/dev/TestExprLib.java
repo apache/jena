@@ -31,10 +31,11 @@ public class TestExprLib
     @Test public void safeSameTerm_07()         { testSafeEquality("sameTerm(?x, 'xyz'@en)", true, true, true) ;}
     @Test public void safeSameTerm_08()         { testSafeEquality("sameTerm(?x, 'xyz'@en)", true, false, false) ;}
 
-    @Test public void safeSameTerm_10()         { testSafeEquality("sameTerm(?x, 123)", false, true, true) ;}
-    @Test public void safeSameTerm_11()         { testSafeEquality("sameTerm(?x, 123)", true, false, false) ;}
+    @Test public void safeSameTerm_09()         { testSafeEquality("sameTerm(?x, 123)", false, true, true) ;}
+    @Test public void safeSameTerm_10()         { testSafeEquality("sameTerm(?x, 123)", true, false, false) ;}
 
-    @Test public void safeSameTerm_12()         { testSafeEquality("sameTerm(?x, 'foo'^^<http://example>)", true) ;}
+    @Test public void safeSameTerm_11()         { testSafeEquality("sameTerm(?x, 'foo'^^<http://example>)", true, false, false) ;}
+    @Test public void safeSameTerm_12()         { testSafeEquality("sameTerm(?x, 'foo'^^<http://example>)", true, true, true) ;}
     
     @Test public void safeEquality_01()         { testSafeEquality("?x = <x>", true) ;}
     @Test public void safeEquality_02()         { testSafeEquality("<x> = ?x", true) ;}
@@ -48,10 +49,11 @@ public class TestExprLib
     @Test public void safeEquality_07()         { testSafeEquality("?x = 'xyz'@en", true, true, true) ;}
     @Test public void safeEquality_08()         { testSafeEquality("?x = 'xyz'@en", true, false, false) ;}
 
-    @Test public void safeEquality_10()         { testSafeEquality("?x = 123", true, true, true) ;}
-    @Test public void safeEquality_11()         { testSafeEquality("?x = 123", false, true, false) ;}
+    @Test public void safeEquality_09()         { testSafeEquality("?x = 123", true, true, true) ;}
+    @Test public void safeEquality_10()         { testSafeEquality("?x = 123", false, true, false) ;}
 
-    @Test public void safeEquality_12()         { testSafeEquality("?x = 'foo'^^<http://example>", true) ;}
+    @Test public void safeEquality_11()         { testSafeEquality("?x = 'foo'^^<http://example>", true, false, false) ;}
+    @Test public void safeEquality_12()         { testSafeEquality("?x = 'foo'^^<http://example>", true, true, true) ;}
     
     private static void testSafeEquality(String string, boolean b)
     {
