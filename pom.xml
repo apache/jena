@@ -231,7 +231,7 @@
                   <format property="build-time.txt" pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
 		<echo message="version=${project.version}"/>
-                <echo message="build.time=${build.time.txt}"/>
+                <echo message="build.time=${build-time.txt}"/>
                 <copy file="src/main/resources/jena-properties.xml" toFile="${basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
                   <filterset>
                     <filter token="NAME" value="${project.name}"/>
@@ -408,11 +408,9 @@
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!-- <url>sftp://openjena.org/var/repo</url> -->
-
-      <!-- RC's to snapshot repo -->
-      <url>sftp://openjena.org/var/repo-dev</url>
-      <!-- <url>file:tmp</url> -->
+      <url>sftp://openjena.org/var/repo</url>
+      <!-- Note: RC aren't snapshots so go to jena-repo -->
+      <!--<url>sftp://openjena.org/var/repo-dev</url>-->
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
