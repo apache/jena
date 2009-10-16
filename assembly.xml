@@ -27,7 +27,9 @@
     </fileSet>
 
     <!-- lib directory -->
-    <!-- copy the ARQ dependences not copied by the dependencySet above -->
+    <!-- copy the ARQ dependences not copied by the dependencySet above
+         Assumes ARQ is not in the dependency set for jena
+      -->
     <fileSet>
       <directory>${project.basedir}/lib</directory>
       <outputDirectory>lib</outputDirectory>
