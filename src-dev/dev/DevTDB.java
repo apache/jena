@@ -11,6 +11,8 @@ public class DevTDB
     // == 0.8.3
     // Check versions (ivy.xml and tdb.pom) 
     
+    // NoteTable modularization (inline, cache)
+    
     // TDB/Extras
     
     // Const for names.
@@ -31,7 +33,7 @@ public class DevTDB
 
     // **** Inlining as shared
     // + BDB + V : share this!
-    // NodeTableBase <- make this independend of index and objectfile and just the inline code.
+    // NodeTableBase <- make this independent of index and objectfile and just the inline code.
 
     
     // TestCacheSet
