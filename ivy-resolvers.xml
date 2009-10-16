@@ -6,7 +6,7 @@
       <ibiblio name="jena-dev" root="http://openjena.org/repo-dev" m2compatible="true" useMavenMetadata="false"/>
 
       <!-- Jena publish repository, sync'ed to maven central -->
-      <!-- <ibiblio name="jena" root="http://openjena.org/repo" m2compatible="true" useMavenMetadata="false"/> -->
+      <ibiblio name="jena" root="http://openjena.org/repo" m2compatible="true"/>
 
       <ibiblio name="maven2" m2compatible="true" />
     </chain>
