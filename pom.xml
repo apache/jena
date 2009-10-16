@@ -46,7 +46,7 @@
      <dependency>
        <groupId>com.hp.hpl.jena</groupId>
        <artifactId>arq</artifactId>
-       <version>RELEAE</version>
+       <version>RELEASE</version>
        <scope>runtime</scope>
      </dependency>
      -->
