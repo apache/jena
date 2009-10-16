@@ -40,6 +40,9 @@
        Runtime scope also means it must be available at test time.  But Jena
        does not depend on ARQ for testing and this creates a loop when ARQ and
        Jena move version together that we can't break.
+       
+       LATEST or RELEASE do not work, as expected. Perhaps we could use:
+       <version>[2.8.0,)</version>
      -->
 
      <!--
