@@ -67,19 +67,25 @@ public class RunARQ
         {
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 
-                                                    "SELECT DISTINCT ?s",
+                                                    "SELECT *",
                                                     "{",
+                                                    "    GRAPH ?g {",
                                                     "    ?s ?p ?o",
-                                                    "    FILTER(?s = :x1 || ?s = :x2 || ?s = :x3)",
+                                                    "    }",
                                                     //"    FILTER(?o = :x2 )",
+                                                    "    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
                                                     "}") ;
             // Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
+            divider() ;
+            System.out.println(q) ;
             Op op = Algebra.compile(q) ;
             op = Optimize.optimize(op, ARQ.getContext()) ;
+            divider() ;
             System.out.println(op) ;
             //Not yet active.
             op = Transformer.transform(new TransformFilterDisjunction(), op) ;
+            divider() ;
             System.out.println(op) ;
 
             DatasetGraph dsg = DatasetUtils.createDataset("D.ttl", null).asDatasetGraph() ;

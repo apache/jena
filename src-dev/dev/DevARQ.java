@@ -12,6 +12,9 @@ public class DevARQ
 
     // ==== Document IF/COLLASCE
     // Enable OpDisjunction.
+    // Do disjunctions in exprLists
+    //"    FILTER(?o = :x2 )",
+    //"    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
     
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
