@@ -9,7 +9,7 @@
   <name>SDB</name>
   <version>1.4.0-SNAPSHOT</version>
   <description/>
-  <url>http://jena.sf.net/SDB</url>
+  <url>http://openjena.org/SDB</url>
 
   <organization>
     <name>Hewlett-Packard</name>
@@ -273,18 +273,18 @@ build.time.txt=${build.time.txt}
   </reporting>
   
   <distributionManagement>
-    <downloadUrl>http://jena.hpl.hp.com/repo-dev</downloadUrl>
+    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <!-- <url>sftp://openjena.org/var/repo-dev</url> -->
       <url>file:tmp</url>
       <layout>default</layout>
     </repository> 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <!-- <url>sftp://jena.hpl.hp.com/var/repo-dev</url> -->
+      <!-- <url>sftp://openjena.org/var/repo-dev</url> -->
       <url>file:tmp</url>
       <layout>default</layout>
     </snapshotRepository>
