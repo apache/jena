@@ -48,10 +48,7 @@ public class NodecSSE implements Nodec
     }
     
     public void release(ByteBuffer bb)
-    {
-//        // +4 for the length slot
-//        return ByteBuffer.allocate(4+maxLength(node)) ;
-    }
+    { }
     
     //@Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
