@@ -22,10 +22,7 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Return whether the index contains the record or not. */
     public boolean contains(Record record) ;
     
-    /** Add a record - return true if an insertion actually happened.
-     * May replace an old record with a new on (e.g. separate value)
-     * but that return false (no new addition). 
-     */
+    /** Add a record - return true if an insertion was actually needed */
     public boolean add(Record record) ;
     
     /** Delete a record.  Return true if a record was actually removed */
@@ -40,16 +37,13 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
-//    /** Location on disk (maybe null - e.g. in-memory testing) */
-//    public Location getLocation() ;
-    
     /** Syncrhonize with any persistent storage underlying the index */
     public void sync(boolean force) ;
     
     /** Close the index - can't not be used again through this object */
     public void close() ;
     
-    /** Answer whether the index is empty or not.  Maye return false for unknown or meaningless
+    /** Answer whether the index is empty or not.  May return false for unknown or meaningless
      * (e.g. transactional index)  */
     public boolean isEmpty() ;
     

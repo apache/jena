@@ -10,7 +10,7 @@ ChangeLog for TDB
 
 + Bug fix: If the query has a dataset description, this was ignored.  
   Now if the query has a dataset description (FROM, FROM NAMED) then
-  an in-memory query execution is done on the laoded files and the TDB
+  an in-memory query execution is done on the loaded files and the TDB
   dataset is ignored.
 
 ==== 0.8.2

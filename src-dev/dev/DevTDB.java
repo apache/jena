@@ -9,11 +9,9 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
-    // Check versions (ivy.xml and tdb.pom) 
-    
-    // NoteTable modularization (inline, cache)
-    
-    // TDB/Extras
+
+    // NodeTable modularization (inline, cache) [Ready]
+    //    NodeTableBase - delete.  Reuse NodeTableIndex 
     
     // Const for names.
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
@@ -26,15 +24,14 @@ public class DevTDB
     //   Explain mode [DONE]
     // Test.
     
-    // Rethink.check cache synchronization (byteBuffer)
+    // == Build - include zip.
+    // Include distribution in publish ("deploy") controled by a property.
+    // Directly create the zip in build/, not dist/
+    
+    // Rethink.check cache synchronization (ByteBuffer)
     //   RecordBufferPageMgr / BPTreeNodeMgr / BTreeNodeMgr / HashBucketMgr -> fromByteBuffer
     //   Why/what does the sync in fromByteBuffer do?
     // Why not BlockConverter.get on block mgr?  Hhow many blockMgrs are there?
-
-    // **** Inlining as shared
-    // + BDB + V : share this!
-    // NodeTableBase <- make this independent of index and objectfile and just the inline code.
-
     
     // TestCacheSet
     // Check node table use of caches
