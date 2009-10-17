@@ -34,7 +34,6 @@
       <artifact name="arq" mvn:classifier="javadoc"/>
       <artifact name="arq" mvn:classifier="sources"/>
       <artifact name="arq" mvn:classifier="test-sources"/>
-      <!--<artifact name="arq" ext="zip" mvn:classifier="tests"/>-->
     </dependency>    
 
     <!-- Explicit - gets the javadoc and sources : As Jena depends on ARQ there is a (safe) conflict -->
@@ -50,20 +49,19 @@
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
-    <dependency conf="dev->*" org="org.slf4j" name="slf4j-api" rev="1.5.6"/>
+    <dependency conf="dev->*" org="org.slf4j" name="slf4j-api" rev="1.5.8"/>
 
     <!-- Additional for development : logging implementation -->
-    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.6">
+    <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.8">
       <exclude org="log4j" module="log4j"/>
     </dependency>
 
     <!-- Choose a log4j that works with ivy -->
-    <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"/>
+    <dependency org="log4j" name="log4j" rev="1.2.14"/>
 
     <!-- Java logging 
-    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6"/>
+    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.8"/>
     -->
-
 
     <!-- Log4j 1.2.15 referes to inaccessible modules as excluded below. -->
     <!-- Alternative.

@@ -42,7 +42,6 @@ deploy
        Name
        name
        version
-       [or version-major-version-minor.version-revision[version-status]
 
        javadoc.packages       Package list (comma separated)  (Optional)
        javadoc.packages.all   Package list (comma separated)  (Optional)
@@ -95,8 +94,7 @@ deploy
   -->
   
   <!-- Set version from components (if not already set) -->
-  <property    name="version"  
-               value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
+  <property    name="version"             value="unset"/>
 
   <!-- Artifacts -->
   <property name="jarfile"                value="${name}-${version}.jar"/>

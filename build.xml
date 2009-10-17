@@ -10,13 +10,8 @@
 
   <property environment="env"/>
 
-  <!-- The major and minor version numbers  -->
-  <property name="version-major"        value="0"/>
-  <property name="version-minor"        value="8"/>
-  <property name="version-revision"     value="3"/>
-  <property name="version-status"       value="-dev"/>
-  <property name="version"
-            value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
+  <!-- Version  -->
+  <property name="version"              value="0.8.3-RC-1"/>
   
   <!-- javadoc -->
   <property name="copyright.text"
@@ -35,8 +30,8 @@
   <property name="src.dev.dir"          value="src-dev"/>
 
   <!-- Coordinate with ivysetting.xml -->
-  <!-- repo-publish, repo-local -->
-  <property name="publish.repo"     value="repo-publish"/>
+  <!-- repo-main, repo-dev, repo-local -->
+  <property name="publish.repo"     value="repo-dev"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
