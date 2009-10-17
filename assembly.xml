@@ -17,7 +17,6 @@
   <dependencySets>
     <dependencySet>
       <unpack>false</unpack>
-      <scope>test</scope>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>
   </dependencySets>
@@ -38,7 +37,9 @@
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-	<include>${this.root}-tests.jar</include>
+	<include>sdb*-tests.jar</include>
+	<include>jena*-tests.jar</include>
+	<include>arq*-tests.jar</include>
       </includes>
     </fileSet>
 

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DCTerms;
   * 
   *  <p>
   *  Usage:<pre>
-  *  jena.sdbtest [db spec] [ manifest ]
+  *  sdb.sdbtest [db spec] [ manifest ]
   *  </pre>
   *  </p>
   * 
