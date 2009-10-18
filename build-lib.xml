@@ -356,8 +356,13 @@ deploy
           depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
   
   <target name="publish" description="Build and publish this version"
-          depends="clean-once,artifacts,test,ivy-publish">
+          depends="clean-once,artifacts,test,pre-publish,ivy-publish">
   </target>
+
+  <!-- maven name - alis for compatibility -->
+  <target name="deploy" depends="publish"/>
+
+  <target name="pre-publish"/>
   
   <target name="publish-test" description="Build and publish this version (locally, for testing)"
 	  depends="clean-once,artifacts,test,ivy-publish-dev">
@@ -441,7 +446,7 @@ deploy
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
           description="Resolve and fetch dependences with Ivy">
-    <!-- sync causes artefacts and versions no longer need to be deleted -->
+    <!-- sync causes artifacts and versions no longer need to be deleted -->
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
     

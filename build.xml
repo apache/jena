@@ -31,7 +31,7 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-dev"/>
+  <property name="publish.repo"     value="repo-local"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>

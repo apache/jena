@@ -24,10 +24,6 @@ public class DevTDB
     //   Explain mode [DONE]
     // Test.
     
-    // == Build - include zip.
-    // Include distribution in publish ("deploy") controled by a property.
-    // Directly create the zip in build/, not dist/
-    
     // Rethink.check cache synchronization (ByteBuffer)
     //   RecordBufferPageMgr / BPTreeNodeMgr / BTreeNodeMgr / HashBucketMgr -> fromByteBuffer
     //   Why/what does the sync in fromByteBuffer do?

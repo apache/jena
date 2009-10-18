@@ -19,6 +19,7 @@
 
   <publications>
     <artifact name="tdb" type="jar"/>
+    <artifact name="tdb" type="zip"/>
     <artifact name="tdb" type="xml" ext="pom"/>
     <artifact name="tdb" mvn:classifier="sources" type="sources" ext="jar"/>
     <artifact name="tdb" mvn:classifier="javadoc" type="javadoc" ext="jar"/>

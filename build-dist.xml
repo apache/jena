@@ -7,27 +7,34 @@
   <!-- Distribution area -->
 
   <property name="dist.name"              value="${Name}-${version}"/>
-  <property name="release.zipfile"        value="${name}-${version}.zip"/>
 
-  <property name="dist.root"              value="dist"/>
+  <property name="dist.root"              value="build/dist"/>
   <property name="dist.dir"               value="${dist.root}/${dist.name}"/>
+
+  <property name="release.zipfile.name"   value="${name}-${version}.zip"/>
+  <property name="release.zipfile"        value="${artifacts.dir}/${release.zipfile.name}"/>
 
   <!-- ==== Release -->
 
-  <target name="release" depends="clean-once,copy-init,copy-dist,zip-release"
+  <target name="release" depends="clean-once,package"
 	  description="Build a release zip"/>
 
   <target name="package" depends="copy-init,copy-dist,zip-release"/>
 
+  <target name="pre-publish" depends="release"/>
+
   <target name="copy-init">
     <delete dir="${dist.dir}" />
     <mkdir dir="${dist.dir}" />
+    <mkdir dir="${artifacts.dir}"/>
     <mkdir dir="${dist.dir}/${lib.dir}"/>
   </target>
 
   <target name="copy-dist" depends="copy-init,jar,javadoc,test">
     <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile},*sources.jar,*javadoc.jar,*tests.jar"/>
+      <fileset dir="${lib.dir}" 
+	       includes="*.jar" 
+	       excludes="${jarfile},*sources.jar,*javadoc.jar,*tests.jar"/>
       <fileset dir="${build.dir}" includes="${jarfile}"/>
     </copy>
 
@@ -71,9 +78,9 @@
 
   <target name="zip-release">
     <!-- Build the zip of the distribution -->
-    <delete file="${dist.root}/${release.zipfile}"/>
-    <zip zipfile="${dist.root}/${release.zipfile}">
-      <fileset dir="dist" includes="${dist.name}/**"/>
+    <delete file="${release.zipfile}"/>
+    <zip zipfile="${release.zipfile}">
+      <fileset dir="${dist.root}" includes="${dist.name}/**"/>
     </zip>
   </target>
 
@@ -93,7 +100,5 @@
     <delete dir="${dist.root}"/>
     <mkdir  dir="${dist.root}"/>
   </target>
-
-
 
 </project>
