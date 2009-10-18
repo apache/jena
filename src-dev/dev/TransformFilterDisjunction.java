@@ -32,14 +32,37 @@ public class TransformFilterDisjunction extends TransformCopy
         //ExprUtils.isSubstitutionSafe
         
         ExprList exprList = opFilter.getExprs() ;
+//        // First pass - any disjunctions?
+//        boolean processDisjunction = false ;
+//        for ( Expr expr : exprList )
+//        {
+//            if ( isEqualityDisjunction(expr) )
+//            {
+//                processDisjunction = true ;
+//                break ;
+//            }
+//        }
+//        
+//        if ( ! processDisjunction )
+//            return super.transform(opFilter, subOp) ;
+//        
+        // Second pass. Do it.
+//        for ( Expr expr : exprList )
+//        {
+//            
+//        }
+            
         // If disjunction, rewrite to union.
         if ( exprList.size() == 1 )
         {
             Expr expr = exprList.get(0) ;
-            Op op2 = expandDisjunction(expr, subOp) ;
-            if ( op2 != null )
-                return op2 ;
-            // Fall thorugh.
+            if ( expr != null )
+            {
+                Op op2 = expandDisjunction(expr, subOp) ;
+                if ( op2 != null )
+                    return op2 ;
+                // Fall thorugh.
+            }
         }
         
         // Do nothing special.
@@ -47,14 +70,22 @@ public class TransformFilterDisjunction extends TransformCopy
         return super.transform(opFilter, subOp) ;
     }
     
+//    private boolean isEqualityDisjunction(Expr expr)
+//    {
+//        if ( !( expr instanceof E_LogicalOr ) )
+//            return false ;
+//        
+//        
+//    }
+
     // Todo:
     // 1 - convert TransformEqualityFilter to use ExprLib for testing.
     // 2 - Scan for safe equality filters in disjunction.
     
     public static Op expandDisjunction(Expr expr, Op subOp)
     {
-        if ( !( expr instanceof E_LogicalOr ) )
-            return null ;
+//        if ( !( expr instanceof E_LogicalOr ) )
+//            return null ;
 
         List<Expr> exprList = explodeDisjunction(null, expr) ;
         if ( exprList == null )

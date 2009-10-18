@@ -64,9 +64,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        qparse("--syntax=sparql_11", "SELECT * {?s ?p ?o}") ; 
-        
         {
+            // Opps.
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 
                                                     "SELECT *",
@@ -75,7 +74,7 @@ public class RunARQ
                                                     "    ?s ?p ?o",
                                                     "    }",
                                                     //"    FILTER(?o = :x2 )",
-                                                    "    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
+                                                    "    FILTER( ?g = :x1 || ?g = :x2 || ?g != :x3 )",
                                                     "}") ;
             // Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;

@@ -11,9 +11,9 @@ public class DevARQ
     // ==== 2.8.1 : Check:
 
     // ==== Document IF/COLLASCE
-    // Enable OpDisjunction.
+    // Enable OpDisjunction.  Need further work - assignments only.!
     // Do disjunctions in exprLists
-    //"    FILTER(?o = :x2 )",
+    //"    FILTER(?o = :x2)",
     //"    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
     
     // De-duplicate aggregator code.
