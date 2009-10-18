@@ -3510,13 +3510,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_34() {
-    if (jj_3R_36()) return true;
+  private boolean jj_3R_48() {
+    if (jj_3R_54()) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
-    if (jj_3R_54()) return true;
+  private boolean jj_3R_34() {
+    if (jj_3R_36()) return true;
     return false;
   }
 

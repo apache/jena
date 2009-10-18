@@ -306,7 +306,6 @@ NON-TERMINALS
 
 
 // -------- Paths
-	PathUnit	:=	Path <EOF>
 // Weakest outermost
 	Path	:=	PathAlternative
 	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*

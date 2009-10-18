@@ -788,17 +788,7 @@ Node VerbSimple() : { Node p ; }
 
 
 // -------- Paths
-
-
-Path PathUnit() : { Path p ; }
-{
-    p = Path()
-    <EOF>
-    { return p ; }
-}
-
 // Weakest outermost
-
 Path Path() : { Path p ; }
 {
   p = PathAlternative() { return p ; }

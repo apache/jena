@@ -838,8 +838,9 @@ Path PathUnit() : { Path p ; }
     { return p ; }
 }
 
-// Weakest outermost
 
+
+// Weakest outermost
 Path Path() : { Path p ; }
 {
   p = PathAlternative() { return p ; }

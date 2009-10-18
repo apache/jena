@@ -890,16 +890,17 @@ Node VerbSimple() : { Node p ; }
 
 // -------- Paths
 
-#ifdef SPARQL_11
+#ifdef ARQ
 Path PathUnit() : { Path p ; }
 {
     p = Path()
     <EOF>
     { return p ; }
 }
+#endif
+#ifdef SPARQL_11
 
 // Weakest outermost
-
 Path Path() : { Path p ; }
 { 
   p = PathAlternative() { return p ; }

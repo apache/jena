@@ -1981,14 +1981,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
 
 // -------- Paths
-  final public Path PathUnit() throws ParseException {
-                    Path p ;
-    p = Path();
-    jj_consume_token(0);
-      {if (true) return p ;}
-    throw new Error("Missing return statement in function");
-  }
-
 // Weakest outermost
   final public Path Path() throws ParseException {
                 Path p ;
@@ -3386,6 +3378,57 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     finally { jj_save(0, xla); }
   }
 
+  private boolean jj_3R_58() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_68()) {
+    jj_scanpos = xsp;
+    if (jj_3R_69()) {
+    jj_scanpos = xsp;
+    if (jj_3R_70()) {
+    jj_scanpos = xsp;
+    if (jj_3R_71()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_62()) {
+    jj_scanpos = xsp;
+    if (jj_3R_63()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_85() {
     if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
     return false;
@@ -3558,8 +3601,28 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     return false;
   }
 
+  private boolean jj_3R_34() {
+    if (jj_3R_36()) return true;
+    return false;
+  }
+
   private boolean jj_3R_76() {
     if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_33() {
+    if (jj_3R_35()) return true;
     return false;
   }
 
@@ -3588,13 +3651,14 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     return false;
   }
 
-  private boolean jj_3R_34() {
-    if (jj_3R_36()) return true;
+  private boolean jj_3R_48() {
+    if (jj_3R_54()) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
-    if (jj_3R_54()) return true;
+  private boolean jj_3_1() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_32()) return true;
     return false;
   }
 
@@ -3640,21 +3704,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     return false;
   }
 
-  private boolean jj_3R_32() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_33()) {
-    jj_scanpos = xsp;
-    if (jj_3R_34()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
   private boolean jj_3R_51() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3685,12 +3734,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_32()) return true;
-    return false;
-  }
-
   private boolean jj_3R_71() {
     if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
@@ -3708,57 +3751,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   private boolean jj_3R_68() {
     if (jj_scan_token(STRING_LITERAL1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_58() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_68()) {
-    jj_scanpos = xsp;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) {
-    jj_scanpos = xsp;
-    if (jj_3R_71()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_37() {
-    if (jj_3R_41()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_37()) {
-    jj_scanpos = xsp;
-    if (jj_3R_38()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_scan_token(FALSE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_54() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_62()) {
-    jj_scanpos = xsp;
-    if (jj_3R_63()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_scan_token(TRUE)) return true;
     return false;
   }
 
