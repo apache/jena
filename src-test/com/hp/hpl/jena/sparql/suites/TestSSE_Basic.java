@@ -114,7 +114,7 @@ public class TestSSE_Basic extends TestCase
     // Default allocations
     public void testVar_09()
     { 
-        Node v = SSE.parseNode("?") ;
+        Node v = NodeFactory.parseNode("?") ;
         assertTrue( v instanceof Var ) ;
         String vn = ((Var)v).getVarName() ;
         assertFalse(vn.equals("")) ;
@@ -122,7 +122,7 @@ public class TestSSE_Basic extends TestCase
     
     public void testVar_10()
     { 
-        Node v = SSE.parseNode("?"+ARQConstants.allocVarAnonMarker) ;
+        Node v = NodeFactory.parseNode("?"+ARQConstants.allocVarAnonMarker) ;
         assertTrue( v instanceof Var ) ;
         String vn = ((Var)v).getVarName() ;
         assertFalse(vn.equals(ARQConstants.allocVarAnonMarker)) ;
@@ -130,7 +130,7 @@ public class TestSSE_Basic extends TestCase
     
     public void testVar_11()
     { 
-        Node v = SSE.parseNode("?"+ARQConstants.allocVarMarker) ;
+        Node v = NodeFactory.parseNode("?"+ARQConstants.allocVarMarker) ;
         assertTrue( v instanceof Var ) ;
         String vn = ((Var)v).getVarName() ;
         assertFalse(vn.equals(ARQConstants.allocVarMarker)) ;
@@ -336,12 +336,12 @@ public class TestSSE_Basic extends TestCase
 
     private void testNode(String str)
     {
-        Node node = SSE.parseNode(str) ;
+        Node node = NodeFactory.parseNode(str) ;
     }
     
     private void testVar(String str)
     {
-        Node node = SSE.parseNode(str) ;
+        Node node = NodeFactory.parseNode(str) ;
         assertTrue( node instanceof Var ) ;
     }
     
@@ -366,7 +366,7 @@ public class TestSSE_Basic extends TestCase
     private void parseBadNode(String str)
     {
         try {
-            Node node = SSE.parseNode(str) ;
+            Node node = NodeFactory.parseNode(str) ;
             //System.out.println(str+" => "+item) ;
             fail("Did not get a parse failure") ;
         } 

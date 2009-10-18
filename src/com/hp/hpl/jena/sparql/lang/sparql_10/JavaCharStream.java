@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.arq ;
+package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to
@@ -619,4 +619,4 @@ class JavaCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=5fc03736eed9431bedcf54d4f7339583 (do not edit this line) */
+/* JavaCC - OriginalChecksum=329ecc7d3c9c6ec9d79fa944be5b076d (do not edit this line) */

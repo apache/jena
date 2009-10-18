@@ -4,14 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.arq;
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase ;
+package com.hp.hpl.jena.sparql.lang.sparql_10;
+import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
 
-class ARQParserBase
-    extends ParserQueryBase
-    implements ARQParserConstants
+class SPARQLParser10Base
+        extends ParserQueryBase
+        implements SPARQLParser10Constants
 {
 }
+
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP

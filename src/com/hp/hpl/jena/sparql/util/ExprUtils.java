@@ -122,7 +122,7 @@ public class ExprUtils
 
     public static NodeValue parseNodeValue(String s)
     {
-        Node n = NodeFactory.create(s) ;
+        Node n = NodeFactory.parseNode(s) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }

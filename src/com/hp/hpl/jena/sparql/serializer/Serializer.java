@@ -101,26 +101,26 @@ public class Serializer
             return ;
         }
         
-        if (outSyntax.equals(Syntax.syntaxSPARQL))
+        if (outSyntax.equals(Syntax.syntaxSPARQL_10))
         {
-            serializeSPARQL(query, writer) ;
+            serializeSPARQL_10(query, writer) ;
             writer.flush() ;
             return ;
         }
 
+        if (outSyntax.equals(Syntax.syntaxSPARQL_11))
+        {
+            serializeSPARQL_11(query, writer) ;
+            writer.flush() ;
+            return ;
+        }
+        
 //        if (outSyntax.equals(Syntax.syntaxSPARQL_X))
 //        {
 //            serializeSPARQL_X(query, writer) ;
 //            writer.flush() ;
 //            return ;
 //        }
-
-        if (outSyntax.equals(Syntax.syntaxSPARQL))
-        {
-            serializeSPARQL(query, writer) ;
-            writer.flush() ;
-            return ;
-        }
         
         ALog.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
@@ -148,13 +148,20 @@ public class Serializer
         query.visit(serilizer) ;
     }
 
-    static public void serializeSPARQL(Query query, IndentedWriter writer)
+    static public void serializeSPARQL_10(Query query, IndentedWriter writer)
     {
         // ARQ is a superset of SPARQL.
         serializeARQ(query, writer) ;
     }
 
-//    static public void serializeSPARQL_X(Query query, IndentedWriter writer)
+    static public void serializeSPARQL_11(Query query, IndentedWriter writer)
+    {
+        // ARQ is a superset of SPARQL.
+        serializeARQ(query, writer) ;
+    }
+
+
+    //    static public void serializeSPARQL_X(Query query, IndentedWriter writer)
 //    {
 //        SerializationContext cxt = new SerializationContext(query, null ) ;
 //        QuerySerializerXML serilizer = new QuerySerializerXML(writer, cxt) ;

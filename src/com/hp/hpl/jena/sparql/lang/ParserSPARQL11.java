@@ -6,31 +6,31 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.Reader ;
+import java.io.StringReader ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 
-public class ParserSPARQL extends Parser
+public class ParserSPARQL11 extends Parser
 {
-    private interface Action { void exec(SPARQLParser parser) throws Exception ; }
+    private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }
     
     @Override
     public Query parse(final Query query, String queryString)
     {
-        query.setSyntax(Syntax.syntaxSPARQL) ;
+        query.setSyntax(Syntax.syntaxSPARQL_11) ;
 
         Action action = new Action() {
-            public void exec(SPARQLParser parser) throws Exception
+            public void exec(SPARQLParser11 parser) throws Exception
             {
                 parser.QueryUnit() ;
             }
@@ -45,7 +45,7 @@ public class ParserSPARQL extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
-            public void exec(SPARQLParser parser) throws Exception
+            public void exec(SPARQLParser11 parser) throws Exception
             {
                 Element el = parser.GroupGraphPattern() ;
                 query.setQueryPattern(el) ;
@@ -59,7 +59,7 @@ public class ParserSPARQL extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
-            public void exec(SPARQLParser parser) throws Exception
+            public void exec(SPARQLParser11 parser) throws Exception
             {
                 Template t = parser.ConstructTemplate() ;
                 query.setConstructTemplate(t) ;
@@ -74,20 +74,20 @@ public class ParserSPARQL extends Parser
     private static void perform(Query query, String string, Action action)
     {
         Reader in = new StringReader(string) ;
-        SPARQLParser parser = new SPARQLParser(in) ;
+        SPARQLParser11 parser = new SPARQLParser11(in) ;
 
         try {
             query.setStrict(true) ;
             parser.setQuery(query) ;
             action.exec(parser) ;
         }
-        catch (com.hp.hpl.jena.sparql.lang.sparql.ParseException ex)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
                                           ) ; }
-        catch (com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError tErr)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
@@ -103,7 +103,7 @@ public class ParserSPARQL extends Parser
         }
         catch (Throwable th)
         {
-            ALog.warn(ParserSPARQL.class, "Unexpected throwable: ",th) ;
+            ALog.warn(ParserSPARQL11.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

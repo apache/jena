@@ -32,7 +32,7 @@ function grammar
   # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${NAME}TokenManager ..."
 
-    F="$DIR/${CLASS}ParserTokenManager.java"
+    F="$DIR/${CLASS}TokenManager.java"
 
     sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
         -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
@@ -76,8 +76,8 @@ function grammar
 	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
     mv F $F
 
-    echo "---- Fixing Java warnings in ${CLASS}Parser ..."
-    F="$DIR/${CLASS}Parser.java"
+    echo "---- Fixing Java warnings in ${CLASS} ..."
+    F="$DIR/${CLASS}.java"
     sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
 	-e 's/(int\[\])//' < $F > F
     mv F $F
@@ -111,7 +111,7 @@ function rdqlGrammar
 
 if [ $# == 0 ]
 then
-    set -- sparql arq
+    set -- sparql10 sparql11 arq
     ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
     ## exit 1
     fi
@@ -119,25 +119,21 @@ then
 for G in "$@"
 do
   case "$G" in
-##       arq-path)
-##           dos2unix < "master-path.jj" | cpp -P -C -DARQ | unix2dos > arq.jj
-##           grammar arq.jj arq ARQ
-##           ;;
-##       sparql-path)
-##           dos2unix < "master-path.jj" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
-##           grammar sparql.jj sparql SPARQL
-##           ;;
-    
-
-      sparql|sparql.jj)
+      sparql10|sparql|sparql_10.jj)
           # The parser that is exactly the working group grammar.
-          dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
-          grammar sparql.jj sparql SPARQL
+          dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 | unix2dos > sparql_10.jj
+          grammar sparql_10.jj sparql_10 SPARQLParser10
+          ;;
+
+      sparql11|sparql_11.jj)
+          # The parser that is exactly the working group grammar.
+          dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_11 | unix2dos > sparql_11.jj
+          grammar sparql_11.jj sparql_11 SPARQLParser11
           ;;
 
       arq|arq.jj)
           dos2unix < "$GRAMMAR" | cpp -P -C -DARQ | unix2dos > arq.jj
-          grammar arq.jj arq ARQ
+          grammar arq.jj arq ARQParser
           ;;
 
       rdql) echo "Tread carefully" 1>&2

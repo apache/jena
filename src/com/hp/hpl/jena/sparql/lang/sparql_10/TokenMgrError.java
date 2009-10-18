@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.arq ;
+package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
 /** Token Manager Error. */
 public class TokenMgrError extends Error
@@ -149,4 +149,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=680f135aeb80e8315a19b3b1ad21230d (do not edit this line) */
+/* JavaCC - OriginalChecksum=5de40e6989d0e17983b26f09412af859 (do not edit this line) */

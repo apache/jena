@@ -64,6 +64,8 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        qparse("--syntax=sparql_11", "SELECT * {?s ?p ?o}") ; 
+        
         {
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 

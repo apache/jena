@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 
 public class ReportARQ
@@ -46,7 +47,7 @@ public class ReportARQ
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op1 = Algebra.compile(query) ;
 
-        Op op1a = Substitute.substitute(op1, Var.alloc("label"), SSE.parseNode("'aa'")) ;
+        Op op1a = Substitute.substitute(op1, Var.alloc("label"), NodeFactory.parseNode("'aa'")) ;
         System.out.println(op1a) ;
         System.exit(0) ;
         

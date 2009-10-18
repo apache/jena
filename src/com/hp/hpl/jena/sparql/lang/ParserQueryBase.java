@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.lang;
 import java.util.Stack;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ParserQueryBase extends ParserBase 
 {
@@ -22,6 +23,18 @@ public class ParserQueryBase extends ParserBase
     }
 
     public Query getQuery() { return query ; }
+    
+    // The ARQ parser is both query and update languages.
+    private UpdateRequest request = null ;
+
+    public void setUpdateRequest(UpdateRequest request)
+    {
+        setPrologue(request) ;
+        this.request = request ;
+        setPrologue(request) ;
+    }
+    
+    protected UpdateRequest getRequest() { return request ; }
     
     protected void startSubSelect()
     {

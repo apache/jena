@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.arq ;
+package com.hp.hpl.jena.sparql.lang.sparql_11 ;
 
 /**
  * This exception is thrown when parse errors are encountered.
@@ -189,4 +189,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=73634a5561b18209c31239a5c0c4b72a (do not edit this line) */
+/* JavaCC - OriginalChecksum=a9a375f936026cc88925c0d41d8d7911 (do not edit this line) */

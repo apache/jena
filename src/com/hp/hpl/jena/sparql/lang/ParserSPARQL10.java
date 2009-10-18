@@ -14,23 +14,23 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
+import com.hp.hpl.jena.sparql.lang.sparql_10.SPARQLParser10 ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.ALog ;
 
 
-public class ParserARQ extends Parser
+public class ParserSPARQL10 extends Parser
 {
-    private interface Action { void exec(ARQParser parser) throws Exception ; }
+    private interface Action { void exec(SPARQLParser10 parser) throws Exception ; }
     
     @Override
     public Query parse(final Query query, String queryString)
     {
-        query.setSyntax(Syntax.syntaxARQ) ;
+        query.setSyntax(Syntax.syntaxSPARQL_10) ;
 
         Action action = new Action() {
-            public void exec(ARQParser parser) throws Exception
+            public void exec(SPARQLParser10 parser) throws Exception
             {
                 parser.QueryUnit() ;
             }
@@ -45,7 +45,7 @@ public class ParserARQ extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
-            public void exec(ARQParser parser) throws Exception
+            public void exec(SPARQLParser10 parser) throws Exception
             {
                 Element el = parser.GroupGraphPattern() ;
                 query.setQueryPattern(el) ;
@@ -59,7 +59,7 @@ public class ParserARQ extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
-            public void exec(ARQParser parser) throws Exception
+            public void exec(SPARQLParser10 parser) throws Exception
             {
                 Template t = parser.ConstructTemplate() ;
                 query.setConstructTemplate(t) ;
@@ -69,25 +69,25 @@ public class ParserARQ extends Parser
         return query.getConstructTemplate() ;
     }
     
- 
+    
     // All throwable handling.
     private static void perform(Query query, String string, Action action)
     {
         Reader in = new StringReader(string) ;
-        ARQParser parser = new ARQParser(in) ;
+        SPARQLParser10 parser = new SPARQLParser10(in) ;
 
         try {
             query.setStrict(true) ;
             parser.setQuery(query) ;
             action.exec(parser) ;
         }
-        catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_10.ParseException ex)
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
                                           ) ; }
-        catch (com.hp.hpl.jena.sparql.lang.arq.TokenMgrError tErr)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_10.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
@@ -103,7 +103,7 @@ public class ParserARQ extends Parser
         }
         catch (Throwable th)
         {
-            ALog.warn(ParserSPARQL11.class, "Unexpected throwable: ",th) ;
+            ALog.warn(ParserSPARQL10.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

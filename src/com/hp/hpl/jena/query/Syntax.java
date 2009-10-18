@@ -14,8 +14,15 @@ import com.hp.hpl.jena.sparql.util.TranslationTable;
 public class Syntax extends Symbol
 {
     /** The syntax that the working group has defined */
-    public static final Syntax syntaxSPARQL
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL") ;
+    public static final Syntax syntaxSPARQL_10
+                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_10") ;
+
+    /** The syntax that the working group has defined */
+    public static final Syntax syntaxSPARQL_11
+                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11") ;
+    
+    /** The synatx currently that is standardized, published, SPARQL */ 
+    public static final Syntax syntaxSPARQL = syntaxSPARQL_10 ;
 
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
@@ -33,6 +40,8 @@ public class Syntax extends Symbol
     public static TranslationTable querySyntaxNames = new TranslationTable(true) ;
     static {
         querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
+        querySyntaxNames.put("sparql_10",   Syntax.syntaxSPARQL_10) ;
+        querySyntaxNames.put("sparql_11",   Syntax.syntaxSPARQL_11) ;
 //        querySyntaxNames.put("sparql-x",    Syntax.syntaxSPARQL_X) ;
         querySyntaxNames.put("arq",         Syntax.syntaxARQ) ;
         querySyntaxNames.put("rdql",        Syntax.syntaxRDQL) ;
@@ -60,7 +69,8 @@ public class Syntax extends Symbol
         
         if ( sym.equals(syntaxRDQL) )        return syntaxRDQL ;
         if ( sym.equals(syntaxSPARQL) )      return syntaxSPARQL ;
-        
+        if ( sym.equals(syntaxSPARQL_10) )   return syntaxSPARQL_10 ;
+        if ( sym.equals(syntaxSPARQL_11) )   return syntaxSPARQL_11 ;
 //        if ( sym.equals(syntaxSPARQL_X) )    return syntaxSPARQL_X ;
         if ( sym.equals(syntaxAlgebra) )    return syntaxAlgebra ;
         return null ;

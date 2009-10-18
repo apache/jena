@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.arq ;
+package com.hp.hpl.jena.sparql.lang.sparql_10 ;
 
 /**
  * Describes the input token stream.
@@ -133,4 +133,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=1af560655147d1fe57883eea5c48bb76 (do not edit this line) */
+/* JavaCC - OriginalChecksum=7332afedc125c03e41628a579b60b0ff (do not edit this line) */

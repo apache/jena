@@ -6,23 +6,23 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayInputStream ;
 
-import junit.framework.TestCase;
+import junit.framework.TestCase ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
+import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 /** An expression test.
  * 
@@ -136,13 +136,13 @@ public abstract class TestExpr extends TestCase
     private Expr parseSPARQL(ByteArrayInputStream in) throws Throwable
     {
         try {
-            SPARQLParser parser = new SPARQLParser(in) ;
+            ARQParser parser = new ARQParser(in) ;
             parser.setQuery(query) ;
             return parser.Expression() ;
         }
-        catch (com.hp.hpl.jena.sparql.lang.sparql.ParseException ex)
+        catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
         { throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-        catch (com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError tErr)
+        catch (com.hp.hpl.jena.sparql.lang.arq.TokenMgrError tErr)
         { throw new QueryParseException(tErr.getMessage(),-1,-1) ; }
         catch (Error err)
         {

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.shared.JenaException;
 
-import com.hp.hpl.jena.sparql.lang.arq.ARQParser;
+import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.query.QueryException;
@@ -50,21 +50,21 @@ public class ParserSPARQLUpdate
     
     private UpdateRequest _parse(UpdateRequest update, Reader r)
     {
-        ARQParser parser = null ;
+        SPARQLParser11 parser = null ;
         try {
-            parser = new ARQParser(r) ;
+            parser = new SPARQLParser11(r) ;
             parser.setUpdateRequest(update) ;
             parser.UpdateUnit() ;
             //validateParsedUpdate(update) ;
             return update ;
         }
-        catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
             ) ; }
-        catch (com.hp.hpl.jena.sparql.lang.arq.TokenMgrError tErr)
+        catch (com.hp.hpl.jena.sparql.lang.sparql_11.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;

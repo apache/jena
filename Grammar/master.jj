@@ -3,6 +3,15 @@
 // (Run through cpp -P -C first)
 #endif
 
+// #if !defined(ARQ) && !defined(SPARQL_10) && !defined(SPARQL_11)
+// #error Please define one of ARQ, SPARQL_10 or SPARQL11
+// #endif
+// 
+// #if defined(SPARQL_10)
+// #define SPARQL
+// #endif
+
+
 #if !defined(ARQ) && !defined(SPARQL)
 #error Please define one of ARQ, SPARQL or SPARQL11
 #endif
@@ -11,24 +20,29 @@
 #error Please define only one of ARQ and SPARQL
 #endif
 
-#ifdef SPARQL
-#define PACKAGE     lang.sparql
-#define CLASS       SPARQLParser
-#define PARSERBASE  SPARQLParserBase
+#ifdef SPARQL_10
+#define PACKAGE     lang.sparql_10
+#define CLASS       SPARQLParser10
+#define PARSERBASE  SPARQLParser10Base
 #endif
 
-// NB An update can contain a nested SELECT
+#ifdef SPARQL_11
+#define PACKAGE     lang.sparql_11
+#define CLASS       SPARQLParser11
+#define PARSERBASE  SPARQLParser11Base
+#define UPDATE
+#endif
 
 #ifdef ARQ
+#define SPARQL_11
 #define PACKAGE     lang.arq
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
 #define UPDATE
 #endif
 
-
 // Author:  Andy Seaborne andy.seaborne@hp.com
-// (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+// (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 // All rights reserved.
 // See end of file for details.
 //
@@ -60,7 +74,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
-#ifdef ARQ
+#ifdef SPARQL_11
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #endif
 #ifdef UPDATE
@@ -75,6 +89,17 @@ public class CLASS extends PARSERBASE
 }
 PARSER_END(CLASS)
 
+#ifdef SPARQL_11
+// Common top for single entry point.
+void Top(): {}
+{
+    Prologue()
+    ( Query() | Update() )
+    <EOF>
+}
+#endif
+
+#ifdef SPARQL_10
 void QueryUnit(): { }
 {
   Query() <EOF>
@@ -85,6 +110,20 @@ void Query() : { }
   Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
+#endif
+#ifdef SPARQL_11
+// Refactored fro SPARQL 1.1
+void QueryUnit(): { }
+{
+  Prologue()
+  Query() <EOF>
+}
+
+void Query() : { }
+{
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+}
+#endif
 
 void Prologue() : {}
 {
@@ -134,7 +173,7 @@ void Project() : {  Var v ; Expr expr ; }
   (
     ( 
       ( v = Var() { getQuery().addResultVar(v) ; } )
-#ifdef ARQ
+#ifdef SPARQL_11
     | 
       // Similar to GROUP BY - adds to a different VarExprList
       // Add BuiltInCall() & FunctionCall()
@@ -237,7 +276,7 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
-#ifdef ARQ
+#ifdef SPARQL_11
   ( GroupClause() )?
   ( HavingClause() )?
 #endif
@@ -245,7 +284,7 @@ void SolutionModifier() : { }
   ( LimitOffsetClauses() )? 
 }
 
-#ifdef ARQ
+#ifdef SPARQL_11
 void GroupClause() : { }
 {
   <GROUP> <BY> ( GroupCondition() )+
@@ -336,16 +375,19 @@ void OffsetClause() : { Token t ; }
 void UpdateUnit() : {}
 {
     Prologue()
-    ( 
-      //( Update() | Manage() | Transaction() )
-      ( Update() | Manage() )
-    ) *
+    Update()
     <EOF>
 }
 
-void Update() : { Update up = null ; }
+void Update() : { }
 {
-  (  up = Modify() | up = Insert() | up = Delete() | up = Load() | up = Clear() )
+    ( Update1() )+
+}
+
+void Update1() : { Update up = null ; GraphMgt mgt ; }
+{
+  (  up = Modify() | up = Insert() | up = Delete() | 
+     up = Load() | up = Clear() |  up = Create() | up = Drop() )
     { getRequest().addUpdate(up) ; }
 }
 
@@ -441,12 +483,6 @@ UpdateClear Clear() : { UpdateClear up = new UpdateClear(); String iri ; }
     { return up ; }
 }
 
-void Manage() : { GraphMgt mgt ; }
-{
-    ( mgt = Create() | mgt = Drop() )
-    { getRequest().addUpdate(mgt) ; }
-}
-
 UpdateCreate Create() : { boolean silent = false ; String iri ; }
 {
     <CREATE>
@@ -497,7 +533,7 @@ Element UpdatePattern() : { Element el ; }
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
   t = <LBRACE>
-#ifdef ARQ
+#ifdef SPARQL_11
   ( 
     { startSubSelect() ; }
     SubSelect()
@@ -544,9 +580,9 @@ Element GroupGraphPatternSub() : { Element el = null ; }
 }
 
 // -- TriplesBlock
-// Two versions - for SPARQL and ARQ (with paths)
+// Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
 
-#ifdef SPARQL
+#ifdef SPARQL_10
 Element TriplesBlock(ElementTriplesBlock acc) : { }
 {
   { if ( acc == null )
@@ -558,7 +594,7 @@ Element TriplesBlock(ElementTriplesBlock acc) : { }
 }
 #endif
 
-#ifdef ARQ
+#ifdef SPARQL_11
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
   { if ( acc == null )
@@ -588,6 +624,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = Assignment()
  | 
    el = FetchGraph()
+#endif
+#ifdef SPARQL_11
  |
    el = ExistsElt()
  |
@@ -637,6 +675,9 @@ Element FetchGraph() : { Node n ; }
   n = VarOrIRIref() 
   { return new ElementFetch(n) ; }
 }
+#endif
+
+#ifdef SPARQL_11
 
 Element ExistsElt() : { Element el ; }
 {
@@ -724,12 +765,12 @@ Template ConstructTemplate() : { }
 
 void ConstructTriples(TemplateGroup acc) : { }
 {
-#ifdef SPARQL
+#ifdef SPARQL_10
 // SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
 #endif
-#ifdef ARQ
+#ifdef SPARQL_11
     // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)
     (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
@@ -792,8 +833,7 @@ Node Verb() : { Node p ;}
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
 
-#ifdef ARQ
-
+#ifdef SPARQL_11
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; } 
 {
   s = VarOrTerm()
@@ -850,7 +890,7 @@ Node VerbSimple() : { Node p ; }
 
 // -------- Paths
 
-#ifdef ARQ
+#ifdef SPARQL_11
 Path PathUnit() : { Path p ; }
 {
     p = Path()
@@ -1211,7 +1251,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
-#ifdef ARQ
+#ifdef SPARQL_11
   | expr = Aggregate() { return expr ; }
 #endif
   )
@@ -1242,7 +1282,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprL
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
 
-#ifdef ARQ
+#ifdef SPARQL_11
   | <COALESCE> a = ArgList()
     { return new E_Coalesce(a) ; }
 
@@ -1267,7 +1307,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprL
 
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
-#ifdef ARQ
+#ifdef SPARQL_11
   | expr = ExistsFunc()      { return expr ; }
   | expr = NotExistsFunc()   { return expr ; }
 #endif
@@ -1286,7 +1326,7 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
-#ifdef ARQ
+#ifdef SPARQL_11
 Expr ExistsFunc() : { Element el ; }
 {
    <EXISTS>
@@ -1534,12 +1574,14 @@ TOKEN [IGNORE_CASE] :
 
 #ifdef ARQ
 |  < SERVICE:     "service" >
+|  < LET:         "let" >
+#endif
+#ifdef SPARQL_11 
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
 |  < NOTEXISTS:   "not" (<WS>)* "exists" >
 |  < UNSAID:      "unsaid" >
 |  < AS:          "as" >
-|  < LET:         "let" >
 |  < GROUP:       "group" >
 |  < HAVING:      "having" >
 |  < AGG:         "agg" >
@@ -1549,7 +1591,6 @@ TOKEN [IGNORE_CASE] :
 |  < SUM:         "sum" >
 |  < AVG:         "avg" >
 |  < STDDEV:      "stdev" >
-//|  < LOAD:        "load" >
 |  < FETCH:       "fetch" >
 #endif
 
@@ -1557,8 +1598,10 @@ TOKEN [IGNORE_CASE] :
 
 // Expression operators
 |  < BOUND:       "bound" >
+#ifdef SPARQL_11
 |  < COALESCE:    "coalesce" >
 |  < IF:          "if" >
+#endif
 
 |  < STR:         "str" >
 |  < DTYPE:       "datatype" >
@@ -1688,17 +1731,15 @@ TOKEN :
 | < AT: "@">
 #ifdef ARQ
 | < ASSIGN:     ":=">
+#endif
+#ifdef SPARQL_11
 // Path related
 |  < VBAR:     "|" >
 | < CARROT:   "^" >
 | < FPATH:    "->" >
 | < RPATH:    "<-" >
 | < QMARK:    "?" >
-
 #endif
-
-
-
 }
 
 // See XML chars.txt for notes

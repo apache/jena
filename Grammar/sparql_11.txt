@@ -64,6 +64,21 @@ TOKENS
 | <GRAPH: "graph">
 | <OPTIONAL: "optional">
 | <UNION: "union">
+| <EXISTS: "exists">
+| <NOT: "not">
+| <NOTEXISTS: "not" (<WS>)* "exists">
+| <UNSAID: "unsaid">
+| <AS: "as">
+| <GROUP: "group">
+| <HAVING: "having">
+| <AGG: "agg">
+| <COUNT: "count">
+| <MIN: "min">
+| <MAX: "max">
+| <SUM: "sum">
+| <AVG: "avg">
+| <STDDEV: "stdev">
+| <FETCH: "fetch">
 | <FILTER: "filter">
 | <BOUND: "bound">
 | <COALESCE: "coalesce">
@@ -80,6 +95,22 @@ TOKENS
 | <SAME_TERM: "sameTerm">
 | <TRUE: "true">
 | <FALSE: "false">
+}
+
+// SPARQL/Update parts.
+<DEFAULT> TOKEN [IGNORE_CASE] : {
+<MODIFY: "modify">
+| <INSERT: "insert">
+| <DELETE: "delete">
+| <DATA: "data">
+| <ADD: "add">
+| <REMOVE: "remove">
+| <LOAD: "load">
+| <CLEAR: "clear">
+| <CREATE: "create">
+| <SILENT: "silent">
+| <DROP: "drop">
+| <INTO: "into">
 }
 
 // -------------------------------------------------
@@ -133,6 +164,11 @@ TOKENS
 | <SLASH: "/">
 | <DATATYPE: "^^">
 | <AT: "@">
+| <VBAR: "|">
+| <CARROT: "^">
+| <FPATH: "->">
+| <RPATH: "<-">
+| <QMARK: "?">
 }
 
 // See XML chars.txt for notes
@@ -154,15 +190,18 @@ TOKENS
 }
 
 NON-TERMINALS
-	QueryUnit	:=	Query <EOF>
-	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
+// Common top for single entry point.
+	Top	:=	Prologue ( Query | Update ) <EOF>
+// Refactored fro SPARQL 1.1
+	QueryUnit	:=	Prologue Query <EOF>
+	Query	:=	( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRI_REF
 // ---- Query type clauses
 	SelectQuery	:=	Project ( DatasetClause )* WhereClause SolutionModifier
 	SubSelect	:=	Project WhereClause SolutionModifier
-	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) )+ | <STAR> )
+	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) | Aggregate | BuiltInCall | FunctionCall | ( <LPAREN> Expression ( <AS> Var )? <RPAREN> ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause
@@ -172,24 +211,70 @@ NON-TERMINALS
 	NamedGraphClause	:=	<NAMED> SourceSelector
 	SourceSelector	:=	IRIref
 	WhereClause	:=	( <WHERE> )? GroupGraphPattern
-	SolutionModifier	:=	( OrderClause )? ( LimitOffsetClauses )?
+	SolutionModifier	:=	( GroupClause )? ( HavingClause )? ( OrderClause )? ( LimitOffsetClauses )?
+	GroupClause	:=	<GROUP> <BY> ( GroupCondition )+
+	GroupCondition	:=	( BuiltInCall | FunctionCall | <LPAREN> Expression ( <AS> Var )? <RPAREN> | Var )
+	HavingClause	:=	<HAVING> ( HavingCondition )+
+	HavingCondition	:=	Constraint
 	OrderClause	:=	<ORDER> <BY> ( OrderCondition )+
 	OrderCondition	:=	( ( ( <ASC> | <DESC> ) BrackettedExpression ) | ( Constraint | Var ) )
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
 // ---- SPARQL/Update
+	UpdateUnit	:=	Prologue Update <EOF>
+	Update	:=	( Update1 )+
+	Update1	:=	( Modify | Insert | Delete | Load | Clear | Create | Drop )
+	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate ( UpdatePattern )?
+	Delete	:=	<DELETE> ( DeleteData | DeleteTemplate )
+	DeleteData	:=	<DATA> ( ( <FROM> )? IRIref )* ConstructTemplate
+	DeleteTemplate	:=	( ( <FROM> )? IRIref )* ConstructTemplate ( UpdatePattern )?
+	Insert	:=	<INSERT> ( InsertData | InsertTemplate )
+	InsertData	:=	<DATA> ( ( <INTO> )? IRIref )* ConstructTemplate
+	InsertTemplate	:=	( ( <INTO> )? IRIref )* ConstructTemplate ( UpdatePattern )?
+	GraphIRI	:=	<GRAPH> IRIref
+	Load	:=	<LOAD> ( IRIref )+ ( <INTO> IRIref )?
+	Clear	:=	<CLEAR> ( GraphIRI )?
+	Create	:=	<CREATE> ( <SILENT> )? GraphIRI
+	Drop	:=	<DROP> ( <SILENT> )? GraphIRI
+	UpdatePattern	:=	( <WHERE> )? GroupGraphPattern
+// void Transaction() : {}
+// {
+//     TransBegin() | TransCommit() | TransAbort()
+// }
+// 
+// void TransBegin() : {}
+// {
+//     <BEGIN> (IRIref())?
+//     { System.out.println("++ Begin") ; }
+// }
+// 
+// void TransCommit() : {}
+// {
+//     <COMMIT> (IRIref())?
+//     { System.out.println("++ Commit") ; }
+// }
+// 
+// void TransAbort() : {}
+// {
+//     <ABORT> (IRIref())?
+//     { System.out.println("++ Abort") ; }
+// }
+
+
 // ---- General Graph Pattern 
-	GroupGraphPattern	:=	<LBRACE> GroupGraphPatternSub <RBRACE>
+	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
 // -- TriplesBlock
-// Two versions - for SPARQL and ARQ (with paths)
-	TriplesBlock	:=	TriplesSameSubject ( <DOT> ( TriplesBlock )? )?
+// Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
+	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
 // -----
-	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern )
+	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | ExistsElt | NotExistsElt )
 // ---- Definitions of each pattern element
 	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
 	GraphGraphPattern	:=	<GRAPH> VarOrIRIref GroupGraphPattern
+	ExistsElt	:=	<EXISTS> GroupGraphPattern
+	NotExistsElt	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
@@ -199,7 +284,7 @@ NON-TERMINALS
 	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
-	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
+	ConstructTriples	:=	TriplesSameSubject ( ( <DOT> ) TriplesSameSubject )* ( <DOT> )?
 // -------- Triple lists with property and object lists
 // -------- Without paths: entry: TriplesSameSubject
 	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
@@ -211,7 +296,28 @@ NON-TERMINALS
 	Verb	:=	( VarOrIRIref | <KW_A> )
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
+	TriplesSameSubjectPath	:=	VarOrTerm PropertyListNotEmptyPath
+		|	TriplesNode PropertyListPath
+	PropertyListNotEmptyPath	:=	( VerbPath | VerbSimple ) ObjectList ( <SEMICOLON> ( ( VerbPath | VerbSimple ) ObjectList )? )*
+	PropertyListPath	:=	( PropertyListNotEmpty )?
+	VerbPath	:=	Path
+	VerbSimple	:=	Var
+// End paths stuff.
+
+
 // -------- Paths
+	PathUnit	:=	Path <EOF>
+// Weakest outermost
+	Path	:=	PathAlternative
+	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
+	PathSequence	:=	PathEltOrReverse ( <SLASH> PathEltOrReverse | <CARROT> PathElt )*
+// Path unit element, no reverse
+	PathElt	:=	PathPrimary ( PathMod )?
+// Path unit element, include reverse.
+	PathEltOrReverse	:=	( PathElt | <CARROT> PathElt )
+	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) ) )
+	PathPrimary	:=	( IRIref | <KW_A> | <LPAREN> Path <RPAREN> )
+	Integer	:=	<INTEGER>
 // -------- Triple expansions
 
 // Anything that can stand in a node slot and which is
@@ -247,20 +353,45 @@ NON-TERMINALS
 		|	<PLUS> PrimaryExpression
 		|	<MINUS> PrimaryExpression
 		|	PrimaryExpression
-	PrimaryExpression	:=	( BrackettedExpression | BuiltInCall | IRIrefOrFunction | RDFLiteral | NumericLiteral | BooleanLiteral | Var )
+	PrimaryExpression	:=	( BrackettedExpression | BuiltInCall | IRIrefOrFunction | RDFLiteral | NumericLiteral | BooleanLiteral | Var | Aggregate )
 	BrackettedExpression	:=	<LPAREN> Expression <RPAREN>
 	BuiltInCall	:=	<STR> <LPAREN> Expression <RPAREN>
 		|	<LANG> <LPAREN> Expression <RPAREN>
 		|	<LANGMATCHES> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<DTYPE> <LPAREN> Expression <RPAREN>
 		|	<BOUND> <LPAREN> Var <RPAREN>
+		|	<COALESCE> ArgList
+		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<SAME_TERM> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<IS_IRI> <LPAREN> Expression <RPAREN>
 		|	<IS_URI> <LPAREN> Expression <RPAREN>
 		|	<IS_BLANK> <LPAREN> Expression <RPAREN>
 		|	<IS_LITERAL> <LPAREN> Expression <RPAREN>
 		|	RegexExpression
+		|	ExistsFunc
+		|	NotExistsFunc
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	ExistsFunc	:=	<EXISTS> GroupGraphPattern
+	NotExistsFunc	:=	( <UNSAID> | <NOTEXISTS> ) GroupGraphPattern
+	Aggregate	:=	( <COUNT> <LPAREN> ( <STAR> | Var | <DISTINCT> ( <STAR> | Var ) ) <RPAREN> | <SUM> <LPAREN> Expression <RPAREN> | <MIN> <LPAREN> Expression <RPAREN> | <MAX> <LPAREN> Expression <RPAREN> | <AVG> <LPAREN> Expression <RPAREN> )
+// AggregateFactory AggregateCount() : { AggregateFactory agg ;
+//                                       boolean distinct = false ;
+//                                       Var v ; Token t ; }
+// {
+//     t = <COUNT> <LPAREN> 
+//     ( <STAR>        { agg = AggCount.get() ; }
+//     | v = Var()     { agg = new AggCountVar(v) ; }
+//     | <DISTINCT> 
+//       ( <STAR>      { agg = AggCountDistinct.get() ; }
+//       | v = Var()   { agg = new AggCountVarDistinct(v) ; }
+//       )
+//     )
+//     <RPAREN>
+//     { return agg ; }
+// }
+
+
+
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 	IRIrefOrFunction	:=	IRIref ( ArgList )?

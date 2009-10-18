@@ -6,41 +6,19 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParserTokenManager;
-import com.hp.hpl.jena.sparql.lang.sparql.Token;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class NodeFactory
 {
-    public static Node create(String nodeString)
+    public static Node parseNode(String nodeString)
     {
-        try {
-            Query query = QueryFactory.make() ;
-            query.setPrefixMapping(ARQConstants.getGlobalPrefixMap()) ;
-            Reader in = new StringReader(nodeString) ;
-            SPARQLParser parser = new SPARQLParser(in) ;
-            parser.setQuery(query) ;
-            Node n = parser.GraphTerm() ;
-            // Check we consumed the whole string.
-            Token t = parser.getNextToken() ;
-            if ( t.kind != SPARQLParserTokenManager.EOF )
-                throw makeException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn, t.beginLine, t.beginColumn) ;
-            return n ;
-        } catch (ParseException ex)
-        { throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+        return SSE.parseNode(nodeString) ;
     }
     
     private static QueryParseException makeException(String msg, int line, int column)

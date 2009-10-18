@@ -4,12 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sparql;
+package com.hp.hpl.jena.sparql.lang.sparql_11;
 import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
 
-class SPARQLParserBase
+class SPARQLParser11Base
         extends ParserQueryBase
-        implements SPARQLParserConstants
+        implements SPARQLParser11Constants
 {
 }
 

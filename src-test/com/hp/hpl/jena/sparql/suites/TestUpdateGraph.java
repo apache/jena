@@ -35,17 +35,17 @@ import com.hp.hpl.jena.update.UpdateRequest;
 
 public abstract class TestUpdateGraph extends TestUpdateBase
 {
-    protected static Node s = NodeFactory.create("<http://example/r>") ;
-    protected static Node p = NodeFactory.create("<http://example/p>") ;
-    protected static Node q = NodeFactory.create("<http://example/q>") ;
-    protected static Node v = NodeFactory.create("<http://example/v>") ;
+    protected static Node s = NodeFactory.parseNode("<http://example/r>") ;
+    protected static Node p = NodeFactory.parseNode("<http://example/p>") ;
+    protected static Node q = NodeFactory.parseNode("<http://example/q>") ;
+    protected static Node v = NodeFactory.parseNode("<http://example/v>") ;
     
-    protected static Node o1 = NodeFactory.create("2007") ;
+    protected static Node o1 = NodeFactory.parseNode("2007") ;
     protected static Triple triple1 =  new Triple(s,p,o1) ;
-    protected static Node o2 = NodeFactory.create("1066") ;
+    protected static Node o2 = NodeFactory.parseNode("1066") ;
     protected static Triple triple2 =  new Triple(s,p,o2) ;
     protected static Graph graph1 = data1() ;
-    protected static Node graphIRI = NodeFactory.create("<http://example/graph>") ;
+    protected static Node graphIRI = NodeFactory.parseNode("<http://example/graph>") ;
     
     public void testInsertData1()
     {
@@ -216,7 +216,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-1.rup") ;
-        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactory.create("123")))) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
     public void testUpdateScript2()
@@ -224,7 +224,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-2.rup") ;
         assertTrue(graphContains(gStore.getGraph(Node.createURI("http://example/g1")),
-                                 new Triple(s,p,NodeFactory.create("123")))) ;
+                                 new Triple(s,p,NodeFactory.parseNode("123")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 
@@ -241,7 +241,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-1.rup") ;
         assertTrue(graphContains(gStore.getDefaultGraph(),
-                                 new Triple(s,p,NodeFactory.create("123")))) ;
+                                 new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
     public void testUpdateScript5()
@@ -263,7 +263,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-3.rup") ;
         assertTrue(graphContains(gStore.getGraph(graphIRI),
-                                 new Triple(s,p,NodeFactory.create("123")))) ;
+                                 new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
     public void testUpdateScript7()
@@ -271,7 +271,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-4.rup") ;
         assertTrue(graphContains(gStore.getDefaultGraph(),
-                                 new Triple(s,p,NodeFactory.create("123")))) ;
+                                 new Triple(s,p,NodeFactory.parseNode("123")))) ;
         Graph g = gStore.getGraph(graphIRI) ;
         assertTrue(graphContains(gStore.getGraph(graphIRI),
                                  new Triple(s,p,o2))) ;

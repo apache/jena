@@ -34,11 +34,16 @@ public class ParserRegistry
     {
         ParserRegistry reg = new ParserRegistry() ;
         
-        reg.add(Syntax.syntaxSPARQL, 
+        reg.add(Syntax.syntaxSPARQL_10, 
                      new ParserFactory() {
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL.equals(syntax) ; } 
-            public Parser create( Syntax syntax ) { return new ParserSPARQL() ; } }) ;
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax) ; } 
+            public Parser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
         
+        reg.add(Syntax.syntaxSPARQL_11, 
+                new ParserFactory() {
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; } 
+            public Parser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
+   
         reg.add(Syntax.syntaxARQ, 
                      new ParserFactory() {
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 

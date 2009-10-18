@@ -438,9 +438,6 @@ public class FormatterElement extends FormatterBase
             return ;
         }
         
-        int x = + 
-        3 ;
-        
         // TODO RDF Collections - spot the parsers pattern 
         if ( triples.isEmpty() )
             return ;

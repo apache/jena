@@ -9,7 +9,7 @@ package com.hp.hpl.jena.query;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.sparql.lang.Parser;
 import com.hp.hpl.jena.sparql.lang.ParserRegistry;
-import com.hp.hpl.jena.sparql.lang.ParserSPARQL;
+import com.hp.hpl.jena.sparql.lang.ParserARQ;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.util.FileManager;
@@ -204,12 +204,12 @@ public class QueryFactory
     
     static public Element createElement(String elementString)
     {
-        return ParserSPARQL.parseElement(elementString) ;
+        return ParserARQ.parseElement(elementString) ;
     }
 
     static public Template createTemplate(String templateString)
     {
-        return ParserSPARQL.parseTemplate(templateString) ;
+        return ParserARQ.parseTemplate(templateString) ;
     }
 }
 

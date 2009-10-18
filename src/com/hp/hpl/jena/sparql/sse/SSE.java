@@ -73,7 +73,7 @@ public class SSE
     public static PrefixMapping getDefaultPrefixMapWrite() { return defaultPrefixMapWrite ; }
     public static void setDefaultPrefixMapWrite(PrefixMapping pmap) { defaultPrefixMapWrite =  pmap ; }
     
-    /** Parse a string to obtain a Node */
+    /** Parse a string to obtain a Node (see NodeFactory.parse() */
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     
     /** Parse a string to obtain a Node */

@@ -117,7 +117,7 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
+      <version>[1.2.12,)</version>
     </dependency>
 
   </dependencies>
@@ -128,7 +128,7 @@
     
     <!-- The filter file is written by antrun -->
     <filters>
-      <filter>${basedir}/target/filter.properties</filter>
+      <filter>${project.basedir}/target/filter.properties</filter>
     </filters>
 
     <resources>
@@ -258,12 +258,12 @@
             <phase>generate-resources</phase>
             <configuration>
               <tasks>
-                <mkdir dir="${basedir}/target"/>
+                <mkdir dir="${project.basedir}/target"/>
                 <tstamp>
                   <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
                   <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
                 </tstamp>
-                <echo file="${basedir}/target/filter.properties">
+                <echo file="${project.basedir}/target/filter.properties">
 #begin
 build.time.xsd=${build.time.xsd}
 build.time.txt=${build.time.txt}
@@ -304,7 +304,7 @@ build.time.txt=${build.time.txt}
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-surefire-report-plugin</artifactId>
          <configuration>
-         <outputDirectory>${basedir}/target/surefire-reports-html</outputDirectory>
+         <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
          </configuration>
          </plugin>
          </plugins>
