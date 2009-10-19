@@ -9,6 +9,7 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
+    // RC-1 done.
 
     // NodeTable modularization (inline, cache) [Ready]
     //    NodeTableBase - delete.  Reuse NodeTableIndex 
@@ -17,9 +18,12 @@ public class DevTDB
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
 
+    // FROM NAMED pick and mix
+    
     // See metadata stuff in BPlusTreeParams
     // Document
     //   concurrency  []
+    
     //   Settings     []
     //   Explain mode [DONE]
     // Test.

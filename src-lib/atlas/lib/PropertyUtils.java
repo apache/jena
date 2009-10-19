@@ -18,6 +18,13 @@ public class PropertyUtils
 {
     /** Java5 does not have read/write from readers/writers - needed for UTF-8 */ 
     
+    static public Properties loadFromFile(String filename) throws IOException
+    {
+        Properties properties = new Properties() ;
+        loadFromFile(properties, filename) ;
+        return properties ;
+    }
+    
     static public void loadFromFile(Properties properties, String filename) throws IOException
     {
         String x = FileUtils.readWholeFileAsUTF8(filename) ;
