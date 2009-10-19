@@ -73,15 +73,15 @@ public class RunARQ
                                                     "    GRAPH ?g {",
                                                     "    ?s ?p ?o",
                                                     "    }",
-                                                    //"    FILTER(?o = :x2 )",
-                                                    "    FILTER( ?g = :x1 || ?g = :x2 || ?g != :x3 )",
+                                                    "    FILTER(?o = :x2 )",
+                                                    "    FILTER( ?g = :x1 || ?g != :x3 )",
                                                     "}") ;
             // Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             divider() ;
             System.out.println(q) ;
             Op op = Algebra.compile(q) ;
-            op = Optimize.optimize(op, ARQ.getContext()) ;
+            //op = Optimize.optimize(op, ARQ.getContext()) ;
             divider() ;
             System.out.println(op) ;
             //Not yet active.

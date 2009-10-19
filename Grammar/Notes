@@ -31,9 +31,9 @@ Note this runs cpp over master.jj to produce arq.jj or sparql.jj
 
 ==== Making the HTML
 
-sparql.txt is produced by "grammar"
+sparql_N.txt is produced by "grammar"
 
-Run "jj2tokens sparql.jj > tokens.txt"
+Run "jj2tokens sparql_11.jj > tokens.txt"
 Manually tidy, noting which to inline
 
 # this knowns which files to use
@@ -50,4 +50,5 @@ Yacker:
 Get text
 Remove /* IRI comment */
 Insert @terminals
-Fix all \
+Fix all \ (around ECHAR)
+

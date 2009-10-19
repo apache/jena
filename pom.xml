@@ -167,7 +167,7 @@
             <id>attach-sources</id>
             <!-- <phase>package</phase> package is the default -->
             <goals>
-              <!-- Maven v2.2.0 jar-no-fork does not exists 
+              <!-- Maven v2.2.0 jar-no-fork does not exist
                    contrary to the documentation
               -->
               <goal>jar</goal> 

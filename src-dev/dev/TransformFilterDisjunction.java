@@ -29,54 +29,69 @@ public class TransformFilterDisjunction extends TransformCopy
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
     {
+        // All the disjunctions must be assignments.
+        // Need to optimize the exprList2 elements
+        
+        
         //ExprUtils.isSubstitutionSafe
         
         ExprList exprList = opFilter.getExprs() ;
-//        // First pass - any disjunctions?
-//        boolean processDisjunction = false ;
-//        for ( Expr expr : exprList )
+        
+//        //---- OLD
+//        if ( exprList.size() == 1 )
 //        {
-//            if ( isEqualityDisjunction(expr) )
-//            {
-//                processDisjunction = true ;
-//                break ;
-//            }
+//            Expr expr = exprList.get(0) ;
+//            Op op2 = expandDisjunction(expr, subOp) ;
+//            if ( op2 != null )
+//                return op2 ;
 //        }
 //        
-//        if ( ! processDisjunction )
-//            return super.transform(opFilter, subOp) ;
-//        
-        // Second pass. Do it.
-//        for ( Expr expr : exprList )
-//        {
-//            
-//        }
-            
-        // If disjunction, rewrite to union.
-        if ( exprList.size() == 1 )
+//        // --- Temp end
+//        if ( true )
+//            return super.transform(opFilter, subOp) ; 
+
+        // Full case
+        // First pass - any disjunctions at all?
+        boolean processDisjunction = false ;
+        for ( Expr expr : exprList )
         {
-            Expr expr = exprList.get(0) ;
-            if ( expr != null )
+            if ( isDisjunction(expr) )
             {
-                Op op2 = expandDisjunction(expr, subOp) ;
-                if ( op2 != null )
-                    return op2 ;
-                // Fall thorugh.
+                processDisjunction = true ;
+                break ;
             }
         }
         
-        // Do nothing special.
-        //return OpFilter.filter(exprList, subOp) ;
-        return super.transform(opFilter, subOp) ;
+        if ( ! processDisjunction )
+            return super.transform(opFilter, subOp) ;
+        
+        // If yes, any to process?
+        ExprList exprList2 = new ExprList() ;
+        
+        for ( Expr expr : exprList )
+        {
+            if ( ! isDisjunction(expr) )
+            {
+                // Assignment there?
+                exprList2.add(expr) ;
+                continue ;
+            }
+            Op op2 = expandDisjunction(expr, subOp) ;
+            if ( op2 != null )
+                subOp = op2 ;
+        }
+
+        if ( exprList2.isEmpty() )
+            return subOp ;
+        
+        Op opNew = OpFilter.filter(exprList2, subOp) ;
+        return super.transform((OpFilter)opNew, subOp) ;
     }
     
-//    private boolean isEqualityDisjunction(Expr expr)
-//    {
-//        if ( !( expr instanceof E_LogicalOr ) )
-//            return false ;
-//        
-//        
-//    }
+    private boolean isDisjunction(Expr expr)
+    {
+        return ( expr instanceof E_LogicalOr ) ; 
+    }
 
     // Todo:
     // 1 - convert TransformEqualityFilter to use ExprLib for testing.
