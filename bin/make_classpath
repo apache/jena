@@ -22,6 +22,7 @@ CPDIR2="$DIRROOT/build/classes"
 ETCDIR="$DIRROOT/etc"
 
 # Cygwin - on Windows, the Java separator is ;
+# Form in UNIX style, trun into windows form at the end.
 
 CYGWIN=0
 SEP=':'
@@ -59,5 +60,10 @@ done
 
 # Add DIRROOT
 #CP="${CP}${SEP}${DIRROOT}"
+
+## if [ "$CYGWIN" = 1 ]
+## then
+##     CP="$(cygpath -w "$CP")"
+##     fi
 
 echo "$CP"
