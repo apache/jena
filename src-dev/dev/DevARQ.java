@@ -8,8 +8,8 @@ package dev;
 
 public class DevARQ
 {
-    // ==== 2.8.1 : Check:
-
+    // ==== 2.8.2
+    
     // ==== Document IF/COLLASCE
     // Enable OpDisjunction.  Need further work - assignments only.!
     // Do disjunctions in exprLists

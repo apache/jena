@@ -65,7 +65,6 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         {
-            // Opps.
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 
                                                     "SELECT *",
@@ -76,7 +75,7 @@ public class RunARQ
                                                     "    FILTER(?o = :x2 )",
                                                     "    FILTER( ?g = :x1 || ?g != :x3 )",
                                                     "}") ;
-            // Only on || equalities
+            // More cautious.  Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             divider() ;
             System.out.println(q) ;
