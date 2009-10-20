@@ -18,6 +18,11 @@ public class Log
 {
     private Log() {}
     
+    static public void info(String caller, String msg)
+    {
+        log(caller).info(msg) ;
+    }
+    
     static public void info(Object caller, String msg)
     {
         log(caller.getClass()).info(msg) ;
@@ -36,6 +41,11 @@ public class Log
     static public void info(Class<?> cls, String msg, Throwable th)
     {
         log(cls).info(msg, th) ;
+    }
+    
+    static public void warn(String caller, String msg)
+    {
+        log(caller).warn(msg) ;
     }
     
     static public void warn(Object caller, String msg)
@@ -78,9 +88,19 @@ public class Log
         log(cls).error(msg, th) ;
     }
 
+    static public void fatal(String caller, String msg)
+    {
+        log(caller).error(msg) ;
+    }
+    
     static public Logger log(Class<?> cls)
     {
         return LoggerFactory.getLogger(cls) ;
+    }
+    
+    static public Logger log(String loggerName)
+    {
+        return LoggerFactory.getLogger(loggerName) ;
     }
     
     /** Turn on a logger (all levels). 
