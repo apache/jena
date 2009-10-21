@@ -664,8 +664,7 @@ public class Setup
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
 
-    // From TDBFactoryGraph
-    private static ReorderTransformation chooseOptimizer(Location location)
+    public static ReorderTransformation chooseOptimizer(Location location)
     {
         if ( location == null )
             return ReorderLib.identity() ;
