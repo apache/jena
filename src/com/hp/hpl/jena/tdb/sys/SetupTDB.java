@@ -60,7 +60,7 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
 
-public class Setup
+public class SetupTDB
 {
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     static final Logger log = TDB.logInfo ;
@@ -196,10 +196,10 @@ public class Setup
         
         // Only support this so far.
         if ( ! metafile.propertyEquals("tdb.layout", "v1") )
-            Setup.error(log, "Excepted 'v1': Wrong layout: "+metafile.getProperty("tdb.layout")) ;
+            SetupTDB.error(log, "Excepted 'v1': Wrong layout: "+metafile.getProperty("tdb.layout")) ;
             
         if ( ! metafile.propertyEquals("tdb.type", "standalone") )
-            Setup.error(log, "Not marked as a standalone type: "+metafile.getProperty("tdb.type")) ;
+            SetupTDB.error(log, "Not marked as a standalone type: "+metafile.getProperty("tdb.type")) ;
 
         // Check expectations.
         
@@ -251,12 +251,12 @@ public class Setup
         String indexes[] = x.split(",") ;
         
         if ( indexes.length != 3 )
-            Setup.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
+            SetupTDB.error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Triple table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
-            Setup.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
+            SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, location) ;
         metafile.flush() ;
         return tripleTable ;
@@ -270,12 +270,12 @@ public class Setup
         String indexes[] = x.split(",") ;
 
         if ( indexes.length != 6 )
-            Setup.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
+            SetupTDB.error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Quad table: "+primary+" :: "+StrUtils.join(",", indexes)) ;
         
         TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
-            Setup.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
+            SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, location) ;
         metafile.flush() ;
         return quadTable ;
@@ -319,7 +319,7 @@ public class Setup
         
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, config, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
-            Setup.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+            SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
         // The nodetable.
         String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
@@ -338,7 +338,7 @@ public class Setup
     public static TupleIndex[] makeTupleIndexes(Location location, Properties config, String primary, String[] descs, String[] filenames)
     {
         if ( primary.length() != 3 && primary.length() != 4 )
-            Setup.error(log, "Bad primary key length: "+primary.length()) ;
+            SetupTDB.error(log, "Bad primary key length: "+primary.length()) ;
 
         int indexRecordLen = primary.length()*NodeId.SIZE ;
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
@@ -422,16 +422,16 @@ public class Setup
         RecordFactory recordFactory = makeRecordFactory(metafile, "tdb.bplustree.record", dftKeyLength, dftValueLength) ;
         
         String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
-        int blkSize = Setup.parseInt(blkSizeStr, "Bad block size") ;
+        int blkSize = SetupTDB.parseInt(blkSizeStr, "Bad block size") ;
         
         // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
         // Does not set order.
         
         int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
         String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
-        int order = Setup.parseInt(orderStr, "Bad order for B+Tree") ;
+        int order = SetupTDB.parseInt(orderStr, "Bad order for B+Tree") ;
         if ( order != calcOrder )
-            Setup.error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+            SetupTDB.error(log, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
         RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
         metafile.flush() ;
@@ -451,15 +451,15 @@ public class Setup
             recSizeStr = metafile.getProperty(keyName) ;
         
         if ( recSizeStr == null )
-            Setup.error(log, "Failed to get a record factory description from "+keyName) ;
+            SetupTDB.error(log, "Failed to get a record factory description from "+keyName) ;
         
         
         String[] recordLengths = recSizeStr.split(",") ;
         if ( recordLengths.length != 2 )
-            Setup.error(log, "Bad record length: "+recSizeStr) ;
+            SetupTDB.error(log, "Bad record length: "+recSizeStr) ;
 
-        int keyLen = Setup.parseInt(recordLengths[0], "Bad key length ("+recSizeStr+")") ;
-        int valLen = Setup.parseInt(recordLengths[1], "Bad value length ("+recSizeStr+")") ;
+        int keyLen = SetupTDB.parseInt(recordLengths[0], "Bad key length ("+recSizeStr+")") ;
+        int valLen = SetupTDB.parseInt(recordLengths[1], "Bad value length ("+recSizeStr+")") ;
         
         return new RecordFactory(keyLen, valLen) ;
     }
@@ -617,7 +617,7 @@ public class Setup
             
         }
         else
-            Setup.error(log, "tdb.layout: expected v1") ;
+            SetupTDB.error(log, "tdb.layout: expected v1") ;
             
         
         metafile.flush() ;

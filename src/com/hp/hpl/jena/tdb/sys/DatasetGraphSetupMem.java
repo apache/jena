@@ -19,7 +19,7 @@ public class DatasetGraphSetupMem implements DatasetGraphMakerTDB
 
     public DatasetGraphTDB createDatasetGraph()
     {
-        return Setup.buildDataset(Location.mem()) ;
+        return SetupTDB.buildDataset(Location.mem()) ;
     }
 
     public void releaseDatasetGraph(DatasetGraphTDB dataset)

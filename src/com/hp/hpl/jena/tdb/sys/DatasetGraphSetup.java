@@ -13,12 +13,12 @@ public class DatasetGraphSetup implements DatasetGraphMakerTDB
 {
     public DatasetGraphTDB createDatasetGraph()
     {
-        return Setup.buildDataset(Location.mem()) ;
+        return SetupTDB.buildDataset(Location.mem()) ;
     }
 
     public DatasetGraphTDB createDatasetGraph(Location location)
     {
-        return Setup.buildDataset(location) ;
+        return SetupTDB.buildDataset(location) ;
     }
 
     public void releaseDatasetGraph(DatasetGraphTDB dataset)

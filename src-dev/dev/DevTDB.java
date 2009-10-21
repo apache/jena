@@ -10,6 +10,12 @@ public class DevTDB
 {
     // == 0.8.3
     // RC-1 done.
+    
+    // == 0.8.4
+    // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
+    //   Remove FactoryGraphTDB
+    //   IndexMakers?
+    // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
     // NodeTable modularization (inline, cache) [Ready]
     //    NodeTableBase - delete.  Reuse NodeTableIndex 

@@ -41,7 +41,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.Setup ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
@@ -104,12 +104,12 @@ public class RunTDB
             MetaFile metafile = fileset.getMetaFile() ;
             String filetype = metafile.getProperty("tdb.file.type", "rangeindex") ;
             if ( filetype.equals("rangeindex") )
-                Setup.error(null, "Expected a range index for '"+"tdb.file.type"+"' got:"+filetype) ;
+                SetupTDB.error(null, "Expected a range index for '"+"tdb.file.type"+"' got:"+filetype) ;
             
             String impl = metafile.getProperty("tdb.file.impl", "bplustree") ;
             RangeIndexMaker rim = Registries.regIndexMakers.get(impl) ;
             if ( rim == null )
-                Setup.error(null, "No such implementation: "+impl) ;
+                SetupTDB.error(null, "No such implementation: "+impl) ;
             return rim.createRangeIndex(fileset) ;
         }
         
@@ -134,19 +134,19 @@ public class RunTDB
         public RangeIndex createRangeIndex(FileSet fileset)
         {
             MetaFile metafile = fileset.getMetaFile() ;
-            RecordFactory recordFactory = Setup.makeRecordFactory(metafile, "tdb.bplustree.record", -1, -1) ;
+            RecordFactory recordFactory = SetupTDB.makeRecordFactory(metafile, "tdb.bplustree.record", -1, -1) ;
             
             String blkSizeStr = metafile.getOrSetDefault("tdb.bplustree.blksize", Integer.toString(SystemTDB.BlockSize)) ; 
-            int blkSize = Setup.parseInt(blkSizeStr, "Bad block size") ;
+            int blkSize = SetupTDB.parseInt(blkSizeStr, "Bad block size") ;
             
             // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
             // Does not set order.
             
             int calcOrder = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
             String orderStr = metafile.getOrSetDefault("tdb.bplustree.order", Integer.toString(calcOrder)) ;
-            int order = Setup.parseInt(orderStr, "Bad order for B+Tree") ;
+            int order = SetupTDB.parseInt(orderStr, "Bad order for B+Tree") ;
             if ( order != calcOrder )
-                Setup.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
+                SetupTDB.error(null, "Wrong order (" + order + "), calculated = "+calcOrder) ;
 
             RangeIndex rIndex = createBPTree(fileset, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
             metafile.flush() ;

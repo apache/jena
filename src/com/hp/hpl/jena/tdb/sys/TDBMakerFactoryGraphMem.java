@@ -14,9 +14,10 @@ public final class TDBMakerFactoryGraphMem implements DatasetGraphMakerTDB
     public DatasetGraphTDB createDatasetGraph()
     { 
         //return FactoryGraphTDB.createDatasetGraphMem() ;
-        return Setup.buildDataset(Location.mem()) ;
+        return SetupTDB.buildDataset(Location.mem()) ;
     }
 
+    //@Override
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {}
 }
