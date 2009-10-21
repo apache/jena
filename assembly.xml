@@ -17,6 +17,7 @@
   <dependencySets>
     <dependencySet>
       <unpack>false</unpack>
+      <scope>test</scope>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>
   </dependencySets>
@@ -32,14 +33,14 @@
       </includes>
     </fileSet>
 
-    <!-- lib/ -->
+    <!-- More for the lib/ -->
     <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-	<include>sdb*-tests.jar</include>
-	<include>jena*-tests.jar</include>
-	<include>arq*-tests.jar</include>
+        <include>${this.root}-tests.jar</include>
+        <include>jena-*-tests.jar</include>
+        <include>arq-*-tests.jar</include>
       </includes>
     </fileSet>
 
@@ -49,7 +50,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>${this.root}-sources.jar</include>
-        <include>${this.root}-tests-sources.jar</include>
+        <include>${this.root}-test-sources.jar</include>
       </includes>
     </fileSet>
 

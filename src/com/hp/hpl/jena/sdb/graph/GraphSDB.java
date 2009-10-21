@@ -164,6 +164,11 @@ public class GraphSDB extends GraphBase2 implements Graph
         
         if ( SDB.getContext().isTrue(SDB.streamGraphAPI) )
         {
+            // Dangerous version -- application must close iterator.
+            return new GraphIterator(triple, qIter) ;
+        }
+        else
+        {
             // ---- Safe version: 
             List<Binding> bindings = new ArrayList<Binding>() ;
             while ( qIter.hasNext() ) bindings.add(qIter.nextBinding()) ;
@@ -171,11 +176,6 @@ public class GraphSDB extends GraphBase2 implements Graph
             
             // QueryIterPlainWrapper is just to make it ia QuyerIterator again.
             return new GraphIterator(triple, new QueryIterPlainWrapper(bindings.iterator())) ;
-        }
-        else
-        {
-            // Dangerous version -- application must close iterator.
-            return new GraphIterator(triple, qIter) ;
         }
     }
 
