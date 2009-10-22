@@ -359,10 +359,10 @@ deploy
           depends="clean-once,artifacts,test,pre-publish,ivy-publish">
   </target>
 
-  <!-- maven name - alis for compatibility -->
+  <!-- maven name - alias for compatibility -->
   <target name="deploy" depends="publish"/>
 
-  <target name="pre-publish"/>
+  <target name="pre-publish" depends="release"/>
   
   <target name="publish-test" description="Build and publish this version (locally, for testing)"
 	  depends="clean-once,artifacts,test,ivy-publish-dev">

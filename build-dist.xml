@@ -21,8 +21,6 @@
 
   <target name="package" depends="copy-init,copy-dist,zip-release"/>
 
-  <target name="pre-publish" depends="release"/>
-
   <target name="copy-init">
     <delete dir="${dist.dir}" />
     <mkdir dir="${dist.dir}" />
