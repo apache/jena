@@ -19,7 +19,7 @@ import atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 @RunWith(Parameterized.class)
 public class TestCodec extends BaseTest 
@@ -82,7 +82,7 @@ public class TestCodec extends BaseTest
     
     private void test(String sseString)
     {
-        Node n = NodeFactory.create(sseString) ;
+        Node n = SSE.parseNode(sseString) ;
         test(n) ;
     }
     

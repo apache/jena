@@ -11,7 +11,12 @@
   <property environment="env"/>
 
   <!-- Version  -->
-  <property name="version"              value="0.8.3-RC-1"/>
+  <property name="version"              value="0.8.3-RC-2"/>
+
+  <!-- Coordinate with ivysetting.xml -->
+  <!-- repo-main, repo-dev, repo-local -->
+  <property name="publish.repo"     value="repo-dev"/>
+
   
   <!-- javadoc -->
   <property name="copyright.text"
@@ -28,10 +33,6 @@
   <property name="src.lib.test.dir"     value="src-lib-test"/>
   <property name="src.examples.dir"     value="src-examples"/>
   <property name="src.dev.dir"          value="src-dev"/>
-
-  <!-- Coordinate with ivysetting.xml -->
-  <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-local"/>
 
   <!-- Metadata -->
   <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
