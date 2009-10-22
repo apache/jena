@@ -6,37 +6,35 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.lib.NodeLib.*;
-import atlas.junit.TestBase;
+import static com.hp.hpl.jena.tdb.lib.NodeLib.hash ;
+import org.junit.Test ;
+import atlas.junit.TestBase ;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.sse.SSE;
-
-import org.junit.Test;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNodeLib extends TestBase
 {
-    // Test sof TDBs NodeLib
+    // Tests of TDBs NodeLib
     @Test public void hash1() 
     {
-        Node x1 = SSE.parseNode("<http://example/x>") ;
-        Node x2 = SSE.parseNode("<http://example/x>") ;
+        Node x1 = NodeFactory.create("<http://example/x>") ;
+        Node x2 = NodeFactory.create("<http://example/x>") ;
         assertEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash2() 
     {
-        Node x1 = SSE.parseNode("<http://example/x1>") ;
-        Node x2 = SSE.parseNode("<http://example/x2>") ;
+        Node x1 = NodeFactory.create("<http://example/x1>") ;
+        Node x2 = NodeFactory.create("<http://example/x2>") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash3() 
     {
-        Node x1 = SSE.parseNode("<lex>") ;
-        Node x2 = SSE.parseNode("'lex'") ;
-        Node x3 = SSE.parseNode("_:lex") ;
+        Node x1 = NodeFactory.create("<lex>") ;
+        Node x2 = NodeFactory.create("'lex'") ;
+        Node x3 = NodeFactory.create("_:lex") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;
@@ -44,21 +42,20 @@ public class TestNodeLib extends TestBase
     
     @Test public void hash4() 
     {
-        Node x1 = SSE.parseNode("123") ;
-        Node x2 = SSE.parseNode("'123'") ;
+        Node x1 = NodeFactory.create("123") ;
+        Node x2 = NodeFactory.create("'123'") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
 
     @Test public void hash5() 
     {
-        Node x1 = SSE.parseNode("123") ;
-        Node x2 = SSE.parseNode("123.0") ;
-        Node x3 = SSE.parseNode("123e0") ;
+        Node x1 = NodeFactory.create("123") ;
+        Node x2 = NodeFactory.create("123.0") ;
+        Node x3 = NodeFactory.create("123e0") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;
     }
-
 }
 
 /*

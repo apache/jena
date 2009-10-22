@@ -15,6 +15,7 @@ import atlas.lib.PoolSync;
 import atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.riot.tokens.TokenizerText;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -84,21 +85,39 @@ public class NodecSSE implements Nodec
         // Byte -> String
         String str = Bytes.fromByteBuffer(bb) ;
         // String -> Node
+        
+        // Easy cases.
+        if ( str.startsWith("_:") )   
+        {
+            // Must be done this way.
+            // In particular, bnode labels can contain ":" from Jena
+            // TokenizerText does not recognize these.
+            str = str.substring(2) ;
+            return Node.createAnon(new AnonId(str)) ;
+        }
+
+        if ( str.startsWith("<") )
+        {
+            str = str.substring(1,str.length()-1) ;
+            str = StrUtils.decode(str, MarkerChar) ;
+            return Node.createURI(str) ;
+        }
         // -- Old - expensive.
         // Node n = SSE.parseNode(str) ;
         
         PeekReader r = PeekReader.make(str) ;
         Tokenizer tokenizer = new TokenizerText(r) ;
-        Node n =  tokenizer.next().asNode() ;
+        Node n = tokenizer.next().asNode() ;
         if ( n == null )
             throw new TDBException("Not a node: "+str) ;
-        
-        if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
-        {
-            String uri = StrUtils.decode(n.getURI(), '_') ;
-            if ( uri != n.getURI() )
-                n = Node.createURI(uri) ;
-        }
+
+        // Not a URI or bNode.
+//        if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
+//        {
+//            String uri = StrUtils.decode(n.getURI(), '_') ;
+//            if ( uri != n.getURI() )
+//                n = Node.createURI(uri) ;
+//        }
         return n ;
     }
 

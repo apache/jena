@@ -18,7 +18,8 @@ import atlas.lib.ByteBufferLib ;
 import atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 @RunWith(Parameterized.class)
 public class TestCodec extends BaseTest 
@@ -74,11 +75,19 @@ public class TestCodec extends BaseTest
     @Test public void nodec_uri_01()    { test ("<>") ; }
     @Test public void nodec_uri_02()    { test ("<http://example/>") ; }
     
+    // Jena anon ids can have a string form including ":"
+    @Test public void nodec_blank_01()  { test (Node.createAnon(new AnonId("a"))) ; }
+    @Test public void nodec_blank_02()  { test (Node.createAnon(new AnonId("a:b:c-d"))) ; }
+    @Test public void nodec_blank_03()  { test (Node.createAnon()) ; }
     
     private void test(String sseString)
     {
-        //Nodec nodec = new NodecSSE() ;
-        Node n = SSE.parseNode(sseString) ;
+        Node n = NodeFactory.create(sseString) ;
+        test(n) ;
+    }
+    
+    private void test(Node n)
+    {
         ByteBuffer bb = nodec.alloc(n) ;
         int x = nodec.encode(n, bb, null) ;
         
