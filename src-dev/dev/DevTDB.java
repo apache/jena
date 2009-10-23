@@ -9,7 +9,8 @@ package dev;
 public class DevTDB
 {
     // == 0.8.3
-    // RC-1 done.
+    // RC-1 done. RC-2 done. 
+    // Release!
     
     // == 0.8.4
     // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
@@ -29,7 +30,6 @@ public class DevTDB
     // See metadata stuff in BPlusTreeParams
     // Document
     //   concurrency  []
-    
     //   Settings     []
     //   Explain mode [DONE]
     // Test.
@@ -41,14 +41,15 @@ public class DevTDB
     
     // TestCacheSet
     // Check node table use of caches
-    
-    // Separate out atlas properly.
-    
     // Don't print optimizer type when set at info level.
-    
+
     // Special case
     // <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
-
+    
+    // == Atlas
+    // Separate out atlas properly.
+    // Add getter to cache suite
+    
     // ----
     // B+Tree checking utility.
     // Dataset checking utility.
