@@ -13,8 +13,9 @@ public class DevARQ
     // ==== Document IF/COLLASCE
     // Enable OpDisjunction.  Need further work - assignments only.!
     // Do disjunctions in exprLists
-    //"    FILTER(?o = :x2)",
-    //"    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
+    //    FILTER(?o = :x2)",
+    //    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
+    // Look for plain discjunctions (visitor) - move disjunctions to first filter - wrap with other FILTERs  
     
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
