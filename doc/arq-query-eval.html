@@ -10,8 +10,8 @@
     <p>
         This page describes the mechanisms that can be used to extend and modify 
 		query execution within ARQ. Through these mechanisms, ARQ can be used to query different graph implementations and to provide different query evaluation and optimization
-        strategies for particular circumstances.&nbsp; These mechanisms are used by <a href="http://jena.sf.net/SDB/">
-            SDB</a> and <a href="http://jena.sf.net/TDB/">TDB</a>.</p>
+        strategies for particular circumstances.&nbsp; These mechanisms are used by <a href="http://openjena.org/SDB/">
+            SDB</a> and <a href="http://openjena.org/TDB/">TDB</a>.</p>
     <p>
         ARQ can be <a href="extension.html">extended in various
             ways</a> to incorporate custom code into a query. <a href="extension.html#valueFunctions">Custom filter functions</a>
@@ -106,7 +106,7 @@ WHERE  { ?x foaf:name  ?name ;
       )
     )))</pre>
     <p>
-        using the <a href="http://jena.hpl.hp.com/wiki/SSE">SSE syntax</a> to write out
+        using the <a href="http://openjena.org/wiki/SSE">SSE syntax</a> to write out
         the internal datastructure for the algebra.</p>
     <p>
         The <a href="http://www.sparql.org/validator.html">online SPARQL validator</a> at
@@ -144,7 +144,7 @@ op = Transformer.transform(someTransform, op) ;</pre>
 		base class is <code>TransformBase,</code> which provides the identify 
 		operation (returns the node supplied) for each transform operation.</p>
 	<p>
-        Operations can be printed out in <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
+        Operations can be printed out in <a href="http://openjena.org/wiki/SSE">SSE</a>
         syntax.&nbsp; The Java <code>toString</code> method is overridden to provide pretty
         printing and the static methods in <code>WriterOp</code> provide output to various
         output objects like <code>java.io.OutputStream</code>.</p>
@@ -420,8 +420,8 @@ QC.setFactory(ARQ.getCOntext(), customExecutorFactory) ;</pre>
   }</pre>
     <p>
         The extension may need to provide its own dataset implementation so that it can
-        detect when queries are directed to its named graph storage. <a href="http://jena.sf.net/SDB">
-            SDB</a> and <a href="http://jena.sf.net/TDB">TDB</a> are examples of this.</p>
+        detect when queries are directed to its named graph storage. <a href="http://openjena.org/SDB">
+            SDB</a> and <a href="http://openjena.org/TDB">TDB</a> are examples of this.</p>
     <h2 id="mixedDatasets">
         Mixed Graph Implementation Datasets</h2>
     <p>
