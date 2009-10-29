@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <rdf:Description rdf:about="http://rdfa.digitalbazaar.com/test-suite/test-cases/xhtml1/0011.xhtml">
+    <dc:title rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">E = mc&lt;sup xmlns="http://www.w3.org/1999/xhtml" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;2&lt;/sup&gt;: The Most Urgent Problem of Our Time</dc:title>
+  </rdf:Description>
+</rdf:RDF>
+

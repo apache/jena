@@ -73,19 +73,25 @@ public class RunARQ
                                                     "    ?s ?p ?o",
                                                     "    }",
                                                     "    FILTER(?o = :x2 )",
-                                                    "    FILTER( ?g = :x1 || ?g != :x3 )",
+                                                    "    FILTER( ?g = :x1 || ?g != :x4 || ?g = :x3 )",
                                                     "}") ;
             // More cautious.  Only on || equalities
             Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             divider() ;
             System.out.println(q) ;
             Op op = Algebra.compile(q) ;
-            //op = Optimize.optimize(op, ARQ.getContext()) ;
+            System.out.println("Compile::") ;
+            System.out.println(op) ;
+            
+            op = Algebra.optimize(op) ;
             divider() ;
+            System.out.println("Optimize::") ;
             System.out.println(op) ;
             //Not yet active.
             op = Transformer.transform(new TransformFilterDisjunction(), op) ;
+            
             divider() ;
+            System.out.println("Transform disjunctions::") ;
             System.out.println(op) ;
 
             DatasetGraph dsg = DatasetUtils.createDataset("D.ttl", null).asDatasetGraph() ;

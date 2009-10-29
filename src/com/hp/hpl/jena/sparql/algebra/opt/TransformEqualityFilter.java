@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -35,10 +36,13 @@ public class TransformEqualityFilter extends TransformCopy
     { 
         // What about filter of OpSequence? 
         
-        // Safe for BGPs (and unions and joins of BGPs)
+        // Safe for BGPs, quads and GRAPH 
+        // (and unions and joins of BGPs) 
         // Optionals - be careful.
         // Optionals+bound - be very careful.
-        if ( !(subOp instanceof OpBGP) && ! (subOp instanceof OpQuadPattern))
+        if ( ! (subOp instanceof OpBGP) &&
+             ! (subOp instanceof OpQuadPattern) &&
+             ! (subOp instanceof OpGraph) )
             return super.transform(opFilter, subOp) ;
         
         ExprList exprs = opFilter.getExprs() ;

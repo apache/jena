@@ -6,17 +6,17 @@
 
 package dev;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter;
-import com.hp.hpl.jena.sparql.expr.E_LogicalOr;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
+import com.hp.hpl.jena.sparql.expr.E_LogicalOr ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 /**Filter disjunction.
  * Merge with TransformFilterImprove
@@ -29,28 +29,10 @@ public class TransformFilterDisjunction extends TransformCopy
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
     {
-        // All the disjunctions must be assignments.
-        // Need to optimize the exprList2 elements
-        
-        
         //ExprUtils.isSubstitutionSafe
         
         ExprList exprList = opFilter.getExprs() ;
         
-//        //---- OLD
-//        if ( exprList.size() == 1 )
-//        {
-//            Expr expr = exprList.get(0) ;
-//            Op op2 = expandDisjunction(expr, subOp) ;
-//            if ( op2 != null )
-//                return op2 ;
-//        }
-//        
-//        // --- Temp end
-//        if ( true )
-//            return super.transform(opFilter, subOp) ; 
-
-        // Full case
         // First pass - any disjunctions at all?
         boolean processDisjunction = false ;
         for ( Expr expr : exprList )
@@ -62,10 +44,10 @@ public class TransformFilterDisjunction extends TransformCopy
             }
         }
         
+        // Still may be a disjunction in a form we don't optimize. 
         if ( ! processDisjunction )
             return super.transform(opFilter, subOp) ;
         
-        // If yes, any to process?
         ExprList exprList2 = new ExprList() ;
         
         for ( Expr expr : exprList )
@@ -77,6 +59,8 @@ public class TransformFilterDisjunction extends TransformCopy
                 continue ;
             }
             Op op2 = expandDisjunction(expr, subOp) ;
+            
+            
             if ( op2 != null )
                 subOp = op2 ;
         }
@@ -106,17 +90,42 @@ public class TransformFilterDisjunction extends TransformCopy
         if ( exprList == null )
             return null ;
         
+        // All disjunctions - soem can be done efficiently via assignments, some can not.
+        List<Expr> exprList2 = null ;
         Op op = null ;
         for ( Expr e : exprList )
         {
-            
-            Op op2 = TransformEqualityFilter.processFilterOrOpFilter(e, subOp) ;
+            Op op2 = TransformEqualityFilter.processFilter(e, subOp) ;
+            if ( op2 == null )
+            {
+                if ( exprList2 == null )
+                    exprList2 = new ArrayList<Expr>() ;
+                exprList2.add(e) ;
+                continue ;
+            }
+
             op = OpDisjunction.create(op, op2) ;
         }
+        
+        if ( exprList2 != null && !exprList2.isEmpty() )
+        {
+            // These are left as disjunctions.
+            Expr eOther = null ;
+            for ( Expr e : exprList2 )
+            {
+                if ( eOther == null )
+                    eOther = e ;
+                else
+                    eOther = new E_LogicalOr(eOther, e) ;
+            }
+            Op opOther = OpFilter.filter(eOther, subOp) ;
+            op = OpDisjunction.create(op, opOther) ;
+        }
+        
         return op ;
     }
 
-    /** Explode a expr into a list of disjunction */
+    /** Explode a expr into a list of disjunctions */
     private static List<Expr> explodeDisjunction(List<Expr> exprList, Expr expr)
     {
         if ( !( expr instanceof E_LogicalOr ) )
