@@ -15,7 +15,7 @@ public class DevARQ
     // Do disjunctions in exprLists
     //    FILTER(?o = :x2)",
     //    FILTER( ?g = :x1 || ?g = :x2 || ?g = :x3 )",
-    // Look for plain discjunctions (visitor) - move disjunctions to first filter - wrap with other FILTERs  
+    // Look for plain disjunctions (visitor) - move disjunctions to first filter - wrap with other FILTERs  
     
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
@@ -50,6 +50,11 @@ public class DevARQ
     // { LET (...) pattern } becomes (join [assign ((...)) (table unit)] pattern
     //    which can be simplified to a sequence.
     //  Generate a sequence always? 
+    
+    // == Clearup
+    // StageGenBasicPattern ==> Remove
+    // Prefer OpExecutor much more.
+    //   Skelleton for StageGenerator
     
     // ---- [quad paths]
     

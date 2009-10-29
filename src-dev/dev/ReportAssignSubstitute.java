@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 
-public class ReportARQ
+public class ReportAssignSubstitute
 {
     @Test
     public void test()
