@@ -44,22 +44,20 @@ public class PlanOp extends PlanBase
             out.println(Utils.className(this)) ;
             return ;
         }
-        if ( label != null )
-        {
-            out.print(Plan.startMarker) ;
-            out.println(label) ;
-            out.incIndent() ;
-        }
+
+        String str = label ;
         
-        //getOp().output(out, sCxt) ;
-        iterator().output(out, sCxt) ;
-        
-        if ( label != null )
-        {
-            out.print(Plan.finishMarker) ;
-            out.decIndent() ;
-        }
-        out.ensureStartOfLine() ;
+        if ( label == null )
+            str = "Plan" ;
+        out.print(Plan.startMarker) ;
+        out.println(str) ;
+        out.incIndent() ;
+       //getOp().output(out, sCxt) ;
+       qIter.output(out, sCxt) ;
+
+       out.print(Plan.finishMarker) ;
+       out.decIndent() ;
+       out.ensureStartOfLine() ;
     }
 }
 /*
