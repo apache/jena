@@ -24,33 +24,51 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineBase ;
+import com.hp.hpl.jena.sparql.util.ALog ;
 
 public class ARQMgt
 {
+    // In some environments, JMX does not exist.
     static private Logger log = LoggerFactory.getLogger(ARQMgt.class) ;
     private static boolean initialized = false ;
+    private static boolean noJMX = false ;
     private static Map<ObjectName, Object> mgtObjects = new HashMap<ObjectName, Object>() ;
-    private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
+    private static MBeanServer mbs = null ;  
     
     public static synchronized void init()
     {
         if ( initialized )
             return ;
         initialized = true ;
-        
-        String NS = ARQ.PATH ;
-        
-        SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
-        ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
-        QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
-        
-        register(NS+".system:type=SystemInfo", sysInfo) ;
-        register(NS+".system:type=Context", cxtBean) ;
-        register(NS+".system:type=Engine", qeInfo) ;
+
+        try {
+
+            mbs = ManagementFactory.getPlatformMBeanServer();
+
+            String NS = ARQ.PATH ;
+
+            SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
+            ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
+            QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
+
+            register(NS+".system:type=SystemInfo", sysInfo) ;
+            register(NS+".system:type=Context", cxtBean) ;
+            register(NS+".system:type=Engine", qeInfo) ;
+
+        } catch (Exception ex) {
+            ALog.warn(ARQMgt.class, "Failed to initialize JMX", ex) ;
+            noJMX = true ;
+            mbs = null ;
+        }
     }
     
     public static void register(String name, Object bean)
     {
+        init() ;
+        
+        if ( noJMX )
+            return ;
+        
         ObjectName objName = null ;
         try
         { objName = new ObjectName(name) ; }
@@ -59,7 +77,7 @@ public class ARQMgt
         
         try {
             // Unregister to avoid classloader problems.
-            // A previous load of this class wil have registered something
+            // A previous load of this class will have registered something
             // with the object name. Remove it - copes with reloading.
             // (Does not cope with multiple loads running in parallel.)
             if ( mbs.isRegistered(objName) )

@@ -66,7 +66,7 @@ public class OpDisjunction extends OpN
     @Override
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op instanceof OpSequence) ) return false ;
+        if ( ! ( op instanceof OpDisjunction) ) return false ;
         OpDisjunction other = (OpDisjunction) op ;
         return super.equalsSubOps(other, labelMap) ;
     }

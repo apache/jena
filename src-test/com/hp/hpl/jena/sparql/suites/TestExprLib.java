@@ -4,17 +4,24 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.suites;
 
-import static org.junit.Assert.* ;
+import junit.framework.Assert ;
+import junit.framework.JUnit4TestAdapter ;
+import org.junit.Test ;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-import org.junit.Test ;
+import dev.ExprLib ;
 
 public class TestExprLib
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestExprLib.class) ;
+    }
+    
     @Test public void safeEqualityNot_01()      { testSafeEquality("123", false) ;}
     @Test public void safeEqualityNot_02()      { testSafeEquality("?x != <y>", false) ;}
     @Test public void safeEqualityNot_03()      { testSafeEquality("<x> = <y>", false) ;}
@@ -58,13 +65,13 @@ public class TestExprLib
     private static void testSafeEquality(String string, boolean b)
     {
         Expr expr = ExprUtils.parse(string) ;
-        assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr)) ;
+        Assert.assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr)) ;
     }
     
     private static void testSafeEquality(String string, boolean b, boolean graphString, boolean graphNumber)
     {
         Expr expr = ExprUtils.parse(string) ;
-        assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr, graphString, graphNumber)) ;
+        Assert.assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr, graphString, graphNumber)) ;
     }
 
 }

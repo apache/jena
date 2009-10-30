@@ -68,6 +68,7 @@ public class BuilderOp
         addBuild(Tags.tagPropFunc,      buildPropertyFunction) ;
         addBuild(Tags.tagJoin,          buildJoin) ;
         addBuild(Tags.tagSequence,      buildSequence) ;
+        addBuild(Tags.tagDisjunction,   buildDisjunction) ;
         addBuild(Tags.tagLeftJoin,      buildLeftJoin) ;
         addBuild(Tags.tagDiff,          buildDiff) ;
         addBuild(Tags.tagUnion,         buildUnion) ;
@@ -277,7 +278,6 @@ public class BuilderOp
 
             Op op = build(itemOp.getList()) ;
             ExprList exprList = BuilderExpr.buildExprOrExprList(itemExpr) ;
-            //exprList = ExprList.splitConjunction(exprList) ;
             return OpFilter.filter(exprList, op) ;
         }
     } ;
@@ -576,7 +576,7 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "assign") ;
-            VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
+            VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
             Op sub = build(list, 2) ;
             return OpAssign.assign(sub, x) ;
         }

@@ -29,8 +29,6 @@ public class TransformFilterDisjunction extends TransformCopy
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
     {
-        //ExprUtils.isSubstitutionSafe
-        
         ExprList exprList = opFilter.getExprs() ;
         
         // First pass - any disjunctions at all?
@@ -59,7 +57,6 @@ public class TransformFilterDisjunction extends TransformCopy
                 continue ;
             }
             Op op2 = expandDisjunction(expr, subOp) ;
-            
             
             if ( op2 != null )
                 subOp = op2 ;
@@ -90,7 +87,7 @@ public class TransformFilterDisjunction extends TransformCopy
         if ( exprList == null )
             return null ;
         
-        // All disjunctions - soem can be done efficiently via assignments, some can not.
+        // All disjunctions - some can be done efficiently via assignments, some can not.
         List<Expr> exprList2 = null ;
         Op op = null ;
         for ( Expr e : exprList )

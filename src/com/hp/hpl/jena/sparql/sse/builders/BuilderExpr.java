@@ -29,36 +29,48 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 public class BuilderExpr
 {
     // Build an expr list when they may also be a single expression.
-    // Because expressions are themslves lists, this requires ExprLists to be explicitly tagged
+    // Because expressions are themselves lists, this requires ExprLists to be explicitly tagged
+    
+    // (exprlist ...)
+    // ((expr1) (expr2))
+    // (expr))
     public static ExprList buildExprOrExprList(Item item)
     {
         if ( item.isTagged(Tags.tagExprList) )
             return buildExprList(item) ;
+        
+        if ( listOfLists(item) )
+            return buildExprListUntagged(item.getList(), 0) ;
+        
         Expr expr = buildExpr(item) ; 
         ExprList exprList = new ExprList(expr) ;
         return exprList ;
+    }
+
+    private static boolean listOfLists(Item item)
+    {
+        // Atom
+        if ( ! item.isList() ) return false ;
+        // List of atom (inc tagged)
+        if ( ! item.getList().car().isList() ) return false ;
+        // List of lists
+        return true ;
     }
 
     public static ExprList buildExprList(Item item)
     {
         if ( ! item.isTagged(Tags.tagExprList) )
             BuilderLib.broken(item, "Not tagged exprlist") ;
+        
         ItemList list = item.getList() ;
-        list = list.cdr();
-        ExprList exprList = new ExprList() ;
-        for (Item elt : list)
-        {
-            Expr expr = buildExpr(elt) ;
-            exprList.add(expr) ;
-        }
-        return exprList ;
-    }
-
-    public static ExprList buildExprListUntagged(ItemList list)
-    {
-       return buildExprListUntagged(list, 0) ;
+        return buildExprListUntagged(list, 1) ;
     }
     
+    private static ExprList buildExprListUntagged(Item item)
+    {
+        return buildExprListUntagged(item.getList(), 0) ;
+    }
+
     private static ExprList buildExprListUntagged(ItemList list, int idx)
     {
         ExprList exprList = new ExprList() ;
@@ -77,27 +89,63 @@ public class BuilderExpr
         return bob.buildItem(item) ;
     }
 
+    public static VarExprList buildNamedExprOrExprList(Item item)
+    {
+        if ( ! item.isList() )
+            BuilderLib.broken(item, "Not a var expr list") ;
+        
+        ItemList list = item.getList() ;
+        
+        if ( list.isEmpty() )
+            return new VarExprList() ;
+        
+        if ( list.car().isList() )
+            // List of lists
+            return buildNamedExprList(list) ;
+        // One item
+        return buildNamedExpr(item) ;
+    }
+    
     public static VarExprList buildNamedExprList(ItemList list)
     {
         VarExprList x = new VarExprList() ;
-
-        for (Item item : list)
-        {
-            if ( item.isNode() )
-            {
-                Var v = BuilderNode.buildVar(item) ;
-                x.add(v) ;
-                continue ;
-            }
-            
-            if ( !item.isList() || item.getList().size() != 2 )
-                    BuilderLib.broken(item, "Not a var or var/expression pair") ;
-            
-            Var var = BuilderNode.buildVar(item.getList().get(0)) ;
-            Expr expr = BuilderExpr.buildExpr(item.getList().get(1)) ;
-            x.add(var, expr) ;
-            }
+        for ( Item item : list )
+            buildNamedExpr(item, x) ;
         return x ;
+    }
+    
+    public static VarExprList buildNamedExpr(Item item)
+    {
+        VarExprList varExprList = new VarExprList() ;
+        buildNamedExpr(item, varExprList) ;
+        return varExprList ;
+    }
+    
+    private static void buildNamedExpr(Item item, VarExprList varExprList)
+    {
+        if ( item.isNode() )
+        {
+            Var v = BuilderNode.buildVar(item) ;
+            varExprList.add(v) ;
+            return ;
+        }
+        if ( !item.isList() || item.getList().size() != 2 )
+            BuilderLib.broken(item, "Not a var or var/expression pair") ;
+
+        ItemList list = item.getList() ;
+
+        if ( list.size() == 1 )
+        {
+            Var v = BuilderNode.buildVar(list.car()) ;
+            varExprList.add(v) ;
+            return ;
+        }
+        
+        if ( list.size() != 2 )
+            BuilderLib.broken(list, "Not a var or var/expression pair") ;
+        Var var = BuilderNode.buildVar(list.get(0)) ;
+        Expr expr = BuilderExpr.buildExpr(list.get(1)) ;
+        varExprList.add(var, expr) ;  
     }
     
     protected Map<String, Build> dispatch = new HashMap<String, Build>() ;

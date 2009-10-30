@@ -62,8 +62,24 @@ public class RunARQ
     
     static { ALog.setLog4j() ; }
     
+//    public static void x(String str) 
+//    {
+//        System.out.println(str) ; 
+//        Item item = SSE.parse(str) ;
+//        ExprList exprList = BuilderExpr.buildExprOrExprList(item) ;
+//        System.out.println(exprList) ; 
+//        
+//    }
+    
     public static void main(String[] argv) throws Exception
     {
+//        x("123") ;
+//        x("(= 123 456)") ;
+//        x("(exprlist (= 123 456) (= 123 456))") ;
+//        x("((= 123 456) (= 123 456))") ;
+//        
+//        System.exit(0) ;
+        
         {
             String queryString = StrUtils.strjoinNL(
                                                     "PREFIX : <http://example/>", 
