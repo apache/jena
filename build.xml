@@ -11,7 +11,7 @@
   <property environment="env"/>
 
   <!-- Version  -->
-  <property name="version"              value="0.8.3-RC-2"/>
+  <property name="version"              value="0.8.3"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
