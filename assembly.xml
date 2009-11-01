@@ -30,6 +30,8 @@
         <include>README*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
+	<include>assembly.xml</include>
+        <include>assembly-testing.xml</include>
       </includes>
     </fileSet>
 
