@@ -10,6 +10,6 @@
 
 <> rdf:type         ja:RDFDataset ;
     ja:defaultGraph 
-        [ rdf:type ja:MemoryModel ;
-          ja:content [ja:externalContent <D.ttl>] ] ;
+        [ rdf:type ja:MemoryModel ; ] ;
+         # ja:content [ja:externalContent <D.ttl>] ] ;
     . 
