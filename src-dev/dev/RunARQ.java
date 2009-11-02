@@ -13,6 +13,7 @@ import arq.qexpr ;
 import arq.sparql ;
 import arq.sse_query ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -47,6 +48,9 @@ import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp ;
 import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -73,6 +77,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        GraphStore gs = GraphStoreFactory.create() ;
+        UpdateAction.readExecute("update.ru", gs) ;
+        //UpdateAction.readExecute("update.ru", gs) ;
+        
+        Model m = ModelFactory.createModelForGraph(gs.getGraph(Node.createURI("http://foo/model04"))) ;
+        m.write(System.out, "RDF/XML-ABBREV") ;
+        System.exit(0) ;
+        
+        
+        
+        
+        //runUpdate() ;
+        
 //        x("123") ;
 //        x("(= 123 456)") ;
 //        x("(exprlist (= 123 456) (= 123 456))") ;
@@ -427,7 +444,7 @@ public class RunARQ
     
     private static void runUpdate()
     {
-        String a[] = {/*"--desc=etc/graphstore.ttl",*/ "--update=update.ru", "--dump"} ;
+        String a[] = {"--desc=dataset.ttl", "--update=update.ru", "--dump"} ;
         arq.update.main(a) ;
         System.exit(0) ;
     }
