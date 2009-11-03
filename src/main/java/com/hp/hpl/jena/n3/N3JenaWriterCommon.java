@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.2 2009-08-05 16:08:51 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.3 2009-11-03 08:54:23 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -704,9 +704,17 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected static boolean checkLocalPart(String s)
     {
+        if ( s.length() == 0 )
+            return true; 
+        
         // This is too restrictive (but safe)
         // local parts with dots are legal.
-        return checkNamePart(s) ;
+        if ( ! checkNamePart(s) )
+            return false ;
+        char ch = s.charAt(0) ;
+        if ( Character.isDigit(ch) )
+            return false ;
+        return true ;
     }
 
     
