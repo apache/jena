@@ -17,12 +17,15 @@ import java.util.Map ;
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
+import atlas.io.PeekReader ;
 import atlas.junit.TextListener2 ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -61,6 +64,15 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        String string = "<abc\\> >" ;
+        PeekReader r = PeekReader.make(string) ;
+        Tokenizer tokenizer = new TokenizerText(r) ;
+        while(tokenizer.hasNext())
+        {
+            System.out.println(tokenizer.next()) ;
+        }
+        
+        
         TDBFactory.createDataset();
         
         TDBMaker.setImplFactory(new DatasetGraphSetup()) ;

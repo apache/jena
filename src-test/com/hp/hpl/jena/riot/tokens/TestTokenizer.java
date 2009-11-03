@@ -53,6 +53,19 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
+    public void tokenUnit_iri3()
+    {
+        try {
+            Tokenizer tokenizer = tokenizer("   <abc\\>   123") ;
+        } catch (ParseException ex)
+        {
+            String x = ex.getMessage() ;
+            assertTrue("illegal escape sequence value: >".equalsIgnoreCase(x)) ;
+        }
+    }
+    
+    
+    @Test
     public void tokenUnit_str1()
     {
         Tokenizer tokenizer = tokenizer("   'abc'   ") ;
@@ -707,6 +720,16 @@ public class TestTokenizer extends BaseTest
         assertEquals("x", token.getImage()) ;
     }
     
+    @Test
+    public void tokenUnit_var2()
+    {
+        Tokenizer tokenizer = tokenizer("? x") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertEquals(TokenType.VAR, token.getType()) ;
+        assertEquals("", token.getImage()) ;
+    }
+
     @Test
     public void tokenUnit_hex1()
     {
