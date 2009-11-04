@@ -17,6 +17,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -77,6 +80,20 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        String str = "http://host/foo%2Fbar" ;
+        System.out.println("<"+str+">") ;
+        
+        int x = Util.splitNamespace(str) ;
+        String ns = str.substring(0,x) ;
+        String ln = str.substring(x) ;
+        System.out.println("-->"+ns+":"+ln) ;
+        
+        Resource r = ResourceFactory.createResource(str) ;
+        System.out.println("ns="+r.getNameSpace()) ;
+        System.out.println("ln="+r.getLocalName()) ;
+        
+        System.exit(0) ;
+        
         GraphStore gs = GraphStoreFactory.create() ;
         UpdateAction.readExecute("update.ru", gs) ;
         //UpdateAction.readExecute("update.ru", gs) ;
