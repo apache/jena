@@ -7,8 +7,6 @@
 package atlas.lib.cache;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import atlas.lib.ActionKeyValue ;
 import atlas.lib.Cache ;
@@ -20,8 +18,14 @@ public class CacheLRU<K,V> implements Cache<K,V>
 {
     // Use an internal class so we don't expose the full LinkedHashMap interface.
     private CacheImpl<K,V> cache ;
+    private Getter<K, V> getter ;
     
-    public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
+    public CacheLRU(Getter<K,V> getter, float loadFactor, int maxSize)
+    {
+        this.cache = new CacheImpl<K, V>(loadFactor, maxSize) ;
+        this.getter = getter ;
+        
+    }
 
     //@Override
     public void clear()
@@ -36,7 +40,14 @@ public class CacheLRU<K,V> implements Cache<K,V>
     //@Override
     public V get(K key)
     {
-        return cache.get(key) ;
+        V v = cache.get(key) ;
+        if ( v == null & getter != null )
+        {
+            v = getter.get(key) ;
+            if ( v != null )
+                cache.put(key, v) ;
+        }
+        return v ;
     }
 
     //@Override
@@ -75,52 +86,6 @@ public class CacheLRU<K,V> implements Cache<K,V>
     public void setDropHandler(ActionKeyValue<K,V> dropHandler)
     {
         cache.setDropHandler(dropHandler) ;
-    }
-
-    public static class CacheImpl<K,V> extends LinkedHashMap<K, V>
-    {
-        // Use? ArrayBlockingQueue
-        int maxEntries ; 
-        ActionKeyValue<K,V> dropHandler = null ;
-    
-        public CacheImpl(int maxSize)
-        {
-            this(0.75f, maxSize) ;
-        }
-    
-        public CacheImpl(float loadFactor, int maxSize)
-        {
-            // True => Access order, which is what makes it LRU
-    
-            // Initial size is max size + slop, rounded up, for the load factor
-            // i.e. it allocate the space needed once at create time.
-    
-            super( Math.round(maxSize/loadFactor+0.5f)+1, loadFactor, true) ;
-            // which is also (int)Math.floor(a + 1f)
-            // and hence can be one larger than needed.  But safer than one less.
-            // +1 is the need for the added entry before the removing the "eldest"
-            maxEntries = maxSize ;
-    
-    
-        }
-    
-        /** Callback for entries when dropped from the cache */
-        public void setDropHandler(ActionKeyValue<K,V> dropHandler)
-        {
-            this.dropHandler = dropHandler ;
-        }
-    
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K,V> eldest) 
-        {
-            // Overshoots by one - the new entry is added, then this called.
-            // Initial capacity adjusted to allow for this.
-    
-            boolean b = ( size() > maxEntries ) ;
-            if ( b && dropHandler != null )
-                dropHandler.apply(eldest.getKey(), eldest.getValue()) ;
-            return b ;
-        }
     }
 }
 

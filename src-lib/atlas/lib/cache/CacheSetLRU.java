@@ -16,7 +16,7 @@ public class CacheSetLRU<T> implements CacheSet<T>
 {
     //LinkHashSet does not have LRU support.
     static Object theOnlyValue = new Object() ;
-    CacheLRU.CacheImpl<T, Object> cacheMap = null ;
+    CacheImpl<T, Object> cacheMap = null ;
     
     public CacheSetLRU(int maxSize)
     {
@@ -25,7 +25,7 @@ public class CacheSetLRU<T> implements CacheSet<T>
     
     public CacheSetLRU(float loadFactor, int maxSize)
     {
-        cacheMap = new CacheLRU.CacheImpl<T, Object>(loadFactor, maxSize) ;
+        cacheMap = new CacheImpl<T, Object>(loadFactor, maxSize) ;
     }
 
 //    /** Callback for entries when dropped from the cache */

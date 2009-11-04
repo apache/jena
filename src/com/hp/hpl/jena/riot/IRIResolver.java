@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import atlas.lib.Cache;
 import atlas.lib.CacheFactory;
+import atlas.lib.cache.Getter ;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
@@ -78,9 +79,13 @@ public class IRIResolver
 
     // The cache.  Maybe this should be in Prologue.
     private static final int CacheSize = 1000 ;
+    final private Getter<String, IRI> getter = new Getter<String, IRI>() {
+        public IRI get(String relURI) { return  base.resolve(relURI) ; }
+    } ;
+    
     // Not static - contains relative IRIs
     // Could split into absolute (satical, global cached) and relative.
-    private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(CacheSize) ;
+    private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
     
     
     /**
@@ -116,7 +121,6 @@ public class IRIResolver
     }
 
     final private IRI base;
-
     /**
      * Construct an IRIResolver with base as the 
      * current working directory.

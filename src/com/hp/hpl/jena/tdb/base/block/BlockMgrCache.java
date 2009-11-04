@@ -38,15 +38,13 @@ public class BlockMgrCache extends BlockMgrSync
     {
         super(blockMgr) ;
         this.indexName = String.format("%-12s", indexName) ;
-        //logging = log.isInfoEnabled() && indexName.startsWith("LOG") ;
         
+        // Caches are related so we can't use a Getter for cache management.
         readCache = CacheFactory.createCache(readSlots) ;
-        //readCache = CacheFactory.createSync(readCache) ; // Sync - must ensure this further out.
         
         if ( writeSlots > 0 )
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            //writeCache = CacheFactory.createSync(writeCache) ; // Sync - must ensure this further out.
             writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
                 //@Override
                 public void apply(Integer id, ByteBuffer bb)
@@ -58,11 +56,15 @@ public class BlockMgrCache extends BlockMgrSync
         }
     }
     
+    // Write out when flushed.
     private void expelEntry(Integer id)
     {
         ByteBuffer bb = writeCache.get(id) ;
         if ( bb == null )
+        {
+            log.error("Write cache: "+id+" expeling entry that isn't there") ;
             return ;
+        }
         log("Drop (write cache): %d", id) ;
         super.put(id, bb) ;
         writeCache.remove(id) ;

@@ -1,43 +1,19 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package atlas.lib;
+package atlas.lib.cache;
 
-import java.util.Iterator;
-
-/** A cache */
-public interface Cache<Key, Value>
+/** A get interface */
+public interface Getter<K, V>
 {
-    /** Does the cache contain the key? */
-    public boolean containsKey(Key key) ;
-    
-    /** Get from cache - or return null.  
-     * Implementations should state whether
-     * they are thread-safe or not. */ 
-    public Value get(Key key) ;
-    
-    /** Insert into from cache and return old value (or null if none) */
-    public Value put(Key key, Value thing) ;
-
-    /** Remove from cache - return true if key referenecd an entry */
-    public boolean remove(Key key) ;
-    
-    /** Iterate over all keys. Iteratring over the keys requires the caller be thread-safe. */ 
-    public Iterator<Key> keys() ;
-    
-    public boolean isEmpty() ;
-    public void clear() ;
-    public long size() ;
-    
-    /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
-    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
+    public V get(K key) ; 
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

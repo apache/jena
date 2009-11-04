@@ -23,7 +23,7 @@ import atlas.test.BaseTest;
 @RunWith(Parameterized.class)
 public class TestCache extends BaseTest
 {
-    // Test do not apply to cache1.
+    // Tests do not apply to cache1.
     private static interface CacheMaker<K,V> { Cache<K,V> make(int size) ; String name() ; } 
 
     private static CacheMaker<Integer, Integer> simple = 
@@ -176,7 +176,6 @@ public class TestCache extends BaseTest
         assertEquals(0, cache.size()) ; 
         assertTrue(cache.isEmpty()) ;
     }
-
 }
 
 /*

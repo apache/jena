@@ -12,10 +12,16 @@ import atlas.lib.cache.CacheSetSync;
 import atlas.lib.cache.CacheSimple ;
 import atlas.lib.cache.CacheStatsAtomic ;
 import atlas.lib.cache.CacheSync;
+import atlas.lib.cache.Getter ;
 
 
 public class CacheFactory
 {
+    public static <Key, Value> Cache<Key, Value> createCache(Getter<Key, Value> getter, int maxSize)
+    {
+        return createCache(getter, 0.75f, maxSize) ;
+    }
+    
     public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
     {
         return createCache(0.75f, maxSize) ;
@@ -23,9 +29,16 @@ public class CacheFactory
     
     public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
+        // Getters not rolled out into codebase yet - although it's not
+        // appropriate to handle cache misses with a getter.
+        return createCache(null, 0.75f, maxSize) ;
     }
     
+    public static <Key, Value> Cache<Key, Value> createCache(Getter<Key, Value> getter, float loadFactor, int maxSize)
+    {
+        return new CacheLRU<Key, Value>(getter, 0.75f, maxSize) ;
+    }
+
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
     {
         return new CacheSimple<Key, Value>(size) ; 

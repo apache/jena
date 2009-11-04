@@ -8,11 +8,8 @@ package dev;
 
 public class DevTDB
 {
-    // == 0.8.3
-    // RC-1 done. RC-2 done. 
-    // Release!
-    
     // == 0.8.4
+    // Getters not rolled out into codebase yet.
     // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
     //   Remove FactoryGraphTDB
     //   IndexMakers?
