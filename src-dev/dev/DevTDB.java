@@ -9,15 +9,15 @@ package dev;
 public class DevTDB
 {
     // == 0.8.4
+    // **** Remove FactoryGraphTDB
+
+    
     // Getters not rolled out into codebase yet.
     // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
     //   Remove FactoryGraphTDB
     //   IndexMakers?
     // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
-    // NodeTable modularization (inline, cache) [Ready]
-    //    NodeTableBase - delete.  Reuse NodeTableIndex 
-    
     // Const for names.
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.

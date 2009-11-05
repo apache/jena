@@ -17,7 +17,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Closeable ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
@@ -33,7 +32,7 @@ public class QuadTable implements Sync, Closeable
 {
     final NodeTupleTable table ;
     
-    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable, Location location)
+    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable)
     {
         table = new NodeTupleTable(4, indexes, nodeTable);
     }

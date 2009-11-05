@@ -48,8 +48,10 @@ import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableBase ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -257,7 +259,7 @@ public class SetupTDB
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( tripleIndexes.length != indexes.length )
             SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, location) ;
+        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
         metafile.flush() ;
         return tripleTable ;
     }
@@ -276,7 +278,7 @@ public class SetupTDB
         TupleIndex quadIndexes[] = makeTupleIndexes(location, config, primary, indexes, indexes) ;
         if ( quadIndexes.length != indexes.length )
             SetupTDB.error(log, "Wrong number of triple table tuples indexes: "+quadIndexes.length) ;
-        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, location) ;
+        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable) ;
         metafile.flush() ;
         return quadTable ;
     }
@@ -509,8 +511,10 @@ public class SetupTDB
         Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
         
         // -- Make the node table using the components established above.
-        NodeTable nodeTable = new NodeTableBase(nodeToId, stringFile,
-                                                nodeToIdCacheSize, idToNodeCacheSize) ;
+        NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
+
+        nodeTable = new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = new NodeTableInline(nodeTable) ;
 
         return nodeTable ;
     }

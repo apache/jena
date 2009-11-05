@@ -1,51 +1,58 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.Names;
 
-public final class NodeTableIndex extends NodeTableBase
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+
+/** NodeTable wrapper to hanlde inline node ids.
+ * If a node can be made inline, then the underlying table never sees it.
+ * If an inline Nodeid is seen, itis decoded and returned without
+ * the underlying table being called. 
+ */
+
+public class NodeTableInline extends NodeTableWrapper
 {
-    // Dead code - only used by old FactoryGraph.
-    // Disk version
-    private NodeTableIndex(IndexBuilder indexBuilder, FileSet fsNodeToId, FileSet fsIdToNode, int nodeToIdCacheSize, int idToNodeCacheSize)
+    // Stack order: Inline > Cache > Actual
+    
+    public NodeTableInline(NodeTable nodeTable)
     {
-        super() ;
-        // Index.
-        Index nodeToId = indexBuilder.newIndex(fsNodeToId, FactoryGraphTDB.nodeRecordFactory) ;
-        // Node table.
-        String filename = fsIdToNode.filename(Names.extNodeData) ;
-        ObjectFile objects = FileFactory.createObjectFileDisk(filename);
-        init(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
+        super(nodeTable) ;
     }
     
-    // Memory version - testing.
-    private NodeTableIndex(IndexBuilder factory)
+    @Override
+    public final NodeId getAllocateNodeId(Node node)
     {
-        super() ;
-        Index nodeToId = factory.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
-        
-        ObjectFile objects = FileFactory.createObjectFileMem() ;
-        init(nodeToId, objects, 100, 100) ;
+        NodeId nid = NodeId.inline(node) ;
+        if ( nid != null ) return nid ;
+        return super.getAllocateNodeId(node) ;
     }
 
-    private static NodeTable createMem(IndexBuilder indexBuilder)
+    @Override
+    public final NodeId getNodeIdForNode(Node node)
     {
-        return new NodeTableIndex(indexBuilder) ;
+        NodeId nid = NodeId.inline(node) ;
+        if ( nid != null ) return nid ;
+        return super.getNodeIdForNode(node) ;
+    }
+    @Override
+    public final Node getNodeForNodeId(NodeId id)
+    {
+        Node n = NodeId.extract(id) ;
+        if ( n != null )
+            return n ;
+        return super.getNodeForNodeId(id) ;
     }
 }
+
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

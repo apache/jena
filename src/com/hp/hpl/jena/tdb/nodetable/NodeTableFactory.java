@@ -61,7 +61,13 @@ public class NodeTableFactory
         {
             Index nodeToId = indexBuilder.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
             ObjectFile objects = FileFactory.createObjectFileMem() ;
-            return new NodeTableBase(nodeToId, objects, 100, 100) ;
+            NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
+            
+            nodeTable = new NodeTableCache(nodeTable, 100, 100) ; 
+            nodeTable = new NodeTableInline(nodeTable) ;
+            
+            return nodeTable ;
+            
             //return NodeTableIndex.createMem(indexBuilder) ;
         }
         
@@ -69,7 +75,11 @@ public class NodeTableFactory
         // Node table.
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
-        return new NodeTableBase(nodeToId, objects, nodeToIdCacheSize, idToNodeCacheSize) ;
+        NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
+        nodeTable = new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = new NodeTableInline(nodeTable) ;
+        return nodeTable ;
+        
     }
 
     public static NodeTable createMem(IndexBuilder indexBuilder)
