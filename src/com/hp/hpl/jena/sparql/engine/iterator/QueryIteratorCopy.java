@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A QueryIterator that copies an iterator.
- *  Can get a QueryIterator over teh copy.
+ *  Can get a QueryIterator over the copy.
  */  
 
 public 
@@ -24,13 +24,18 @@ class QueryIteratorCopy extends QueryIteratorBase
 {
     // Not tracked.
     List<Binding> elements = new ArrayList<Binding>() ;
-    QueryIterator iterator ; 
+    QueryIterator iterator ;
+    
+    QueryIterator original ;        // Keep for debugging - This is closed as it is copied.
+    
     
     public QueryIteratorCopy(QueryIterator qIter)
     {
         for ( ; qIter.hasNext() ; )
             elements.add(qIter.nextBinding()) ;
+        qIter.close() ;
         iterator = copy() ;
+        original = qIter ;
     }
 
     @Override
@@ -40,7 +45,12 @@ class QueryIteratorCopy extends QueryIteratorBase
     }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
-    {}
+    {
+        out.print("QueryIteratorCopy") ;
+        out.incIndent() ;
+        original.output(out, sCxt) ;
+        out.decIndent() ;
+    }
     
     
     public List<Binding> elements()
