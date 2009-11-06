@@ -7,10 +7,11 @@
 package atlas.iterator;
 
 
-import java.util.*;
+import java.io.PrintStream ;
+import java.util.* ;
 
-import atlas.lib.Action;
-import atlas.lib.ActionKeyValue;
+import atlas.lib.Action ;
+import atlas.lib.ActionKeyValue ;
 
 
 public class Iter<T> implements Iterable<T>, Iterator<T>
@@ -264,9 +265,20 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         } ;
         return iter ;
     }
-    
-  
 
+    public static <T> Iterator<T> print(final Iterator<? extends T> stream)
+    {
+        return Iter.print(System.out, stream) ;
+    }
+
+    public static <T> Iterator<T> print(PrintStream out, final Iterator<? extends T> stream)
+    {
+        Action<T> action = new Action<T>(){
+            public void apply(T item)
+            { System.out.println(item) ; }
+        } ;
+        return Iter.operate(stream, action) ;
+    }
     
     public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {

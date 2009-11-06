@@ -12,11 +12,11 @@ import java.util.Map.Entry;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
-/** View of a dataset's prefixes for a particualr graph */
+/** View of a dataset's prefixes for a particular graph */
 
 public class GraphPrefixesProjection extends PrefixMappingImpl
 {
-    // Own cache and complete replace  PrefixMappingImpl?
+    // Own cache and complete replace PrefixMappingImpl?
 
     private String graphName ;
     private DatasetPrefixStorage prefixes ; 

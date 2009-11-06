@@ -110,6 +110,15 @@ public class SolverLib
             chain = solve(nodeTupleTable, chain, tuple, anyGraph, execCxt) ;
         }
         
+        // DEBUG POINT
+        if ( false )
+        {
+            if ( chain.hasNext())
+                chain = Iter.print(chain) ;
+            else
+                System.out.println("No results") ;
+        }
+        
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }

@@ -113,6 +113,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
                 return output ;
             }
         } ;
+        
         return Iter.iter(iterMatches).map(binder).removeNulls() ;
     }
     

@@ -51,7 +51,7 @@ public class JenaReaderTurtle2 extends JenaReaderBase
     
     public void finishRead(Model model)
     {
-     // Merge prefixes.
+        // Merge prefixes.
         for ( Map.Entry<String,IRI> e : getPrefixMap().getMapping().entrySet() )
             model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
     }
