@@ -18,9 +18,16 @@ public class DevTDB
     //   IndexMakers?
     // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
+    // Setup
     // Const for names.
     // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
+    // **** Parameterize by:
+    //   NodeTableFactory
+    //   BlockMgrFactory
+    //   IndexFactory [dft to over BlockMgrFactory]
+    //   RangeIndexFactory [dft to over BlockMgrFactory]
+
 
     // FROM NAMED pick and mix
     

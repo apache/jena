@@ -4,13 +4,13 @@
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 
 <http://example/> <legalURI> 123 ;
-    <legalURIé> "foo" ;
+#    <legalURIé> "foo" ;
 #    :p "é" ;
-    :p "\u0020" ;
-    :p "\u0123" ;
-    :p "\uF123" ;
+#    :p "\u0020" ;
+#    :p "\u0123" ;
+#    :p "\uF123" ;
     :p "New test" ;
 .
 
 
-<http://example/> <(il)legalURI> 1234 .
+#<http://example/> <(il)legalURI> 1234 .

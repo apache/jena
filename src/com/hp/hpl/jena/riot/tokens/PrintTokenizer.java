@@ -9,7 +9,7 @@ package com.hp.hpl.jena.riot.tokens;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Print a logging messing on every token */
+/** Print a logging message on every token */
 public class PrintTokenizer extends TokenizerWrapper
 {
     static private int counter = 0 ;

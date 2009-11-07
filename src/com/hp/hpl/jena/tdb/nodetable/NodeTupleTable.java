@@ -74,11 +74,11 @@ public class NodeTupleTable implements Sync, Closeable
     /** Find by node. */
     public Iterator<Tuple<Node>> find(Node...nodes)
     {
-        Iterator<Tuple<NodeId>> _iter = findAsNodeIds(nodes) ;
-        if ( _iter == null )
+        Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ;
+        if ( iter1 == null )
             return new NullIterator<Tuple<Node>>() ;
-        Iterator<Tuple<Node>> iter = TupleLib.convertToNodes(nodeTable, _iter) ;
-        return iter ;
+        Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
+        return iter2 ;
     }
     
     /** Find by node - return an iterator of NodeIds. Can return "null" for not found as well as NullIterator */

@@ -84,7 +84,7 @@ public class SolverLib
         List<Triple> triples = pattern.getList() ;
         
         Iterator<Binding> iter = input ;
-        boolean anyGraph = (Node.ANY.equals(graphNode)) ;
+        boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode))) ;
         
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
         if ( graphNode == null ) {

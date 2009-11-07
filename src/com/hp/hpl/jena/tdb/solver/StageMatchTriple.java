@@ -81,6 +81,8 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         // Go directly to the tuple table
         Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
         
+        // ** Allow a triple or quad filter here.
+        
         // If we want to reduce to RDF semantics over quads,
         // we need to reduce the quads to unique triples. 
         // We do that by having the graph slot as "any", then running
