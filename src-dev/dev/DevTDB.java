@@ -34,6 +34,7 @@ public class DevTDB
     // See metadata stuff in BPlusTreeParams
     // Document
     //   concurrency  []
+    //   closing and sync'ing - tutorial.
     //   Settings     []
     //   Explain mode [DONE]
     // Test.
