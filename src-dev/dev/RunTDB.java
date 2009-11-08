@@ -19,6 +19,7 @@ import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
 import atlas.io.PeekReader ;
 import atlas.junit.TextListener2 ;
+import atlas.lib.FileOps ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.* ;
@@ -64,6 +65,11 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        FileOps.clearDirectory("DB") ;
+        tdb.tdbloader.main("--tdb=tdb.ttl", "--graph=http://example/g1", "D.ttl") ;
+        System.exit(0) ;
+        
+        
         String string = "<abc\\> >" ;
         PeekReader r = PeekReader.make(string) ;
         Tokenizer tokenizer = new TokenizerText(r) ;

@@ -6,6 +6,7 @@
 
 package tdb.cmdline;
 
+import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
@@ -55,10 +56,17 @@ public abstract class CmdTDB extends CmdARQ
     
     protected Model getModel()
     {
+        Dataset ds = tdbDatasetAssembler.getDataset() ;
+        
         if ( graphName != null )
-            return tdbDatasetAssembler.getDataset().getNamedModel(graphName) ;
+        {
+            Model m = ds.getNamedModel(graphName) ;
+            if ( m == null )
+                throw new CmdException("No such named graph (is this a TDB dataset?)") ;
+            return m ;
+        }
         else
-            return tdbDatasetAssembler.getDataset().getDefaultModel() ;
+            return ds.getDefaultModel() ;
     }
     
     protected Location getLocation()
