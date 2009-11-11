@@ -224,7 +224,7 @@ public class SetupTDB
         
         log.debug("Object table: "+indexNode2Id+" - "+indexId2Node) ;
         
-        
+        // Cache sizes should come from this.info.
         NodeTable nodeTable = makeNodeTable(location, 
                                             indexNode2Id,
                                             SystemTDB.Node2NodeIdCacheSize,

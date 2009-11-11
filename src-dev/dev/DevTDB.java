@@ -10,7 +10,6 @@ public class DevTDB
 {
     // == 0.8.4
     // **** Remove FactoryGraphTDB
-
     
     // Getters not rolled out into codebase yet.
     // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
@@ -53,7 +52,6 @@ public class DevTDB
     
     // == Atlas
     // Separate out atlas properly.
-    // Add getter to cache suite
     
     // ----
     // B+Tree checking utility.
