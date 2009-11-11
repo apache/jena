@@ -10,6 +10,7 @@ package com.hp.hpl.jena.tdb.solver;
 import java.util.Iterator;
 import java.util.List;
 
+import atlas.iterator.Filter ;
 import atlas.iterator.Iter;
 import atlas.iterator.NullIterator;
 import atlas.iterator.RepeatApplyIterator;
@@ -34,12 +35,15 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 
     private final ExecutionContext execCxt ;
     private boolean anyGraphs ;
+    private Filter<Tuple<NodeId>> filter ;
 
-    public StageMatchTriple(NodeTupleTable nodeTupleTable, boolean anyGraphs, 
-                            Iterator<BindingNodeId> input, Tuple<Node> tuple, 
+    public StageMatchTriple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
+                            Tuple<Node> tuple, boolean anyGraphs, 
+                            Filter<Tuple<NodeId>> filter, 
                             ExecutionContext execCxt)
     {
         super(input) ;
+        this.filter = filter ;
         this.nodeTupleTable = nodeTupleTable ; 
         this.patternTuple = tuple ;
         this.execCxt = execCxt ;
@@ -82,6 +86,8 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
         
         // ** Allow a triple or quad filter here.
+        if ( filter != null )
+            iterMatches = Iter.filter(iterMatches, filter) ;
         
         // If we want to reduce to RDF semantics over quads,
         // we need to reduce the quads to unique triples. 

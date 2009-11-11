@@ -17,20 +17,20 @@ import java.util.Map ;
 import junit.framework.TestCase ;
 import org.junit.runner.JUnitCore ;
 import org.junit.runner.Result ;
-import atlas.io.PeekReader ;
+import atlas.iterator.Filter ;
 import atlas.junit.TextListener2 ;
-import atlas.lib.FileOps ;
+import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.tdb.TC_TDB ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
@@ -41,15 +41,15 @@ import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.junit.QueryTestTDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.tdb.sys.DatasetGraphSetup ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
-
-import dump.DumpIndex ;
 
 public class RunTDB
 {
@@ -65,34 +65,33 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
-        FileOps.clearDirectory("DB") ;
-        tdb.tdbloader.main("--tdb=tdb.ttl", "--graph=http://example/g1", "D.ttl") ;
-        System.exit(0) ;
+        
+        Dataset ds = TDBFactory.createDataset("DB") ;
+        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        
+        NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         
         
-        String string = "<abc\\> >" ;
-        PeekReader r = PeekReader.make(string) ;
-        Tokenizer tokenizer = new TokenizerText(r) ;
-        while(tokenizer.hasNext())
-        {
-            System.out.println(tokenizer.next()) ;
-        }
-        
-        
-        TDBFactory.createDataset();
-        
-        TDBMaker.setImplFactory(new DatasetGraphSetup()) ;
-        Dataset ds = TDBFactory.createDataset("tmp/DBX") ;
+        final NodeId target = nodeTable.getNodeIdForNode(Node.createURI("http://example/graph2")) ;
+        System.out.println("Filter: "+target) ;
+        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
+            public boolean accept(Tuple<NodeId> item)
+            {
+                //System.err.println(item) ;
+                if ( item.size() == 4 && item.get(0).equals(target) )
+                {
+                    System.out.println("Reject: "+item) ;
+                    return false ;
+                }
+                System.out.println("Accept: "+item) ;
+                return true ;
+            } } ;
+        TDB.getContext().set(SystemTDB.symTupleFilter, filter) ;
 
-        //        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
-        //        ds.getDefaultModel().write(System.out, "TTL") ;
-        System.exit(0) ;
-
-        if ( false )
-        {
-            DumpIndex.dump(System.out, "DB", "SPO") ;
-            System.exit(0) ;
-        }
+        String qs = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }}" ;
+        //String qs = "SELECT * { GRAPH ?g { ?s ?p ?o } }" ;
+        
+        tdbquery("--tdb=tdb.ttl", qs) ;
     }
 
     // Switching on index type to build.

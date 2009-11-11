@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 import java.util.Iterator;
 import java.util.List;
 
+import atlas.iterator.Filter ;
 import atlas.iterator.Iter;
 import atlas.iterator.Transform;
 import atlas.lib.Tuple;
@@ -54,18 +55,22 @@ public class SolverLib
         }} ;
 
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, 
+                                        QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                        ExecutionContext execCxt)
     {
-        return execute(graph.getNodeTupleTable(), null, pattern, input, execCxt) ;
+        return execute(graph.getNodeTupleTable(), null, pattern, input, filter, execCxt) ;
     }
     
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input.
      *  GraphNode is Node.ANY for execution over the union of named graphs.
+     *  GraphNode is null for execution over the real default graph.
      */ 
-    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, 
-                                        BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern,
+                                        QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                        ExecutionContext execCxt)
     {
-        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, execCxt) ;
+        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, filter, execCxt) ;
     }
     
     public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
@@ -77,9 +82,11 @@ public class SolverLib
     
     // The worker.  Callers choose the NodeTupleTable.  
     //     graphNode maybe Node.ANY, meaning we should make triples unique.
+    //     graphNode maybe null, meaning we should make triples unique.
 
-    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode,
-                                         BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, 
+                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                         ExecutionContext execCxt)
     {
         List<Triple> triples = pattern.getList() ;
         
@@ -107,7 +114,7 @@ public class SolverLib
             else
                 // 4-tuples.
                 tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(nodeTupleTable, chain, tuple, anyGraph, execCxt) ;
+            chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
         }
         
         // DEBUG POINT
@@ -123,11 +130,13 @@ public class SolverLib
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
     
-    private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
-                                                 Tuple<Node> tuple, boolean anyGraph,
+    private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, 
+                                                 Tuple<Node> tuple,
+                                                 boolean anyGraph,
+                                                 Iterator<BindingNodeId> chain, Filter<Tuple<NodeId>> filter,
                                                  ExecutionContext execCxt)
     {
-        return new StageMatchTriple(nodeTupleTable, anyGraph, chain, tuple, execCxt) ;
+        return new StageMatchTriple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding

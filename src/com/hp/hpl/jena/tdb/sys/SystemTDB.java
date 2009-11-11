@@ -86,6 +86,10 @@ public class SystemTDB
     /** Index type */
     public static final Symbol symIndexType         = allocSymbol("indexType") ;
 
+    /** Experimental : triple and quad filtering at scan level */
+    public static final Symbol symTupleFilter       = allocSymbol("tupleFilter") ;
+
+    
     private static final String propertyFileKey1    = tdbPropertyRoot+".settings" ;
     private static final String propertyFileKey2    = tdbSymbolPrefix+":settings" ;
 

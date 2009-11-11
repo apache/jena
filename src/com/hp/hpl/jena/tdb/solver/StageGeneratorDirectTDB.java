@@ -6,16 +6,23 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import atlas.iterator.Filter ;
+import atlas.lib.Tuple ;
 
-/** Execute TDB requests directly -- no reordering */ 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+
+/** Execute TDB requests directly -- no reordering
+ *  Using OpExecutor is preferred.
+ */ 
 public class StageGeneratorDirectTDB implements StageGenerator
 {
+    // Using OpExecutor is preferred.
     StageGenerator above = null ;
     
     public StageGeneratorDirectTDB(StageGenerator original)
@@ -29,11 +36,13 @@ public class StageGeneratorDirectTDB implements StageGenerator
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
         
+        Filter<Tuple<NodeId>> filter = OpExecutorTDB.getFilter(execCxt.getContext()) ;
+        
         if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
-        return SolverLib.execute(graph, pattern, input, execCxt) ;
+        return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
     }
 }
 

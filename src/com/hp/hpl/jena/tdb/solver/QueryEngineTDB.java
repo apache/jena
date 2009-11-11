@@ -135,7 +135,7 @@ public class QueryEngineTDB extends QueryEngineMain
         {
             if ( query.hasDatasetDescription() )
             {
-                // Has a description - don't use the dataset, use the desription via an all-purpose query engine.
+                // Has a description - don't use the dataset, use the description via an all-purpose query engine.
                 QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
                 return engine.getPlan() ;
             }
