@@ -3,14 +3,4 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example/> <legalURI> 123 ;
-#    <legalURIé> "foo" ;
-#    :p "é" ;
-#    :p "\u0020" ;
-#    :p "\u0123" ;
-#    :p "\uF123" ;
-    :p "New test" ;
-.
-
-
-#<http://example/> <(il)legalURI> 1234 .
+:z :p 135667 .

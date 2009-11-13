@@ -2,7 +2,7 @@
   <properties file="${ivy.settings.dir}/ivysettings.properties" />
 
   <property name="sftp.root.dev" value="repo-dev/com/hp/hpl/jena" override="false"/>
-  <property name="sftp.root.main" value="repo-dev/com/hp/hpl/jena" override="false"/>
+  <property name="sftp.root.main" value="repo/com/hp/hpl/jena" override="false"/>
 
   <!-- Resolvers used for getting our dependencies -->
   <include file="${ivy.settings.dir}/ivy-resolvers.xml" />
