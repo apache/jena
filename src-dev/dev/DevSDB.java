@@ -8,6 +8,8 @@ package dev;
 
 public class DevSDB
 {
+	// javadoc is javadoc all!
+
     // Document assembler for models including named graphs.
 
     // maven: 
