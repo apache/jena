@@ -49,6 +49,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Brings in sources -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>iri</artifactId>
+      <version>0.8</version>
+    </dependency>
+
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
@@ -78,12 +85,6 @@
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.7.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>iri</artifactId>
-      <version>0.7</version>
     </dependency>
 
     <!-- Choose your logging provider 
