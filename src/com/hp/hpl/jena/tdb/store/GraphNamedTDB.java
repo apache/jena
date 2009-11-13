@@ -148,7 +148,8 @@ public class GraphNamedTDB extends GraphTDBBase
     @Override
     final public void close()
     { 
-        // Do nothing.  May be retuned via the dataset again later. 
+        // Do nothing much.  May be returned via the dataset again later. 
+        sync(true) ;
     }
     
     @Override

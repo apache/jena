@@ -94,7 +94,13 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     final public void close()
     {
-        if ( dataset == null )
+        if ( dataset != null )
+        {
+            // Part of a dataset which may be cached and so "close" is meaningless.
+            // At least sync it to flush data to disk.
+            sync(true) ;
+        }
+        else            
         {
             // Free standing graph.  Clear up.
             prefixes.close();

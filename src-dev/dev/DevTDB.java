@@ -10,7 +10,14 @@ public class DevTDB
 {
     // == 0.8.4
     // **** Remove FactoryGraphTDB
+    // Document:
+    //   concurrency  []
+    //   closing and sync'ing - tutorial.  Bad for model from TDBFactory.createModel.
+    //   Settings     []
+    //   Explain mode [DONE]
     
+    // Can a free standing graph ever have no dataset.
+
     // Getters not rolled out into codebase yet.
     // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
     //   Remove FactoryGraphTDB
@@ -31,11 +38,6 @@ public class DevTDB
     // FROM NAMED pick and mix
     
     // See metadata stuff in BPlusTreeParams
-    // Document
-    //   concurrency  []
-    //   closing and sync'ing - tutorial.
-    //   Settings     []
-    //   Explain mode [DONE]
     // Test.
     
     // Rethink.check cache synchronization (ByteBuffer)
