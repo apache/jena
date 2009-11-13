@@ -628,6 +628,47 @@ public class ResultSetFormatter
     {
         throw new ARQNotImplemented("outputAsSSE") ;
     }
+    
+    // ---- CSV
+    
+    /** Output a boolean result in CSV format
+     *  
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsCSV(boolean booleanResult)
+    { outputAsCSV(System.out, booleanResult ) ; }
+    
+    /** Output a boolean result in in CSV format
+     *  
+     * @param outStream     output stream
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsCSV(OutputStream outStream, boolean booleanResult)
+    {
+        CSVOutput fmt = new CSVOutput() ;
+        fmt.format(outStream, booleanResult) ;
+    }
+
+    /** Output a result set in CSV format
+     *  @param resultSet     result set
+     */
+    
+    static public void outputAsCSV(ResultSet resultSet)
+    { outputAsCSV(System.out, resultSet) ; }
+    
+    /** Output a result set in CSV format
+     * @param outStream  The output stream
+     * @param resultSet     The result set
+     */
+    
+    static public void outputAsCSV(OutputStream outStream, ResultSet resultSet)
+    {
+        CSVOutput fmt = new CSVOutput() ;
+        fmt.format(outStream, resultSet) ;
+    }
+
 }
 
 /*

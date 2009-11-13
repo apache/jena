@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
 /**
  * A JSON writer for SPARQL Result Sets
  * 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.query.ResultSet;
  * @author Andy Seaborne
  */
 
-public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
+public class JSONOutputResultSet implements ResultSetProcessor
 {
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;

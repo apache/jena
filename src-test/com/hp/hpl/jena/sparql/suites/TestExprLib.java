@@ -11,9 +11,9 @@ import junit.framework.JUnit4TestAdapter ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprLib ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
-import dev.ExprLib ;
 
 public class TestExprLib
 {

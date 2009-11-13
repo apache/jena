@@ -10,7 +10,7 @@ package com.hp.hpl.jena.sparql.resultset;
 /**
  * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
  */
-public interface JSONResults
+public class JSONResults
 {
     public static final int INDENT = 2 ;
         

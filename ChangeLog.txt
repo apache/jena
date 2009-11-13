@@ -4,6 +4,7 @@ ChangeLog for ARQ
 ==== ARQ 2.8.2
 
 + SPARQL v1.1 as an defined language and parser, separate from ARQ 
++ Results output in CSV
 
 ==== ARQ 2.8.1
 

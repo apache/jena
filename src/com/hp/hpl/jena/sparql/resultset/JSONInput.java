@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.util.FileUtils;
 
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+
 /**
  * Code that reads a JSON Result Set and builds the ARQ structure for the same.
  * Originally from Elias Torres &lt;<a href="mailto:elias@torrez.us">elias@torrez.us</a>&gt;
@@ -94,7 +96,8 @@ public class JSONInput extends SPARQLResult
         catch (IOException e) { throw new ResultSetException(e.getMessage(), e); }
     }
     
-    public static class JSONResultSet implements ResultSet, JSONResults {
+    public static class JSONResultSet implements ResultSet
+    {
         // ResultSet variables
         QuerySolution current = null;
         List<String> variables = new ArrayList<String>();

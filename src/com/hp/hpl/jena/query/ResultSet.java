@@ -45,7 +45,7 @@ public interface ResultSet extends Iterator<QuerySolution>
     public int getRowNumber() ;
     
     /** Get the variable names for the projection. Not all query
-     *  solution from a result have every variable defined. 
+     *  solutions from a result have every variable defined. 
      */
     public List<String> getResultVars() ;
 

@@ -4,15 +4,10 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.E_Equals ;
-import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprFunction2 ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class ExprLib
 {

@@ -21,6 +21,8 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+
 /**
  * JSON Output as a JSON object
  * (Converted from a JSONStringer output writer by Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
@@ -28,7 +30,7 @@ import com.hp.hpl.jena.query.ResultSet;
  * @author Andy Seaborne 
  */
 
-public class JSONObjectResult implements ResultSetProcessor, JSONResults
+public class JSONObjectResult implements ResultSetProcessor
 {
     static boolean outputExplicitUnbound = false;
 

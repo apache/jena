@@ -11,13 +11,15 @@ import java.io.OutputStream;
 
 import com.hp.hpl.jena.sparql.lib.org.json.*;
 
+import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+
 /** JSON Output (ASK format)
  * 
  * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
  */
 
 
-public class JSONOutputASK implements JSONResults
+public class JSONOutputASK
 {
     OutputStream outStream ;
     

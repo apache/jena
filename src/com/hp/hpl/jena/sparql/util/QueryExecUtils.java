@@ -146,6 +146,12 @@ public class QueryExecUtils
             done = true ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV ) )
+        {
+            ResultSetFormatter.outputAsCSV(System.out, results) ;
+            done = true ;
+        }
+        
         if ( ! done )
             System.err.println("Unknown format request: "+outputFormat) ;
         results = null ;
@@ -255,7 +261,6 @@ public class QueryExecUtils
             return ;
         }
 
-
         if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
             //ResultSetFormatter.out(System.out, b) ;
@@ -263,6 +268,14 @@ public class QueryExecUtils
             return ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV) )
+        {
+            ResultSetFormatter.outputAsCSV(System.out, b) ;
+            return ;
+        }
+
+
+        
         System.err.println("Unknown format: "+outputFormat.getSymbol()) ;
     }
     
