@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT *
+{ ?x ?p ?v . ?x ?p ?v }
+OFFSET 2
