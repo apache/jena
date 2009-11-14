@@ -10,13 +10,11 @@ package dev;
 import java.util.Iterator ;
 
 import org.junit.Assert ;
-
 import arq.qexpr ;
 import arq.sparql ;
 import arq.sse_query ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.test.GraphTestBase ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;

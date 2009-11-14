@@ -6,14 +6,21 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.*;
-import org.junit.Assert ;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.expr.nodevalue.*;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprNotComparableException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 /** com.hp.hpl.jena.query.test.TestNodeValue
