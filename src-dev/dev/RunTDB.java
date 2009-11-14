@@ -69,14 +69,19 @@ public class RunTDB
         Dataset ds = TDBFactory.createDataset("DB") ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         
-        NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
-        
-        
+        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         final NodeId target = nodeTable.getNodeIdForNode(Node.createURI("http://example/graph2")) ;
+
         System.out.println("Filter: "+target) ;
+        
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
+            
             public boolean accept(Tuple<NodeId> item)
             {
+                
+                // Reverse the lookup as a demo
+                Node n = nodeTable.getNodeForNodeId(target) ;
+                
                 //System.err.println(item) ;
                 if ( item.size() == 4 && item.get(0).equals(target) )
                 {
@@ -86,6 +91,8 @@ public class RunTDB
                 System.out.println("Accept: "+item) ;
                 return true ;
             } } ;
+            
+            
         TDB.getContext().set(SystemTDB.symTupleFilter, filter) ;
 
         String qs = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }}" ;
