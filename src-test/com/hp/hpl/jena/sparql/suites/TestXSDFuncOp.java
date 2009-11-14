@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.suites;
 
 import junit.framework.*;
+import org.junit.Assert ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
@@ -772,6 +773,30 @@ public class TestXSDFuncOp extends TestCase
         assertEquals("Wrong result", 3, r.getInteger().longValue() ) ;
     }
 
+    public void testSqrt1()
+    {
+        NodeValue four = NodeValue.makeInteger(4) ;
+        NodeValue two = NodeValue.makeInteger(2) ;
+        NodeValue result = XSDFuncOp.sqrt( four ) ;
+        
+        assertTrue(result.isDecimal()) ;
+        assertTrue( NodeValue.sameAs( two, result)) ;
+        assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
+    }
+    
+    public void testSqrt2()
+    {
+        NodeValue four = NodeValue.makeDouble(4) ;
+        NodeValue two = NodeValue.makeInteger(2) ;
+        NodeValue result = XSDFuncOp.sqrt( four ) ;
+
+        assertTrue(result.isDouble()) ;
+        assertTrue( NodeValue.sameAs( two, result)) ;
+        
+        assertNotNull(result.asNode()) ;
+        
+        //assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
+    }
 }
 
 /*

@@ -300,7 +300,6 @@ public class XSDFuncOp
         switch (classifyNumeric("sqrt", v))
         {
             case OP_INTEGER:
-                return v ;
             case OP_DECIMAL:
                 double dec = v.getDecimal().doubleValue() ;
                 return NodeValue.makeDecimal( Math.sqrt(dec) ) ;

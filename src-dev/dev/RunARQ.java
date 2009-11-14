@@ -9,11 +9,14 @@ package dev;
 
 import java.util.Iterator ;
 
+import org.junit.Assert ;
+
 import arq.qexpr ;
 import arq.sparql ;
 import arq.sse_query ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.test.GraphTestBase ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -40,6 +43,8 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -80,6 +85,17 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
+        NodeValue four = NodeValue.makeInteger(4) ;
+        NodeValue two = NodeValue.makeInteger(2) ;
+        NodeValue result = XSDFuncOp.sqrt( four ) ;
+        Assert.assertTrue( NodeValue.sameAs( two, result)) ;
+        Assert.assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
+        
+        System.exit(0) ;
+        //assertEquals( two, XSDFuncOp.sqrt( result ).asNode() );
+
+        
+        
         String str = "http://host/foo%2Fbar" ;
         System.out.println("<"+str+">") ;
         
