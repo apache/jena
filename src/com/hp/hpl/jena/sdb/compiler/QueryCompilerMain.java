@@ -30,11 +30,21 @@ public abstract class QueryCompilerMain implements QueryCompiler
         this.request = request ;
     }
     
-    public Op compile(final Op op)
+    public Op compile(Op op)
     {
         QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
         if ( request.getContext().isTrue(SDB.useQuadRewrite) )
             quadCompiler = new QuadBlockRewriteCompiler(request, quadCompiler) ;
+        
+        // Pre-transform:
+        // (slice (project...)) ==> (project (slice ...))
+        // and only this (no intermediate nodes)
+        
+        if ( request.LimitOffsetTranslation )
+        {
+            Transform preTransform = new TransformSliceProject() ;
+            op = Transformer.transform(preTransform, op) ;
+        }
         
         Transform t = new TransformSDB(request, quadCompiler) ;
         Op op2 = Transformer.transform(t, op) ;
@@ -53,10 +63,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
         
         boolean patternIsOneSQLStatement = SDB_QC.isOpSQL(patternOp) ;
             
-        // To be removed : project handling in SqlNodesFinisher:: transform SDB should do this.
-        // See XYZ below
-        
         // Find all OpSQL nodes and put a bridge round them.
+        // Some will have been done, some won't (e.g. ORDER BY)
+        
         OpWalker.walk(op2, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
         return op2 ;
     }
@@ -103,13 +112,10 @@ public abstract class QueryCompilerMain implements QueryCompiler
             }
                     
             SqlNode sqlNode = opSQL.getSqlNode() ;
-            
             SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
-            
             SQLBridge bridge = f.create(request, sqlNode, projectVars) ;
             bridge.build();
             sqlNode = bridge.getSqlNode() ;
-            
             opSQL.setBridge(bridge) ;
             opSQL.resetSqlNode(sqlNode) ;
         }

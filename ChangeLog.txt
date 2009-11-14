@@ -6,7 +6,11 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
-==== SDB v1.4 (pre)
+==== SDB v1.3.2
+
++ Enable OFFSET/LIMIT processing of SQL.
+
+==== SDB v1.3.1
 
 + Changed the index structure for the quad table to improve converage.
   Migration: drop all secondary indexes and reindex.

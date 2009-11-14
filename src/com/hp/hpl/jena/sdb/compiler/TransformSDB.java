@@ -6,37 +6,37 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.SetUtils.intersection;
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.* ;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.filter ;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.map ;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.toSet ;
+import static com.hp.hpl.jena.sparql.lib.iterator.SetUtils.intersection ;
 
-import java.util.List;
-import java.util.Set;
+import java.util.List ;
+import java.util.Set ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.ScopeEntry;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
-import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
-import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
-import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sdb.core.AliasesSql ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.core.ScopeEntry ;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock ;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable ;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads ;
+import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler ;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError ;
+import com.hp.hpl.jena.sdb.store.SQLBridge ;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 
 public class TransformSDB extends TransformCopy
 {
@@ -190,7 +190,6 @@ public class TransformSDB extends TransformCopy
         //request.getStore().getSQLBridgeFactory().create(request, null, null)
         if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opProject, subOp) ;
-        if ( false ) return super.transform(opProject, subOp) ;
         
         // Need to not do bridge elsewhere.
         List<Var> vars = opProject.getVars() ;
@@ -218,53 +217,38 @@ public class TransformSDB extends TransformCopy
     {
         if ( ! request.LimitOffsetTranslation )
             return super.transform(opSlice, subOp) ;
-        
-        // Two cases are currently handled:
-        // (slice (sql expression))
-        // (slice (project ... (sql expression)))
-        
-        boolean canHandle = false ;
-        
-        // Relies on the fact that isOpSQL(null) is false.
-        if (  SDB_QC.isOpSQL(subOp) )
-            canHandle = true ;
-        else if ( SDB_QC.isOpSQL(sub(asProject(subOp))) )
-        {
-            return transformSliceProject(opSlice, (OpProject)subOp) ;
-        }
 
-        // Simple slice
+        // Not a slice of SQL
         if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opSlice, subOp) ;
+        
+        // Two cases are currently handled:
+        // (slice (project (sql expression)))
+        // (slice (sql expression))
 
+        if ( isProject(opSlice.getSubOp()) )
+            // This should not happen because the pre-transform done in QueryEngineMain
+            // rewrites the case into the equivalent (project (slice ...))
+            return transformSliceProject(opSlice, (OpSQL)subOp, ((OpSQL)subOp).getSqlNode()) ;
+
+        // (slice (sql expression))
         return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
     }
         
     private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
     {
         SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-        Op x = new OpSQL(n, opSlice, request) ;
+        OpSQL x = new OpSQL(n, opSlice, request) ;
         return x ;
     }
     
-    public Op transformSliceProject(OpSlice opSlice, OpProject opProject)
+    private Op transformSliceProject(OpSlice opSlice, OpSQL subOp, SqlNode sqlOp)
     {
-        // (slice (project X))
-        Op subOp = opProject.getSubOp() ;
-        
-        if ( ! SDB_QC.isOpSQL(subOp) )
-            // Can't cope - just pass the slice to the general superclass. 
-            return super.transform(opSlice, opProject) ;
-
-        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-        
-        List<Var> pv = opProject.getVars() ;
-        
-        // Do as (slice X)
-        SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-        // Put back project - as an OpProject to leave for the bridge.
-        Op x = new OpSQL(n, opProject, request) ;
-        return new OpProject(x, pv) ;
+        // This put the LIMIT outside all the projects left joins, which is a bit of a pity.
+        // Could improve by rewriting (slice (project...)) into (project (slice...)) in QueryCompilerMain 
+        OpSQL x = (OpSQL)transformSlice(opSlice, sqlOp) ;
+        SQLBridge bridge = subOp.getBridge() ;
+        return x ;
     }
 
     // ----

@@ -8,6 +8,8 @@ package dev;
 
 public class DevSDB
 {
+    // Activate SDBRequest.LimitOffsetTranslation
+    
 	// javadoc is javadoc all!
 
     // Document assembler for models including named graphs.
