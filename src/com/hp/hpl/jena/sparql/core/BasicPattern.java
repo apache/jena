@@ -92,13 +92,12 @@ public class BasicPattern implements Iterable<Triple>
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
         
         boolean first = true ;
-        for ( Iterator<Triple> iter = triples.iterator() ; iter.hasNext() ; )
+        for ( Triple t : triples )
         {
             if ( !first )
                 out.print(" ") ;
             else
                 first = false ;
-            Triple t = iter.next();
             // Adds (triple ...)
             // SSE.write(buff.getIndentedWriter(), t) ;
             out.print("(") ;

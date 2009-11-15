@@ -46,7 +46,7 @@ public class WriterNode
         WriterLib.finish(out, Tags.tagQuad) ;
     }
     
-    private static void outputPlain(IndentedWriter out, Quad qp, SerializationContext naming)
+    public static void outputPlain(IndentedWriter out, Quad qp, SerializationContext naming)
     {
         output(out, qp.getGraph(), naming) ;
         out.print(" ") ;

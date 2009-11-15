@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -16,6 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -26,12 +26,13 @@ public class OpQuadPattern extends Op0
         return (op instanceof OpQuadPattern ) ;
     }
     
-    Node graphNode ;
-    BasicPattern triples ;
-    List<Quad> quads = null ;
+    private Node graphNode ;
+    private BasicPattern triples ;
+    
+    private QuadPattern quads = null ;
     
     // A QuadPattern is a block of quads with the same graph arg.
-    // i.e. a BasicGraphPattern.  This gets the blank node coping right.
+    // i.e. a BasicGraphPattern.  This gets the blank node scoping right.
     
     // Quads are for a specific quad store.
     
@@ -44,15 +45,27 @@ public class OpQuadPattern extends Op0
         this.triples = triples ;
     }
     
-    public List<Quad> getQuads()
+    private void initQuads()
     {
         if ( quads == null )
         {
-            quads = new ArrayList<Quad>() ;
+            quads = new QuadPattern() ;
             for (Triple t : triples )
                 quads.add(new Quad(graphNode, t)) ;
         }
-        return quads ; 
+    }
+    
+    public QuadPattern getPattern()
+    {
+        initQuads() ;
+        return quads ;
+    } 
+    
+    @Deprecated
+    public List<Quad> getQuads()
+    {
+        initQuads() ;
+        return quads.getList() ;
     }
     
     public Node getGraphNode()              { return graphNode ; } 

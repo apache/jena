@@ -6,21 +6,24 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.ListIterator ;
+
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 
 /** A class whose purpose is to give a name to a collection of quads
- * Reduces the use of bland "List" in APIs (Java 1.4) 
  */ 
 
-public class QuadPattern
+public class QuadPattern implements Iterable<Quad>
 {
     private List<Quad> quads = new ArrayList<Quad>() ; 
 
-    // Not used?
-    // OpQuadPattern is a graph node and a basic graph pattern.
     public QuadPattern() {}
     public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }
     
@@ -48,7 +51,29 @@ public class QuadPattern
     }
     
     @Override
-    public String toString() { return quads.toString() ; } 
+    public String toString()
+    { 
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+        
+        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+        
+        boolean first = true ;
+        for ( Quad quad : quads )
+        {
+            if ( !first )
+                out.print(" ") ;
+            else
+                first = false ;
+            // Adds (triple ...)
+            // SSE.write(buff.getIndentedWriter(), t) ;
+            out.print("(") ;
+            WriterNode.outputPlain(out, quad, sCxt) ;
+            out.print(")") ;
+        }
+        out.flush();
+        return buff.getBuffer().toString() ;
+    }
 }
 
 /*
