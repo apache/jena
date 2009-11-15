@@ -10,29 +10,24 @@ public class DevTDB
 {
     // == 0.8.4
     // **** Remove FactoryGraphTDB
-    // Document:
-    //   concurrency  []
-    //   closing and sync'ing - tutorial.  Bad for model from TDBFactory.createModel.
-    //   Settings     []
-    //   Explain mode [DONE]
     
-    // Can a free standing graph ever have no dataset.
-
-    // Getters not rolled out into codebase yet.
-    // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
-    //   Remove FactoryGraphTDB
-    //   IndexMakers?
-    // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
-
     // Setup
     // Const for names.
-    // [Half] Per DB properties for variable stuff (see SystemTDB.readPropertiesFile)
     //    Remove SystemTDB.intValue and friends.
     // **** Parameterize by:
     //   NodeTableFactory
     //   BlockMgrFactory
     //   IndexFactory [dft to over BlockMgrFactory]
     //   RangeIndexFactory [dft to over BlockMgrFactory]
+
+    // Document:
+    //   Settings
+    //   Better tables.
+
+    // Sort out DatasetGraphMakerTDB -> One type, not thing+mem.
+    //   Remove FactoryGraphTDB
+    //   IndexMakers?
+    // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
 
     // FROM NAMED pick and mix

@@ -39,6 +39,7 @@
     <!-- Source code -->
     <zip zipfile="${dist.dir}/${src.zipfile}">
       <fileset refid="fileset.src"/>
+      <fileset dir="${src.examples.dir}" includes="**.java"/>
     </zip>
 
     <copy todir="${dist.dir}/${test.dir}">

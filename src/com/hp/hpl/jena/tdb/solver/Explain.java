@@ -6,14 +6,21 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import java.util.List ;
+
 import org.slf4j.Logger ;
 import atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
 
@@ -60,7 +67,6 @@ Document:
         ALL { @Override public int level() { return 3 ; } } ,
         /** No query execution logging. */
         NONE { @Override public int level() { return -1 ; } }
-        
         ;
         
         abstract public int level() ;
@@ -108,7 +114,7 @@ Document:
             _explain(logExec, message, op.toString(), true) ;
     }
     
-    // ---- BGP
+    // ---- BGP and quads
     
     public static void explain(BasicPattern bgp, Context context)
     {
@@ -120,7 +126,48 @@ Document:
         if ( explaining(InfoLevel.ALL, logExec,context) )
             _explain(logExec, message, bgp.toString(), false) ;
     }
+    
+    public static void explain(String message, List<Quad> quads, Context context)
+    {
+        if ( explaining(InfoLevel.ALL, logExec,context) )
+        {
+            String str = formatQuads(quads) ;
+            _explain(logExec, message, str, false) ;
+        }
+    }
 
+    // TEMP : quad list that looks right.
+    // Renove when QuadPatterns roll through from ARQ.
+    
+    private static String formatQuads(List<Quad> quads)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+
+        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+
+        boolean first = true ;
+        for ( Quad qp : quads )
+        {
+            if ( !first )
+                out.print(" ") ;
+            else
+                first = false ;
+            // Adds (triple ...)
+            // SSE.write(buff.getIndentedWriter(), t) ;
+            out.print("(") ;
+            WriterNode.output(out, qp.getGraph(), sCxt) ;
+            out.print(" ") ;
+            WriterNode.output(out, qp.getSubject(), sCxt) ;
+            out.print(" ") ;
+            WriterNode.output(out, qp.getPredicate(), sCxt) ;
+            out.print(" ") ;
+            WriterNode.output(out, qp.getObject(), sCxt) ;
+            out.print(")") ;
+        }
+        out.flush();
+        return buff.getBuffer().toString() ;
+    }    
     // ----
     
     private static void _explain(Logger logger, String reason, String explanation, boolean newlineAlways)
@@ -156,13 +203,18 @@ Document:
             _explain(logInfo, str) ;
         }
     }
+
+    public static boolean explaining(InfoLevel level, Context context)
+    {
+        return explaining(level, logInfo, context) ;
+    }
+    
+
     
     public static boolean explaining(InfoLevel level, Logger logger, Context context)
     {
         if ( ! _explaining(level, context) ) return false ;
         return logger.isInfoEnabled() ;
-        
-        
     }
     
     private static boolean _explaining(InfoLevel level, Context context)
@@ -195,6 +247,7 @@ Document:
             if ( s.equalsIgnoreCase("all") )
                 // All levels.
                 return true ;
+            // Backwards compatibility.
             if ( s.equalsIgnoreCase("true") ) 
                 return true ;
             if ( s.equalsIgnoreCase("none") ) 

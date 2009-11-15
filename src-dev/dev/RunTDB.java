@@ -65,6 +65,9 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        tdbquery("--tdb=tdb.ttl", "--set=tdb:logExec=info", "SELECT * {GRAPH ?g { ?s ?p ?o}}") ;
+        System.exit(0) ;
+        
         
         Dataset ds = TDBFactory.createDataset("DB") ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;

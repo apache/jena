@@ -151,6 +151,7 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
+            //Explain.explain("QUERY", query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(op, (DatasetGraphTDB)dataset, binding, context) ;
             return engine.getPlan() ;
         }

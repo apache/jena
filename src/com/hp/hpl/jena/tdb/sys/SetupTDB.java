@@ -553,7 +553,7 @@ public class SetupTDB
         if (!newDataset && metafile.existsMetaData())
         {
             // Existing metadata
-            String verString = metafile.getProperty(Names.kVersion, "unknown") ;
+            String verString = metafile.getProperty("tdb.create.version", "unknown") ;
             TDB.logInfo.debug("Location: " + location.toString()) ;
             TDB.logInfo.debug("Version:  " + verString) ;
         }
