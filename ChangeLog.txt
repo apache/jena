@@ -1,6 +1,11 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.4
+
++ Experimental: filtering of quads (to support dynamic datasets and graph masking).
++ Incldue src-examples in sources shipped.  
+
 ==== 0.8.3
 
 + Concurrency fixes
