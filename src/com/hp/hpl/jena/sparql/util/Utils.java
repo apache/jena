@@ -106,10 +106,16 @@ public class Utils
     
     private static String calcTimezone(Calendar cal)
     {
+        Date date = cal.getTime() ;
         TimeZone z = cal.getTimeZone() ;
         int tzOff = z.getRawOffset() ;
-        int tzDst = z.getDSTSavings() ;
-        int tz = tzOff + tzDst ;
+        int tz = tzOff ;
+
+        if ( z.inDaylightTime(date) )
+        {
+            int tzDst = z.getDSTSavings() ;
+            tz = tz + tzDst ;
+        }
         
         String sign = "+" ;
         if ( tz < 0 )
