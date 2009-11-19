@@ -11,6 +11,9 @@ public class DevTDB
     // == 0.8.4
     // **** Remove FactoryGraphTDB
     
+    // tdbverify
+    // Need jena-2.6.2-tests.jar
+    
     // Setup
     // Const for names.
     //    Remove SystemTDB.intValue and friends.

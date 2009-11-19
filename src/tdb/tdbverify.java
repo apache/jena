@@ -22,6 +22,7 @@ public class tdbverify
 {
     public static void main(String ... argv)
     {
+        TDB.init();
         PrintStream out = System.out ;
         if ( TDB.VERSION.equals("DEV") )
             out.printf("TDB test suite (development)\n") ;

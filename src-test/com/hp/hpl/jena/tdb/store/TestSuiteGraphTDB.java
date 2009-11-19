@@ -27,8 +27,6 @@ public class TestSuiteGraphTDB extends TestSuite
         super("TDB-Scripts") ;
         TestFactoryTDB.make(this, manifestMain, "TDB-", TDBMaker.stdFactory) ;
     }
-
-    
 }
 
 /*
