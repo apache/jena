@@ -30,9 +30,10 @@ public class TS_DAWG extends TestSuite
         
         TestSuite ts1 = new TestSuite("Approved") ;
         ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
-        // These merely duplictae ARQ's synstax tests becuase Andy write the DAGW syntax tests,
+        // These merely duplictae ARQ's syntax tests because Andy wrote the DAWG syntax tests,
         // but they are quick so include the snapshot
-        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
+        // But Eclipse get confused ...
+//        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
         addTest(ts1) ;
         
 //        TestSuite ts2 = new TestSuite("Pending") ;

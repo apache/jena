@@ -12,13 +12,13 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 import junit.framework.TestSuite;
 
-public class TS extends TestSuite
+public class TS_General extends TestSuite
 {
     static final String testSetName         = "General" ;
 
-    static public TestSuite suite() { return new TS(); }
+    static public TestSuite suite() { return new TS_General(); }
 
-    public TS()
+    public TS_General()
     {
         super(testSetName) ;
         // Tests should be silent.
@@ -34,11 +34,6 @@ public class TS extends TestSuite
 
         // Algebra
         addTest(TS_Algebra.suite() );
-
-        // Syntax
-        addTest(TS_Syntax.suite()) ;
-        addTest(TS_Serialization.suite()) ;
-
     }
 }
 

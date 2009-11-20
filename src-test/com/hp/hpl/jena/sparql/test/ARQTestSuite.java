@@ -36,9 +36,14 @@ public class ARQTestSuite extends TestSuite
         
         TestSuite ts = new ARQTestSuite() ;
 
-        // Internal
-        ts.addTest(TS.suite() );
-
+        // General, programmatic tests
+        ts.addTest(TS_General.suite() );
+        
+        // Syntax
+        ts.addTest(TS_Syntax.suite()) ;
+        // Serialization
+        ts.addTest(TS_Serialization.suite()) ;
+        
         // Scripted tests for SPARQL
         ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
       
@@ -63,9 +68,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_Update.suite()) ;
         
         ts.addTest(TS_SSE.suite()) ;
-        
-//        // The ARQ-Optimizer test suite, Markus Stocker 08/06/2007
-//        ts.addTest(OptimizerTestSuite.suite()) ;
         
         return ts ;
     }

@@ -6,20 +6,26 @@
 
 package dev;
 
-import junit.framework.TestSuite;
-import arq.examples.test.TestLARQExamples;
+import junit.framework.TestSuite ;
+import arq.examples.test.TestLARQExamples ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
-import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
+import com.hp.hpl.jena.sparql.test.ARQTestSuite ;
 
 /** All tests - the main test suite and also the examples tests */
 public class AllTestsARQ extends TestSuite
 {
+    /*====================
+     * Eclipse: Soem ARQ tests are also DAWG tests (and so have same name)
+     * This confused JUnit/Eclipse but it seems to be safe and they are all run.
+     *==================== 
+     */
+    
     static public TestSuite suite()
     {
         // Fiddle around with the config if necessary
@@ -31,9 +37,17 @@ public class AllTestsARQ extends TestSuite
         
         TestSuite ts = new AllTestsARQ() ;
 
+        // Main test suite
+        // This is the test suite run by maven.
         ts.addTest(ARQTestSuite.suite()) ;
-
+        
+        /*
+         * The test count here and maven differ 
+         * Example are not part of the mvn testing process 
+         */
+        
         // Scripted tests for ARQ examples.
+        // 
         ts.addTest(QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
         ts.addTest(TestLARQExamples.suite()) ;
         return ts ;
