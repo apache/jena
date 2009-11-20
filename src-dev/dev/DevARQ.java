@@ -8,10 +8,6 @@ package dev;
 
 public class DevARQ
 {
-    // ==== Document IF/COLLASCE
-    // Test OpDisjunction
-    // Test disjunction optimizations.
-    
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
     
@@ -32,7 +28,8 @@ public class DevARQ
     // Convert test suite by manifest to JUnit4. JUnit4TestAdapter
     //   Partial: all the Test* use JUnit4TestAdapter
     //   To do: Organise suites better.
-    //          Plase in TS sets via JUnit4
+    //          TS ==> JUnit4
+    //          No more JUnit3.
     
     // Library
     // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.
