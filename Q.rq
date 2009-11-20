@@ -1,3 +1,7 @@
-CONSTRUCT { _:x <p> ?x . }
-{ _:x <p> ?x . }
- 
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :       <http://example.org/>
+
+SELECT *
+{
+   ?s :p ?o . FILTER(?o = 13 || ?o = 12 )
+} 
