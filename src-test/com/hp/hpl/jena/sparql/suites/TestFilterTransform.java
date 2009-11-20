@@ -4,23 +4,29 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.suites;
 
 import junit.framework.Assert ;
+import junit.framework.JUnit4TestAdapter ;
+import org.junit.Test ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 
-import org.junit.Test ;
-
 public class TestFilterTransform
 {
-    Transform t_equality = new TransformEqualityFilter() ;
-    Transform t_disjunction = new TransformFilterDisjunction() ;
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestFilterTransform.class) ;
+    }
+    
+    private Transform t_equality = new TransformEqualityFilter() ;
+    private Transform t_disjunction = new TransformFilterDisjunction() ;
     
     @Test public void equality01()
     {

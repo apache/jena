@@ -29,7 +29,10 @@ public class DevARQ
     // e.g. if first step is a URI, use this to seed the process
     
     // == Test
-    // Convert test suite by manifest to JUnit4. JUnit4TestAdpter
+    // Convert test suite by manifest to JUnit4. JUnit4TestAdapter
+    //   Partial: all the Test* use JUnit4TestAdapter
+    //   To do: Organise suites better.
+    //          Plase in TS sets via JUnit4
     
     // Library
     // TEMP : dump necessary copies in c.h.h.j.sparql.lib until whole thing is sorted out.

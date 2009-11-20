@@ -6,20 +6,20 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.math.BigDecimal ;
+import java.util.Calendar ;
+import java.util.GregorianCalendar ;
+import java.util.TimeZone ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
 
 /** com.hp.hpl.jena.query.test.TestNodeValue
@@ -29,18 +29,24 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class TestNodeValue extends TestCase
 {
+    
     static final double doubleAccuracy = 0.00000001d ;
     // Many tests are in TestExpressionARQ by using the parser to build NodeValues
     // Just some basic testing here
-    
-    public static TestSuite suite()
+
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestNodeValue.class) ;
-        ts.setName(Utils.classShortName(TestNodeValue.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestNodeValue.class) ;
     }
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestNodeValue.class) ;
+//        ts.setName(Utils.classShortName(TestNodeValue.class)) ;
+//        return ts ;
+//    }
    
-    public void testInt1()
+    @Test public void testInt1()
     {
         NodeValue v = NodeValue.makeInteger(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -48,7 +54,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Is a node: "+v, v.hasNode()) ;
     }
     
-    public void testInt2()
+    @Test public void testInt2()
     {
         NodeValue v = NodeValue.makeNodeInteger(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -56,14 +62,14 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
     
-    public void testInt3()
+    @Test public void testInt3()
     {
         NodeValue v1 = NodeValue.makeNodeInteger(5) ;
         NodeValue v2 = NodeValue.makeInteger(5) ;
         assertTrue("Not same integer: "+v1+" & "+v2, v1.getInteger().equals(v2.getInteger())) ; 
     }
     
-    public void testFloat1()
+    @Test public void testFloat1()
     {
         NodeValue v = NodeValue.makeFloat(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -72,7 +78,7 @@ public class TestNodeValue extends TestCase
         assertFalse("No node: "+v, v.hasNode()) ;
     }
     
-    public void testFloat2()
+    @Test public void testFloat2()
     {
         NodeValue v = NodeValue.makeNodeFloat(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -81,7 +87,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
 
-    public void testFloat3()
+    @Test public void testFloat3()
     {
         NodeValue v1 = NodeValue.makeNodeFloat(5.7f) ;
         NodeValue v2 = NodeValue.makeFloat(5.7f) ;
@@ -89,7 +95,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not same float as double: "+v1+" & "+v2, v1.getDouble() == v2.getDouble()) ; 
     }
     
-    public void testDouble1()
+    @Test public void testDouble1()
     {
         NodeValue v = NodeValue.makeDouble(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -97,7 +103,7 @@ public class TestNodeValue extends TestCase
         assertFalse("No node: "+v, v.hasNode()) ;
     }
 
-    public void testDouble2()
+    @Test public void testDouble2()
     {
         NodeValue v = NodeValue.makeNodeDouble(5) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -105,14 +111,14 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
 
-    public void testDouble3()
+    @Test public void testDouble3()
     {
         NodeValue v1 = NodeValue.makeNodeDouble(5.7) ;
         NodeValue v2 = NodeValue.makeDouble(5.7) ;
         assertTrue("Not same double: "+v1+" & "+v2, v1.getDouble() == v2.getDouble()) ; 
     }
     
-    public void testDecimal1()
+    @Test public void testDecimal1()
     {
         NodeValue v = NodeValue.makeDecimal(new BigDecimal("1.3"))  ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -120,7 +126,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Is a node: "+v, v.hasNode()) ;
     }
 
-    public void testDecimal2()
+    @Test public void testDecimal2()
     {
         NodeValue v = NodeValue.makeNodeDecimal("1.3") ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -128,7 +134,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
     
-    public void testDecimal3()
+    @Test public void testDecimal3()
     {
         NodeValue v1 = NodeValue.makeDecimal(new BigDecimal("1.3")) ;
         NodeValue v2 = NodeValue.makeNodeDecimal("1.3") ;
@@ -136,7 +142,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Not same decimal by equals: "+v1+" & "+v2, v1, v2) ; 
     }
     
-    public void testDateTime1()
+    @Test public void testDateTime1()
     {
         Calendar cal = new GregorianCalendar() ;
         cal.setTimeZone(TimeZone.getTimeZone("GMT")) ;
@@ -150,7 +156,7 @@ public class TestNodeValue extends TestCase
         // DateTimes always have nodes because we used that to parse the thing.
     }
 
-    public void testDateTime2()
+    @Test public void testDateTime2()
     {
         NodeValue v = NodeValue.makeNodeDateTime("2005-02-18T20:39:10Z") ;
         assertTrue("Not a dateTime: "+v, v.isDateTime()) ;
@@ -164,14 +170,14 @@ public class TestNodeValue extends TestCase
 //    assertNotNull("No node: "+v, v.getNode()) ;
 
     
-    public void testDateTime3()
+    @Test public void testDateTime3()
     {
         NodeValue v1 = NodeValue.makeDateTime("2005-02-18T20:39:10Z") ;
         NodeValue v2 = NodeValue.makeNodeDateTime("2005-02-18T20:39:10Z") ;
         assertEquals("Not Calendar.equals: ", v1.getDateTime(), v2.getDateTime()) ; 
     }
 
-    public void testDateTime4()
+    @Test public void testDateTime4()
     {
         Calendar cal1 = new GregorianCalendar() ;
         cal1.setTimeZone(TimeZone.getTimeZone("GMT")) ;
@@ -187,7 +193,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Not equal: "+v, cal1, cal2) ;
     }
 
-    public void testDateTime5()
+    @Test public void testDateTime5()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -201,7 +207,7 @@ public class TestNodeValue extends TestCase
         }
     }
     
-    public void testDate1()
+    @Test public void testDate1()
     {
         Calendar cal = new GregorianCalendar() ;
         cal.setTimeZone(TimeZone.getTimeZone("GMT")) ;
@@ -217,7 +223,7 @@ public class TestNodeValue extends TestCase
         // DateTimes always have nodes because we used that to parse the thing.
     }
     
-    public void testDate2()
+    @Test public void testDate2()
     {
         NodeValue v = NodeValue.makeNodeDate("2005-02-18") ;
         assertTrue("Not a date: "+v, v.isDate()) ;
@@ -225,14 +231,14 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
     
-    public void testDate3()
+    @Test public void testDate3()
     {
         NodeValue v1 = NodeValue.makeDate("2005-02-18+01:00") ;
         NodeValue v2 = NodeValue.makeNodeDate("2005-02-18+01:00") ;
         assertEquals("Not Calendar.equals: ", v1.getDate(), v2.getDate()) ; 
     }
 
-    public void testDate4()
+    @Test public void testDate4()
     {
         Calendar cal1 = new GregorianCalendar() ;
         cal1.setTimeZone(TimeZone.getTimeZone("GMT")) ;
@@ -249,7 +255,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Not equal: "+v, cal1, cal2) ;
     }
 
-    public void testDate5()
+    @Test public void testDate5()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -263,7 +269,7 @@ public class TestNodeValue extends TestCase
         }
     }
         
-    public void testNodeInt1()
+    @Test public void testNodeInt1()
     {
         NodeValue v = NodeValue.makeNode("57", XSDDatatype.XSDinteger) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -271,7 +277,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
 
-    public void testNodeInt2()
+    @Test public void testNodeInt2()
     {
         NodeValue v = NodeValue.makeNode("57", XSDDatatype.XSDdouble) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -279,7 +285,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
 
-    public void testNodeInt3()
+    @Test public void testNodeInt3()
     {
         NodeValue v = NodeValue.makeNode("57", XSDDatatype.XSDinteger) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -289,7 +295,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Print form mismatch", "57", actualStr) ;
     }
 
-    public void testNodeInt4()
+    @Test public void testNodeInt4()
     {
         NodeValue v = NodeValue.makeNodeInteger(18) ;
         assertTrue("Not a number: "+v, v.isNumber()) ;
@@ -299,7 +305,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Print form mismatch", "18", actualStr) ;
     }
     
-    public void testNodeInt5()
+    @Test public void testNodeInt5()
     {
         // Legal as a bare integer but not canonical form 
         NodeValue v = NodeValue.makeNodeInteger("018") ;
@@ -310,7 +316,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Print form mismatch", "018", actualStr) ;
     }
     
-    public void testNodeFloat1()
+    @Test public void testNodeFloat1()
     {
         // Theer is no SPARQL representation in short form of a float. 
         NodeValue v = NodeValue.makeNode("57.0", XSDDatatype.XSDfloat) ;
@@ -325,7 +331,7 @@ public class TestNodeValue extends TestCase
                      actualStr);
     }
 
-    public void testNodeDouble1()
+    @Test public void testNodeDouble1()
     {
         // Note input form is legal and canomical as a lexical form double 
         NodeValue v = NodeValue.makeNode("57.0e0", XSDDatatype.XSDdouble) ;
@@ -339,7 +345,7 @@ public class TestNodeValue extends TestCase
 //                     actualStr);
     }
 
-    public void testNodeDouble2()
+    @Test public void testNodeDouble2()
     {
         // Note input form is not legal as a lexical form double 
         NodeValue v = NodeValue.makeNode("57", XSDDatatype.XSDdouble) ;
@@ -353,7 +359,7 @@ public class TestNodeValue extends TestCase
                      actualStr);
     }
 
-    public void testNodeDouble3()
+    @Test public void testNodeDouble3()
     {
         // Note input form is legal but not canonical as a bare FP 
         NodeValue v = NodeValue.makeNode("057.0e0", XSDDatatype.XSDdouble) ;
@@ -365,7 +371,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Print form mismatch", "057.0e0", actualStr);
     }
 
-    public void testNodeBool1()
+    @Test public void testNodeBool1()
     {
         NodeValue v = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
@@ -373,7 +379,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not satisfied: "+v, v.getBoolean());
     }
 
-    public void testNodeBool2()
+    @Test public void testNodeBool2()
     {
         NodeValue v = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
@@ -381,7 +387,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Satisfied: "+v, v.getBoolean()) ;
     }
 
-    public void testNodeBool3()
+    @Test public void testNodeBool3()
     {
         NodeValue v = NodeValue.makeBoolean(true) ;
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
@@ -390,7 +396,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
 
-    public void testNodeBool4()
+    @Test public void testNodeBool4()
     {
         NodeValue v = NodeValue.makeBoolean(false) ;
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
@@ -399,7 +405,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Not false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
 
-    public void testBadLexcial1()
+    @Test public void testBadLexcial1()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -410,7 +416,7 @@ public class TestNodeValue extends TestCase
         } finally { NodeValue.VerboseWarnings = b ; }
     }
     
-    public void testBadLexcial2()
+    @Test public void testBadLexcial2()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -421,7 +427,7 @@ public class TestNodeValue extends TestCase
         } finally { NodeValue.VerboseWarnings = b ; }
     }
     
-    public void testBadLexcial3()
+    @Test public void testBadLexcial3()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -431,7 +437,7 @@ public class TestNodeValue extends TestCase
         } finally { NodeValue.VerboseWarnings = b ; }
     }
 
-    public void testBadLexcial4()
+    @Test public void testBadLexcial4()
     {
         boolean b = NodeValue.VerboseWarnings ;
         try {
@@ -452,21 +458,21 @@ public class TestNodeValue extends TestCase
     //   numeric: number != Nan && number != 0 is true
     // http://www.w3.org/TR/xquery/#dt-ebv
 
-    public void testEBV1()
+    @Test public void testEBV1()
     {
         assertTrue("Not a boolean", NodeValue.TRUE.isBoolean()) ;
         assertTrue("Not true", NodeValue.TRUE.getBoolean()) ;
         assertTrue("Not true", XSDFuncOp.booleanEffectiveValue(NodeValue.TRUE)) ;
     }
 
-    public void testEBV2()
+    @Test public void testEBV2()
     {
         assertTrue("Not a boolean", NodeValue.FALSE.isBoolean()) ;
         assertFalse("Not false", NodeValue.FALSE.getBoolean()) ;
         assertFalse("Not false", XSDFuncOp.booleanEffectiveValue(NodeValue.FALSE)) ;
     }
     
-    public void testEBV3()
+    @Test public void testEBV3()
     {
         NodeValue v = NodeValue.makeInteger(1) ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
@@ -475,7 +481,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
-    public void testEBV4()
+    @Test public void testEBV4()
     {
         NodeValue v = NodeValue.makeInteger(0) ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
@@ -484,7 +490,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
-    public void testEBV5()
+    @Test public void testEBV5()
     {
         NodeValue v = NodeValue.makeString("xyz") ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
@@ -493,7 +499,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
-    public void testEBV6()
+    @Test public void testEBV6()
     {
         NodeValue v = NodeValue.makeString("") ;
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
@@ -502,14 +508,14 @@ public class TestNodeValue extends TestCase
         assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
-    public void testFloatDouble1()
+    @Test public void testFloatDouble1()
     {
         NodeValue v1 = NodeValue.makeNodeDouble("1.5") ;
         NodeValue v2 = NodeValue.makeNode("1.5", XSDDatatype.XSDfloat) ;
         assertTrue("Should be equal: 1.5 float and 1.5 double", NodeValue.sameAs(v1, v2)) ;
     }
     
-    public void testFloatDouble5()
+    @Test public void testFloatDouble5()
     {
         NodeValue v1 = NodeValue.makeNodeDouble("1.3") ;
         NodeValue v2 = NodeValue.makeNode("1.3", XSDDatatype.XSDfloat) ;
@@ -518,7 +524,7 @@ public class TestNodeValue extends TestCase
     
     // More effective boolean values - see TestExpressionARQ
     
-    public void testString1()
+    @Test public void testString1()
     {
         NodeValue v = NodeValue.makeString("string") ;
         assertTrue("Not a string: "+v, v.isString()) ;
@@ -526,14 +532,14 @@ public class TestNodeValue extends TestCase
         
     }
 
-    public void testNodeString1()
+    @Test public void testNodeString1()
     {
         NodeValue v = NodeValue.makeNode("string", null, (String)null) ; // Plain literal
         assertTrue("Not a string: "+v, v.isString()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
     }
 
-    public void testNodeString2()
+    @Test public void testNodeString2()
     {
         NodeValue v = NodeValue.makeNode("string", null, (String)null) ; // Plain literal
         assertTrue("Not a string: "+v, v.isString()) ;
@@ -542,7 +548,7 @@ public class TestNodeValue extends TestCase
         assertEquals("Print form mismatch", "\"string\"", actualStr) ;
     }
 
-    public void testNodeString3()
+    @Test public void testNodeString3()
     {
         NodeValue v = NodeValue.makeNode("string", XSDDatatype.XSDstring) ; // XSD String literal
         assertTrue("Not a string: "+v, v.isString()) ;
@@ -556,7 +562,7 @@ public class TestNodeValue extends TestCase
     // TODO testSameValueDecimal tests
     // TODO sameValueAs mixed tests
     
-    public void testSameValue1()
+    @Test public void testSameValue1()
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeInteger(7) ;
@@ -568,7 +574,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue2()
+    @Test public void testSameValue2()
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeNodeInteger(7) ; 
@@ -580,7 +586,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue3()
+    @Test public void testSameValue3()
     {
         NodeValue nv1 = NodeValue.makeDecimal("1.5") ;
         NodeValue nv2 = NodeValue.makeDecimal("1.6") ;
@@ -592,7 +598,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue4()
+    @Test public void testSameValue4()
     {
         NodeValue nv1 = NodeValue.makeDecimal("3") ;
         NodeValue nv2 = NodeValue.makeInteger(4) ;
@@ -604,7 +610,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue5()
+    @Test public void testSameValue5()
     {
         NodeValue nv1 = NodeValue.makeDecimal("-1.5") ;   // Must be exact for double and decimal
         NodeValue nv2 = NodeValue.makeDouble(1.5) ;
@@ -616,7 +622,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue6()
+    @Test public void testSameValue6()
     {
         NodeValue nv1 = NodeValue.makeNodeInteger(17) ;
         NodeValue nv2 = NodeValue.makeDouble(34) ;
@@ -628,7 +634,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testSameValue7()
+    @Test public void testSameValue7()
     {
         NodeValue nv1 = NodeValue.makeBoolean(true) ;
         NodeValue nv2 = NodeValue.makeString("a") ;
@@ -640,7 +646,7 @@ public class TestNodeValue extends TestCase
         assertFalse("Different values - notNotSame ("+nv1+","+nv3+")", NodeValue.notSameAs(nv1, nv3)) ;
     }
     
-    public void testLang1()
+    @Test public void testLang1()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
@@ -649,7 +655,7 @@ public class TestNodeValue extends TestCase
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
     }
     
-    public void testLang2()
+    @Test public void testLang2()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
@@ -659,7 +665,7 @@ public class TestNodeValue extends TestCase
         assertFalse(nv1.equals(nv2)) ;
     }
 
-    public void testLang3()
+    @Test public void testLang3()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
@@ -668,7 +674,7 @@ public class TestNodeValue extends TestCase
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
     
-    public void testLang4()
+    @Test public void testLang4()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
@@ -678,49 +684,49 @@ public class TestNodeValue extends TestCase
         assertFalse(nv1.equals(nv2)) ;
     }
 
-    public void testEquals1()
+    @Test public void testEquals1()
     {
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeInteger(1) ;
         assertEquals("Not NodeValue.equals()", nv1, nv2) ;
     }
     
-    public void testEquals2()
+    @Test public void testEquals2()
     {
         NodeValue nv1 = NodeValue.makeNodeInteger(1) ;
         NodeValue nv2 = NodeValue.makeInteger(1) ;
         assertEquals("Not NodeValue.equals()", nv1, nv2) ;
     }
     
-    public void testEquals3()
+    @Test public void testEquals3()
     {   // Make different ways but equals 
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeNodeInteger(1) ;
         assertEquals("Not NodeValue.equals()", nv1, nv2) ;
     }
     
-    public void testEquals4()
+    @Test public void testEquals4()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createURI("http://example")) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createURI("http://example")) ;
         assertEquals("Not NodeValue.equals()", nv1 , nv2) ;
     }
     
-    public void testNotEquals1()
+    @Test public void testNotEquals1()
     {
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeInteger(2) ;
         assertFalse("NodeValue.equals()", nv1.equals(nv2)) ;
     }
     
-    public void testNotEquals2()
+    @Test public void testNotEquals2()
     {
         NodeValue nv1 = NodeValue.makeNodeInteger(1) ;
         NodeValue nv2 = NodeValue.makeNodeString("1") ;
         assertFalse("NodeValue.equals()", nv1.equals(nv2)) ;
     }
     
-    public void testNotEquals3()
+    @Test public void testNotEquals3()
     {   //Literals and URIs are different.
         NodeValue nv1 = NodeValue.makeNode(Node.createURI("http://example")) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("http://example")) ;

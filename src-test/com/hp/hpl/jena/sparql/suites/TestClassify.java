@@ -6,93 +6,95 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 
 public class TestClassify extends TestCase
 {
-    public static Test suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestClassify.class) ;
-        ts.setName(Utils.classShortName(TestClassify.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestClassify.class) ;
     }
+//    public static Test suite()
+//    {
+//        TestSuite ts = new TestSuite(TestClassify.class) ;
+//        ts.setName(Utils.classShortName(TestClassify.class)) ;
+//        return ts ;
+//    }
 
-    public void testClassify_Join_01() 
+    @Test public void testClassify_Join_01() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ; }
 
-    public void testClassify_Join_02() 
+    @Test public void testClassify_Join_02() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ; }
 
-    public void testClassify_Join_03() 
+    @Test public void testClassify_Join_03() 
 	{ classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
 
-    public void testClassify_Join_04() 
+    @Test public void testClassify_Join_04() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ; }
 
-    public void testClassify_Join_05() 
+    @Test public void testClassify_Join_05() 
 	{ classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ; }
 
-    public void testClassify_Join_06() 
+    @Test public void testClassify_Join_06() 
 	{ classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ; }
 
-	public void testClassify_Join_07() 
+	@Test public void testClassify_Join_07() 
 	{ classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
-	public void testClassify_Join_08() 
+	@Test public void testClassify_Join_08() 
 	{ classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ; }
 
-	public void testClassify_Join_09() 
+	@Test public void testClassify_Join_09() 
 	{ classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ; }
 
     // Actually, this is safe IF executed left, then streamed to right.
-	public void testClassify_Join_10() 
+	@Test public void testClassify_Join_10() 
 	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
     // Not safe: ?s
     // Other parts of RHS may restrict ?s to things that can't match the LHS.
-	public void testClassify_Join_11() 
+	@Test public void testClassify_Join_11() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", false) ; }
 
     // Not safe: ?s
-	public void testClassify_Join_12() 
+	@Test public void testClassify_Join_12() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", false) ; }
 
-	public void testClassify_Join_13() 
+	@Test public void testClassify_Join_13() 
 	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
 
-	public void testClassify_Join_14() 
+	@Test public void testClassify_Join_14() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
 
-	public void testClassify_Join_15() 
+	@Test public void testClassify_Join_15() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ; }
 
-    public void testClassify_Join_20() 
+    @Test public void testClassify_Join_20() 
     { classifyJ("{ {?s :p ?x } . { {} OPTIONAL { :s :p ?x } } }", false) ; }
     
     // Assuming left-right execution, this is safe.
-    public void testClassify_Join_21() 
+    @Test public void testClassify_Join_21() 
     { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
 
     // Not a join by adjacent BGP flattening. 
-//    public void testClassify_Join_30() 
+//    @Test public void testClassify_Join_30() 
 //    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
     
     // Subselect with modifier is handled witout linearization
-    public void testClassify_Join_31() 
+    @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
     private void classifyJ(String pattern, boolean expected)
@@ -109,28 +111,28 @@ public class TestClassify extends TestCase
         assertEquals("Join: "+pattern, expected, nonLinear) ;
     }
 
-    public void testClassify_LeftJoin_01()
+    @Test public void testClassify_LeftJoin_01()
     { classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?x} }", true)  ; }
     
-    public void testClassify_LeftJoin_02()
+    @Test public void testClassify_LeftJoin_02()
     { classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 ?p2 ?x} } }", true)  ; }
     
-    public void testClassify_LeftJoin_03()
+    @Test public void testClassify_LeftJoin_03()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?o3} } }", true)  ; }
     
-    public void testClassify_LeftJoin_04()
+    @Test public void testClassify_LeftJoin_04()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ; }
     
-    public void testClassify_LeftJoin_05()
+    @Test public void testClassify_LeftJoin_05()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x OPTIONAL { ?s ?p ?x } } }", true)  ; }
 
-    public void testClassify_LeftJoin_06()  // Note use of {{ }}
+    @Test public void testClassify_LeftJoin_06()  // Note use of {{ }}
     { classifyLJ("{ ?s ?p ?x OPTIONAL { { ?s ?p ?o FILTER(?x) } } }", false)  ; }
 
-    public void testClassify_LeftJoin_07()
+    @Test public void testClassify_LeftJoin_07()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x1 OPTIONAL { ?s ?p ?x2 FILTER(?x) } } }", false)  ; }
 
-    public void testClassify_LeftJoin_10()
+    @Test public void testClassify_LeftJoin_10()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
         
     

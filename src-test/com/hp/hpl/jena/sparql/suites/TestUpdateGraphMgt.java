@@ -6,21 +6,25 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.AlreadyExists;
-import com.hp.hpl.jena.sparql.DoesNotExist;
-import com.hp.hpl.jena.sparql.modify.op.*;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
+import org.junit.Test ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.AlreadyExists ;
+import com.hp.hpl.jena.sparql.DoesNotExist ;
+import com.hp.hpl.jena.sparql.modify.op.Update ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDrop ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.UpdateAction ;
 
 
 public abstract class TestUpdateGraphMgt extends TestUpdateBase
 {
     static final Node graphIRI = Node.createURI("http://example/graph") ;
     
-    public void testCreateDrop1()
+    @Test public void testCreateDrop1()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Update u = new UpdateCreate(graphIRI) ;
@@ -44,7 +48,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
         
     }
 
-    public void testCreateDrop2()
+    @Test public void testCreateDrop2()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Update u = new UpdateCreate(graphIRI) ;
@@ -63,7 +67,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
         UpdateAction.execute(u, gStore) ;
     }
     
-    public void testCreateDrop3()
+    @Test public void testCreateDrop3()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "create-1.rup") ;
@@ -71,7 +75,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
     }
 
-    public void testCreateDrop4()
+    @Test public void testCreateDrop4()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.addGraph(graphIRI, GraphUtils.makeDefaultGraph()) ;

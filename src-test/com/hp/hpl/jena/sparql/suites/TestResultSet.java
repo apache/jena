@@ -6,33 +6,33 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayOutputStream ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.resultset.RSCompare;
-import com.hp.hpl.jena.sparql.resultset.ResultSetFormat;
-import com.hp.hpl.jena.sparql.resultset.ResultSetMem;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
+import com.hp.hpl.jena.sparql.resultset.RSCompare ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetMem ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** com.hp.hpl.jena.query.test.TestResultSet
  * 
@@ -41,15 +41,20 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class TestResultSet extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestResultSet.class) ;
-        ts.setName(Utils.classShortName(TestResultSet.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestResultSet.class) ;
     }
     
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestResultSet.class) ;
+//        ts.setName(Utils.classShortName(TestResultSet.class)) ;
+//        return ts ;
+//    }
+    
     // Test reading and writing 
-    public void test_RS_1()
+    @Test public void test_RS_1()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -60,7 +65,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    public void test_RS_1_str()
+    @Test public void test_RS_1_str()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         String x = ResultSetFormatter.asXMLString(rs1) ;
@@ -69,7 +74,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
 
-    public void test_RS_2()
+    @Test public void test_RS_2()
     {
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -80,7 +85,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    public void test_RS_2_str()
+    @Test public void test_RS_2_str()
     {
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
         String x = ResultSetFormatter.asXMLString(rs1) ;
@@ -91,7 +96,7 @@ public class TestResultSet extends TestCase
 
     // RDF
     
-    public void test_RS_3()
+    @Test public void test_RS_3()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         Model model = ResultSetFormatter.toModel(rs1) ;
@@ -100,7 +105,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    public void test_RS_4()
+    @Test public void test_RS_4()
     {
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
         Model model = ResultSetFormatter.toModel(rs1) ;
@@ -111,7 +116,7 @@ public class TestResultSet extends TestCase
     
     // JSON
     
-    public void test_RS_5()
+    @Test public void test_RS_5()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -122,7 +127,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    public void test_RS_6()
+    @Test public void test_RS_6()
     {
         ResultSetRewindable rs1 = make2Rewindable("x", Node.createURI("tag:local")) ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
@@ -135,7 +140,7 @@ public class TestResultSet extends TestCase
     
     // Test using the DAWG examples
     
-    public void test_RS_7()
+    @Test public void test_RS_7()
     {
         InputStream in = FileManager.get().open("testing/ResultSet/output.srx") ;
         ResultSetRewindable rs1 =  ResultSetFactory.makeRewindable(ResultSetFactory.fromXML(in)) ;
@@ -148,7 +153,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
-    public void test_RS_8()
+    @Test public void test_RS_8()
     {
         InputStream in = FileManager.get().open("testing/ResultSet/output.srx") ;
         ResultSetRewindable rs1 =  ResultSetFactory.makeRewindable(ResultSetFactory.fromXML(in)) ;
@@ -162,7 +167,7 @@ public class TestResultSet extends TestCase
     }
     
     // Test comparison 
-    public void test_RS_cmp_1()
+    @Test public void test_RS_cmp_1()
     {
         ResultSetRewindable rs1 = new ResultSetMem() ;
         ResultSetRewindable rs2 = new ResultSetMem() ;
@@ -172,7 +177,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.sameUnordered(rs1, rs2)) ;
     }
     
-    public void test_RS_cmp_2()
+    @Test public void test_RS_cmp_2()
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
@@ -180,7 +185,7 @@ public class TestResultSet extends TestCase
 
     }
 
-    public void test_RS_cmp_3()
+    @Test public void test_RS_cmp_3()
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
@@ -189,7 +194,7 @@ public class TestResultSet extends TestCase
 
 
     
-    public void test_RS_cmp_4()
+    @Test public void test_RS_cmp_4()
     {
         ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
         ResultSet rs2 = make("x", Node.createURI("tag:local")) ;
@@ -197,7 +202,7 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.sameUnordered(rs1, rs2)) ;
     }
 
-    public void test_RS_cmp_5()
+    @Test public void test_RS_cmp_5()
     {
         // Same variable, different values
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local:1")) ;
@@ -208,7 +213,7 @@ public class TestResultSet extends TestCase
         assertFalse(RSCompare.sameUnordered(rs1, rs2)) ;
     }
 
-    public void test_RS_cmp_6()
+    @Test public void test_RS_cmp_6()
     {
         // Different variable, same values
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;

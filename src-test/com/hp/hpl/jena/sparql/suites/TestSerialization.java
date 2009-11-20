@@ -6,28 +6,33 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
 public class TestSerialization extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestSerialization.class) ;
-        ts.setName(Utils.classShortName(TestSerialization.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestSerialization.class) ;
     }
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestSerialization.class) ;
+//        ts.setName(Utils.classShortName(TestSerialization.class)) ;
+//        return ts ;
+//    }
     
     PrefixMapping pmap1 = new PrefixMappingImpl() ;
     {
@@ -37,166 +42,166 @@ public class TestSerialization extends TestCase
     }
     
     // Simple stuff
-    public void test_URI_1() // Not in the map
+    @Test public void test_URI_1() // Not in the map
     { fmtURI_Prefix("http://elsewhere/", "<http://elsewhere/>", pmap1) ; }
 
-    public void test_URI_2() // Too short
+    @Test public void test_URI_2() // Too short
     { fmtURI_Prefix("http://example/", "<http://example/>", pmap1) ; }
     
-    public void test_URI_3() // No prefix mapping
+    @Test public void test_URI_3() // No prefix mapping
     { fmtURI_Prefix("http://default/", "<http://default/>", (PrefixMapping)null) ; }
 
-    public void test_URI_4()
+    @Test public void test_URI_4()
     { fmtURI_Base("http://example/", (String)null, "<http://example/>" ) ; }
     
-    public void test_URI_5()
+    @Test public void test_URI_5()
     { fmtURI_Base("http://example/x", "http://example/", "<x>") ; }
 
-    public void test_URI_6()
+    @Test public void test_URI_6()
     { fmtURI_Base("http://example/x", "http://example/ns#","<x>") ; }
     
-    public void test_URI_7()
+    @Test public void test_URI_7()
     { fmtURI_Base("http://example/ns#x", "http://example/ns#", "<#x>") ; }
     
-    public void test_URI_8()
+    @Test public void test_URI_8()
     { fmtURI_Base("http://example/ns#x", "http://example/ns", "<#x>") ; }
     
-    public void test_URI_9()
+    @Test public void test_URI_9()
     { fmtURI_Base("http://example/x/y", "http://example/x/", "<y>") ; }
     
-    public void test_URI_10()
+    @Test public void test_URI_10()
     { fmtURI_Base("http://example/x/y", "http://example/x", "<x/y>") ; }
     
-    public void test_URI_11()
+    @Test public void test_URI_11()
     { fmtURI_Base("http://example/x/y", "http://example/", "<x/y>") ; }
 
-//    public void test_URI_12()
+//    @Test public void test_URI_12()
 //    { fmtURI_Base("http://example/x/y", "http://example/z", "<x/y>") ; }
 
-    public void test_PName_1() 
+    @Test public void test_PName_1() 
     { fmtURI_Prefix("http://example/x#abc", "ex:abc", pmap1) ; }
 
-    public void test_PName_2() 
+    @Test public void test_PName_2() 
     { fmtURI_Prefix("http://example/x#", "ex:", pmap1) ; }
 
-    public void test_PName_3()
+    @Test public void test_PName_3()
     { fmtURI_Prefix("http://default/x", ":x", pmap1) ; }
 
-    public void test_PName_4()
+    @Test public void test_PName_4()
     { fmtURI_Prefix("http://default/", ":", pmap1) ; }
 
-    public void test_PName_5() // Prefixed names with a leading number in the local part
+    @Test public void test_PName_5() // Prefixed names with a leading number in the local part
     { fmtURI_Prefix("http://default/0", ":0", pmap1) ; }
     
-    public void test_PName_6()
+    @Test public void test_PName_6()
     { fmtURI_Prefix("http://example/x#x-1", "ex:x-1", pmap1) ; }
     
     // Things that can't be prefixed names
 
-    public void test_PName_Bad_1()
+    @Test public void test_PName_Bad_1()
     { fmtURI_Prefix("http://other/x", "<http://other/x>", pmap1) ; }
 
-    public void test_PName_Bad_2()
+    @Test public void test_PName_Bad_2()
     { fmtURI_Prefix("http://other/x#a", "<http://other/x#a>", pmap1) ; }
     
-    public void test_PName_Bad_3()
+    @Test public void test_PName_Bad_3()
     { fmtURI_Prefix("http://example/x##", "<http://example/x##>", pmap1) ; }
 
-    public void test_PName_Bad_4() 
+    @Test public void test_PName_Bad_4() 
     { fmtURI_Prefix("http://default/x#a", "<http://default/x#a>", pmap1) ; }
 
-    public void test_PName_Bad_5() 
+    @Test public void test_PName_Bad_5() 
     { fmtURI_Prefix("http://default/#a", "<http://default/#a>", pmap1) ; }
 
-    public void test_PName_Bad_6()
+    @Test public void test_PName_Bad_6()
     { fmtURI_Prefix("http://example/x/a", "<http://example/x/a>", pmap1) ; }
     
-    public void test_PName_Bad_7() 
+    @Test public void test_PName_Bad_7() 
     { fmtURI_Prefix("http://example/x.", "<http://example/x.>", pmap1) ; }
     
     // Dots
-    public void test_Dots_1() // Internal DOT 
+    @Test public void test_Dots_1() // Internal DOT 
     { fmtURI_Prefix("http://example/x#a.b", "ex:a.b", pmap1) ; }
     
-    public void test_Dots_2() // Trailing DOT
+    @Test public void test_Dots_2() // Trailing DOT
     { fmtURI_Prefix("http://example/x#a.b.", "<http://example/x#a.b.>", pmap1) ; }
 
-    public void test_Dots_3() // Leading DOT
+    @Test public void test_Dots_3() // Leading DOT
     { fmtURI_Prefix("http://example/x#.b", "<http://example/x#.b>", pmap1) ; }
 
-    public void testQueryPattern1()
+    @Test public void testQueryPattern1()
     { test("SELECT * { ?s ?p ?o }", 
            "SELECT * { ?s ?p ?o }",
            true) ;
     }
     
-    public void testQueryPattern2()
+    @Test public void testQueryPattern2()
     { test("SELECT * { ?s ?p ?o }", 
            "SELECT *       { ?s ?p ?o }",
            true) ;
     }
     
-    public void testQueryComment1()
+    @Test public void testQueryComment1()
     { test("SELECT * { ?s ?p ?o }", 
            "SELECT *  # Comment\n" +
            " { ?s ?p ?o }",
            true) ;
     }
     
-    public void testQuery1()
+    @Test public void testQuery1()
     { test("SELECT * { ?s ?p ?o . [] ?p ?o }",
            "SELECT ?x { ?s ?p ?o . [] ?p ?o }",
            false) ;
     }
     
-    public void testQueryExpr1()
+    @Test public void testQueryExpr1()
     { test("SELECT * { ?s ?p ?o . FILTER (?o)}", 
            "SELECT * { ?s ?p ?o   FILTER (?o)}", // No DOT - same
            true) ;
     }
     
-    public void testQueryExpr2()
+    @Test public void testQueryExpr2()
     { test("SELECT * { FILTER (?x = 3)}", 
            "SELECT * { FILTER (?x = 3)}",
            true) ;
     }
 
-    public void testQueryExpr3()
+    @Test public void testQueryExpr3()
     { test("SELECT * { FILTER (?x != 3)}", 
            "SELECT * { FILTER (?x = 3)}",
            false) ;
     }
     
-    public void testQueryExpr4()
+    @Test public void testQueryExpr4()
     { test("SELECT * { FILTER (?z && ?x != 3)}", 
            "SELECT * { FILTER (?z && ?x = 3)}",
            false) ;
     }
     
-    public void testOpToSyntax_1()
+    @Test public void testOpToSyntax_1()
     {
         testOpToSyntax("(bgp (triple ?s ?p ?o))", "SELECT * {?s ?p ?o}") ;
     }
     
-    public void testOpToSyntax_2()
+    @Test public void testOpToSyntax_2()
     {
         testOpToSyntax("(bgp (triple ?s ?p ?o) (<urn:x> <urn:p> <urn:z>) )", 
                        "SELECT * {?s ?p ?o . <urn:x> <urn:p> <urn:z> }") ;
     }
 
-    public void testOpToSyntax_3()
+    @Test public void testOpToSyntax_3()
     {
         testOpToSyntax("(table unit)", 
                        "SELECT * {}") ;
     }
 
-    public void testOpToSyntax_4()
+    @Test public void testOpToSyntax_4()
     {
         testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)))",
                        "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c }}") ;
     }
 
-    public void testOpToSyntax_5()
+    @Test public void testOpToSyntax_5()
     {
         testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)) (> ?z 5))",
                        "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c FILTER(?z > 5) }}") ;

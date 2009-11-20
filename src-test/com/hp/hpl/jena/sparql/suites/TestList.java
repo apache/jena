@@ -6,99 +6,103 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import java.io.StringReader;
-import java.util.List;
+import java.io.StringReader ;
+import java.util.List ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.graph.GNode;
-import com.hp.hpl.jena.sparql.util.graph.GraphList;
-import com.hp.hpl.jena.vocabulary.RDF;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.util.graph.GNode ;
+import com.hp.hpl.jena.sparql.util.graph.GraphList ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class TestList extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestList.class) ;
-        ts.setName(Utils.classShortName(TestList.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestList.class) ;
     }
     
-    GNode emptyList = parse(listStr_1) ; 
-    GNode list4 = parse(listStr_2) ;
-    GNode list22 = parse(listStr_3) ;
-    Node NIL = RDF.nil.asNode() ;
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestList.class) ;
+//        ts.setName(Utils.classShortName(TestList.class)) ;
+//        return ts ;
+//    }
     
-    public void testListLength_1()  { assertEquals(0, GraphList.length(emptyList)) ; }
+    private GNode emptyList = parse(listStr_1) ; 
+    private GNode list4 = parse(listStr_2) ;
+    private GNode list22 = parse(listStr_3) ;
+    private Node NIL = RDF.nil.asNode() ;
     
-    public void testListLength_2()  { assertEquals(4, GraphList.length(list4)) ; } 
+    @Test public void testListLength_1()  { assertEquals(0, GraphList.length(emptyList)) ; }
     
-    public void testListLength_3()  { assertEquals(4, GraphList.length(list22)) ; }
+    @Test public void testListLength_2()  { assertEquals(4, GraphList.length(list4)) ; } 
     
-    //public void testListlength_3()  { assertEquals(-1, GraphList.length(gnode(node1))) ; } 
+    @Test public void testListLength_3()  { assertEquals(4, GraphList.length(list22)) ; }
+    
+    //@Test public void testListlength_3()  { assertEquals(-1, GraphList.length(gnode(node1))) ; } 
     
 
-    public void testListIndex_1()   { assertEquals(0, GraphList.index(list4, node1)) ; }
+    @Test public void testListIndex_1()   { assertEquals(0, GraphList.index(list4, node1)) ; }
 
-    public void testListIndex_2()   { assertEquals(1, GraphList.index(list4, node2)) ; }
+    @Test public void testListIndex_2()   { assertEquals(1, GraphList.index(list4, node2)) ; }
 
-    public void testListIndex_3()   { assertEquals(2, GraphList.index(list4, node3)) ; }
+    @Test public void testListIndex_3()   { assertEquals(2, GraphList.index(list4, node3)) ; }
     
-    public void testListIndex_4()   { assertEquals(3, GraphList.index(list4, node4)) ; }
+    @Test public void testListIndex_4()   { assertEquals(3, GraphList.index(list4, node4)) ; }
 
-    public void testListIndex_5()   { assertEquals(-1, GraphList.index(list4, node0)) ; }
+    @Test public void testListIndex_5()   { assertEquals(-1, GraphList.index(list4, node0)) ; }
 
-    public void testListIndex_6()   { assertEquals(-1, GraphList.index(emptyList, node1)) ; }
+    @Test public void testListIndex_6()   { assertEquals(-1, GraphList.index(emptyList, node1)) ; }
 
-    public void testListIndex_7()   { assertEquals(0, GraphList.index(list22, node1)) ; }
+    @Test public void testListIndex_7()   { assertEquals(0, GraphList.index(list22, node1)) ; }
 
-    public void testListIndex_8()   { assertEquals(1, GraphList.index(list22, node2)) ; }
+    @Test public void testListIndex_8()   { assertEquals(1, GraphList.index(list22, node2)) ; }
 
     
-    public void testListIndexes_1()   
+    @Test public void testListIndexes_1()   
     { 
         List<Integer> x = GraphList.indexes(emptyList, node0) ;
         assertEquals(0, x.size()) ;
     }
     
-    public void testListIndexes_2()   
+    @Test public void testListIndexes_2()   
     { 
         List<Integer> x = GraphList.indexes(list4, node0) ;
         assertEquals(0, x.size()) ;
     }
 
-    public void testListIndexes_3()   
+    @Test public void testListIndexes_3()   
     { 
         List<Integer> x = GraphList.indexes(list4, node1) ;
         assertEquals(1, x.size()) ;
         assertEquals(0, x.get(0).intValue()) ;
     }
     
-    public void testListIndexes_4()   
+    @Test public void testListIndexes_4()   
     { 
         List<Integer> x = GraphList.indexes(list4, node2) ;
         assertEquals(1, x.size()) ;
         assertEquals(1, x.get(0).intValue()) ;
     }
 
-    public void testListIndexes_5()   
+    @Test public void testListIndexes_5()   
     { 
         List<Integer> x = GraphList.indexes(list4, node4) ;
         assertEquals(1, x.size()) ;
         assertEquals(3, x.get(0).intValue()) ;
     }
     
-    public void testListIndexes_6()   
+    @Test public void testListIndexes_6()   
     { 
         List<Integer> x = GraphList.indexes(list22, node1) ;
         assertEquals(2, x.size()) ;
@@ -106,56 +110,56 @@ public class TestList extends TestCase
         assertEquals(2, x.get(1).intValue()) ;
     }
 
-    public void testListTriples_1() { assertEquals(0, GraphList.allTriples(emptyList).size()) ; }
+    @Test public void testListTriples_1() { assertEquals(0, GraphList.allTriples(emptyList).size()) ; }
 
-    public void testListTriples_2() { assertEquals(4*2, GraphList.allTriples(list4).size()) ; }
+    @Test public void testListTriples_2() { assertEquals(4*2, GraphList.allTriples(list4).size()) ; }
     
     
-    public void testListContains_1()    { assertFalse(GraphList.contains(emptyList, node0)) ; }
+    @Test public void testListContains_1()    { assertFalse(GraphList.contains(emptyList, node0)) ; }
     
-    public void testListContains_2()    { assertFalse(GraphList.contains(emptyList, node1)) ; }
+    @Test public void testListContains_2()    { assertFalse(GraphList.contains(emptyList, node1)) ; }
 
-    public void testListContains_3()    { assertTrue(GraphList.contains(list4, node1)) ; }
+    @Test public void testListContains_3()    { assertTrue(GraphList.contains(list4, node1)) ; }
 
-    public void testListContains_4()    { assertTrue(GraphList.contains(list4, node2)) ; }
+    @Test public void testListContains_4()    { assertTrue(GraphList.contains(list4, node2)) ; }
     
-    public void testListContains_5()    { assertTrue(GraphList.contains(list4, node4)) ; }
+    @Test public void testListContains_5()    { assertTrue(GraphList.contains(list4, node4)) ; }
 
-    public void testListOccurs_1()      { assertEquals(0, GraphList.occurs(emptyList, node0)) ; }
+    @Test public void testListOccurs_1()      { assertEquals(0, GraphList.occurs(emptyList, node0)) ; }
     
-    public void testListOccurs_2()      { assertEquals(0, GraphList.occurs(emptyList, node1)) ; }
+    @Test public void testListOccurs_2()      { assertEquals(0, GraphList.occurs(emptyList, node1)) ; }
     
-    public void testListOccurs_3()      { assertEquals(0, GraphList.occurs(list4, node0)) ; }
+    @Test public void testListOccurs_3()      { assertEquals(0, GraphList.occurs(list4, node0)) ; }
     
-    public void testListOccurs_4()      { assertEquals(0, GraphList.occurs(emptyList, node1)) ; }
+    @Test public void testListOccurs_4()      { assertEquals(0, GraphList.occurs(emptyList, node1)) ; }
     
-    public void testListOccurs_5()      { assertEquals(0, GraphList.occurs(emptyList, NIL)) ; }
+    @Test public void testListOccurs_5()      { assertEquals(0, GraphList.occurs(emptyList, NIL)) ; }
     
-    public void testListOccurs_6()      { assertEquals(0, GraphList.occurs(list4, NIL)) ; }
+    @Test public void testListOccurs_6()      { assertEquals(0, GraphList.occurs(list4, NIL)) ; }
     
-    public void testListOccurs_7()      { assertEquals(1, GraphList.occurs(list4, node1)) ; }
+    @Test public void testListOccurs_7()      { assertEquals(1, GraphList.occurs(list4, node1)) ; }
     
-    public void testListOccurs_8()      { assertEquals(1, GraphList.occurs(list4, node2)) ; }
+    @Test public void testListOccurs_8()      { assertEquals(1, GraphList.occurs(list4, node2)) ; }
     
-    public void testListOccurs_9()      { assertEquals(1, GraphList.occurs(list4, node3)) ; }
+    @Test public void testListOccurs_9()      { assertEquals(1, GraphList.occurs(list4, node3)) ; }
     
-    public void testListOccurs_10()     { assertEquals(1, GraphList.occurs(list4, node4)) ; }
+    @Test public void testListOccurs_10()     { assertEquals(1, GraphList.occurs(list4, node4)) ; }
     
-    public void testListOccurs_11()     { assertEquals(2, GraphList.occurs(list22, node1)) ; }
+    @Test public void testListOccurs_11()     { assertEquals(2, GraphList.occurs(list22, node1)) ; }
     
-    public void testListOccurs_12()     { assertEquals(2, GraphList.occurs(list22, node2)) ; }
+    @Test public void testListOccurs_12()     { assertEquals(2, GraphList.occurs(list22, node2)) ; }
     
-    public void testListGet_1()         { assertNull(GraphList.get(emptyList, 0)) ; }
+    @Test public void testListGet_1()         { assertNull(GraphList.get(emptyList, 0)) ; }
 
-    public void testListGet_2()         { assertNull(GraphList.get(emptyList, -1)) ; }
+    @Test public void testListGet_2()         { assertNull(GraphList.get(emptyList, -1)) ; }
 
-    public void testListGet_3()         { assertNull(GraphList.get(list4, -1)) ; }
+    @Test public void testListGet_3()         { assertNull(GraphList.get(list4, -1)) ; }
 
-    public void testListGet_4()         { assertNull(GraphList.get(list4, 9)) ; }
+    @Test public void testListGet_4()         { assertNull(GraphList.get(list4, 9)) ; }
 
-    public void testListGet_5()         { assertEquals(node1, GraphList.get(list4, 0)) ; }
+    @Test public void testListGet_5()         { assertEquals(node1, GraphList.get(list4, 0)) ; }
 
-    public void testListGet_6()         
+    @Test public void testListGet_6()         
     { 
         assertEquals(node1, GraphList.get(list4, 0)) ;
         assertEquals(node2, GraphList.get(list4, 1)) ;
@@ -163,7 +167,7 @@ public class TestList extends TestCase
         assertEquals(node4, GraphList.get(list4, 3)) ;
     }
 
-    public void testListGet_7()         
+    @Test public void testListGet_7()         
     { 
         assertEquals(node1, GraphList.get(list22, 0)) ;
         assertEquals(node2, GraphList.get(list22, 1)) ;

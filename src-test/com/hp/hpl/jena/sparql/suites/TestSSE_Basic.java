@@ -6,22 +6,28 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemException;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemException ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestSSE_Basic extends TestCase
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestSSE_Basic.class) ;
+    }
+    
     // Tests not requiring URI resolution or prefix name handling.
     
     static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
@@ -36,83 +42,83 @@ public class TestSSE_Basic extends TestCase
     static Item int2i = Item.createNode(int2) ;
     static Item int3i = Item.createNode(int3) ;
     
-    public static TestSuite suite()
-    {
-        TestSuite ts = new TestSuite(TestSSE_Basic.class) ;
-        ts.setName("SSE Basic") ;
-        return ts ;
-    }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestSSE_Basic.class) ;
+//        ts.setName("SSE Basic") ;
+//        return ts ;
+//    }
 
     // ---- Parsing : not check for the correct outcome
-    public void testParseTerm_01() { parse("'xyz'") ; }
-    public void testParseTerm_02() { parse("'xyz'@en") ; }
-    public void testParseTerm_03() { parseBad("'xyz' @en") ; }
+    @Test public void testParseTerm_01() { parse("'xyz'") ; }
+    @Test public void testParseTerm_02() { parse("'xyz'@en") ; }
+    @Test public void testParseTerm_03() { parseBad("'xyz' @en") ; }
 
-    public void testParseSymbol_01() { parse("a") ; }      
-    public void testParseSymbol_02() { parseBad("'a") ; }
+    @Test public void testParseSymbol_01() { parse("a") ; }      
+    @Test public void testParseSymbol_02() { parseBad("'a") ; }
     // TODO Parser needs fixing
-    //public void testParseSymbol_03() { parse("@a") ; }
-    public void testParseSymbol_04() { parse("a@") ; }
+    //@Test public void testParseSymbol_03() { parse("@a") ; }
+    @Test public void testParseSymbol_04() { parse("a@") ; }
     
     
-    public void testParseList_01() { parse("()") ; }
-    public void testParseList_02() { parse("(a)") ; }
-    public void testParseList_03() { parse(" (a)") ; }
-    public void testParseList_04() { parse("( a)") ; }
-    public void testParseList_05() { parse("(a )") ; }
-    public void testParseList_06() { parse("(a) ") ; }
-    public void testParseList_07() { parse("('a') ") ; }
-    public void testParseList_08() { parse("(<a>) ") ; }
+    @Test public void testParseList_01() { parse("()") ; }
+    @Test public void testParseList_02() { parse("(a)") ; }
+    @Test public void testParseList_03() { parse(" (a)") ; }
+    @Test public void testParseList_04() { parse("( a)") ; }
+    @Test public void testParseList_05() { parse("(a )") ; }
+    @Test public void testParseList_06() { parse("(a) ") ; }
+    @Test public void testParseList_07() { parse("('a') ") ; }
+    @Test public void testParseList_08() { parse("(<a>) ") ; }
     
-    public void testParse_10() { parseBad("'foo' @en") ; }
+    @Test public void testParse_10() { parseBad("'foo' @en") ; }
 
     // ---- Terms 
-    public void testLit_01() { testNode("'foo'") ; } 
-    public void testLit_02() { testNode("\"foo\"") ; } 
-    public void testLit_03() { testNode("''") ; }
-    public void testLit_04() { testNode("\"\"") ; }
-    public void testLit_05() { testNode("'foo'@en") ; } 
-    public void testLit_06() { parseBad("'foo' @en") ; } 
-    public void testLit_07() { parseBad("'") ; }
-    public void testLit_08() { parseBad("'\"") ; }
-    public void testLit_09() { parseBad("'''") ; } 
-    public void testLit_10() { parseBad("''@") ; }
-    public void testLit_11() { testNode("'''abc\\ndef'''") ; }
+    @Test public void testLit_01() { testNode("'foo'") ; } 
+    @Test public void testLit_02() { testNode("\"foo\"") ; } 
+    @Test public void testLit_03() { testNode("''") ; }
+    @Test public void testLit_04() { testNode("\"\"") ; }
+    @Test public void testLit_05() { testNode("'foo'@en") ; } 
+    @Test public void testLit_06() { parseBad("'foo' @en") ; } 
+    @Test public void testLit_07() { parseBad("'") ; }
+    @Test public void testLit_08() { parseBad("'\"") ; }
+    @Test public void testLit_09() { parseBad("'''") ; } 
+    @Test public void testLit_10() { parseBad("''@") ; }
+    @Test public void testLit_11() { testNode("'''abc\\ndef'''") ; }
     
-    public void testLit_12()
+    @Test public void testLit_12()
     { 
         Node n = Node.createLiteral("A\tB") ;
         testNode("'''A\\tB'''", n) ;
     }
     
-    public void testLit_13() { testNode("'abc\\ndef'") ; }
+    @Test public void testLit_13() { testNode("'abc\\ndef'") ; }
     
-    public void testNum_1() { testNode("1") ; }
-    public void testNum_2() { testNode("1.1") ; }
-    public void testNum_3() { testNode("1.0e6") ; }
+    @Test public void testNum_1() { testNode("1") ; }
+    @Test public void testNum_2() { testNode("1.1") ; }
+    @Test public void testNum_3() { testNode("1.0e6") ; }
 
-    public void testNum_4() { parseBadNode("1 ") ; }
+    @Test public void testNum_4() { parseBadNode("1 ") ; }
     
-    public void testNum_5() { parseBadNode("1 1") ; }
+    @Test public void testNum_5() { parseBadNode("1 1") ; }
  
-    public void testURI_1() { testNode("<http://example/base>") ; }
-    public void testURI_2() { parseBadNode("http://example/baseNoDelimiters") ; }
-    public void testURI_3() { parseBadNode("<http://example/ space>") ; }
+    @Test public void testURI_1() { testNode("<http://example/base>") ; }
+    @Test public void testURI_2() { parseBadNode("http://example/baseNoDelimiters") ; }
+    @Test public void testURI_3() { parseBadNode("<http://example/ space>") ; }
     
-    public void testVar_01() { testVar("?x") ; }
-    public void testVar_02() { testVar("?") ; }
-    public void testVar_03() { testVar("?0") ; }
+    @Test public void testVar_01() { testVar("?x") ; }
+    @Test public void testVar_02() { testVar("?") ; }
+    @Test public void testVar_03() { testVar("?0") ; }
     // See ARQConstants.anonVarMarker
-    public void testVar_04() { testVar("??x") ; }
-    public void testVar_05() { testVar("??") ; }
-    public void testVar_06() { testVar("??0") ; }
+    @Test public void testVar_04() { testVar("??x") ; }
+    @Test public void testVar_05() { testVar("??") ; }
+    @Test public void testVar_06() { testVar("??0") ; }
     
     // See ARQConstants.allocVarMarker
-    public void testVar_07() { testVar("?"+ARQConstants.allocVarMarker+"0") ; }
-    public void testVar_08() { testVar("?"+ARQConstants.allocVarMarker) ; }
+    @Test public void testVar_07() { testVar("?"+ARQConstants.allocVarMarker+"0") ; }
+    @Test public void testVar_08() { testVar("?"+ARQConstants.allocVarMarker) ; }
 
     // Default allocations
-    public void testVar_09()
+    @Test public void testVar_09()
     { 
         Node v = NodeFactory.parseNode("?") ;
         assertTrue( v instanceof Var ) ;
@@ -120,7 +126,7 @@ public class TestSSE_Basic extends TestCase
         assertFalse(vn.equals("")) ;
     }
     
-    public void testVar_10()
+    @Test public void testVar_10()
     { 
         Node v = NodeFactory.parseNode("?"+ARQConstants.allocVarAnonMarker) ;
         assertTrue( v instanceof Var ) ;
@@ -128,7 +134,7 @@ public class TestSSE_Basic extends TestCase
         assertFalse(vn.equals(ARQConstants.allocVarAnonMarker)) ;
     }
     
-    public void testVar_11()
+    @Test public void testVar_11()
     { 
         Node v = NodeFactory.parseNode("?"+ARQConstants.allocVarMarker) ;
         assertTrue( v instanceof Var ) ;
@@ -136,33 +142,33 @@ public class TestSSE_Basic extends TestCase
         assertFalse(vn.equals(ARQConstants.allocVarMarker)) ;
     }
     
-    public void testWS_1() { parseBadNode("?x ") ; }
-    public void testWS_2() { parseBadNode(" ?x") ; }
+    @Test public void testWS_1() { parseBadNode("?x ") ; }
+    @Test public void testWS_2() { parseBadNode(" ?x") ; }
     
     // ---- Nodes
     
-    public void testNode_1()    { testNode("3", int3) ; }
-    public void testNode_2()    { testNode("<http://example/node1>", Node.createURI("http://example/node1")) ; } 
-    public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>", typeLit1) ; }
-    public void testTypedLit_2() { testNode("'123'^^<http://example/type>", typeLit1) ; }
-    public void testTypedLit_3() { testNode("'3'^^<"+XSDDatatype.XSDinteger.getURI()+">", int3) ; }
+    @Test public void testNode_1()    { testNode("3", int3) ; }
+    @Test public void testNode_2()    { testNode("<http://example/node1>", Node.createURI("http://example/node1")) ; } 
+    @Test public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>", typeLit1) ; }
+    @Test public void testTypedLit_2() { testNode("'123'^^<http://example/type>", typeLit1) ; }
+    @Test public void testTypedLit_3() { testNode("'3'^^<"+XSDDatatype.XSDinteger.getURI()+">", int3) ; }
 
     // --- Symbols
     
-    public void testSymbol_1()    { testSymbol("word") ; }
-    public void testSymbol_2()    { testSymbol("+") ; }
+    @Test public void testSymbol_1()    { testSymbol("word") ; }
+    @Test public void testSymbol_2()    { testSymbol("+") ; }
     // XXX Parser broken
-//    public void testSymbol_3()    { testSymbol("^^") ; }
-//    public void testSymbol_4()    { testSymbol("^^<foo>") ; }
-//    public void testSymbol_5()    { testSymbol("@") ; }
-//    public void testSymbol_6()    { testSymbol("@en") ; }
+//    @Test public void testSymbol_3()    { testSymbol("^^") ; }
+//    @Test public void testSymbol_4()    { testSymbol("^^<foo>") ; }
+//    @Test public void testSymbol_5()    { testSymbol("@") ; }
+//    @Test public void testSymbol_6()    { testSymbol("@en") ; }
     
     // --- nil
     
-    public void testNil_1()    { testItem("nil", Item.nil) ; }
-    public void testNil_2()    { testNotItem("null", Item.nil) ; }
-    public void testNil_3()    { testNotItem("()", Item.nil) ; }
-    public void testNil_4()
+    @Test public void testNil_1()    { testItem("nil", Item.nil) ; }
+    @Test public void testNil_2()    { testNotItem("null", Item.nil) ; }
+    @Test public void testNil_3()    { testNotItem("()", Item.nil) ; }
+    @Test public void testNil_4()
     { 
         Item x = Item.createList() ;
         x.getList().add(Item.nil) ;
@@ -171,50 +177,50 @@ public class TestSSE_Basic extends TestCase
 
     // ---- Lists
     
-    public void testList_1()
+    @Test public void testList_1()
     { 
         Item item = parse("()") ;
         assertTrue(item.isList()) ;
         assertEquals(item.getList().size(), 0 ) ;
     }
 
-    public void testList_2()    { testList("(1)", int1i) ; }
-    public void testList_3()    { testList("(1 2)", int1i, int2i) ; }
-    public void testList_4()    { testList("(1 a)", int1i, Item.createSymbol("a")) ; }
+    @Test public void testList_2()    { testList("(1)", int1i) ; }
+    @Test public void testList_3()    { testList("(1 2)", int1i, int2i) ; }
+    @Test public void testList_4()    { testList("(1 a)", int1i, Item.createSymbol("a")) ; }
     
-    public void testList_5()
+    @Test public void testList_5()
     { 
         Item list = Item.createList() ;
         list.getList().add(int1i) ;
         testList("((1) a)", list, Item.createSymbol("a")) ;
     }
     
-    public void testList_6()
+    @Test public void testList_6()
     { testList("(+ 1)", Item.createSymbol("+"), int1i) ; }
 
-    public void testList_7()
+    @Test public void testList_7()
     { testList("[+ 1]", Item.createSymbol("+"), int1i) ; }
     
     
-    public void testNum_01()
+    @Test public void testNum_01()
     { 
         Item item = SSE.parse("1") ;
         assertEquals(1, item.getInt()) ;
     }
         
-    public void testNum_02()
+    @Test public void testNum_02()
     { 
         Item item = SSE.parse("3") ;
         assertEquals(3d, item.getDouble(), 0) ;
     }
 
-    public void testNum_03()
+    @Test public void testNum_03()
     { 
         Item item = SSE.parse("2.5") ;      // Exact double
         assertEquals(2.5d, item.getDouble(), 0) ;
     }
     
-    public void testNum_04()
+    @Test public void testNum_04()
     { 
         Item item = SSE.parse("abc") ;
         try {
@@ -223,7 +229,7 @@ public class TestSSE_Basic extends TestCase
         } catch (ItemException ex) {}
     }
 
-    public void testNum_05()
+    @Test public void testNum_05()
     { 
         Item item = SSE.parse("<x>") ;
         try {
@@ -233,20 +239,20 @@ public class TestSSE_Basic extends TestCase
     }
     
     
-    public void testMisc_01()    { testEquals("()") ; }
-    public void testMisc_02()    { testEquals("(a)") ; }
-    public void testMisc_10()    { testNotEquals("(a)", "a") ; }
-    public void testMisc_11()    { testNotEquals("(a)", "()") ; }
-    public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
+    @Test public void testMisc_01()    { testEquals("()") ; }
+    @Test public void testMisc_02()    { testEquals("(a)") ; }
+    @Test public void testMisc_10()    { testNotEquals("(a)", "a") ; }
+    @Test public void testMisc_11()    { testNotEquals("(a)", "()") ; }
+    @Test public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
     
-    public void testTaggedList_1()
+    @Test public void testTaggedList_1()
     {
         Item x = Item.createTagged("TAG") ;
         assertTrue(x.isTagged()) ;
         assertTrue(x.isTagged("TAG")) ;
     }
     
-    public void testTaggedList_2()
+    @Test public void testTaggedList_2()
     {
         Item x = Item.createTagged("TAG") ;
         Item.addPair(x.getList(), "KEY", "VALUE") ;

@@ -6,17 +6,23 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class TestOrdering extends TestCase
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestOrdering.class) ;
+    }
+    
     NodeValue nvInt2 = NodeValue.makeNodeInteger(2) ;
     NodeValue nvInt3 = NodeValue.makeNodeInteger("3") ;
     NodeValue nvInt03 = NodeValue.makeNodeInteger("03") ;
@@ -44,14 +50,14 @@ public class TestOrdering extends TestCase
     Node nFloat8 = nvFloat8.getNode() ;
     Node nByte10 = nvByte10.getNode() ;
     
-    public static TestSuite suite()
-    {
-        TestSuite ts = new TestSuite(TestOrdering.class) ;
-        ts.setName("TestOrdering") ;
-        return ts ;
-    }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestOrdering.class) ;
+//        ts.setName("TestOrdering") ;
+//        return ts ;
+//    }
     
-    public void testComp_2_3()
+    @Test public void testComp_2_3()
     {
         int x = NodeValue.compareAlways(nvInt2, nvInt3) ;
         assertTrue("2 should be value-less than 3", Expr.CMP_LESS == x ) ;
@@ -59,7 +65,7 @@ public class TestOrdering extends TestCase
         assertTrue("2 should be strict-less than 3", Expr.CMP_LESS == y ) ;
     }
     
-    public void testComp_3_str3()
+    @Test public void testComp_3_str3()
     {
         int x = NodeValue.compareAlways(nvInt3, nvStr3) ;
         int y = NodeUtils.compareRDFTerms(nInt3, nStr3) ;
@@ -68,7 +74,7 @@ public class TestOrdering extends TestCase
         assertTrue("3 should be syntactic-greater than to \"3\"", Expr.CMP_GREATER == y ) ;
     }
 
-    public void testComp_03_str3()
+    @Test public void testComp_03_str3()
     {
         int x = NodeValue.compareAlways(nvInt03, nvStr3) ;
         int y = NodeUtils.compareRDFTerms(nInt03, nStr3) ;
@@ -78,7 +84,7 @@ public class TestOrdering extends TestCase
     }
     
     // Compare things of different types.
-    public void testComp_int_double_1()
+    @Test public void testComp_int_double_1()
     {
         int x = NodeValue.compareAlways(nvInt10, nvDouble9) ;
         int y = NodeUtils.compareRDFTerms(nInt10, nDouble9) ;
@@ -86,7 +92,7 @@ public class TestOrdering extends TestCase
         assertTrue("Int 10 less than double 9 in syntactic compare", Expr.CMP_LESS == y ) ;
     }
 
-    public void testComp_byte_double_1()
+    @Test public void testComp_byte_double_1()
     {
         int x = NodeValue.compareAlways(nvByte10, nvDouble9) ;
         int y = NodeUtils.compareRDFTerms(nByte10, nDouble9) ;
@@ -94,7 +100,7 @@ public class TestOrdering extends TestCase
         assertTrue("Byte 10 greater than double 9 in non-value compare (dataype URIs compare)", Expr.CMP_LESS == y ) ;
     }
 
-    public void testComp_int_float_1()
+    @Test public void testComp_int_float_1()
     {
         int x = NodeValue.compareAlways(nvInt10, nvFloat8) ;
         int y = NodeUtils.compareRDFTerms(nInt10, nFloat8) ;
@@ -102,19 +108,19 @@ public class TestOrdering extends TestCase
         assertTrue("Int 10 less than float 8 in syntatic compare", Expr.CMP_LESS == y) ;
     }
     
-    public void testComp_int_posint_1()
+    @Test public void testComp_int_posint_1()
     {
         int x = NodeValue.compareAlways(nvInt9, nvPosInt9) ;
         assertTrue("Int 9 should be not equals to positive integer 9", Expr.CMP_EQUAL != x ) ;
     }
     
-    public void testComp_int_posint_2()
+    @Test public void testComp_int_posint_2()
     {
         int x = NodeValue.compareAlways(nvInt10, nvPosInt9) ;
         assertTrue("Int 10 not greater than positive integer 9", Expr.CMP_GREATER == x ) ;
     }
     
-    public void test_xsd_string1()
+    @Test public void test_xsd_string1()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "", XSDDatatype.XSDstring)) ;
@@ -122,7 +128,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_EQUAL == x ) ;
     }
     
-    public void test_xsd_string2()
+    @Test public void test_xsd_string2()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("xyz", "", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "", XSDDatatype.XSDstring)) ;
@@ -130,7 +136,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_GREATER == x ) ;
     }
 
-    public void test_xsd_string3()
+    @Test public void test_xsd_string3()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("xyz", "", XSDDatatype.XSDstring)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "", null)) ;
@@ -138,7 +144,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_GREATER == x ) ;
     }
 
-    public void test_xsd_string4()
+    @Test public void test_xsd_string4()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("xyz", "", XSDDatatype.XSDstring)) ;
@@ -146,14 +152,14 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_LESS == x ) ;
     }
 
-    public void test_xsd_string5()
+    @Test public void test_xsd_string5()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "", XSDDatatype.XSDstring)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("xyz", "", null)) ;
         int x = NodeValue.compare(nv1, nv2) ;
         assertTrue(Expr.CMP_LESS == x ) ;
     }
-    public void test_lang1()
+    @Test public void test_lang1()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "en", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "", null)) ;
@@ -162,7 +168,7 @@ public class TestOrdering extends TestCase
         assertTrue("Lang tags should sort after plain literal", Expr.CMP_GREATER == x ) ;
     }
 
-    public void test_lang2()
+    @Test public void test_lang2()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "en", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "EN", null)) ;
@@ -171,7 +177,7 @@ public class TestOrdering extends TestCase
         assertTrue("Lang tags should sort by case", Expr.CMP_GREATER == x ) ;
     }
 
-    public void test_lang3()
+    @Test public void test_lang3()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("ABC", "en", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "EN", null)) ;
@@ -182,7 +188,7 @@ public class TestOrdering extends TestCase
         assertTrue("Lang nodes should sort by case (syntactically)", Expr.CMP_LESS == y ) ;
     }
 
-    public void test_lang4()
+    @Test public void test_lang4()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("ABC", "en", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "en", null)) ;
@@ -193,7 +199,7 @@ public class TestOrdering extends TestCase
         assertTrue("Lang nodes should sort by lexical form if lang tags the same", Expr.CMP_LESS == x ) ;
     }
     
-    public void test_lang5()
+    @Test public void test_lang5()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("xyz", "en", null)) ;
@@ -204,7 +210,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_LESS == x ) ;
     }
 
-    public void test_lang6()
+    @Test public void test_lang6()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("xyz", "", null)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "en", null)) ;
@@ -215,7 +221,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_GREATER == x ) ;
     }
     
-    public void test_lang7()
+    @Test public void test_lang7()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("abc", "",  XSDDatatype.XSDstring)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("xyz", "en", null)) ;
@@ -226,7 +232,7 @@ public class TestOrdering extends TestCase
         assertTrue(Expr.CMP_LESS == x ) ;
     }
     
-    public void test_lang8()
+    @Test public void test_lang8()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("xyz", "",  XSDDatatype.XSDstring)) ;
         NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("abc", "en", null)) ;

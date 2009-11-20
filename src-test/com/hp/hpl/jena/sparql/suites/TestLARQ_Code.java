@@ -6,37 +6,44 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import java.io.StringReader;
+import java.io.StringReader ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.larq.IndexBuilderNode;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexBuilderSubject;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.junit.TestLARQUtils;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.larq.IndexBuilderNode ;
+import com.hp.hpl.jena.query.larq.IndexBuilderString ;
+import com.hp.hpl.jena.query.larq.IndexBuilderSubject ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.query.larq.LARQ ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.NodeIterator ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.junit.TestLARQUtils ;
+import com.hp.hpl.jena.vocabulary.DC ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
-public class TestLARQ1 extends TestCase
+public class TestLARQ_Code extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestLARQ1.class) ;
-        ts.setName("LARQ-code") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestLARQ_Code.class) ;
     }
+    
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestLARQ1.class) ;
+//        ts.setName("LARQ-code") ;
+//        return ts ;
+//    }
 //    // Called every test.
 //    public void setUp() {}
 //    public void tearDown() {}
@@ -59,7 +66,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(r, r2) ;
     }
     
-    public void test_ext_2()
+    @Test public void test_ext_2()
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -75,7 +82,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(lit, lit2) ;
     }
 
-    public void test_ext_3()
+    @Test public void test_ext_3()
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -92,7 +99,7 @@ public class TestLARQ1 extends TestCase
         assertTrue(bnode2.isAnon()) ;
     }
 
-    public void test_ext_4()
+    @Test public void test_ext_4()
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -105,7 +112,7 @@ public class TestLARQ1 extends TestCase
         assertFalse(nIter.hasNext()) ;
     }
     
-    public void test_ext_5()
+    @Test public void test_ext_5()
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -123,7 +130,7 @@ public class TestLARQ1 extends TestCase
     }
     
     // Test what happens when the index is updated after a reader index (LARQIndex) is created
-    public void test_ext_6()
+    @Test public void test_ext_6()
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -150,7 +157,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(1, TestLARQUtils.count(nIter)) ;
     }
     
-    public void test_index_literal_1()
+    @Test public void test_index_literal_1()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ; 
@@ -160,7 +167,7 @@ public class TestLARQ1 extends TestCase
         index.close() ;
     }
 
-    public void test_index_literal_2()
+    @Test public void test_index_literal_2()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString(DC.title)) ; 
@@ -169,7 +176,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(2,TestLARQUtils.count(nIter)) ;
     } 
     
-    public void test_index_literal_3()
+    @Test public void test_index_literal_3()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ; 
@@ -186,7 +193,7 @@ public class TestLARQ1 extends TestCase
         }
     }
 
-    public void test_index_literal_4()
+    @Test public void test_index_literal_4()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString(DC.title)) ; 
@@ -202,7 +209,7 @@ public class TestLARQ1 extends TestCase
     }
     
     
-    public void test_index_subject_1()
+    @Test public void test_index_subject_1()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderSubject()) ; 
@@ -211,7 +218,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(3,TestLARQUtils.count(nIter)) ;
     }
     
-    public void test_index_subject_2()
+    @Test public void test_index_subject_2()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderSubject(DC.title)) ; 
@@ -220,7 +227,7 @@ public class TestLARQ1 extends TestCase
         assertEquals(2,TestLARQUtils.count(nIter)) ;
     }
 
-    public void test_index_subject_3()
+    @Test public void test_index_subject_3()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderSubject()) ; 
@@ -237,7 +244,7 @@ public class TestLARQ1 extends TestCase
         }
     }
 
-    public void test_index_subject_4()
+    @Test public void test_index_subject_4()
     { 
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderSubject(DC.title)) ; 
@@ -252,31 +259,31 @@ public class TestLARQ1 extends TestCase
     }
 
     // Negative searches
-    public void test_negative_1()
+    @Test public void test_negative_1()
     {
         IndexLARQ index = TestLARQUtils.createIndex(datafile, new IndexBuilderString()) ;
         assertFalse(index.hasMatch("+iceberg")) ;
     }
 
-    public void test_negative_2()
+    @Test public void test_negative_2()
     {
         IndexLARQ index = TestLARQUtils.createIndex(datafile, new IndexBuilderString(DC.title)) ;
         assertFalse(index.hasMatch("+iceberg")) ;
     }
 
-    public void test_negative_3()
+    @Test public void test_negative_3()
     {
         IndexLARQ index = TestLARQUtils.createIndex(datafile, new IndexBuilderSubject()) ;
         assertFalse(index.hasMatch("+iceberg")) ;
     }
     
-    public void test_negative_4()
+    @Test public void test_negative_4()
     {
         IndexLARQ index = TestLARQUtils.createIndex(datafile, new IndexBuilderSubject(DC.title)) ;
         assertFalse(index.hasMatch("+iceberg")) ;
     }
     
-    public void test_textMatches_index_registration_1()
+    @Test public void test_textMatches_index_registration_1()
     {
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;
@@ -296,7 +303,7 @@ public class TestLARQ1 extends TestCase
         } finally { LARQ.removeDefaultIndex() ; }
     }
     
-    public void test_textMatches_index_registration_2()
+    @Test public void test_textMatches_index_registration_2()
     {
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;
@@ -320,7 +327,7 @@ public class TestLARQ1 extends TestCase
     }
     
 //    
-//    public void test_textMatches_literal_1()
+//    @Test public void test_textMatches_literal_1()
 //    {
 //        Model model = ModelFactory.createDefaultModel() ;
 //        IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;
@@ -333,7 +340,7 @@ public class TestLARQ1 extends TestCase
 //        LARQ.removeDefaultIndex() ;
 //    }
 //
-//    public void test_textMatches_literal_2()
+//    @Test public void test_textMatches_literal_2()
 //    {
 //        Model model = ModelFactory.createDefaultModel() ;
 //        IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString(DC.title)) ;
@@ -348,7 +355,7 @@ public class TestLARQ1 extends TestCase
 //    
 //    
 //
-//    public void test_textMatches_literal_3()
+//    @Test public void test_textMatches_literal_3()
 //    {
 //        Model model = ModelFactory.createDefaultModel() ;
 //        IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;
@@ -364,7 +371,7 @@ public class TestLARQ1 extends TestCase
 //        LARQ.removeDefaultIndex() ;
 //    }
 //
-//    public void test_textMatches_literal_4()
+//    @Test public void test_textMatches_literal_4()
 //    {
 //        Model model = ModelFactory.createDefaultModel() ;
 //        IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;
@@ -379,7 +386,7 @@ public class TestLARQ1 extends TestCase
 //        LARQ.removeDefaultIndex() ;
 //    }
 //
-//    public void test_textMatches_literal_5()
+//    @Test public void test_textMatches_literal_5()
 //    {
 //        Model model = ModelFactory.createDefaultModel() ;
 //        IndexLARQ index = TestLARQUtils.createIndex(model, datafile, new IndexBuilderString()) ;

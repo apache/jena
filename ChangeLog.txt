@@ -5,6 +5,9 @@ ChangeLog for ARQ
 
 + SPARQL v1.1 as an defined language and parser, separate from ARQ 
 + Results output in CSV
++ Optimization of disjunction FILTERs 
+    with care to get same effects if value-based
+    URIs are always safe to optimize. 
 
 ==== ARQ 2.8.1
 

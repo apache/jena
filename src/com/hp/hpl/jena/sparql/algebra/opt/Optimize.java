@@ -104,6 +104,8 @@ public class Optimize implements Rewrite
         this.context = context ;
     }
 
+    public static boolean disjunctionOptimization = true ;
+    
     public Op rewrite(Op op)
     {
         if ( false )
@@ -126,6 +128,10 @@ public class Optimize implements Rewrite
         // or improve to place in a sequence. 
 
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
+        
+        if ( disjunctionOptimization)
+         op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
+        
         op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
         if ( context.isTrueOrUndef(ARQ.filterPlacement) )

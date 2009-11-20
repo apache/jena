@@ -6,34 +6,33 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-/** com.hp.hpl.jena.query.util.test.TestContext
- * 
- * @author Andy Seaborne
- */
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class TestContext extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestContext.class) ;
-        ts.setName("TestContext") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestContext.class) ;
     }
-    
-
+//    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestContext.class) ;
+//        ts.setName("TestContext") ;
+//        return ts ;
+//    }
     
     Symbol p1 = Symbol.create("p1") ;
     Symbol p2 = Symbol.create("p2") ;
     
-    public void testCxt1() { Context cxt = new Context(); }
+    @Test public void testCxt1() { Context cxt = new Context(); }
     
-    public void testCxt2()
+    @Test public void testCxt2()
     { 
         Context cxt = new Context();
         assertTrue("Defined in empty context", !cxt.isDefined(p1)) ;
@@ -43,7 +42,7 @@ public class TestContext extends TestCase
         assertSame("Not the same", "v", v) ;
     }
 
-    public void testCxt3()
+    @Test public void testCxt3()
     { 
         Context cxt = new Context();
         cxt.set(p1, "v") ;
@@ -52,7 +51,7 @@ public class TestContext extends TestCase
         assertSame("Not as first set", "v", v) ;
     }
 
-    public void testCxt4()
+    @Test public void testCxt4()
     { 
         Context cxt = new Context();
         cxt.set(p1, "true") ;
@@ -63,7 +62,7 @@ public class TestContext extends TestCase
         assertTrue("False when undef", !cxt.isFalse(p2)) ;
     }
 
-    public void testCxt5()
+    @Test public void testCxt5()
     { 
         Context cxt = new Context();
         cxt.set(p1, "false") ;
@@ -71,7 +70,7 @@ public class TestContext extends TestCase
         assertTrue("Not false or undef", cxt.isFalseOrUndef(p1)) ;
     }
     
-    public void testCxt6()
+    @Test public void testCxt6()
     { 
         Context cxt = new Context();
         cxt.setTrue(p1) ;

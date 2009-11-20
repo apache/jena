@@ -6,35 +6,39 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sparql.util.DateTimeStruct.DateTimeParseException;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct.DateTimeParseException ;
 
 
 public class TestDateTimeParsing extends TestCase
 {
-    public static Test suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestDateTimeParsing.class) ;
-        ts.setName(Utils.classShortName(TestDateTimeParsing.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestDateTimeParsing.class) ;
     }
     
-    public void testDT_1()  { dateTimeTest("2007-08-31T12:34:56Z") ; }
-    public void testDT_2()  { dateTimeTest("2007-08-31T12:34:56") ; } 
-    public void testDT_3()  { dateTimeTest("2007-08-31T12:34:56.003") ; } 
-    public void testDT_4()  { dateTimeTest("2007-08-31T12:34:56.003+05:00") ; } 
-    public void testDT_5()  { dateTimeTest("-2007-08-31T12:34:56.003-05:00") ; } 
-    public void testDT_6()  { dateTimeTest("-2007-08-31T12:34:56") ; } 
+//    public static Test suite()
+//    {
+//        TestSuite ts = new TestSuite(TestDateTimeParsing.class) ;
+//        ts.setName(Utils.classShortName(TestDateTimeParsing.class)) ;
+//        return ts ;
+//    }
     
-    public void testDT_7()  { dateTimeBad("+2007-08-31T12:34:56") ; }
-    public void testDT_8()  { dateTimeBad("2007-08-31") ; }
+    @Test public void testDT_1()  { dateTimeTest("2007-08-31T12:34:56Z") ; }
+    @Test public void testDT_2()  { dateTimeTest("2007-08-31T12:34:56") ; } 
+    @Test public void testDT_3()  { dateTimeTest("2007-08-31T12:34:56.003") ; } 
+    @Test public void testDT_4()  { dateTimeTest("2007-08-31T12:34:56.003+05:00") ; } 
+    @Test public void testDT_5()  { dateTimeTest("-2007-08-31T12:34:56.003-05:00") ; } 
+    @Test public void testDT_6()  { dateTimeTest("-2007-08-31T12:34:56") ; } 
     
-    public void testDT_10()
+    @Test public void testDT_7()  { dateTimeBad("+2007-08-31T12:34:56") ; }
+    @Test public void testDT_8()  { dateTimeBad("2007-08-31") ; }
+    
+    @Test public void testDT_10()
     { 
         DateTimeStruct dt = DateTimeStruct.parseDateTime("2007-08-31T12:34:56") ;
         check(dt, null, 
@@ -42,7 +46,7 @@ public class TestDateTimeParsing extends TestCase
               "12", "34", "56", null) ;
     }
         
-    public void testDT_11()
+    @Test public void testDT_11()
     { 
         DateTimeStruct dt = DateTimeStruct.parseDateTime("2007-08-31T12:34:56Z") ;
         check(dt, null, 
@@ -50,7 +54,7 @@ public class TestDateTimeParsing extends TestCase
               "12", "34", "56", "Z") ;
     }
         
-    public void testDT_12()
+    @Test public void testDT_12()
     { 
         DateTimeStruct dt = DateTimeStruct.parseDateTime("-2007-08-31T12:34:56.003-05:00") ;
         check(dt, "-", 
@@ -60,10 +64,10 @@ public class TestDateTimeParsing extends TestCase
     
     // ----
     
-    public void testD_1()  { dateTest("2007-08-31Z") ; }
-    public void testD_2()  { dateTest("2007-08-31") ; } 
+    @Test public void testD_1()  { dateTest("2007-08-31Z") ; }
+    @Test public void testD_2()  { dateTest("2007-08-31") ; } 
     
-    public void testD_10()
+    @Test public void testD_10()
     { 
         DateTimeStruct dt = DateTimeStruct.parseDate("2007-08-31") ;
         check(dt, null, 

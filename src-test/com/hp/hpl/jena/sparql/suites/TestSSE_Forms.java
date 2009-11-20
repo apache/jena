@@ -6,75 +6,95 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestSSE_Forms extends TestCase
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestSSE_Forms.class) ;
+    }
+
     static PrefixMapping pmap = new PrefixMappingImpl() ;
     static { 
         pmap.setNsPrefix("xsd", XSD.getURI()) ;
         pmap.setNsPrefix("ex", "http://example/") ;
     }
-    public static TestSuite suite()
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestSSE_Forms.class) ;
+//        ts.setName("SSE Resolve") ;
+//        
+//        SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
+//        SSE.getDefaultPrefixMapRead().removeNsPrefix("ex") ;
+////        SSE.setDefaultPrefixMapRead(null) ;
+////        SSE.setDefaultPrefixMapWrite(null) ;
+//        return ts ;
+//    }
+
+    @BeforeClass public static void beforeClass()
     {
-        TestSuite ts = new TestSuite(TestSSE_Forms.class) ;
-        ts.setName("SSE Resolve") ;
-        
         SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
         SSE.getDefaultPrefixMapRead().removeNsPrefix("ex") ;
-//        SSE.setDefaultPrefixMapRead(null) ;
-//        SSE.setDefaultPrefixMapWrite(null) ;
-        return ts ;
+    }
+
+    @AfterClass public static void afterClass()
+    {
+        SSE.getDefaultPrefixMapRead().setNsPrefix("" ,    "http://example/") ;
+        SSE.getDefaultPrefixMapRead().setNsPrefix("ex" ,  "http://example/ns#") ;
     }
 
     // ---- Assume ParseHandlerResolver from here on
     
-    public void testBase_01()
+    @Test public void testBase_01()
     { 
         Item r = Item.createNode(Node.createURI("http://example/x")) ; 
         testItem("(base <http://example/> <x>)", r) ;
     }
     
-    public void testBase_02()
+    @Test public void testBase_02()
     { 
         Item r = Item.createNode(Node.createURI("http://example/x")) ; 
         testItem("(base <http://HOST/> (base <http://example/xyz> <x>))", r) ;
     }
 
-    public void testBase_03()
+    @Test public void testBase_03()
     { 
         Item r = SSE.parse("(1 <http://example/xyz>)", null) ;
         testItem("(base <http://example/> (1 <xyz>))", r) ;
     }
     
-    public void testBase_04()
+    @Test public void testBase_04()
     { 
         Item r = SSE.parse("(1 <http://example/xyz>)", null) ;
         testItem("(1 (base <http://example/> <xyz>))", r) ;
     }
     
-    public void testBase_05()
+    @Test public void testBase_05()
     { 
         Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
         testItem("((base <http://example/> <xyz>) (base <http://EXAMPLE/other> <#foo>))", r) ;
     }
     
-    public void testBase_06()
+    @Test public void testBase_06()
     { 
         Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
         testItem("(base <http://example/> (<xyz> (base <http://EXAMPLE/other> <#foo>)))", r) ;
     }
 
-    public void testBase_07()
+    @Test public void testBase_07()
     { 
         Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
         testItem("(base <http://EXAMPLE/other#> ((base <http://example/> <xyz>) <#foo>))", r) ;
@@ -82,31 +102,31 @@ public class TestSSE_Forms extends TestCase
     
     // ----
     
-    public void testPrefix_01()
+    @Test public void testPrefix_01()
     { 
         Item r = Item.createNode(Node.createURI("http://example/abc")) ;
         testItem("(prefix ((ex: <http://example/>)) ex:abc)", r);
     }
 
-    public void testPrefix_02()
+    @Test public void testPrefix_02()
     { 
         Item r = Item.createNode(Node.createURI("http://EXAMPLE/abc")) ;
         testItem("(prefix ((ex: <http://example/>)) (prefix ((ex: <http://EXAMPLE/>)) ex:abc))", r);
     }
     
-    public void testPrefix_03()
+    @Test public void testPrefix_03()
     { 
         Item r = SSE.parse("(<http://example/abc>)" , null) ;
         testItem("(prefix ((ex: <http://example/>)) (ex:abc))", r);
     }
     
-    public void testPrefix_04()
+    @Test public void testPrefix_04()
     { 
         Item r = SSE.parse("(<http://EXAMPLE/abc>)" , null) ;
         testItem("(prefix ((ex: <http://example/>)) ( (prefix ((ex: <http://EXAMPLE/>)) ex:abc) ))", r);
     }
     
-    public void testPrefix_05()
+    @Test public void testPrefix_05()
     { 
         Item r = SSE.parse("(<http://example/abc>)" , null) ;
         testItem("(prefix ((ex: <http://example/>)) ( (prefix ((x: <http://EXAMPLE/>)) ex:abc) ))", r);
@@ -114,14 +134,14 @@ public class TestSSE_Forms extends TestCase
     
     // ---- Form
     
-    public void testForm_01()
+    @Test public void testForm_01()
     { 
         // Special form of nothing.
         Item item = SSE.parse("(prefix ((ex: <http://example/>)))") ;
         assertNull(item) ;
     }
     
-    public void testForm_02()
+    @Test public void testForm_02()
     { 
         // Special form of nothing.
         Item item = SSE.parse("(base <http://example/>)") ;
@@ -131,7 +151,7 @@ public class TestSSE_Forms extends TestCase
     
     // URI resolving.
     
-    public void testTypedLit_r1()
+    @Test public void testTypedLit_r1()
     { 
         Node node = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ; 
         testItem("'3'^^xsd:integer", Item.createNode(node)) ;
@@ -139,7 +159,7 @@ public class TestSSE_Forms extends TestCase
 
 
 
-    public void testBasePrefix_01()
+    @Test public void testBasePrefix_01()
     { 
         Item r = SSE.parse("<http://example/abc>" , null) ;
         testItem("(base <http://example/> (prefix ((x: <>)) x:abc) )", r);

@@ -16,8 +16,12 @@ public class TS_Update extends TestSuite
     static public TestSuite suite()
     {
         TestSuite ts = new TS_Update() ;
-        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
-        ts.addTestSuite(TestUpdateGraphMem.class) ;
+//        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
+//        ts.addTestSuite(TestUpdateGraphMem.class) ;
+      ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
+      ts.addTest(TestUpdateGraphMem.suite()) ;
+        
+        
         return ts ;
     }
     

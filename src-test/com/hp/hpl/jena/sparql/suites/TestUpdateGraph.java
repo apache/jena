@@ -7,31 +7,32 @@
 package com.hp.hpl.jena.sparql.suites;
 
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.modify.op.UpdateDelete;
-import com.hp.hpl.jena.sparql.modify.op.UpdateDeleteData;
-import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
-import com.hp.hpl.jena.sparql.modify.op.UpdateInsertData;
-import com.hp.hpl.jena.sparql.modify.op.UpdateModify;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDelete ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDeleteData ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateInsert ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateInsertData ;
+import com.hp.hpl.jena.sparql.modify.op.UpdateModify ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public abstract class TestUpdateGraph extends TestUpdateBase
 {
@@ -47,7 +48,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     protected static Graph graph1 = data1() ;
     protected static Node graphIRI = NodeFactory.parseNode("<http://example/graph>") ;
     
-    public void testInsertData1()
+    @Test public void testInsertData1()
     {
 		GraphStore gStore = getEmptyGraphStore() ;
 		defaultGraphData(gStore, graph1) ;
@@ -61,7 +62,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getDefaultGraph(), triple2)) ;
     }
     
-    public void testDeleteData1()
+    @Test public void testDeleteData1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
@@ -75,7 +76,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertFalse(graphContains(gStore.getDefaultGraph(), triple2)) ;
     }
     
-    public void testDeleteData2()
+    @Test public void testDeleteData2()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
@@ -88,7 +89,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertFalse(graphContains(gStore.getDefaultGraph(), triple1)) ;
     }
     
-    public void testInsert1()
+    @Test public void testInsert1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert() ;
@@ -97,7 +98,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
-    public void testInsert2()
+    @Test public void testInsert2()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert() ;
@@ -106,7 +107,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
     }
     
-    public void testInsert3()
+    @Test public void testInsert3()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert(graph1) ;
@@ -114,7 +115,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
     }
     
-    public void testInsert4()
+    @Test public void testInsert4()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
@@ -124,7 +125,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
 
-    public void testInsert5()
+    @Test public void testInsert5()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
@@ -139,7 +140,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getDefaultGraph(), triple2)) ;
     }
     
-    public void testDelete1()
+    @Test public void testDelete1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         UpdateDelete insert = new UpdateDelete() ;
@@ -148,7 +149,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
-    public void testDelete2()
+    @Test public void testDelete2()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
@@ -158,7 +159,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
-    public void testDelete3()
+    @Test public void testDelete3()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;
@@ -168,7 +169,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     }
     
     
-    public void testDelete4()
+    @Test public void testDelete4()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         namedGraphData(gStore, graphIRI, data1()) ;
@@ -179,7 +180,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
-    public void testDelete5()
+    @Test public void testDelete5()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, data2()) ;
@@ -196,7 +197,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
-    public void testModify1()
+    @Test public void testModify1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, data2()) ;
@@ -212,14 +213,14 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
     
-    public void testUpdateScript1()
+    @Test public void testUpdateScript1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-1.rup") ;
         assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
-    public void testUpdateScript2()
+    @Test public void testUpdateScript2()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-2.rup") ;
@@ -228,7 +229,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 
-    public void testUpdateScript3()
+    @Test public void testUpdateScript3()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-3.rup") ;
@@ -236,7 +237,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 
-    public void testUpdateScript4()
+    @Test public void testUpdateScript4()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-1.rup") ;
@@ -244,7 +245,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
                                  new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
-    public void testUpdateScript5()
+    @Test public void testUpdateScript5()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-2.rup") ;
@@ -258,7 +259,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(g.isIsomorphicWith(gStore.getDefaultGraph())) ;
     }
     
-    public void testUpdateScript6()
+    @Test public void testUpdateScript6()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-3.rup") ;
@@ -266,7 +267,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
                                  new Triple(s,p,NodeFactory.parseNode("123")))) ;
     }
     
-    public void testUpdateScript7()
+    @Test public void testUpdateScript7()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "data-4.rup") ;
@@ -301,7 +302,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         return gStore.getDefaultGraph() ;
     }
     
-    public void testUpdateInitialBinding1()
+    @Test public void testUpdateInitialBinding1()
     {
         Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o1) ;
         assertEquals(graph.size(), 1) ;
@@ -309,7 +310,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(graph, triple2)) ;
     }
     
-    public void testUpdateInitialBinding2()
+    @Test public void testUpdateInitialBinding2()
     {
         Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o2) ;
         assertEquals(graph.size(), 1) ;
@@ -317,7 +318,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertFalse(graphContains(graph, triple2)) ;
     }
 
-    public void testUpdateInitialBinding3()
+    @Test public void testUpdateInitialBinding3()
     {
         // Does not affect the delete
         Graph graph = testUpdateInitialBindingWorker(Var.alloc("FF"), o1) ;

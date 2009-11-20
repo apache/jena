@@ -1,49 +1,26 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.suites;
 
-
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-
 import junit.framework.TestSuite;
 
-public class TS extends TestSuite
+public class TS_LARQ
 {
-    static final String testSetName         = "General" ;
-
-    static public TestSuite suite() { return new TS(); }
-
-    public TS()
+    static public TestSuite suite()
     {
-        super(testSetName) ;
-        // Tests should be silent.
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        
-        // Lower level
-        addTest(TS_Internal.suite() );
-        // RDF terms
-        addTest(TS_Expr.suite()) ;
-        // Expressions
-        addTest(TS_Functions.suite()) ;
-
-        // Algebra
-        addTest(TS_Algebra.suite() );
-
-        // Syntax
-        addTest(TS_Syntax.suite()) ;
-        addTest(TS_Serialization.suite()) ;
-
+        TestSuite ts = new TestSuite("LARQ") ;
+        ts.addTest(TestLARQ_Code.suite()) ;
+        ts.addTest(TestLARQ_Script.suite()) ;
+        return ts ;
     }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

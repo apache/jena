@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.expr.E_Regex;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.expr.E_Regex ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
@@ -21,23 +22,30 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public class TestRegex extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestRegex.class) ;
-        ts.setName("TestRegex") ;
         if ( false )
             ARQ.getContext().set(ARQ.regexImpl, ARQ.xercesRegex) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestRegex.class) ;
     }
     
-    public void testRegex1() { regexTest("ABC", "ABC", null, true) ; }
-    public void testRegex2() { regexTest("ABC", "abc", null, false) ; }
-    public void testRegex3() { regexTest("ABC", "abc", "", false) ; }
-    public void testRegex4() { regexTest("ABC", "abc", "i", true) ; }
-    public void testRegex5() { regexTest("abc", "B", "i", true) ; }
-    public void testRegex6() { regexTest("ABC", "^ABC", null, true) ; }
-    public void testRegex7() { regexTest("ABC", "BC", null, true) ; }
-    public void testRegex8() { regexTest("ABC", "^BC", null, false) ; }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestRegex.class) ;
+//        ts.setName("TestRegex") ;
+//        if ( false )
+//            ARQ.getContext().set(ARQ.regexImpl, ARQ.xercesRegex) ;
+//        return ts ;
+//    }
+    
+    @Test public void testRegex1() { regexTest("ABC", "ABC", null, true) ; }
+    @Test public void testRegex2() { regexTest("ABC", "abc", null, false) ; }
+    @Test public void testRegex3() { regexTest("ABC", "abc", "", false) ; }
+    @Test public void testRegex4() { regexTest("ABC", "abc", "i", true) ; }
+    @Test public void testRegex5() { regexTest("abc", "B", "i", true) ; }
+    @Test public void testRegex6() { regexTest("ABC", "^ABC", null, true) ; }
+    @Test public void testRegex7() { regexTest("ABC", "BC", null, true) ; }
+    @Test public void testRegex8() { regexTest("ABC", "^BC", null, false) ; }
 
     public void regexTest(String value, String pattern, String flags, boolean expected)
     {

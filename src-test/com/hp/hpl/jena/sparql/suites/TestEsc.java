@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.*;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.sparql.lang.ParserBase;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.lang.ParserBase ;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
@@ -19,39 +20,44 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class TestEsc extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestEsc.class) ;
-        ts.setName(Utils.classShortName(TestEsc.class)) ;
-        return ts ;
+        return new JUnit4TestAdapter(TestEsc.class) ;
     }
     
-    public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
-    public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }
-    public void testEsc03() { execTest("1234\\uabcd1234", "1234\uabcd1234") ; }
-    public void testEsc04() { execTestFail("\\X") ; }
-    public void testEsc05() { execTestFail("\\Xz") ; }
-    public void testEsc06() { execTestFail("a\\X") ; }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestEsc.class) ;
+//        ts.setName(Utils.classShortName(TestEsc.class)) ;
+//        return ts ;
+//    }
+    
+    @Test public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
+    @Test public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }
+    @Test public void testEsc03() { execTest("1234\\uabcd1234", "1234\uabcd1234") ; }
+    @Test public void testEsc04() { execTestFail("\\X") ; }
+    @Test public void testEsc05() { execTestFail("\\Xz") ; }
+    @Test public void testEsc06() { execTestFail("a\\X") ; }
     
     
-    public void testEscUni01() { execTestFail("\\uabck") ; }
-    public void testEscUni02() { execTestFail("\\uab") ; }
-    public void testEscUni03() { execTestFail("\\uabc") ; }
-    public void testEscUni04() { execTestFail("\\ua") ; }
-    public void testEscUni05() { execTestFail("\\u") ; }
-    public void testEscUni06() { execTestFail("\\") ; }
-    public void testEscUni07() { execTest("\\u0020", " ") ; }
-    public void testEscUni08() { execTest("\\uFFFF", "\uFFFF") ; }
-    public void testEscUni09() { execTest("\\u0000", "\u0000") ; }
-    public void testEscUni10() { execTestFail("\\U0000") ; }
-    public void testEscUni11() { execTestFail("\\U0000A") ; }
-    public void testEscUni12() { execTestFail("\\U0000AB") ; }
-    public void testEscUni13() { execTestFail("\\U0000ABC") ; }
-    public void testEscUni14() { execTest("\\U0000ABCD", "\uABCD") ; }
-    public void testEscUni15() { execTestFail("\\U0000") ; }
-    public void testEscUni16() { execTest("\\U00000000", "\u0000") ; }
-    public void testEscUni17() { execTest("x\\tx\\nx\\r", "x\tx\nx\r") ; }
-    public void testEscUni18() { execTest("x\\t\\n\\r", "x\t\n\r") ; }
+    @Test public void testEscUni01() { execTestFail("\\uabck") ; }
+    @Test public void testEscUni02() { execTestFail("\\uab") ; }
+    @Test public void testEscUni03() { execTestFail("\\uabc") ; }
+    @Test public void testEscUni04() { execTestFail("\\ua") ; }
+    @Test public void testEscUni05() { execTestFail("\\u") ; }
+    @Test public void testEscUni06() { execTestFail("\\") ; }
+    @Test public void testEscUni07() { execTest("\\u0020", " ") ; }
+    @Test public void testEscUni08() { execTest("\\uFFFF", "\uFFFF") ; }
+    @Test public void testEscUni09() { execTest("\\u0000", "\u0000") ; }
+    @Test public void testEscUni10() { execTestFail("\\U0000") ; }
+    @Test public void testEscUni11() { execTestFail("\\U0000A") ; }
+    @Test public void testEscUni12() { execTestFail("\\U0000AB") ; }
+    @Test public void testEscUni13() { execTestFail("\\U0000ABC") ; }
+    @Test public void testEscUni14() { execTest("\\U0000ABCD", "\uABCD") ; }
+    @Test public void testEscUni15() { execTestFail("\\U0000") ; }
+    @Test public void testEscUni16() { execTest("\\U00000000", "\u0000") ; }
+    @Test public void testEscUni17() { execTest("x\\tx\\nx\\r", "x\tx\nx\r") ; }
+    @Test public void testEscUni18() { execTest("x\\t\\n\\r", "x\t\n\r") ; }
     
     
     

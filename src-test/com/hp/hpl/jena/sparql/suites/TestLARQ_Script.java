@@ -6,26 +6,41 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.junit.QueryTest;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.larq.IndexBuilderModel ;
+import com.hp.hpl.jena.query.larq.IndexBuilderString ;
+import com.hp.hpl.jena.query.larq.IndexBuilderSubject ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
+import com.hp.hpl.jena.query.larq.LARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.junit.QueryTest ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.DC ;
 
-public class TestLARQ2 extends TestCase
+public class TestLARQ_Script extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestLARQ2.class) ;
-        ts.setName("LARQ-Scripts") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestLARQ_Script.class) ;
     }
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestLARQ2.class) ;
+//        ts.setName("LARQ-Scripts") ;
+//        return ts ;
+//    }
     
     static final String root = "testing/LARQ/" ;
 //    static final String datafile = "testing/LARQ/data-1.ttl" ;
@@ -33,7 +48,7 @@ public class TestLARQ2 extends TestCase
 //    static final String results2 = "testing/LARQ/results-2.srj" ;
 //    static final String results3 = "testing/LARQ/results-3.srj" ;
     
-    public TestLARQ2(String name)
+    public TestLARQ_Script(String name)
     { 
         super(name) ;
     }
@@ -75,25 +90,25 @@ public class TestLARQ2 extends TestCase
         LARQ.removeDefaultIndex() ;
     }
     
-    public void test_larq_1()
+    @Test public void test_larq_1()
     { runTestScript("larq-q-1.rq", "data-1.ttl", "results-1.srj", new IndexBuilderString()) ; }
 
-    public void test_larq_2()
+    @Test public void test_larq_2()
     { runTestScript("larq-q-2.rq", "data-1.ttl", "results-2.srj", new IndexBuilderString(DC.title)) ; }
 
-    public void test_larq_3()
+    @Test public void test_larq_3()
     { runTestScript("larq-q-3.rq", "data-1.ttl", "results-3.srj", new IndexBuilderSubject(DC.title)) ; }
     
-    public void test_larq_4()
+    @Test public void test_larq_4()
     { runTestScript("larq-q-4.rq", "data-1.ttl", "results-4.srj", new IndexBuilderString()) ; }
     
-    public void test_larq_5()
+    @Test public void test_larq_5()
     { runTestScript("larq-q-5.rq", "data-1.ttl", "results-5.srj", new IndexBuilderString()) ; }
 
-    public void test_larq_6()
+    @Test public void test_larq_6()
     { runTestScript("larq-q-6.rq", "data-1.ttl", "results-6.srj", new IndexBuilderString()) ; }
 
-    public void test_larq_7()
+    @Test public void test_larq_7()
     { runTestScript("larq-q-7.rq", "data-1.ttl", "results-7.srj", new IndexBuilderString()) ; }
 }
 

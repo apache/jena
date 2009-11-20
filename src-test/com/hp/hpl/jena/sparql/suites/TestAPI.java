@@ -21,12 +21,17 @@ import com.hp.hpl.jena.vocabulary.OWL;
 
 public class TestAPI extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestAPI.class) ;
-        ts.setName("TestMisc") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestAPI.class) ;
     }
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestAPI.class) ;
+//        ts.setName("TestMisc") ;
+//        return ts ;
+//    }
     
     private static final String ns = "http://example/ns#" ;
     
@@ -49,7 +54,7 @@ public class TestAPI extends TestCase
     public void tearDown()
     {}
     
-    public void testInitialBindingsConstruct()
+    @Test public void testInitialBindingsConstruct()
     {
         QueryExecution qExec = makeQExec("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -67,7 +72,7 @@ public class TestAPI extends TestCase
         qExec.close() ;
     }
 
-    public void test_API1()
+    @Test public void test_API1()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
         try {
@@ -80,17 +85,17 @@ public class TestAPI extends TestCase
         
     }
     
-//    public void test_OptRegex1()
+//    @Test public void test_OptRegex1()
 //    {
 //        execRegexTest(1, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x')}") ;
 //    }
 //
-//    public void test_OptRegex2()
+//    @Test public void test_OptRegex2()
 //    {
 //        execRegexTest(2, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x', 'i')}") ;
 //    }
 
-    public void testInitialBindings0()
+    @Test public void testInitialBindings0()
     {
         QuerySolutionMap smap1 = new QuerySolutionMap() ;
         QuerySolutionMap smap2 = new QuerySolutionMap() ;
@@ -106,7 +111,7 @@ public class TestAPI extends TestCase
         assertTrue(smap2.contains("o")) ;
     }
     
-    public void testInitialBindings1()
+    @Test public void testInitialBindings1()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -116,7 +121,7 @@ public class TestAPI extends TestCase
         assertEquals("Initial binding didn't restrict query properly", 1, count) ;
     }
     
-    public void testInitialBindings2()
+    @Test public void testInitialBindings2()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -126,7 +131,7 @@ public class TestAPI extends TestCase
         assertEquals("Initial binding restricted query improperly", 3, count) ;
     }
 
-    public void testInitialBindings3()
+    @Test public void testInitialBindings3()
     {
         QueryExecution qExec = makeQExec("SELECT * {?s ?p 'x1'}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -138,8 +143,7 @@ public class TestAPI extends TestCase
         qExec.close() ;
     }
     
-    @Test
-    public void testInitialBindings4()
+    @Test public void testInitialBindings4()
     {
         // Test derived from report by Holger Knublauch
         String queryString =

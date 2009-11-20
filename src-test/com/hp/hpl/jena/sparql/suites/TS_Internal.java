@@ -23,7 +23,6 @@ public class TS_Internal extends TestSuite
         addTest(TestXSDFuncOp.suite()) ;
         addTest(TestExprLib.suite()) ;
         addTest(TestPath.suite()) ;
-        addTest(TestClassify.suite()) ;
         
         addTest(TestOrdering.suite()) ;
         addTest(TestEsc.suite()) ;

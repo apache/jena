@@ -6,11 +6,18 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
+import junit.framework.JUnit4TestAdapter ;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 
 public class TestUpdateGraphMgtMem extends TestUpdateGraphMgt
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestUpdateGraphMgtMem.class) ;
+    }
+    
     @Override
     protected GraphStore getEmptyGraphStore()
     {

@@ -7,41 +7,47 @@
 package com.hp.hpl.jena.sparql.suites;
 
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
-import com.hp.hpl.jena.sparql.algebra.op.OpNull;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderNode;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderNode ;
 
 public class TestSSE_Builder extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestSSE_Builder.class) ;
-        ts.setName("SSE Op") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestSSE_Builder.class) ;
     }
     
-    public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
-    public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
-    public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
-    public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
-    public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
-    public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestSSE_Builder.class) ;
+//        ts.setName("SSE Op") ;
+//        return ts ;
+//    }
     
-    public void test_07() { SSE.parseExpr("1") ; }
-    public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
+    @Test public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
+    @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
+    @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
+    @Test public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
+    @Test public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
+    @Test public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
     
-    public void testOp_01() { opSame("(null)") ; }
-    public void testOp_02() { opSame("(null)", OpNull.create()) ; }
-    public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
+    @Test public void test_07() { SSE.parseExpr("1") ; }
+    @Test public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
+    
+    @Test public void testOp_01() { opSame("(null)") ; }
+    @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
+    @Test public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
-    public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
+    @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
     
     private static void opSame(String str)
     {
@@ -54,21 +60,21 @@ public class TestSSE_Builder extends TestCase
         assertEquals(op, other) ;
     }
     
-    public void testBuildInt_01()
+    @Test public void testBuildInt_01()
     { 
         Item item = SSE.parseItem("1") ;
         int i = BuilderNode.buildInt(item) ;
         assertEquals(1, i) ;
     }
 
-    public void testBuildInt_02()
+    @Test public void testBuildInt_02()
     { 
         Item item = SSE.parseItem("1") ;
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(1, i) ;
     }
 
-    public void testBuildInt_03()
+    @Test public void testBuildInt_03()
     { 
         Item item = SSE.parseItem("_") ;
         int i = BuilderNode.buildInt(item, 23) ;

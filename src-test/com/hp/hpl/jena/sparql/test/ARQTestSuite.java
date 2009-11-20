@@ -43,7 +43,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
       
         // ARQ + Lucene
-        ts.addTest(TestLARQ.suite()) ;
+        ts.addTest(TS_LARQ.suite()) ;
       
         // Scripted tests for ARQ features outside SPARQL syntax
         // Currently at end of manifest-arq.ttl

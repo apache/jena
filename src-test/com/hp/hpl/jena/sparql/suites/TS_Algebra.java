@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,19 +8,22 @@ package com.hp.hpl.jena.sparql.suites;
 
 import junit.framework.TestSuite;
 
-public class TestLARQ
+public class TS_Algebra extends TestSuite
 {
-    static public TestSuite suite()
+    static final String testSetName         = "Algebra Transformation" ;
+
+    static public TestSuite suite() { return new TS_Algebra(); }
+
+    public TS_Algebra()
     {
-        TestSuite ts = new TestSuite("LARQ") ;
-        ts.addTest(TestLARQ1.suite()) ;
-        ts.addTest(TestLARQ2.suite()) ;
-        return ts ;
+        super(testSetName) ;
+        addTest(TestClassify.suite()) ;
+        addTest(TestFilterTransform.suite()) ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.*;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.expr.ExprTypeException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.*;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
  * @author Andy Seaborne
@@ -23,67 +24,72 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class TestNodeFunctions extends TestCase
 {
+    public static junit.framework.Test suite()
+    {
+        return new JUnit4TestAdapter(TestNodeFunctions.class) ;
+    }
+    
     private static final double accuracyExact = 0.0d ;
     private static final double accuracyClose = 0.000001d ;
     
-    public static TestSuite suite()
-    {
-        TestSuite ts = new TestSuite(TestNodeFunctions.class) ;
-        ts.setName(Utils.classShortName(TestNodeFunctions.class)) ;
-        return ts ;
-    }
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestNodeFunctions.class) ;
+//        ts.setName(Utils.classShortName(TestNodeFunctions.class)) ;
+//        return ts ;
+//    }
 
 
-    public void testSameTerm1()
+    @Test public void testSameTerm1()
     {
         Node n1 = Node.createLiteral("xyz") ;
         Node n2 = Node.createLiteral("xyz") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testSameTerm2()
+    @Test public void testSameTerm2()
     {
         Node n1 = Node.createLiteral("xyz") ;
         Node n2 = Node.createLiteral("abc") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testSameTerm3()
+    @Test public void testSameTerm3()
     {
         Node n1 = Node.createLiteral("xyz") ;
         Node n2 = Node.createURI("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testSameTerm4()
+    @Test public void testSameTerm4()
     {
         Node n1 = Node.createLiteral("xyz") ;
         Node n2 = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testSameTerm5()
+    @Test public void testSameTerm5()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         Node n2 = Node.createLiteral("xyz", null, null) ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testSameTerm6()
+    @Test public void testSameTerm6()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         Node n2 = Node.createLiteral("xyz", "EN", null) ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
-    public void testRDFtermEquals1()
+    @Test public void testRDFtermEquals1()
     {
         Node n1 = Node.createURI("xyz") ;
         Node n2 = Node.createLiteral("xyz", null, null) ;
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
     
-    public void testRDFtermEquals3()
+    @Test public void testRDFtermEquals3()
     {
         // Unextended - no language tag  
         Node n1 = Node.createLiteral("xyz") ;
@@ -95,35 +101,35 @@ public class TestNodeFunctions extends TestCase
     }
     
 
-    public void testRDFtermEquals2()
+    @Test public void testRDFtermEquals2()
     {
         Node n1 = Node.createLiteral("xyz", "en", null) ;
         Node n2 = Node.createLiteral("xyz", "EN", null) ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
     
-    public void testStr1()
+    @Test public void testStr1()
     {
         NodeValue nv = NodeValue.makeNodeInteger(56) ;
         NodeValue s = NodeFunctions.str(nv) ;
         assertEquals("56", s.getString()) ;
     }
     
-    public void testStr2()
+    @Test public void testStr2()
     {
         NodeValue nv = NodeValue.makeInteger(56) ;
         NodeValue s = NodeFunctions.str(nv) ;
         assertEquals("56", s.getString()) ;
     }
 
-    public void testStr3()
+    @Test public void testStr3()
     {
         NodeValue nv = NodeValue.makeNode("abc", "fr", (String)null) ;
         NodeValue s = NodeFunctions.str(nv) ;
         assertEquals("abc", s.getString()) ;
     }
 
-    public void testStr4()
+    @Test public void testStr4()
     {
         Node n = Node.createAnon() ;
         try {
@@ -133,7 +139,7 @@ public class TestNodeFunctions extends TestCase
         catch (ExprTypeException ex) {} 
     }
     
-    public void testDatatype1()
+    @Test public void testDatatype1()
     {
         NodeValue nv = NodeValue.makeInteger(5) ;
         Node n = nv.asNode() ;
@@ -141,7 +147,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(XSD.integer.asNode(), r) ;
     }
 
-    public void testDatatype2()
+    @Test public void testDatatype2()
     {
         NodeValue nv = NodeValue.makeInteger(5) ;
         NodeValue r = NodeFunctions.datatype(nv) ;
@@ -149,7 +155,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(e, r) ;
     }
 
-    public void testDatatype3()
+    @Test public void testDatatype3()
     {
         NodeValue nv = NodeValue.makeString("abc") ;
         NodeValue r = NodeFunctions.datatype(nv) ;
@@ -157,7 +163,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(e, r) ;
     }
 
-    public void testDatatype4()
+    @Test public void testDatatype4()
     {
         NodeValue nv = NodeValue.makeNode("abc", "fr", (String)null) ;
         try {
@@ -167,7 +173,7 @@ public class TestNodeFunctions extends TestCase
         catch (ExprTypeException ex) {} 
     }
 
-    public void testDatatype5()
+    @Test public void testDatatype5()
     {
         try {
             NodeValue nv = NodeValue.makeNode(Node.createURI("http://example")) ;
@@ -177,7 +183,7 @@ public class TestNodeFunctions extends TestCase
         catch (ExprTypeException ex) {} 
     }
 
-    public void testDatatype6()
+    @Test public void testDatatype6()
     {
         NodeValue nv = NodeValue.makeNode(Node.createAnon()) ;
         try {
@@ -187,13 +193,13 @@ public class TestNodeFunctions extends TestCase
         catch (ExprTypeException ex) {} 
     }
 
-    public void testLang1()
+    @Test public void testLang1()
     {
         Node n = Node.createLiteral("abc", "en-gb", null) ;
         assertEquals("en-gb", NodeFunctions.lang(n)) ;
     }
 
-    public void testLang2()
+    @Test public void testLang2()
     {
         NodeValue nv = NodeValue.makeNode("abc", "en", (String)null) ;
         NodeValue r = NodeFunctions.lang(nv) ;
@@ -201,7 +207,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(e, r) ;
     }
 
-    public void testLang3()
+    @Test public void testLang3()
     {
         NodeValue nv = NodeValue.makeInteger(5) ;
         NodeValue r = NodeFunctions.lang(nv) ;
@@ -209,7 +215,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(e, r) ;
     }
     
-    public void testLang4()
+    @Test public void testLang4()
     {
         NodeValue nv = NodeValue.makeNode(Node.createLiteral("simple")) ;
         NodeValue r = NodeFunctions.lang(nv) ;
@@ -217,7 +223,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(e, r) ;
     }
     
-    public void testLang5()
+    @Test public void testLang5()
     {
         NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
         try {
@@ -227,7 +233,7 @@ public class TestNodeFunctions extends TestCase
         catch (ExprTypeException ex) {} 
     }
     
-    public void testLangMatches1()
+    @Test public void testLangMatches1()
     {
         NodeValue nv = NodeValue.makeString("en") ;
         NodeValue pat = NodeValue.makeString("en") ;
@@ -236,7 +242,7 @@ public class TestNodeFunctions extends TestCase
         assertFalse(NodeValue.FALSE.equals(r)) ;
     }
 
-    public void testLangMatches2()
+    @Test public void testLangMatches2()
     {
         NodeValue nv = NodeValue.makeString("en") ;
         NodeValue pat = NodeValue.makeString("fr") ;
@@ -245,7 +251,7 @@ public class TestNodeFunctions extends TestCase
         assertFalse(NodeValue.TRUE.equals(r)) ;
     }
 
-    public void testLangMatches3()
+    @Test public void testLangMatches3()
     {
         NodeValue nv = NodeValue.makeString("en-gb") ;
         NodeValue pat = NodeValue.makeString("en-gb") ;
@@ -253,7 +259,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.TRUE, r) ;
     }
 
-    public void testLangMatches4()
+    @Test public void testLangMatches4()
     {
         NodeValue nv = NodeValue.makeString("en-gb") ;
         NodeValue pat = NodeValue.makeString("en") ;
@@ -261,7 +267,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.TRUE, r) ;
     }
 
-    public void testLangMatches5()
+    @Test public void testLangMatches5()
     {
         NodeValue nv = NodeValue.makeString("abc") ;
         NodeValue pat = NodeValue.makeString("*") ;
@@ -269,7 +275,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.TRUE, r) ;
     }
 
-    public void testLangMatches6()
+    @Test public void testLangMatches6()
     {
         NodeValue nv = NodeValue.makeString("x-y-z") ;
         NodeValue pat = NodeValue.makeString("x") ;
@@ -277,7 +283,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.TRUE, r) ;
     }
 
-    public void testLangMatches7()
+    @Test public void testLangMatches7()
     {
         NodeValue nv = NodeValue.makeString("x") ;
         NodeValue pat = NodeValue.makeString("x-y-z") ;
@@ -285,7 +291,7 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.FALSE, r) ;
     }
 
-    public void testLangMatches8()
+    @Test public void testLangMatches8()
     {
         // The language tag of a plain literal is ""
         // A language tag is not allowed to be the empty string (by RFC 3066)
@@ -295,21 +301,21 @@ public class TestNodeFunctions extends TestCase
         assertEquals(NodeValue.FALSE, r) ;
     }
 
-    public void testIsIRI_1()
+    @Test public void testIsIRI_1()
     {
         NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
     }
     
-    public void testIsIRI_2()
+    @Test public void testIsIRI_2()
     {
         NodeValue nv = NodeValue.makeNode(Node.createLiteral("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
     
-    public void testIsBlank1()
+    @Test public void testIsBlank1()
     {
         NodeValue nv = NodeValue.makeNode(Node.createAnon());
         NodeValue r = NodeFunctions.isBlank(nv) ;
@@ -317,14 +323,14 @@ public class TestNodeFunctions extends TestCase
         
     }
 
-    public void testIsBlank2()
+    @Test public void testIsBlank2()
     {
         NodeValue nv = NodeValue.makeNode(Node.createLiteral("xyz")) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
 
-    public void testIsBlank3()
+    @Test public void testIsBlank3()
     {
         NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
@@ -332,14 +338,14 @@ public class TestNodeFunctions extends TestCase
         
     }
     
-    public void testIsLiteral1()
+    @Test public void testIsLiteral1()
     {
         NodeValue nv = NodeValue.makeNode(Node.createLiteral("xyz")) ;
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
     }
 
-    public void testIsLiteral2()
+    @Test public void testIsLiteral2()
     {
         NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isLiteral(nv) ;

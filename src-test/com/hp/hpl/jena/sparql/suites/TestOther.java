@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /**
  * Tests of programmatically controlled features.
@@ -23,18 +24,23 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class TestOther extends TestCase
 {
-    public static TestSuite suite()
+    public static junit.framework.Test suite()
     {
-        TestSuite ts = new TestSuite(TestOther.class) ;
-        ts.setName("TestOther") ;
-        return ts ;
+        return new JUnit4TestAdapter(TestOther.class) ;
     }
+    
+//    public static TestSuite suite()
+//    {
+//        TestSuite ts = new TestSuite(TestOther.class) ;
+//        ts.setName("TestOther") ;
+//        return ts ;
+//    }
     
     private static final String ns = "http://example/ns#" ;
     
     Model m = null ;
     
-    public void testFoo()
+    @Test public void testFoo()
     {
     }
     
