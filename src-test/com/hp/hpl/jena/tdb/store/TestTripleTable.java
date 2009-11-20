@@ -6,19 +6,18 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import atlas.test.BaseTest;
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.Test ;
+import atlas.test.BaseTest ;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Test;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 public class TestTripleTable extends BaseTest
 {
@@ -116,7 +115,8 @@ public class TestTripleTable extends BaseTest
     
     private TripleTable createTripleTableMem()
     {
-       return FactoryGraphTDB.createTripleTableMem() ;
+        DatasetGraphTDB ds = SetupTDB.buildDataset(Location.mem()) ; 
+        return ds.getTripleTable() ;
     }
 }
 

@@ -1,30 +1,30 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.junit;
+package com.hp.hpl.jena.tdb.sys;
 
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 
-public class AbstractTestGraphTDB extends AbstractTestGraph
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+
+public class Default
 {
-    public AbstractTestGraphTDB(String name)
-    {
-        super(name) ;
-    }
-    
-    @Override public void testBulkAddWithReification() {}
-    
-    @Override public void testIsomorphismFile() {}
-    
-    // Meaning less - graphs (and hence models) are not indpenedent of their datasets. 
-    @Override public void testCloseSetsIsClosed() {}
+
+    // ---- Record factories
+    public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ;
+    public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ;
+    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

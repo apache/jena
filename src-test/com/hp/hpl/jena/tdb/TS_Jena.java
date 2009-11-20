@@ -7,6 +7,11 @@
 package com.hp.hpl.jena.tdb;
 
 
+import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMem ;
+import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMemNew ;
+import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMem ;
+import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMemNew ;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -15,9 +20,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestGraphBPlusTreeMem.class
-    , TestGraphBPlusTreeMem2.class
+    , TestGraphBPlusTreeMemNew.class
     , TestGraphBTreeMem.class
-    , TestGraphBTreeMem2.class
+    , TestGraphBTreeMemNew.class
 })
 
 public class TS_Jena

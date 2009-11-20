@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.graph.basics;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -12,13 +12,15 @@ import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Place to put various "making" explicitly for testing */
 
-public class GraphTDBFactoryTesting
+class GraphTDBFactoryTesting
 {
+    // This class and FactoryGraphTDB are old ways of making graphs and datasets 
+    
     /** Create a graph backed with storage at a location using and BTree (not B+Tree) indexes (testing) */
     public static GraphTriplesTDB createBTree(Location location)
     { 

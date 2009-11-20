@@ -12,7 +12,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Default ;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -59,7 +59,7 @@ public class NodeTableFactory
     {
         if ( fsNodeToId.isMem() )
         {
-            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), FactoryGraphTDB.nodeRecordFactory) ;
+            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), Default.nodeRecordFactory) ;
             ObjectFile objects = FileFactory.createObjectFileMem() ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
@@ -71,7 +71,7 @@ public class NodeTableFactory
             //return NodeTableIndex.createMem(indexBuilder) ;
         }
         
-        Index nodeToId = indexBuilder.newIndex(fsNodeToId, FactoryGraphTDB.nodeRecordFactory) ;
+        Index nodeToId = indexBuilder.newIndex(fsNodeToId, Default.nodeRecordFactory) ;
         // Node table.
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);

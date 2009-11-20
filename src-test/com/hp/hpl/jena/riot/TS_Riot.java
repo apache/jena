@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
     , TestLangNTriples.class
     , TestLangTurtle.class
     , TestSuiteTurtle.class
-    
+
     , TestOutputNTriples.class
 })
 

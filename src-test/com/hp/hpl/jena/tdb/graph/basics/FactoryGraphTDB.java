@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.sys;
+package com.hp.hpl.jena.tdb.graph.basics;
 
 import static com.hp.hpl.jena.tdb.TDB.logInfo ;
 import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexQuads ;
@@ -36,10 +36,15 @@ import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Low-level factory for things TDB. See {@link com.hp.hpl.jena.tdb.TDBFactory} for the usual application API */
-public class FactoryGraphTDB
+class FactoryGraphTDB
 {
+    // This class and GraphTDBFactoryTesting are old ways of making graphs and datasets 
+
+    
     // **** Much of this is superceeded by the newer factory for making datasets that manages metafiles. 
     // Remains for testing using IndexBuilders
     
@@ -50,34 +55,6 @@ public class FactoryGraphTDB
     public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 
     public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
-    
-//    // Detect existing (other technology) indexes.
-//    public static DatasetGraphTDB create(Location location)
-//    { 
-//        if ( location == null )
-//            throw new TDBException("Location is null") ;
-//
-//        if ( location.exists(Names.indexNode2Id, Names.extHashExt) )
-//        {
-//            log.info("Existing extendible hash index for nodes found - using ExtHash/B+Tree indexing") ;
-//            return createDatasetGraph(IndexBuilder.getExtHash(), location) ;
-//        }
-//        
-//        if ( location.exists(indexSPO, Names.btExt) )
-//        {
-//            log.info("Existing BTree index found - using BTree indexing") ;
-//            return createDatasetGraph(IndexBuilder.getBTree(), location) ;
-//        }
-//        
-//        if ( location.exists(indexSPO, Names.bptExt1) )
-//        {
-//            log.debug("Existing B+Tree index found - using B+Tree indexing") ;
-//            return createDatasetGraph(IndexBuilder.getBPlusTree(), location) ;
-//        }   
-//        
-//        return createDatasetGraph(IndexBuilder.get(), location) ;
-//    }
-
     
     /** Create a TDB graph using a specifc index builder - mainly for testing */
     public static GraphTriplesTDB createGraph(IndexBuilder indexBuilder, Location location)
@@ -92,31 +69,31 @@ public class FactoryGraphTDB
         return createGraph(indexBuilder, Location.mem()) ;
     }
     
-    /** Create or connect a TDB dataset */ 
-    public static DatasetGraphTDB createDatasetGraph(Location location)
-    {
-        if ( location.isMem() )
-            return createDatasetGraphMem() ;
-        return createDatasetGraph(IndexBuilder.get(), location) ;
-    }
-
-    /** Create or connect a TDB dataset in-memory - for testing */ 
-    public static DatasetGraphTDB createDatasetGraphMem()
-    {
-        return createDatasetGraph(IndexBuilder.mem(), Location.mem()) ;
-    }
-
-    /** Create or connect a TDB dataset (graph-level) */
-    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location)
-    {
-        return _createDatasetGraph(indexBuilder, location, tripleIndexes, quadIndexes) ;
-    }
-    
-    /** Create or connect a TDB dataset (graph-level) */
-    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
-    {
-        return _createDatasetGraph(indexBuilder, location, graphDesc, quadDesc) ;
-    }
+//    /** Create or connect a TDB dataset */ 
+//    public static DatasetGraphTDB createDatasetGraph(Location location)
+//    {
+//        if ( location.isMem() )
+//            return createDatasetGraphMem() ;
+//        return createDatasetGraph(IndexBuilder.get(), location) ;
+//    }
+//
+//    /** Create or connect a TDB dataset in-memory - for testing */ 
+//    public static DatasetGraphTDB createDatasetGraphMem()
+//    {
+//        return createDatasetGraph(IndexBuilder.mem(), Location.mem()) ;
+//    }
+//
+//    /** Create or connect a TDB dataset (graph-level) */
+//    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location)
+//    {
+//        return _createDatasetGraph(indexBuilder, location, tripleIndexes, quadIndexes) ;
+//    }
+//    
+//    /** Create or connect a TDB dataset (graph-level) */
+//    public static DatasetGraphTDB createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphDesc, String[] quadDesc)
+//    {
+//        return _createDatasetGraph(indexBuilder, location, graphDesc, quadDesc) ;
+//    }
 
 //    /** Create or connect a TDB dataset */
 //    public static Dataset createDataset(Location location)
@@ -133,7 +110,7 @@ public class FactoryGraphTDB
     /** Given an IndexBuilder, RecordFactory, Location and index descriptions,
      *  make a set of indexes. 
      */
-    public static TupleIndex[] indexes(final IndexBuilder indexBuilder, RecordFactory recordFactory, 
+    private static TupleIndex[] indexes(final IndexBuilder indexBuilder, RecordFactory recordFactory, 
                                        final Location location, String primary, String...descs)
     {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
@@ -147,31 +124,27 @@ public class FactoryGraphTDB
         return indexes ;
     }
     
-    /** Testing */
-    public static TripleTable createTripleTableMem()
+    private static TripleTable createTripleTableMem()
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes) ;
     }
 
     /** Public for testing only : create a triple table.*/
-    public static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
+    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
         return new TripleTable(indexes, nodeTable) ;
     }
 
-    // ---- All creation happens here
-    
-    /** Testing */
-    static QuadTable createQuadTableMem()
+    private static QuadTable createQuadTableMem()
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
     }
     
     /** Public for testing only : create a quad table.*/
-    public static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
+    private static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
                                              Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;

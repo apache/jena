@@ -20,7 +20,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.sys.FactoryGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.Default ;
 
 public class tdbdump extends CmdSub
 {
@@ -106,7 +106,7 @@ public class tdbdump extends CmdSub
                //fileset.getPropertyAsInteger(key) ;
             }
             
-            RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, FactoryGraphTDB.indexRecordTripleFactory) ;
+            RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, Default.indexRecordTripleFactory) ;
             for ( Record r : rIndex )
             {
                 System.out.println(r.toString()) ;

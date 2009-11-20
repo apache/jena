@@ -11,8 +11,11 @@ public class DevTDB
     // == 0.8.4
     // **** Remove FactoryGraphTDB
     
-    // tdbverify
-    // Need jena-2.6.2-tests.jar
+    // **** Redo IndexBuilder and NodeTableBuilder (with caching
+    //   Setup(TupleTableBuilder)
+    //   SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
+    
+    // Ensure that there 
     
     // Setup
     // Const for names.

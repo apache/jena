@@ -1,35 +1,28 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package dev;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTesting;
+// This is not in the test source folder tree.
+// In the build script, it finds all the TS_*.
+// Ideally would do that here
 
-// Jena normal tests
-public class TestGraphBPlusTreeMem extends AbstractTestGraphTDB
-{
-    public TestGraphBPlusTreeMem()
-    {
-        this("GraphBPlusTree") ;
-    }
-    
-    protected TestGraphBPlusTreeMem(String name) { super(name) ; }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    com.hp.hpl.jena.tdb.TC_TDB.class
+} )
 
-    // Insert tests from AbstractTestGraph here to debug
-    
-    // In-memory testing
-    @Override
-    public Graph getGraph() { return GraphTDBFactoryTesting.createBPlusTreeMem() ; }
-}
+public class TDB_AllTests
+{ }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

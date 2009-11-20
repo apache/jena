@@ -4,22 +4,21 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.graph.basics;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 
-// This is not in the test source folder tree.
-// In the build script, it finds all the TS_*.
-// Ideally would do that here
+/** Based on the new graph tests in AbstractTestGraph2 */
+public class TestGraphBPlusTreeMemNew extends AbstractTestGraph2
+{
+    @Override
+    public Graph emptyGraph() { return GraphTDBFactoryTesting.createBPlusTreeMem() ; }
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    com.hp.hpl.jena.tdb.TC_TDB.class
-} )
-
-public class TC_TDB
-{ }
+    @Override
+    protected void returnGraph(Graph g)
+    {}
+}
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
