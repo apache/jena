@@ -10,18 +10,18 @@ import junit.framework.TestSuite ;
 import arq.examples.test.TestLARQExamples ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQTestSuite ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
-import com.hp.hpl.jena.sparql.test.ARQTestSuite ;
 
 /** All tests - the main test suite and also the examples tests */
 public class AllTestsARQ extends TestSuite
 {
     /*====================
-     * Eclipse: Soem ARQ tests are also DAWG tests (and so have same name)
+     * Eclipse: Some ARQ tests are also DAWG tests (and so have same name)
      * This confused JUnit/Eclipse but it seems to be safe and they are all run.
      *==================== 
      */
