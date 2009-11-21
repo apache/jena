@@ -1,35 +1,39 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites;
+package com.hp.hpl.jena.sparql.modify;
+
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.sparql.expr.TS_ExprRDQL ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 
-public class TS_RDQL extends TestSuite
+public class TS_Update extends TestSuite
 {
-    static final public String testDirRDQL           = "testing/RDQL-ARQ" ;
-    static final public String controlFilenameRDQL   = testDirRDQL+"/manifest-rdql.n3" ;
-
-
-    static public TestSuite suite() { return new TS_RDQL(); }
-
-    public TS_RDQL()
+    public static final String testDirUpdate = "testing/Update" ;
+    
+    static public TestSuite suite()
     {
-        super("RDQL") ;
+        TestSuite ts = new TS_Update() ;
+//        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
+//        ts.addTestSuite(TestUpdateGraphMem.class) ;
+      ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
+      ts.addTest(TestUpdateGraphMem.suite()) ;
         
-        addTest(TS_ExprRDQL.suite()) ;
-        addTest(QueryTestSuiteFactory.make(controlFilenameRDQL)) ; 
+        
+        return ts ;
+    }
+    
+    private TS_Update()
+    {
+        super("ARQ/Update");
     }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

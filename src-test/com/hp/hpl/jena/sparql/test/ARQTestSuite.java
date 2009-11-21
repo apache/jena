@@ -9,12 +9,18 @@ package com.hp.hpl.jena.sparql.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.api.TestAPI ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
+import com.hp.hpl.jena.sparql.modify.TS_Update ;
 import com.hp.hpl.jena.sparql.suites.*;
+import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
+import com.hp.hpl.jena.sparql.syntax.TS_Serialization ;
+import com.hp.hpl.jena.sparql.syntax.TS_Syntax ;
 
 /**
  * All the ARQ tests 

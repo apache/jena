@@ -1,35 +1,33 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites;
+package com.hp.hpl.jena.sparql.modify;
 
-import junit.framework.TestSuite;
+import junit.framework.JUnit4TestAdapter ;
 
-import com.hp.hpl.jena.sparql.expr.TS_ExprRDQL ;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
 
-public class TS_RDQL extends TestSuite
+public class TestUpdateGraphMem extends TestUpdateGraph
 {
-    static final public String testDirRDQL           = "testing/RDQL-ARQ" ;
-    static final public String controlFilenameRDQL   = testDirRDQL+"/manifest-rdql.n3" ;
-
-
-    static public TestSuite suite() { return new TS_RDQL(); }
-
-    public TS_RDQL()
+    public static junit.framework.Test suite()
     {
-        super("RDQL") ;
-        
-        addTest(TS_ExprRDQL.suite()) ;
-        addTest(QueryTestSuiteFactory.make(controlFilenameRDQL)) ; 
+        return new JUnit4TestAdapter(TestUpdateGraphMem.class) ;
+    }
+    
+    @Override
+    protected GraphStore getEmptyGraphStore()
+    {
+        GraphStore gStore = GraphStoreFactory.create() ;
+        return gStore ;
     }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

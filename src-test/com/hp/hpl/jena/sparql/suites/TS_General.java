@@ -7,8 +7,10 @@
 package com.hp.hpl.jena.sparql.suites;
 
 
+import com.hp.hpl.jena.sparql.algebra.TS_Algebra ;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 
 import junit.framework.TestSuite;
 

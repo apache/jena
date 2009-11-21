@@ -4,49 +4,22 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites;
+package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.core.TestContext ;
-import com.hp.hpl.jena.sparql.core.TestEsc ;
-import com.hp.hpl.jena.sparql.expr.TestExprLib ;
-import com.hp.hpl.jena.sparql.expr.TestNodeFunctions ;
-import com.hp.hpl.jena.sparql.expr.TestNodeValue ;
-import com.hp.hpl.jena.sparql.expr.TestOrdering ;
-import com.hp.hpl.jena.sparql.expr.TestRegex ;
-import com.hp.hpl.jena.sparql.expr.TestXSDFuncOp ;
-import com.hp.hpl.jena.sparql.syntax.TestResultSet ;
-import com.hp.hpl.jena.sparql.syntax.TestSerialization ;
-import com.hp.hpl.jena.sparql.util.TestDateTimeParsing ;
-import com.hp.hpl.jena.sparql.util.TestList ;
 
 import junit.framework.TestSuite;
 
-public class TS_Internal extends TestSuite
+public class TS_Algebra extends TestSuite
 {
-    static final String testSetName         = "Internal" ;
+    static final String testSetName         = "Algebra Transformation" ;
 
-    static public TestSuite suite() { return new TS_Internal(); }
+    static public TestSuite suite() { return new TS_Algebra(); }
 
-    public TS_Internal()
+    public TS_Algebra()
     {
         super(testSetName) ;
-        
-        addTest(TestNodeValue.suite()) ;
-        addTest(TestNodeFunctions.suite()) ;
-        addTest(TestXSDFuncOp.suite()) ;
-        addTest(TestExprLib.suite()) ;
-        addTest(TestPath.suite()) ;
-        
-        addTest(TestOrdering.suite()) ;
-        addTest(TestEsc.suite()) ;
-        addTest(TestResultSet.suite()) ;
-        addTest(TestSerialization.suite()) ;
-        
-        addTest(TestContext.suite()) ;
-        addTest(TestList.suite()) ;
-        
-        addTest(TestRegex.suite()) ;
-        addTest(TestDateTimeParsing.suite()) ;
+        addTest(TestClassify.suite()) ;
+        addTest(TestFilterTransform.suite()) ;
     }
 }
 

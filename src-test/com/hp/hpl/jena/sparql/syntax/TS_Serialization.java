@@ -4,49 +4,20 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites;
-
-import com.hp.hpl.jena.sparql.core.TestContext ;
-import com.hp.hpl.jena.sparql.core.TestEsc ;
-import com.hp.hpl.jena.sparql.expr.TestExprLib ;
-import com.hp.hpl.jena.sparql.expr.TestNodeFunctions ;
-import com.hp.hpl.jena.sparql.expr.TestNodeValue ;
-import com.hp.hpl.jena.sparql.expr.TestOrdering ;
-import com.hp.hpl.jena.sparql.expr.TestRegex ;
-import com.hp.hpl.jena.sparql.expr.TestXSDFuncOp ;
-import com.hp.hpl.jena.sparql.syntax.TestResultSet ;
-import com.hp.hpl.jena.sparql.syntax.TestSerialization ;
-import com.hp.hpl.jena.sparql.util.TestDateTimeParsing ;
-import com.hp.hpl.jena.sparql.util.TestList ;
+package com.hp.hpl.jena.sparql.syntax;
 
 import junit.framework.TestSuite;
 
-public class TS_Internal extends TestSuite
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+
+
+public class TS_Serialization extends TestSuite
 {
-    static final String testSetName         = "Internal" ;
-
-    static public TestSuite suite() { return new TS_Internal(); }
-
-    public TS_Internal()
+    // See also TestSerialization for some low level tests (not scripted)
+    static public TestSuite suite()
     {
-        super(testSetName) ;
-        
-        addTest(TestNodeValue.suite()) ;
-        addTest(TestNodeFunctions.suite()) ;
-        addTest(TestXSDFuncOp.suite()) ;
-        addTest(TestExprLib.suite()) ;
-        addTest(TestPath.suite()) ;
-        
-        addTest(TestOrdering.suite()) ;
-        addTest(TestEsc.suite()) ;
-        addTest(TestResultSet.suite()) ;
-        addTest(TestSerialization.suite()) ;
-        
-        addTest(TestContext.suite()) ;
-        addTest(TestList.suite()) ;
-        
-        addTest(TestRegex.suite()) ;
-        addTest(TestDateTimeParsing.suite()) ;
+        return QueryTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl") ;
     }
 }
 
