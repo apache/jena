@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
@@ -23,11 +22,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestSSE_Basic extends TestCase
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestSSE_Basic.class) ;
-    }
-    
     // Tests not requiring URI resolution or prefix name handling.
     
     static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;

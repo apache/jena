@@ -1,33 +1,49 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql;
 
-import junit.framework.JUnit4TestAdapter ;
+
 import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
 
-@RunWith(Suite.class)
-@SuiteClasses( { 
-    TestSSE_Basic.class ,
-    TestSSE_Forms.class ,
-    TestSSE_Builder.class 
-})
-public class TS_SSE extends TestSuite
+import com.hp.hpl.jena.sparql.core.TestContext ;
+import com.hp.hpl.jena.sparql.core.TestEsc ;
+import com.hp.hpl.jena.sparql.expr.TS_Expr ;
+import com.hp.hpl.jena.sparql.expr.TestExpressions ;
+import com.hp.hpl.jena.sparql.path.TestPath ;
+import com.hp.hpl.jena.sparql.syntax.TestResultSet ;
+import com.hp.hpl.jena.sparql.syntax.TestSerialization ;
+import com.hp.hpl.jena.sparql.util.TS_Util ;
+
+public class TS_General extends TestSuite
 {
-    public static junit.framework.Test suite()
+    static final String testSetName         = "General" ;
+
+    static public TestSuite suite() { return new TS_General(); }
+
+    public TS_General()
     {
-        return new JUnit4TestAdapter(TS_SSE.class) ;
+        super(testSetName) ;
+
+        addTest(TS_Expr.suite()) ;
+        addTest(TestExpressions.suite()) ;  // JUnit3 style tests.
+        
+        addTest(TS_Util.suite()) ;
+        
+        addTest(TestPath.suite()) ;
+        addTest(TestEsc.suite()) ;
+        addTest(TestResultSet.suite()) ;
+        addTest(TestSerialization.suite()) ;
+        
+        addTest(TestContext.suite()) ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

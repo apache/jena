@@ -7,21 +7,13 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import junit.framework.Assert ;
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprLib ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 
 public class TestExprLib
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestExprLib.class) ;
-    }
-    
     @Test public void safeEqualityNot_01()      { testSafeEquality("123", false) ;}
     @Test public void safeEqualityNot_02()      { testSafeEquality("?x != <y>", false) ;}
     @Test public void safeEqualityNot_03()      { testSafeEquality("<x> = <y>", false) ;}

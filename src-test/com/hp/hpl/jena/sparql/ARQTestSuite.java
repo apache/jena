@@ -6,18 +6,18 @@
 package com.hp.hpl.jena.sparql;
 
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.algebra.TS_Algebra ;
 import com.hp.hpl.jena.sparql.api.TestAPI ;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
-import com.hp.hpl.jena.sparql.suites.*;
 import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
 import com.hp.hpl.jena.sparql.syntax.TS_Serialization ;
 import com.hp.hpl.jena.sparql.syntax.TS_Syntax ;
@@ -42,8 +42,15 @@ public class ARQTestSuite extends TestSuite
         
         TestSuite ts = new ARQTestSuite() ;
 
-        // General, programmatic tests
+        // Tests should be silent.
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+        
+        // Lower level
         ts.addTest(TS_General.suite() );
+
+        // Algebra
+        ts.addTest(TS_Algebra.suite() );
         
         // Syntax
         ts.addTest(TS_Syntax.suite()) ;

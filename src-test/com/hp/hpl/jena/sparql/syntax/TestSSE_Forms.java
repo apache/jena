@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -22,27 +21,11 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestSSE_Forms extends TestCase
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestSSE_Forms.class) ;
-    }
-
     static PrefixMapping pmap = new PrefixMappingImpl() ;
     static { 
         pmap.setNsPrefix("xsd", XSD.getURI()) ;
         pmap.setNsPrefix("ex", "http://example/") ;
     }
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestSSE_Forms.class) ;
-//        ts.setName("SSE Resolve") ;
-//        
-//        SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
-//        SSE.getDefaultPrefixMapRead().removeNsPrefix("ex") ;
-////        SSE.setDefaultPrefixMapRead(null) ;
-////        SSE.setDefaultPrefixMapWrite(null) ;
-//        return ts ;
-//    }
 
     @BeforeClass public static void beforeClass()
     {

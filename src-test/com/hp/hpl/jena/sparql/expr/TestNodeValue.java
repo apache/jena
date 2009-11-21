@@ -11,41 +11,17 @@ import java.util.Calendar ;
 import java.util.GregorianCalendar ;
 import java.util.TimeZone ;
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-
-
-/** com.hp.hpl.jena.query.test.TestNodeValue
- * 
- * @author Andy Seaborne
- */
 
 public class TestNodeValue extends TestCase
 {
-    
     static final double doubleAccuracy = 0.00000001d ;
-    // Many tests are in TestExpressionARQ by using the parser to build NodeValues
-    // Just some basic testing here
 
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestNodeValue.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestNodeValue.class) ;
-//        ts.setName(Utils.classShortName(TestNodeValue.class)) ;
-//        return ts ;
-//    }
-   
     @Test public void testInt1()
     {
         NodeValue v = NodeValue.makeInteger(5) ;

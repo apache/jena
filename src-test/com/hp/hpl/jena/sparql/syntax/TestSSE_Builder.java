@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 
-import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;
 import org.junit.Test ;
 
@@ -21,18 +20,6 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderNode ;
 
 public class TestSSE_Builder extends TestCase
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestSSE_Builder.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestSSE_Builder.class) ;
-//        ts.setName("SSE Op") ;
-//        return ts ;
-//    }
-    
     @Test public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
     @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
