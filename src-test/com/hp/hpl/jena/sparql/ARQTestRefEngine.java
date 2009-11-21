@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.test;
+package com.hp.hpl.jena.sparql;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

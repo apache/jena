@@ -12,33 +12,31 @@ import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 
 public class TS_DAWG extends TestSuite
 {
-  static final String testSetNameDAWG        = "DAWG - Misc" ;
+    static final String testSetNameDAWG        = "DAWG - Misc" ;
 
-  static final public String testDirDAWG         = "testing/DAWG" ;
-  static final public String testDirWGApproved   = "testing/DAWG-Final" ;
-  static final public String testDirWGPending    = "testing/DAWG-Pending" ;
+    static final public String testDirDAWG         = "testing/DAWG" ;
+    static final public String testDirWGApproved   = "testing/DAWG-Final" ;
+    static final public String testDirWGPending    = "testing/DAWG-Pending" ;
 
     static public TestSuite suite() { return new TS_DAWG(); }
 
     public TS_DAWG()
     {
         super("DAWG") ;
-        
+
         // One test, dawg-optional-filter-005-simplified or dawg-optional-filter-005-not-simplified
-        // must fail because it's the same query and daat with different interpretations of the
+        // must fail because it's the same query and data with different interpretations of the
         // spec.  ARQ implements dawg-optional-filter-005-not-simplified.
-        
+
         TestSuite ts1 = new TestSuite("Approved") ;
         ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-evaluation.ttl")) ;
-        // These merely duplictae ARQ's syntax tests because Andy wrote the DAWG syntax tests,
+
+        // These merely duplicate ARQ's syntax tests because Andy wrote the DAWG syntax tests,
         // but they are quick so include the snapshot
-        // But Eclipse get confused ...
-//        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
+        // But Eclipse get confused and may make them as not run (but they have).
+        ts1.addTest(QueryTestSuiteFactory.make(testDirWGApproved+"/manifest-syntax.ttl")) ;
         addTest(ts1) ;
-        
-//        TestSuite ts2 = new TestSuite("Pending") ;
-//        addTest(ts2) ;
-        
+
         TestSuite ts3 = new TestSuite("Misc") ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Misc/manifest.n3")) ;
         ts3.addTest(QueryTestSuiteFactory.make(testDirDAWG+"/Syntax/manifest.n3")) ;
