@@ -6,10 +6,14 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.graph.Node;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import atlas.iterator.Iter ;
+import atlas.lib.Pair ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Sink node table */
 public class NodeTableSink implements NodeTable
@@ -39,6 +43,11 @@ public class NodeTableSink implements NodeTable
         return nid ;
     }
 
+    public Iterator<Pair<NodeId, Node>> all()
+    {
+        return Iter.nullIterator() ;
+    }
+    
     //@Override
     public void sync(boolean force)
     {}

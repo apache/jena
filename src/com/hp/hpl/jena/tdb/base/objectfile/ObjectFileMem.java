@@ -8,9 +8,15 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator ;
 import java.util.List;
 
+import atlas.iterator.Iter ;
+
+import atlas.iterator.IteratorInteger ;
+import atlas.iterator.Transform ;
 import atlas.lib.ByteBufferLib;
+import atlas.lib.Pair ;
 
 /** In-memory ByteBufferFile (for testing) - copies bytes in and out
  * to ensure no implicit modification.  
@@ -55,6 +61,20 @@ public class ObjectFileMem implements ObjectFile
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
         buffers.add(bb2) ;
         return buffers.size()-1 ; 
+    }
+
+    public Iterator<Pair<Long, ByteBuffer>> all()
+    {
+        int N = buffers.size() ;
+        Iterator<Long> iter = new IteratorInteger(0,N) ;
+        Transform<Long, Pair<Long, ByteBuffer>> transform = new Transform<Long, Pair<Long, ByteBuffer>>() {
+            public Pair<Long, ByteBuffer> convert(Long item)
+            {
+                ByteBuffer bb = buffers.get(item.intValue()) ;
+                return new Pair<Long, ByteBuffer>(item, bb) ;
+            }
+        } ;
+        return Iter.map(iter, transform) ;
     }
 
     public void sync(boolean force)

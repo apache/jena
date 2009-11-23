@@ -27,8 +27,8 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.sys.Default ;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
@@ -59,11 +59,11 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         {
             case 3:
                 primary = Names.primaryIndexTriples ;
-                rf = Default.indexRecordTripleFactory ;
+                rf = SystemTDB.indexRecordTripleFactory ;
                 break ;
             case 4:
                 primary = Names.primaryIndexQuads;
-                rf = Default.indexRecordQuadFactory ;
+                rf = SystemTDB.indexRecordQuadFactory ;
                 break ;
             default:
                 throw new TDBException("Bad length for index description: "+desc) ;

@@ -8,10 +8,10 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.Iterator ;
 
 import atlas.lib.Bytes ;
+import atlas.lib.Pair ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.file.FileBase ;
@@ -87,22 +87,43 @@ public class ObjectFileDiskDirect implements ObjectFile
         return filesize ;
     }
 
-    public List<String> all()
+    public Iterator<Pair<Long, ByteBuffer>> all()
     {
         try { file.out.seek(0) ; } 
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
-        
-        List<String> strings = new ArrayList<String>() ;
-        long x = 0 ;
-        while ( x < filesize )
+
+        ObjectIterator iter = new ObjectIterator(0, filesize) ;
+        return iter ;
+    }
+    
+    private class ObjectIterator implements Iterator<Pair<Long, ByteBuffer>>
+    {
+        final private long start ;
+        final private long finish ;
+        private long current ;
+
+        public ObjectIterator(long start, long finish)
         {
-            ByteBuffer bb = read(x) ;
-            String str = Bytes.fromByteBuffer(bb) ;
-            strings.add(str) ;
-            // Assumes magic.
-            x = x + bb.limit() + 4 ; 
+            this.start = start ;
+            this.finish = finish ;
+            this.current = start ;
         }
-        return strings ;
+        
+        public boolean hasNext()
+        {
+            return ( current < finish ) ;
+        }
+
+        public Pair<Long, ByteBuffer> next()
+        {
+            long x = current ;
+            ByteBuffer bb = read(current) ;
+            current = current + bb.limit() + 4 ; 
+            return new Pair<Long, ByteBuffer>(x, bb) ;
+        }
+
+        public void remove()
+        { throw new UnsupportedOperationException() ; }
     }
     
 

@@ -6,24 +6,25 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.ByteOrder;
-import java.util.Properties;
+import java.io.FileNotFoundException ;
+import java.io.IOException ;
+import java.nio.ByteOrder ;
+import java.util.Properties ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import atlas.lib.PropertyUtils;
-import atlas.logging.Log;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.lib.PropertyUtils ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.block.FileMode;
-import com.hp.hpl.jena.tdb.index.IndexType;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexType ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class SystemTDB
 {
@@ -66,6 +67,11 @@ public class SystemTDB
 
     // ---- Symbols and similar
     
+    // ---- Record factories
+    public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ;
+    public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ;
+    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+
     /** Root of TDB-defined parameter names */
     public static final String symbolNamespace      = "http://jena.hpl.hp.com/TDB#" ;
 

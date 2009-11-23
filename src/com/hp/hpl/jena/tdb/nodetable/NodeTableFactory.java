@@ -12,7 +12,6 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.sys.Default ;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -59,25 +58,25 @@ public class NodeTableFactory
     {
         if ( fsNodeToId.isMem() )
         {
-            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), Default.nodeRecordFactory) ;
+            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory) ;
             ObjectFile objects = FileFactory.createObjectFileMem() ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
-            nodeTable = new NodeTableCache(nodeTable, 100, 100) ; 
-            nodeTable = new NodeTableInline(nodeTable) ;
+            nodeTable = NodeTableCache.create(nodeTable, 100, 100) ; 
+            nodeTable =  NodeTableInline.create(nodeTable) ;
             
             return nodeTable ;
             
             //return NodeTableIndex.createMem(indexBuilder) ;
         }
         
-        Index nodeToId = indexBuilder.newIndex(fsNodeToId, Default.nodeRecordFactory) ;
+        Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory) ;
         // Node table.
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
-        nodeTable = new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
-        nodeTable = new NodeTableInline(nodeTable) ;
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ;
         
     }

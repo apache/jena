@@ -189,7 +189,7 @@ public class MetaFile implements Sync, Closeable
         inconsistent(key, x, expected) ; 
     }
 
-    /** Check property has teh vakue given - throw exception if not. */
+    /** Check property has the value given - throw exception if not. */
     public void checkMetadata(String key, String expected)
     {
         String value = getProperty(key) ;

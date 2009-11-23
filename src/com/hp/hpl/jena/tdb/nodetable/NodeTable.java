@@ -6,10 +6,14 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import java.util.Iterator ;
+
+import atlas.lib.Pair ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 
  *  where Nodes can be staored and a NodeId allocated
@@ -18,9 +22,6 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public interface NodeTable extends Sync, Closeable
 {
-    static public final String type   = "dat" ; 
-    static public final String layout = "1" ;
-    
     /** Store the node in the node table (if not already present) and return the allocated Id. */
     public NodeId getAllocateNodeId(Node node) ;
     
@@ -29,6 +30,9 @@ public interface NodeTable extends Sync, Closeable
     
     /** Look up node id and return the Node - return null if not found */
     public Node getNodeForNodeId(NodeId id) ;
+    
+    /** Iterate over all nodes (not necessarily fast).  Doesa not icnldue inlined NodeIds */
+    public Iterator<Pair<NodeId, Node>> all() ;
 }
 
 /*

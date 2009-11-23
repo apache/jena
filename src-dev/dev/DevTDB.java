@@ -6,14 +6,23 @@
 
 package dev;
 
+
 public class DevTDB
 {
     // == 0.8.4
-    // **** Remove FactoryGraphTDB
+    // Eclipse container for ivy/maven etc
+    // NodeTaleFactory and SetupTDB.makeNodeTable have common code. 
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
-    //   Setup(TupleTableBuilder)
-    //   SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
+    //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
+    
+    // Where is IndexBuilder used now?
+    // Interface is IndexFactory and includes the record factory.
+    //  See SetupTDB.makeRangeIndex(Location location, String indexName, 
+    // RangeIndexMaker.makeRangeIndex(location, name, dft k and v, cache sizes)
+    // Meaning of cache sizes is per-type  
+    
+    // Need control over caching sizes etc.
     
     // Ensure that there 
     

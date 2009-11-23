@@ -92,12 +92,8 @@ public class SetupTDB
     // 
     // IndexBuilders.  Or add a new IndexBuilder that can make from meta files.
     
-
-    // ---- Record factories
-//    public final static RecordFactory indexRecordTripleFactory  = new RecordFactory(LenIndexTripleRecord, 0) ;
-//    public final static RecordFactory indexRecordQuadFactory    = new RecordFactory(LenIndexQuadRecord, 0) ;
-//    public final static RecordFactory nodeRecordFactory         = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
-//    public final static RecordFactory prefixNodeFactory         = new RecordFactory(3*NodeId.SIZE, 0) ;
+    static public final String NodeTableType   = "dat" ; 
+    static public final String NodeTableLayout = "1" ;
     
     
     /**  The JVM-wide parameters (these can change without a chnage to on-disk structure) */ 
@@ -349,10 +345,10 @@ public class SetupTDB
         return indexes ;
     }
     
-    private static TupleIndex makeTupleIndex(Location location,
-                                             Properties config,
-                                             String primary, String indexOrder, String indexName,
-                                             int keyLength)
+    public static TupleIndex makeTupleIndex(Location location,
+                                            Properties config,
+                                            String primary, String indexOrder, String indexName,
+                                            int keyLength)
     {
         /*
         * tdb.file.type=rangeindex        # Service provided.
@@ -377,14 +373,14 @@ public class SetupTDB
         return tupleIndex ;
     }
     
-    private static Index makeIndex(Location location, String indexName, 
+    public static Index makeIndex(Location location, String indexName, 
                                    int dftKeyLength, int dftValueLength, 
                                    int readCacheSize,int writeCacheSize)
     {
         return makeRangeIndex(location, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
     }
     
-    private static RangeIndex makeRangeIndex(Location location, String indexName, 
+    public static RangeIndex makeRangeIndex(Location location, String indexName, 
                                              int dftKeyLength, int dftValueLength,
                                              int readCacheSize,int writeCacheSize)
     {
@@ -410,7 +406,9 @@ public class SetupTDB
          return rIndex ;
     }
     
-    private static RangeIndex makeBPlusTree(FileSet fs, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
+    public static RangeIndex makeBPlusTree(FileSet fs, 
+                                           int readCacheSize, int writeCacheSize,
+                                           int dftKeyLength, int dftValueLength)
     {
         // ---- BPlusTree
         // Get parameters.
@@ -488,14 +486,13 @@ public class SetupTDB
 
         if (nodeTableType != null)
         {
-            if ( ! nodeTableType.equals(NodeTable.type))
+            if ( ! nodeTableType.equals(NodeTableType))
                 log.debug("Explicit node table type: " + nodeTableType + " (ignored)") ;
         }
         else
         {
-            // WRONG
-            location.getMetaFile().setProperty(Names.kNodeTableType, NodeTable.type) ;
-            location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTable.layout) ;
+            location.getMetaFile().setProperty(Names.kNodeTableType, NodeTableType) ;
+            location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTableLayout) ;
         }
         
         // -- make id to node mapping -- Names.indexId2Node
@@ -513,8 +510,8 @@ public class SetupTDB
         // -- Make the node table using the components established above.
         NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
 
-        nodeTable = new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
-        nodeTable = new NodeTableInline(nodeTable) ;
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = NodeTableInline.create(nodeTable) ;
 
         return nodeTable ;
     }

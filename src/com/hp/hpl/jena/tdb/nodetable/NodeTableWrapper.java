@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
+import java.util.Iterator ;
+
+import atlas.lib.Pair ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -37,6 +41,12 @@ public class NodeTableWrapper implements NodeTable
     {
         return nodeTable.getNodeForNodeId(id) ;
     }
+
+    public Iterator<Pair<NodeId, Node>> all()
+    {
+        return nodeTable.all();
+    }
+
 
     //@Override
     public void sync(boolean force)

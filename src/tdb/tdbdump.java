@@ -8,19 +8,21 @@ package tdb;
 
 import java.util.List ;
 
-import tdb.cmdline.CmdSub;
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModFormat;
-import atlas.logging.Log;
+import tdb.cmdline.CmdSub ;
+import tdb.cmdline.CmdTDB ;
+import tdb.cmdline.ModFormat ;
+import arq.cmd.CmdException ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.objectfile.StringFile;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.sys.Default ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class tdbdump extends CmdSub
 {
@@ -95,22 +97,22 @@ public class tdbdump extends CmdSub
         private void execOne(String fn)
         {
             FileSet fileset = new FileSet(fn) ;
-            // Depends on the index type
-            // Triple indexes :     FactoryGraphTDB.indexRecordTripleFactory
-            // Node index :         FactoryGraphTDB.nodeRecordFactory ; 
-            // Quad indexes :       FactoryGraphTDB.indexRecordQuadFactory ;
             // Look in the fileset metadata.
             
-            if ( fileset.getMetaFile().existsMetaData() )
-            {
-               //fileset.getPropertyAsInteger(key) ;
-            }
+            if ( !fileset.getMetaFile().existsMetaData() )
+                throw new CmdException("No metadata") ;
+                
+            if ( ! fileset.getMetaFile().hasProperty("tdb.bplustree.record") )
+                throw new CmdException("No record size in metadata") ;
             
-            RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, Default.indexRecordTripleFactory) ;
+            RangeIndex rIndex = SetupTDB.makeBPlusTree(fileset, SystemTDB.BlockReadCacheSize, SystemTDB.BlockWriteCacheSize, -1, -1) ;
+            dumpIndex(rIndex) ;
+        }
+        
+        static void dumpIndex(RangeIndex rIndex )
+        {
             for ( Record r : rIndex )
-            {
                 System.out.println(r.toString()) ;
-            }
         }
     }
     
@@ -137,6 +139,11 @@ public class tdbdump extends CmdSub
                 StringFile objs = FileFactory.createStringFileDisk(x) ;
                 objs.dump(handler) ;
             }
+        }
+        
+        static void dumpNodeTable(NodeTable nodeTable)
+        {
+            // ???? 
         }
         
         static StringFile.DumpHandler handler = new StringFile.DumpHandler() {

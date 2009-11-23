@@ -21,7 +21,12 @@ public class NodeTableInline extends NodeTableWrapper
 {
     // Stack order: Inline > Cache > Actual
     
-    public NodeTableInline(NodeTable nodeTable)
+    public static NodeTable create(NodeTable nodeTable)
+    {
+        return new NodeTableInline(nodeTable) ;
+    }
+    
+    private NodeTableInline(NodeTable nodeTable)
     {
         super(nodeTable) ;
     }

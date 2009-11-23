@@ -29,8 +29,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.sys.Default ;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DumpIndex
 {
@@ -41,13 +41,13 @@ public class DumpIndex
         RecordFactory rf = null ;
 
         if ( contains(name, Names.tripleIndexes) )
-            rf = Default.indexRecordTripleFactory ;
+            rf = SystemTDB.indexRecordTripleFactory ;
         else if ( contains(name, Names.quadIndexes) )
-            rf = Default.indexRecordQuadFactory ;
+            rf = SystemTDB.indexRecordQuadFactory ;
         else if ( contains(name, Names.prefixIndexes) )
             rf = DatasetPrefixesTDB.factory ;
         else if ( name.equals(Names.indexNode2Id) )
-            rf = Default.nodeRecordFactory ;
+            rf = SystemTDB.nodeRecordFactory ;
 
         if ( rf == null )
         {

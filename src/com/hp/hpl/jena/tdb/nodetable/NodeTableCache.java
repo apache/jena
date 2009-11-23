@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
+import java.util.Iterator ;
+
 import atlas.lib.Cache ;
 import atlas.lib.CacheFactory ;
 import atlas.lib.CacheSet ;
+import atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.ALog ;
@@ -29,7 +32,14 @@ public class NodeTableCache implements NodeTable
     private CacheSet<Node> notPresent ;
     private NodeTable baseTable ;
 
-    public NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize)
+    {
+        if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
+            return nodeTable ;
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ;
+    }
+
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
         this.baseTable = baseTable ;
         if ( nodeToIdCacheSize > 0) 
@@ -169,6 +179,11 @@ public class NodeTableCache implements NodeTable
     public synchronized void sync(boolean force)
     {
         baseTable.sync(force) ;
+    }
+
+    public Iterator<Pair<NodeId, Node>> all()
+    {
+        return baseTable.all() ;
     }
 }
 /*

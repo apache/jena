@@ -8,6 +8,12 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash ;
 
+import java.util.Iterator ;
+
+import atlas.iterator.Iter ;
+import atlas.iterator.Transform ;
+import atlas.lib.Pair ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -105,26 +111,10 @@ public class NodeTableNative implements NodeTable
 
         nodeId = accessIndex(node, allocate) ;
         return nodeId ;
-//        
-//        synchronized (this)
-//        {
-//            // Check caches.
-//            nodeId = cacheLookup(node) ;
-//            if ( nodeId != null )
-//                return nodeId ; 
-//
-//            nodeId = accessIndex(node, allocate) ;
-//
-//            // Ensure caches have it.  Includes recording "no such node"
-//            cacheUpdate(node, nodeId) ;
-//            return nodeId ;
-//        }
     }
     
     // Access the node->NodeId index.
-    // Synchronized.
-    // Given a node and a hash, return NodeId
-    // Assumes a cache miss on node2id_Cache
+    // Synchronized further out.
     protected NodeId accessIndex(Node node, boolean create)
     {
         Hash hash = new Hash(nodeHashToId.getRecordFactory().keyLength()) ;
@@ -160,56 +150,9 @@ public class NodeTableNative implements NodeTable
         return id ;
     }
     
-//    // ---- Only places that the caches are touched
-//    
-//    /** Check caches to see if we can map a NodeId to a Node. Returns null on no cache entry. */ 
-//    protected Node cacheLookup(NodeId id)
-//    {
-//        if ( id2node_Cache == null ) return null ;
-//        return id2node_Cache.get(id) ;
-//    }
-//    
-//    /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
-//    protected NodeId cacheLookup(Node node)
-//    {
-//        // Remember things known (currently) not to exist 
-//        if ( notPresent.contains(node) ) return null ;
-//        if ( node2id_Cache == null ) return null ;
-//        return node2id_Cache.get(node) ; 
-//    }
-//
-//    /** Update the Node->NodeId caches */
-//    protected void cacheUpdate(Node node, NodeId id)
-//    {
-//        // synchronized is further out.
-//        // The "notPresent" cache is used to note whether a node
-//        // is known not to exist.
-//        // This must be specially handled later if the node is added. 
-//        if ( NodeId.doesNotExist(id) )
-//        {
-//            notPresent.add(node) ;
-//            return ;
-//        }
-//        
-//        if ( id == NodeId.NodeIdAny )
-//        {
-//            ALog.warn(this, "Attempt to cache NodeIdAny - ignored") ;
-//            return ;
-//        }
-//        
-//        if ( node2id_Cache != null )
-//            node2id_Cache.put(node, id) ;
-//        if ( id2node_Cache != null )
-//            id2node_Cache.put(id, node) ;
-//        // Remove if previously marked "not present"
-//        if ( notPresent.contains(node) )
-//            notPresent.remove(node) ;
-//    }
-//    // ----
-    
     // -------- NodeId<->Node
     // Assumes NodeId inlining and caching has been handled.
-    // Assumes synchronized (the caches wil be updated consistently)
+    // Assumes synchronized (the caches will be updated consistently)
     
     // Only places for accessing the StringFile.
     
@@ -242,6 +185,21 @@ public class NodeTableNative implements NodeTable
         }
     }
 
+    public Iterator<Pair<NodeId, Node>> all()
+    {
+        // Could be quicker by hoping down the objects files.
+        Iterator<Record> iter = nodeHashToId.iterator() ; ;
+
+        Transform<Record, Pair<NodeId, Node>> transform = new Transform<Record, Pair<NodeId, Node>>() {
+            public Pair<NodeId, Node> convert(Record item)
+            {
+                NodeId id = NodeId.create(item.getValue(), 0) ;
+                Node n = NodeLib.fetchDecode(id.getId(), getObjects()) ;
+                return new Pair<NodeId, Node>(id, n) ;
+            }};
+        return Iter.map(iter, transform) ;
+    }
+    
     //@Override
     public synchronized void sync(boolean force)
     {

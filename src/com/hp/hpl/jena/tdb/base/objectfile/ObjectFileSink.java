@@ -6,8 +6,10 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer;
-import java.util.List;
+import java.nio.ByteBuffer ;
+import java.util.Iterator ;
+
+import atlas.lib.Pair ;
 
 /** For testing only */
 public class ObjectFileSink implements ObjectFile
@@ -15,7 +17,7 @@ public class ObjectFileSink implements ObjectFile
     long id = 0 ;
     
     //@Override
-    public List<String> all()
+    public Iterator<Pair<Long, ByteBuffer>> all()
     {
         throw new UnsupportedOperationException() ;
     }

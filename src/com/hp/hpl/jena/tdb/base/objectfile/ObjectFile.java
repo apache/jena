@@ -7,9 +7,12 @@
 package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
+import atlas.lib.Pair ;
+
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
 
 /** Temporary name.
  */
@@ -26,6 +29,9 @@ public interface ObjectFile extends Sync, Closeable
     public long length() ;
     public void sync(boolean force) ;
     public void close() ;
+    
+    /** All the bytebuffers */
+    public Iterator<Pair<Long, ByteBuffer>> all() ;
 }
 
 /*

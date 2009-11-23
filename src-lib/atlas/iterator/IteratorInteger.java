@@ -4,22 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.sys;
+package atlas.iterator;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexQuadRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-
-public class Default
+public class IteratorInteger implements Iterator<Long>
 {
+    private final long start ;
+    private final long finish ;
+    private long current ;
 
-    // ---- Record factories
-    public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ;
-    public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ;
-    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+    public static IteratorInteger range(long start, long finish)
+    {
+        return new IteratorInteger(start, finish) ;
+    }
+    
+    
+    /** [start, finish) */
+    public IteratorInteger(long start, long finish)
+    {
+        this.start = start ;
+        this.finish = finish ;
+        this.current = start ;
+    }
+    
+    public boolean hasNext()
+    {
+        return ( current < finish ) ;
+    }
+
+    public Long next()
+    {
+        Long v = Long.valueOf(current) ;
+        current++ ;
+        return v ;
+    }
+
+    public void remove()
+    { throw new UnsupportedOperationException() ; }
 
 }
 
