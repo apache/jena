@@ -200,11 +200,7 @@ public class StrUtils extends StringUtils
             {
                 if ( ch == escapees[j] )
                 {
-                    buff.append(marker) ;
-                    int lo = ch & 0xF ;
-                    int hi = ch >> 4 ;
-                    buff.append(Chars.hexDigits[hi]) ;                
-                    buff.append(Chars.hexDigits[lo]) ; 
+                    Chars.encodeAsHex(buff, marker, ch) ;
                     break ; // Out of escapees loop.
                 }
             }

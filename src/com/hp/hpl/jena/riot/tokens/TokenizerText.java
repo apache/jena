@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.riot.tokens;
 
-import static com.hp.hpl.jena.riot.Chars.*;
+import static com.hp.hpl.jena.riot.RiotChars.*;
 
 import atlas.io.PeekReader;
 
@@ -767,33 +767,6 @@ public class TokenizerText implements Tokenizer
        if ( checker != null ) checker.checkControl(code) ;
     }
 
-    // ---- Character classes 
-    
-    private boolean isA2Z(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
-    }
-
-    private boolean isA2ZN(int ch)
-    {
-        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
-    }
-
-    private boolean isNumeric(int ch)
-    {
-        return range(ch, '0', '9') ;
-    }
-    
-    private static boolean isWhitespace(int ch)
-    {
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
-    }
-    
-    private static boolean isNewlineChar(int ch)
-    {
-        return ch == '\r' || ch == '\n' ;
-    }
-
     // ---- Escape sequences
     
     private final
@@ -870,22 +843,13 @@ public class TokenizerText implements Tokenizer
         if ( ch == EOF )
             exception("Not a hexadecimal character (end of file)") ;
 
-        if ( range(ch, '0', '9') )
-            return ch-'0' ;
-        if ( range(ch, 'a', 'f') )
-            return ch-'a'+10 ;
-        if ( range(ch, 'A', 'F') )
-            return ch-'A'+10 ;
-        
+        int x =  valHexChar(ch) ;
+        if ( x != -1 )
+            return x ; 
         exception("Not a hexadecimal character: "+(char)ch) ;
         return -1 ; 
     }
     
-    private static boolean range(int ch, char a, char b)
-    {
-        return ( ch >= a && ch <= b ) ;
-    }
-
     private boolean expect(String str) {
         for (int i = 0; i < str.length(); i++) {
             char want = str.charAt(i);

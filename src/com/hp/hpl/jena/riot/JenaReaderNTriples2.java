@@ -32,8 +32,8 @@ public class JenaReaderNTriples2 extends JenaReaderBase
         PeekReader peekReader = PeekReader.make(reader) ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        LangNTriples parser = new LangNTriples(tokenizer) ;
-        parser.parse(sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        parser.parse() ;
     }
     
     /** Parse - but do nothing else */
@@ -44,8 +44,8 @@ public class JenaReaderNTriples2 extends JenaReaderBase
         Sink<Triple> sink = new SinkToGraphTriples(GraphFactory.sinkGraph()) ;
         
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        LangNTriples parser = new LangNTriples(tokenizer) ;
-        parser.parse(sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        parser.parse() ;
     }
 }
 

@@ -6,20 +6,22 @@
 
 package com.hp.hpl.jena.riot.out;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.net.MalformedURLException;
+import java.io.IOException ;
+import java.io.Writer ;
+import java.net.MalformedURLException ;
 
-import atlas.io.OutputUtils;
+import atlas.io.OutputUtils ;
+import atlas.lib.Chars ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.IRIRelativize;
-import com.hp.hpl.jena.riot.PrefixMap;
-import com.hp.hpl.jena.riot.Prologue;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.IRIRelativize ;
+import com.hp.hpl.jena.riot.PrefixMap ;
+import com.hp.hpl.jena.riot.Prologue ;
+import com.hp.hpl.jena.riot.RiotChars ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 /** Utilites for formatter output (N-Triples and Turtle formats) */
 public class OutputLangUtils
@@ -53,7 +55,31 @@ public class OutputLangUtils
         print(out," .") ;
         println(out) ;
     }
+    
+    // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
+    static char encodeMarkerChar = 'X' ;
+    // The charactsers 
+    static char[] invalidBNodeLabelChars = new char[]{encodeMarkerChar, ':', '-'} ;  
 
+    public static String safeBNodeLabel(String label)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        // Must be at least one char and not a digit.
+        buff.append("B") ;
+        
+        for ( int i = 0 ; i < label.length() ; i++ )
+        {
+            char ch = label.charAt(i) ;
+            
+            // We added a "b" as the first char 
+            if ( RiotChars.isA2ZN(ch) )
+                buff.append(ch) ;
+            else
+                Chars.encodeAsHex(buff, encodeMarkerChar, ch) ;
+        }
+        return buff.toString() ;
+    }
+    
     static public void output(Writer out, Node node, Prologue prologue)
     {
         // NodeVisitor would be nice but don't want to create an object per static call. 
@@ -66,9 +92,14 @@ public class OutputLangUtils
         if ( node.isBlank() )
         {
             print(out,"_:") ;
-            print(out,node.getBlankNodeLabel()) ;
+            // N-triples is quite restrictive about the labels. [A-Za-z][A-Za-z0-9]*
+            // Our format is _:B<encoded>
+            String label = node.getBlankNodeLabel() ;
+            label = safeBNodeLabel(label) ;
+            print(out,label) ;
             return ;
         }
+        
         if ( node.isLiteral() )
         {
             // TODO Do Turtle number abbreviates, controlled by a flag.

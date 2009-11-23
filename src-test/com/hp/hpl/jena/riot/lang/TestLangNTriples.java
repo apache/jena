@@ -109,8 +109,7 @@ public class TestLangNTriples extends BaseTest
         Tokenizer tokenizer = new TokenizerText(reader) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         
-        LangNTriples x = new LangNTriples(tokenizer) ;
-        x.parse(sink) ;
+        LangNTriples x = new LangNTriples(tokenizer, sink) ;
         return sink ;
     }
 }

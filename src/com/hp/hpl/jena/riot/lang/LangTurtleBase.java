@@ -13,6 +13,8 @@ import atlas.event.Event ;
 import atlas.event.EventManager ;
 import atlas.lib.Sink ;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
@@ -21,10 +23,12 @@ import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.PrefixMap ;
 import com.hp.hpl.jena.riot.Prologue ;
 import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish. */
@@ -145,7 +149,8 @@ public abstract class LangTurtleBase extends LangBase
 
     protected final void directive()
     {
-        String x = tokenResolve().getImage() ;
+        // It's a directive ...
+        String x = peekToken().getImage() ;
         nextToken() ;
         
         if ( x.equals("base") )
@@ -175,7 +180,7 @@ public abstract class LangTurtleBase extends LangBase
         String prefix = peekToken().getImage() ;
         nextToken() ;
         if ( ! lookingAt(IRI) )
-            exception("@prefix requires an IRI (found '"+tokenResolve()+"')") ;
+            exception("@prefix requires an IRI (found '"+peekToken()+"')") ;
         String iriStr = peekToken().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
@@ -203,9 +208,10 @@ public abstract class LangTurtleBase extends LangBase
     // Must be at least one triple. 
     protected final void triples()
     {
+        // Lookin at a node.
         Node subject = node() ;
         if ( subject == null )
-            exception("Not recognized: expected directive or triples: %s", tokenResolve().text()) ;
+            exception("Not recognized: expected node: %s", peekToken().text()) ;
         
         nextToken() ;
         predicateObjectList(subject) ;
@@ -295,10 +301,8 @@ public abstract class LangTurtleBase extends LangBase
     
     protected final Node node()
     {
-        // Resolve
-        // CHECK
-        // This is the only place where Nodes are created for triples.
-        Node n = tokenResolve().asNode() ;
+        // Token to Node
+        Node n = tokenAsNode(peekToken()) ;
         if ( getChecker() != null )
             getChecker().check(n) ; 
         return n ;
@@ -367,7 +371,7 @@ public abstract class LangTurtleBase extends LangBase
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception("Unrecognized: "+tokenResolve()) ;
+        exception("Unrecognized: "+peekToken()) ;
         return null ;
     }
     
@@ -454,36 +458,97 @@ public abstract class LangTurtleBase extends LangBase
         sink.send(new Triple(subject, predicate, object)) ;
     }
     
-    protected final Token tokenResolve()
-    {
-        return convert(peekToken()) ;
-    }
+    LabelToNodeMap lmap = LabelToNodeMap.createBNodeMap() ;
     
-    protected final Token convert(Token token)
+    @Override
+    protected final Node tokenAsNode(Token token) 
     {
-        if ( token.hasType(PREFIXED_NAME) )
+        switch(token.getType())
         {
-            String prefix = token.getImage() ;
-            String suffix   = token.getImage2() ;
-            String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
-            if ( expansion == null )
-                exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
-            token.setType(IRI) ;
-            token.setImage(expansion) ;
-            token.setImage2(null) ;
-        } 
-        else if ( token.hasType(IRI) )
-        {
-            token.setImage(prologue.getResolver().resolve(token.getImage()).toString()) ;
+            // Assumes that bnode labes have been sorted out already.
+            case BNODE : 
+            {
+                String label = token.getImage() ;
+                // Fix up ":" and "-" to produce a N-Triples safe label? 
+                Node n = lmap.asNode(label) ;
+                return n ;
+            }
+            case IRI :
+            {
+                String resolvedIRI = prologue.getResolver().resolve(token.getImage()).toString() ;
+                return Node.createURI(resolvedIRI) ;
+            }
+            case PREFIXED_NAME :
+            {
+                String prefix = token.getImage() ;
+                String suffix   = token.getImage2() ;
+                String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
+                if ( expansion == null )
+                    exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+                return Node.createURI(expansion) ;
+            }
+            case DECIMAL :
+                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDdecimal)  ; 
+            case DOUBLE :
+                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDdouble)  ;
+            case INTEGER:
+                return Node.createLiteral(token.getImage(), null, XSDDatatype.XSDinteger) ;
+            case LITERAL_DT :
+            {
+                Node n = tokenAsNode(token.getSubToken()) ;
+                if ( ! n.isURI() )
+                    throw new RiotException("Invalid token: "+token) ;
+                
+                RDFDatatype dt =  Node.getType(n.getURI()) ;
+                return Node.createLiteral(token.getImage(), null, dt)  ;
+            }
+            case LITERAL_LANG : 
+                return Node.createLiteral(token.getImage(), token.getImage2(), null)  ;
+                
+            case STRING1:
+            case STRING2:
+            case LONG_STRING1:
+            case LONG_STRING2:
+                return Node.createLiteral(token.getImage()) ;
+            
+            default: break ;
         }
-        else if ( token.hasType(LITERAL_DT) )
-        {
-            Token t = token.getSubToken() ;
-            t = convert(t) ;
-            token.setSubToken(t) ;
-        }
-        return token ;
+        return null ;
     }
+
+        
+//    private Token convert(Token token)
+//    {
+//        if ( token.hasType(PREFIXED_NAME) )
+//        {
+//            String prefix = token.getImage() ;
+//            String suffix   = token.getImage2() ;
+//            String expansion = prologue.getPrefixMap().expand(prefix, suffix) ;
+//            if ( expansion == null )
+//                exceptionDirect("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
+//            token.setType(IRI) ;
+//            token.setImage(expansion) ;
+//            token.setImage2(null) ;
+//        } 
+//        else if ( token.hasType(IRI) )
+//        {
+//            token.setImage(prologue.getResolver().resolve(token.getImage()).toString()) ;
+//        }
+//        else if ( token.hasType(LITERAL_DT) )
+//        {
+//            Token t = token.getSubToken() ;
+//            t = convert(t) ;
+//            token.setSubToken(t) ;
+//        }
+//        else if ( token.hasType(BNODE) )
+//        {
+//            String label = token.getImage() ;
+//            // Fix up ":" and "-" to produce a N-Triples safe label? 
+//            Node n = lmap.asNode(label) ;
+//            token.setImage(n.getBlankNodeLabel()) ;
+//        }
+//        return token ;
+//    }
     
 }
 

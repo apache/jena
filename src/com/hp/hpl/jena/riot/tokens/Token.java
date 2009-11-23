@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.riot.tokens;
 
-import static com.hp.hpl.jena.riot.Chars.CH_COMMA;
-import static com.hp.hpl.jena.riot.Chars.CH_DOT;
-import static com.hp.hpl.jena.riot.Chars.CH_LBRACE;
-import static com.hp.hpl.jena.riot.Chars.CH_LBRACKET;
-import static com.hp.hpl.jena.riot.Chars.CH_LPAREN;
-import static com.hp.hpl.jena.riot.Chars.CH_RBRACE;
-import static com.hp.hpl.jena.riot.Chars.CH_RBRACKET;
-import static com.hp.hpl.jena.riot.Chars.CH_RPAREN;
-import static com.hp.hpl.jena.riot.Chars.CH_SEMICOLON;
+import static com.hp.hpl.jena.riot.RiotChars.CH_COMMA;
+import static com.hp.hpl.jena.riot.RiotChars.CH_DOT;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACE;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACKET;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LPAREN;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACE;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACKET;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RPAREN;
+import static com.hp.hpl.jena.riot.RiotChars.CH_SEMICOLON;
 import static com.hp.hpl.jena.riot.tokens.TokenType.BNODE;
 import static com.hp.hpl.jena.riot.tokens.TokenType.DECIMAL;
 import static com.hp.hpl.jena.riot.tokens.TokenType.DOUBLE;
@@ -218,10 +218,14 @@ public final class Token
     
     // Validation of URIs?
     
+    /** Token to Node, a very direct form that is purely driven off the token.
+     *  Turtle and N-triples need to process the token and not call this.
+     */
     public Node asNode()
     {
         switch(tokenType)
         {
+            // Assumes that bnode labes have been sorted out already.
             case BNODE : return Node.createAnon(new AnonId(tokenImage)) ;
             case IRI :   return Node.createURI(tokenImage) ; 
             case PREFIXED_NAME :

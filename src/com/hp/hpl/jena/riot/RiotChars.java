@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
-public class Chars
+public class RiotChars
 {
     /** End of file - not a Unicode codepoint */
     public static final int EOF             = -1 ;
@@ -46,6 +46,53 @@ public class Chars
     public static final char CH_MINUS        = '-' ;
     public static final char CH_SLASH        = '/' ;
     public static final char CH_RSLASH       = '\\' ;
+    
+    // ---- Character classes 
+    
+    public static boolean isA2Z(int ch)
+    {
+        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
+    }
+
+    public static boolean isA2ZN(int ch)
+    {
+        return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
+    }
+
+    public static boolean isDigit(int ch)
+    {
+        return range(ch, '0', '9') ;
+    }
+    
+    public static boolean isWhitespace(int ch)
+    {
+        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
+    }
+    
+    public static boolean isNewlineChar(int ch)
+    {
+        return ch == '\r' || ch == '\n' ;
+    }
+
+    public static int valHexChar(int ch)
+    {
+        if ( range(ch, '0', '9') )
+            return ch-'0' ;
+        if ( range(ch, 'a', 'f') )
+            return ch-'a'+10 ;
+        if ( range(ch, 'A', 'F') )
+            return ch-'A'+10 ;
+        return -1 ;
+    }
+
+    
+    public static boolean range(int ch, char a, char b)
+    {
+        return ( ch >= a && ch <= b ) ;
+    }
+
+
+
 }
 
 /*

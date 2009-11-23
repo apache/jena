@@ -65,6 +65,8 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        tdb.turtle.main("D.ttl") ; System.exit(0) ;
+        
         tdbquery("--tdb=tdb.ttl", "--set=tdb:logExec=info", "SELECT * {GRAPH ?g { ?s ?p ?o}}") ;
         System.exit(0) ;
         

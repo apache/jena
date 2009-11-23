@@ -68,7 +68,15 @@ public class Chars
     public static CharsetDecoder getDecoder() { return decoders.get() ; }
     /** Add/return a UTF-8 decoder to the pool */
     public static void putDecoder(CharsetDecoder decoder) { decoders.put(decoder) ; }
-
+    
+    public static void encodeAsHex(StringBuilder buff, char marker, char ch)
+    {
+        buff.append(marker) ;
+        int lo = ch & 0xF ;
+        int hi = (ch >> 4) & 0xF ;
+        buff.append(Chars.hexDigits[hi]) ;                
+        buff.append(Chars.hexDigits[lo]) ;
+    }
 }
 
 /*

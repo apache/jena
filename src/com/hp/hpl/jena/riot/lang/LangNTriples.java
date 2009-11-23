@@ -36,14 +36,16 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
+    private final Sink<Triple> sink ;
     
-    public LangNTriples(Tokenizer tokens)
+    public LangNTriples(Tokenizer tokens, Sink<Triple> sink)
     { 
         super(null, new ErrorHandlerLogger(messageLog), tokens) ;
+        this.sink = sink ; 
     }
     
     /** Method to parse the whole stream of triples, sending each to the sink */ 
-    public final void parse(Sink<Triple> sink)
+    public final void parse()
     {
         EventManager.send(sink, new Event(RIOT.startRead, null)) ;
         while(hasNext())
@@ -92,19 +94,28 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
         return new Triple(s, p, o) ;
     }
 
+    @Override
+    protected final Node tokenAsNode(Token token) 
+    {
+        if ( token.hasType(TokenType.BNODE) )
+            return scopedBNode(token.getImage()) ;
+        // Leave IRIs alone (don't resolve)
+        return token.asNode() ;
+    }
+    
     private Node checkSubject(Token s)
     {
         if ( ! ( s.hasType(TokenType.BNODE) ||
                  s.hasType(TokenType.IRI) ) )
             exception("Illegal subject", s) ;
-        return s.asNode() ;
+        return tokenAsNode(s) ;
     }
 
     private Node checkPredicate(Token p)
     {
         if ( ! p.hasType(TokenType.IRI) )
-            exception("Illegal predciate", p) ;
-        return p.asNode() ;
+            exception("Illegal predicate", p) ;
+        return tokenAsNode(p) ;
     }
 
     private Node checkObject(Token o)
@@ -125,7 +136,7 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
                 exception("Illegal object", o) ;
         }
             
-        return o.asNode() ;
+        return tokenAsNode(o) ;
     }
 }
 

@@ -10,12 +10,14 @@ import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
 import atlas.iterator.PeekIterator ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandler ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
 /** Stream of tokens, that can be seen as Nodes */
 public abstract class LangBase implements LangRIOT
@@ -32,7 +34,6 @@ public abstract class LangBase implements LangRIOT
         setErrorHandler(errorHandler) ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
-
     }
     
     //@Override
@@ -44,7 +45,6 @@ public abstract class LangBase implements LangRIOT
     public ErrorHandler getErrroHandler()       { return errorHandler ; }
     //@Override
     public void setErrorHandler(ErrorHandler handler) { this.errorHandler = handler  ; }
-    
     
     // ---- Managing tokens.
     
@@ -103,6 +103,15 @@ public abstract class LangBase implements LangRIOT
         Token t = peekIter.next() ;
         return t ;
     }
+
+    protected abstract Node tokenAsNode(Token token) ;
+
+    private LabelToNodeMap labelmap = LabelToNodeMap.createBNodeMap() ;
+    protected Node scopedBNode(String label)
+    {
+        return labelmap.asNode(label) ;
+    }
+
     
     protected final void expectOrEOF(String msg, TokenType tokenType)
     {

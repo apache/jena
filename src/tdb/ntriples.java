@@ -4,64 +4,70 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package tdb;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.DOT ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
-import atlas.lib.Sink ;
+import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
+import atlas.io.PeekReader ;
+
+import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.util.FileUtils ;
 
-/** Turtle language */
-public class LangTurtle extends LangTurtleBase
+public class ntriples
 {
-    public LangTurtle(String baseURI, Tokenizer tokens, Sink<Triple> sink)
+    /** Run the N-triples parser - and produce N-triples */
+    public static void main(String... args)
     {
-        super(baseURI, tokens, sink) ;
-    }
-
-    @Override
-    protected final void oneTopLevelElement()
-    {
-        // Triples node.
-
-        // TriplesSameSubject -> TriplesNode PropertyList?
-        if ( peekTriplesNodeCompound() )
+        if ( args.length == 0 )
         {
-            if ( VERBOSE ) log.info(">> compound") ;
-            Node n = triplesNodeCompound() ;
-            if ( VERBOSE ) log.info("<< compound") ;
-            // May be followed by: 
-            //   A predicateObject list
-            //   A DOT or EOF.
-            if ( lookingAt(EOF) )
-                return ;
-            if ( lookingAt(DOT) )
-            {
-                nextToken() ;
-                return ;
-            }
-            if ( peekPredicate() )
-            {
-                predicateObjectList(n) ;
-                expectEndOfTriples() ;
-                return ;
-            }
-            exception("Unexpected token : %s", peekToken()) ;
-        }
-
-        // TriplesSameSubject -> Term PropertyListNotEmpty 
-        if ( lookingAt(NODE) )
-        {
-            if ( VERBOSE ) log.info(">> triples") ;
-            triples() ;
-            if ( VERBOSE ) log.info("<< triples") ;
+            parse("http://example/BASE", System.in) ;
             return ;
         }
-        exception("Out of place: %s", peekToken()) ;
+
+        for ( int i = 0 ; i < args.length ; i++ )
+        {
+            String fn = args[i] ;
+            parse("http://base/", fn) ;
+        }
+    }        
+
+    public static void parse(String baseURI, String filename)
+    {
+        InputStream in = null ;
+        try {
+            in = new FileInputStream(filename) ;
+        } catch (FileNotFoundException ex)
+        {
+            System.err.println("File not found: "+filename) ;
+            return ;
+        }
+        parse(baseURI, in) ;
+    }
+
+    public static void parse(String baseURI, InputStream in)
+    {   
+        parseRIOT(baseURI, in) ;
+    }
+
+    public static void parseRIOT(String baseURI, InputStream in)
+    {
+        Reader r = FileUtils.asUTF8(in) ;
+        PeekReader peekReader = PeekReader.make(r) ;
+
+        SinkTripleOutput sink = new SinkTripleOutput(System.out) ; 
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        Checker checker = new Checker(null) ;
+        parser.setChecker(checker) ;
+        parser.parse();
+        sink.close() ;
     }
 }
 
