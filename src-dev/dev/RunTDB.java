@@ -306,7 +306,7 @@ public class RunTDB
     
     private static void tdbdump(String... args)
     {
-        tdb.tdbdump.main(args) ; 
+        tdb.tdbdump_OLD.main(args) ; 
         System.exit(0) ;
     }
     

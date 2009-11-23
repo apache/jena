@@ -24,21 +24,21 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class tdbdump extends CmdSub
+public class tdbdump_OLD extends CmdSub
 {
     ModFormat modFormat =  new ModFormat() ;
     
     static public void main(String... argv)
     { 
         Log.setLog4j() ;
-        new tdbdump(argv).exec() ;
+        new tdbdump_OLD(argv).exec() ;
     }
 
     static final String CMD_DATA =      "data" ; 
     static final String CMD_INDEX =     "index" ; 
     static final String CMD_NODES =     "nodes" ;
     
-    protected tdbdump(String...argv)
+    protected tdbdump_OLD(String...argv)
     {
         super(argv) ;
         super.addSubCommand(CMD_INDEX, new Exec()

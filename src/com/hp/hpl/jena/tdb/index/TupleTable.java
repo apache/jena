@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import static java.lang.String.format ;
+
 import java.util.Iterator;
 
 import atlas.lib.Tuple;
@@ -50,7 +52,7 @@ public class TupleTable implements Sync, Closeable
     public boolean add( Tuple<NodeId> t) 
     { 
         if ( tupleLen != t.size() )
-            throw new TDBException(String.format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
+            throw new TDBException(format("Mismatch: inserting tuple of length %d into a table of tuples of length %d", t.size(), tupleLen)) ;
 
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
@@ -62,7 +64,7 @@ public class TupleTable implements Sync, Closeable
                     duplicate(t) ;
                     return false ;
                 }
-                throw new TDBException("Secondary index duplicate: "+t) ;
+                throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getLabel(), t)) ;
             }
         }
         return true ;
@@ -75,7 +77,7 @@ public class TupleTable implements Sync, Closeable
     public boolean delete( Tuple<NodeId> t ) 
     { 
         if ( tupleLen != t.size() )
-            throw new TDBException(String.format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
+            throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
 
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
@@ -106,7 +108,7 @@ public class TupleTable implements Sync, Closeable
 //        }
         
         if ( tupleLen != pattern.size() )
-            throw new TDBException(String.format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), tupleLen)) ;
+            throw new TDBException(format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), tupleLen)) ;
         
         int numSlots = 0 ;
         // Canonical form. 

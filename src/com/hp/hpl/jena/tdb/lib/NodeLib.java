@@ -20,6 +20,7 @@ import atlas.iterator.Transform ;
 import atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
@@ -198,6 +199,20 @@ public class NodeLib
         return node ;
     }
     
+    public static String format(String sep, Node[] nodes)
+    {
+        // Sigh ...
+        StringBuilder b = new StringBuilder() ;
+        for ( int i = 0 ; i < nodes.length ; i++ )
+        {
+            if ( i != 0 ) 
+                b.append(sep) ;
+            b.append(FmtUtils.stringForNode(nodes[i])) ;
+        }
+        return b.toString() ;
+    }
+    
+    // See also nodeTable.all
     public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
     {
         return Iter.map(iter, new Transform<NodeId, Node>(){

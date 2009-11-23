@@ -32,7 +32,7 @@ public class StrUtils extends StringUtils
         return join("\n", args) ;
     }
     
-    /** Concatentate string, using a separator */
+    /** Concatentate strings, using a separator */
     public static String strjoin(String sep, String... args)
     {
         return join(sep, args) ;

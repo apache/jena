@@ -5,24 +5,22 @@
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
-import static java.lang.String.format;
+import static java.lang.String.format ;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import atlas.iterator.NullIterator;
-import atlas.lib.Tuple;
+import atlas.iterator.NullIterator ;
+import atlas.lib.Tuple ;
 
-
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleTable;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleTable ;
+import com.hp.hpl.jena.tdb.lib.NodeLib ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.lib.TupleLib ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 
 /** Support code to group tuple table and node table */ 
@@ -51,11 +49,18 @@ public class NodeTupleTable implements Sync, Closeable
         NodeId n[] = new NodeId[nodes.length] ;
         for ( int i = 0 ; i < nodes.length ; i++ )
             n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
-        
+
         Tuple<NodeId> t = Tuple.create(n) ;
-        return tupleTable.add(t) ;
+        try {
+            return tupleTable.add(t) ;
+        } catch (TDBException ex)
+        {
+            String x = NodeLib.format(" ", nodes) ; 
+            System.err.println("Bad add for tuple: "+x) ;
+            throw ex ;
+        }
     }
-    
+
     public boolean deleteRow(Node...nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;
