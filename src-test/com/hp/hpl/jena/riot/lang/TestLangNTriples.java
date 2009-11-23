@@ -110,6 +110,7 @@ public class TestLangNTriples extends BaseTest
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         
         LangNTriples x = new LangNTriples(tokenizer, sink) ;
+        x.parse() ;
         return sink ;
     }
 }
