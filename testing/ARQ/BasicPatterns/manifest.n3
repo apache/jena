@@ -10,37 +10,37 @@
       (
 # Dump data to check it.
 
-[ mf:name "query-dump 0" ; 
+[ mf:name "query-dump-0" ; 
   mf:action [ qt:query <query-dump.rq> ; qt:data <model0.nt> ] ]
 
-[ mf:name "query-dump 1" ; 
+[ mf:name "query-dump-1" ; 
   mf:action [ qt:query <query-dump.rq> ; qt:data <model1.nt> ] ]
 
-[ mf:name "query-dump 2" ; 
+[ mf:name "query-dump-2" ; 
   mf:action [ qt:query <query-dump.rq> ; qt:data <model2.nt> ] ]
 
-[ mf:name "query-dump 3" ;
+[ mf:name "query-dump-3" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model3.nt> ] ]
 
-[ mf:name "query-dump 4" ; 
+[ mf:name "query-dump-4" ; 
   mf:action [ qt:query <query-dump.rq> ; qt:data <model4.nt> ] ]
 
-[ mf:name "query-dump 5" ;
+[ mf:name "query-dump-5" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model5.nt> ] ]
 
-[ mf:name "query-dump 6" ;
+[ mf:name "query-dump-6" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model6.nt> ] ]
 
-[ mf:name "query-dump 7" ;
+[ mf:name "query-dump-7" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model7.nt> ] ]
 
-[ mf:name "query-dump 8" ;
+[ mf:name "query-dump-8" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model8.n3> ] ]
 
-[ mf:name "query-dump 9" ;
+[ mf:name "query-dump-9" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <model9.n3> ] ]
 
-[ mf:name "query-dump A" ;
+[ mf:name "query-dump-A" ;
   mf:action [ qt:query <query-dump.rq> ; qt:data <modelA.nt> ] ]
 
 
