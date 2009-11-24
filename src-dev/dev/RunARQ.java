@@ -23,12 +23,11 @@ import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -78,20 +77,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-       // ARQ TestFilterTransform
+        // ARQ TestFilterTransform
+        // transform if "safe" where safe is recurse of BGP, sequence, join 
+        // ??LHS of opt.
+        // Must mention.
         
-        Transform t_placement   = new TransformFilterPlacement() ;
-        Op op = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))") ;
-        // Good
-        Op op2 = Transformer.transform(t_placement, op) ;
+        Transform transform   = new TransformEqualityFilter() ;
+        
+        Op op = SSE.parseOp("(filter (= ?unused <x>) (bgp (?s ?p ?x)))") ;
+        Op op2 = Transformer.transform(transform, op) ;
         System.out.println(op) ;
         System.out.println(op2) ;
-        
-        OpFilter f = (OpFilter)op ;
-        // Bad.
-        Op op3 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
-        System.out.println(op3) ;
         System.exit(0) ;
+        
         
         GraphStore gs = GraphStoreFactory.create() ;
         UpdateAction.readExecute("update.ru", gs) ;
