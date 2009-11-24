@@ -13,8 +13,6 @@ public class DevTDB
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
     
-    // Bug: FILTER (?o = ?unbound)
-    
     // Sort out NodecSSE and NodecLib
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
