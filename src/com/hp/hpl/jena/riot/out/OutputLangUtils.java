@@ -28,7 +28,7 @@ public class OutputLangUtils
 {
     // This is FmtUtils but for writers
     
-    // Make an object so it cna have per-instance flags
+    // Make an object so it can have per-instance flags
     // ASCII vs UTF-8
     // Abbreviate numbers or not.
     

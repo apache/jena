@@ -92,7 +92,13 @@ public class DumpOps
             Pair<NodeId, Node> pair = iter.next() ;
             NodeId nid = pair.car() ;
             Node n = pair.cdr();
-            System.out.printf("%016X %s\n", nid.getId(), FmtUtils.stringForNode(n)) ; 
+            String x ;
+            if ( n.isBlank() )
+                // raw bNode labels.
+                x = "_:"+n.getBlankNodeLabel() ;
+            else
+                x = FmtUtils.stringForNode(n) ;
+            System.out.printf("%016X %s\n", nid.getId(), x) ; 
         }
         dumpedNodeTables.add(nodeTable) ;
     }

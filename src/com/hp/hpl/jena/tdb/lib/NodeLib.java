@@ -77,54 +77,6 @@ public class NodeLib
         return n ;
     }
 
-    // OLD CODE
-//    // Use nodec's
-//    private static String encode(Node node) { return encode(node, null) ; }
-//
-//    private static String encode(Node node, PrefixMapping pmap)
-//    {
-//        if ( node.isBlank() )
-//            return "_:"+node.getBlankNodeLabel() ;
-//        if ( node.isURI() ) 
-//        {
-//            // Pesky spaces
-//            //throw new TDBException("Space found in URI: "+node) ;
-//            String x = StrUtils.encode(node.getURI(), '_', invalidIRIChars) ;
-//            if ( x != node.getURI() )
-//                node = Node.createURI(x) ; 
-//        }
-//        
-//        return FmtUtils.stringForNode(node, pmap) ;
-//    }
-//
-//    private static Node decode(String s)     { return decode(s, null) ; }
-//    
-//    private static Node decode(String s, PrefixMapping pmap)
-//    {
-//        if ( s.startsWith("_:") )   
-//        {
-//            s = s.substring(2) ;
-//            return Node.createAnon(new AnonId(s)) ;
-//        }
-//
-//        if ( s.startsWith("<") )
-//        {
-//            s = s.substring(1,s.length()-1) ;
-//            s = StrUtils.decode(s, MarkerChar) ;
-//            return Node.createURI(s) ;
-//        }
-//        
-//        try {
-//            // SSE invocation is expensive (??).
-//            Node n = SSE.parseNode(s, pmap) ;
-//            return n ;
-//        } catch (SSEParseException ex)
-//        {
-//            ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
-//            throw ex ;
-//        }
-//    }
-
     public static Hash hash(Node n)
     { 
         Hash h = new Hash(LenNodeHash) ;
