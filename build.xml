@@ -11,11 +11,11 @@
   <property environment="env"/>
 
   <!-- Version  -->
-  <property name="version"              value="0.8.4-dev"/>
+  <property name="version"              value="0.8.4-RC-1"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-local"/>
+  <property name="publish.repo"     value="repo-dev"/>
 
   
   <!-- javadoc -->

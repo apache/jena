@@ -369,7 +369,7 @@ public class OpExecutorTDB extends OpExecutor
                 DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
                 
                 if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                    Explain.explain("Execute", opQuadPattern.getQuads(), execCxt.getContext()) ;
+                    Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
 
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 return SolverLib.execute(ds, gn, bgp, input, filter, execCxt) ;
@@ -393,7 +393,7 @@ public class OpExecutorTDB extends OpExecutor
                     // Legacy - when ARQ upgrades, this will be deprecated and need updating.
                     
                     if ( Explain.explaining(Explain.InfoLevel.ALL, execCxt.getContext()) )
-                        Explain.explain("Execute", opQuadPattern.getQuads(), execCxt.getContext()) ;
+                        Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
 
                     // Quad-backed graph
                     return SolverLib.execute(((GraphTDB)g).getDataset(), opQuadPattern.getGraphNode(), opQuadPattern.getBasicPattern(), 

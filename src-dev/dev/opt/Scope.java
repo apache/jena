@@ -162,8 +162,7 @@ public class Scope
         public void visit(OpQuadPattern opQuad)
         {
             Set<Var> acc = new HashSet<Var>() ;
-            //for ( Quad q : opQuad.getQuads() )
-            for ( Quad q : opQuad.getQuads()  )
+            for ( Quad q : opQuad.getPattern()  )
                 addVarsFromQuad(acc, q) ;
             defined.put(opQuad, acc) ;
         }

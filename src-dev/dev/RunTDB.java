@@ -67,12 +67,14 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+ 
         /*
          * I think the bug is in TransformFilterPlacement, because the Filter doesn't wrap around the OpBGP after insertAnyFilter():
   if ( patternVarsScope.containsAll(exprVars) ) // some vars like ?unbound are out of scope 
          */
         {
-            Dataset test = DatasetFactory.create() ; //TDBFactory.createDataset();
+            Dataset test = TDBFactory.createDataset();
+            //Dataset test = DatasetFactory.create() ;
             test.asDatasetGraph().getDefaultGraph().add(new Triple(Node.createAnon(), RDF.type.asNode(), Node.createURI("http://example.com/A")));
             Query qry = QueryFactory.create("SELECT * WHERE { ?s ?p ?o FILTER (?o = ?unbound) }");
             QueryExecution qe = QueryExecutionFactory.create(qry, test);

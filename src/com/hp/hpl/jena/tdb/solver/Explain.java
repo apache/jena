@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.List ;
-
 import org.slf4j.Logger ;
 import atlas.lib.StrUtils ;
 
@@ -15,6 +13,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
@@ -127,7 +126,7 @@ Document:
             _explain(logExec, message, bgp.toString(), false) ;
     }
     
-    public static void explain(String message, List<Quad> quads, Context context)
+    public static void explain(String message, QuadPattern quads, Context context)
     {
         if ( explaining(InfoLevel.ALL, logExec,context) )
         {
@@ -139,7 +138,7 @@ Document:
     // TEMP : quad list that looks right.
     // Renove when QuadPatterns roll through from ARQ.
     
-    private static String formatQuads(List<Quad> quads)
+    private static String formatQuads(QuadPattern quads)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         IndentedWriter out = buff.getIndentedWriter() ;
