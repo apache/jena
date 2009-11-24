@@ -30,7 +30,7 @@ public interface Expr
      */ 
     public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
   
-    // Coudl use ExprVars directly.
+    // Could use ExprVars directly.
     public Set<Var>  getVarsMentioned() ;
     public void varsMentioned(Collection<Var> acc) ;
     

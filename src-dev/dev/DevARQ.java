@@ -14,6 +14,7 @@ public class DevARQ
 	// {?z <p> <q> filter (?x = <x>)}
     
     // MicroAPI.
+    // ARQ warnings on cross product and unused project vars 
     
     // ==== ARQ
     // JMX

@@ -13,8 +13,11 @@ import org.junit.Test ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 
@@ -25,8 +28,9 @@ public class TestFilterTransform
         return new JUnit4TestAdapter(TestFilterTransform.class) ;
     }
     
-    private Transform t_equality = new TransformEqualityFilter() ;
+    private Transform t_equality    = new TransformEqualityFilter() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
+    private Transform t_placement   = new TransformFilterPlacement() ;
     
     @Test public void equality01()
     {
@@ -112,8 +116,63 @@ public class TestFilterTransform
              "))") ;
     }
     
-
+    @Test public void placement01()
+    {
+        test("(filter (= ?x 1) (bgp ( ?s ?p ?x)))",
+             t_placement,
+             "(filter (= ?x 1) (bgp ( ?s ?p ?x)))") ;
+        	
+    }
     
+    @Test public void placement02()
+    {
+        test("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x1) ))",
+             t_placement,
+             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x1)))") ;
+            
+    }
+
+    @Test public void placement03()
+    {
+        test("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x) ))",
+             t_placement,
+             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x)))") ;
+    }
+
+    @Test public void placement04()
+    {
+        test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))",
+             t_placement,
+             "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
+    }
+    
+    @Test public void placement10()
+    {
+        // Unbound
+        test("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))",
+             t_placement,
+             "(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
+    }
+    
+    @Test public void placement11()
+    {
+        Op op1 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
+        OpFilter f = (OpFilter)op1 ;
+        Op op2 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
+        Op op3 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
+        Assert.assertEquals(op3, op2) ;
+    }
+
+    @Test public void placement12()
+    {
+        Op op1 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
+        OpFilter f = (OpFilter)op1 ;
+        Op op2 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
+        Op op3 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
+        Assert.assertEquals(op3, op2) ;
+    }
+    
+
     static void test(String input, Transform transform, String... output)
     {
         Op op1 = SSE.parseOp(input) ;
@@ -126,7 +185,7 @@ public class TestFilterTransform
         }
         
         Op op3 = SSE.parseOp(StrUtils.strjoinNL(output)) ;
-        Assert.assertEquals(op2, op3) ;
+        Assert.assertEquals(op3, op2) ;
     }
     
 }

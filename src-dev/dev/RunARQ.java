@@ -9,7 +9,6 @@ package dev;
 
 import java.util.Iterator ;
 
-import arq.qexpr ;
 import arq.sparql ;
 import arq.sse_query ;
 
@@ -17,31 +16,25 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.rdf.model.impl.Util ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
-import com.hp.hpl.jena.sparql.algebra.opt.Optimize ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -50,8 +43,12 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterOp ;
-import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -81,24 +78,19 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        sparql.main("PREFIX  afn: <http://jena.hpl.hp.com/ARQ/function#> SELECT (afn:now() as ?now) {}") ; 
-        System.exit(0) ;
-        //assertEquals( two, XSDFuncOp.sqrt( result ).asNode() );
-
+       // ARQ TestFilterTransform
         
+        Transform t_placement   = new TransformFilterPlacement() ;
+        Op op = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))") ;
+        // Good
+        Op op2 = Transformer.transform(t_placement, op) ;
+        System.out.println(op) ;
+        System.out.println(op2) ;
         
-        String str = "http://host/foo%2Fbar" ;
-        System.out.println("<"+str+">") ;
-        
-        int x = Util.splitNamespace(str) ;
-        String ns = str.substring(0,x) ;
-        String ln = str.substring(x) ;
-        System.out.println("-->"+ns+":"+ln) ;
-        
-        Resource r = ResourceFactory.createResource(str) ;
-        System.out.println("ns="+r.getNameSpace()) ;
-        System.out.println("ln="+r.getLocalName()) ;
-        
+        OpFilter f = (OpFilter)op ;
+        // Bad.
+        Op op3 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
+        System.out.println(op3) ;
         System.exit(0) ;
         
         GraphStore gs = GraphStoreFactory.create() ;
@@ -108,91 +100,6 @@ public class RunARQ
         Model m = ModelFactory.createModelForGraph(gs.getGraph(Node.createURI("http://foo/model04"))) ;
         m.write(System.out, "RDF/XML-ABBREV") ;
         System.exit(0) ;
-        
-        
-        
-        
-        //runUpdate() ;
-        
-//        x("123") ;
-//        x("(= 123 456)") ;
-//        x("(exprlist (= 123 456) (= 123 456))") ;
-//        x("((= 123 456) (= 123 456))") ;
-//        
-//        System.exit(0) ;
-        
-        {
-            String queryString = StrUtils.strjoinNL(
-                                                    "PREFIX : <http://example/>", 
-                                                    "SELECT *",
-                                                    "{",
-                                                    "    GRAPH ?g {",
-                                                    "    ?s ?p ?o",
-                                                    "    }",
-                                                    "    FILTER(?o = :x2 )",
-                                                    "    FILTER( ?g = :x1 || ?g != :x4 || ?g = :x3 )",
-                                                    "}") ;
-            // More cautious.  Only on || equalities
-            Query q = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
-            divider() ;
-            System.out.println(q) ;
-            Op op = Algebra.compile(q) ;
-            System.out.println("Compile::") ;
-            System.out.println(op) ;
-            
-            op = Algebra.optimize(op) ;
-            divider() ;
-            System.out.println("Optimize::") ;
-            System.out.println(op) ;
-            //Not yet active.
-            op = Transformer.transform(new TransformFilterDisjunction(), op) ;
-            
-            divider() ;
-            System.out.println("Transform disjunctions::") ;
-            System.out.println(op) ;
-
-            DatasetGraph dsg = DatasetUtils.createDataset("D.ttl", null).asDatasetGraph() ;
-            QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
-            System.exit(0) ;
-        }
-        
-        qexpr.main("fn:round(1)") ; System.exit(0) ; 
-        
-        report() ; System.exit(0) ;
-        
-        execQuery("D.ttl", "Q.arq") ;
-        
-        
-        arq.qexpr.main("coalesce(123)") ; System.exit(0) ;
-        String queryString = StrUtils.strjoinNL("PREFIX : <http://example/>",
-                                                "SELECT *",
-                                                "{",
-                                                "   ?s ?p1 ?x OPTIONAL { ?s ?p2 ?x OPTIONAL { ?s ?p3 ?x } }" ,
-                                                //"   ?s ?p ?x OPTIONAL { ?s ?p ?o FILTER(?x) }" ,
-                                                "}") ;
-        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
-        
-        boolean b = LeftJoinClassifier.isLinear((OpLeftJoin)op) ;
-        System.out.println(op) ;
-        System.out.println(b) ;
-        
-        Op op2 = Optimize.optimize(op, ARQ.getContext()) ;
-        System.out.println(op2) ;
-        System.exit(0) ;
-        
-        //WriterOp.output(IndentedWriter.stdout, op) ;
-        //IndentedWriter.stdout.flush();
-        
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter iWriter = buff.getIndentedWriter() ;
-        iWriter.setFlatMode(true) ;
-        WriterOp.output(iWriter, op) ;
-        iWriter.flush() ;
-        String s = buff.asString() ;
-        System.out.println(s) ;
-        
-        
         System.exit(0) ;
         
         execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
