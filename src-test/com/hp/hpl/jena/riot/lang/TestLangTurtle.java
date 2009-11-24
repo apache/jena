@@ -6,19 +6,41 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.Reader ;
+import java.io.StringReader ;
 
-import org.junit.Test;
-import atlas.test.BaseTest;
+import org.junit.Test ;
+import atlas.test.BaseTest ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 public class TestLangTurtle extends BaseTest
 {
+    
+    @Test public void blankNodes()
+    {
+        String s = "_:a <http://example/p> 'foo' . " ;
+        StringReader r = new StringReader(s) ;
+        Model m = ModelFactory.createDefaultModel() ;
+        
+        RDFReader reader = new JenaReaderTurtle2() ;
+        reader.read(m, r, null) ;
+        assertEquals(1, m.size()) ;
+        
+        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
+        assertNotEquals(x, "a") ;
+
+        // reset - reread -  new bNode.
+        r = new StringReader(s) ;
+        reader.read(m, r, null) ;
+        assertEquals(2, m.size()) ;
+    }
+    
+    
     @Test public void updatePrefixMapping()
     {
         JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;

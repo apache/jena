@@ -29,6 +29,7 @@ import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish. */
@@ -454,7 +455,7 @@ public abstract class LangTurtleBase extends LangBase
         }
         Triple t = new Triple(subject, predicate, object) ;
         if ( VERBOSE ) 
-            log.info(PrintingSink.strForTriple(t)) ;
+            log.info(NodeFmtLib.str(t)) ;
         sink.send(new Triple(subject, predicate, object)) ;
     }
     

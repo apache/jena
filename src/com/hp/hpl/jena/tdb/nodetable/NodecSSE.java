@@ -19,8 +19,8 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.riot.tokens.TokenizerText;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 /** Simple encoder/decoder for nodes that uses the SSE string encoding. */
 
@@ -63,12 +63,7 @@ public class NodecSSE implements Nodec
         }
         
         // Node->String
-        String str ;
-        if ( node.isBlank() )
-            str = "_:"+node.getBlankNodeLabel() ;
-        else 
-            str = FmtUtils.stringForNode(node, pmap) ;
-        
+        String str = NodeFmtLib.serialize(node) ;
         // String -> bytes
         int x = Bytes.toByteBuffer(str, bb) ;
         bb.position(0) ;        // Around the space used

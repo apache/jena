@@ -13,9 +13,9 @@ public class DevTDB
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
     
-    // Encoding bnodes must avoid FmtUtils.
-    // Have NodecLib.encode.decode. -- never call FmtUtils.
-    // XXX CHECK
+    // Bug: FILTER (?o = ?unbound)
+    
+    // Sort out NodecSSE and NodecLib
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;

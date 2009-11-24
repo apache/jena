@@ -19,13 +19,12 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.IndexAssembler;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 public class TDBGraphAssembler extends AssemblerBase implements Assembler
 {
@@ -109,7 +108,7 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
                 System.out.printf("Index: %s\n", desc) ; System.out.flush();
                 continue ;
             }
-            throw new TDBException("Wrong format for tdb:index: should be a string: found: "+FmtUtils.stringForRDFNode(obj)) ; 
+            throw new TDBException("Wrong format for tdb:index: should be a string: found: "+NodeFmtLib.displayStr(obj)) ; 
             //          Resource x = (Resource)obj ;
             //          String desc = x.getProperty(pDescription).getString() ;
             //          String file = x.getProperty(pFile).getString() ;

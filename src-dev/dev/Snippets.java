@@ -12,7 +12,6 @@ import org.apache.log4j.Level;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.tdb.index.IndexTestLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -58,7 +58,7 @@ public class Snippets
             System.out.println("null node") ;
             return ;
         }
-        String y = FmtUtils.stringForNode(n2) ;
+        String y = NodeFmtLib.displayStr(n2) ;
         System.out.println("Output = "+y) ;
         if ( ! n.equals(n2) )
         {

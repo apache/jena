@@ -23,11 +23,11 @@ import com.hp.hpl.jena.graph.query.QueryHandler;
 
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.*;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -76,7 +76,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     {
         if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && getLog().isInfoEnabled() )
         {
-            String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
+            String $ = NodeFmtLib.displayStr(t, this.getPrefixMapping()) ;
             getLog().info("Duplicate: ("+$+")") ;
         }
     }

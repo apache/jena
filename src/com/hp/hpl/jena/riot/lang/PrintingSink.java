@@ -6,14 +6,11 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import org.slf4j.Logger;
-import atlas.lib.Sink;
+import org.slf4j.Logger ;
+import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 public class PrintingSink implements Sink<Triple>
 {
@@ -24,35 +21,15 @@ public class PrintingSink implements Sink<Triple>
     //@Override
     public void send(Triple triple)
     {
-        String string =
-            str(triple.getSubject())+" "+
-            str(triple.getPredicate())+" "+
-            str(triple.getObject()) ;
-        
+        String string = NodeFmtLib.str(triple) ;
         log.info(string) ;
     }
 
-    private static String str(Node n)
-    {
-        if ( n.isBlank() ) return "_:"+n.toString() ;
-        return FmtUtils.stringForNode(n) ;
-    }
-    
     //@Override
     public void flush() { }
     
     //@Override
     public void close() { }
-
-    public static String strForTriple(Triple triple)
-    {
-        String string =
-            str(triple.getSubject())+" "+
-            str(triple.getPredicate())+" "+
-            str(triple.getObject()) ;
-        return string ;
-    }
-
 }
 
 /*

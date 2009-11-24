@@ -20,7 +20,6 @@ import atlas.iterator.Transform ;
 import atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
@@ -40,21 +39,13 @@ public class NodeLib
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
-    // Used.
-    
     public static long encodeStore(Node node, StringFile file)
     {
-//        String s = encode(node) ;
-//        long x = file.write(s) ;
-//        return x ;
         return encodeStore(node, file.getByteBufferFile()) ;
     }
 
     public static Node fetchDecode(long id, StringFile file)
     {
-//        String s = file.read(id) ;
-//        Node n = decode(s) ;
-//        return n ;
         return fetchDecode(id, file.getByteBufferFile()) ;
     }
 
@@ -159,7 +150,7 @@ public class NodeLib
         {
             if ( i != 0 ) 
                 b.append(sep) ;
-            b.append(FmtUtils.stringForNode(nodes[i])) ;
+            b.append(NodeFmtLib.serialize(nodes[i])) ;
         }
         return b.toString() ;
     }
@@ -175,7 +166,6 @@ public class NodeLib
             }
         }) ;
     }
-
 }
 
 /*

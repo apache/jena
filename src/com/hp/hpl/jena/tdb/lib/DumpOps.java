@@ -16,7 +16,6 @@ import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -92,12 +91,7 @@ public class DumpOps
             Pair<NodeId, Node> pair = iter.next() ;
             NodeId nid = pair.car() ;
             Node n = pair.cdr();
-            String x ;
-            if ( n.isBlank() )
-                // raw bNode labels.
-                x = "_:"+n.getBlankNodeLabel() ;
-            else
-                x = FmtUtils.stringForNode(n) ;
+            String x = NodeFmtLib.serialize(n) ;
             System.out.printf("%016X %s\n", nid.getId(), x) ; 
         }
         dumpedNodeTables.add(nodeTable) ;

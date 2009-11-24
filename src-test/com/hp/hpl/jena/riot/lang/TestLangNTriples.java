@@ -6,16 +6,21 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.lib.SinkCounting;
-import atlas.io.PeekReader;
-import org.junit.Test;
-import atlas.test.BaseTest;
+import java.io.StringReader ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.riot.ParseException;
-import com.hp.hpl.jena.riot.lang.LangNTriples;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
+import org.junit.Test ;
+import atlas.io.PeekReader ;
+import atlas.lib.SinkCounting ;
+import atlas.test.BaseTest ;
+
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
+import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 
 
 public class TestLangNTriples extends BaseTest
@@ -57,6 +62,27 @@ public class TestLangNTriples extends BaseTest
         SinkCounting<Triple> sink = parse("<x> <y> \"123\"@lang.") ;
         assertEquals(1, sink.count) ;
     }
+    
+    @Test public void nt6()
+    {
+        String s = "_:a <p> 'foo' . " ;
+        StringReader r = new StringReader(s) ;
+        Model m = ModelFactory.createDefaultModel() ;
+        
+        RDFReader reader = new JenaReaderNTriples2() ;
+        reader.read(m, r, null) ;
+        assertEquals(1, m.size()) ;
+        
+        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
+        assertNotEquals(x, "a") ;
+        
+
+        // reset - reread -  new bNode.
+        r = new StringReader(s) ;
+        reader.read(m, r, null) ;
+        assertEquals(2, m.size()) ;
+    }
+    
     // Test iterator interface.
 
     // Test parse errors interface.

@@ -6,21 +6,19 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import atlas.logging.Log;
+import atlas.logging.Log ;
 
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 
@@ -129,7 +127,7 @@ public class BindingTDB extends BindingBase
         if ( id != null )
             extra = "/"+id ;
         Node node = get(var) ;
-        String tmp = FmtUtils.stringForObject(node) ;
+        String tmp = NodeFmtLib.displayStr(node) ;
         sbuff.append("( ?"+var.getVarName()+extra+" = "+tmp+" )") ;
     }
 }

@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 
 /** Utilities for encoding/decoding nodes as strings.
@@ -34,6 +34,7 @@ public class NodecLib
     public static String encode(Node node, PrefixMapping pmap)
     {
         if ( node.isBlank() )
+            // Raw label.
             return "_:"+node.getBlankNodeLabel() ;
         if ( node.isURI() ) 
         {
@@ -44,7 +45,7 @@ public class NodecLib
                 node = Node.createURI(x) ; 
         }
         
-        return FmtUtils.stringForNode(node, pmap) ;
+        return NodeFmtLib.serialize(node) ;
     }
 
     public static Node decode(String s)     { return decode(s, null) ; }
@@ -66,13 +67,9 @@ public class NodecLib
         
         try {
             // SSE invocation is expensive (??).
+            // Try TokenizerText?
+            // Use for literals only.
             Node n = SSE.parseNode(s, pmap) ;
-//            if ( n.isURI() )
-//            {
-//                String x = StrUtils.decode(n.getURI(), MarkerChar) ;
-//                if ( x != n.getURI() )
-//                    n = Node.createURI(x) ;
-//            }
             return n ;
         } catch (SSEParseException ex)
         {

@@ -23,6 +23,7 @@ import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
@@ -50,6 +51,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class RunTDB
 {
@@ -65,6 +67,19 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        /*
+         * I think the bug is in TransformFilterPlacement, because the Filter doesn't wrap around the OpBGP after insertAnyFilter():
+  if ( patternVarsScope.containsAll(exprVars) ) // some vars like ?unbound are out of scope 
+         */
+        {
+            Dataset test = DatasetFactory.create() ; //TDBFactory.createDataset();
+            test.asDatasetGraph().getDefaultGraph().add(new Triple(Node.createAnon(), RDF.type.asNode(), Node.createURI("http://example.com/A")));
+            Query qry = QueryFactory.create("SELECT * WHERE { ?s ?p ?o FILTER (?o = ?unbound) }");
+            QueryExecution qe = QueryExecutionFactory.create(qry, test);
+            ResultSetFormatter.out(qe.execSelect());
+            System.exit(0) ;
+        }
+
         tdb.turtle.main("D.ttl") ; System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "--set=tdb:logExec=info", "SELECT * {GRAPH ?g { ?s ?p ?o}}") ;

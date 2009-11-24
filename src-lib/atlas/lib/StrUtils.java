@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.n3.turtle.ParserBase;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
 
@@ -86,16 +86,6 @@ public class StrUtils extends StringUtils
     }
     
 
-    
-    // See FmtUtils.toString()
-//    public static String toString(Printable f)
-//    { 
-//        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-//        IndentedWriter out = buff.getIndentedWriter() ;
-//        f.output(out) ;
-//        out.flush();
-//        return buff.toString() ;
-//    }
     
     public static String str(Object x)
     {
