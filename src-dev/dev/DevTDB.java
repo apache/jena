@@ -10,13 +10,24 @@ package dev;
 public class DevTDB
 {
     // == 0.8.4
+    // RC-1
+    // ARQ fix?
+
+    
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
+    //   Remove NodeTableFcatory and have one per-technology setup/maker
     
     // Sort out NodecSSE and NodecLib
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
+    
+    // ===
+    // -> Stopping long running queries - 
+    //    hook in BGQ/Quad patterns
+    // -> Dynamic datasets
+    // -> MRSW checking
     
     // Where is IndexBuilder used now?
     // Interface is IndexFactory and includes the record factory.
@@ -25,8 +36,6 @@ public class DevTDB
     // Meaning of cache sizes is per-type  
     
     // Need control over caching sizes etc.
-    
-    // Ensure that there 
     
     // Setup
     // Const for names.
@@ -46,9 +55,6 @@ public class DevTDB
     //   IndexMakers?
     // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
-
-    // FROM NAMED pick and mix
-    
     // See metadata stuff in BPlusTreeParams
     // Test.
     
