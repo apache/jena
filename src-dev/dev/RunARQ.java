@@ -83,11 +83,22 @@ public class RunARQ
         // Must mention.
         
         Transform transform   = new TransformEqualityFilter() ;
+
+        {
+            divider() ;
+            Op op = SSE.parseOp("(filter (= ?unused <x>) (bgp (?s ?p ?x)))") ;
+            Op op2 = Transformer.transform(transform, op) ;
+            System.out.println(op) ;
+            System.out.println(op2) ;
+        }
+        {
+            divider() ;
+            Op op = SSE.parseOp("(filter (= ?used <x>) (bgp (?s ?p ?used)))") ;
+            Op op2 = Transformer.transform(transform, op) ;
+            System.out.println(op) ;
+            System.out.println(op2) ;
+        }
         
-        Op op = SSE.parseOp("(filter (= ?unused <x>) (bgp (?s ?p ?x)))") ;
-        Op op2 = Transformer.transform(transform, op) ;
-        System.out.println(op) ;
-        System.out.println(op2) ;
         System.exit(0) ;
         
         

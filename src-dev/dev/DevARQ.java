@@ -10,8 +10,6 @@ public class DevARQ
 {
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
-    // Equality FILTER optimization - need to test that var is actually used in subexpression
-	// {?z <p> <q> filter (?x = <x>)}
     
     // MicroAPI.
     // ARQ warnings on cross product and unused project vars 

@@ -55,6 +55,14 @@ public class TestFilterTransform
              (String[])null) ;
     }
     
+    @Test public void equality04()
+    {
+        // Unused
+        test("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
+             t_equality,
+             (String[])null) ;
+    }
+    
     
     @Test public void disjunction01()
     {

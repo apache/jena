@@ -6,22 +6,25 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import java.util.Set ;
+
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.E_Equals;
-import com.hp.hpl.jena.sparql.expr.E_SameTerm;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprFunction2;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.E_Equals ;
+import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprFunction2 ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class TransformEqualityFilter extends TransformCopy
 {
@@ -47,12 +50,15 @@ public class TransformEqualityFilter extends TransformCopy
         
         ExprList exprs = opFilter.getExprs() ;
         Op op = subOp ;
+        // Variables set
+        Set<Var> patternVars = OpVars.patternVars(op) ;
+        
         // Any assignments must go inside filters so the filters see the assignments.
         ExprList exprs2 = new ExprList() ;
         
         for (  Expr e : exprs.getList() )
         {
-            Op op2 = processFilter(e, op) ;
+            Op op2 = processFilterWorker(e, op, patternVars) ;
             if ( op2 == null )
                 exprs2.add(e) ;
             else
@@ -68,7 +74,7 @@ public class TransformEqualityFilter extends TransformCopy
     /** Return an optimized filter for equality expressions */
     public static Op processFilterOrOpFilter(Expr e, Op subOp)
     {
-        Op op2 = processFilter(e, subOp) ;
+        Op op2 = processFilterWorker(e, subOp, null) ;
         if ( op2 == null )
             op2 = OpFilter.filter(e, subOp) ;
         return op2 ;
@@ -77,6 +83,13 @@ public class TransformEqualityFilter extends TransformCopy
     /** Return null for "no change" */
     public static Op processFilter(Expr e, Op subOp)
     {
+        return processFilterWorker(e, subOp, null) ;
+    }
+
+    private static Op processFilterWorker(Expr e, Op subOp, Set<Var> patternVars)
+    {
+        if ( patternVars == null )
+            patternVars = OpVars.patternVars(subOp) ;
         // Rewrites: 
         // FILTER ( ?x = :x ) for IRIs and bNodes, not literals 
         //    (to preserve value testing in the filter, and not in the graph). 
@@ -108,6 +121,9 @@ public class TransformEqualityFilter extends TransformCopy
         if ( var == null || constant == null )
             return null ;
 
+        if ( !patternVars.contains(var) )
+            return null ;
+        
         // Corner case: sameTerm is false for string/plain literal, 
         // but true in the graph for graph matching. 
         if (e instanceof E_SameTerm)
