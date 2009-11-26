@@ -13,8 +13,11 @@ public enum TokenType
     PREFIXED_NAME, 
     BNODE,
     //BOOLEAN,
+    // One kind of string?
+    STRING,         // Tokne created programmatically and superclass of ...
     STRING1, STRING2,
     LONG_STRING1, LONG_STRING2,
+    
     LITERAL_LANG, LITERAL_DT,
     INTEGER, DECIMAL, DOUBLE,
     

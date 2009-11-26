@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import atlas.lib.Pair ;
+
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 
@@ -76,6 +78,20 @@ public class PrefixMap
         }
         return null ;
     }
+    
+    /** Abbrevaite an IRI or retrn null */
+    public Pair<String, String> abbrev(String uriStr)
+    {
+        for ( Entry<String, IRI> e : prefixes.entrySet())
+        {
+            String prefix = e.getValue().toString() ;
+            
+            if ( uriStr.startsWith(prefix) )
+                return new Pair<String, String>(e.getKey(), uriStr.substring(prefix.length())) ;
+        }
+        return null ;
+    }
+
     
     /** Expand a prefix, return null if it can't be expanded */
     public String expand(String prefix, String localName) 

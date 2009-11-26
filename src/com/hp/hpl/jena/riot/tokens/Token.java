@@ -22,15 +22,20 @@ import static com.hp.hpl.jena.riot.tokens.TokenType.INTEGER;
 import static com.hp.hpl.jena.riot.tokens.TokenType.IRI;
 import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_DT;
 import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_LANG;
-import static com.hp.hpl.jena.riot.tokens.TokenType.STRING2;
+import static com.hp.hpl.jena.riot.tokens.TokenType.STRING;
 import static com.hp.hpl.jena.riot.tokens.TokenType.VAR;
+
+import atlas.lib.Pair ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.riot.PrefixMap ;
+import com.hp.hpl.jena.riot.Prologue ;
 import com.hp.hpl.jena.riot.RiotException;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -38,9 +43,8 @@ public final class Token
 {
     private TokenType tokenType = null ;
     private String tokenImage = null ;
-    //private String tokenImage1 = null ;
-    private String tokenImage2 = null ;
-    private Token subToken = null ;     // A related token (used for datatype literals)
+    private String tokenImage2 = null ;     // Used for language tag and second part of prefix name
+    private Token subToken = null ;         // A related token (used for datatype literals)
     public int cntrlCode = 0 ;
     private long column ;
     private long line ;
@@ -69,17 +73,26 @@ public final class Token
         return line ;
     }
     
-    private Token(TokenType type) { this(type, null, null) ; }
+    private Token(TokenType type) { this(type, null, null, null) ; }
     
-    private Token(TokenType type, String image1) { this(type, image1, null) ; }
+    private Token(TokenType type, String image1) { this(type, image1, null, null) ; }
     
     private Token(TokenType type, String image1, String image2)
-    { 
+    { this(type, image1, image2, null) ; }
+
+    private Token(TokenType type, String image1, Token subToken)
+    { this(type, image1, null, subToken) ; }
+
+
+    private Token(TokenType type, String image1, String image2, Token subToken)
+    {
         this() ;
         setType(type) ;
         setImage(image1) ;
         setImage2(image2) ;
+        setSubToken(subToken) ;
     }
+
     
     private Token() { this(-1, -1) ; }
     
@@ -172,6 +185,7 @@ public final class Token
             case INTEGER:
             case LITERAL_DT:
             case LITERAL_LANG:
+            case STRING:
             case STRING1:
             case STRING2:
             case LONG_STRING1:
@@ -206,6 +220,7 @@ public final class Token
         {
             case LITERAL_DT:
             case LITERAL_LANG:
+            case STRING:
             case STRING1:
             case STRING2:
             case LONG_STRING1:
@@ -219,7 +234,9 @@ public final class Token
     // Validation of URIs?
     
     /** Token to Node, a very direct form that is purely driven off the token.
-     *  Turtle and N-triples need to process the token and not call this.
+     *  Turtle and N-triples need to process the token and not call this:
+     *  1/ USes bNode label as given
+     *  2/ No prefix or URI resolution.
      */
     public Node asNode()
     {
@@ -242,6 +259,7 @@ public final class Token
                 return Node.createLiteral(tokenImage, null, dt)  ;
             }
             case LITERAL_LANG : return Node.createLiteral(tokenImage, tokenImage2, null)  ;
+            case STRING:
             case STRING1:
             case STRING2:
             case LONG_STRING1:
@@ -300,12 +318,36 @@ public final class Token
     {
         return new Token(TokenType.KEYWORD, word) ; 
     }
-    
+
     public static Token tokenForNode(Node n)
-        {
+    {
+        return tokenForNode(n, null, null) ;
+    }
+
+    public static Token tokenForNode(Node n, Prologue prologue)
+    {
+        return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
+    }
+
+    public static Token tokenForNode(Node n, String base, PrefixMap mapping)
+    {
             if ( n.isURI() )
-                // Prefixing.
+            {
+                String uri = n.getURI();
+                if ( mapping != null )
+                {
+                    Pair<String,String> pname = mapping.abbrev(uri) ;
+                    if ( pname != null )
+                        return new Token(TokenType.PREFIXED_NAME, pname.getLeft(), pname.getRight()) ;
+                }
+                if ( base != null )
+                {
+                    String x = FmtUtils.abbrevByBase(uri, base) ;
+                    if ( x != null ) 
+                        return new Token(TokenType.IRI, x) ;
+                }
                 return new Token(IRI, n.getURI()) ;
+            }
             if ( n.isBlank() )
                 return new Token(BNODE, n.getBlankNodeLabel()) ;
             if ( n.isVariable() )
@@ -371,14 +413,17 @@ public final class Token
     //                }
                     // Not a recognized form.
                     // Has datatype.
-                    return new Token(LITERAL_DT, s, datatype) ;    // WRONG-ish
+                    
+                    Node dt = Node.createURI(datatype) ;
+                    Token subToken = tokenForNode(dt) ;
+                    return new Token(LITERAL_DT, s, subToken) ;
                 }
     
                 if ( lang != null && lang.length()>0)
                     return new Token(LITERAL_LANG, s, lang) ; 
                 
                 // Plain.
-                return new Token(STRING2, s) ; 
+                return new Token(STRING, s) ; 
             }
             
             throw new IllegalArgumentException() ;

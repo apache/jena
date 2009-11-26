@@ -466,7 +466,7 @@ public abstract class LangTurtleBase extends LangBase
     {
         switch(token.getType())
         {
-            // Assumes that bnode labes have been sorted out already.
+            // Assumes that bnode labels have been sorted out already.
             case BNODE : 
             {
                 String label = token.getImage() ;
@@ -506,6 +506,7 @@ public abstract class LangTurtleBase extends LangBase
             case LITERAL_LANG : 
                 return Node.createLiteral(token.getImage(), token.getImage2(), null)  ;
                 
+            case STRING:                
             case STRING1:
             case STRING2:
             case LONG_STRING1:

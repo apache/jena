@@ -12,6 +12,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.riot.PrefixMap ;
+import com.hp.hpl.jena.riot.Prologue ;
 import com.hp.hpl.jena.riot.RiotChars ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -43,9 +45,16 @@ public class NodeFmtLib
     private static final boolean onlySafeBNodeLabels = false ;
 
     public static String displayStr(Node n) { return FmtUtils.stringForNode(n) ; }
+
+    public static String serialize(Node n)
+    { return  serialize(n, null, null) ; }
+
+    public static String serialize(Node n, Prologue prologue)
+    { return  serialize(n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
+
     
     /** Encoding of a node so it can be reconstructed */ 
-    public static String serialize(Node n)
+    public static String serialize(Node n, String base, PrefixMap prefixMap)
     {
         // See also Nodec.
         if ( n == null )
@@ -65,7 +74,7 @@ public class NodeFmtLib
         if ( n.isURI() )
         {
             String uri = n.getURI() ;
-            return FmtUtils.stringForURI(uri, null, null) ;
+            return stringForURI(uri, base, prefixMap) ;
         }
         
         // Safe name?
@@ -79,6 +88,24 @@ public class NodeFmtLib
         //return null ;
     }
     
+    // c.f. FmtUtils.stringForURI
+    // Uses PrefixMap, not PrefixMapping
+    static String stringForURI(String uri, String base, PrefixMap mapping)
+    {
+        if ( mapping != null )
+        {
+            String pname = mapping.abbreviate(uri) ;
+            if ( pname != null )
+                return pname ;
+        }
+        if ( base != null )
+        {
+            String x = FmtUtils.abbrevByBase(uri, base) ;
+            if ( x != null ) 
+                return "<"+x+">" ;
+        }
+        return FmtUtils.stringForURI(uri) ; 
+    }
     
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X' ;

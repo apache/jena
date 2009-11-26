@@ -12,6 +12,7 @@ import com.hp.hpl.jena.riot.lang.TestLangTurtle;
 import com.hp.hpl.jena.riot.lang.TestSuiteTurtle;
 import com.hp.hpl.jena.riot.lang.TestTurtleInternal;
 import com.hp.hpl.jena.riot.out.TestOutputNTriples;
+import com.hp.hpl.jena.riot.tokens.TestTokenForNode ;
 import com.hp.hpl.jena.riot.tokens.TestTokenizer;
 
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
       TestTokenizer.class
+    , TestTokenForNode.class
     , TestPrefixMap.class
     , TestIRI.class
     , TestTurtleInternal.class

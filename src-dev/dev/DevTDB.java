@@ -10,24 +10,28 @@ package dev;
 public class DevTDB
 {
     // == 0.8.4
-    // RC-1
-    // ARQ fix?
+    // RC-1 ...
 
     
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
     //   Remove NodeTableFcatory and have one per-technology setup/maker
     
+    // Grand roll out
+    //    riot to ARQ, PrrefixMapping=>PrfixMap, Prologue change.
+    //    FmtUtils and NodeFmtLib 
+    
     // Sort out NodecSSE and NodecLib
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
     
-    // ===
+    // === Projects
     // -> Stopping long running queries - 
     //    hook in BGQ/Quad patterns
     // -> Dynamic datasets
     // -> MRSW checking
+    // -> BDB-JE & transactions
     
     // Where is IndexBuilder used now?
     // Interface is IndexFactory and includes the record factory.
