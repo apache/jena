@@ -14,6 +14,10 @@ public class DevARQ
     // MicroAPI.
     // ARQ warnings on cross product and unused project vars 
     
+    // public class FmtUtils
+    // Consider a temporary SerialzationContext that does not abbreviate bNodes.
+    // PrefixMapping impl around PrefixMap.
+    
     // ==== ARQ
     // JMX
     //   Document

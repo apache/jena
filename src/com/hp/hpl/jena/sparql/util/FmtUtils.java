@@ -24,12 +24,15 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-/**
- * @author   Andy Seaborne
+/** Presentation forms of various kinds of objects.
+ *  Beware that bNodes are abbreviated to _:b0 etc.
  */
 
 public class FmtUtils
 {
+    // Consider withdrawing non-serialzation context forms of this.
+    // Or a temporary SerialzationContext does not abbreviate bNodes.
+    // Rename as PresentationUtils (!!)
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;

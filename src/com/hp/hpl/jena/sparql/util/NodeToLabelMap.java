@@ -29,6 +29,8 @@ public class NodeToLabelMap
     
     public NodeToLabelMap(String prefix, boolean bNodesAsFakeURIs)
     {
+        if ( prefix == null || prefix.equals("") )
+            throw new IllegalArgumentException("Must provide a prefix") ;
         this.prefixString = "_:"+prefix ;
         this.bNodesAsFakeURIs = bNodesAsFakeURIs ;
     }
@@ -60,23 +62,7 @@ public class NodeToLabelMap
 
         return  prefixString+(bNodeCounter++) ;
     }
-    
-//    /**
-//     * @return Returns the bNodesAsFakeURIs.
-//     */
-//    public boolean isBNodesAsFakeURIs()
-//    {
-//        return bNodesAsFakeURIs ;
-//    }
-//
-//    /**
-//     * @param nodesAsFakeURIs The bNodesAsFakeURIs to set.
-//     */
-//    public void setBNodesAsFakeURIs(boolean nodesAsFakeURIs)
-//    {
-//        bNodesAsFakeURIs = nodesAsFakeURIs ;
-//    }
-//
+
 //    /**
 //     * @return Returns the prefix.
 //     */
