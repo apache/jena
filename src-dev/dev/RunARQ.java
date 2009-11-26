@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -82,7 +82,7 @@ public class RunARQ
         // ??LHS of opt.
         // Must mention.
         
-        Transform transform   = new TransformEqualityFilter() ;
+        Transform transform   = new TransformFilterEquality() ;
 
         {
             divider() ;

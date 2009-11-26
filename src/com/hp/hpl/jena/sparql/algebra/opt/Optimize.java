@@ -127,7 +127,7 @@ public class Optimize implements Rewrite
         // Do this before filter placement and other sequence generating transformations.
         // or improve to place in a sequence. 
 
-        op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
+        op = apply("Filter Equality", new TransformFilterEquality(), op) ;
         
         if ( disjunctionOptimization)
          op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;

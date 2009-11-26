@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.query.Query;
 /** Utilities to produce SPARQL algebra */
 public class Algebra
 {
-    private static Transform optimization() { return new TransformEqualityFilter() ; }
+    private static Transform optimization() { return new TransformFilterEquality() ; }
     
     // -------- Optimize
     

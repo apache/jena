@@ -91,7 +91,7 @@ public class TransformFilterDisjunction extends TransformCopy
         Op op = null ;
         for ( Expr e : exprList )
         {
-            Op op2 = TransformEqualityFilter.processFilter(e, subOp) ;
+            Op op2 = TransformFilterEquality.processFilter(e, subOp) ;
             if ( op2 == null )
             {
                 if ( exprList2 == null )

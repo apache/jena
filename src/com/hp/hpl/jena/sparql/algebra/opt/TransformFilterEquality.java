@@ -24,15 +24,16 @@ import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2 ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
-public class TransformEqualityFilter extends TransformCopy
+public class TransformFilterEquality extends TransformCopy
 {
     // TODO (Carefully) Two forms - aggressive and strict
     //Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
     // Extend to disjunctions of equalties.
     
-    public TransformEqualityFilter() {}
+    public TransformFilterEquality() {}
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
@@ -91,6 +92,7 @@ public class TransformEqualityFilter extends TransformCopy
         if ( patternVars == null )
             patternVars = OpVars.patternVars(subOp) ;
         // Rewrites: 
+        // FILTER ( ?x = ?y ) 
         // FILTER ( ?x = :x ) for IRIs and bNodes, not literals 
         //    (to preserve value testing in the filter, and not in the graph). 
         // FILTER ( sameTerm(?x, :x ) ) etc
@@ -104,8 +106,19 @@ public class TransformEqualityFilter extends TransformCopy
         ExprFunction2 eq = (ExprFunction2)e ;
         Expr left = eq.getArg1() ;
         Expr right = eq.getArg2() ;
+
+        // This gets cardinality wrong.
+//        if ( left.isVariable() && right.isVariable() )
+//        {
+//            // Both must be used or else.
+//            if ( patternVars.contains(left.asVar()) &&
+//                 patternVars.contains(right.asVar()) )
+//                return subst(subOp, left.getExprVar(), right.getExprVar()) ;
+//        }
+        
         Var var = null ;
         NodeValue constant = null ;
+        
 
         if ( left.isVariable() && right.isConstant() )
         {
@@ -148,6 +161,15 @@ public class TransformEqualityFilter extends TransformCopy
         Op op = Substitute.substitute(subOp, var, nv.asNode()) ;
         return OpAssign.assign(op, var, nv) ;
     }
+    
+    private static Op subst(Op subOp , ExprVar var1, ExprVar var2)
+    {
+        // Replace var2 with var1
+        Op op = Substitute.substitute(subOp, var2.asVar(), var1.asVar()) ;
+        // Insert LET(var2:=var1)
+        return OpAssign.assign(op, var2.asVar(), var1) ;
+    }
+
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

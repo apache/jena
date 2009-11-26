@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -28,7 +28,7 @@ public class TestFilterTransform
         return new JUnit4TestAdapter(TestFilterTransform.class) ;
     }
     
-    private Transform t_equality    = new TransformEqualityFilter() ;
+    private Transform t_equality    = new TransformFilterEquality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;
     

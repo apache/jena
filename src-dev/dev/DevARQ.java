@@ -11,6 +11,9 @@ public class DevARQ
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
     
+    // FILTER (?x=?y) rewrite.
+    // But cardinailty changes: see processFilterWorker
+    
     // MicroAPI.
     // ARQ warnings on cross product and unused project vars 
     
