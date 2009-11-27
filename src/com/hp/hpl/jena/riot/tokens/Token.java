@@ -56,12 +56,12 @@ public final class Token
     public final int getCntrlCode()  { return cntrlCode ; }
     public final Token getSubToken() { return subToken ; }
     
-    public final void setType(TokenType tokenType)    { this.tokenType = tokenType ; }
-    public final void setImage(String tokenImage)     { this.tokenImage = tokenImage ; }
-    //public final void setImage1(String tokenImage1)   { this.tokenImage1 = tokenImage1 ; }
-    public final void setImage2(String tokenImage2)   { this.tokenImage2 = tokenImage2 ; }
-    public final void setCntrlCode(int cntrlCode)     { this.cntrlCode = cntrlCode ; }
-    public final void setSubToken(Token subToken)     { this.subToken = subToken ; }
+    public final Token setType(TokenType tokenType)    { this.tokenType = tokenType ; return this ; }
+    public final Token setImage(String tokenImage)     { this.tokenImage = tokenImage ; return this ; }
+    //public final Token setImage1(String tokenImage1)   { this.tokenImage1 = tokenImage1 ; return this ; }
+    public final Token setImage2(String tokenImage2)   { this.tokenImage2 = tokenImage2 ; return this ; }
+    public final Token setCntrlCode(int cntrlCode)     { this.cntrlCode = cntrlCode ; return this ; }
+    public final Token setSubToken(Token subToken)     { this.subToken = subToken ; return this ; }
     
     public long getColumn()
     {
