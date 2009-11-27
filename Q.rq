@@ -1,7 +1,21 @@
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  :       <http://example.org/>
+PREFIX  o:    <http://example>
+PREFIX  :    <http://example>
 
 SELECT *
 {
-   ?s :p ?o . FILTER(?o = 13 || ?o = 12 )
-} 
+    ?x :p ?y .
+    ?z :p ?y .
+    FILTER(?x = ?z)
+}
+
+
+## SELECT DISTINCT  *
+## WHERE
+##   { ?d2      o:hasCode       "15" ;
+##              o:hasInitiator  ?writer .
+##     ?writer  o:hasUserName   ?writerName .
+##     ?d1      o:hasCode       "21" ;
+##              o:hasInitiator  ?reader .
+##     ?reader  o:hasUserName   ?readerName .
+##     FILTER ( ?d1 = ?d2 && ?writer != ?reader )
+##   }
