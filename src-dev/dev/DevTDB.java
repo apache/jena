@@ -10,6 +10,7 @@ package dev;
 public class DevTDB
 {
     // == 0.8.4
+    // BUILD: Make sure ivy.xml set to ARQ 2.8.2
     // RC-1 ...
 
     
@@ -24,9 +25,8 @@ public class DevTDB
     // Sort out NodecSSE and NodecLib
     
     // Better build
-    // tdbverify - 
     
-    // 1/ ivy resolve and then use that for compile
+    // 1/ ivy resolve and then use that for compile [DONE]
     // 2/ Order: publish, then release 
     // build-lib/xyz.xml
     //   Split build-lib.xml in tasks and general settings

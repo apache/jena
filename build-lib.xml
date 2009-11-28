@@ -183,11 +183,20 @@ deploy
     <property name="java.source"      value="1.5"/>
     <property name="java.target"      value="1.5"/>
   </target>
+  
+  <!-- ========================================== -->
+  <!-- ==== Initialization tasks -->
         
+  <target name="init">
+    <echo message="Build: ${artifact.base} ${build.time.txt}"/>
+  </target>
+
   <target name="set-classpath">
     <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
     <path id="java.build.class.path">
-      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+      <!--<path refid="dependences.classpath"/>-->
+      <!-- <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/> -->
+      <fileset dir="lib" includes="*.jar" excludes="${jarfile}"/>
     </path>
     <path id="java.build.test.class.path">
       <pathelement path="${build.classes.dir}" />
@@ -195,13 +204,9 @@ deploy
     </path>
   </target>          
 
-  <target name="init">
-    <echo message="Build: ${artifact.base}"/>
-  </target>
+  <target name="java-init" depends="init,javac-flags,dependences,set-classpath"/>
 
-  <target name="java-init" depends="init,javac-flags,set-classpath"/>
-
-  <target name="dependences" />
+  <target name="dependences" depends="ivy-resolve"/>
 
   <!-- ========================================== -->
   <!-- ==== Build, compile, jar, javadoc -->
@@ -212,10 +217,9 @@ deploy
     <mkdir dir="${build.classes.dir}"/>
 
     <!--
-    <pathconvert pathsep=":" property="the-clases" refid="java.build.class.path" />
-    <echo message="${the-source-path}"/>
+    <pathconvert pathsep=" " property="the-classpath" refid="java.build.class.path" />
+    <echo message="java.build.class.path:: ${the-classpath}"/>
     -->
-
     <javac destdir="${build.classes.dir}"
            debug="${java.debug}"
            deprecation="${java.debuglevel}"
@@ -472,25 +476,23 @@ deploy
   </target>
 
   <!-- DEVELOPMENT : lib2/ -->
-  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
+  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve" 
           description="Resolve and fetch dependences with Ivy">
     <!-- sync causes artifacts and versions no longer need to be deleted -->
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
-    <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
-    
-    <!--
-    <pathconvert refid="ivy.dev.classpath" property="tmp" />
-    <echo message="Path: ${tmp}"/>
-    -->
   </target>
 
-  <target name="ivy-resolve" depends="ivy-resolve-report" description="Resolve dependences"/>
-
-  <target name="ivy-resolve-report" depends="ivy-init">
+  <target name="ivy-resolve" depends="ivy-init" description="Resolve dependences">
     <ivy:resolve conf="main"
                  haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
+
+    <ivy:cachepath pathid="dependences.classpath" conf="dev" />
+    <!--
+    <pathconvert refid="dependences.classpath" property="tmp" />
+    <echo message="Path: ${tmp}"/>
+    -->
   </target>
 
   
