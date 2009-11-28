@@ -10,8 +10,10 @@ package dev;
 public class DevTDB
 {
     // == 0.8.4
+    // RC-2 next.
+    
+    // Final: ARQ 2.8.2 first.
     // BUILD: Make sure ivy.xml set to ARQ 2.8.2
-    // RC-1 ...
 
     
     // Eclipse container for ivy/maven etc
@@ -24,15 +26,16 @@ public class DevTDB
     
     // Sort out NodecSSE and NodecLib
     
-    // Better build
-    
-    // 1/ ivy resolve and then use that for compile [DONE]
-    // 2/ Order: publish, then release 
-    // build-lib/xyz.xml
-    //   Split build-lib.xml in tasks and general settings
-    //   build-lib.xml is settings and a bunch of imports
-    //     build-ivy including setting classpath
-    //     build-tasks (assumes classpaths etc set) 
+    // == Better build?
+    // Classpath for junit - the jar files?
+    // 1/ build => target/
+    // 2/ lib-build/
+    //      build-settings.xml
+    //      build-ivy.xml or build-basic.xml ==> ${dependences.classpath}
+    //      build-tasks.xml (assumes settings)
+    //      build-lib.xml   Main 
+    //      build-dist.xml  Assembly - provides "package"
+    // or is this too detailed?
     
     
     

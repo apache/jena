@@ -68,8 +68,7 @@ deploy
        clean      clean up
        clean-once clean up once - can depend on this repeatedly - will run first time only.
        compile    compile sources
-       jar        make jar, once
-       build.jar  make jar
+       jar        make jar
        release    make a release
        publish    export to maven
        test       Run the test suite (runs once)
@@ -99,6 +98,8 @@ deploy
        JUnit test suites look like TS_*
        
   -->
+
+  <!-- Debugging - run "ant -d" and look for build sequence -->
   
   <!-- Set version from components (if not already set) -->
   <property    name="version"             value="unset"/>
@@ -120,7 +121,7 @@ deploy
   <property name="src.zipfile"            value="${artifact.base}-src.zip"/>
   <property name="javadoc.zipfile"        value="${artifact.base}-javadoc.zip"/>
 
-  <!-- Places -->
+  <!-- Places in distribution-->
   <property name="doc.dir"                value="doc"/>
   <property name="javadoc.dir"            value="${doc.dir}/javadoc"/>
   <property name="javadoc.all.dir"        value="${doc.dir}/javadoc-all"/>
@@ -140,7 +141,10 @@ deploy
   <property name="ivy.keyfile"            location="${env.IVYKEY}"/>
   <property name="ivy.user"               value="${env.IVYUSER}"/>
 
+  <property name="ivy.fetch.dir"          value="lib2"/>
+  <property name="package.lib.dir"        value="${ivy.fetch.dir}"/>
   <!-- Other -->
+
   <property name="javadoc.title"          value="${Name}"/>
   <property name="javadoc.window.title"   value="${Name}-${version-major}.${version-minor} Javadoc"/>
 
@@ -194,9 +198,7 @@ deploy
   <target name="set-classpath">
     <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
     <path id="java.build.class.path">
-      <!--<path refid="dependences.classpath"/>-->
-      <!-- <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/> -->
-      <fileset dir="lib" includes="*.jar" excludes="${jarfile}"/>
+      <path refid="dependences.classpath"/>
     </path>
     <path id="java.build.test.class.path">
       <pathelement path="${build.classes.dir}" />
@@ -206,7 +208,8 @@ deploy
 
   <target name="java-init" depends="init,javac-flags,dependences,set-classpath"/>
 
-  <target name="dependences" depends="ivy-resolve"/>
+  <!--<target name="dependences" depends="ivy-resolve"/>-->
+  <target name="dependences" depends="ivy-fetch"/>
 
   <!-- ========================================== -->
   <!-- ==== Build, compile, jar, javadoc -->
@@ -257,10 +260,12 @@ deploy
     </copy>
   </target>
 
-  <target name="build.jar" depends="compile">
+  <target name="jar" depends="compile,build-properties,package.jar">
     <!-- Insert the properties for the build into the class area -->
+    <!--
     <antcall target="build-properties"/>
     <antcall target="package.jar"/>
+    -->
   </target>
 
   <target name="package.jar">
@@ -328,14 +333,15 @@ deploy
 
   <!-- Not depends="build.jar" because that will always be run even if the body is "unless"'ed out -->
 
-  <target name="jar" 
-	  description="Compile and build the jar"
+  <target name="jar-once" 
+	  description="Compile and build the jar, once"
 	  unless="jar.run">
-    <antcall target="build.jar"/>
+    <antcall target="jar"/>
     <property name="jar.run" value="done"/>
   </target>
 
-  <target name="build" depends="clean,jar,report,src-zip" description="Clean build of the jar, and snapshot the sources used"/>
+  <target name="build" depends="clean,jar,report,src-zip" 
+	  description="Clean build of the jar, and snapshot the sources used"/>
 
   <!-- ========================================== -->
   <!-- ==== Zipping -->
@@ -386,28 +392,24 @@ deploy
   <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
   <target name="artifacts" 
           depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
-  
+
+  <!-- Includes makign the zip file -->
   <target name="publish" description="Build and publish this version"
-          depends="clean-once,artifacts,test,pre-publish,ivy-publish">
+          depends="clean,artifacts,test,pre-publish,ivy-publish,post-publish">
   </target>
 
   <!-- maven name - alias for compatibility -->
   <target name="deploy" depends="publish"/>
 
-  <target name="pre-publish" depends="release"/>
-  
-  <target name="publish-test" description="Build and publish this version (locally, for testing)"
-	  depends="clean-once,artifacts,test,ivy-publish-dev">
-  </target>
+  <target name="pre-publish" depends="package"/>
+
+  <target name="post-publish"/>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
-  <target name="test" unless="test.run"
-	  description="Run the test suite">
-    <antcall target="junit"/>
-    <property name="test.run" value="done"/>
-  </target>
+  <target name="test" depends="junit"
+	  description="Run the test suite"/>
 
   <target name="junit" 
 	  depends="run-junit,run-report" description="Run the test suite">
@@ -427,7 +429,7 @@ deploy
   <target name="pre-run-junit"/>
 
   <target name="run-junit"
-	  depends="clean-once,jar,pre-run-junit,clean-reports">
+	  depends="clean,jar,pre-run-junit,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 
@@ -475,9 +477,23 @@ deploy
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
   </target>
 
-  <!-- DEVELOPMENT : lib2/ -->
-  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve" 
+  <target name="ivy-fetch" depends="ivy-init" 
           description="Resolve and fetch dependences with Ivy">
+    <ivy:resolve conf="main"/>
+    <!-- sync causes artifacts and versions no longer need to be deleted -->
+    <ivy:retrieve conf="main" pattern="${ivy.fetch.dir}/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
+    <!-- packaging also excludes sources and javadocs -->
+
+    <path id="dependences.classpath">
+      <fileset dir="${ivy.fetch.dir}" excludes="*sources.jar,*javadoc.jar"/>
+    </path>
+
+  </target>
+
+  <!-- DEVELOPMENT : lib2/ -->
+  <target name="ivy-setup-lib" depends="ivy-init" 
+          description="Resolve and fetch dependences with Ivy">
+    <ivy:resolve conf="dev"/>
     <!-- sync causes artifacts and versions no longer need to be deleted -->
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
   </target>
@@ -488,7 +504,7 @@ deploy
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
 
-    <ivy:cachepath pathid="dependences.classpath" conf="dev" />
+    <ivy:cachepath pathid="dependences.classpath" conf="main" />
     <!--
     <pathconvert refid="dependences.classpath" property="tmp" />
     <echo message="Path: ${tmp}"/>
@@ -497,14 +513,13 @@ deploy
 
   
   <import file="build-macros.xml"/>
-    
-  <target name="ivy-publish" depends="ivy-init">
+  
+  <target name="ivy-publish-macro" depends="ivy-init">
+    <!-- call resolve again ??? -->
     <publish-module ivy.file="ivy.xml" resolver="${publish.repo}"/>
   </target>
 
-  <target name="ivy-publish-old" depends="ivy-init,ivy-resolve">
-    <!-- <ivy:resolve conf="main"/> -->
-    <!-- <ivy:deliver conf="main"/> -->
+  <target name="ivy-publish" depends="ivy-init,test">
     <ivy:publish conf="main" 
                  resolver="${publish.repo}" 
                  overwrite="true">
@@ -528,7 +543,7 @@ deploy
   <!-- DEVELOPMENT -->
   <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
-    <ivy:publish conf="main" 
+    <ivy:publish conf="dev" 
                  resolver="dev-resolver" 
                  overwrite="true"
                  forcedeliver="true">

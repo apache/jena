@@ -50,7 +50,7 @@
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.5"/>
-    <dependency conf="dev->*" org="org.slf4j" name="slf4j-api" rev="1.5.8"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.8"/>
 
     <!-- Additional for development : logging implementation -->
     <dependency conf="dev->*" org="org.slf4j" name="slf4j-log4j12" rev="1.5.8">

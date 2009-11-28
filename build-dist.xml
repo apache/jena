@@ -16,10 +16,10 @@
 
   <!-- ==== Release -->
 
-  <target name="release" depends="clean-once,package"
+  <target name="release" depends="clean,artifacts,test,package"
 	  description="Build a release zip"/>
 
-  <target name="package" depends="copy-init,copy-dist,zip-release"/>
+  <target name="package" depends="artifacts,copy-init,copy-dist,zip-release"/>
 
   <target name="copy-init">
     <delete dir="${dist.dir}" />
@@ -30,7 +30,7 @@
 
   <target name="copy-dist" depends="copy-init,jar,javadoc,test">
     <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" 
+      <fileset dir="${package.lib.dir}" 
 	       includes="*.jar" 
 	       excludes="${jarfile},*sources.jar,*javadoc.jar"/>
       <fileset dir="${build.dir}" includes="${jarfile}"/>
@@ -83,21 +83,11 @@
     </zip>
   </target>
 
-  <!-- To calm error checking -->
+  <!-- To calm error checking
   <target name="test"/>
   <target name="clean"/>
-  <target name="clean-once"/>
   <target name="artifacts"/>
   <target name="jar"/>
   <target name="javadoc"/>
-  
-  <target name="clean-dist">
-    <delete dir="${dist.root}"/>
-  </target>
-
-  <target name="clean-dist-area" description="Clean distribution area">
-    <delete dir="${dist.root}"/>
-    <mkdir  dir="${dist.root}"/>
-  </target>
-
+  -->
 </project>
