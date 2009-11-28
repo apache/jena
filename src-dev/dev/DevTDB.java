@@ -15,13 +15,26 @@ public class DevTDB
     
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
-    //   Remove NodeTableFcatory and have one per-technology setup/maker
+    //   Remove NodeTableFactory and have one per-technology setup/maker
     
     // Grand roll out
     //    riot to ARQ, PrrefixMapping=>PrfixMap, Prologue change.
     //    FmtUtils and NodeFmtLib 
     
     // Sort out NodecSSE and NodecLib
+    
+    // Better build
+    // tdbverify - 
+    
+    // 1/ ivy resolve and then use that for compile
+    // 2/ Order: publish, then release 
+    // build-lib/xyz.xml
+    //   Split build-lib.xml in tasks and general settings
+    //   build-lib.xml is settings and a bunch of imports
+    //     build-ivy including setting classpath
+    //     build-tasks (assumes classpaths etc set) 
+    
+    
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
@@ -30,7 +43,7 @@ public class DevTDB
     // -> Stopping long running queries - 
     //    hook in BGQ/Quad patterns
     // -> Dynamic datasets
-    // -> MRSW checking
+    // -> MRSW checking with current modification detection
     // -> BDB-JE & transactions
     
     // Where is IndexBuilder used now?

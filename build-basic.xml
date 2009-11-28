@@ -1,112 +1,12 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="basic">
+  <!-- Simple build and jar - no external resolution of jars, no publishing -->
+  <!-- See build-lib.xml for documentation of properties -->
 
-  <!-- TODO
-     Pick out lifecycle cleanly.
-       pre- post-
-       
-initialize - compile - gather - package - publish - package 
-main
-  generate-sources 	
-  process-sources 	
-  generate-resources 	
-  process-resources 	
-  compile-main
-test-src 	
-  generate-test-sources 	
-  process-test-sources 	
-  generate-test-resources 	
-  process-test-resources 	
-  test-compile 	
-  	
-test
-
-prepare-package 	
-package 	
-integrity
-verify 	
-(install) 	
-deploy 	
-       
-     Check(write) documentation
-     Publish self.
-     echo lifecycle.
-     http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-  --> 
-    
-    
-  <!-- ========================================== -->
-
-  <!-- == Files 
-       build.xml         Set parameters
-       build-lib.xml     Library of ant tasks
-       build-dist.xml    Build a zip distribution
-  -->
-
-  <!-- ==== Configuration  -->
-
-  <!-- == Assumes==
-       ++ Properties
-       Name
-       name
-       version
-
-       javadoc.packages       Package list (comma separated)  (Optional)
-       javadoc.packages.all   Package list (comma separated)  (Optional)
-       build.metadata.file    (Optional)
-          The metadata file to add to the build (Java properties)
-       Copyright.text
-       publish.repo
-         Ivy resolver to use for publication
-       ++ Paths
-       java.source.path
-
-       ++ Fileset (source files to release)
-       fileset.src
- 
-       == Library of standard tasks
-       build      Build jar, run tests and snapshot sources
-       clean      clean up
-       clean-once clean up once - can depend on this repeatedly - will run first time only.
-       compile    compile sources
-       jar        make jar, once
-       build.jar  make jar
-       release    make a release
-       publish    export to maven
-       test       Run the test suite (runs once)
-
-
-		Process properties used to indicate a task has run.
-			jar.run
-			clean.run
-			test.run
-		
-		The "once" tasks will run once-per-run
-
-       == Assumes directory layout
-       doc/
-       doc/javadoc
-       doc/javadoc-all
-       lib/
-       build/
-       build/classes
-       build/artifacts
-       reports/
-       reports/xml
-       testing/
-       (src as per path)
-
-       == Other
-       JUnit test suites look like TS_*
-       
-  -->
-  
-  <!-- Set version from components (if not already set) -->
-  <property    name="version"             value="unset"/>
+  <!-- Make conditional on availability of ${version} -->
+  <property name="${artifact.base}"       value="${name}"/>
+  <!-- <property name="${artifact.base}"       value="${name}-${version}"/> -->
 
   <!-- Artifacts -->
-
-  <property name="artifact.base"          value="${name}-${version}"/>
-
   <property name="jarfile"                value="${artifact.base}.jar"/>
   <property name="jarfile.test"           value="${artifact.base}-tests.jar"/>
 
@@ -129,7 +29,6 @@ deploy
   <!-- Testing - scripts and data files -->
   <property name="test.dir"               value="testing"/>
 
-  <!-- Build area - locally publising in ivy is to build/pub --> 
   <property name="build.dir"              value="build"/>
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
   <property name="build.classes.test.dir" value="${build.dir}/classes-test"/>
@@ -212,8 +111,8 @@ deploy
     <mkdir dir="${build.classes.dir}"/>
 
     <!--
-    <pathconvert pathsep=":" property="the-clases" refid="java.build.class.path" />
-    <echo message="${the-source-path}"/>
+    <pathconvert pathsep=";" property="the-path" refid="java.build.class.path" />
+    <echo message="${the-path}"/>
     -->
 
     <javac destdir="${build.classes.dir}"
@@ -355,16 +254,6 @@ deploy
     <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
   </target>
   
-  <target name="pom-artifact">
-    <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
-    <copy file="${pomfile.template}" tofile="${artifacts.dir}/${pomfile}">
-      <filterset>
-        <!-- <filterset refid="filters.shared"/> -->
-        <filter token="VERSION" value="${version}"/>
-      </filterset>
-    </copy>
-  </target>
-  
   <target name="src-artifact">
     <jar destfile="${artifacts.dir}/${src.artifact}">
       <fileset refid="fileset.src"/>
@@ -381,20 +270,7 @@ deploy
 
   <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
   <target name="artifacts" 
-          depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
-  
-  <target name="publish" description="Build and publish this version"
-          depends="clean-once,artifacts,test,pre-publish,ivy-publish">
-  </target>
-
-  <!-- maven name - alias for compatibility -->
-  <target name="deploy" depends="publish"/>
-
-  <target name="pre-publish" depends="release"/>
-  
-  <target name="publish-test" description="Build and publish this version (locally, for testing)"
-	  depends="clean-once,artifacts,test,ivy-publish-dev">
-  </target>
+          depends="jar-artifact,src-artifact,javadoc-artifact"/>
   
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
@@ -460,92 +336,6 @@ deploy
     </junitreport>
   </target>
 
-  <!-- ========================================== -->
-  <!-- ==== Ivy : Dependency Management  -->
-
-  <target name="ivy-init" depends="publish-check">
-    <ivy:settings />
-  </target>
-
-  <!-- Convenience target -->
-  <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
-  </target>
-
-  <!-- DEVELOPMENT : lib2/ -->
-  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
-          description="Resolve and fetch dependences with Ivy">
-    <!-- sync causes artifacts and versions no longer need to be deleted -->
-    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
-    <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
-    
-    <!--
-    <pathconvert refid="ivy.dev.classpath" property="tmp" />
-    <echo message="Path: ${tmp}"/>
-    -->
-  </target>
-
-  <target name="ivy-resolve" depends="ivy-resolve-report" description="Resolve dependences"/>
-
-  <target name="ivy-resolve-report" depends="ivy-init">
-    <ivy:resolve conf="main"
-                 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
-    <ivy:report todir="${reports.dir}"/>
-    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
-  </target>
-
-  
-  <import file="build-macros.xml"/>
-    
-  <target name="ivy-publish" depends="ivy-init">
-    <publish-module ivy.file="ivy.xml" resolver="${publish.repo}"/>
-  </target>
-
-  <target name="ivy-publish-old" depends="ivy-init,ivy-resolve">
-    <!-- <ivy:resolve conf="main"/> -->
-    <!-- <ivy:deliver conf="main"/> -->
-    <ivy:publish conf="main" 
-                 resolver="${publish.repo}" 
-                 overwrite="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-    </ivy:publish>
-  </target>
-
-  <target name="publish-check">
-    <fail message="Publication environment variables (IVYUSER, IVYKEY) not set">
-      <condition>
-        <and> 
-          <not><isset property="env.IVYUSER"/></not>
-          <not><isset property="env.IVYKEY"/></not>
-        </and>
-      </condition>
-    </fail>
-    <fail message="Publication environment variable (IVYUSER) not set"  unless="env.IVYUSER"/>
-    <fail message="Publication environment variable (IVYKEY) not set"  unless="env.IVYKEY"/>
-  </target>
-
-  <!-- DEVELOPMENT -->
-  <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
-    <!-- <ivy:resolve conf="main"/> -->
-    <ivy:publish conf="main" 
-                 resolver="dev-resolver" 
-                 overwrite="true"
-                 forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-    </ivy:publish>
-  </target>
-
-  <target name="ivy-pom" depends="ivy-init">
-    <!-- Make a basic POM file -->
-    <ivy:makepom ivyfile="ivy.xml" 
-                 pomfile="pom-tdb-auto.xml">
-      <!--
-        <mapping conf="default" scope="compile"/>
-        <mapping conf="runtime" scope="runtime"/>
-      -->
-    </ivy:makepom>
-  </target>
-  
-  
   <!-- ========================================== -->
   <!-- ==== Run -->
 

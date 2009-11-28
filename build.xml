@@ -11,11 +11,11 @@
   <property environment="env"/>
 
   <!-- Version  -->
-  <property name="version"              value="0.8.4-RC-1"/>
+  <property name="version"              value="0.8.4-RC-2"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-dev"/>
+  <property name="publish.repo"     value="repo-local"/>
 
   
   <!-- javadoc -->
@@ -49,10 +49,12 @@
     <pathelement path="${src.lib.test.dir}"/>
   </path>    
 
+  <!--
   <path id="java.source.path">
     <path refid="java.source.path.main"/>
     <path refid="java.source.path.test"/>
   </path>
+  -->
 
   <!-- Sources as fileset (want path=>fileset to avoid the duplication here) -->
 
@@ -72,6 +74,7 @@
 -->
 
   <import file="build-lib.xml"/>
+  <!-- The target "release" - make a distribution and zip it -->
   <import file="build-dist.xml"/>
 
   <target name="publish-release" depends="clean-once,publish,release"/>
