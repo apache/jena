@@ -263,6 +263,24 @@ deploy
     </javac>
   </target>
 
+  <target name="compile-dev" 
+	  depends="java-init"
+	  if="src.dev.dir" >
+    <!-- Don't compile into the build area -->
+    <javac destdir="classes"
+           debug="${java.debug}"
+           deprecation="${java.debuglevel}"
+           optimize="${java.optimize}"
+           encoding="${java.encoding}"
+           source="${java.source}"
+           target="${java.target}"
+	   srcdir="${src.dev.dir}"
+           >
+      <classpath refid="java.build.test.class.path" />
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
   <target name="build-properties" if="build.metadata.file">
     <delete file="${build.metadata.file.dest}"/>
     <copy tofile="${build.metadata.file.dest}" file="${build.metadata.file.src}">
