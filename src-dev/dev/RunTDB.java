@@ -42,7 +42,8 @@ public class RunTDB
         if ( args.length == 0 )
             args = new String[]{"/home/afs/Datasets/BSBM/bsbm-1m.nt.gz"} ;
         
-        Performance.tokenizer(args[0]) ; System.exit(0) ;
+        //Performance.tokenizer(args[0]) ; System.exit(0) ;
+        Performance.turtle(args[0]) ; System.exit(0) ;
         
         tdb.turtle.main("D.ttl") ; System.exit(0) ;
 

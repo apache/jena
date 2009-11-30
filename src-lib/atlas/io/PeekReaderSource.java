@@ -136,7 +136,7 @@ public final class PeekReaderSource extends PeekReader
     }
 
     @Override
-    protected int advance()
+    protected final int advance()
     {
         if ( idx >= buffLen )
             // Points outsize the array.  Refill it 

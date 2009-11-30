@@ -10,7 +10,12 @@ import java.io.Reader ;
 
 import atlas.io.IO ;
 import atlas.io.PeekReader ;
+import atlas.lib.SinkCounting ;
 
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.util.Timer ;
@@ -50,14 +55,58 @@ public class Performance
         
         long time = timer.endTimer() ;
         System.out.printf("Tokens: %,d\n", count) ;
-        System.out.printf("Time:   %.2f\n", time/1000.0) ;
+        System.out.printf("Time:   %.2fs\n", time/1000.0) ;
         
         System.out.printf("Tokens per second: %,.02f\n", count/( time/1000.0)) ;
         // Time!
         
     }
     
-    static public void ntriples() {} 
+    static public void ntriples(String filename)
+    {
+        Reader r = IO.openFileUTF8(filename) ;
+        PeekReader peekReader = PeekReader.make(r) ;
+
+        SinkCounting<Triple> sink = new SinkCounting<Triple>() ; 
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+
+        parser.setChecker(null) ;
+        
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+
+        parser.parse();
+        sink.close() ;
+
+        long time = timer.endTimer() ;
+        System.out.printf("Triples: %,d\n", sink.count) ;
+        System.out.printf("Time:    %.2fs\n", time/1000.0) ;
+        System.out.printf("Triples per second: %,.02f\n", sink.count/( time/1000.0)) ;
+    }
+    
+    static public void turtle(String filename)
+    {
+        Reader r = IO.openFileUTF8(filename) ;
+        PeekReader peekReader = PeekReader.make(r) ;
+
+        SinkCounting<Triple> sink = new SinkCounting<Triple>() ; 
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        LangRIOT parser = new LangTurtle(null, tokenizer, sink) ;
+
+        parser.setChecker(null) ;
+        
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+
+        parser.parse();
+        sink.close() ;
+
+        long time = timer.endTimer() ;
+        System.out.printf("Triples: %,d\n", sink.count) ;
+        System.out.printf("Time:    %.2fs\n", time/1000.0) ;
+        System.out.printf("Triples per second: %,.02f\n", sink.count/( time/1000.0)) ;
+    }
 }
 
 /*

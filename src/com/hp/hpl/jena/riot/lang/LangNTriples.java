@@ -30,7 +30,7 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
  *  <li>The <tt>Iterator&lt;Triple&gt;</tt> interface yields triples one-by-one.</li>
  *  </ul>  
  */
-public class LangNTriples extends LangBase implements Iterator<Triple>
+public final class LangNTriples extends LangBase implements Iterator<Triple>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTriples.class) ;
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
@@ -76,11 +76,11 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
     private Triple parseOne()
     {
         Token sToken = nextToken() ;
-        Node s = checkSubject(sToken) ;
+        Node s = parseSubject(sToken) ;
         Token pToken = nextToken() ;
-        Node p = checkPredicate(pToken) ;
+        Node p = parsePredicate(pToken) ;
         Token oToken = nextToken() ;
-        Node o = checkObject(oToken) ;
+        Node o = parseObject(oToken) ;
         Token x = nextToken() ;
         if ( x.getType() != TokenType.DOT )
             exception("Triple not terminated by DOT: %s", x, x) ;
@@ -103,7 +103,7 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
         return token.asNode() ;
     }
     
-    private Node checkSubject(Token s)
+    private Node parseSubject(Token s)
     {
         if ( ! ( s.hasType(TokenType.BNODE) ||
                  s.hasType(TokenType.IRI) ) )
@@ -111,14 +111,14 @@ public class LangNTriples extends LangBase implements Iterator<Triple>
         return tokenAsNode(s) ;
     }
 
-    private Node checkPredicate(Token p)
+    private Node parsePredicate(Token p)
     {
         if ( ! p.hasType(TokenType.IRI) )
             exception("Illegal predicate", p) ;
         return tokenAsNode(p) ;
     }
 
-    private Node checkObject(Token o)
+    private Node parseObject(Token o)
     {
         switch(o.getType())
         {

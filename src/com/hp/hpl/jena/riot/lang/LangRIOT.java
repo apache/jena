@@ -15,6 +15,7 @@ public interface LangRIOT
     public void             setErrorHandler(ErrorHandler handler) ;
     public Checker          getChecker() ;
     public void             setChecker(Checker checker) ;
+    public void             parse() ;    
 }
 
 /*
