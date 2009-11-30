@@ -1,21 +1,36 @@
-PREFIX  o:    <http://example>
-PREFIX  :    <http://example>
 
-SELECT *
-{
-    ?x :p ?y .
-    ?z :p ?y .
-    FILTER(?x = ?z)
-}
+PREFIX :  <http://example>
 
+SELECT DISTINCT ?sub WHERE {
+  # Get the prices
+  ?sub :hasPrice ?obj .
+  ?obj :hasMinPrice ?min . ?obj :hasMaxPrice ?max .
 
-## SELECT DISTINCT  *
-## WHERE
-##   { ?d2      o:hasCode       "15" ;
-##              o:hasInitiator  ?writer .
-##     ?writer  o:hasUserName   ?writerName .
-##     ?d1      o:hasCode       "21" ;
-##              o:hasInitiator  ?reader .
-##     ?reader  o:hasUserName   ?readerName .
-##     FILTER ( ?d1 = ?d2 && ?writer != ?reader )
-##   }
+  # Get the prices for each ?sub again 
+  # forming the local cross product of prices per ?sub
+
+  ?sub :hasPrice ?obj1 .
+  ?obj1 :hasMinPrice ?min1 . ?obj1 :hasMaxPrice ?max1 .
+
+  # Now have rows like (sub, price, price1) where 
+  # the "price" are obj/min/max.
+  # Redundancy:
+  # For every (sub, price, price1) also have:
+  #   (sub, price, price) and (sub, price1, price)
+
+  # Eliminate things : 
+
+    # Remove same price in cross product 
+    FILTER ( ?obj != ?obj1 )
+
+    # Removed duplicates because that has the cross product
+    # objects so if (A,B) occurs, does (B,A)
+    # Assumes min1 != min - too risky
+    # Use the DISTINCT above instead
+    # FILTER ( ?min1 < ?min )
+
+    # Test for overlapping ranges.
+    # Either min1 is between min and max or max1 is between min and max
+    FILTER ( ( ( ?max1 >= ?min ) && ( ?max1 < ?max ) ) || 
+             ( ( ?min1 >= ?min ) && ( ?min1 <= ?max ) ) )
+} ORDER BY ?sub
