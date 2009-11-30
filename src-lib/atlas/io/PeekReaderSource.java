@@ -7,6 +7,7 @@
 package atlas.io;
 
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.io.Reader ;
 import java.nio.channels.ReadableByteChannel ;
 import java.nio.charset.CharsetDecoder ;
@@ -36,7 +37,7 @@ public final class PeekReaderSource extends PeekReader
     // but also possibly because it stops the JIT doing a better job.
     // **** read(char[]) is a loop of single char operations.
     
-    private static final int CB_SIZE       = 16 * 1024 ;
+    private static final int CB_SIZE       = 32 * 1024 ;
     
     private final char[] chars ;            // CharBuffer?
     private int buffLen ;
@@ -80,6 +81,32 @@ public final class PeekReaderSource extends PeekReader
         public int fill(char[] array)
         {
             try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+        }
+    }
+    
+    /** Faster?? for ASCII */
+    static final class SourceASCII implements Source
+    {
+        final InputStream input ;
+        SourceASCII(InputStream r) { input = r ; }
+        public void close()
+        { try { input.close() ; } catch (IOException ex) { exception(ex) ; } } 
+        
+        public final int fill(char[] array)
+        {
+            try {
+                // Recycle.
+                byte[] buff = new byte[array.length] ;
+                int len = input.read(buff) ;
+                for ( int i = 0 ; i < len ; i++ )
+                {
+                    byte b = buff[i] ;
+                    if ( b < 0 )
+                        throw new AtlasException("Illegal ASCII charcater: "+b) ;
+                   array[i] = (char)b ;
+                }
+                return len ;
+            } catch (IOException ex) { exception(ex) ; return -1 ; }
         }
     }
     

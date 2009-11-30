@@ -21,7 +21,7 @@ public class TestTokenizer extends BaseTest
 {
     private static Tokenizer tokenizer(String string)
     {
-        PeekReader r = PeekReader.make(string) ;
+        PeekReader r = PeekReader.readString(string) ;
         Tokenizer tokenizer = new TokenizerText(r) ;
         return tokenizer ;
     }

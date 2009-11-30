@@ -21,23 +21,10 @@ public class DevTDB
     //   Remove NodeTableFactory and have one per-technology setup/maker
     
     // Grand roll out
-    //    riot to ARQ, PrrefixMapping=>PrfixMap, Prologue change.
+    //    riot to ARQ, PrrefixMapping=>PrefixMap, Prologue change.
     //    FmtUtils and NodeFmtLib 
     
     // Sort out NodecSSE and NodecLib
-    
-    // == Better build?
-    // Classpath for junit - the jar files?
-    // 1/ build => target/
-    // 2/ lib-build/
-    //      build-settings.xml
-    //      build-ivy.xml or build-basic.xml ==> ${dependences.classpath}
-    //      build-tasks.xml (assumes settings)
-    //      build-lib.xml   Main 
-    //      build-dist.xml  Assembly - provides "package"
-    // or is this too detailed?
-    
-    
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;

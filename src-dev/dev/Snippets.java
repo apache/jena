@@ -11,6 +11,14 @@ import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import org.apache.log4j.Level;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgrCache;
@@ -23,11 +31,47 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class Snippets
 {
+    
+    public static void rewrite()
+    {
+        final ReorderTransformation reorder = ReorderLib.weighted("stats.sse") ;
+        // Simple testing
+        class TransformReorderBGP extends TransformCopy
+        {
+            @Override
+            public Op transform(OpBGP opBGP)
+            {
+                BasicPattern pattern = opBGP.getPattern() ;
+                BasicPattern pattern2 = rewrite(pattern) ; 
+                return new OpBGP(pattern2) ; 
+            }
+
+            public BasicPattern rewrite(BasicPattern pattern)
+            {
+                ReorderProc proc = reorder.reorderIndexes(pattern) ;
+                System.out.println("Reorder: "+proc) ;
+                return proc.reorder(pattern) ;
+            }
+        }
+
+        //final ReorderTransformation reorder = ReorderLib.fixed() ;
+        Query query = QueryFactory.read("Q.rq") ;
+        Op op = Algebra.compile(query) ;
+        System.out.println(op) ;
+
+        op = Transformer.transform(new TransformReorderBGP(), op) ;
+        System.out.println(op) ;
+        System.exit(0) ;
+    }
+    
 
     static void typedNode()
         {

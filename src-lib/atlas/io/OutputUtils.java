@@ -21,7 +21,7 @@ public class OutputUtils
             x = oneHex(out, x, i) ;
     }
 
-    /** Print one hex digit of the numer */
+    /** Print one hex digit of the number */
     public static int oneHex(StringBuilder out, int x, int i)
     {
         int y = BitsInt.unpack(x, 4*i, 4*i+4) ;

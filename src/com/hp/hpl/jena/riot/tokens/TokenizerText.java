@@ -17,7 +17,7 @@ import com.hp.hpl.jena.riot.ParseException;
 
 /** Tokenizer for all sorts of things RDF-ish */
 
-public class TokenizerText implements Tokenizer
+public final class TokenizerText implements Tokenizer
 {
     // TODO Various allow/deny options
     
@@ -32,7 +32,7 @@ public class TokenizerText implements Tokenizer
     public static boolean Checking = false ;
 
     private Token token = null ; 
-    private final StringBuilder sb = new StringBuilder() ;
+    private final StringBuilder stringBuilder = new StringBuilder(200) ;
     private final PeekReader reader ;
     private boolean finished = false ;
     private TokenChecker checker = null ; // new CheckerBase()  ;
@@ -317,25 +317,25 @@ public class TokenizerText implements Tokenizer
     
     private String readLong(int quoteChar, boolean endNL)
     {
-        sb.setLength(0) ;
+        stringBuilder.setLength(0) ;
         for ( ;; )
         {
             int ch = reader.readChar() ;
             if ( ch == EOF )
             {
-                if ( endNL ) return sb.toString() ; 
+                if ( endNL ) return stringBuilder.toString() ; 
                 exception("Broken long string") ;
             }
             
             if ( ch == quoteChar )
             {
                 if ( threeQuotes(quoteChar) )
-                    return sb.toString() ;
+                    return stringBuilder.toString() ;
             }
             
             if ( ch == '\\' )
                 ch = readLiteralEscape() ;
-            insertLiteralChar(sb, ch) ;
+            insertLiteralChar(stringBuilder, ch) ;
         }
     }
 
@@ -371,7 +371,7 @@ public class TokenizerText implements Tokenizer
     
     private String readWord(boolean leadingDigitAllowed)
     {
-        sb.setLength(0) ;
+        stringBuilder.setLength(0) ;
         int idx = 0 ;
         if ( ! leadingDigitAllowed )
         {
@@ -387,7 +387,7 @@ public class TokenizerText implements Tokenizer
             if ( Character.isLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == '-' )
             {
                 reader.readChar() ;
-                sb.append((char)ch) ;
+                stringBuilder.append((char)ch) ;
                 continue ;
             }
             else
@@ -396,14 +396,14 @@ public class TokenizerText implements Tokenizer
         }
         // BAD : assumes pushbackChar is infinite.
         // Check is ends in "."
-        while ( idx > 0 && sb.charAt(idx-1) == CH_DOT )
+        while ( idx > 0 && stringBuilder.charAt(idx-1) == CH_DOT )
         {
             // Push back the dot.
             reader.pushbackChar(CH_DOT) ;
-            sb.setLength(idx-1) ;
+            stringBuilder.setLength(idx-1) ;
             idx -- ;
         }
-        return sb.toString() ;
+        return stringBuilder.toString() ;
     }
 
     // Make better!
@@ -431,7 +431,7 @@ public class TokenizerText implements Tokenizer
         */
         boolean isDouble = false ;
         boolean isDecimal = false ;
-        sb.setLength(0) ;
+        stringBuilder.setLength(0) ;
         
         int x = 0 ; // Digits before a dot.
         int ch = reader.peekChar() ;
@@ -439,25 +439,25 @@ public class TokenizerText implements Tokenizer
         {
             x++ ;
             reader.readChar() ;
-            sb.append((char)ch) ;
+            stringBuilder.append((char)ch) ;
             ch = reader.peekChar() ;
             if ( ch == 'x' || ch == 'X' )
             {
                 reader.readChar() ;
-                sb.append((char)ch) ;
-                readHex(reader, sb) ;
-                token.setImage(sb.toString()) ;
+                stringBuilder.append((char)ch) ;
+                readHex(reader, stringBuilder) ;
+                token.setImage(stringBuilder.toString()) ;
                 token.setType(TokenType.HEX) ;
                 return ;
             }
         }
         else if ( ch == '-' || ch == '+' )
         {
-            readPossibleSign(sb) ;
+            readPossibleSign(stringBuilder) ;
         }
         
         
-        x += readDigits(sb) ;
+        x += readDigits(stringBuilder) ;
 //        if ( x == 0 )
 //        {
 //            
@@ -466,23 +466,23 @@ public class TokenizerText implements Tokenizer
         if ( ch == CH_DOT )
         {
             reader.readChar() ;
-            sb.append(CH_DOT) ;
+            stringBuilder.append(CH_DOT) ;
             isDecimal = true ;  // Includes things that will be doubles.
-            readDigits(sb) ;
+            readDigits(stringBuilder) ;
         }
         
         if ( x == 0 && ! isDecimal )
             // Possible a tokenizer error - should not have entered readNumber in the first place.
             exception("Unrecognized as number") ;
         
-        if ( exponent(sb) )
+        if ( exponent(stringBuilder) )
         {
             isDouble = true ;
             isDecimal = false ;
             
         }
         
-        token.setImage(sb.toString()) ;
+        token.setImage(stringBuilder.toString()) ;
         if ( isDouble )
             token.setType(TokenType.DOUBLE) ;
         else if ( isDecimal )
@@ -551,9 +551,9 @@ public class TokenizerText implements Tokenizer
     
     private String langTag()
     {
-        sb.setLength(0) ;
-        a2z(sb) ;
-        if ( sb.length() == 0 )
+        stringBuilder.setLength(0) ;
+        a2z(stringBuilder) ;
+        if ( stringBuilder.length() == 0 )
             exception("Bad language tag") ;
         for ( ;; )
         {
@@ -561,16 +561,16 @@ public class TokenizerText implements Tokenizer
             if ( ch == '-' )
             {
                 reader.readChar() ;
-                sb.append('-') ;
-                int x = sb.length();
-                a2zN(sb) ;
-                if ( sb.length() == x )
+                stringBuilder.append('-') ;
+                int x = stringBuilder.length();
+                a2zN(stringBuilder) ;
+                if ( stringBuilder.length() == x )
                     exception("Bad language tag") ;
             }
             else
                 break ;
         }
-        return sb.toString();
+        return stringBuilder.toString();
     }
     
     private void a2z(StringBuilder sb2)
@@ -581,7 +581,7 @@ public class TokenizerText implements Tokenizer
             if ( isA2Z(ch) )
             {
                 reader.readChar() ;
-                sb.append((char)ch) ;
+                stringBuilder.append((char)ch) ;
             }
             else
                 return ;
@@ -596,7 +596,7 @@ public class TokenizerText implements Tokenizer
             if ( isA2ZN(ch) )
             {
                 reader.readChar() ;
-                sb.append((char)ch) ;
+                stringBuilder.append((char)ch) ;
             }
             else
                 return ;
@@ -606,7 +606,7 @@ public class TokenizerText implements Tokenizer
     // Blank node label: A-Z,a-z0-9 and '-'
     private String blankNodeLabel()
     {
-        sb.setLength(0) ;
+        stringBuilder.setLength(0) ;
         boolean seen = false ;
         for(;;)
         {
@@ -615,12 +615,12 @@ public class TokenizerText implements Tokenizer
                 break ;
             if ( ! isA2ZN(ch) && ch != '-' )
                 break ;
-            sb.append((char)ch) ;
+            stringBuilder.append((char)ch) ;
             seen = true ;
         }
         if ( ! seen )
             exception("Blank node label missing") ;
-        return sb.toString() ; 
+        return stringBuilder.toString() ; 
     }
 
     
@@ -632,7 +632,7 @@ public class TokenizerText implements Tokenizer
     {
         long y = getLine() ;
         long x = getColumn() ;
-        sb.setLength(0) ;
+        stringBuilder.setLength(0) ;
 
         // Assumes first char read already.
 //        int ch0 = reader.readChar() ;
@@ -645,17 +645,17 @@ public class TokenizerText implements Tokenizer
             int ch = reader.readChar() ;
             if ( ch == EOF )
             {
-                if ( endNL ) return sb.toString() ; 
-                exception("Broken token: "+sb.toString(), y, x) ;
+                if ( endNL ) return stringBuilder.toString() ; 
+                exception("Broken token: "+stringBuilder.toString(), y, x) ;
             }
 
             if ( ch == '\n' )
-                exception("Broken token (newline): "+sb.toString(), y, x) ;
+                exception("Broken token (newline): "+stringBuilder.toString(), y, x) ;
             
             if ( ch == endCh )
             {
                 //sb.append(((char)ch)) ;
-                return sb.toString() ;
+                return stringBuilder.toString() ;
             }
             
             if ( ch == '\\' )
@@ -667,8 +667,8 @@ public class TokenizerText implements Tokenizer
                     ch = reader.readChar() ;
                     if ( ch == EOF )
                     {
-                        if ( endNL ) return sb.toString() ; 
-                        exception("Broken token: "+sb.toString(), y, x) ;
+                        if ( endNL ) return stringBuilder.toString() ; 
+                        exception("Broken token: "+stringBuilder.toString(), y, x) ;
                     }
     
                     switch (ch)
@@ -681,7 +681,7 @@ public class TokenizerText implements Tokenizer
                     }
                 }
             }
-            insertLiteralChar(sb, ch) ;
+            insertLiteralChar(stringBuilder, ch) ;
         }
     }
     
@@ -691,7 +691,7 @@ public class TokenizerText implements Tokenizer
             buffer.append((char)ch) ;
         else
         {
-            // Convert to UTF-16.  Note that the rest of any systemn this is used
+            // Convert to UTF-16.  Note that the rest of any system this is used
             // in must also respect codepoints and surrogate pairs. 
             if ( ! Character.isDefined(ch) && ! Character.isSupplementaryCodePoint(ch) )
                 exception(String.format("Illegal codepoint: 0x%04X", ch)) ;

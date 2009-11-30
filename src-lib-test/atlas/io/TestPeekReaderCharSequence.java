@@ -12,7 +12,7 @@ public class TestPeekReaderCharSequence extends AbstractTestPeekReader
     @Override
     PeekReader make(String contents, int size)
     {
-        return PeekReader.make(contents) ;
+        return PeekReader.readString(contents) ;
     }
 }
 

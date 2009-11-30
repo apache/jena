@@ -131,7 +131,7 @@ public class TestLangNTriples extends BaseTest
 
     private static SinkCounting<Triple> parse(String string)
     {
-        PeekReader reader = PeekReader.make(string) ;
+        PeekReader reader = PeekReader.readString(string) ;
         Tokenizer tokenizer = new TokenizerText(reader) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         

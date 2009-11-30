@@ -83,7 +83,7 @@
     <property name="java.target"      value="1.5"/>
   </target>
         
-  <target name="set-classpath">
+  <target name="set-classpath-build">
     <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
     <path id="java.build.class.path">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
@@ -98,7 +98,7 @@
     <echo message="Build: ${artifact.base}"/>
   </target>
 
-  <target name="java-init" depends="init,javac-flags,set-classpath"/>
+  <target name="java-init" depends="init,javac-flags,set-classpath-build"/>
 
   <target name="dependences" />
 

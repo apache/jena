@@ -15,7 +15,7 @@
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-local"/>
+  <property name="publish.repo"     value="repo-dev"/>
 
   
   <!-- javadoc -->
@@ -73,9 +73,9 @@
    <echo>${fileset.src}</echo>
 -->
 
-  <import file="build-lib.xml"/>
+  <import file="lib-build/build-lib.xml"/>
   <!-- The target "release" - make a distribution and zip it -->
-  <import file="build-dist.xml"/>
+  <import file="lib-build/build-dist.xml"/>
 
   <target name="publish-release" depends="clean-once,publish,release"/>
 

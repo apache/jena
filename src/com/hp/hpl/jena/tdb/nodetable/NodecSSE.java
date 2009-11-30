@@ -100,7 +100,7 @@ public class NodecSSE implements Nodec
         // -- Old - expensive.
         // Node n = SSE.parseNode(str) ;
         
-        PeekReader r = PeekReader.make(str) ;
+        PeekReader r = PeekReader.readString(str) ;
         Tokenizer tokenizer = new TokenizerText(r) ;
         Node n = tokenizer.next().asNode() ;
         if ( n == null )

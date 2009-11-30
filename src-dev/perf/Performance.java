@@ -1,47 +1,67 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package dev;
+package perf;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
+import java.io.Reader ;
 
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
+import atlas.io.IO ;
+import atlas.io.PeekReader ;
 
-// Not good.  Does not know about which variables are bound.
-public class TransformReorderBGP extends TransformCopy
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.sparql.util.Timer ;
+
+public class Performance
 {
-    private ReorderTransformation transform ;
+    static public void tokenizer(String filename)
+    {
+        Reader r = IO.openFileUTF8(filename) ;
+        PeekReader pr = PeekReader.make(r) ;
+        timeTokenizer("tokenizer("+filename+")", pr) ;
+    }
 
-    public TransformReorderBGP(ReorderTransformation transform)
-    { 
-        this.transform = transform ;
+    static public void tokenizerAscii(String filename)
+    {
+        Reader r = IO.openFileASCII(filename) ;
+        PeekReader pr = PeekReader.make(r) ;
+        timeTokenizer("tokenizerAscii("+filename+")", pr) ;
+    }
+
+    static public void timeTokenizer(String message, PeekReader peekReader) 
+    {
+        if ( message != null )
+            System.out.println(message) ;
+        
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        
+        long count = 0 ;
+
+        for ( ; tokenizer.hasNext() ; )
+        {
+            count++ ;
+            tokenizer.next() ;
+        }
+        
+        long time = timer.endTimer() ;
+        System.out.printf("Tokens: %,d\n", count) ;
+        System.out.printf("Time:   %.2f\n", time/1000.0) ;
+        
+        System.out.printf("Tokens per second: %,.02f\n", count/( time/1000.0)) ;
+        // Time!
+        
     }
     
-    @Override
-    public Op transform(OpBGP opBGP)
-    {
-        BasicPattern pattern = opBGP.getPattern() ;
-        BasicPattern pattern2 = rewrite(pattern) ; 
-        return new OpBGP(pattern2) ; 
-    }
-    
-    public BasicPattern rewrite(BasicPattern pattern)
-    {
-        ReorderProc proc = transform.reorderIndexes(pattern) ;
-        System.out.println("Reorder: "+proc) ;
-        return proc.reorder(pattern) ;
-    }
+    static public void ntriples() {} 
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

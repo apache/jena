@@ -1,4 +1,4 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib" basedir=".">
 
   <!-- TODO
      Pick out lifecycle cleanly.
@@ -160,12 +160,6 @@ deploy
   <!-- ========================================== -->
   <!-- ==== Setup  -->
   
-  <path id="java.run.class.path">
-    <!-- jar file may, or may not, be in the lib directory -->
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <fileset dir="${build.dir}" includes="tdb*.jar"/>
-  </path>
-
   <tstamp>
     <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
     <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
@@ -189,13 +183,20 @@ deploy
   </target>
   
   <!-- ========================================== -->
-  <!-- ==== Initialization tasks -->
-        
+  <!-- ==== Initialization and dynamic property and path setting -->
+
+  <!-- 
+    java.build.class.path       CP to copimile the system
+    java.build.test.class.path  CP to copimile system's tests
+    java.test.class.path        CP to run the test suite (shoudl use the jar created)
+    dependences.classpath       CP for the jars needed. Set by ivy.
+  -->
+
   <target name="init">
     <echo message="Build: ${artifact.base} ${build.time.txt}"/>
   </target>
 
-  <target name="set-classpath">
+  <target name="set-classpath-build">
     <!-- This must be after IVY has done it's dependence stuff, hence as a task --> 
     <path id="java.build.class.path">
       <path refid="dependences.classpath"/>
@@ -206,15 +207,24 @@ deploy
     </path>
   </target>          
 
-  <target name="java-init" depends="init,javac-flags,dependences,set-classpath"/>
+  <target name="set-classpath-test">
+    <path id="java.test.class.path">
+      <path refid="dependences.classpath" />
+      <pathelement location="${build.dir}/${jarfile}"/>
+    </path>
+  </target>
+
+  <target name="java-init" depends="init,javac-flags,dependences,set-classpath-build"/>
 
   <!--<target name="dependences" depends="ivy-resolve"/>-->
   <target name="dependences" depends="ivy-fetch"/>
 
+  <target name="test-init" depends="jar,set-classpath-test"/>
+
   <!-- ========================================== -->
   <!-- ==== Build, compile, jar, javadoc -->
 
-  <target name="compile" depends="java-init,dependences,compile-main,compile-test"  description="Compile project"/>
+  <target name="compile" depends="java-init,compile-main,compile-test"  description="Compile project"/>
   
   <target name="compile-main">
     <mkdir dir="${build.classes.dir}"/>
@@ -429,11 +439,11 @@ deploy
   <target name="pre-run-junit"/>
 
   <target name="run-junit"
-	  depends="clean,jar,pre-run-junit,clean-reports">
+	  depends="jar,set-classpath-test,pre-run-junit,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 
-    <!-- Don't stop on failure - set a property instead -->
+    <!-- Don't stop on failure - set a property instead - so reports can be written -->
     <junit fork="yes" printsummary="yes" 
 	   errorProperty="junit.failed" failureProperty="junit.failed">
       <!-- usefile="false"  type="plain"-->
@@ -441,9 +451,7 @@ deploy
       <formatter type="xml" />
       <formatter type="plain" />
       <classpath>
-        <pathelement path="${build.classes.dir}" />
-        <pathelement path="${build.classes.test.dir}" />
-        <path refid="java.run.class.path" />
+        <path refid="java.test.class.path" />
       </classpath>
       <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
       <batchtest todir="${reports.dir.xml}">
