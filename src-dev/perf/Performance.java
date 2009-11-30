@@ -64,6 +64,7 @@ public class Performance
     
     static public void ntriples(String filename)
     {
+        System.out.println("N-Triples") ;
         Reader r = IO.openFileUTF8(filename) ;
         PeekReader peekReader = PeekReader.make(r) ;
 
@@ -87,6 +88,7 @@ public class Performance
     
     static public void turtle(String filename)
     {
+        System.out.println("Turtle") ;
         Reader r = IO.openFileUTF8(filename) ;
         PeekReader peekReader = PeekReader.make(r) ;
 
