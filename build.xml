@@ -1,6 +1,6 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="build">
 
-  <!-- Configuration as a propertied file ? -->
+  <!-- Configuration as a properties file ? -->
   <!-- <property file="tdb-build.properties"/> -->
 
   <!-- ========================================== -->
@@ -11,11 +11,11 @@
   <property environment="env"/>
 
   <!-- Version  -->
-  <property name="version"              value="0.8.4"/>
+  <property name="version"              value="0.8.5-SNAPSHOT"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
-  <property name="publish.repo"     value="repo-main"/>
+  <property name="publish.repo"     value="repo-dev"/>
 
   
   <!-- javadoc -->
