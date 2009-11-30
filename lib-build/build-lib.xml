@@ -186,9 +186,9 @@ deploy
   <!-- ==== Initialization and dynamic property and path setting -->
 
   <!-- 
-    java.build.class.path       CP to copimile the system
-    java.build.test.class.path  CP to copimile system's tests
-    java.test.class.path        CP to run the test suite (shoudl use the jar created)
+    java.build.class.path       CP to compile the system
+    java.build.test.class.path  CP to compile system's tests
+    java.test.class.path        CP to run the test suite (should use the jar created)
     dependences.classpath       CP for the jars needed. Set by ivy.
   -->
 
@@ -264,7 +264,7 @@ deploy
   </target>
 
   <target name="compile-dev" 
-	  depends="java-init"
+	  depends="java-init, compile-main,compile-test"
 	  if="src.dev.dir" >
     <!-- Don't compile into the build area -->
     <javac destdir="classes"
@@ -276,7 +276,11 @@ deploy
            target="${java.target}"
 	   srcdir="${src.dev.dir}"
            >
-      <classpath refid="java.build.test.class.path" />
+      <classpath>
+	<path refid="dependences.classpath" />
+	<pathelement path="${build.classes.dir}" />
+	<pathelement path="${build.classes.test.dir}" />
+      </classpath>
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
