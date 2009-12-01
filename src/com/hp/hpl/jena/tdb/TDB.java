@@ -118,33 +118,33 @@ public class TDB
         TDBMaker.clearDatasetCache() ;
     }
     
-    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
+    /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model)
     {
         sync(model.getGraph()) ;
     }
     
-    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
+    /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
     public static void sync(Graph graph)
     {
         sync(graph, true) ;
     }
 
-    /** Sync a TDB synchronizable object (model, graph dataset). Do nothing otherwise */
+    /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
     public static void sync(Dataset dataset)
     { 
         DatasetGraph ds = dataset.asDatasetGraph() ;
         sync(ds) ;
     }
     
-    /** Sync a TDB synchronizable object (model, graph daatset). Do nothing otherwise */
+    /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
     public static void sync(DatasetGraph dataset)
     { 
         if ( dataset instanceof DatasetGraphTDB )
             sync(dataset, true) ;
         else
         {
-            // May be a general purpose datsset with TDB objects in it.
+            // May be a general purpose dataset with TDB objects in it.
             Iterator<Node> iter = dataset.listGraphNodes() ;
             for ( ; iter.hasNext() ; )
             {
@@ -156,21 +156,23 @@ public class TDB
     }
 
     
-    /** Sync a TDB synchronizable object (model, graph daatset). 
+    /** Sync a TDB synchronizable object (model, graph, dataset). 
      *  If force is true, synchronize as much as possible (e.g. file metadata)
      *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
-     * Do nothing otherwise */
+     * Do nothing otherwise 
+     */
     private static void sync(Object object, boolean force)
     {
         if ( object instanceof Sync )
             ((Sync)object).sync(force) ;
     }
     
-    static { initWorker() ; }
+    static { initialization1() ; }
     
     private static boolean initialized = false ;
-    private static synchronized void initWorker()
+    private static synchronized void initialization1()
     {
+        // Called at start.
         if ( initialized )
             return ;
         initialized = true ;
@@ -200,6 +202,17 @@ public class TDB
         RDFReaderFImpl.setBaseReaderClassName("TURTLE", readerTTL) ;
         RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL", readerTTL) ;
+        
+        // Attempt to sync everything on exit.
+        // This can not be gauaranteed
+        Runnable runnable = new Runnable() {
+
+            public void run()
+            { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
+        } ;
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
+
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
@@ -241,16 +254,13 @@ public class TDB
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
     
-    // Final initialization 
+    // Final initialization (in case any statics in this file are important). 
     static {
         initlization2() ;
     }
 
     private static void initlization2()
-    {
-        //TDB.logInfo.info("TDB: "+TDB.VERSION) ;
-    }
-
+    { }
 }
 
 /*

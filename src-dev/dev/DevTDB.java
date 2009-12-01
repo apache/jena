@@ -15,6 +15,10 @@ public class DevTDB
     // Final: ARQ 2.8.2 first.
     // BUILD: Make sure ivy.xml set to ARQ 2.8.2
 
+    // Set cache sizes.  See SystemTDB.
+    // Add a shutdown hook to try to flush datasets.
+    
+    
     
     // Eclipse container for ivy/maven etc
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 

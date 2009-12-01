@@ -51,6 +51,13 @@ public class TDBMaker
             ((CachingTDBMaker)factory).flush();
     }
     
+    /** Sync all cached datasets */
+    public synchronized static void syncDatasetCache()
+    {
+        if ( factory instanceof CachingTDBMaker )
+            ((CachingTDBMaker)factory).sync();
+    }
+    
     /** Release a dataset from any caching */
     public static void releaseDataset(DatasetGraphTDB dataset)
     { factory.releaseDatasetGraph(dataset) ; }

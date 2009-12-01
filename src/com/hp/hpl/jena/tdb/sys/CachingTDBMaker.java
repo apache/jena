@@ -45,8 +45,15 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
         return dg ;
     }
 
-    public void flush() { cache.clear() ; }
-
+    public void flush() { sync() ; cache.clear() ; }
+    
+    public void sync()
+    { 
+        for ( DatasetGraphTDB dsg : cache.values() )
+        {
+            dsg.sync(true) ;
+        }
+    }
     public void releaseDatasetGraph(DatasetGraphTDB dataset)
     {
         Location location = dataset.getLocation() ; 
