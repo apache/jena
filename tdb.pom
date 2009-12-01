@@ -72,7 +72,7 @@
       <version>1.5.8</version>
     </dependency>
 
-    <!-- And a choice of logging implementation ... -->
+    <!-- And a choice of logging implementation ...
       <dependency>
 	<groupId>org.slf4j</groupId>
 	<artifactId>slf4j-log4j12</artifactId>
