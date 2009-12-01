@@ -81,8 +81,9 @@ public class ARQ
     
     /** Turn on/off processing of blank node labels in queries */  
     public static void enableBlankNodeResultLabels(boolean val)
-    {
-        Boolean b = val ? Boolean.TRUE : Boolean.FALSE ;
+    { 
+        Boolean.valueOf(val) ;
+        Boolean b = Boolean.valueOf(val) ;
         globalContext.set(inputGraphBNodeLabels, b) ;
         globalContext.set(outputGraphBNodeLabels, b) ;
     }
