@@ -9,15 +9,15 @@ package dev;
 public class DevARQ
 {
     // De-duplicate aggregator code.
+    
+    // Junit3 ==> Junit4
+    
     // Run ref engine and main engine in a test - remove ref only tests
     
     // CSV and TSV
-    // Reengineer code.  Proper escaping.  strSafe in CSVOutput
-    // Input: ResultSetFactory.load
-    // Tests
-    
-    // FILTER (?x=?y) rewrite.
-    // But cardinailty changes: see processFilterWorker
+    //   Reengineer code.  Proper escaping.  strSafe in CSVOutput
+    //   Input: ResultSetFactory.load
+    //   Tests
     
     // MicroAPI.
     // ARQ warnings on cross product and unused project vars 
@@ -53,7 +53,7 @@ public class DevARQ
     // NodeFactory == SSE => Merge
 
     // === Optimization
-    // Amalgamation: BGPs,Quads, Sequences.
+    // Amalgamation: BGPs, Quads, Sequences.
     // Assign squashing : assign as rename. (assign ((?x ?y)))
     
     // Initial bindings && Initial table (do as iterator of initial bindings)
@@ -62,7 +62,6 @@ public class DevARQ
     //  Generate a sequence always? 
     
     // == Clearup
-    // StageGenBasicPattern ==> Remove
     // Prefer OpExecutor much more.
     //   Skelleton for StageGenerator
     
