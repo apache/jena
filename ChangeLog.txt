@@ -1,6 +1,9 @@
 ChangeLog for TDB
 =================
 
+==== 0.8.5
++ Add a shiutdown hook to sync datasets (don't rely on it!)
+
 ==== 0.8.4
 
 + Experimental: filtering of quads (to support dynamic datasets and graph masking at some time).
