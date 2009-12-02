@@ -114,6 +114,7 @@ public class ResultSetFactory
             m.read(input, null, "N3") ;
             return ResultSetFactory.fromRDF(m) ;
         }
+
         if ( format.equals(ResultSetFormat.syntaxJSON) )
         {
             // Only ResultSets

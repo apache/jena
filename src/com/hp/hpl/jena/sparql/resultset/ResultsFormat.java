@@ -19,6 +19,7 @@ public class ResultsFormat extends Symbol
     public final static ResultsFormat FMT_RS_JSON  = new ResultsFormat("rs/json") ;   /** Format of result set as JSON */
     public final static ResultsFormat FMT_RS_SSE   = new ResultsFormat("rs/sse") ;    /** Format of result set as SSE */ 
     public final static ResultsFormat FMT_RS_CSV   = new ResultsFormat("rs/csv") ;
+    public final static ResultsFormat FMT_RS_TSV   = new ResultsFormat("rs/tsv") ;
 
     public final static ResultsFormat FMT_NONE     = new ResultsFormat("none") ;       /** No output */
     public final static ResultsFormat FMT_TEXT     = new ResultsFormat("rs/text") ;   /** Any kind of text */
@@ -67,6 +68,10 @@ public class ResultsFormat extends Symbol
 
         resultFormats.put("rs/csv",    ResultsFormat.FMT_RS_CSV ) ;
         resultFormats.put("csv",       ResultsFormat.FMT_RS_CSV ) ;
+
+        resultFormats.put("rs/tsv",    ResultsFormat.FMT_RS_TSV ) ;
+        resultFormats.put("tsv",       ResultsFormat.FMT_RS_TSV ) ;
+
         
         // Dump!
         resultFormats.put("tuples",    ResultsFormat.FMT_TUPLES ) ;

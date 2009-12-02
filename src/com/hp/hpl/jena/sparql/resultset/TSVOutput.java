@@ -18,32 +18,27 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-// TODO
-/** Convenient comma separated values - see also TSV (tab separated values)
- *  which output full RDf terms (in Turtle-style).
- *  
- *  The CSV format supported is:
- *  <ul>
- *  <li>First row is variable names without '?'</li>
- *  <li>Strings, quoted if necessary and numbers output only.
- *  No language tags, or datatypes.
- *  URIs are send without $lt;&gt;  
- *  </li>
- *  </ul> 
+/**
+ * Tab Separated Values.
+ * 
+ * First row is variable names (with ?).
+ * Subsequent rows are RDF terms, written Turtle style.
  */
-public class CSVOutput extends OutputBase
+public class TSVOutput extends OutputBase
 {
-    // RFC for CSV : http://www.ietf.org/rfc/rfc4180.txt
+    // Tab Separated Values
+    // http://www.iana.org/assignments/media-types/text/tab-separated-values 
     
-    static String NL = "\r\n" ;
+    static String NL   = "\n" ;
+    static String SEP  = "\t" ;
     
     public void format(OutputStream out, ResultSet resultSet)
     {
         try {
-
             Writer w = FileUtils.asUTF8(out) ;
             w = new BufferedWriter(w) ;
             
@@ -51,19 +46,18 @@ public class CSVOutput extends OutputBase
             List<String> varNames = resultSet.getResultVars() ;
             List<Var> vars = new ArrayList<Var>(varNames.size()) ;
             
-            // Convert to Vars and output the header line.
             for( String v : varNames )
             {
                 if ( sep != null )
                     w.write(sep) ;
                 else
-                    sep = "," ;
-                w.write(csvSafe(v)) ; 
+                    sep = SEP ;
+                w.write("?") ;
+                w.write(v) ; 
                 vars.add(Var.alloc(v)) ;
             }
             w.write(NL) ;
             
-            // Data output
             for ( ; resultSet.hasNext() ; )
             {
                 sep = null ;
@@ -73,40 +67,24 @@ public class CSVOutput extends OutputBase
                 {
                     if ( sep != null )
                         w.write(sep) ;
-                    sep = "," ;
+                    sep = SEP ;
                     
                     Node n = b.get(v) ;
                     if ( n != null )
-                        output(w, n) ;
+                    {
+                        // This will not include a raw tab.
+                        String str = FmtUtils.stringForNode(n) ;
+                        w.write(str) ;
+                    }
                 }
                 w.write(NL) ;
             }
+            
             w.flush() ;
         } catch (IOException ex)
         {
             throw new ARQException(ex) ;
         }
-    }
-
-    private void output(Writer w, Node n) throws IOException 
-    {
-        //String str = FmtUtils.stringForNode(n) ;
-        String str = "?" ;
-        if ( n.isLiteral() ) str = n.getLiteralLexicalForm() ;
-        else if ( n.isURI() ) str = n.getURI() ;
-        else if ( n.isBlank() ) str = n.getBlankNodeLabel() ;
-        
-        str = csvSafe(str) ;
-        w.write(str) ;
-    }
-
-    private String csvSafe(String str)
-    {
-        str = str.replaceAll("\"", "\"\"") ; 
-        
-        if ( str.contains(",") )
-            str = "\""+str+"\"" ; 
-        return str ;
     }
 
     static final byte[] yesBytes = StrUtils.asUTF8bytes("yes") ;

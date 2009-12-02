@@ -669,6 +669,47 @@ public class ResultSetFormatter
         fmt.format(outStream, resultSet) ;
     }
 
+    // ---- TSV
+    
+    /** Output a boolean result in TSV (tab separated values) format
+     *  
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsTSV(boolean booleanResult)
+    { outputAsTSV(System.out, booleanResult ) ; }
+    
+    /** Output a boolean result in in TSV format
+     *  
+     * @param outStream     output stream
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsTSV(OutputStream outStream, boolean booleanResult)
+    {
+        TSVOutput fmt = new TSVOutput() ;
+        fmt.format(outStream, booleanResult) ;
+    }
+
+    /** Output a result set in TSV format
+     *  @param resultSet     result set
+     */
+    
+    static public void outputAsTSV(ResultSet resultSet)
+    { outputAsTSV(System.out, resultSet) ; }
+    
+    /** Output a result set in TSV format
+     * @param outStream  The output stream
+     * @param resultSet     The result set
+     */
+    
+    static public void outputAsTSV(OutputStream outStream, ResultSet resultSet)
+    {
+        TSVOutput fmt = new TSVOutput() ;
+        fmt.format(outStream, resultSet) ;
+    }
+
+    
 }
 
 /*

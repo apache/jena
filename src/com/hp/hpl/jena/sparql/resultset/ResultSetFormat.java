@@ -27,6 +27,7 @@ public class ResultSetFormat extends Symbol
     
     public static final ResultSetFormat syntaxSSE          = new ResultSetFormat("RS_SSE") ;
     public static final ResultSetFormat syntaxCSV          = new ResultSetFormat("RS_CSV") ;
+    public static final ResultSetFormat syntaxTSV          = new ResultSetFormat("RS_TSV") ;
 
     // Common names to symbol (used by arq.rset)
     protected static TranslationTable syntaxNames = new TranslationTable(true) ;
@@ -44,6 +45,7 @@ public class ResultSetFormat extends Symbol
         syntaxNames.put("yaml",    ResultSetFormat.syntaxJSON) ;    // The JSON format is a subset of YAML
         syntaxNames.put("sse",     ResultSetFormat.syntaxSSE) ;
         syntaxNames.put("csv",     ResultSetFormat.syntaxCSV) ;
+        syntaxNames.put("tsv",     ResultSetFormat.syntaxTSV) ;
     }
 
     protected ResultSetFormat(String symbol) { super(symbol) ; }
@@ -96,6 +98,8 @@ public class ResultSetFormat extends Symbol
         // Likelyto be something completely different!
         if ( url.endsWith(".csv") )
             return ResultSetFormat.syntaxCSV ;
+        if ( url.endsWith(".tsv") )
+            return ResultSetFormat.syntaxTSV ;
         
         return defaultFormat ;
     }

@@ -11,6 +11,11 @@ public class DevARQ
     // De-duplicate aggregator code.
     // Run ref engine and main engine in a test - remove ref only tests
     
+    // CSV and TSV
+    // Reengineer code.  Proper escaping.  strSafe in CSVOutput
+    // Input: ResultSetFactory.load
+    // Tests
+    
     // FILTER (?x=?y) rewrite.
     // But cardinailty changes: see processFilterWorker
     
