@@ -10,11 +10,17 @@ package dev;
 public class DevTDB
 {
     // == 0.8.5
-    // Eclipse container for ivy/maven etc
+    // + Eclipse container for ivy/maven etc
+    // + MRSW checking with current modification detection
+    // + Dynamic datasets
+    
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
     //   Remove NodeTableFactory and have one per-technology setup/maker
+
+    // -> BDB-JE and compressed blocks.
     
-    // Grand roll out
+    // ** Grand roll out
+    //    Atlas to atlas
     //    riot to ARQ, PrrefixMapping=>PrefixMap, Prologue change.
     //    FmtUtils and NodeFmtLib 
     
@@ -29,6 +35,7 @@ public class DevTDB
     // -> Dynamic datasets
     // -> MRSW checking with current modification detection
     // -> BDB-JE & transactions
+    // -> BDB-JE and compressed blocks.
     
     // Where is IndexBuilder used now?
     // Interface is IndexFactory and includes the record factory.
