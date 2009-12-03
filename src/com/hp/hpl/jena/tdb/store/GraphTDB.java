@@ -42,6 +42,12 @@ public interface GraphTDB extends Graph, Closeable, Sync, Reorderable
     
     public Location getLocation() ; 
     
+    /** Indicate the start of something that may change the graph */  
+    public void startUpdate() ;
+    
+    /** Indicate the end of something that may have changed the graph */  
+    public void finishUpdate() ;
+    
 }
 
 /*

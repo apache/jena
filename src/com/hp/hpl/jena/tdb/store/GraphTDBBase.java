@@ -51,6 +51,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected final DatasetGraphTDB dataset ;
     protected final Node graphNode ;
     protected final int syncPoint ;
+    private long epoch = 4 ;                // And reads are always even.
 
     public GraphTDBBase(DatasetGraphTDB dataset, Node graphName)
     { 
@@ -155,9 +156,10 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     /** Iterator over something that, when counted, is the graph size. */
     protected abstract Iterator<?> countThis() ;
     
-    // And reads are always even.
-    private long epoch = 4 ; 
+    
+    //@Override
     public final void startUpdate() { epoch ++ ; }
+    //@Override
     public final void finishUpdate() { epoch ++ ; }
 
     @Override

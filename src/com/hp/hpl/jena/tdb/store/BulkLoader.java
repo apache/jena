@@ -123,6 +123,8 @@ public class BulkLoader
             generateStats = false ;
         }
         
+        graph.startUpdate() ;
+        
         Timer timer = new Timer() ;
         timer.startTimer() ;
         
@@ -176,7 +178,11 @@ public class BulkLoader
 
         if ( showProgress )
             println("** Close graph") ;
-        graph.close() ;
+        
+        graph.finishUpdate() ;
+
+        // ??
+        //graph.close() ;
 
         timer.endTimer() ;
         long time = timer.getTimeInterval() ;
