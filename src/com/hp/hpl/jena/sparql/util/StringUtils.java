@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.lib.iterator.Iter;
 public class StringUtils
 {
     /** Join an array of strings */
-    public static String join(String sep, String[]a)
+    public static String join(String sep, String...a)
     {
         if ( a.length == 0 )
             return "" ;
