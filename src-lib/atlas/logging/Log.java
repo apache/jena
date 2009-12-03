@@ -6,7 +6,13 @@
 
 package atlas.logging;
 
+import java.io.ByteArrayInputStream ;
 import java.io.File;
+import java.io.FileInputStream ;
+import java.io.InputStream ;
+
+import atlas.lib.AtlasException ;
+import atlas.lib.StrUtils ;
 
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.xml.DOMConfigurator ;
@@ -188,6 +194,45 @@ public class Log
             DOMConfigurator.configure(filename) ;
         else
             PropertyConfigurator.configure(filename) ;
+    }
+    
+    //---- java.util.logging - because that's always present.
+    
+    static String defaultProperties = 
+        StrUtils.strjoinNL(
+                           // Atlas.
+                           //"handlers=atlas.logging.java.ConsoleHandlerStdout" ,
+                           //"atlas.logging.java.ConsoleHandlerStdout.level=ALL",
+                           //"atlas.logging.java.ConsoleHandlerStdout.formatter=atlas.logging.java.TextFormatter",
+
+                           // Provided by the JRE
+                           "handlers=java.util.logging.ConsoleHandler" ,
+                           "java.util.logging.ConsoleHandler.level=INFO"
+        ) ;   
+        
+    
+    public static void setJavaLogging()
+    {
+        setJavaLogging("logging.properties") ;
+    }
+    
+    
+    public static void setJavaLogging(String file)
+    {
+        try
+        {
+            InputStream details = new FileInputStream(file) ;
+            java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
+        } catch (Exception ex) { throw new AtlasException(ex) ; } 
+    }
+    
+    public static void setJavaLoggingBuiltin()
+    {
+        try
+        {
+            InputStream details = new ByteArrayInputStream(defaultProperties.getBytes("UTF-8")) ;
+            java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
+        } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
 }
 

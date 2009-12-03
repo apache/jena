@@ -58,7 +58,7 @@
     </dependency>
 
     <!-- Choose a log4j that works with ivy -->
-    <dependency org="log4j" name="log4j" rev="1.2.14"/>
+    <dependency conf="dev->*" org="log4j" name="log4j" rev="1.2.14"/>
 
     <!-- Java logging 
     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.8"/>

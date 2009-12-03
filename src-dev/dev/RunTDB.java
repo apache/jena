@@ -9,21 +9,29 @@ package dev;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.Iterator ;
 
 import perf.Performance ;
 import atlas.iterator.Filter ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class RunTDB
 {
@@ -39,11 +47,50 @@ public class RunTDB
 
     public static void main(String ... args) throws IOException
     {
+        // Violate MRSW.
+        {
+            Model m  = TDBFactory.createModel() ;
+            FileManager.get().readModel(m, "D.ttl") ;
+
+            System.out.println("Test 1") ;
+            // Test 1
+            ExtendedIterator<Statement> iter = m.listLiteralStatements(null, null, 13) ;
+
+            System.out.println(iter.hasNext()) ;
+            System.out.println(iter.next()) ;
+
+            System.out.println(iter.hasNext()) ;
+            System.out.println(iter.next()) ;
+
+            System.out.println("Remove") ;
+            m.removeAll() ;
+
+            System.out.println(iter.hasNext()) ;
+            //System.out.println(iter.next()) ;
+        }
+        // Test 2
+        {
+            System.out.println("Test 2") ;
+            Triple t = SSE.parseTriple("(<s> <p> <o>)") ;
+            Graph g = TDBFactory.createDatasetGraph().getGraph(Node.createURI("http://example/graph")) ;
+            Iterator<Triple> iter = g.find(null, null, null) ;
+            System.out.println(iter.hasNext()) ;
+            g.add(t) ;
+            System.out.println(iter.hasNext()) ;
+            
+        }
+        
+        System.out.println("END") ;
+        System.exit(0) ;
+        
+        
+        
+        
         if ( args.length == 0 )
-            args = new String[]{"/home/afs/Datasets/BSBM/bsbm-1m.nt.gz"} ;
+            args = new String[]{"/home/afs/Datasets/BSBM/bsbm-250k.nt.gz"} ;
         
         //Performance.tokenizer(args[0]) ; System.exit(0) ;
-        Performance.turtle(args[0]) ; System.exit(0) ;
+        Performance.ntriples(args[0]) ; System.exit(0) ;
         
         tdb.turtle.main("D.ttl") ; System.exit(0) ;
 

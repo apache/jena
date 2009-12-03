@@ -64,7 +64,7 @@ public class GraphNamedTDB extends GraphTDBBase
     }
 
     @Override
-    public void performAdd( Triple t ) 
+    protected boolean _performAdd( Triple t ) 
     { 
         if ( isQuadUnionGraph(graphNode) )
             throw new TDBException("Can't add a triple to the RDF merge of all named graphs") ;
@@ -77,11 +77,12 @@ public class GraphNamedTDB extends GraphTDBBase
         
         if ( ! changed )
             duplicate(t) ;
+        return changed ; 
     }
 
  
     @Override
-    public void performDelete( Triple t ) 
+    protected boolean _performDelete( Triple t ) 
     { 
         if ( isQuadUnionGraph(graphNode) )
             throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
@@ -91,6 +92,7 @@ public class GraphNamedTDB extends GraphTDBBase
             //throw new TDBException("Attempt to delete a triple from the default graph via its named form"); 
         else 
             changed = dataset.getQuadTable().delete(graphNode, t) ;
+        return changed ; 
     }
     
     @Override

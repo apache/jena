@@ -38,17 +38,19 @@ public class GraphTriplesTDB extends GraphTDBBase
     }
     
     @Override
-    public void performAdd( Triple t ) 
+    protected boolean _performAdd( Triple t ) 
     { 
         boolean changed = tripleTable.add(t) ;
         if ( ! changed )
             duplicate(t) ;
+        return changed ;
     }
 
     @Override
-    public void performDelete( Triple t ) 
+    protected boolean _performDelete( Triple t ) 
     { 
         boolean changed = tripleTable.delete(t) ;
+        return changed ;
     }
     
     @Override
@@ -60,13 +62,6 @@ public class GraphTriplesTDB extends GraphTDBBase
 //    @Override
 //    public boolean isEmpty()        { return tripleTable.isEmpty() ; }
     
-    // B+Trees don't (yet) have a proper size
-//    @Override
-//    public int graphBaseSize()
-//    {
-//        return (int)tripleTable.size() ;
-//    }
-        
     @Override
     protected final Logger getLog() { return log ; }
 

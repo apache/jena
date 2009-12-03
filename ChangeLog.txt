@@ -2,7 +2,10 @@ ChangeLog for TDB
 =================
 
 ==== 0.8.5
-+ Add a shiutdown hook to sync datasets (don't rely on it!)
++ Add a shutdown hook to sync datasets (don't rely on it!)
++ Adding checking for concurrenct modification situations.
+  TDB supports multiple readers OR single writer.
+  See also java.util collections.   
 
 ==== 0.8.4
 

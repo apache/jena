@@ -7,30 +7,40 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph;
+import static com.hp.hpl.jena.sparql.core.Quad.isQuadUnionGraph ;
 
-import java.util.Iterator;
+import java.util.ConcurrentModificationException ;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
-import org.slf4j.Logger;
+import org.slf4j.Logger ;
+import atlas.iterator.Iter ;
 
-import atlas.iterator.Iter;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.Quad;
-
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.graph.*;
+import com.hp.hpl.jena.graph.BulkUpdateHandler ;
+import com.hp.hpl.jena.graph.Capabilities ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Reifier ;
+import com.hp.hpl.jena.graph.TransactionHandler ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
+import com.hp.hpl.jena.tdb.graph.GraphBase2 ;
+import com.hp.hpl.jena.tdb.graph.GraphSyncListener ;
+import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB ;
+import com.hp.hpl.jena.tdb.graph.Reifier2 ;
+import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
+import com.hp.hpl.jena.tdb.graph.UpdateListener ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
@@ -69,6 +79,28 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     //@Override
     public Lock getLock()                                       { return dataset.getLock() ; }
     
+    // Intercept performAdd/preformDelete and bracket in start/finish markers   
+    
+    @Override
+    public final void performAdd(Triple triple)
+    { 
+        startUpdate() ;
+        _performAdd(triple) ;
+        finishUpdate() ;
+    }
+
+    @Override
+    public final void performDelete(Triple triple)
+    {
+        startUpdate() ;
+        _performDelete(triple) ;
+        finishUpdate() ;
+    }
+    
+    protected abstract boolean _performAdd( Triple triple ) ;
+    
+    protected abstract boolean _performDelete( Triple triple ) ;
+    
     //@Override
     public abstract void sync(boolean force) ;
     
@@ -81,7 +113,8 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         }
     }
     
-    protected static ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
+    // /*static/* - remove when MRSW checkign is stable. 
+    protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
     {
         // See also SolverLib.execute
         Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
@@ -90,10 +123,10 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         
         boolean b = iter.hasNext() ;
         
-        return new MapperIteratorTriples(iter) ;
+        return new MapperIteratorTriples(iter, this) ;
     }
     
-    protected static ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
+    protected /*static*/ ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
     {
         Node gn = graphNode ;
         // Explicitly named union graph. 
@@ -108,7 +141,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         
         if ( gn == Node.ANY )
             iterTriples = Iter.distinct(iterTriples) ;
-        return new MapperIteratorTriples(iterTriples) ;
+        return new MapperIteratorTriples(iterTriples, this) ;
     }
     
     @Override
@@ -121,6 +154,11 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     
     /** Iterator over something that, when counted, is the graph size. */
     protected abstract Iterator<?> countThis() ;
+    
+    // And reads are always even.
+    private long epoch = 4 ; 
+    public final void startUpdate() { epoch ++ ; }
+    public final void finishUpdate() { epoch ++ ; }
 
     @Override
     protected final int graphBaseSize()
@@ -133,10 +171,60 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     static class MapperIteratorTriples extends NiceIterator<Triple>
     {
         private final Iterator<Triple> iter ;
-        MapperIteratorTriples(Iterator<Triple> iter) { this.iter = iter ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Triple next() { return iter.next(); }
-        @Override public void remove() { iter.remove(); }
+        private GraphTDBBase base ;
+        private long epoch ;
+        private boolean finished = false ;
+        
+        MapperIteratorTriples(Iterator<Triple> iter, GraphTDBBase base) 
+        { 
+            this.iter = iter ;
+            this.base = base ;
+            this.epoch = base.epoch ;
+            finished = ! iter.hasNext() ;
+        }
+        
+        private void checkCourrentModification()
+        {
+            if ( finished )
+                return ;
+            
+            long now = base.epoch ;
+            if ( now != epoch )
+                throw new ConcurrentModificationException() ;
+        }
+        
+        @Override public boolean hasNext()
+        { 
+            // Problem - the underlying iterator may have finished.
+            // Solved by .hashNext in next() ;
+            // This is good because many iterators do their the work in .hasNext();
+            checkCourrentModification() ;
+            boolean b = iter.hasNext() ;
+            if ( ! b )
+                finished = true ; 
+            return b ;
+        }
+        
+        @Override public Triple next()
+        { 
+            checkCourrentModification() ;
+            try { 
+                Triple t = iter.next();
+                if ( ! iter.hasNext() )
+                    // Iterator finished.  Note this.
+                    finished = true ;
+                return t ;
+            }
+            catch (NoSuchElementException ex) { finished = true ; throw ex ; }
+        }
+        
+        @Override public void remove()     
+        //{ throw new UnsupportedOperationException() ; }
+        {
+            checkCourrentModification() ; 
+            iter.remove() ;
+            epoch = base.epoch ;
+        }
     }
     
     // Convert from Iterator<Quad> to Iterator<Triple>

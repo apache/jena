@@ -4,11 +4,13 @@
   <property name="sftp.root.dev" value="repo-dev/com/hp/hpl/jena" override="false"/>
   <property name="sftp.root.main" value="repo/com/hp/hpl/jena" override="false"/>
 
-  <!-- Resolvers used for getting our dependencies -->
+  <!-- Resolvers used for getting our dependencies from
+       Defines "resolver-chain" 
+  -->
   <include file="${ivy.settings.dir}/ivy-resolvers.xml" />
 
   <resolvers>
-    <!-- Where to publish -->
+    <!-- Where to publish to -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="repo-local" >
        <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>
@@ -28,7 +30,6 @@
       <ivy      pattern="${sftp.root.dev}/[module]/[revision]/ivy.xml"/>
       <artifact pattern="${sftp.root.dev}/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </sftp>
-
   </resolvers>
 
   <settings defaultResolver="resolver-chain"/>

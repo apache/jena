@@ -12,7 +12,11 @@ public class DevTDB
     // == 0.8.5
     // + Eclipse container for ivy/maven etc
     // + MRSW checking with current modification detection
+    //     Tests needed.  See RunTDB
     // + Dynamic datasets
+    
+    // Separate out an interface for UpdateTracking
+    // start/stop update + start/stop read
     
     // NodeTableFactory and SetupTDB.makeNodeTable have common code. 
     //   Remove NodeTableFactory and have one per-technology setup/maker
@@ -25,6 +29,8 @@ public class DevTDB
     //    FmtUtils and NodeFmtLib 
     
     // Sort out NodecSSE and NodecLib
+
+    // Logging : something depends on log4j.
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;

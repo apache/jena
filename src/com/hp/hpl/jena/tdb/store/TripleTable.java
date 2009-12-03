@@ -77,6 +77,8 @@ public class TripleTable implements Sync, Closeable
     public void close()
     { table.close() ; }
     
+    public boolean isEmpty()        { return table.isEmpty() ; }
+    
 //    /** Find by node. */
 //    public Iterator<Triple> find(Node s, Node p, Node o)
 //    {

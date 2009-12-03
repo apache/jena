@@ -94,6 +94,8 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
     
     private void removeWorker(Node s, Node p, Node o)
     {
+        graphTDB.startUpdate() ;
+        
         // Delete in batches.
         // That way, there is no active iterator when a delete 
         // from the indexes happens.
@@ -137,6 +139,9 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
             if ( len < sliceSize )
                 break ;
         }
+        
+        graphTDB.finishUpdate() ;
+
     }
 }
 

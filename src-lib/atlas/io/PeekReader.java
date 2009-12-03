@@ -123,7 +123,7 @@ public abstract class PeekReader extends Reader
     }
     
     // And the correct way to read the currChar is to call peekChar.
-    private void setCurrChar(int ch)
+    private final void setCurrChar(int ch)
     {
         currChar = ch ;
     }
@@ -213,7 +213,7 @@ public abstract class PeekReader extends Reader
     // currChar is either chars[idx-1] or pushbackChars[idxPushback]
     
     /** Return the next character, moving on one place and resetting the peek character */ 
-    private int nextChar()
+    private final int nextChar()
     {
         int ch = peekChar() ;
         
