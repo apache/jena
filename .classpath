@@ -19,10 +19,10 @@
 	<classpathentry kind="lib" path="lib/icu4j-3.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/arq-2.8.1-tests.jar"/>
 	<classpathentry kind="lib" path="lib/jena-2.6.2-tests.jar"/>
 	<classpathentry kind="lib" path="lib/iri-0.8.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.2-tests.jar"/>
+	<classpathentry kind="lib" path="lib/arq-2.8.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

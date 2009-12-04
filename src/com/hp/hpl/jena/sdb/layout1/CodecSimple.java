@@ -6,21 +6,12 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.lang.sparql.Token;
-import com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
 public class CodecSimple implements EncoderDecoder
@@ -56,50 +47,7 @@ public class CodecSimple implements EncoderDecoder
     // -> ??
     static Node stringToNode(String string, PrefixMapping pmap)
     {
-        try {
-            //            // Hooking direcly into the tokenizer might be more efficient
-            //            // if this ever becomes a problem.  Need to resolve qname => URIs.
-            //            JavaCharStream str = new JavaCharStream(new StringReader(string)) ;
-            //            SPARQLParserTokenManager tMgr = new SPARQLParserTokenManager(str) ;
-            //            Token t2 = tMgr.getNextToken() ;
-            
-            Query query = new Query() ;
-            query.setPrefixMapping(pmap) ;
-            Reader in = new StringReader(string) ;
-            SPARQLParser p = new SPARQLParser(in) ;
-            p.setQuery(query) ;
-            Node n = p.GraphTerm() ;
-            Token t = p.getNextToken() ;
-            if ( t.kind != SPARQLParser.EOF )
-                throw new ParseException("More to parse: "+t.image) ;
-            return n ;
-        }
-        catch (TokenMgrError ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
-        }
-        catch (ParseException ex)
-        {
-            if ( ex.currentToken != null )
-            {
-                int x = ex.currentToken.beginColumn ;
-                System.out.println(string) ;
-                for ( int i = 0 ; i < x ; i++ )
-                    System.err.print(' ') ;
-                System.err.println("^^") ;
-            }
-            System.err.println(ex.getMessage()) ;
-        } catch (Throwable th)
-        {
-            String m = th.getMessage() ;
-            if ( m == null )
-                m = "No Message" ;
-            
-            System.err.println(m) ;
-            th.printStackTrace(System.err) ;
-        }
-        return null ;
+        return SSE.parseNode(string, pmap) ;
     }
 }
 

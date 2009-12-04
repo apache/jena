@@ -22,8 +22,9 @@ public class SDBUpdateTestSuite extends TestSuite
     private SDBUpdateTestSuite()
     {
         super("SDB Update") ;
-        this.addTestSuite(TestSPARQLUpdate.class) ;
-        this.addTestSuite(TestSPARQLUpdateMgt.class) ;
+        
+        addTestSuite(TestSPARQLUpdate.class) ;
+        addTestSuite(TestSPARQLUpdateMgt.class) ;
     }
 }
 

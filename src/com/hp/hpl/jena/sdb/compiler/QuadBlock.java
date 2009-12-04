@@ -6,29 +6,28 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sparql.lib.iterator.Iter.apply;
+import static com.hp.hpl.jena.sparql.lib.iterator.Iter.apply ;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
-
-import com.hp.hpl.jena.sparql.lib.Action;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.lib.Action ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.PrintSerializable ;
+import com.hp.hpl.jena.sparql.util.PrintUtils ;
 
 public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintSerializable
 {
-    // A nicer QuadPattern
+    // Pre-dates QuadPattern
     Node graphNode ;
 
     public QuadBlock() { super() ; }
-    
+
     public QuadBlock(QuadBlock other)
     { 
         super(other) ;
@@ -38,7 +37,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     public QuadBlock(OpQuadPattern quadPattern)
     {
         super() ;
-        this.addAll(quadPattern.getQuads()) ;
+        this.addAll(quadPattern.getPattern().getList()) ;
         graphNode = quadPattern.getGraphNode() ;
     }
 
@@ -48,14 +47,14 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     { 
         return new QuadBlock(this) ;
     }
-    
+
     static private Quad[] qArrayTemplate = new Quad[0] ;
-    
+
     public Quad[] asArray()
     {
         return this.toArray(qArrayTemplate) ;
     }
-    
+
     public Node getGraphNode() { return graphNode ; }
 
     public boolean contains(Quad pattern)
@@ -63,7 +62,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
 
     public boolean contains(Node g, Node s, Node p, Node o)
     { return findFirst(g, s, p, o) >= 0 ; } 
-    
+
     public int findFirst(Quad pattern)
     {
         return findFirst(0, pattern) ;
@@ -73,7 +72,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     {
         return findFirst(0, g, s, p, o) ; 
     }
-    
+
     public int findFirst(int start, Quad pattern)
     {
         return findFirst(start, pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ;
@@ -108,7 +107,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
         slice.addAll(subList(fromIndex, this.size())) ;
         return slice ;  
     }
-    
+
     public Iterable<Quad> find(Quad pattern)
     {
         return find(pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ;
@@ -145,7 +144,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
         &&
         ( g == null || g.equals(q.getGraph()) ) ;
     }
-    
+
     @Override
     public String toString()
     { return PrintUtils.toString(this) ; }
@@ -153,7 +152,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     public void output(final IndentedWriter out, SerializationContext sCxt)
     { 
         final String sep = "\n" ;
-        
+
         final Action<Quad> strAction = new Action<Quad>() {
             boolean first = true ; 
             public void apply(Quad quad)
@@ -164,7 +163,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
                 out.print(quad) ;
             } } ;
 
-        apply(this, strAction) ;
+            apply(this, strAction) ;
     }
 
     public String toString(PrefixMapping prefixMapping)
