@@ -1,6 +1,30 @@
 PREFIX : <http://example/>
 
-SELECT *
+SELECT * 
 {
-    ?s :p ?v .
+    ?x :p ?o1
+    FILTER(true)
+    GRAPH :g2 { ?x :q ?o2 . ?x :q ?o3 }
 }
+
+
+## PREFIX opol: <http://www.ontopolis.net/ontopolis/0.1/>
+## PREFIX dolite: <http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#>
+## PREFIX opolg: <http://www.ontopolis.net/graph/>
+## PREFIX dcterms: <http://purl.org/dc/terms/>
+## 
+## SELECT DISTINCT ?similarPlanId ?title
+## WHERE {
+##     GRAPH opolg:similarity {
+##     ?startPlan dolite:proper-part ?similarity .
+##     ?similarPlan dolite:proper-part ?similarity .
+##     ?simValue opol:similarity ?similarity .
+##     ?similarity a opol:SimilarityInfo .
+##     }
+##     GRAPH opolg:ontopolis {
+##     ?similarPlan dcterms:identifier ?similarPlanId .
+##     ?similarPlan dcterms:title ?title .
+##     }
+## }
+## ORDER BY DESC(?simValue)
+## LIMIT 10
