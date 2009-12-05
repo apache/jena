@@ -116,7 +116,7 @@ void SubSelect() :{ }
   SolutionModifier()
 }
 
-void Project() : { Var v ; Expr expr ; }
+void Project() : { Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
@@ -134,7 +134,19 @@ void Project() : { Var v ; Expr expr ; }
       expr = Aggregate()
       { getQuery().addResultVar((Var)null, expr) ; }
     | expr = BuiltInCall() { getQuery().addResultVar((Var)null, expr) ; }
+
+    // PROBLEMS: 
+    // <uri>(?x)
+    // looks like a function call and also a "<uri> ( ?v )"
+    //| expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
+
+    // TIDY! This form is used at least twice.
+    //| expr = IRIrefOrFunction() { getQuery().addResultVar((Var)null, expr) ; }
+
     | expr = FunctionCall() { getQuery().addResultVar((Var)null, expr) ; }
+    | n = RDFLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
+    | n = NumericLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
+    | n = BooleanLiteral() { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
 
     // Syntax: ( expr [AS ?var] )
     |

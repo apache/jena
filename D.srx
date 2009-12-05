@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="s"/>
+    <variable name="p"/>
+    <variable name="o"/>
+  </head>
+  <results>
+    <result>
+      <binding name="s">
+        <bnode>b0</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMaxPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">450.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b0</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMinPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">200.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://examplecar1</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasPrice</uri>
+      </binding>
+      <binding name="o">
+        <bnode>b1</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://examplecar1</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasPrice</uri>
+      </binding>
+      <binding name="o">
+        <bnode>b2</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b1</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMaxPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">200.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b1</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMinPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">100.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://examplecar2</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasPrice</uri>
+      </binding>
+      <binding name="o">
+        <bnode>b3</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://examplecar2</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasPrice</uri>
+      </binding>
+      <binding name="o">
+        <bnode>b0</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b3</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMaxPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">400.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b3</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMinPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">100.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b2</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMaxPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">450.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <bnode>b2</bnode>
+      </binding>
+      <binding name="p">
+        <uri>http://examplehasMinPrice</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">300.0</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

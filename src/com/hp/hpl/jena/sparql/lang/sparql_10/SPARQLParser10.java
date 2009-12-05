@@ -116,7 +116,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
   final public void Project() throws ParseException {
-                   Var v ; Expr expr ;
+                   Var v ; Expr expr ; Node n ;
     jj_consume_token(SELECT);
       getQuery().setQuerySelectType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

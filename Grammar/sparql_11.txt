@@ -201,7 +201,7 @@ NON-TERMINALS
 // ---- Query type clauses
 	SelectQuery	:=	Project ( DatasetClause )* WhereClause SolutionModifier
 	SubSelect	:=	Project WhereClause SolutionModifier
-	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) | Aggregate | BuiltInCall | FunctionCall | ( <LPAREN> Expression ( <AS> Var )? <RPAREN> ) )+ | <STAR> )
+	Project	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( ( Var ) | Aggregate | BuiltInCall | FunctionCall | RDFLiteral | NumericLiteral | BooleanLiteral | ( <LPAREN> Expression ( <AS> Var )? <RPAREN> ) )+ | <STAR> )
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause

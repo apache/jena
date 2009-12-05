@@ -104,7 +104,7 @@ void SubSelect() :{ }
   SolutionModifier()
 }
 
-void Project() : { Var v ; Expr expr ; }
+void Project() : { Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
