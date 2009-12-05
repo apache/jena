@@ -16,8 +16,9 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
-final class BTreePageMgr
+final class BTreePageMgr implements Session
 {
     private BTree btree ;
     private BlockMgr blockMgr ;

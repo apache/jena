@@ -11,8 +11,9 @@ import java.nio.ByteBuffer;
 import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
-public interface BlockMgr extends Sync, Closeable
+public interface BlockMgr extends Sync, Closeable, Session
 {
     /** Allocate an uninitialized slot.  Fill with a .put */ 
     public int allocateId();

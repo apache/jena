@@ -19,9 +19,10 @@ import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.index.btree.BTreeException;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
-public final class BPTreeNodeMgr
+public final class BPTreeNodeMgr implements Session
 {
  // Only "public" for external very low level tools in development to access this class.
  // Assume package access.
@@ -123,21 +124,17 @@ public final class BPTreeNodeMgr
     }
     
     /** Signal the start of an update operation */
+    public void startRead()         { blockMgr.startRead() ; }
+
+    /** Signal the completeion of an update operation */
+    public void finishRead()        { blockMgr.finishRead() ; }
+
+    /** Signal the start of an update operation */
     public void startUpdate()       { blockMgr.startUpdate() ; }
     
     /** Signal the completion of an update operation */
     public void finishUpdate()      { blockMgr.finishUpdate() ; }
 
-    /** Signal the start of an update operation */
-    public void startRead()         { blockMgr.startRead() ; }
-    
-    /** Signal the completeion of an update operation */
-    public void finishRead()        { blockMgr.finishRead() ; }
-    
-    // ---- On-disk support
-    
-    // Using a BlockConverter interally.
-    
     private class Block2BPTreeNode implements BlockConverter.Converter<BPTreeNode>
     {
         //@Override

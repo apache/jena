@@ -23,6 +23,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
 
 
@@ -56,7 +57,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
  *  @author	Andy Seaborne
  */
 
-public class BTree implements Iterable<Record>, RangeIndex
+public class BTree implements Iterable<Record>, RangeIndex, Session
 {
     /*
      * Insertion:
@@ -254,6 +255,18 @@ public class BTree implements Iterable<Record>, RangeIndex
             pageMgr.getBlockMgr().close()   ;
     }
     
+    public void startRead()
+    {}
+
+    public void finishRead()
+    {}
+
+    public void startUpdate()
+    {}
+
+    public void finishUpdate()
+    {}
+
     //@Override
     public long size()
     { 

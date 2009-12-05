@@ -8,23 +8,22 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
-
-import atlas.lib.ActionKeyValue;
-import atlas.lib.Cache;
-import atlas.lib.CacheFactory;
+import java.util.WeakHashMap ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Caching block manager - this is an LRU cache */
-public class BlockMgrCache extends BlockMgrSync
+/** Caching block manager - this is an weak ref cache */
+public class BlockMgrWeakRefCache extends BlockMgrSync
 {
-    private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
+
+    // UNTESTED
+    private static Logger log = LoggerFactory.getLogger(BlockMgrWeakRefCache.class) ;
     // Read cache
-    Cache<Integer, ByteBuffer> readCache = null ;
+    WeakHashMap<Integer, ByteBuffer> readCache = null ;
 
     // Delayed dirty writes.
-    Cache<Integer, ByteBuffer> writeCache = null ;
+    WeakHashMap<Integer, ByteBuffer> writeCache = null ;
     
     public static boolean globalLogging = false ;           // Also enable the logging level. 
     private boolean logging = false ;                       // Also enable the logging level. 
@@ -34,26 +33,16 @@ public class BlockMgrCache extends BlockMgrSync
     long cacheMisses = 0 ;
     long cacheWriteHits = 0 ;
     
-    public BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
+    public BlockMgrWeakRefCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
         this.indexName = String.format("%-12s", indexName) ;
         
         // Caches are related so we can't use a Getter for cache management.
-        readCache = CacheFactory.createCache(readSlots) ;
+        readCache = new WeakHashMap<Integer, ByteBuffer>(readSlots, 0.75f) ;
         
         if ( writeSlots > 0 )
-        {
-            writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
-                //@Override
-                public void apply(Integer id, ByteBuffer bb)
-                { 
-                    log("Cache spill: write block: %d", id) ;
-                    expelEntry(id) ;
-                }
-            }) ;
-        }
+            writeCache = new WeakHashMap<Integer, ByteBuffer>(writeSlots) ;
     }
     
     // Write out when flushed.
@@ -62,7 +51,7 @@ public class BlockMgrCache extends BlockMgrSync
         ByteBuffer bb = writeCache.get(id) ;
         if ( bb == null )
         {
-            log.warn("Write cache: "+id+" expeling entry that isn't there") ;
+            log.error("Write cache: "+id+" expeling entry that isn't there") ;
             return ;
         }
         log("Drop (write cache): %d", id) ;
@@ -191,7 +180,6 @@ public class BlockMgrCache extends BlockMgrSync
     private boolean syncFlush(boolean all)
     {
         boolean didSync = false ;
-        
         if ( writeCache != null )
         {
             log("Flush (write cache)") ;
@@ -199,45 +187,15 @@ public class BlockMgrCache extends BlockMgrSync
             long N = writeCache.size() ;
             Integer[] ids = new Integer[(int)N] ;
 
-            // Single writer (sync is a write operation MRSW)
-            // Iterating is safe.
-            
-            Iterator<Integer> iter = writeCache.keys() ;
+            Iterator<Integer> iter = writeCache.keySet().iterator() ;
             if ( iter.hasNext() )
                 didSync = true ;
 
-            // Empty the whole write cache.
-            // Maybe for "all=false", only do, say 50%.
             for ( ; iter.hasNext() ; )
             {
                 Integer id = iter.next();
                 expelEntry(id) ;
             }
-            
-            
-            
-            /* Code to pick a proportiton of the cache - use only if all-false*/
-//            // Choose ... and it's in order.
-//            // Single writer (sync is a write operation MRSW)
-//            // Iterating is safe.
-//            
-//            Iterator<Integer> iter = writeCache.keys() ;
-//            if ( iter.hasNext() )
-//                didSync = true ;
-//            // Find all 
-//            for ( int i = 0 ; iter.hasNext() ; i++ )
-//                ids[i] = iter.next() ;
-//            
-//            // Flush entries.
-//            long limit = 3*N/4 ;
-//            if ( all ) limit = N ;
-//            
-//            for ( int i = 0 ; i < (int)limit ; i++ )
-//            {
-//                Integer id = ids[i] ;
-//                expelEntry(id) ;
-//            }
-            
         }
         return didSync ;
     }

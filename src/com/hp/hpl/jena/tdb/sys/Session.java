@@ -1,51 +1,34 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.sys;
 
-import atlas.lib.Tuple;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.sys.Session ;
-
-public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
+/** A Session is a set of operations that are either all read actions 
+ * or a mixture of read and write (an update).
+ * Most implementations of this interface do not enforce the policy - it
+ * is up to the caller to preserve the invariant for the object called. 
+ */
+public interface Session
 {
-    public NodeTupleTable getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
+    /** Signal the start of an update operation */
+    public void startUpdate() ;
     
-    /** Get a lock that is shared for all graphs from teh same dataset (it is the dataset lock) */
-    public Lock getLock() ;
+    /** Signal the completion of an update operation */
+    public void finishUpdate();
+
+    /** Signal the start of an update operation */
+    public void startRead();
     
-    /**
-     * Return the graph node for this graph if it's in a quad table, else return
-     * null for a triple table based (e.g. the default graph of a dataset)
-     */ 
-    public Node getGraphNode() ;
-    
-    /** Return the TDB-backed daatset for this graph.
-     *  Maybe null - indicating it's a simple graph backed by TDB
-     *  (and also the concrete default graph) 
-     */
-    public DatasetGraphTDB getDataset() ;
-    
-    public Location getLocation() ; 
+    /** Signal the completeion of an update operation */
+    public void finishRead();
+
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

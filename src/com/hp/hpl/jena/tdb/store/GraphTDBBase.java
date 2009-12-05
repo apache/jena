@@ -157,6 +157,13 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected abstract Iterator<?> countThis() ;
     
     
+
+    //@Override
+    public void finishRead()        {}
+
+    //@Override
+    public void startRead()         {}
+    
     //@Override
     public final void startUpdate() { epoch ++ ; }
     //@Override

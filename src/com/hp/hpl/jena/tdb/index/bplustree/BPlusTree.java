@@ -26,6 +26,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
 /** B-Tree converted to B+Tree
  * 
@@ -62,7 +63,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
  *  @author	Andy Seaborne
  */
 
-public class BPlusTree implements Iterable<Record>, RangeIndex
+public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 {
     /*
      * Insertion:
@@ -289,6 +290,22 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return root.iterator(fromRec, toRec) ;
     }
     
+    //@Override
+    public void finishRead()
+    {}
+
+    //@Override
+    public void finishUpdate()
+    {}
+
+    //@Override
+    public void startRead()
+    {}
+
+    //@Override
+    public void startUpdate()
+    {}
+
     //@Override
     public boolean isEmpty()
     {
