@@ -170,6 +170,7 @@ public final class Token
         return sb.toString() ;
     }
     
+    public boolean isCtlCode() { return tokenType == TokenType.CNTRL ; }
 
     public boolean isWord() { return tokenType == TokenType.KEYWORD ; }
 
