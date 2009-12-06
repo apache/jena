@@ -20,6 +20,7 @@ import org.junit.runners.Suite;
     // The script suite
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
+    , TestConcurrentAccess.class
 } )
 public class TS_Store
 { 

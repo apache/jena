@@ -191,53 +191,30 @@ public class BlockMgrCache extends BlockMgrSync
     private boolean syncFlush(boolean all)
     {
         boolean didSync = false ;
-        
+
         if ( writeCache != null )
         {
             log("Flush (write cache)") ;
-            
+
             long N = writeCache.size() ;
             Integer[] ids = new Integer[(int)N] ;
 
             // Single writer (sync is a write operation MRSW)
             // Iterating is safe.
-            
+
             Iterator<Integer> iter = writeCache.keys() ;
             if ( iter.hasNext() )
                 didSync = true ;
 
-            // Empty the whole write cache.
-            // Maybe for "all=false", only do, say 50%.
-            for ( ; iter.hasNext() ; )
+            // Need to get all then delete else concurrent modification exception. 
+            for ( int i = 0 ; iter.hasNext() ; i++ )
+                ids[i] = iter.next() ;
+
+            for ( int i = 0 ; i < N ; i++ )
             {
-                Integer id = iter.next();
+                Integer id = ids[i] ;
                 expelEntry(id) ;
             }
-            
-            
-            
-            /* Code to pick a proportiton of the cache - use only if all-false*/
-//            // Choose ... and it's in order.
-//            // Single writer (sync is a write operation MRSW)
-//            // Iterating is safe.
-//            
-//            Iterator<Integer> iter = writeCache.keys() ;
-//            if ( iter.hasNext() )
-//                didSync = true ;
-//            // Find all 
-//            for ( int i = 0 ; iter.hasNext() ; i++ )
-//                ids[i] = iter.next() ;
-//            
-//            // Flush entries.
-//            long limit = 3*N/4 ;
-//            if ( all ) limit = N ;
-//            
-//            for ( int i = 0 ; i < (int)limit ; i++ )
-//            {
-//                Integer id = ids[i] ;
-//                expelEntry(id) ;
-//            }
-            
         }
         return didSync ;
     }

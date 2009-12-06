@@ -8,6 +8,8 @@ package atlas.lib.cache;
 
 import java.util.Iterator ;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
+
 import atlas.iterator.SingletonIterator ;
 import atlas.lib.ActionKeyValue ;
 import atlas.lib.Cache ;
@@ -42,8 +44,15 @@ public class Cache1<K, V> implements Cache<K,V>
     //@Override
     public void clear()
     { 
+        if ( cacheKey == null )
+            return ;
+
+        K k = cacheKey ;
+        V v = cacheValue ;
         cacheKey = null ;
         cacheValue = null ;
+        
+        notifyDrop(k, v) ;
     }
 
     //@Override
@@ -61,14 +70,18 @@ public class Cache1<K, V> implements Cache<K,V>
     //@Override
     public V put(K key, V thing)
     {
-        V old = cacheValue ;
+        if ( Utils.equals(cacheKey, key) && Utils.equals(cacheValue, thing) )
+            // No change.
+            return cacheValue ;
+
+        // Change
+        K k = cacheKey ;
+        V v = cacheValue ;
         // Displaces any existing cached key/value pair
         cacheKey = key ;
         cacheValue = thing ;
-        
-        if ( old != null && old.equals(cacheValue) )
-            drop(key, old) ;
-        return old ;
+        notifyDrop(k, v) ;
+        return v ;
     }
 
     //@Override
@@ -78,8 +91,7 @@ public class Cache1<K, V> implements Cache<K,V>
         
         if ( cacheKey.equals(key) )
         {
-            drop(cacheKey, cacheValue) ;
-            clear() ;
+            clear() ;   // Will notify
             return true ;
         }
         return false ;
@@ -91,9 +103,9 @@ public class Cache1<K, V> implements Cache<K,V>
         this.dropHandler = dropHandler ;
     }
 
-    private void drop(K key, V thing)
+    private void notifyDrop(K key, V thing)
     {
-        if ( dropHandler != null )
+        if ( dropHandler != null && key != null )
             dropHandler.apply(key, thing) ;
     }
     

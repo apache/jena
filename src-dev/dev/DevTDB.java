@@ -10,9 +10,6 @@ package dev;
 public class DevTDB
 {
     // == 0.8.5
-    // + Eclipse container for ivy/maven etc
-    // + MRSW checking with current modification detection
-    //     Tests needed.  See RunTDB
     // + Dynamic datasets
     
     // Separate out an interface for UpdateTracking
@@ -35,11 +32,12 @@ public class DevTDB
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
     
+    // Cache clear to call drop handlers on all cache implementations.
+    
     // === Projects
     // -> Stopping long running queries - 
     //    hook in BGQ/Quad patterns
     // -> Dynamic datasets
-    // -> MRSW checking with current modification detection
     // -> BDB-JE & transactions
     // -> BDB-JE and compressed blocks.
     
