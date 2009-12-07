@@ -335,8 +335,10 @@ public class MetaFile implements Sync, Closeable
     }
 
     //@Override
-    public void sync(boolean force)
-    { flush() ; }
+    public void sync()                  { flush() ; }
+    
+    //@Override
+    public void sync(boolean force)     { flush() ; }
 
     //@Override
     public void close()

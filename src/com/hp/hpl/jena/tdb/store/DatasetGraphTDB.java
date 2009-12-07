@@ -144,6 +144,9 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public Location getLocation()       { return location ; }
 
     //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     {
         tripleTable.sync(force) ;

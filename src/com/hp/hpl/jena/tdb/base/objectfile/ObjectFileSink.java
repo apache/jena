@@ -33,6 +33,10 @@ public class ObjectFileSink implements ObjectFile
     }
 
     //@Override
+    public void sync()
+    {}
+    
+    //@Override
     public void sync(boolean force)
     {}
 

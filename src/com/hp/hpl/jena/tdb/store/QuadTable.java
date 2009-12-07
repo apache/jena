@@ -82,6 +82,9 @@ public class QuadTable implements Sync, Closeable
     public NodeTupleTable getNodeTupleTable() { return table ; }
 
     //@Override
+    public void sync() { sync(true) ; }
+
+    //@Override
     public void sync(boolean force)
     { table.sync(force) ; }
 

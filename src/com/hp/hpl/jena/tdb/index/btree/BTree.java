@@ -243,6 +243,10 @@ public class BTree implements Iterable<Record>, RangeIndex, Session
         return pageMgr.getBlockMgr().isEmpty() ;
     }
 
+    //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     {
         if ( pageMgr.getBlockMgr() != null )

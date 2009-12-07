@@ -176,6 +176,9 @@ public class NodeTableCache implements NodeTable
     }
 
     //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
     public synchronized void sync(boolean force)
     {
         baseTable.sync(force) ;

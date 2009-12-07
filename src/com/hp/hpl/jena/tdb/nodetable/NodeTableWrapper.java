@@ -47,6 +47,8 @@ public class NodeTableWrapper implements NodeTable
         return nodeTable.all();
     }
 
+    //@Override
+    public void sync() { nodeTable.sync() ; } 
 
     //@Override
     public void sync(boolean force)

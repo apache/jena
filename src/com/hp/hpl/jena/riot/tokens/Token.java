@@ -6,38 +6,43 @@
 
 package com.hp.hpl.jena.riot.tokens;
 
-import static com.hp.hpl.jena.riot.RiotChars.CH_COMMA;
-import static com.hp.hpl.jena.riot.RiotChars.CH_DOT;
-import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACE;
-import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACKET;
-import static com.hp.hpl.jena.riot.RiotChars.CH_LPAREN;
-import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACE;
-import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACKET;
-import static com.hp.hpl.jena.riot.RiotChars.CH_RPAREN;
-import static com.hp.hpl.jena.riot.RiotChars.CH_SEMICOLON;
-import static com.hp.hpl.jena.riot.tokens.TokenType.BNODE;
-import static com.hp.hpl.jena.riot.tokens.TokenType.DECIMAL;
-import static com.hp.hpl.jena.riot.tokens.TokenType.DOUBLE;
-import static com.hp.hpl.jena.riot.tokens.TokenType.INTEGER;
-import static com.hp.hpl.jena.riot.tokens.TokenType.IRI;
-import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_DT;
-import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_LANG;
-import static com.hp.hpl.jena.riot.tokens.TokenType.STRING;
-import static com.hp.hpl.jena.riot.tokens.TokenType.VAR;
+import static com.hp.hpl.jena.riot.RiotChars.CH_COMMA ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_DOT ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACE ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LBRACKET ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_LPAREN ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACE ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RBRACKET ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_RPAREN ;
+import static com.hp.hpl.jena.riot.RiotChars.CH_SEMICOLON ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.BNODE ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.DECIMAL ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.DOUBLE ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.INTEGER ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.IRI ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_DT ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_LANG ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.STRING ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.VAR ;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
+import atlas.io.PeekReader ;
 import atlas.lib.Pair ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.riot.PrefixMap ;
 import com.hp.hpl.jena.riot.Prologue ;
-import com.hp.hpl.jena.riot.RiotException;
+import com.hp.hpl.jena.riot.RiotException ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 public final class Token
 {
@@ -62,6 +67,28 @@ public final class Token
     public final Token setImage2(String tokenImage2)   { this.tokenImage2 = tokenImage2 ; return this ; }
     public final Token setCntrlCode(int cntrlCode)     { this.cntrlCode = cntrlCode ; return this ; }
     public final Token setSubToken(Token subToken)     { this.subToken = subToken ; return this ; }
+    
+    static Token create(String s)
+    {
+        PeekReader pr = PeekReader.readString(s) ;
+        TokenizerText tt = new TokenizerText(pr) ;
+        if ( ! tt.hasNext() )
+            throw new RiotException("No token") ;
+        Token t = tt.next() ;
+        if ( tt.hasNext() )
+            throw new RiotException("Extraneous charcaters") ;
+        return t ;
+    }
+
+    static Iter<Token> createN(String s)
+    {
+        PeekReader pr = PeekReader.readString(s) ;
+        TokenizerText tt = new TokenizerText(pr) ;
+        List<Token> x = new ArrayList<Token>() ;
+        while(tt.hasNext())
+            x.add(tt.next()) ;
+        return Iter.iter(x) ;
+    }
     
     public long getColumn()
     {

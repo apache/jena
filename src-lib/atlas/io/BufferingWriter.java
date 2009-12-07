@@ -187,8 +187,8 @@ public final class BufferingWriter extends Writer
         if ( bufferSize() > 0 )
         {
             send(out, buffer) ;
-            buffer.clear() ;
             out.flush() ;
+            buffer.clear() ;
         }
     }
 

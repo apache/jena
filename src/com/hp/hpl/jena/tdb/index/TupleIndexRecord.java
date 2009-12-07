@@ -252,6 +252,10 @@ public class TupleIndexRecord implements TupleIndex
     }
     
     //@Override
+    public void sync()
+    { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     {
         index.sync(force) ;

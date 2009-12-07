@@ -103,6 +103,9 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     protected abstract boolean _performDelete( Triple triple ) ;
     
     //@Override
+    public void sync() { sync(true) ; }
+
+    //@Override
     public abstract void sync(boolean force) ;
     
     protected void duplicate(Triple t)

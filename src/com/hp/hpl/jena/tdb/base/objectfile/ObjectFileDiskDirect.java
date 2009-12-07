@@ -132,10 +132,11 @@ public class ObjectFileDiskDirect implements ObjectFile
     { file.close() ; }
 
     //@Override
-    public void sync(boolean force)
-    { file.sync(force) ; }
-
+    public void sync()                  { file.sync() ; }
     
+    //@Override
+    public void sync(boolean force)     { file.sync(force) ; }
+
     // ---- Dump
     public void dump() { dump(handler) ; }
 

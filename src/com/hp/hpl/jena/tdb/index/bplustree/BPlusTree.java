@@ -312,6 +312,10 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return nodeManager.getBlockMgr().isEmpty() ;
     }
     
+    //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     {
         if ( nodeManager.getBlockMgr() != null )

@@ -167,6 +167,10 @@ public class TupleTable implements Sync, Closeable
 //    }
     
     //@Override
+    public void sync()
+    { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     {
         for ( TupleIndex idx : indexes )

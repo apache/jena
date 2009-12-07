@@ -61,6 +61,13 @@ public class BlockMgrSync implements BlockMgr
 
     //@Override
     synchronized
+    public void sync()
+    {
+        blockMgr.sync() ;
+    }
+
+    //@Override
+    synchronized
     public void sync(boolean force)
     {
         blockMgr.sync(force) ;

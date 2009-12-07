@@ -139,6 +139,10 @@ public class TupleIndexMem implements TupleIndex
     {
         return index.size() ;
     }
+
+    //@Override
+    public void sync()
+    { sync(true) ; }
     
     //@Override
     public void sync(boolean force)

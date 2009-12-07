@@ -43,6 +43,9 @@ public abstract class BlockMgrBase implements BlockMgr
     //@Override
     public void finishRead()
     {}
+    
+    //@Override
+    public void sync()  { sync(true) ; }
 }
 
 /*

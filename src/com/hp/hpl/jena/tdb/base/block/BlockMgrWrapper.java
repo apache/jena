@@ -54,6 +54,12 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     //@Override
+    public void sync()
+    {
+        blockMgr.sync() ;
+    }
+    
+    //@Override
     public void sync(boolean force)
     {
         blockMgr.sync(force) ;

@@ -6,30 +6,30 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Map ;
+import java.util.Set ;
 
-import atlas.lib.ColumnMap;
-import atlas.lib.Tuple;
+import atlas.lib.ColumnMap ;
+import atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage;
-import com.hp.hpl.jena.tdb.graph.GraphPrefixesProjection;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.graph.DatasetPrefixStorage ;
+import com.hp.hpl.jena.tdb.graph.GraphPrefixesProjection ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
@@ -198,6 +198,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     {
         nodeTupleTable.close() ;
     }
+
+    //@Override
+    public void sync() { sync(true) ; }
 
     //@Override
     public void sync(boolean force)

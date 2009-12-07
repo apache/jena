@@ -191,6 +191,10 @@ public class LucIndex implements TupleIndex
         return 0 ;
     }
 
+    //@Override
+    public void sync()
+    {}
+
 
     //@Override
     public void sync(boolean force)

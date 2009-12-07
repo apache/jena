@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.lib;
 
 public interface Sync
 {
+    public void sync() ;
     public void sync(boolean force) ;
 }
 

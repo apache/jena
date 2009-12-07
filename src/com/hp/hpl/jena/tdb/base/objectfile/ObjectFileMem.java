@@ -77,6 +77,9 @@ public class ObjectFileMem implements ObjectFile
         return Iter.map(iter, transform) ;
     }
 
+    public void sync()
+    {}
+    
     public void sync(boolean force)
     {}
 

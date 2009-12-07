@@ -199,6 +199,9 @@ public class NodeTableNative implements NodeTable
             }};
         return Iter.map(iter, transform) ;
     }
+
+    //@Override
+    public void sync() { sync(true) ; } 
     
     //@Override
     public synchronized void sync(boolean force)

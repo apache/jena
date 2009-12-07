@@ -37,7 +37,7 @@ public class IO
     }
     
     /** Open an input stream to a file. 
-     * If the filename is null or "-", rturn System.in
+     * If the filename is null or "-", return System.in
      * If the filename ends in .gz, wrap in  GZIPInputStream  
      */
     static public InputStream openFile(String filename)

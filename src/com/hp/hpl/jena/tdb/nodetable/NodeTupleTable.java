@@ -143,6 +143,9 @@ public class NodeTupleTable implements Sync, Closeable
     }
     
     //@Override
+    public final void sync() { sync(true) ; }
+    
+    //@Override
     public final void sync(boolean force)
     {
         tupleTable.sync(force) ;

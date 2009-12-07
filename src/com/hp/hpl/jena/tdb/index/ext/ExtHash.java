@@ -334,6 +334,9 @@ public class ExtHash implements Index
     }
 
     //@Override
+    public void sync() { sync(true) ; }
+    
+    //@Override
     public void sync(boolean force)
     { 
         hashBucketMgr.getBlockMgr().sync(force) ;
