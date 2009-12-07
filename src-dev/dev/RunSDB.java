@@ -53,7 +53,8 @@ public class RunSDB
     public static void main(String ... argv) throws SQLException
     {
         //sdb.sdbconfig.main("--sdb=sdb.ttl", "--create") ;
-        sdb.sdbprint.main("--sdb=sdb.ttl", "select *  where { GRAPH<G> { ?s ?p ?o}} limit 5") ;
+        //sdb.sdbprint.main("--sdb=sdb.ttl", "select *  where { GRAPH<G> { ?s ?p ?o}} limit 5") ;
+        sdb.sdbprint.main("--sdb=sdb.ttl", "--file=Q.rq") ;
         System.exit(0) ;
         
         {

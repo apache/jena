@@ -67,6 +67,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
+        // Scoping problems.
         if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
         
