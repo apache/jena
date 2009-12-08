@@ -1,3 +1,0 @@
-SELECT ?p ?o WHERE {
-  <http://dbpedia.org/resource/Metropolitan_Museum_of_Art> ?p ?o
-}
