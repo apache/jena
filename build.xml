@@ -16,7 +16,6 @@
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->
   <property name="publish.repo"     value="repo-dev"/>
-
   
   <!-- javadoc -->
   <property name="copyright.text"

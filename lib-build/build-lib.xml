@@ -425,8 +425,8 @@ deploy
   <target name="artifacts" 
           depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
 
-  <!-- Includes makign the zip file -->
-  <target name="publish" description="Build and publish this version"
+  <!-- Includes making the zip file -->
+  <target name="publish" description="Build and publish this version, together with the zip distribution."
           depends="clean,artifacts,test,pre-publish,ivy-publish,post-publish">
   </target>
 

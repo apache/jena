@@ -1,40 +1,20 @@
 /*
- * (c) Copyright 2009 Talis Information Ltd
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.sys;
+package perf;
 
-
-/** A Session is a set of operations that are either all read actions 
- * or a mixture of read and write (an update).
- * 
- * Most implementations of this interface do not enforce the policy - it
- * is up to the caller to preserve the invariant for the object called.
- * 
- *  An implementation may allow polciies such as transactional (ACID)
- * but, unless otherwise documented, an application can not 
- * assume that. 
- */
-public interface Session
+public class Turtle 
 {
-    /** Signal the start of an update operation */
-    public void startUpdate() ;
-    
-    /** Signal the completion of an update operation */
-    public void finishUpdate();
-
-    /** Signal the start of an update operation */
-    public void startRead();
-    
-    /** Signal the completeion of an update operation */
-    public void finishRead();
-
+    public static void main(String...args)
+    {
+        Performance.turtle(args[0]) ;
+    }
 }
-
 /*
- * (c) Copyright 2009 Talis Information Ltd
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

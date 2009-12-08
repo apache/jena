@@ -2,6 +2,7 @@ ChangeLog for TDB
 =================
 
 ==== 0.8.5
++ Fix XML of the POM file.
 + Add a shutdown hook to sync datasets (don't rely on it!)
 + Adding checking for concurrenct modification situations.
   TDB supports multiple readers OR single writer.

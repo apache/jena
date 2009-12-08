@@ -56,15 +56,12 @@ public class Performance
         long time = timer.endTimer() ;
         System.out.printf("Tokens: %,d\n", count) ;
         System.out.printf("Time:   %.2fs\n", time/1000.0) ;
-        
         System.out.printf("Tokens per second: %,.02f\n", count/( time/1000.0)) ;
-        // Time!
-        
     }
     
     static public void ntriples(String filename)
     {
-        System.out.println("N-Triples") ;
+        System.out.println("N-Triples("+filename+")") ;
         Reader r = IO.openFileUTF8(filename) ;
         PeekReader peekReader = PeekReader.make(r) ;
 
@@ -88,7 +85,7 @@ public class Performance
     
     static public void turtle(String filename)
     {
-        System.out.println("Turtle") ;
+        System.out.println("Turtle("+filename+")") ;
         Reader r = IO.openFileUTF8(filename) ;
         PeekReader peekReader = PeekReader.make(r) ;
 
