@@ -8,6 +8,9 @@ package dev;
 
 public class DevSDB
 {
+    // Scope and Join bug.
+    // Need to clear constant calculation across left and right in a join.
+    
     // Activate SDBRequest.LimitOffsetTranslation
     
 	// javadoc is javadoc all!

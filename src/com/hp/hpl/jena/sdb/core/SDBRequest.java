@@ -34,7 +34,7 @@ public class SDBRequest extends StoreHolder
     private VarAlloc varAlloc = new VarAlloc(AliasesSparql.VarBase) ;
     
     public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
-    public boolean LimitOffsetTranslation = true ; // Does the DB grok the Limit/Offset SQL?
+    public boolean LimitOffsetTranslation = true ;  // Does the DB grok the Limit/Offset SQL?
     public boolean DistinctOnCLOB = true ;          // Is ths DB able to do DISTINCT on CLOBs? 
     
     private Context context ;
