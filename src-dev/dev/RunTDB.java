@@ -11,30 +11,23 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
 import java.io.StringWriter ;
-import java.util.Iterator ;
 
 import perf.Performance ;
 import atlas.iterator.Filter ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
