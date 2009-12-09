@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.3 2009-11-03 08:54:23 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.4 2009-12-09 16:03:45 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -247,8 +247,11 @@ public class N3JenaWriterCommon implements RDFWriter
             if ( ! checkPrefixPart(prefix) ) 
                 iter.remove() ;
             else
-                // Build acceptable reverse mapping  
-                reversePrefixMap.put(uri, prefix) ;
+            {
+                if ( checkPrefixPart(prefix) )
+                    // Build acceptable reverse mapping  
+                    reversePrefixMap.put(uri, prefix) ;
+            }
         }
         
         startWriting() ;
@@ -639,7 +642,7 @@ public class N3JenaWriterCommon implements RDFWriter
 		    if ( prefix != null )
 		    {
 		        String localPart = uriStr.substring(idx+1) ;
-		        if ( checkLocalPart(localPart) )
+		        if ( checkNamePart(localPart) )
 		            return prefix+':'+localPart ;
 		    }
 		}
@@ -673,7 +676,6 @@ public class N3JenaWriterCommon implements RDFWriter
 //		}
 
 		// Not as a prefixed name - write as a quoted URIref
-		// Should we unicode escape here?
         // It should be right - the writer should be UTF-8 on output.
 		return "<"+uriStr+">" ;
 	}
@@ -688,56 +690,78 @@ public class N3JenaWriterCommon implements RDFWriter
         return idx ;
     }
     
-    
-    // Prefxied names in N3 and Turtle aren't really qnames
-    //    No dots in preifx part; digit can be first in local part
+    // Checks of prefixed names
     // These tests must agree, or be more restrictive, than the parser. 
     protected static boolean checkPrefixedName(String ns, String local)
     {
-        return checkPrefixPart(ns) && checkLocalPart(local) ;
+        return checkPrefixPart(ns) && checkNamePart(local) ;
     }
+    
+    /* http://www.w3.org/TeamSubmission/turtle/#sec-grammar-grammar
+     * [27]    qname           ::=     prefixName? ':' name?
+     * [30]    nameStartChar   ::=     [A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+     * [31]    nameChar        ::=     nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+     * [32]    name            ::=     nameStartChar nameChar*
+     * [33]    prefixName      ::=     ( nameStartChar - '_' ) nameChar*
+     */
     
     protected static boolean checkPrefixPart(String s)
     {
-        return checkNamePart(s) ;
-    }
-    
-    protected static boolean checkLocalPart(String s)
-    {
         if ( s.length() == 0 )
-            return true; 
-        
-        // This is too restrictive (but safe)
-        // local parts with dots are legal.
-        if ( ! checkNamePart(s) )
+            return true;
+        CharacterIterator cIter = new StringCharacterIterator(s) ;
+        char ch = cIter.first() ;
+        if ( ! checkNameStartChar(ch) )
             return false ;
-        char ch = s.charAt(0) ;
-        if ( Character.isDigit(ch) )
+        if ( ch == '_' )    // Can't start with _ (bnodes labels handled separately) 
             return false ;
-        return true ;
+        return checkNameTail(cIter) ;
     }
-
     
     protected static boolean checkNamePart(String s)
     {
+        if ( s.length() == 0 )
+            return true; 
         CharacterIterator cIter = new StringCharacterIterator(s) ;
-        
-        for ( char ch = cIter.first() ;
-              ch != java.text.CharacterIterator.DONE ;
-              ch = cIter.next() )
-        {
-            if ( Character.isLetterOrDigit(ch) )
-                continue ;
-            switch (ch)
-            {
-                case '_': case '-':
-                    continue ;
-            }
-            // Not an acceptable character
+        char ch = cIter.first() ;
+        if ( ! checkNameStartChar(ch) )
             return false ;
-        }
-        return true ; 
+        return checkNameTail(cIter) ;
     }
+    
+    private static boolean checkNameTail(CharacterIterator cIter)
+    {
+        // Assumes cIter.first already called but nothing else.
+        // Skip first char.
+        char ch = cIter.next() ;
+        for ( ; ch != java.text.CharacterIterator.DONE ; ch = cIter.next() )
+        {
+            if ( ! checkNameChar(ch) )
+                return false ;
+        } 
+        return true ;
+    }
+
+    protected static boolean checkNameStartChar(char ch)
+    {
+        if ( Character.isLetter(ch) )
+            return true ;
+        if ( ch == '_' )
+            return true ;
+        return false ;
+    }
+
+    protected static boolean checkNameChar(char ch)
+    {
+        if ( Character.isLetterOrDigit(ch) )
+            return true ;
+        if ( ch == '_' )
+            return true ;
+        if ( ch == '-' )
+            return true ;
+        return false ;
+    }
+
     
     protected final static String WS = "\n\r\t" ;
 
