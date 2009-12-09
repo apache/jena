@@ -19,7 +19,6 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.IRIRelativize ;
 import com.hp.hpl.jena.riot.PrefixMap ;
 import com.hp.hpl.jena.riot.Prologue ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 /** Utilites for formatter output (N-Triples and Turtle formats) */
@@ -141,7 +140,7 @@ public class OutputLangUtils
         if ( mapping == null ) return null ;
 
         String pname = mapping.abbreviate(uri) ;
-        if ( pname != null && checkValidPrefixName(pname) )
+        if ( pname != null ) // Assume only validperfixes in the map else ... && checkValidPrefixName(pname) )
             return pname ;
         return null ;
     }
@@ -159,58 +158,6 @@ public class OutputLangUtils
         return r ;
     }
     
-    private static boolean checkValidPrefixName(String prefixedName)
-    {
-        // Split it to get the parts.
-        int i = prefixedName.indexOf(':') ;
-        if ( i < 0 )
-            throw new ARQInternalErrorException("Broken short form -- "+prefixedName) ;
-        String p = prefixedName.substring(0,i) ;
-        String x = prefixedName.substring(i+1) ; 
-        // Check legality
-        if ( checkValidPrefix(p) && checkValidLocalname(x) )
-            return true ;
-        return false ;
-    }
-    
-    private static boolean checkValidPrefix(String prefixStr)
-    {
-        if ( prefixStr.startsWith("_"))
-            // Should .equals?? 
-            return false ;
-        return checkValidLocalname(prefixStr) ;
-    }
-    
-    private static boolean checkValidLocalname(String localname)
-    {
-        if ( localname.length() == 0 )
-            return true ;
-        
-        for ( int idx = 0 ; idx < localname.length() ; idx++ )
-        {
-            char ch = localname.charAt(idx) ;
-            if ( ! validPNameChar(ch) )
-                return false ;
-        }
-        
-        // Test start and end - at least one character in the name.
-        
-        if ( localname.endsWith(".") )
-            return false ;
-        if ( localname.startsWith(".") )
-            return false ;
-        
-        return true ;
-    }
-    
-    private static boolean validPNameChar(char ch)
-    {
-        if ( Character.isLetterOrDigit(ch) ) return true ;
-        if ( ch == '.' )    return true ;
-        if ( ch == '-' )    return true ;
-        if ( ch == '_' )    return true ;
-        return false ;
-    }
   
 
     private static void print(Writer out, String s)
@@ -289,7 +236,6 @@ public class OutputLangUtils
             }
         }
     }
-    
 }
 
 /*

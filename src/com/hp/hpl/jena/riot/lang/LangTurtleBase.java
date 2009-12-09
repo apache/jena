@@ -347,6 +347,9 @@ public abstract class LangTurtleBase extends LangBase
                 return NodeConst.nodeTrue ;
             if ( image.equals(KW_FALSE) )
                 return NodeConst.nodeFalse ;
+            if ( image.equals(KW_A) )
+                exception("Keyword 'a' not legal at this point") ; 
+
             exception("Unrecognized keyword: "+image) ; 
         }
         

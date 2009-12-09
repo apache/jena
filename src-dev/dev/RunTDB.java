@@ -9,6 +9,8 @@ package dev;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.StringReader ;
+import java.io.StringWriter ;
 import java.util.Iterator ;
 
 import perf.Performance ;
@@ -21,6 +23,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -32,6 +35,7 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
 {
@@ -45,45 +49,39 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    public static void main(String ... args) throws IOException
+    
+    
+    
+    public static void main(String[] args) throws IOException
     {
-        // Violate MRSW.
+        TDB.init();
+        Model m = ModelFactory.createDefaultModel();
+        m.createResource("http://example.org/#-1", RDFS.Resource);
+        
         {
-            Model m  = TDBFactory.createModel() ;
-            FileManager.get().readModel(m, "D.ttl") ;
-
-            System.out.println("Test 1") ;
-            // Test 1
-            ExtendedIterator<Statement> iter = m.listLiteralStatements(null, null, 13) ;
-
-            System.out.println(iter.hasNext()) ;
-            System.out.println(iter.next()) ;
-
-            System.out.println(iter.hasNext()) ;
-            System.out.println(iter.next()) ;
-
-            System.out.println("Remove") ;
-            m.removeAll() ;
-
-            System.out.println(iter.hasNext()) ;
-            //System.out.println(iter.next()) ;
+            StringWriter w = new StringWriter() ;
+            m.write(w, "TURTLE");
+            String s = w.toString() ;
+            StringReader r = new StringReader(s) ;
+            m.read(r, null, "TURTLE");
         }
-        // Test 2
+        
+//        m.write(new FileWriter("test.ttl"), "TURTLE");
+//        m.read(new FileReader("test.ttl"), null, "TURTLE");
         {
-            System.out.println("Test 2") ;
-            Triple t = SSE.parseTriple("(<s> <p> <o>)") ;
-            Graph g = TDBFactory.createDatasetGraph().getGraph(Node.createURI("http://example/graph")) ;
-            Iterator<Triple> iter = g.find(null, null, null) ;
-            System.out.println(iter.hasNext()) ;
-            g.add(t) ;
-            System.out.println(iter.hasNext()) ;
+            StringWriter w = new StringWriter() ;
+            m.setNsPrefix("eg", "http://example.org/#");
+            m.write(w, "TURTLE");
+            String s = w.toString() ;
+
+            System.out.println(s) ;
+
+            StringReader r = new StringReader(s) ;
+            m.read(r, null, "TURTLE");
             
+            m.write(System.out, "TURTLE");
         }
-        
-        System.out.println("END") ;
         System.exit(0) ;
-        
-        
         
         
         if ( args.length == 0 )

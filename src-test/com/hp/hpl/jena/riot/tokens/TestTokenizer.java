@@ -543,6 +543,27 @@ public class TestTokenizer extends BaseTest
         pnameToken(token, "a123", "456") ;
     }
 
+    @Test
+    public void tokenUnit_pname9()
+    {
+        Tokenizer tokenizer = tokenizer("a123:-456") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        pnameToken(token, "a123", "") ;
+        
+        token = tokenizer.next() ;
+        assertEquals(TokenType.INTEGER, token.getType()) ;
+        assertEquals("-456", token.getImage()) ;
+        
+    }
+
+
+private void pnameToken(Token token, String string1, String string2)
+    {
+        assertEquals(TokenType.PREFIXED_NAME, token.getType()) ;
+        assertEquals(string1, token.getImage()) ;
+        assertEquals(string2, token.getImage2()) ;
+    }
 
 //    @Test(expected = ParseException.class)
 //    public void tokenUnit_25()
@@ -767,13 +788,6 @@ public class TestTokenizer extends BaseTest
         assertEquals("0Xabc", token.getImage()) ;
     }
     
-    private void pnameToken(Token token, String string1, String string2)
-    {
-        assertEquals(TokenType.PREFIXED_NAME, token.getType()) ;
-        assertEquals(string1, token.getImage()) ;
-        assertEquals(string2, token.getImage2()) ;
-    }
-
     @Test
     public void tokenLiteralDT_0()
     {

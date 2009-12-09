@@ -370,6 +370,9 @@ public final class TokenizerText implements Tokenizer
     }
     
     private String readWord(boolean leadingDigitAllowed)
+    { return readWordSub(leadingDigitAllowed, false) ; }
+    
+    private String readWordSub(boolean leadingDigitAllowed, boolean leadingSignAllowed)
     {
         stringBuilder.setLength(0) ;
         int idx = 0 ;
@@ -377,6 +380,12 @@ public final class TokenizerText implements Tokenizer
         {
             int ch = reader.peekChar() ;
             if ( Character.isDigit(ch) )
+                return "" ;
+        }
+        if ( ! leadingSignAllowed )
+        {
+            int ch = reader.peekChar() ;
+            if ( ch == '-' || ch == '+' )
                 return "" ;
         }
         
