@@ -1,7 +1,8 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+  (c) 2009 TopQuadrant, Inc.
   [See end of file]
-  $Id: GraphListener.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
+  $Id: GraphListener.java,v 1.2 2009-12-09 17:33:58 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -13,6 +14,34 @@ import java.util.*;
     poked to add or remove some triples, and after that poke has completed
     without throwing an exception, all the listeners attached to the Graph are
     informed about the poke.
+    
+    <p>The notifications are, in general, given before further changes to the graph are made. 
+    Listeners are discouraged from making further modifications to the same graph
+    since that will invalidate this property for other listeners.</p>
+    
+    <p>Some modifications may result in multiple notifications in some cases.
+    For example, a bulk notification with {@link #notifyAddArray(Graph, Triple[])},
+    may, or may not, be accompanied by several {@link #notifyAddTriple(Graph, Triple)}
+    notifications, one for each triple. If possible, Graph implementations 
+    should avoid such duplicate notifications and only give the bulk notifications,
+    see {@link com.hp.hpl.jena.graph.impl.GraphWithPerform}.
+    When these duplicate notifications occur, each should happen immediately
+    after the change it signifies is complete. Thus, in the previous example,
+    if the array has two triples, the pattern is:
+    </p>
+    <ol>
+    <li>The first triple is added.</li>
+    <li>{@link #notifyAddTriple(Graph, Triple)} for the first triple.</li>
+    <li>The second triple is added.</li>
+    <li>{@link #notifyAddTriple(Graph, Triple)} for the second triple.</li>
+    <li>{@link #notifyAddArray(Graph, Triple[])} for the array.</li>
+    </ol>
+    
+    <p>To track all changes to a graph it is necessary to consider all the methods
+    in this interface, including {@link #notifyEvent(Graph, Object)}.
+    </p>
+    
+    
     
     @author Jeremy Carroll, extensions by kers
 */
@@ -74,7 +103,16 @@ public interface GraphListener
     void notifyDeleteGraph( Graph g, Graph removed );
     
     /**
-         method to call for a general event
+         method to call for a general event.
+         <code>value</code> is usually a {@link GraphEvents}.
+         Special attention is drawn to {@link GraphEvents#removeAll}
+         and events whose {@link GraphEvents#getTitle()} is <code>"remove"</code>
+         (see {@link GraphEvents#remove(Node, Node, Node)}. These correspond
+         to the bulk operations {@link BulkUpdateHandler#removeAll()},
+         and {@link BulkUpdateHandler#remove(Node, Node, Node)}, respectively.
+         Unlike other notifications, the listener cannot tell which triples
+         have been modified, since they have already been deleted by the time
+         this event is sent, and the event does not include a record of them.
      	@param value
      */
     void notifyEvent( Graph source, Object value );
