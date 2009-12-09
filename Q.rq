@@ -3,7 +3,7 @@ PREFIX : <http://example/>
 SELECT * 
 {
     ?x :p ?o1
-    FILTER(true)
+    #FILTER(true)
     GRAPH :g2 { ?x :q ?o2 . ?x :q ?o3 }
 }
 
