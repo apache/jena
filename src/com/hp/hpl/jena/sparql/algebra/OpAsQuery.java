@@ -244,7 +244,12 @@ public class OpAsQuery
         }
 
         public void visit(OpExt opExt)
-        { throw new ARQNotImplemented("OpExt") ; }
+        {
+//            Op op = opExt.effectiveOp() ;
+//            // This does not work in all cases.
+//            op.visit(this) ;
+            throw new ARQNotImplemented("OpExt") ;
+        }
 
         public void visit(OpNull opNull)
         { throw new ARQNotImplemented("OpNull") ; }
