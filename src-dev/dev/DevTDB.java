@@ -12,8 +12,7 @@ public class DevTDB
     // == 0.8.5
     // + Dynamic datasets
     
-    // Compare load BSBM results to published results
-    // (first need the unpublished tools to produce the output HTML)
+    // Node hash is quite unsubtle (but schema change) 
     
     // Separate out an interface for UpdateTracking
     // start/stop update + start/stop read
