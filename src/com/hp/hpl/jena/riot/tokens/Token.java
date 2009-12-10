@@ -135,6 +135,23 @@ public final class Token
         this.column = token.column ;
     }
     
+    public long asLong()
+    {
+        return asLong(-1) ;
+    }
+    
+    public long asLong(long dft)
+    {
+        switch (tokenType)
+        {
+            case INTEGER:   return Long.valueOf(tokenImage) ;
+            case HEX:       return Long.valueOf(tokenImage, 16) ;
+             default:
+                 return dft ;
+        }
+    }
+    
+    
     public String asWord()
     {
         if ( ! hasType(TokenType.KEYWORD) ) return null ;
@@ -257,6 +274,11 @@ public final class Token
             default:
                 return false ;
         }
+    }
+    
+    public boolean isInteger()
+    {
+        return tokenType.equals(TokenType.INTEGER) ;
     }
     
     // Validation of URIs?
