@@ -12,6 +12,13 @@ public class DevTDB
     // == 0.8.5
     // + Dynamic datasets
     
+    // NodeFmtLib - expose safeBNodeLabel flag.
+    // And a decode operation.
+    
+    // NodeId: 
+    // Bit 0: 0 - 63 bits of id (hash!) or block allocation for cluster.
+    // Bit 0: 1 - inline
+    
     // Node hash is quite unsubtle (but schema change) 
     
     // Separate out an interface for UpdateTracking

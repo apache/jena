@@ -6,10 +6,10 @@
 
 package atlas.event;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 
 /** The event system - the single, global event manager control the registration and delivery of events.
  *  An event is a label and an argument.  
@@ -52,6 +52,7 @@ public class EventManager
         List<EventListener> z = x.get(type) ;
         if ( z == null )
         {
+            //?? new CopyOnWriteArrayList<EventListener>() ;
             z = new ArrayList<EventListener>() ;
             x.put(type, z) ;
         }
