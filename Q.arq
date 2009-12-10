@@ -1,12 +1,8 @@
-PREFIX  o:    <http://example>
-# Original query
-SELECT count(DISTINCT  *)
-WHERE
-   { ?d1      o:hasCode       "15" ;
-              o:hasInitiator  ?writer .
-     ?writer  o:hasUserName   ?writerName .
-     ?d2      o:hasCode       "21" ;
-              o:hasInitiator  ?reader .
-     ?reader  o:hasUserName   ?readerName .
-     FILTER ( ?d1 = ?d2 && ?writer != ?reader )
-   }
+PREFIX : <http://example/>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+SELECT ?a ?b ?s ?title
+{
+  ?b dc:title ?title .
+  SERVICE <http://sparql.org/books>
+     { ?s dc:title ?title . ?s dc:creator ?a }
+} 

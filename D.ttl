@@ -1,8 +1,5 @@
-@prefix : <http://example> .
+@prefix : <http://example/> .
+@prefix  dc:     <http://purl.org/dc/elements/1.1/> .
 
-:car1 :hasPrice [ :hasMinPrice 300.0 ; :hasMaxPrice 450.0 ] .
-:car1 :hasPrice [ :hasMinPrice 100.0 ; :hasMaxPrice 200.0 ] .
 
-# Has overlap
-:car2 :hasPrice [ :hasMinPrice 200.0 ; :hasMaxPrice 450.0 ] .
-:car2 :hasPrice [ :hasMinPrice 100.0 ; :hasMaxPrice 400.0 ] .
+
