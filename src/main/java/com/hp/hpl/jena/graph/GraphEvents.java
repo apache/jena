@@ -1,8 +1,8 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
-  (c) 2009 TopQuadrant, Inc.
+  (c) Copyright 2009 TopQuadrant, Inc.
   [See end of file]
-  $Id: GraphEvents.java,v 1.2 2009-12-09 17:33:58 jeremy_carroll Exp $
+  $Id: GraphEvents.java,v 1.3 2009-12-11 03:36:51 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.graph;
 
