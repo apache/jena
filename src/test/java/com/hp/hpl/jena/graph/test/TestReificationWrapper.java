@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestReificationWrapper.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+ 	$Id: TestReificationWrapper.java,v 1.2 2009-12-11 18:00:31 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -35,6 +35,7 @@ public class TestReificationWrapper extends AbstractTestReifier
         TestSuite result = new TestSuite();
         result.addTest( MetaTestGraph.suite( TestReificationWrapper.class, ReificationWrapperGraph.class, ReificationStyle.Standard ) );
         result.addTestSuite( TestReificationWrapperGraph.class );
+        result.setName(TestReificationWrapper.class.getSimpleName());
         return result; 
         }       
     

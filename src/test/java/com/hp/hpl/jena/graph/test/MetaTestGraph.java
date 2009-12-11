@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+  $Id: MetaTestGraph.java,v 1.2 2009-12-11 18:00:31 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -48,6 +48,7 @@ public class MetaTestGraph extends AbstractTestGraph
         result.addTest( suite( testClass, graphClass, ReificationStyle.Minimal ) ); 
         result.addTest( suite( testClass, graphClass, ReificationStyle.Standard ) ); 
         result.addTest( suite( testClass, graphClass, ReificationStyle.Convenient ) ); 
+        result.setName("Meta "+testClass.getName());
         return result;    
         }
         
@@ -59,6 +60,7 @@ public class MetaTestGraph extends AbstractTestGraph
             Method [] methods = c.getDeclaredMethods();
             addTestMethods( result, testClass, methods, graphClass, style );  
             }
+        result.setName(testClass.getName()+" "+style.toString());
         return result;    
         }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
+  $Id: TestReifier.java,v 1.2 2009-12-11 18:00:31 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -47,6 +47,7 @@ public class TestReifier extends AbstractTestReifier
         TestSuite result = new TestSuite();
         result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
         result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMemFaster.class ) );
+        result.setName(TestReifier.class.getSimpleName());
         return result; 
         }   
         

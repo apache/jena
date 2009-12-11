@@ -1,7 +1,8 @@
 /*
  	(c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: NodeCreateUtils.java,v 1.2 2009-07-27 09:13:36 andy_seaborne Exp $
+ 	[See end of file]
+ 	$Id: NodeCreateUtils.java,v 1.3 2009-12-11 18:00:31 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphQueryPackage.java,v 1.1 2009-06-29 08:55:50 castagna Exp $
+  $Id: TestGraphQueryPackage.java,v 1.2 2009-12-11 18:02:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -37,6 +37,7 @@ public class TestGraphQueryPackage extends TestCase
         result.addTest( TestPerlyParser.suite() );
         result.addTest( TestRegexpTrees.suite() );
         result.addTest( TestDomain.suite() );
+        result.setName(TestGraphQueryPackage.class.getSimpleName());
         return result;
         }
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTest.java,v 1.1 2009-06-29 08:55:50 castagna Exp $
+  $Id: QueryTest.java,v 1.2 2009-12-11 18:02:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -26,6 +26,7 @@ public class QueryTest extends TestCase
         result.addTest( new TestSuite( TestQueryGraphMem.class ) );
         result.addTest( new TestSuite( TestQuerySmallGraphMem.class ) );
         result.addTestSuite( TestQuery.class );
+        result.setName(QueryTest.class.getName());
         return result;
         } 
     
