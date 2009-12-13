@@ -2,7 +2,7 @@
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   (c) Copyright 2009 TopQuadrant, Inc.
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.2 2009-12-13 05:13:56 jeremy_carroll Exp $
+  $Id: SimpleEventManager.java,v 1.3 2009-12-13 05:19:06 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -39,6 +39,23 @@ public class SimpleEventManager implements GraphEventManager
         { 
         this.graph = graph;
         this.listeners = new CopyOnWriteArrayList<GraphListener>(); 
+/* Implementation note: Jeremy Carroll
+ * 
+ * Use of CopyOnWriteArray is unnecessarily inefficient, in that
+ * a copy is only needed when the register or unregister
+ * is concurrent with an iteration over the list.
+ * Since this list is not public we can either make it private
+ * or provide methods for iterating, so that we know when
+ * it is necessary to copy the array of listeners and when it 
+ * isn't.
+ * This is a fair bit of code, and would need either a lock or
+ * an atomic integer or something from the concurrent package.
+ * Until and unless the high cost of registering and unregistering
+ * is an issue I think the current code is elegant and clean.
+ * In practice, most graphs have no more than 10 listeners
+ * so the 10 registrations take 55 word copy operations - nothing
+ * to get upset about.
+ */
         }
     
     public GraphEventManager register( GraphListener listener ) 
