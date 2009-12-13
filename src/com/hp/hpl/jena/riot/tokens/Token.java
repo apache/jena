@@ -364,6 +364,11 @@ public final class Token
         }
     }
     
+    public static Token tokenForInteger(long value)
+    {
+        return new Token(TokenType.INTEGER, Long.toString(value)) ;
+    }
+    
     public static Token tokenForWord(String word)
     {
         return new Token(TokenType.KEYWORD, word) ; 

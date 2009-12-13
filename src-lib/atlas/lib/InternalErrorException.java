@@ -8,7 +8,9 @@ package atlas.lib;
 
 public class InternalErrorException extends RuntimeException
 {
-    public InternalErrorException(String msg) { super(msg) ; }
+    public InternalErrorException()                         { super() ; }
+    public InternalErrorException(String msg)               { super(msg) ; }
+    public InternalErrorException(Throwable th)             { super(th) ; }
     public InternalErrorException(String msg, Throwable th) { super(msg, th) ; }
 }
 

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source "$TDBROOT/bin/tdb_init"
+#AGENT="-agentlib:hprof=cpu=times"
+
+if [ "$#" != 2 ]
+then
+    echo "Usage: $0 (ntriples|turtle|tokens) file" 1>&2
+    exit 1
+    fi
+
+C="$1"
+F="$2"
+
+case "$C" in
+    ntriples)    MAIN=perf.NTriples ;;
+    turtle)      MAIN=perf.Turtle ;;
+    tokens)      MAIN=perf.Tokens ;;
+esac
+
+exec java -server $AGENT $JVM_ARGS $SOCKS -cp "$TDB_CP" $MAIN "$F"

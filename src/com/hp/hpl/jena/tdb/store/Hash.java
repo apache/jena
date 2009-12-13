@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Arrays;
 
+import atlas.lib.Bytes ;
+
 /** Hash values. */ 
 public class Hash
 {
@@ -31,6 +33,13 @@ public class Hash
         boolean b = Arrays.equals(bytes, ((Hash)other).bytes) ;
         return b ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return "hash:"+Bytes.asHex(bytes) ;
+    }
+    
     
 }
 

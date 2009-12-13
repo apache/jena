@@ -8,7 +8,9 @@ package atlas.lib;
 
 public class NotImplemented extends InternalErrorException
 {
-    public NotImplemented(String msg) { super(msg) ; }
+    public NotImplemented()                         { super() ; }
+    public NotImplemented(String msg)               { super(msg) ; }
+    public NotImplemented(Throwable th)             { super(th) ; }
     public NotImplemented(String msg, Throwable th) { super(msg, th) ; }
 }
 

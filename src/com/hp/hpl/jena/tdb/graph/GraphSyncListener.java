@@ -14,7 +14,7 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 /** Calls sync every tickCount additions and at the end of a bulk load. */ 
 public class GraphSyncListener extends GraphListenerCounter
 {
-    Sync sync ;
+    final Sync sync ;
     
     public GraphSyncListener(Sync g, int tickCount)
     {

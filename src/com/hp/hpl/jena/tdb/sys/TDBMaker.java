@@ -26,7 +26,7 @@ public class TDBMaker
     public final static DatasetGraphMakerTDB cachedFactory = new CachingTDBMaker(uncachedFactory) ;
 
     // Caching by location.
-    private static boolean CACHING = true ;
+    private final static boolean CACHING = true ;
 
     /** The default implementation factory for TDB datasets. 
      *  Caching of daatsets for sharing purposes.  
