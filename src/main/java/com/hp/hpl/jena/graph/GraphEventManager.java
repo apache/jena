@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphEventManager.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
+  $Id: GraphEventManager.java,v 1.2 2009-12-13 05:24:41 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,6 +23,18 @@ public interface GraphEventManager extends GraphListener
         sent to the manager are sent to all registered listeners. A listener may
         be registered multiple times, in which case it's called multiple times per
         event.
+        
+        A listener will be notified of an event if it is registered
+        before the Graph method call that initiated the event, and 
+        was not unregistered before that method call returned.
+        In addition, a listener <em>may</em> (or may not) be notified 
+        of an event if it is registered
+        before such a method returns or is unregistered after such
+        a method is called. For example, it may unregister itself
+        in response to the event.
+        
+        If the registration and/or unregistration occur on different
+        threads the usual thread uncertainties in such statements apply.
         
         @param listener a listener to be fed events
         @return this manager, for cascading
