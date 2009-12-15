@@ -218,6 +218,34 @@ public final class Token
 
     public boolean isWord() { return tokenType == TokenType.KEYWORD ; }
 
+    public boolean isString()
+    {
+        switch(tokenType)
+        {
+            case STRING:
+            case STRING1:
+            case STRING2:
+            case LONG_STRING1:
+            case LONG_STRING2:
+                return true ;
+            default:
+                return false ;
+        }
+    }
+
+    public boolean isNumber()
+    {
+        switch(tokenType)
+        {
+            case DECIMAL: 
+            case DOUBLE:
+            case INTEGER:
+                return true ;
+            default:
+                return false ;
+        }
+    }
+    
     public boolean isNode()
     {
         switch(tokenType)
