@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
 /** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator
  * 
@@ -51,6 +52,8 @@ public class QueryIterPlainWrapper extends QueryIter
         if ( iterator != null )
         {
             NiceIterator.close(iterator) ;
+            // In case we wrapped, for example, another QueryIterator.
+            Iter.close(iterator) ;
             iterator = null ;
         }
     }

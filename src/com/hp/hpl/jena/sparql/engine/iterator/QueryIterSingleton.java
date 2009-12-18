@@ -25,15 +25,21 @@ public class QueryIterSingleton extends QueryIterYieldN
     public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext execCxt)
     {
         Binding b = new Binding1(parent, var, value) ;
-        return new QueryIterSingleton(b, execCxt) ;
+        return QueryIterSingleton.create(b, execCxt) ;
     }
     
+    public static QueryIterSingleton create(Binding binding, ExecutionContext execCxt)
+    {
+        return new QueryIterSingleton(binding, execCxt) ;
+        
+    }
+
     private QueryIterSingleton(Binding binding) // Not needed
     {
         this(binding, null) ;
     }
     
-    public QueryIterSingleton(Binding binding, ExecutionContext context)
+    protected QueryIterSingleton(Binding binding, ExecutionContext context)
     {
         super(1, binding, context) ;
     }
@@ -43,6 +49,9 @@ public class QueryIterSingleton extends QueryIterYieldN
     {
         out.print("QueryIterSingleton "+binding);
     }
+    
+//    @Override
+//    public void closeIterator() { super.closeIterator() ; }
 }
 
 

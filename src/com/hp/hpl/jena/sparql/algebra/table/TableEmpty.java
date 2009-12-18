@@ -32,7 +32,7 @@ public class TableEmpty extends TableBase
                                         ExecutionContext execContext)
     {
         if ( includeOnNoMatch )
-            return new QueryIterSingleton(bindingLeft, execContext) ;
+            return QueryIterSingleton.create(bindingLeft, execContext) ;
         else
             // No rows - no match
             return new QueryIterNullIterator(execContext) ;

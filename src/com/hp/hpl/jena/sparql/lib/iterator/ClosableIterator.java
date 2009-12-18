@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.sparql.lib.iterator;
 
-public interface ClosableIterator
+import java.util.Iterator ;
+
+import com.hp.hpl.jena.sparql.core.Closeable ;
+
+public interface ClosableIterator<T> extends Closeable, Iterator<T>
 {
-    public void close() ;
+    //public void close() ;
 }
 
 /*

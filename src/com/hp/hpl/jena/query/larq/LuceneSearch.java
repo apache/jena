@@ -245,7 +245,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         if ( hit == null )
             return new QueryIterNullIterator(execCxt) ;
         if ( score == null ) 
-            return new QueryIterSingleton(binding, execCxt) ;
+            return QueryIterSingleton.create(binding, execCxt) ;
         return IterLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
     }
 

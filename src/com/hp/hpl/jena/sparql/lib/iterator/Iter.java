@@ -351,8 +351,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     public static <T> void close(Iterator<T> iter)
     {
-        if ( iter instanceof ClosableIterator )
-            ((ClosableIterator)iter).close() ;
+        if ( iter instanceof ClosableIterator<?> )
+            ((ClosableIterator<?>)iter).close() ;
     }
 
     public static <T> Iterator<T> debug(Iterator<T> stream)

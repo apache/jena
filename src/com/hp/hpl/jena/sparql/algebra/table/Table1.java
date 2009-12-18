@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding0 ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
@@ -34,8 +35,8 @@ public class Table1 extends TableBase
     
     public QueryIterator iterator(ExecutionContext execCxt)
     {
-        Binding b = new Binding1(null, var, value) ;
-        QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;
+        // Root binding?
+        QueryIterator qIter = QueryIterSingleton.create(new Binding0(), var, value, execCxt) ;
         return qIter ;
     }
 
@@ -50,7 +51,7 @@ public class Table1 extends TableBase
         {
             // Not present - return the merge = the other binding + this (var/value)
             Binding mergedBinding = new Binding1(bindingLeft, var, value) ;
-            return new QueryIterSingleton(mergedBinding, execContext) ;
+            return QueryIterSingleton.create(mergedBinding, execContext) ;
         }
         
         if ( ! other.equals(value) )
@@ -64,7 +65,7 @@ public class Table1 extends TableBase
         if ( ! matches && ! includeOnNoMatch)
             return new QueryIterNullIterator(execContext) ;
         // Matches, or does not match and it's a left join - return the left binding. 
-        return new QueryIterSingleton(bindingLeft, execContext) ;
+        return QueryIterSingleton.create(bindingLeft, execContext) ;
     }
 
     @Override

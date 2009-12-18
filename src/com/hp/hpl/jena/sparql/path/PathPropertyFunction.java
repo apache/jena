@@ -30,7 +30,7 @@ public class PathPropertyFunction extends PFuncSimple
                                        ExecutionContext execCxt)
     {
         return new QueryIterPath(new TriplePath(subject, path, object),
-                                 new QueryIterSingleton(binding, execCxt),
+                                 QueryIterSingleton.create(binding, execCxt),
                                  execCxt) ;
     }
  

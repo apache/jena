@@ -42,7 +42,7 @@ public class QC
     
     public static QueryIterator execute(Op op, Binding binding, ExecutionContext execCxt)
     {
-        QueryIterator qIter = new QueryIterSingleton(binding, execCxt) ;
+        QueryIterator qIter = QueryIterSingleton.create(binding, execCxt) ;
         return OpExecutor.execute(op, qIter, execCxt) ;
     }
     

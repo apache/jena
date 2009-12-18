@@ -52,7 +52,7 @@ public abstract class ExprFunctionOp extends ExprFunction
                                                         env.getDataset(),
                                                         QC.getFactory(env.getContext())
                                                         ) ;
-        QueryIterator qIter1 = new QueryIterSingleton(binding, execCxt) ;
+        QueryIterator qIter1 = QueryIterSingleton.create(binding, execCxt) ;
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;

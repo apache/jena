@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sparql.lib.iterator;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Iterator ;
+import java.util.NoSuchElementException ;
 
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIterator
+public abstract class RepeatApplyIterator<T> implements ClosableIterator<T>
 {
     private Iterator<T> input ;
     private boolean finished = false ;
@@ -65,8 +65,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
     //@Override
     public void close()
     {
-        if ( input instanceof ClosableIterator )
-            ((ClosableIterator)input).close();
+        Iter.close(input) ;
     }
 }
 /*

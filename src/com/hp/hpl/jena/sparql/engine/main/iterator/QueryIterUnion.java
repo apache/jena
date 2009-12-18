@@ -45,7 +45,7 @@ public class QueryIterUnion extends QueryIterRepeatApply
         for (Op subOp : subOps)
         {
             subOp = QC.substitute(subOp, binding) ;
-            QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
+            QueryIterator parent = QueryIterSingleton.create(binding, getExecContext()) ;
             QueryIterator qIter = QC.execute(subOp, parent, getExecContext()) ;
             unionQIter.add(qIter) ;
         }

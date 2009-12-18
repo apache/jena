@@ -1,39 +1,48 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package reports;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-public class IterLib
+public class ReportUnclosedIterator
 {
-    public static QueryIterator noResults(ExecutionContext execCxt)
+    public static void main(String...argv)
     {
-        return new QueryIterNullIterator(execCxt) ;
-    }
-    
-    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
-    {
-        return QueryIterSingleton.create(binding, var, value, execCxt) ;
-    }
-    
-    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
-    {
-        return QueryIterSingleton.create(binding, execCxt) ;
+        // Analysis
+        // Aggregation reads whole results and then "replaces" the root iterator."
+        // Order does the same? No because ORDER is over everyting, this is per group. 
+        
+        Model model = ModelFactory.createDefaultModel();
+        // Insert one triple here.
+        //model.getGraph().add(SSE.parseTriple("(<x> <p> <y>)")) ;
+        
+        String str = "SELECT count(?object) WHERE { ?subject ?p ?object }";
+        Query query = QueryFactory.create(str, Syntax.syntaxARQ);
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
+        ResultSet rs = qexec.execSelect();
+//        ResultSetFormatter.out(rs) ;
+//        if ( rs.hasNext() ) 
+//            rs.next();
+        //rs.hasNext() ; // If this, forcing iteraors to finish neatly, it works.
+        
+        qexec.close();
+        System.out.println("Exit") ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -234,7 +234,7 @@ public class TestResultSet extends TestCase
         b.add(Var.alloc(var), val) ;
         List<String> vars = new ArrayList<String>() ;
         vars.add(var) ;
-        QueryIterator qIter = new QueryIterSingleton(b, null) ;
+        QueryIterator qIter = QueryIterSingleton.create(b, null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
         return rs ;
     }
@@ -284,7 +284,7 @@ public class TestResultSet extends TestCase
         vars.add(var1) ;
         vars.add(var2) ;
         
-        QueryIterator qIter = new QueryIterSingleton(b, null) ;
+        QueryIterator qIter = QueryIterSingleton.create(b, null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
         return rs ; 
     }

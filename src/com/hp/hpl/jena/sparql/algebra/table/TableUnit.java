@@ -28,7 +28,7 @@ public class TableUnit extends TableBase
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         // BindingRoot?
-        return new QueryIterSingleton(new Binding0(), execCxt) ;
+        return QueryIterSingleton.create(new Binding0(), execCxt) ;
     }
 
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
@@ -36,7 +36,7 @@ public class TableUnit extends TableBase
                                         ExecutionContext execCxt)
     {
         // We are one row of no entries - joins with anything
-        return new QueryIterSingleton(bindingLeft, execCxt) ;
+        return QueryIterSingleton.create(bindingLeft, execCxt) ;
     }
 
     @Override

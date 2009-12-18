@@ -39,8 +39,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
     private static Iterator<Binding> calc(QueryIterator iter, 
-                                 VarExprList groupVars, List<E_Aggregator> aggregators,
-                                 ExecutionContext execCxt)
+                                          VarExprList groupVars, List<E_Aggregator> aggregators,
+                                          ExecutionContext execCxt)
     {
         // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
         Map<BindingKey, Binding> buckets = new HashMap<BindingKey, Binding>() ;    
@@ -93,7 +93,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             }
             
             if ( valueExists )
-                return new QueryIterSingleton(binding, execCxt) ;
+                return QueryIterSingleton.create(binding, execCxt) ;
             else 
                 return new QueryIterNullIterator(execCxt) ;
         }
