@@ -47,6 +47,13 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
+        String a[] = { "user.home", "user.name" } ; 
+        for ( String x : a )
+        {
+            System.out.println(x+"="+System.getProperties().getProperty(x)) ;
+        }
+        System.exit(0) ;
+        
         TDB.init();
         Model m = ModelFactory.createDefaultModel();
         m.createResource("http://example.org/#-1", RDFS.Resource);

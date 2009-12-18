@@ -12,12 +12,17 @@ public class DevTDB
     // == 0.8.5
     // + Dynamic datasets
     
+    // Dataset.close() always calls TDBMake.releaseDataset - shouldn't there be a reference count?
+    
     // NodeFmtLib - expose safeBNodeLabel flag.
     // And a decode operation.
     
-    // NodeId: 
+    // NodeId:  
     // Bit 0: 0 - 63 bits of id (hash!) or block allocation for cluster.
     // Bit 0: 1 - inline
+    // Schema compatibility needs to handle this carefully.
+    
+    // Case canonicalized lang tags? Affects hashing.
     
     // Node hash is quite unsubtle (but schema change) 
     
