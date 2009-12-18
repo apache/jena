@@ -1,6 +1,6 @@
-PREFIX : <http://example/>
-PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
-SELECT ?a ?b ?s ?title
-{
-  ?b dc:title ?title .
-} 
+prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+prefix sd: <http://education.data.gov.uk/def/school/>
+
+select ?name ?s ?lat ?long {?s rdf:type sd:School . ?s geo:lat ?lat ; geo:long ?long ; rdfs:label ?name}

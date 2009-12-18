@@ -20,7 +20,7 @@ public class QueryFactory
 
     // ---- static methods for making a query
     
-    /** Create a SPARQL query from the given string by calling the parser.
+    /** Create a SPARQL query from the given string.
      *
      * @param queryString      The query string
      * @throws QueryException  Thrown when a parse error occurs
@@ -31,16 +31,16 @@ public class QueryFactory
         return create(queryString, Syntax.defaultSyntax) ;
     }
 
-    /** Create a query from the given string by calling the parser.
+    /** Create a query from the given string with the 
      *
      * @param queryString      The query string
-     * @param langURI          URI for the syntax
+     * @param syntax           {@link Syntax}
      * @throws QueryException  Thrown when a parse error occurs
      */
     
-    static public Query create(String queryString, Syntax langURI)
+    static public Query create(String queryString, Syntax syntax)
     {
-        return create(queryString, null, langURI) ;
+        return create(queryString, null, syntax) ;
     }
 
     /** Create a query from the given string by calling the parser.
@@ -62,14 +62,14 @@ public class QueryFactory
     *
     * @param queryString      The query string
     * @param baseURI          Base URI
-    * @param querySyntax      URI for the syntax
+    * @param syntax           {@link Syntax}
     * @throws QueryException  Thrown when a parse error occurs
     */
    
-   static public Query create(String queryString, String baseURI, Syntax querySyntax)
+   static public Query create(String queryString, String baseURI, Syntax syntax)
    {
        Query query = new Query() ;
-       parse(query, queryString, baseURI, querySyntax) ;
+       parse(query, queryString, baseURI, syntax) ;
        return query ;
        
    }
