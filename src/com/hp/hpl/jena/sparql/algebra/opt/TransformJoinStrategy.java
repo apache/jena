@@ -36,7 +36,7 @@ public class TransformJoinStrategy extends TransformCopy
           // Streamed evaluation
           return OpSequence.create(left, right) ;
       // Can't do better.
-      return opJoin ;
+      return super.transform(opJoin, left,right) ;
     }
     
     //public Op transform(OpSequence opSequence, List<Op> elts)
@@ -59,7 +59,8 @@ public class TransformJoinStrategy extends TransformCopy
           return new OpConditional(opLeft, opRight) ;
       }
 
-      // Not index-able.
+      // Not index-able. 
+      //return super.transform(opLeftJoin, opLeft, opRight) ;
       return opLeftJoin ;
     }
 }

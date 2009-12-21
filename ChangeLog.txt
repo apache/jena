@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.8.3
+
++ Bug fix: some multiplely nested OPTIONALs could result in only naive, unoptimized execution. 
+
 ==== ARQ 2.8.2
 
 + SPARQL v1.1 as an defined language and parser, separate from ARQ 

@@ -1,6 +1,81 @@
-prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-prefix sd: <http://education.data.gov.uk/def/school/>
+PREFIX  sioc: <http://rdfs.org/sioc/spec/>
+PREFIX  bibo: <http://purl.org/ontology/bibo/>
+PREFIX  resource: <http://purl.org/vocab/resourcelist/schema#>
+PREFIX  dcterms: <http://purl.org/dc/terms/>
 
-select ?name ?s ?lat ?long {?s rdf:type sd:School . ?s geo:lat ?lat ; geo:long ?long ; rdfs:label ?name}
+#DESCRIBE ?resource ?list ?section ?containingResource ?publisher ?containingPublisher ?authorList ?containingAuthorList ?author ?containingAuthor ?alternatives ?alternative ?alternativeResource ?alternativeToItem ?alternativeToResource ?sectionOrItem ?sectionOrItemResource ?resource_a ?resource_b ?resource_c <http://liblists.sussex.ac.uk/items/958x3-11>
+SELECT *
+WHERE
+  { OPTIONAL
+      { <http://liblists.sussex.ac.uk/items/958x3-11>
+                  resource:list  ?list .
+        OPTIONAL
+          { ?list  resource:contains  ?sectionOrItem .
+            OPTIONAL
+              { ?sectionOrItem
+                          resource:resource  ?sectionOrItemResource .
+              }
+          }
+      }
+    OPTIONAL
+      { <http://liblists.sussex.ac.uk/items/958x3-11>
+                  sioc:has_container  ?section .
+      }
+    OPTIONAL
+      { <http://liblists.sussex.ac.uk/items/958x3-11>
+                  resource:alternatives  ?alternatives .
+        ?alternatives
+                  ?p                    ?alternative .
+        ?alternative  resource:resource  ?alternativeResource .
+      }
+    OPTIONAL
+      { <http://liblists.sussex.ac.uk/items/958x3-11>
+                  resource:alternativeTo  ?alternativeToItem .
+        ?alternativeToItem
+                  resource:resource     ?alternativeToResource .
+        OPTIONAL
+          { <http://liblists.sussex.ac.uk/items/958x3-11>
+                      resource:alternativeTo  ?alternativeToItem .
+            ?alternativeToItem
+                      resource:resource     ?alternativeToResource .
+            OPTIONAL
+              { ?alternativeToItem
+                          resource:list  ?list .
+              }
+            OPTIONAL
+              { ?alternativeToItem
+                          sioc:has_container  ?section .
+              }
+          }
+        OPTIONAL
+          { <http://liblists.sussex.ac.uk/items/958x3-11>
+                      resource:resource  ?resource .
+          }
+        OPTIONAL
+          { <http://liblists.sussex.ac.uk/items/958x3-11>
+                      resource:resource  ?resource_a .
+            ?resource_a  bibo:authorList  ?authorList .
+            ?authorList  ?p              ?author .
+          }
+        OPTIONAL
+          { <http://liblists.sussex.ac.uk/items/958x3-11>
+                      resource:resource  ?resource_b .
+            ?resource_b  dcterms:publisher  ?publisher .
+          }
+        OPTIONAL
+          { <http://liblists.sussex.ac.uk/items/958x3-11>
+                      resource:resource  ?resource_c .
+            ?resource_c  dcterms:isPartOf  ?containingResource .
+            OPTIONAL
+              { ?containingResource
+                          bibo:authorList  ?containingAuthorList .
+                ?containingAuthorList
+                          ?p               ?containingAuthor .
+              }
+            OPTIONAL
+              { ?containingResource
+                          dcterms:publisher  ?containingPublisher .
+              }
+          }
+      }
+  }

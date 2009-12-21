@@ -12,7 +12,7 @@ import java.util.Iterator ;
 import arq.sparql ;
 import arq.sse_query ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -21,18 +21,20 @@ import com.hp.hpl.jena.sparql.algebra.ExtBuilder ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry ;
-import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -48,9 +50,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -77,42 +77,91 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        // ARQ TestFilterTransform
-        // transform if "safe" where safe is recurse of BGP, sequence, join 
-        // ??LHS of opt.
-        // Must mention.
         
-        Transform transform   = new TransformFilterEquality() ;
+        {
+            System.out.println(ARQ.VERSION); 
+            System.out.println(Jena.VERSION); 
 
-        {
-            divider() ;
-            Op op = SSE.parseOp("(filter (= ?unused <x>) (bgp (?s ?p ?x)))") ;
-            Op op2 = Transformer.transform(transform, op) ;
-            System.out.println(op) ;
-            System.out.println(op2) ;
+            Query query = QueryFactory.read("Q.rq") ;
+
+//            Op op = Algebra.compile(query.getQueryPattern()) ;
+//            Transform t = new TransformJoinStrategy(null) ;
+//            op = Transformer.transform(t, op) ;
+//            System.out.println(op) ; 
+//            System.exit(0) ;
+            
+            Model model = FileManager.get().loadModel("D.nt") ;
+            //Model model = null;
+            Timer timer = new Timer() ;
+            timer.startTimer() ;
+            exec(query, model) ;
+            long time = timer.endTimer() ;
+            System.out.printf("Time = %.2fs\n", time/1000.0) ;
+            System.exit(0) ;
         }
+
+
+        Query query = QueryFactory.create("SELECT * { FILTER ($a = 1 || $a = 2) }");
+        Model model = ModelFactory.createDefaultModel();
+        QuerySolutionMap map = new QuerySolutionMap();
+        map.add("a", model.createLiteral("qwe"));
+        QueryExecution queryExecution = QueryExecutionFactory.create(query, model, map);
+        ResultSet resultSet = queryExecution.execSelect();
+        ResultSetFormatter.out(resultSet) ;
+        System.exit(0) ;
+    }
+          
+    private static void exec(Query query, Model model)
+    {
+        if ( true )
         {
-            divider() ;
-            Op op = SSE.parseOp("(filter (= ?used <x>) (bgp (?s ?p ?used)))") ;
-            Op op2 = Transformer.transform(transform, op) ;
-            System.out.println(op) ;
-            System.out.println(op2) ;
+            QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+            ResultSet rs = qexec.execSelect() ;
+            ResultSetFormatter.out(rs) ;
         }
-        
-        System.exit(0) ;
-        
-        
-        GraphStore gs = GraphStoreFactory.create() ;
-        UpdateAction.readExecute("update.ru", gs) ;
-        //UpdateAction.readExecute("update.ru", gs) ;
-        
-        Model m = ModelFactory.createModelForGraph(gs.getGraph(Node.createURI("http://foo/model04"))) ;
-        m.write(System.out, "RDF/XML-ABBREV") ;
-        System.exit(0) ;
-        System.exit(0) ;
-        
-        execQuery("D.ttl", "Q.arq") ; System.exit(0) ;
-        divider() ;
+        else
+        {
+            System.out.println("Experimental") ;
+            Op op = Algebra.compile(query.getQueryPattern()) ;
+            OpLeftJoin lj = (OpLeftJoin)op ;
+
+            boolean b = LeftJoinClassifier.isLinear(lj) ;
+            System.out.println(b) ;
+
+            if ( lj.getLeft() instanceof OpLeftJoin )
+            {        
+                boolean b2 = LeftJoinClassifier.isLinear((OpLeftJoin)lj.getLeft()) ;
+                System.out.println("Left: "+b2) ;
+            }
+
+            if ( lj.getRight() instanceof OpLeftJoin )
+            {        
+                boolean b3 = LeftJoinClassifier.isLinear((OpLeftJoin)lj.getRight()) ;
+                System.out.println("Right: "+b3) ;
+            }
+            
+            
+            Op op1 = Algebra.optimize(lj.getLeft()) ;
+            System.out.println(op1) ;
+            Op op2 = Algebra.optimize(lj.getRight()) ;
+            System.out.println(op2) ;
+            
+            ExecutionContext ec = new ExecutionContext(ARQ.getContext(), 
+                                                       model.getGraph(),
+                                                       null,
+                                                       null) ;
+            QueryIterator qIter1 = QC.execute(op1, BindingRoot.create(), ec) ;
+            QueryIterator qIter2 = QC.execute(op2, BindingRoot.create(), ec) ;
+            QueryIterator qIter = new QueryIterLeftJoin(qIter1, qIter2, null, ec) ;
+            while(qIter.hasNext())
+            {
+                System.out.println(qIter.next()) ;
+            }
+
+
+
+
+        }
     }
 
     
