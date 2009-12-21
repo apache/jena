@@ -60,8 +60,7 @@ public class TransformJoinStrategy extends TransformCopy
       }
 
       // Not index-able. 
-      //return super.transform(opLeftJoin, opLeft, opRight) ;
-      return opLeftJoin ;
+      return super.transform(opLeftJoin, opLeft, opRight) ;
     }
 }
 
