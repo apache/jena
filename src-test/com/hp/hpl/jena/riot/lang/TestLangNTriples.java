@@ -30,37 +30,37 @@ public class TestLangNTriples extends BaseTest
     @Test public void nt0()
     {
         SinkCounting<Triple> sink = parse("") ;
-        assertEquals(0, sink.count) ;
+        assertEquals(0, sink.getCount()) ;
     }
     
     @Test public void nt1()
     {
         SinkCounting<Triple> sink = parse("<x> <y> <z>.") ;
-        assertEquals(1, sink.count) ;
+        assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt2()
     {
         SinkCounting<Triple> sink = parse("<x> <y> \"z\".") ;
-        assertEquals(1, sink.count) ;
+        assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt3()
     {
         SinkCounting<Triple> sink = parse("<x> <y> <z>. <x> <y> <z>.") ;
-        assertEquals(2, sink.count) ;
+        assertEquals(2, sink.getCount()) ;
     }
 
     @Test public void nt4()
     {
         SinkCounting<Triple> sink = parse("<x> <y> \"123\"^^<int>.") ;
-        assertEquals(1, sink.count) ;
+        assertEquals(1, sink.getCount()) ;
     }
 
     @Test public void nt5()
     {
         SinkCounting<Triple> sink = parse("<x> <y> \"123\"@lang.") ;
-        assertEquals(1, sink.count) ;
+        assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt6()

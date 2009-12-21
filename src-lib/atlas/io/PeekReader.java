@@ -6,10 +6,13 @@
 
 package atlas.io;
 
+import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -81,6 +84,15 @@ public abstract class PeekReader extends Reader
     public static PeekReader readString(String string)
     {
         return new PeekReaderCharSequence(string) ;
+    }
+    
+    public static PeekReader open(String filename) 
+    {
+        try {
+            InputStream in = new FileInputStream(filename) ;
+            Reader r = FileUtils.asUTF8(in) ;
+            return make(r) ;
+        } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
     protected PeekReader()

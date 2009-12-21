@@ -1,38 +1,39 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Limited
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.lib;
 
+import java.io.PrintStream ;
 
-
-public final class SinkCounting<T> implements Sink<T>
+public class SinkPrint<T> implements Sink<T>
 {
-    private long count = 0 ;
-    private final Sink<T> output ; 
     
-    public SinkCounting(Sink<T> output)
-    { this.output = output ; }
+    private PrintStream out ;
+
+    public SinkPrint() 
+    { this(System.out); }
     
-    public SinkCounting()
-    { this.output = new SinkNull<T>() ; }
+    public SinkPrint(PrintStream out) 
+    { this.out = out ; }
     
-    /* @Override */
-    public void send(T thing)
+    //@Override
+    public void send(T item)
     {
-        count++ ;
-        if (output != null) output.send(thing) ;
+        out.println("Sink: "+item) ;
     }
+
+    //@Override 
+    public void flush() { }
     
-    public long getCount() { return count ; } 
-    
-    /*@Override*/ public void flush() {}
-    /*@Override*/ public void close() {}
+    //@Override
+    public void close() {}
 }
+
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Limited
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

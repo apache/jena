@@ -78,9 +78,9 @@ public class Performance
         sink.close() ;
 
         long time = timer.endTimer() ;
-        System.out.printf("Triples: %,d\n", sink.count) ;
+        System.out.printf("Triples: %,d\n", sink.getCount()) ;
         System.out.printf("Time:    %.2fs\n", time/1000.0) ;
-        System.out.printf("Triples per second: %,.02f\n", sink.count/( time/1000.0)) ;
+        System.out.printf("Triples per second: %,.02f\n", sink.getCount()/( time/1000.0)) ;
     }
     
     static public void turtle(String filename)
@@ -102,9 +102,9 @@ public class Performance
         sink.close() ;
 
         long time = timer.endTimer() ;
-        System.out.printf("Triples: %,d\n", sink.count) ;
+        System.out.printf("Triples: %,d\n", sink.getCount()) ;
         System.out.printf("Time:    %.2fs\n", time/1000.0) ;
-        System.out.printf("Triples per second: %,.02f\n", sink.count/( time/1000.0)) ;
+        System.out.printf("Triples per second: %,.02f\n", sink.getCount()/( time/1000.0)) ;
     }
 }
 

@@ -1,18 +1,20 @@
 @base <http://base/>. 
-@prefix : <http://test/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example/> .
+@prefix ns: <http://example/ns#> .
 
-_:z :p 135667 .
-_:z :p 13566 .
-_:z :p 1356 .
-_:z :p 135 .
-_:z :p 13 .
-_:z :p 1 .
+## :x1 a ns:C .
+## :x2 a ns:D .
+## :x3 a ns:C_1 .
+## :x4 a ns:C_2 .
+## 
+## :y1 ns:q  "foo" .
+## :y2 ns:P  "foo" .
+## :y3 ns:P_1  "foo" .
+## :y4 ns:P_2  "foo" .
 
-_:z :q 135667 .
-_:z :q 13566 .
-_:z :q 1356 .
-_:z :q 135 .
-_:z :q 13 .
-_:z :q 1 .
+:z1 ns:R 123 .
+:z2 ns:R1 123 .
+
+:z3 ns:D 123 .
+:z4 ns:D1 123 .
+

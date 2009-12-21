@@ -9,9 +9,11 @@ package atlas.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.sparql.util.Utils;
 
-public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIterator
+public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
 {
     private Iterator<T> input ;
     private boolean finished = false ;
@@ -65,8 +67,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIte
     //@Override
     public void close()
     {
-        if ( input instanceof ClosableIterator )
-            ((ClosableIterator)input).close();
+        Iter.close(input) ;
     }
 }
 /*

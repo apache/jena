@@ -1,18 +1,18 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package atlas.iterator;
+package atlas.lib;
 
-public interface ClosableIterator
+public interface Closeable
 {
     public void close() ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

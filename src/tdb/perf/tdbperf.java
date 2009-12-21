@@ -145,7 +145,7 @@ public class tdbperf extends CmdSub
             long x = timer.endTimer() ;
             double time = x/1000.0 ;
             
-            long count = sink.count ;
+            long count = sink.getCount() ;
             
             if ( time > 0 )
                 System.out.printf("Triples: %,d: Time: %,.2f sec [%,.2f TPS]\n", count, time, count/time);

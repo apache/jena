@@ -11,23 +11,38 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
 import java.io.StringWriter ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 
 import perf.Performance ;
+import atlas.io.PeekReader ;
 import atlas.iterator.Filter ;
+import atlas.lib.Sink ;
+import atlas.lib.SinkCounting ;
+import atlas.lib.SinkPrint ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
@@ -47,12 +62,7 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
-        String a[] = { "user.home", "user.name" } ; 
-        for ( String x : a )
-        {
-            System.out.println(x+"="+System.getProperties().getProperty(x)) ;
-        }
-        System.exit(0) ;
+        streamInference() ; System.exit(0) ;
         
         TDB.init();
         Model m = ModelFactory.createDefaultModel();
@@ -146,6 +156,168 @@ public class RunTDB
         JenaReaderTurtle2.parse(input) ;
         System.out.println("END") ;
         System.exit(0) ;
+    }
+    
+    static final class InferenceExpander implements Sink<Triple>
+    {
+        // Assumes rdf:type is not a superproperty. 
+        
+        // Expanded hierarchy:
+        // If C < C1 < C2 then C2 is in the list for C 
+        final private Map<Node, List<Node>> transClasses ;
+        final private Map<Node, List<Node>> transProperties;
+        final private Sink<Triple> output ;
+        final private Map<Node, List<Node>> domainList ;
+        final private Map<Node, List<Node>> rangeList ;  
+        
+        static final Node rdfType = RDF.type.asNode() ;
+        
+        public InferenceExpander(Sink<Triple> output,
+                                 Map<Node, List<Node>> transClasses,
+                                 Map<Node, List<Node>> transProperties,
+                                 Map<Node, List<Node>> domainList,
+                                 Map<Node, List<Node>> rangeList)
+        {
+            this.output = output ;
+            this.transClasses = transClasses ;
+            this.transProperties = transProperties ;
+            this.domainList = domainList ;
+            this.rangeList = rangeList ;
+            // Class trigger.
+            
+        }
+        
+        public void send(Triple triple)
+        {
+            System.out.println();
+            output.send(triple) ;
+            Node s = triple.getSubject() ;
+            Node p = triple.getPredicate() ;
+            Node o = triple.getObject() ;
+
+            subClass(s,p,o) ;
+            subProperty(s,p,o) ;
+
+            domain(s,p,o) ;
+            
+            // Beware of literal subjects.
+            range(s,p,o) ;
+        }
+
+        /*
+        [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
+         [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
+        */
+        
+        final private void domain(Node s, Node p, Node o)
+        {
+            List<Node> x = domainList.get(p) ;
+            if ( x != null )
+            {
+                for ( Node c : x )
+                {
+                    output.send(new Triple(s,rdfType,c)) ;
+                    subClass(s, rdfType, c) ;
+                }
+            }
+        }
+
+        final private void range(Node s, Node p, Node o)
+        {
+            // Range
+            List<Node> x = rangeList.get(p) ;
+            if ( x != null )
+            {
+                for ( Node c : x )
+                {
+                    output.send(new Triple(o,rdfType,c)) ;
+                    subClass(o, rdfType, c) ;
+                }
+            }
+        }
+
+        final private void subClass(Node s, Node p, Node o)
+        {
+            if ( p.equals(rdfType) )
+            {
+                List<Node> x = transClasses.get(o) ;
+                if ( x != null )
+                    for ( Node c : x )
+                        output.send(new Triple(s,p,c)) ;
+            }
+        }
+        
+        private void subProperty(Node s, Node p, Node o)
+        {
+            List<Node> x = transProperties.get(p) ;
+            if ( x != null )
+            {
+                for ( Node p2 : x )
+                    output.send(new Triple(s,p2,o)) ;
+            }
+        }
+        
+        public void flush()
+        { output.flush(); }
+
+        public void close()
+        { output.close(); }
+        
+    }
+    
+    public static void streamInference()
+    {
+        Map<Node, List<Node>> transClasses = new HashMap<Node, List<Node>>() ;
+        
+        Node c = NodeFactory.parseNode("<http://example/ns#C>") ;
+        Node c1 = NodeFactory.parseNode("<http://example/ns#C_1>") ;
+        Node c2 = NodeFactory.parseNode("<http://example/ns#C_2>") ;
+        Node c3 = NodeFactory.parseNode("<http://example/ns#C_3>") ;
+        Node c4 = NodeFactory.parseNode("<http://example/ns#C_4>") ;
+        
+        transClasses.put(c, new ArrayList<Node>()) ;
+        transClasses.get(c).add(c1) ;
+        transClasses.get(c).add(c2) ;
+        transClasses.put(c1, new ArrayList<Node>()) ;
+        transClasses.get(c1).add(c2) ;
+        
+        Map<Node, List<Node>> transProperties = new HashMap<Node, List<Node>>() ;
+        Node p = NodeFactory.parseNode("<http://example/ns#P>") ;
+        Node p1 = NodeFactory.parseNode("<http://example/ns#P_1>") ;
+        Node p2 = NodeFactory.parseNode("<http://example/ns#P_2>") ;
+
+        transProperties.put(p, new ArrayList<Node>()) ;
+        transProperties.get(p).add(p1) ;
+        transProperties.get(p).add(p2) ;
+        transProperties.put(p1, new ArrayList<Node>()) ;
+        transProperties.get(p1).add(p2) ;
+
+        Map<Node, List<Node>> domainList = new HashMap<Node, List<Node>>() ;
+        Node pD = NodeFactory.parseNode("<http://example/ns#D>") ;
+        domainList.put(pD, new ArrayList<Node>()) ;
+        domainList.get(pD).add(c3) ;
+        
+        Map<Node, List<Node>> rangeList = new HashMap<Node, List<Node>>() ;
+        Node pR = NodeFactory.parseNode("<http://example/ns#R>") ;
+        rangeList.put(pR, new ArrayList<Node>()) ;
+        rangeList.get(pR).add(c4) ;
+        //Now C1 recurse
+        
+        SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
+        SinkCounting<Triple> inputSink = new SinkCounting<Triple>(new InferenceExpander(outputSink,
+                                                                                   transClasses,
+                                                                                   transProperties,
+                                                                                   domainList,
+                                                                                   rangeList
+                                                                                   )) ;
+        Tokenizer tokenizer = new TokenizerText(PeekReader.open("D.ttl")) ;
+        LangRIOT parser = new LangTurtle("http://base/", tokenizer, inputSink) ;
+        parser.parse() ;
+        inputSink.flush() ;
+        
+        System.out.println() ;
+        System.out.printf("Input  =  %d\n", inputSink.getCount()) ;
+        System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
     }
 }
 
