@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
@@ -38,16 +39,19 @@ public class JSONOutputResultSet implements ResultSetProcessor
 {
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;
-
-    IndentedWriter out ;
-    int bNodeCounter = 0 ;
-    Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
+    
+    private boolean outputGraphBNodeLabels = false ;
+    private IndentedWriter out ;
+    private int bNodeCounter = 0 ;
+    private Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
     
     JSONOutputResultSet(OutputStream outStream)
     { this(new IndentedWriter(outStream)) ; }
     
     JSONOutputResultSet(IndentedWriter indentedOut)
-    { out = indentedOut ; }
+    {   out = indentedOut ;
+        outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;
+    }
     
     public void start(ResultSet rs)
     {
@@ -203,12 +207,21 @@ public class JSONOutputResultSet implements ResultSetProcessor
     {
         if ( resource.isAnon() )
         {
+            String label ; 
+            if ( outputGraphBNodeLabels )
+                label = resource.getId().getLabelString() ;
+            else
+            {
+                if ( ! bNodeMap.containsKey(resource))
+                    bNodeMap.put(resource, "b"+(bNodeCounter++)) ;
+                label = bNodeMap.get(resource) ;
+            }
+            
             out.print(quoteName(dfType)+": "+quote(dfBNode)+" , ") ;
             if ( multiLineValues ) out.println() ;
-            if ( ! bNodeMap.containsKey(resource))
-                bNodeMap.put(resource, "b"+(bNodeCounter++)) ;
-            String label = bNodeMap.get(resource) ;
+            
             out.print(quoteName(dfValue)+": "+quote(label)) ;
+            
             if ( multiLineValues ) out.println() ;
         }
         else

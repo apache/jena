@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.ALog ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
-/** Main part of a QueryEngine - somethign that takes responsibility for a complete query execution */ 
+/** Main part of a QueryEngine - something that takes responsibility for a complete query execution */ 
 public abstract class QueryEngineBase implements OpEval, Closeable
 {
     public final static QueryEngineInfo queryEngineInfo = new QueryEngineInfo() ;
