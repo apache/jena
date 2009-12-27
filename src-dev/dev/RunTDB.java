@@ -19,7 +19,6 @@ import java.util.Map ;
 import perf.Performance ;
 import atlas.io.PeekReader ;
 import atlas.iterator.Filter ;
-import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkPrint ;
 import atlas.lib.Tuple ;
@@ -42,7 +41,6 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
@@ -156,113 +154,6 @@ public class RunTDB
         JenaReaderTurtle2.parse(input) ;
         System.out.println("END") ;
         System.exit(0) ;
-    }
-    
-    static final class InferenceExpander implements Sink<Triple>
-    {
-        // Assumes rdf:type is not a superproperty. 
-        
-        // Expanded hierarchy:
-        // If C < C1 < C2 then C2 is in the list for C 
-        final private Map<Node, List<Node>> transClasses ;
-        final private Map<Node, List<Node>> transProperties;
-        final private Sink<Triple> output ;
-        final private Map<Node, List<Node>> domainList ;
-        final private Map<Node, List<Node>> rangeList ;  
-        
-        static final Node rdfType = RDF.type.asNode() ;
-        
-        public InferenceExpander(Sink<Triple> output,
-                                 Map<Node, List<Node>> transClasses,
-                                 Map<Node, List<Node>> transProperties,
-                                 Map<Node, List<Node>> domainList,
-                                 Map<Node, List<Node>> rangeList)
-        {
-            this.output = output ;
-            this.transClasses = transClasses ;
-            this.transProperties = transProperties ;
-            this.domainList = domainList ;
-            this.rangeList = rangeList ;
-            // Class trigger.
-            
-        }
-        
-        public void send(Triple triple)
-        {
-            System.out.println();
-            output.send(triple) ;
-            Node s = triple.getSubject() ;
-            Node p = triple.getPredicate() ;
-            Node o = triple.getObject() ;
-
-            subClass(s,p,o) ;
-            subProperty(s,p,o) ;
-
-            domain(s,p,o) ;
-            
-            // Beware of literal subjects.
-            range(s,p,o) ;
-        }
-
-        /*
-        [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-         [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
-        */
-        
-        final private void domain(Node s, Node p, Node o)
-        {
-            List<Node> x = domainList.get(p) ;
-            if ( x != null )
-            {
-                for ( Node c : x )
-                {
-                    output.send(new Triple(s,rdfType,c)) ;
-                    subClass(s, rdfType, c) ;
-                }
-            }
-        }
-
-        final private void range(Node s, Node p, Node o)
-        {
-            // Range
-            List<Node> x = rangeList.get(p) ;
-            if ( x != null )
-            {
-                for ( Node c : x )
-                {
-                    output.send(new Triple(o,rdfType,c)) ;
-                    subClass(o, rdfType, c) ;
-                }
-            }
-        }
-
-        final private void subClass(Node s, Node p, Node o)
-        {
-            if ( p.equals(rdfType) )
-            {
-                List<Node> x = transClasses.get(o) ;
-                if ( x != null )
-                    for ( Node c : x )
-                        output.send(new Triple(s,p,c)) ;
-            }
-        }
-        
-        private void subProperty(Node s, Node p, Node o)
-        {
-            List<Node> x = transProperties.get(p) ;
-            if ( x != null )
-            {
-                for ( Node p2 : x )
-                    output.send(new Triple(s,p2,o)) ;
-            }
-        }
-        
-        public void flush()
-        { output.flush(); }
-
-        public void close()
-        { output.close(); }
-        
     }
     
     public static void streamInference()

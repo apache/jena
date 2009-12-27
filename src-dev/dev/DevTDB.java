@@ -11,6 +11,7 @@ public class DevTDB
 {
     // == 0.8.5
     // + Dynamic datasets
+    // + Dataset management
     
     // Dataset.close() always calls TDBMake.releaseDataset - shouldn't there be a reference count?
     
