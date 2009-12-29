@@ -1,35 +1,35 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.lib;
 
-
-
-public final class SinkCounting<T> extends SinkWrapper<T>
+/** Wrap one sink in another - to pass on behaviour, the derived Sink must call super.operation
+ *  See also: {@link SinkSplit}
+ */
+public class SinkWrapper<T> implements Sink<T>
 {
-    private long count = 0 ;
-    
-    public SinkCounting(Sink<T> output)
-    { super(output) ; }
-    
-    public SinkCounting()
-    { super(new SinkNull<T>()) ; }
-    
-    @Override
-    public void send(T thing)
+    protected final Sink<T> sink ;
+
+    public SinkWrapper(Sink<T> sink)
     {
-        count++ ;
-        super.send(thing) ;
+        this.sink = sink ;
     }
     
-    public long getCount() { return count ; } 
+    public void flush()
+    { sink.flush(); }
+
+    public void send(T item)
+    { sink.send(item) ; }
+
+    public void close()
+    { sink.close(); }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

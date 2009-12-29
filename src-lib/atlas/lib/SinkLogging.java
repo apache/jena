@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 public class SinkLogging<T> implements Sink<T>
 {
-    
     private Logger log ;
 
     public SinkLogging(Logger log) { this.log = log ; }

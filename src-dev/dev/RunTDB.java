@@ -11,16 +11,14 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
 import java.io.StringWriter ;
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
 
 import perf.Performance ;
 import atlas.io.PeekReader ;
 import atlas.iterator.Filter ;
+import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkPrint ;
+import atlas.lib.SinkWrapper ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
@@ -34,13 +32,13 @@ import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
@@ -156,58 +154,41 @@ public class RunTDB
         System.exit(0) ;
     }
     
+    static class SinkGapper<T> extends SinkWrapper<T>
+    {
+        public SinkGapper(Sink<T> sink)
+        {
+            super(sink) ;
+        }
+        
+        @Override
+        public void send(T item)
+        {
+            super.send(item) ;
+            System.out.println("--") ;
+        }
+    }
+    
     public static void streamInference()
     {
-        Map<Node, List<Node>> transClasses = new HashMap<Node, List<Node>>() ;
-        
-        Node c = NodeFactory.parseNode("<http://example/ns#C>") ;
-        Node c1 = NodeFactory.parseNode("<http://example/ns#C_1>") ;
-        Node c2 = NodeFactory.parseNode("<http://example/ns#C_2>") ;
-        Node c3 = NodeFactory.parseNode("<http://example/ns#C_3>") ;
-        Node c4 = NodeFactory.parseNode("<http://example/ns#C_4>") ;
-        
-        transClasses.put(c, new ArrayList<Node>()) ;
-        transClasses.get(c).add(c1) ;
-        transClasses.get(c).add(c2) ;
-        transClasses.put(c1, new ArrayList<Node>()) ;
-        transClasses.get(c1).add(c2) ;
-        
-        Map<Node, List<Node>> transProperties = new HashMap<Node, List<Node>>() ;
-        Node p = NodeFactory.parseNode("<http://example/ns#P>") ;
-        Node p1 = NodeFactory.parseNode("<http://example/ns#P_1>") ;
-        Node p2 = NodeFactory.parseNode("<http://example/ns#P_2>") ;
-
-        transProperties.put(p, new ArrayList<Node>()) ;
-        transProperties.get(p).add(p1) ;
-        transProperties.get(p).add(p2) ;
-        transProperties.put(p1, new ArrayList<Node>()) ;
-        transProperties.get(p1).add(p2) ;
-
-        Map<Node, List<Node>> domainList = new HashMap<Node, List<Node>>() ;
-        Node pD = NodeFactory.parseNode("<http://example/ns#D>") ;
-        domainList.put(pD, new ArrayList<Node>()) ;
-        domainList.get(pD).add(c3) ;
-        
-        Map<Node, List<Node>> rangeList = new HashMap<Node, List<Node>>() ;
-        Node pR = NodeFactory.parseNode("<http://example/ns#R>") ;
-        rangeList.put(pR, new ArrayList<Node>()) ;
-        rangeList.get(pR).add(c4) ;
-        //Now C1 recurse
+        Model m = FileManager.get().loadModel("V.ttl") ;
         
         SinkCounting<Triple> outputSink = new SinkCounting<Triple>(new SinkPrint<Triple>()) ;
-        SinkCounting<Triple> inputSink = new SinkCounting<Triple>(new InferenceExpander(outputSink,
-                                                                                   transClasses,
-                                                                                   transProperties,
-                                                                                   domainList,
-                                                                                   rangeList
-                                                                                   )) ;
+        
+        SinkCounting<Triple> inputSink1 = new SinkCounting<Triple>(new InferenceExpander(outputSink, m)) ;
+        // Add gaps between parser triples. 
+        Sink<Triple> inputSink2 = new SinkGapper<Triple>(inputSink1) ;
+        
+        Sink<Triple> inputSink = inputSink2 ;
+        
         Tokenizer tokenizer = new TokenizerText(PeekReader.open("D.ttl")) ;
         LangRIOT parser = new LangTurtle("http://base/", tokenizer, inputSink) ;
+        
         parser.parse() ;
         inputSink.flush() ;
-        
+
         System.out.println() ;
-        System.out.printf("Input  =  %d\n", inputSink.getCount()) ;
+        System.out.printf("Input  =  %d\n", inputSink1.getCount()) ;
         System.out.printf("Total  =  %d\n", outputSink.getCount()) ;
     }
 }

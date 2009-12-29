@@ -6,6 +6,8 @@
 
 package dev;
 
+import java.util.ArrayList ;
+import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -13,6 +15,15 @@ import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 final class InferenceExpander implements Sink<Triple>
@@ -21,30 +32,58 @@ final class InferenceExpander implements Sink<Triple>
     
     // Expanded hierarchy:
     // If C < C1 < C2 then C2 is in the list for C 
-    final private Map<Node, List<Node>> transClasses ;
-    final private Map<Node, List<Node>> transProperties;
-    final private Sink<Triple> output ;
-    final private Map<Node, List<Node>> domainList ;
-    final private Map<Node, List<Node>> rangeList ;  
+    private final Sink<Triple> output ;
+    private final Map<Node, List<Node>> transClasses ;
+    private final Map<Node, List<Node>> transProperties;
+    private final Map<Node, List<Node>> domainList ;
+    private final Map<Node, List<Node>> rangeList ;  
     
     static final Node rdfType = RDF.type.asNode() ;
     
-    public InferenceExpander(Sink<Triple> output,
-                             Map<Node, List<Node>> transClasses,
-                             Map<Node, List<Node>> transProperties,
-                             Map<Node, List<Node>> domainList,
-                             Map<Node, List<Node>> rangeList)
+    public InferenceExpander(Sink<Triple> output, Model vocab)
     {
         this.output = output ;
-        this.transClasses = transClasses ;
-        this.transProperties = transProperties ;
-        this.domainList = domainList ;
-        this.rangeList = rangeList ;
+        transClasses = new HashMap<Node, List<Node>>() ;
+        transProperties = new HashMap<Node, List<Node>>() ;
+        domainList = new HashMap<Node, List<Node>>() ;
+        rangeList = new HashMap<Node, List<Node>>() ;
+        
+        // Find classes - uses property paths
+        exec("SELECT ?x ?y { ?x rdfs:subClassOf+ ?y }", vocab, transClasses) ;
+        
+        // Find properties
+        exec("SELECT ?x ?y { ?x rdfs:subPropertyOf+ ?y }", vocab, transProperties) ;
+        
+        // Find domain
+        exec("SELECT ?x ?y { ?x rdfs:domain ?y }", vocab, domainList) ;
+        
+        // Find range
+        exec("SELECT ?x ?y { ?x rdfs:range ?y }", vocab, rangeList) ;
+    }
+    
+    private static void exec(String qs, Model model, Map<Node, List<Node>> multimap)
+    {
+        String preamble = StrUtils.strjoinNL("PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                                             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                                             "PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>",
+                                             "PREFIX  owl:    <http://www.w3.org/2002/07/owl#>",
+                                             "PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>") ;
+        Query query = QueryFactory.create(preamble+"\n"+qs, Syntax.syntaxARQ) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+        ResultSet rs = qexec.execSelect() ;
+        for ( ; rs.hasNext() ; )
+        {
+            QuerySolution soln= rs.next() ;
+            Node x = soln.get("x").asNode() ;
+            Node y = soln.get("y").asNode() ;
+            if ( ! multimap.containsKey(x) )
+                multimap.put(x, new ArrayList<Node>()) ;
+            multimap.get(x).add(y) ;
+        }
     }
     
     public void send(Triple triple)
     {
-        System.out.println();
         output.send(triple) ;
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
@@ -52,18 +91,45 @@ final class InferenceExpander implements Sink<Triple>
 
         subClass(s,p,o) ;
         subProperty(s,p,o) ;
-
         domain(s,p,o) ;
-        
         // Beware of literal subjects.
         range(s,p,o) ;
     }
 
     /*
-    [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-     [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
-    */
+     [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+     [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+     */
+    final private void subClass(Node s, Node p, Node o)
+    {
+        if ( p.equals(rdfType) )
+        {
+            List<Node> x = transClasses.get(o) ;
+            if ( x != null )
+                for ( Node c : x )
+                    output.send(new Triple(s,p,c)) ;
+        }
+    }
+
+    // Rule extracts from Jena's RDFS rules etc/rdfs.rules 
     
+    /*
+    [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+    [rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+    */
+    private void subProperty(Node s, Node p, Node o)
+    {
+        List<Node> x = transProperties.get(p) ;
+        if ( x != null )
+        {
+            for ( Node p2 : x )
+                output.send(new Triple(s,p2,o)) ;
+        }
+    }
+
+    /*
+     [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
+    */
     final private void domain(Node s, Node p, Node o)
     {
         List<Node> x = domainList.get(p) ;
@@ -77,8 +143,14 @@ final class InferenceExpander implements Sink<Triple>
         }
     }
 
+    /*
+    [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]
+     */ 
     final private void range(Node s, Node p, Node o)
     {
+        // Mask out literal subjects
+        if ( o.isLiteral() )
+            return ;
         // Range
         List<Node> x = rangeList.get(p) ;
         if ( x != null )
@@ -91,27 +163,6 @@ final class InferenceExpander implements Sink<Triple>
         }
     }
 
-    final private void subClass(Node s, Node p, Node o)
-    {
-        if ( p.equals(rdfType) )
-        {
-            List<Node> x = transClasses.get(o) ;
-            if ( x != null )
-                for ( Node c : x )
-                    output.send(new Triple(s,p,c)) ;
-        }
-    }
-    
-    private void subProperty(Node s, Node p, Node o)
-    {
-        List<Node> x = transProperties.get(p) ;
-        if ( x != null )
-        {
-            for ( Node p2 : x )
-                output.send(new Triple(s,p2,o)) ;
-        }
-    }
-    
     public void flush()
     { output.flush(); }
 

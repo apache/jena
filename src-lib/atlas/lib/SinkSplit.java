@@ -1,35 +1,46 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.lib;
 
-
-
-public final class SinkCounting<T> extends SinkWrapper<T>
+/** Split a sink stream and duplicate the operations onto two sinks 
+ *  See also: {@link SinkWrapper}
+ */
+public class SinkSplit<T> implements Sink<T>
 {
-    private long count = 0 ;
-    
-    public SinkCounting(Sink<T> output)
-    { super(output) ; }
-    
-    public SinkCounting()
-    { super(new SinkNull<T>()) ; }
-    
-    @Override
-    public void send(T thing)
+    private final Sink<T> sink1 ;
+    private final Sink<T> sink2 ;
+
+    public SinkSplit(Sink<T> sink1, Sink<T> sink2)
     {
-        count++ ;
-        super.send(thing) ;
+        this.sink1 = sink1 ;
+        this.sink2 = sink2 ;
     }
     
-    public long getCount() { return count ; } 
+    public void flush()
+    { 
+        sink1.flush();
+        sink2.flush();
+    }
+        
+    public void send(T item)
+    { 
+        sink1.send(item) ;
+        sink2.send(item) ;
+    }
+
+    public void close()
+    {
+        sink1.close(); 
+        sink2.close();
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
