@@ -19,13 +19,13 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 public abstract class AbstractTestGraph2 extends TestBase
 {
     // This will become the basis for a general graph test in Jena
-    protected static final Node s1 = makeNode("<s1>") ;
-    protected static final Node p1 = makeNode("<p1>") ;
-    protected static final Node o1 = makeNode("<o1>") ;
+    protected static final Node s1 = makeNode("<ex:s1>") ;
+    protected static final Node p1 = makeNode("<ex:p1>") ;
+    protected static final Node o1 = makeNode("<ex:o1>") ;
 
-    protected static final Node s2 = makeNode("<s2>") ;
-    protected static final Node p2 = makeNode("<p2>") ;
-    protected static final Node o2 = makeNode("<o2>") ;
+    protected static final Node s2 = makeNode("<ex:s2>") ;
+    protected static final Node p2 = makeNode("<ex:p2>") ;
+    protected static final Node o2 = makeNode("<ex:o2>") ;
     
     protected static final Node lit1 = makeNode("'lex'") ;
     protected static final Node lit2 = makeNode("'lex'@en") ;
@@ -74,13 +74,13 @@ public abstract class AbstractTestGraph2 extends TestBase
     {
         Graph g = emptyGraph() ;
         // SPO twice -- as different nodes.
-        Node ns1 = makeNode("<s>") ;
-        Node np1 = makeNode("<p>") ;
-        Node no1 = makeNode("<o>") ;
+        Node ns1 = makeNode("<ex:s>") ;
+        Node np1 = makeNode("<ex:p>") ;
+        Node no1 = makeNode("<ex:o>") ;
         
-        Node ns2 = makeNode("<s>") ;
-        Node np2 = makeNode("<p>") ;
-        Node no2 = makeNode("<o>") ;
+        Node ns2 = makeNode("<ex:s>") ;
+        Node np2 = makeNode("<ex:p>") ;
+        Node no2 = makeNode("<ex:o>") ;
         
         Triple t1 = triple(ns1, np1, no1) ;
         Triple t2 = triple(ns2, np2, no2) ;
@@ -107,7 +107,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue(g.contains(t2)) ;
         assertTrue(g.contains(s1,p1,lit1)) ;
         assertTrue(g.contains(s1,p1,lit2)) ;
-        Node o = makeNode("<lex>") ;
+        Node o = makeNode("<ex:lex>") ;
         assertFalse(g.contains(s1,p1,o)) ;
         returnGraph(g) ;
 
@@ -188,12 +188,14 @@ public abstract class AbstractTestGraph2 extends TestBase
         returnGraph(g) ;
     }
 
+    private static Node any = Node.ANY ;
+    
     @Test public void remove_01()
     {
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(null, null, null) ;
+        g.getBulkUpdateHandler().remove(any, any, any) ;
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }
@@ -203,7 +205,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(s2, null, null) ;
+        g.getBulkUpdateHandler().remove(s2, any, any) ;
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t1)) ;
         returnGraph(g) ;
@@ -214,7 +216,7 @@ public abstract class AbstractTestGraph2 extends TestBase
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(s1, null, null) ;
+        g.getBulkUpdateHandler().remove(s1, any, any) ;
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }

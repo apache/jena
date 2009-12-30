@@ -1,16 +1,17 @@
 @base <http://base/>. 
+
 @prefix : <http://example/> .
 @prefix ns: <http://example/ns#> .
 
-## :x1 a ns:C .
-## :x2 a ns:D .
-## :x3 a ns:C_1 .
-## :x4 a ns:C_2 .
-## 
-## :y1 ns:q  "foo" .
-## :y2 ns:P  "foo" .
-## :y3 ns:P_1  "foo" .
-## :y4 ns:P_2  "foo" .
+:x1 a ns:C .
+:x2 a ns:D .
+:x3 a ns:C_1 .
+:x4 a ns:C_2 .
+
+:y1 ns:q  "foo" .
+:y2 ns:P  "foo" .
+:y3 ns:P_1  "foo" .
+:y4 ns:P_2  "foo" .
 
 :z1 ns:R 123 .
 :z2 ns:R1 123 .
