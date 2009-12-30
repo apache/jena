@@ -1,0 +1,15 @@
+@prefix ns: <http://example/ns#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+
+# C < C_1 < C_2
+ns:C rdfs:subClassOf ns:C_1 .
+ns:C_1 rdfs:subClassOf ns:C_2 .
+
+# P < P1 < P2
+ns:P rdfs:subPropertyOf ns:P_1 .
+ns:P_1 rdfs:subPropertyOf ns:P_2 .
+
+ns:D rdfs:domain ns:C_3 .
+
+ns:R rdfs:range ns:C_4 .
