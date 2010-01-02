@@ -81,8 +81,8 @@ public class SolverLib
 
     
     // The worker.  Callers choose the NodeTupleTable.  
-    //     graphNode maybe Node.ANY, meaning we should make triples unique.
-    //     graphNode maybe null, meaning we should make triples unique.
+    //     graphNode may be Node.ANY, meaning we should make triples unique.
+    //     graphNode may be null, meaning we should make triples unique.
 
     private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, 
                                          QueryIterator input, Filter<Tuple<NodeId>> filter,

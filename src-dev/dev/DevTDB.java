@@ -13,7 +13,7 @@ public class DevTDB
     // + Dynamic datasets
     // + Dataset management
     
-    // Dataset.close() always calls TDBMake.releaseDataset - shouldn't there be a reference count?
+    // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
     
     // NodeFmtLib - expose safeBNodeLabel flag.
     // And a decode operation.
@@ -41,8 +41,6 @@ public class DevTDB
     //    FmtUtils and NodeFmtLib 
     
     // Sort out NodecSSE and NodecLib
-
-    // Logging : something depends on log4j.
     
     // **** Redo IndexBuilder and NodeTableBuilder (with caching
     //   ?? SetupTDB(IndexBuilder, NodeTableBuilder, PrefixTableBuilder) ;
@@ -51,7 +49,7 @@ public class DevTDB
     
     // === Projects
     // -> Stopping long running queries - 
-    //    hook in BGQ/Quad patterns
+    //    hook in BGP/Quad patterns
     // -> Dynamic datasets
     // -> BDB-JE & transactions
     // -> BDB-JE and compressed blocks.

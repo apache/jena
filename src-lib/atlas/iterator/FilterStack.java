@@ -1,53 +1,52 @@
 /*
- * (c) C;opyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package atlas.iterator;
 
-import atlas.iterator.Filter ;
-import atlas.lib.Tuple ;
-
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-
-/** Execute TDB requests directly -- no reordering
- *  Using OpExecutor is preferred.
- */ 
-public class StageGeneratorDirectTDB implements StageGenerator
+/**
+ * Add a filter to a chain - the original filter is called after this new sub-filter.
+ */
+public abstract class FilterStack<T> implements  Filter<T>
 {
-    // Using OpExecutor is preferred.
-    StageGenerator above = null ;
+    private final Filter<T> other ;
+    private final boolean subFilterLast ;
     
-    public StageGeneratorDirectTDB(StageGenerator original)
-    {
-        above = original ;
-    }
+    public FilterStack(Filter<T> other) { this(other, false) ; }
     
-    //@Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public FilterStack(Filter<T> other, boolean callOldFilterFirst)
     {
-        // --- In case this isn't for TDB
-        Graph g = execCxt.getActiveGraph() ;
-        
-        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        
-        if ( ! ( g instanceof GraphTDB ) )
-            // Not us - bounce up the StageGenerator chain
-            return above.execute(pattern, input, execCxt) ;
-        GraphTDB graph = (GraphTDB)g ;
-        return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
+        this.other = other ;
+        this.subFilterLast = callOldFilterFirst ;
     }
+   
+    public final boolean accept(T item)
+    {
+        if ( subFilterLast )
+        {
+            if ( !  acceptAdditional(item) )
+                return false ;
+            if ( other != null || ! other.accept(item) )
+                return false ;
+        }
+        else
+        {
+            if ( other != null || ! other.accept(item) )
+                return false ;
+            if ( !  acceptAdditional(item) )
+                return false ;
+        }
+        return true ;
+    }
+
+    /** Additional filter condition to apply */
+    public abstract boolean acceptAdditional(T item) ;
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

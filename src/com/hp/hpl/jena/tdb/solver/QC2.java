@@ -1,5 +1,5 @@
 /*
- * (c) C;opyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -9,45 +9,35 @@ package com.hp.hpl.jena.tdb.solver;
 import atlas.iterator.Filter ;
 import atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** Execute TDB requests directly -- no reordering
- *  Using OpExecutor is preferred.
- */ 
-public class StageGeneratorDirectTDB implements StageGenerator
+public class QC2
 {
-    // Using OpExecutor is preferred.
-    StageGenerator above = null ;
-    
-    public StageGeneratorDirectTDB(StageGenerator original)
+    public static Filter<Tuple<NodeId>> getFilter(Context context)
     {
-        above = original ;
+        Object x = context.get(SystemTDB.symTupleFilter) ;
+
+        try {
+            @SuppressWarnings("unchecked")
+            Filter<Tuple<NodeId>> f = (Filter<Tuple<NodeId>>)x ;
+            return f ;
+        } catch (ClassCastException ex)
+        {
+            throw new TDBException("Not a Filter<Tuple<NodeId>>:"+x, ex) ;
+        }
     }
-    
-    //@Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+
+    public static void setFilter(Context context, Filter<Tuple<NodeId>> filter)
     {
-        // --- In case this isn't for TDB
-        Graph g = execCxt.getActiveGraph() ;
-        
-        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        
-        if ( ! ( g instanceof GraphTDB ) )
-            // Not us - bounce up the StageGenerator chain
-            return above.execute(pattern, input, execCxt) ;
-        GraphTDB graph = (GraphTDB)g ;
-        return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
+        context.set(SystemTDB.symTupleFilter, filter) ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

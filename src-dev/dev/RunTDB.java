@@ -11,6 +11,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
 import java.io.StringWriter ;
+import java.util.HashSet ;
+import java.util.Set ;
 
 import perf.Performance ;
 import atlas.io.PeekReader ;
@@ -25,6 +27,8 @@ import atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
@@ -32,11 +36,15 @@ import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
@@ -58,6 +66,37 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
+        // And if ?g is used inside?  assign first
+        String qs = "SELECT * { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://foo> { ?s ?p ?o } } }" ;
+        Query query = QueryFactory.create(qs) ;
+        Op op = Algebra.compile(query) ;
+        divider() ;
+        System.out.print(op) ;
+
+        Set<Node> defaultGraph = new HashSet<Node>() ;
+        Set<Node> namedGraphs = new HashSet<Node>() ;
+        namedGraphs.add(Node.createURI("http://example/g1")) ;
+        namedGraphs.add(Node.createURI("http://example/g2")) ;
+
+        if ( false )
+        {
+            divider() ;
+            Op opTriples = Algebra.toQuadForm(op) ;
+            opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), opTriples) ;
+            System.out.print(opTriples) ;
+        }
+        
+        if ( true )
+        {
+            divider() ;
+            Op opQuad = Algebra.toQuadForm(op) ;
+            opQuad = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), opQuad) ;
+            System.out.print(opQuad) ;
+        }
+
+        System.exit(0) ;
+        
+        
         streamInference() ; System.exit(0) ;
         
         TDB.init();

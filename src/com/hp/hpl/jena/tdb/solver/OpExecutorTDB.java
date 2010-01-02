@@ -30,8 +30,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc ;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -39,7 +37,6 @@ import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** TDB executor for algebra expressions.  It is the standard ARQ executor
  *  except for basic graph patterns and filtered basic graph patterns (currently).  
@@ -301,22 +298,6 @@ public class OpExecutorTDB extends OpExecutor
     
         return false ;
     }
-
-    // ---- Dynamic datasets
-    
-    public static Filter<Tuple<NodeId>> getFilter(Context context)
-    {
-        Object x = context.get(SystemTDB.symTupleFilter) ;
-
-        try {
-            @SuppressWarnings("unchecked")
-            Filter<Tuple<NodeId>> f = (Filter<Tuple<NodeId>>)x ;
-            return f ;
-        } catch (ClassCastException ex)
-        {
-            throw new TDBException("Not a Filter<Tuple<NodeId>>:"+x, ex) ;
-        }
-    }
     
     // ---- OpExecute factories and plain executor.
     
@@ -338,7 +319,7 @@ public class OpExecutorTDB extends OpExecutor
         public OpExecutorPlainTDB(ExecutionContext execCxt)
         {
             super(execCxt) ;
-            filter = getFilter(execCxt.getContext()) ;
+            filter = QC2.getFilter(execCxt.getContext()) ;
         }
         
         @Override

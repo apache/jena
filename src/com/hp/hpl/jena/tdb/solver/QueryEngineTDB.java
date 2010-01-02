@@ -6,28 +6,38 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphNamedTDB;
+import java.util.Collection ;
+import java.util.HashSet ;
+import java.util.Set ;
+
+import atlas.iterator.Filter ;
+import atlas.iterator.FilterStack ;
+import atlas.lib.Tuple ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
@@ -94,7 +104,7 @@ public class QueryEngineTDB extends QueryEngineMain
     
     // ---- Rewrite that looks for a fixed node as the graph name 
     // (in (graph) and (quad)) and changes it to another one.
-    static class TransformGraphRename extends TransformCopy
+    private static class TransformGraphRename extends TransformCopy
     { 
         private Node oldGraphName ;
         private Node newGraphName ;
@@ -131,18 +141,50 @@ public class QueryEngineTDB extends QueryEngineMain
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return (dataset instanceof DatasetGraphTDB) ; }
 
-        public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
+        public Plan create(Query query, DatasetGraph ds, Binding input, Context context)
         {
+            DatasetGraphTDB dataset = (DatasetGraphTDB)ds ;
+            
             if ( query.hasDatasetDescription() )
             {
-                // Has a description - don't use the dataset, use the description via an all-purpose query engine.
-                QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
-                return engine.getPlan() ;
+                // Create a filter and register it.
+                
+                
+                if ( false )
+                {
+                    // Filter version - dynamic datasets - unfinished.
+                    // Union of this.
+                    
+                    Set<Node> defaultGraphNodes = convertToNodes(query.getGraphURIs()) ;
+                    Set<NodeId> defaultGraphIds = convertToNodeIds(defaultGraphNodes, dataset) ;
+                    
+                    // Mask of this.
+                    // Caveat GRAPH ?g { ... }
+                    Set<Node> namedGraphNodes = convertToNodes(query.getNamedGraphURIs()) ;
+                    Set<NodeId> namedGraphIds = convertToNodeIds(namedGraphNodes, dataset) ;
+                    
+                    // Dataset that exposes only the graphs in the description. 
+                    //dataset = new DatasetGraphMask(dataset, namedGraphNodes, namedGraphNodes) ;
+                    
+                    Filter<Tuple<NodeId>> filter1 = QC2.getFilter(context) ;
+                    // Filter that exposes only the triples of graphs in the description.
+                    Filter<Tuple<NodeId>> filter2 = new DatasetFilter(filter1, defaultGraphIds, namedGraphIds) ;
+                    QC2.setFilter(context, filter2) ;
+//                  // And set union graph.  Works with the filter?
+//                  context.set(TDB.symUnionDefaultGraph, true) ;
+                }
+                else
+                {
+                    // Old-ish code.
+                    // Has a description - don't use the dataset, use the description via an all-purpose query engine.
+                    QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
+                    return engine.getPlan() ;
+                }
             }
             
             Explain.explain("QUERY", query, context) ;
             
-            QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
+            QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
         
@@ -156,6 +198,96 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
     } ;
+    
+    private static Set<Node> convertToNodes(Collection<String> uris)
+    {
+        Set<Node> nodes = new HashSet<Node>() ;
+        for ( String x : uris )
+            nodes.add(Node.createURI(x)) ;
+        return nodes ;
+    }
+    
+    private static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
+    {
+        Set<NodeId> graphIds = new HashSet<NodeId>() ;
+        NodeTable nt = dataset.getQuadTable().getNodeTupleTable().getNodeTable() ;
+        for ( Node n : nodes )
+            graphIds.add(nt.getNodeIdForNode(n)) ;
+        return graphIds ;
+    }
+ 
+    private static class DatasetFilter extends FilterStack<Tuple<NodeId>>
+    {
+        Set<NodeId> defaultGraphIds ;
+        Set<NodeId> namedGraphIds ;
+        
+        public DatasetFilter(Filter<Tuple<NodeId>> other, Set<NodeId> defaultGraphIds, Set<NodeId> namedGraphIds)
+        {
+            super(other) ;
+            this.defaultGraphIds = defaultGraphIds ;
+            this.namedGraphIds = namedGraphIds ;
+        }
+        
+        @Override
+        public boolean acceptAdditional(Tuple<NodeId> tuple)
+        {
+            if ( tuple.size() == 3 )
+                return true ;
+            // Quads : GSPO
+            NodeId g = tuple.get(0) ;
+            return namedGraphIds.contains(g) || defaultGraphIds.contains(g);
+        }
+    }
+    
+//    private static class DatasetGraphMask extends DatasetGraphTDB
+//    {
+//        private Set<Node> defaultGraph ;
+//        private Set<Node> namedGraphs ;
+//
+//        public DatasetGraphMask(DatasetGraphTDB dsg, Set<Node> defaultGraph, Set<Node> namedGraphs)
+//        {
+//            super(dsg) ;
+//            this.defaultGraph = defaultGraph ;
+//            this.namedGraphs = namedGraphs ;
+//        }
+//
+//        @Override
+//        public boolean containsGraph(Node graphNode)
+//        {
+//            return namedGraphs.contains(graphNode) ;
+//        }
+//
+//        // Need special handling.
+////        @Override
+////        public Graph getDefaultGraph()
+////        {
+////            return super.getDefaultGraph() ;
+////        }
+//
+////        @Override
+////        public Graph getGraph(Node graphNode)
+////        {
+////            if ( containsGraph(graphNode))
+////                return null ;
+////            return super.getGraph(graphNode) ;
+////        }
+//
+////        @Override
+////        public Lock getLock()
+////        { return super.getLock() ; }
+//
+//        @Override
+//        public Iterator<Node> listGraphNodes()
+//        {
+//            return namedGraphs.iterator() ;
+//        }
+//
+//        @Override
+//        public int size()
+//        {
+//            return namedGraphs.size() ;
+//        }
+//    }
 }
 
 /*

@@ -46,12 +46,17 @@ public class DatasetGraphTDB extends DatasetGraphBase
     {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
-        this.transform = transform ;
         this.prefixes = prefixes ;
+        this.transform = transform ;
         this.location = location ;
         this.config = config ;
     }
     
+    protected DatasetGraphTDB(DatasetGraphTDB other)
+    {
+        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.location, other.config) ;
+    }
+
     public DatasetGraphTDB duplicate()
     {
         return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
