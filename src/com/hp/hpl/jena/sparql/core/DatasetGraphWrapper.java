@@ -1,37 +1,56 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core ;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.Lock ;
 
-public interface DatasetGraph extends Closeable
+public class DatasetGraphWrapper implements DatasetGraph
 {
-    /** Get the default graph as a Jena Graph */
-    public Graph getDefaultGraph() ;
+    protected final DatasetGraph dsg ;
 
-    public Graph getGraph(Node graphNode) ;
+    public DatasetGraphWrapper(DatasetGraph dsg)
+    {
+        this.dsg = dsg ;
+    }
 
-    public boolean containsGraph(Node graphNode) ;
+    //@Override
+    public void close() { dsg.close() ; }
 
-    public Iterator<Node> listGraphNodes() ;
+    //@Override
+    public boolean containsGraph(Node graphNode)
+    { return dsg.containsGraph(graphNode) ; }
 
-    public Lock getLock() ;
-    
-    /** Get the size (number of graphs) - may be -1 for unknown */ 
-    public int size() ;
-    
-    public void close() ;
+    //@Override
+    public Graph getDefaultGraph()
+    { return dsg.getDefaultGraph(); }
+
+    //@Override
+    public Graph getGraph(Node graphNode)
+    { return dsg.getGraph(graphNode) ; }
+
+    //@Override
+    public Lock getLock()
+    { return dsg.getLock() ; }
+
+    //@Override
+    public Iterator<Node> listGraphNodes()
+    { return dsg.listGraphNodes() ; }
+
+    //@Override
+    public int size()
+    { return dsg.size() ; }
 }
+
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
