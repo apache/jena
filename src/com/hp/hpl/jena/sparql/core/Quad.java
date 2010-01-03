@@ -58,7 +58,7 @@ public class Quad
         return node.equals(defaultGraphNodeGenerated) ;
     }
     
-    /** Default graph (generated or explicitly named) */
+    /** Default graph (either generated or explicitly named) */
     public static boolean isDefaultGraph(Node node)
     {
         return node.equals(defaultGraphNodeGenerated) || node.equals(defaultGraphIRI) ; 

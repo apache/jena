@@ -20,15 +20,20 @@ public class JoinClassifier
 
     static public boolean isLinear(OpJoin join)
     {
-        Op left = effectiveOp(join.getLeft()) ;
-        Op right = effectiveOp(join.getRight()) ;
+        if (print) System.err.println(join) ;
+        return isLinear(join.getLeft(),join.getRight()) ;
+    }
+
+    static public boolean isLinear(Op left, Op right)
+    {
+         left = effectiveOp(left) ;
+         right = effectiveOp(right) ;
 
         // Subquery with modifier. Substitution does not apply.
         // With SELECT *, it's as if the subquery were just the pattern.
 
         if (right instanceof OpModifier) return false ;
 
-        if (print) System.err.println(join) ;
         // Assume something will not commute these later on.
         return check(left, right) ;
     }

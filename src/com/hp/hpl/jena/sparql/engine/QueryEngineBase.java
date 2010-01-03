@@ -42,6 +42,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         this.context.put(ARQConstants.sysCurrentQuery, query) ;
         // Build the Op.
         query.setResultVars() ;
+        // Unoptimized.
         setOp(createOp(query)) ;
     }
     
@@ -88,6 +89,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     
     protected Plan createPlan()
     {
+        // Decide the algebra to actually execute.
         Op op = modifyOp(queryOp) ;
 
         QueryIterator queryIterator = null ;
@@ -130,7 +132,10 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     abstract protected
     QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
 
+    /** Algebra expression (including any optimization) */
     public Op getOp() { return queryOp ; }
+    
+    protected Binding getStartBinding() { return startBinding ; }
     
     public void close()
     { }

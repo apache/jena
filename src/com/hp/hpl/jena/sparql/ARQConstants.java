@@ -176,7 +176,7 @@ public class ARQConstants
      */
     public static final Symbol sysCurrentDataset  = Symbol.create(systemVarNS+"dataset") ;
 
-    /** Context key for the algebra expression of the query execution */
+    /** Context key for the algebra expression of the query execution after optimization */
     public static final Symbol sysCurrentAlgebra  = Symbol.create(systemVarNS+"algebra") ;
 
 //    /** Context key for the algebra execution engine of the query execution */

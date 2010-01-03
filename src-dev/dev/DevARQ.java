@@ -36,6 +36,8 @@ public class DevARQ
     //   Remote queries made
     // ----
     
+    // OpJoin optimization: If one side is a table, then sequence that first.
+    
     // Improve PathLib.ungroundedPath
     // e.g. if first step is a URI, use this to seed the process
     

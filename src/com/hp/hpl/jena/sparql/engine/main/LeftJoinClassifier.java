@@ -33,8 +33,12 @@ public class LeftJoinClassifier
 
     static public boolean isLinear(OpLeftJoin op)
     {
-        Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
-        Op right = JoinClassifier.effectiveOp(op.getRight()) ;
+        return isLinear(op.getLeft(), op.getRight()) ;
+    }
+    static public boolean isLinear(Op left, Op right)
+    {
+        left = JoinClassifier.effectiveOp(left) ;
+        right = JoinClassifier.effectiveOp(right) ;
         
         // Subquery with modifier.  Substitution does not apply.
         // With SELECT *, it's as if the subquery were just the pattern.
