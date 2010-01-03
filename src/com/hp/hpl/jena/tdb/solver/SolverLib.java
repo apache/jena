@@ -8,8 +8,11 @@ package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 
+import java.util.Collection ;
+import java.util.HashSet ;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set ;
 
 import atlas.iterator.Filter ;
 import atlas.iterator.Iter;
@@ -204,6 +207,24 @@ public class SolverLib
         String x = Iter.asString(triples, "\n  ") ;
         return printAbbrev(x) ; 
     }
+
+    public static Set<Node> convertToNodes(Collection<String> uris)
+    {
+        Set<Node> nodes = new HashSet<Node>() ;
+        for ( String x : uris )
+            nodes.add(Node.createURI(x)) ;
+        return nodes ;
+    }
+    
+    public static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
+    {
+        Set<NodeId> graphIds = new HashSet<NodeId>() ;
+        NodeTable nt = dataset.getQuadTable().getNodeTupleTable().getNodeTable() ;
+        for ( Node n : nodes )
+            graphIds.add(nt.getNodeIdForNode(n)) ;
+        return graphIds ;
+    }
+    
 
 }
 

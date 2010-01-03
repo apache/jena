@@ -95,7 +95,12 @@ public class SystemTDB
     /** Experimental : triple and quad filtering at scan level */
     public static final Symbol symTupleFilter       = allocSymbol("tupleFilter") ;
 
+    /** Experimental : graphs forming the default graph  */
+    public static final Symbol symDatasetDefaultGraphs     = allocSymbol("datasetDefaultGraphs") ;
     
+    /** Experimental : graphs forming the named graphs  */
+    public static final Symbol symDatasetNamedGraphs       = allocSymbol("datasetNamedGraphs") ;
+
     private static final String propertyFileKey1    = tdbPropertyRoot+".settings" ;
     private static final String propertyFileKey2    = tdbSymbolPrefix+":settings" ;
 

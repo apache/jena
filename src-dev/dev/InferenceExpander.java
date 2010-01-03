@@ -26,9 +26,26 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.StrUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-final class InferenceExpander implements Sink<Triple>
+
+/** Apply a fixed set of inference rules to a stream of triples.
+ *  This is inference on the A-Box (the data) with respect to a fixed T-Box
+ *  (the vocabulary, ontology).
+ *  <ul>
+ *  <li>rdfs:subClassOf (transitive)</li>
+ *  <li>rdfs:subPropertyOf (transitive)</li>
+ *  <li>rdfs:domain</li>
+ *  <li>rdfs:range</li>
+ *  </ul>  
+ */
+public class InferenceExpander implements Sink<Triple>
 {
-    // Assumes rdf:type is not a superproperty. 
+    // Calculates hierarchies (subclass, subproperty) from a model.
+    // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).
+    
+    // Todo:
+    //   rdfs:member
+    //   list:member ???
+    
     
     // Expanded hierarchy:
     // If C < C1 < C2 then C2 is in the list for C 
@@ -42,11 +59,11 @@ final class InferenceExpander implements Sink<Triple>
     
     public InferenceExpander(Sink<Triple> output, Model vocab)
     {
-        this.output = output ;
-        transClasses = new HashMap<Node, List<Node>>() ;
+        this.output     = output ;
+        transClasses    = new HashMap<Node, List<Node>>() ;
         transProperties = new HashMap<Node, List<Node>>() ;
-        domainList = new HashMap<Node, List<Node>>() ;
-        rangeList = new HashMap<Node, List<Node>>() ;
+        domainList      = new HashMap<Node, List<Node>>() ;
+        rangeList       = new HashMap<Node, List<Node>>() ;
         
         // Find classes - uses property paths
         exec("SELECT ?x ?y { ?x rdfs:subClassOf+ ?y }", vocab, transClasses) ;

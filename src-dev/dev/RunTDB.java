@@ -26,6 +26,7 @@ import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
@@ -39,9 +40,13 @@ import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
@@ -66,31 +71,67 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
-        // And if ?g is used inside?  assign first
-        String qs = "SELECT * { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://foo> { ?s ?p ?o } } }" ;
+        String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
+        
+        //String qs = "SELECT * "+desc+" { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://example/g1> { ?s ?p ?o } } }" ;
+        String qs = "SELECT * "+desc+" { ?s ?p ?g }" ;
+        //qs = "SELECT * "+desc+" { GRAPH ?g {} }" ;
+
         Query query = QueryFactory.create(qs) ;
-        Op op = Algebra.compile(query) ;
+
+        if ( false )
+        {
+            Dataset ds = TDBFactory.createDataset() ;
+            Context context =  ARQ.getContext().copy() ;
+            Plan plan = QueryEngineTDB.getFactory().create(query, ds.asDatasetGraph(), BindingRoot.create(), context) ;
+            Op op = plan.getOp() ;
+            System.out.print(op) ;
+            System.exit(0) ;
+        }
         divider() ;
+        
+        Op op = Algebra.compile(query) ;
         System.out.print(op) ;
 
         Set<Node> defaultGraph = new HashSet<Node>() ;
         Set<Node> namedGraphs = new HashSet<Node>() ;
         namedGraphs.add(Node.createURI("http://example/g1")) ;
         namedGraphs.add(Node.createURI("http://example/g2")) ;
+        
+        defaultGraph.add(Node.createURI("http://example/dft1")) ;
+        defaultGraph.add(Node.createURI("http://example/dft2")) ;
 
         if ( false )
         {
             divider() ;
-            Op opTriples = Algebra.toQuadForm(op) ;
-            opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), opTriples) ;
+            System.out.println("-- Triple forms") ;
+            System.out.println() ;
+            Op opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), op) ;
             System.out.print(opTriples) ;
+            divider() ;
+            System.out.println("-- Triples: optimized") ;
+            System.out.println() ;         
+            opTriples = Algebra.optimize(opTriples) ;
+            System.out.print(opTriples) ;
+            
+            Op op2 = Algebra.optimize(opTriples) ;
+            op2 = Algebra.toQuadForm(op2) ;
+            divider() ;
+            System.out.println("-- Triples -> Quad") ;
+            System.out.print(op2) ;
         }
         
         if ( true )
         {
             divider() ;
+            System.out.println("-- Quad forms") ;
+            System.out.println() ;
             Op opQuad = Algebra.toQuadForm(op) ;
+            System.out.print(opQuad) ;
             opQuad = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), opQuad) ;
+            divider() ;
+            System.out.println("-- Transformed") ;
+            System.out.println() ;
             System.out.print(opQuad) ;
         }
 

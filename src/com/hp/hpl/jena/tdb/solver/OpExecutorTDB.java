@@ -17,8 +17,10 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -70,6 +72,23 @@ public class OpExecutorTDB extends OpExecutor
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
+    // Retrieving nodes isn't so bad because they will be needed anyway.
+    // And if their duplicates, likely to be cached.
+    // Need to work with SolverLib which wraps the NodeId bindgins with a converter. 
+    
+    @Override
+    protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input)
+    {
+        return super.execute(opDistinct, input) ;
+    }
+    
+    @Override
+    protected QueryIterator execute(OpReduced opReduced, QueryIterator input)
+    {
+        return super.execute(opReduced, input) ;
+    }
+
+    
     @Override
     protected QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {

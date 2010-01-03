@@ -9,79 +9,75 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
+import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.table.Table1 ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+
+/**
+ * Transform to restrict a query to subset of the named graphs in a daatsets,
+ * both in the named graphs visible, and the default graph as a composition of
+ * graphs in the datasets.
+ */
 
 public class TransformDynamicDataset extends TransformCopy
 {
-    private Set<Node> defaultGraph ;
+    private Set<Node> defaultGraphs ;
     private Set<Node> namedGraphs ;
 
-    public TransformDynamicDataset(Set<Node> defaultGraph, Set<Node> namedGraphs)
+    public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs)
     {
-        this.defaultGraph = defaultGraph ;
+        this.defaultGraphs = defaultGraphs ;
         this.namedGraphs = namedGraphs ;
     }
     
     @Override
-    public Op transform(OpGraph opGraph, Op x)
-    { 
-        Node gn = opGraph.getNode() ;
-        if ( namedGraphs.size() == 0 )
-            return OpNull.create() ;
-        
-        if ( gn.isVariable() )
-        {
-            // AND REWRITE ?g everywhere.
-            
-            Var v = Var.alloc(gn) ; 
-            // Assume few named graphs over a large collection.
-            // rewrite as union of
-            Op union = null ;
-            for ( Node n : namedGraphs )
-            {
-                Op op = OpAssign.assign(x, v, NodeValue.makeNode(n)) ;
-                union = OpUnion.create(union, op) ;
-            }
-            return union ;
-        }
-
-        // Not a variable.
-        if ( ! namedGraphs.contains(gn) )
-            // No match. 
-            return OpNull.create() ;
-        // Nothing to do.
-        return super.transform(opGraph, x) ;
+    public Op transform(OpBGP op)
+    {
+        // Bad - assume we work on the quad form.
+        // Other wise need to know the active graph at this point =>
+        throw new ARQException("Unexpected use of BGP in for a dynamic dataset") ;
+        //return super.transform(op) ;
     }
-
+    
+//    @Override
+//    public Op transform(OpTriple opTriple)
+//    {
+//        return super.transform(opTriple) ;
+//    }
+    
     @Override
     public Op transform(OpQuadPattern opQuadPattern)
     {
         Node gn = opQuadPattern.getGraphNode() ;
+
+        if ( Quad.isDefaultGraph(gn) )  
+            // Quad pattern directed at the default graph. 
+            return patternOver(defaultGraphs, opQuadPattern.getBasicPattern()) ;
+
+        if ( Quad.isQuadUnionGraph(gn) )  
+            // Quad pattern directed at the union of (visible) named graphs 
+            return patternOver(namedGraphs, opQuadPattern.getBasicPattern()) ;
+
         if ( gn.isVariable() )
         {
-            // AND REWRITE ?g everywhere.
-
-            Var v = Var.alloc(gn) ; 
-            
-            // Assume few named graphs over a large collection.
-            // rewrite as union of
+            Var v = Var.alloc(gn) ;
             Op union = null ;
-            
-            BasicPattern bgp = opQuadPattern.getBasicPattern() ;
-            
             for ( Node n : namedGraphs )
             {
-                Op quads2 = new OpQuadPattern(n, bgp) ;
-                Op op = OpAssign.assign(quads2, v, NodeValue.makeNode(n)) ;
+                Binding b = new Binding1(null, v, n) ;
+                Op x2 = QC.substitute(opQuadPattern, b) ;
+                Op op = OpAssign.assign(x2, v, NodeValue.makeNode(n)) ;
                 union = OpUnion.create(union, op) ;
             }
             return union ;
@@ -94,6 +90,98 @@ public class TransformDynamicDataset extends TransformCopy
         // Nothing to do.
         return super.transform(opQuadPattern) ;
     }
+
+    // Generate quad algebra that accesses the set of graphs as a single graph (including duplicate surpression). 
+    private Op patternOver(Set<Node> graphs, BasicPattern basicPattern)
+    {
+        if ( graphs.size() == 0 )
+        {
+            // No graphs => no results.
+            return OpNull.create() ;
+        }
+        
+        Op union = null ;
+        
+        for ( Node n : graphs )
+        {
+            Op pattern = new OpQuadPattern(n, basicPattern) ;
+            union = OpUnion.create(union, pattern) ;
+        }
+        
+        if ( graphs.size() == 1 )
+            return union ;
+        
+        // More than one graph - make distinct
+        return new OpDistinct(union) ;
+    }
+
+    @Override
+    public Op transform(OpDatasetNames opDatasetNames)
+    {
+        Node gn = opDatasetNames.getGraphNode() ;
+        if ( gn.isVariable() )
+        {
+            // Answer is a table.
+            Table t = TableFactory.create() ;
+            Var v = Var.alloc(gn) ;
+            for ( Node n : namedGraphs )
+            {
+                Binding b = new Binding1(null, v, n) ;
+                t.addBinding(b) ;
+            }
+            return OpTable.create(t) ; 
+        }
+        // Not a variable.
+        if ( ! namedGraphs.contains(gn) )
+            // No match. 
+            return OpNull.create() ;
+        // Nothing to do.
+        return super.transform(opDatasetNames) ;
+    }
+
+    @Override
+    public Op transform(OpGraph opGraph, Op x)
+    {
+        // We work on quad forms so this does not occur.  
+        // But do it anyway, for completeness and for any later chnages.
+        
+        // What we need to do is a sequence whereby we loop over the namedGraphs
+        // and try each possibility.
+        
+        Node gn = opGraph.getNode() ;
+        if ( namedGraphs.size() == 0 )
+            return OpNull.create() ;
+        
+        if ( gn.isVariable() )
+        {
+            Op union = null ;
+            Var v = Var.alloc(gn) ;
+            
+            for ( Node n : namedGraphs )
+            {
+                /* Graph evaluation is defined as:
+                 * foreach IRI i in D
+                 *    R := Union(R, Join( eval(D(D[i]), P) , Ω(?var->i) )
+                 */
+                // Do before join classification and optimization.
+                Op op = OpTable.create(new Table1(v, n)) ;
+                op = OpJoin.create(op, x) ;
+                op = new OpGraph(n, op) ;
+                // Don't need an assign.  The table did that.
+                // op = OpAssign.assign(op, v, NodeValue.makeNode(n)) ;
+                union = OpUnion.create(union, op) ;
+            }
+            return union ;
+        }
+
+        // Not a variable.
+        if ( ! namedGraphs.contains(gn) )
+            // No match. 
+            return OpNull.create() ;
+        // Nothing to do.
+        return super.transform(opGraph, x) ;
+    }
+    
 }
 
 /*

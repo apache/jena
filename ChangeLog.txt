@@ -2,6 +2,15 @@ ChangeLog for TDB
 =================
 
 ==== 0.8.5
+
++ Dynamic datasets : use the dataset description in a query (FROM/FROM NAMED) to 
+  restrict the behaviour of the queyr execution to just those graphs.
+    Default graph can be the set union of several graphs (use multiple FROM)
+    Multiple named graphs (multiple FROM NAMED) restricts visibility of named graphs.
+    
+    This is a change in behvaiour from earlier versions where a dataset 
+    description was ignored or a generalpurpose query executed (graphs pulled 
+    from the web). 
 + Fix XML of the POM file.
 + Add a shutdown hook to sync datasets (don't rely on it!)
 + Adding checking for concurrenct modification situations.
