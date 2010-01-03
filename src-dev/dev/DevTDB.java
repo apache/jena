@@ -6,11 +6,20 @@
 
 package dev;
 
-
 public class DevTDB
 {
     // == 0.8.5
-    // + Dynamic datasets
+    // + Dynamic datasets 
+    //   Tests (no FROM => default dataset!)
+    //   UnionGraph + FROM NAMED.
+    //   Documentation
+    
+    // Change to an explicit op for NodeId to Node
+    // Then can push code through this more easily (e.g. filters, distinct).
+    // QueryIteratorIdToNode or OpNodeIdToNode
+    //   Op version needs deeper OpBGP_NodeId, OpQuad_NodeId
+    //  Currently done with SolverLib.convertToNodes
+    
     // + Dataset management
     
     // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
