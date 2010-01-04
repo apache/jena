@@ -51,7 +51,7 @@ public class PathEval
     
     static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
     {
-        Iterator<Node> iter = evalReverse(model.getGraph(), rdfNode.asNode(), path) ;
+        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
         return convertGraphNodeToRDFNode(model, iter) ;
     }
     
@@ -68,7 +68,7 @@ public class PathEval
     }
     
     /** Evaluate a path starting at the end of the path */ 
-    static public Iterator<Node> evalReverse(Graph g, Node node, Path path) 
+    static public Iterator<Node> evalInverse(Graph g, Node node, Path path) 
     { return eval(g, node, path, false) ; }
 
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)
@@ -126,12 +126,12 @@ public class PathEval
         }
         
         //@Override
-        public void visit(P_Reverse reversePath)
+        public void visit(P_Inverse inversePath)
         {
             //boolean b = forwardMode ;
             // Flip direction and evaluate
             forwardMode = ! forwardMode ;
-            reversePath.getSubPath().visit(this) ;
+            inversePath.getSubPath().visit(this) ;
             forwardMode = ! forwardMode ;
         }
 

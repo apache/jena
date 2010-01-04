@@ -127,7 +127,7 @@ public class PathLib
         if ( Var.isVar(s) )
         {
             // Var subject, concreate object - do backwards.
-            iter = PathEval.evalReverse(graph, o, path) ;
+            iter = PathEval.evalInverse(graph, o, path) ;
             endNode = s ;
         } 
         else

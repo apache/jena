@@ -930,16 +930,16 @@ Path PathAlternative() : { Path p1 , p2 ; }
 
 Path PathSequence() : { Path p1 , p2 ; }
 {
-    p1 = PathEltOrReverse()
-    ( <SLASH> p2 = PathEltOrReverse()
+    p1 = PathEltOrInverse()
+    ( <SLASH> p2 = PathEltOrInverse()
       { p1 = new P_Seq(p1, p2) ; }
     | <CARROT> p2 = PathElt()
-      { p1 = new P_Seq(p1, new P_Reverse(p2)) ; }
+      { p1 = new P_Seq(p1, new P_Inverse(p2)) ; }
     )*
    { return p1; }
 }
 
-// Path unit element, no reverse
+// Path unit element, no inverse
 Path PathElt() : { String str ; Node n ; Path p ; }
 { 
    p = PathPrimary() 
@@ -947,13 +947,13 @@ Path PathElt() : { String str ; Node n ; Path p ; }
    { return p ; }
 }
 
-// Path unit element, include reverse.
-Path PathEltOrReverse() : { String str ; Node n ; Path p ; }
+// Path unit element, including inverse.
+Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
 { 
    ( p = PathElt() 
    | <CARROT>
      p = PathElt()
-     { p = new P_Reverse(p) ; }
+     { p = new P_Inverse(p) ; }
    )
    { return p ; }
 }

@@ -134,10 +134,10 @@ public class PathWriter
         }
 
         // Need to consider binary ^
-        public void visit(P_Reverse reversePath)
+        public void visit(P_Inverse inversePath)
         {
             out.print("^") ;
-            Path p = reversePath.getSubPath() ;
+            Path p = inversePath.getSubPath() ;
             boolean parens = true ; 
             if ( p instanceof P_Link )
                 parens = false ;

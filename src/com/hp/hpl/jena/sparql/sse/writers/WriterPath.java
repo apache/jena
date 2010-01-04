@@ -171,7 +171,7 @@ public class WriterPath
             return Long.toString(value) ;
         }
 
-        public void visit(P_Reverse reversePath)
+        public void visit(P_Inverse reversePath)
         {
             out.print("(") ;
             out.print(Tags.tagPathReverse) ;

@@ -12,7 +12,7 @@ public interface PathVisitor
     public void visit(P_Alt pathAlt) ;
     public void visit(P_Seq pathSeq) ;
     public void visit(P_Mod pathMod) ;
-    public void visit(P_Reverse reversePath) ;
+    public void visit(P_Inverse inversePath) ;
 }
 
 /*

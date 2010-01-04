@@ -89,9 +89,9 @@ public class PathCompiler
             return ;
         }
 
-        if ( path instanceof P_Reverse )
+        if ( path instanceof P_Inverse )
         {
-            reduce(x, varAlloc, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
+            reduce(x, varAlloc, endNode, ((P_Inverse)path).getSubPath(), startNode) ;
             return ;
         }
 

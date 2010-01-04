@@ -149,7 +149,7 @@ public class BuilderPath
         {
             BuilderLib.checkLength(2, 2, list, "path reverse: wanted 1 argument") ;
             Path path = build(list, 1) ;
-            return new P_Reverse(path) ;
+            return new P_Inverse(path) ;
         }
     };
 

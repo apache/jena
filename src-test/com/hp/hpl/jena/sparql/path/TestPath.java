@@ -189,7 +189,7 @@ public class TestPath
     {
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
-            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
+            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalInverse(graph, start, p) ; 
         Set<Node> results = new HashSet<Node>() ;
         for ( ; resultsIter.hasNext() ; )
             results.add( resultsIter.next() ) ;

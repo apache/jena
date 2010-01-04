@@ -2139,7 +2139,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case CARROT:
         jj_consume_token(CARROT);
         p2 = PathElt();
-        p1 = new P_Seq(p1, new P_Reverse(p2)) ;
+        p1 = new P_Seq(p1, new P_Inverse(p2)) ;
         break;
       default:
         jj_la1[86] = jj_gen;
@@ -2184,7 +2184,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case CARROT:
       jj_consume_token(CARROT);
       p = PathElt();
-       p = new P_Reverse(p) ;
+       p = new P_Inverse(p) ;
       break;
     default:
       jj_la1[88] = jj_gen;
