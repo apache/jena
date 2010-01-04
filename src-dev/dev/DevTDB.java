@@ -10,7 +10,7 @@ public class DevTDB
 {
     // == 0.8.5
     // + Dynamic datasets 
-    //   Tests (no FROM => default dataset!)
+    //   Tests (no FROM => default dataset!, not none? or use named default graph.)
     //   UnionGraph + FROM NAMED.
     //   Documentation
     
