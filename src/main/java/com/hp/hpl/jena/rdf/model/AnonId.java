@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+ * $Id: AnonId.java,v 1.2 2010-01-05 22:04:53 der Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:38 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2010-01-05 22:04:53 $
  */
 
 // This version contains experimental modifications by der to 
@@ -74,6 +74,8 @@ public class AnonId extends java.lang.Object {
             synchronized (AnonId.class) {
                 id = "A" + idCount++; // + rand.nextLong();
             }
+        } else if (JenaParameters.enableGAEcompatibility) {
+            id = java.util.UUID.randomUUID().toString(); 
         } else {
             id = (new UID()).toString();
         }
