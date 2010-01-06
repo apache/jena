@@ -2,8 +2,7 @@ Release Notes
 =============
 
 Misc:
-   o Added JenaParameter.enableGAEcompatibility to switch AnonID generation 
-     version compatible with Google App Engine.
+   o Patched AnonId using UID when running in environments like GAE
 
 ==== Jena 2.6.2
 

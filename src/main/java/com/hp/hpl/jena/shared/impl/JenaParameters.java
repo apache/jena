@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.2 2010-01-05 22:04:53 der Exp $
+ * $Id: JenaParameters.java,v 1.3 2010-01-06 11:52:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-01-05 22:04:53 $
+ * @version $Revision: 1.3 $ on $Date: 2010-01-06 11:52:32 $
  */
 public class JenaParameters {
     
@@ -104,13 +104,7 @@ public class JenaParameters {
      * will only be unique for this single JVM run.
      */
     public static boolean disableBNodeUIDGeneration = false;
-    
-    /**
-     * If this flag is true (default is false) then changes are made to 
-     * enable compatibility with Google App Engine. At present the only
-     * effect is to use UUID instead of UID for AnonID generation.
-     */
-    public static boolean enableGAEcompatibility = false;
+
 }
 
 

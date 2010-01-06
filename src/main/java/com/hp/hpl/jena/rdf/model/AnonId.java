@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.2 2010-01-05 22:04:53 der Exp $
+ * $Id: AnonId.java,v 1.3 2010-01-06 11:52:32 der Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2010-01-05 22:04:53 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2010-01-06 11:52:32 $
  */
 
 // This version contains experimental modifications by der to 
@@ -46,6 +46,15 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
 // down apparent non-deterministic behaviour.
 
 public class AnonId extends java.lang.Object {
+    
+    // Support for running in environments, like Google App Engine, where
+    // java.rmi.server.UID is not available
+    // Will be obsoleted by improved AnonId handling
+    static boolean UIDok = true;
+    static {
+        try { new UID() ; }
+        catch (Throwable ex) { UIDok = false ; }
+    }
     
     protected String id = null;
 
@@ -74,7 +83,7 @@ public class AnonId extends java.lang.Object {
             synchronized (AnonId.class) {
                 id = "A" + idCount++; // + rand.nextLong();
             }
-        } else if (JenaParameters.enableGAEcompatibility) {
+        } else if (!UIDok) {
             id = java.util.UUID.randomUUID().toString(); 
         } else {
             id = (new UID()).toString();
