@@ -55,7 +55,7 @@ public class ARQMgt
             register(NS+".system:type=Context", cxtBean) ;
             register(NS+".system:type=Engine", qeInfo) ;
 
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             ALog.warn(ARQMgt.class, "Failed to initialize JMX", ex) ;
             noJMX = true ;
             mbs = null ;
