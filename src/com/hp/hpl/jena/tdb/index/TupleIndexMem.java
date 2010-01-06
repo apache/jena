@@ -22,17 +22,15 @@ import com.hp.hpl.jena.tdb.index.mem.IterFunc;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** In-mmeory structures and indexing. */
-public class TupleIndexMem implements TupleIndex
+public class TupleIndexMem extends TupleIndexBase
 {
     // Not used.
+    // Simple in-memory structure.
     private Index3<NodeId, NodeId, NodeId, Tuple<NodeId>> index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
-    private ColumnMap colMap ;
-    private int tupleLength ;
     
     public TupleIndexMem(int N, ColumnMap colMapping)
     {
-        this.tupleLength = N ;
-        this.colMap = colMapping ;
+        super(N, colMapping) ;
     }
     
     //@Override
@@ -100,34 +98,6 @@ public class TupleIndexMem implements TupleIndex
         return new SingletonIterator<Tuple<NodeId>>(t) ;
     }
 
-    //@Override
-    public String getLabel()
-    {
-        return colMap.getLabel() ;
-    }
-
-    //@Override
-    public int getTupleLength()
-    {
-        return tupleLength ;
-    }
-
-    //@Override
-    public int weight(Tuple<NodeId> pattern)
-    {
-        for ( int i = 0 ; i < tupleLength ; i++ )
-        {
-            NodeId X = colMap.fetchSlot(i, pattern) ;
-            if ( undef(X) )
-                // End of fixed terms
-                return i ;
-        }
-        return tupleLength ;
-    }
-
-    private boolean undef(NodeId x)
-    { return NodeId.isAny(x) ; }
-    
     //@Override
     public boolean isEmpty()
     {

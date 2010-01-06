@@ -13,9 +13,10 @@ import java.util.List;
 
 
 
-/** General descriptor of a reorderring (mapping) of columns in tuples to columns in indexes, 
+/** General descriptor of a reordering (mapping) of columns in tuples to columns in indexes, 
  * for example, from triples to triple index order. 
- * @author Andy Seaborne
+ *
+ * Naming: map is convert to the reordered form, fetch is get back.
  */
 public class ColumnMap
 {
@@ -213,6 +214,28 @@ public class ColumnMap
         return label ;
     }
     
+    /** Reorder the letters of a string by the same rules as this column map (forward, map direction)*/ 
+    public String mapName(String word)
+    {
+        return mapString(word, insertOrder) ;
+    }
+    
+    /** Reorder the letters of a string by the same rules as this column map (backward, fetch direction) */ 
+    public String fetchName(String word)
+    {
+        return mapString(word, fetchOrder) ;
+    }
+    
+    private String mapString(String src, int[] map)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        for ( int i = 0 ; i < src.length() ; i++ )
+        {
+            int j = map[i] ;
+            sb.append(src.charAt(i)) ;
+        }
+        return sb.toString() ;
+    }
 }
 
 /*

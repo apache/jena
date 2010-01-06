@@ -18,13 +18,10 @@ public class CacheLRU<K,V> implements Cache<K,V>
 {
     // Use an internal class so we don't expose the full LinkedHashMap interface.
     private CacheImpl<K,V> cache ;
-    private Getter<K, V> getter ;
     
-    public CacheLRU(Getter<K,V> getter, float loadFactor, int maxSize)
+    public CacheLRU(float loadFactor, int maxSize)
     {
         this.cache = new CacheImpl<K, V>(loadFactor, maxSize) ;
-        this.getter = getter ;
-        
     }
 
     //@Override
@@ -40,14 +37,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
     //@Override
     public V get(K key)
     {
-        V v = cache.get(key) ;
-        if ( v == null & getter != null )
-        {
-            v = getter.get(key) ;
-            if ( v != null )
-                cache.put(key, v) ;
-        }
-        return v ;
+        return cache.get(key) ;
     }
 
     //@Override

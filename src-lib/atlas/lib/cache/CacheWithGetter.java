@@ -1,56 +1,41 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package atlas.lib.cache;
 
-import java.util.Iterator;
+import atlas.lib.Cache ;
 
-import atlas.lib.Tuple;
+/** Cache that takes a {@link Getter} to automatically fill cache misses. */
 
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
-
-public interface TupleIndex extends Sync, Closeable
+public class CacheWithGetter<K,V> extends CacheWrapper<K, V>
 {
-    /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    public boolean add(Tuple<NodeId> tuple) ;
-
-    /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    public boolean delete(Tuple<NodeId> tuple) ; 
+    Getter<K,V> getter ;
     
-    public String getLabel() ; 
-    //public ColumnMap getColMap() { return colMap ;  }
+    public CacheWithGetter(Cache<K,V> cache, Getter<K,V> getter)
+    {
+        super(cache) ;
+        this.getter = getter ;
+    }
     
-    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
-     *  Input pattern in natural order, not index order.
-     */
-
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) ;
-    
-    /** return an iterator of everything */
-    public Iterator<Tuple<NodeId>> all() ;
-    
-    /** Weight a pattern - specified in normal order (not index order) */
-    public int weight(Tuple<NodeId> pattern) ;
-
-    /** Length of tuple supported */
-    public int getTupleLength() ;
-
-    /** Size of index (number of slots). May be an estimate and not exact. -1 for unknown.  */
-    public long size() ;
-
-    /** Answer whether empty or not */
-    public boolean isEmpty() ;
+    @Override
+    public V get(K key)
+    { 
+        V object = super.get(key) ;
+        if ( object == null && getter != null )
+        {
+            object = getter.get(key) ;
+            if ( object != null )
+                cache.put(key, object) ;
+        }
+        return object ;
+    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,22 +6,17 @@
 
 package atlas.lib;
 
-import atlas.lib.cache.CacheLRU ;
-import atlas.lib.cache.CacheSetLRU;
-import atlas.lib.cache.CacheSetSync;
-import atlas.lib.cache.CacheSimple ;
-import atlas.lib.cache.CacheStatsAtomic ;
-import atlas.lib.cache.CacheSync;
-import atlas.lib.cache.Getter ;
+import atlas.lib.cache.* ;
 
 
 public class CacheFactory
 {
     public static <Key, Value> Cache<Key, Value> createCache(Getter<Key, Value> getter, int maxSize)
     {
-        return createCache(getter, 0.75f, maxSize) ;
+        Cache<Key, Value> cache = createCache(0.75f, maxSize) ;
+        return createCacheWithGetter(cache, getter) ;
     }
-    
+
     public static <Key, Value> Cache<Key, Value> createCache(int maxSize)
     {
         return createCache(0.75f, maxSize) ;
@@ -29,14 +24,12 @@ public class CacheFactory
     
     public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        // Getters not rolled out into codebase yet - although it's not
-        // appropriate to handle cache misses with a getter.
-        return createCache(null, 0.75f, maxSize) ;
+        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
     }
     
-    public static <Key, Value> Cache<Key, Value> createCache(Getter<Key, Value> getter, float loadFactor, int maxSize)
+    public static <Key, Value> Cache<Key, Value> createCacheWithGetter(Cache<Key, Value> cache, Getter<Key, Value> getter)
     {
-        return new CacheLRU<Key, Value>(getter, 0.75f, maxSize) ;
+        return new CacheWithGetter<Key, Value>(cache, getter) ;
     }
 
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)

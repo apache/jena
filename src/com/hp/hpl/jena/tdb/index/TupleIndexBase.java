@@ -1,56 +1,64 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.index;
 
-import java.util.Iterator;
+import atlas.lib.ColumnMap ;
+import atlas.lib.Tuple ;
 
-import atlas.lib.Tuple;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
-
-public interface TupleIndex extends Sync, Closeable
+public abstract class TupleIndexBase implements TupleIndex
 {
-    /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    public boolean add(Tuple<NodeId> tuple) ;
-
-    /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    public boolean delete(Tuple<NodeId> tuple) ; 
+    protected final ColumnMap colMap ;
+    protected final int tupleLength ;
     
-    public String getLabel() ; 
-    //public ColumnMap getColMap() { return colMap ;  }
+    protected TupleIndexBase(int N,  ColumnMap colMapping)
+    {
+        this.tupleLength = N ;
+        this.colMap = colMapping ;
+    }
     
-    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
-     *  Input pattern in natural order, not index order.
-     */
+    //@Override
+    public final int weight(Tuple<NodeId> pattern)
+    {
+        for ( int i = 0 ; i < tupleLength ; i++ )
+        {
+            NodeId X = colMap.fetchSlot(i, pattern) ;
+            if ( undef(X) )
+                // End of fixed terms
+                return i ;
+        }
+        return tupleLength ;
+    }
 
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) ;
+
+    //@Override
+    public final String getLabel()
+    {
+        return colMap.getLabel() ;
+    }
+
+    //@Override
+    public final int getTupleLength()
+    {
+        return tupleLength ;
+    }
+
+    public final ColumnMap getColumnMap() { return colMap ;  }
     
-    /** return an iterator of everything */
-    public Iterator<Tuple<NodeId>> all() ;
+    protected final boolean undef(NodeId x)
+    { return NodeId.isAny(x) ; }
     
-    /** Weight a pattern - specified in normal order (not index order) */
-    public int weight(Tuple<NodeId> pattern) ;
-
-    /** Length of tuple supported */
-    public int getTupleLength() ;
-
-    /** Size of index (number of slots). May be an estimate and not exact. -1 for unknown.  */
-    public long size() ;
-
-    /** Answer whether empty or not */
-    public boolean isEmpty() ;
+    @Override
+    public String toString() { return "index:"+getLabel() ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
