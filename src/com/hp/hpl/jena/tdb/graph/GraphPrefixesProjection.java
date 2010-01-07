@@ -78,11 +78,12 @@ public class GraphPrefixesProjection extends PrefixMappingImpl
     protected String get(String prefix)
     {
         String x = super.get(prefix) ;
-        if ( x !=  null )
+        if ( x != null )
             return x ;
         // In case it has been updated.
         x = prefixes.readPrefix(graphName, prefix) ;
-        super.set(prefix, x) ;
+        if ( x != null )
+            super.set(prefix, x) ;
         return x ;
     }
 

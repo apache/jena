@@ -499,25 +499,36 @@ deploy
   <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
+  <!-- IVY operations directly -->
+
   <target name="ivy-init" depends="publish-check">
     <ivy:settings />
   </target>
+
+  <target name="ivy-resolve" depends="ivy-init" description="Resolve dependences">
+    <ivy:resolve conf="main"
+                 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+    <ivy:report todir="${reports.dir}"/>
+    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
+  </target>
+
+  <target name="ivy-retrieve" depends="ivy-init" description="Retrieve dependences">
+    <ivy:retrieve conf="main" 
+		  pattern="${ivy.fetch.dir}/[artifact]-[revision](-[classifier]).[ext]" 
+		  sync="true"/>
+  </target>
+
+  <!-- End ivy direct operations -->
 
   <!-- Convenience target -->
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
   </target>
 
-  <target name="ivy-fetch" depends="ivy-init" 
+  <target name="ivy-fetch" depends="ivy-init,ivy-resolve,ivy-retrieve" 
           description="Resolve and fetch dependences with Ivy">
-    <ivy:resolve conf="main"/>
-    <!-- sync causes artifacts and versions no longer need to be deleted -->
-    <ivy:retrieve conf="main" pattern="${ivy.fetch.dir}/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
-    <!-- packaging also excludes sources and javadocs -->
-
     <path id="dependences.classpath">
       <fileset dir="${ivy.fetch.dir}" excludes="*sources.jar,*javadoc.jar"/>
     </path>
-
   </target>
 
   <!-- DEVELOPMENT : lib2/ -->
@@ -528,19 +539,14 @@ deploy
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
   </target>
 
-  <target name="ivy-resolve" depends="ivy-init" description="Resolve dependences">
-    <ivy:resolve conf="main"
-                 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
-    <ivy:report todir="${reports.dir}"/>
-    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
-
+  <!-- Resolve and set path -->
+  <target name="ivy-resolve-path" depends="ivy-resolve" description="Resolve dependences and set the classpath">
     <ivy:cachepath pathid="dependences.classpath" conf="main" />
     <!--
     <pathconvert refid="dependences.classpath" property="tmp" />
     <echo message="Path: ${tmp}"/>
     -->
   </target>
-
   
   <import file="build-macros.xml"/>
   

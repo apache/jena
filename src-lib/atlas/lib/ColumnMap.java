@@ -221,20 +221,21 @@ public class ColumnMap
     }
     
     /** Reorder the letters of a string by the same rules as this column map (backward, fetch direction) */ 
-    public String fetchName(String word)
+    public String unmapName(String word)
     {
         return mapString(word, fetchOrder) ;
     }
     
+    // Map is get from i and put to j
     private String mapString(String src, int[] map)
     {
-        StringBuilder sb = new StringBuilder() ;
+        char[] chars = new char[src.length()] ;
         for ( int i = 0 ; i < src.length() ; i++ )
         {
             int j = map[i] ;
-            sb.append(src.charAt(i)) ;
+            chars[j] = src.charAt(i) ;
         }
-        return sb.toString() ;
+        return new String(chars) ;
     }
 }
 

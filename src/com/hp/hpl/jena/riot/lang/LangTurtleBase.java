@@ -93,9 +93,9 @@ public abstract class LangTurtleBase extends LangBase
     protected final static String KW_TRUE           = "true" ;
     protected final static String KW_FALSE          = "false" ;
     
-    protected final static  boolean VERBOSE    = false ;
-    protected static final boolean CHECKING   = true ;
-    protected final boolean strict            = false ;
+    protected final static  boolean VERBOSE         = false ;
+    protected static final boolean CHECKING         = true ;
+    protected final boolean strict                  = false ;
     
     protected final Prologue prologue ;
     
