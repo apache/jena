@@ -23,12 +23,19 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestPrefixMappingTDB extends TestPrefixMapping2
 {
-    static DatasetPrefixesTDB datasetPrefixes = DatasetPrefixesTDB.testing() ; 
+    static DatasetPrefixesTDB last = null ;
     
     @Override
     protected PrefixMapping create()
     {
-        return datasetPrefixes.getPrefixMapping() ;
+        last = DatasetPrefixesTDB.testing() ;
+        return view() ;
+    }
+
+    @Override
+    protected PrefixMapping view()
+    {
+        return last.getPrefixMapping() ; 
     }
 
     @Test public void multiple1()

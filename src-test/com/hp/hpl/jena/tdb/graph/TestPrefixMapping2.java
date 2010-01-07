@@ -6,17 +6,19 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import atlas.test.BaseTest;
-import org.junit.Test;
+import org.junit.Test ;
+import atlas.test.BaseTest ;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 public abstract class TestPrefixMapping2 extends BaseTest
 {
     static final String defaultPrefixURI  = "" ;
 
-    protected abstract PrefixMapping create() ; 
-    
+    /** Create a fresh PrefixMapping */
+    protected abstract PrefixMapping create() ;
+    /** Create a fresh view over the same storage as last create() */
+    protected abstract PrefixMapping view() ; 
     
     @Test public void prefix1()
     {
@@ -36,7 +38,9 @@ public abstract class TestPrefixMapping2 extends BaseTest
         PrefixMapping pmap = create() ;
         pmap.setNsPrefix("ex", uri) ;
         
-        PrefixMapping pmap2 = create() ;
+        // Create a second view onto the same storage.
+        
+        PrefixMapping pmap2 = view() ;
         String x = pmap2.getNsPrefixURI("ex") ;
         
         assertNotNull(x) ;
@@ -81,6 +85,15 @@ public abstract class TestPrefixMapping2 extends BaseTest
         assertEquals("ex2:foo", pmap.qnameFor("http://example/ns#foo")) ;
     }
     
+    @Test public void prefix8()
+    {
+        PrefixMapping pmap = create() ;
+        String x = "scheme:i_do_not_exist" ;
+        
+        assertEquals(x, pmap.expandPrefix(x)) ;
+        // Call again - used to cause problems. 
+        assertEquals(x, pmap.expandPrefix(x)) ;
+    }
     
 }
 
