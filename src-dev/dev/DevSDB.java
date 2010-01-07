@@ -10,6 +10,7 @@ public class DevSDB
 {
     // Scope and Join bug.
     // Need to clear constant calculation across left and right in a join.
+    // Temporary fix applied (TransformSDB.transform(OpJoin) does not combine SQL)
     
     // ListSubjects etc - QueryHandlerSDB
     

@@ -67,12 +67,20 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
+        // TEMPORARY FIX
         // Scoping problems.
-        if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
+        if ( true )
             return super.transform(opJoin, left, right) ;
         
+        if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
+            return super.transform(opJoin, left, right) ;
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
+        
+        // This is wrong.  If right is more than single triple pattern,
+        // the generated SQL wil attemp to use NodeTable lookups from the
+        // LHS but they are out of scope.
+        
         return new OpSQL(SqlBuilder.innerJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
 

@@ -62,7 +62,6 @@ public class SqlBuilder
         if ( left == null )
             return right ; 
         
-        // Try to make things a left tree (join(join(table, table), table)
         return join(request, INNER, left, right, null) ; 
     }
 
