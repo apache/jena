@@ -244,7 +244,7 @@ public class BuilderOp
                     if ( ! g.equals(q.getGraph()) )
                         BuilderLib.broken(item, "Quad has different graph node in quadapttern: "+q) ;
                 }
-                bp.add(q.getTriple()) ;
+                bp.add(q.asTriple()) ;
                 
             }
             

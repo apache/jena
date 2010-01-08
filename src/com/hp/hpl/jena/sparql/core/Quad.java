@@ -11,6 +11,8 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
+    // Create QuadNames? GraphNames?
+    
     /** Name of the default graph as used in quad form of algebra 
      * (not for access the default graph by name - use Quad.defaultGraphIRI)
      */ 
@@ -48,7 +50,8 @@ public class Quad
     public Node getSubject()    { return subject ; }
     public Node getPredicate()  { return predicate ; }
     public Node getObject()     { return object ; }
-    public Triple getTriple()   { return new Triple(subject, predicate, object) ; }
+    /** Get as a triple - useful because quads often come in blocks for the same graph */  
+    public Triple asTriple()   { return new Triple(subject, predicate, object) ; }
     
     /** node used by the quad generator for the default graph */
     public static boolean isQuadDefaultGraphNode(Node node)
@@ -69,7 +72,6 @@ public class Quad
     {
         return node.equals(unionGraph) ;
     }
-
     
     public boolean isDefaultGraph()         { return isQuadDefaultGraphNode(graph) ; }
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
