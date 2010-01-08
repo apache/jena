@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
+ * Last modified on   $Date: 2010-01-08 12:57:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
@@ -28,8 +28,10 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.Polyadic;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.InfGraph;
 
 import java.util.*;
 
@@ -42,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.3 2009-10-06 13:04:42 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.4 2010-01-08 12:57:58 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -234,9 +236,9 @@ public class OWLProfile
          * @param g A graph
          * @return All <code>rdf:type</code> nodes for <code>n</code> in <code>g</code>
          */
-        public Set<Node> allTypes( Node n, EnhGraph g) {
+        public Set<Node> allTypes( Node n, Graph g) {
             Set<Node> types = new HashSet<Node>();
-            for (ExtendedIterator<Triple> i = g.asGraph().find( n, RDF.type.asNode(), Node.ANY ); i.hasNext(); ) {
+            for (ExtendedIterator<Triple> i = g.find( n, RDF.type.asNode(), Node.ANY ); i.hasNext(); ) {
                 types.add( i.next().getObject() );
             }
             return types;
@@ -262,8 +264,36 @@ public class OWLProfile
          * Return true if the node <code>n</code> in graph <code>g</code> has one of the
          * types in <code>ref</code>
          */
-        public boolean hasType( Node n, EnhGraph g, Resource[] ref ) {
-            return intersect( allTypes( n, g ), ref );
+        public boolean hasType( Node n, EnhGraph eg, Resource[] ref ) {
+            // depending on the type of the underlying graph, it may or may not be advantageous
+            // to get all types at once, or ask many separate queries. heuristically, we assume
+            // that fine-grain queries to an inference graph is preferable, and all-at-once for
+            // other types, including persistent stores
+
+            Graph g = eg.asGraph();
+
+            if (isInferenceGraph( g )) {
+                for (Resource r: ref) {
+                    if (g.contains( n, RDF.type.asNode(), r.asNode() )) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else {
+                return intersect( allTypes( n, g ), ref );
+            }
+        }
+
+        /**
+         * Return true if a given graph is an inference graph
+         * @param g A graph
+         * @return True if the graph is an inference graph, or is a union with an inference
+         * base graph
+         */
+        public boolean isInferenceGraph( Graph g ) {
+            return (g instanceof InfGraph) ||
+                   (g instanceof Polyadic && ((Polyadic) g).getBaseGraph() instanceof InfGraph);
         }
     }
 
