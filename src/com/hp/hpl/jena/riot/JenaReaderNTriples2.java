@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
+import java.io.IOException ;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -34,6 +35,7 @@ public class JenaReaderNTriples2 extends JenaReaderBase
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangNTriples parser = new LangNTriples(tokenizer, sink) ;
         parser.parse() ;
+        peekReader.close();
     }
     
     /** Parse - but do nothing else */
@@ -46,6 +48,10 @@ public class JenaReaderNTriples2 extends JenaReaderBase
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangNTriples parser = new LangNTriples(tokenizer, sink) ;
         parser.parse() ;
+        try {
+            peekReader.close();
+            reader.close() ;
+        } catch (IOException ex) { ex.printStackTrace(System.err) ; }
     }
 }
 

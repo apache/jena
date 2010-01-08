@@ -6,7 +6,7 @@
 
 package atlas.lib;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.Array ;
 
 /** Collection of array-related operations */
 public class ArrayUtils
@@ -18,22 +18,34 @@ public class ArrayUtils
     public static <T> T[] alloc(Class<T> cls, int n)
     {
         return (T[])Array.newInstance(cls, n) ;
+    }
+    
+ // Compiles but fails at runtime (class cast exception if the reuls is assigned or accessed)
 //        @SuppressWarnings("unchecked")
 //        T[] array = (T[])new Object[n] ;
 // or is T known 
 //        @SuppressWarnings("unchecked")
 //        Set<T> x[] = new Set[length] ;
 //        return array ;
-    }
-    
+        
     /** Allocation space and copy */ 
     public static <T> T[] copy(T[] array)
     {
-        // Java6.
+        // *** Java6.
         //return Arrays.copyOf(array, array.length) ;
+
         // Java5.
+        // Fails for arrays of length 0;
+        if ( array.length == 0 )
+        {
+            throw new IllegalArgumentException("Zerro length array not supported") ;
+//            // Accessing this at runtime causes an error.
+//            @SuppressWarnings("unchecked")
+//            T[] array2 = (T[])new Object[0] ;
+//            return array2 ;
+        }
         @SuppressWarnings("unchecked")
-        T[] array2 = (T[])new Object[array.length] ;
+        T[] array2 = (T[])Array.newInstance(array[0].getClass(), array.length) ;
         System.arraycopy(array, 0, array2, 0, array.length) ;
         return array2 ;
     }

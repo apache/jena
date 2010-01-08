@@ -423,6 +423,15 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter1.append(iter2) ;
     }
 
+    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T>iter2)
+    { 
+        if ( iter1 == null )
+            return iter2 ;
+        if ( iter2 == null )
+            return iter1 ;
+        return Iter.iter(iter1).append(Iter.iter(iter2)) ;
+    }
+
     // ------------------------------------------------------
     // The class.
     

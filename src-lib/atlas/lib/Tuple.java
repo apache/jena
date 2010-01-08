@@ -15,18 +15,23 @@ import java.util.List;
 import atlas.iterator.Iter;
 import atlas.iterator.IteratorArray;
 
+/** Tuple class - tuples are immutable and must be created initialized */
 public final class Tuple<T> implements Iterable<T>
 {
-    public static <X> Tuple<X> blankTuple(int len)
-    {
-        @SuppressWarnings("unchecked")
-        X[] tuple = (X[])new Object[len] ;
-        return Tuple.create(tuple) ;
-    }
+    // Or use an ArrayList<T>
+    
+//    public static <X> Tuple<X> blankTuple(Class<X> clazz, int capacity)
+//    {
+//        @SuppressWarnings("unchecked")
+//        X[] tuple = (X[])Array.newInstance(clazz,capacity);
+//        return Tuple.create(tuple) ;
+//    }
     
     public static <X> Tuple<X> create(X ... elements)
     { return new Tuple<X>(elements) ; }
     
+    // May need to be Object[] (+ cast on access)
+    // to support 
     final T[] tuple ;
     
     private Tuple(T...tuple)
@@ -51,11 +56,7 @@ public final class Tuple<T> implements Iterable<T>
     
     public T[] tupleCopy()
     { 
-        // Arrays.copyOf in Java6
-        @SuppressWarnings("unchecked")
-        T[] tuple2 = (T[])new Object[tuple.length] ;
-        System.arraycopy(tuple, 0, tuple2, 0, tuple.length) ;
-        return tuple2 ;
+        return ArrayUtils.copy(tuple) ;
     }
 
     //@Override

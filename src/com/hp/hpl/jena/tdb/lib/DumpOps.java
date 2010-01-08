@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
+import java.util.Arrays ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
@@ -118,10 +119,10 @@ public class DumpOps
     public static void dumpNodeTupleTable(TupleTable tupleTable)
     {
         int N = tupleTable.getTupleLen() ;
-
-        Tuple<NodeId> t = Tuple.blankTuple(N) ;
-        for ( int i = 0 ; i < N ; i++ )
-            t.tuple()[i] = NodeId.NodeIdAny ;
+        NodeId[] nodeIds = new NodeId[N] ;
+        Arrays.fill(nodeIds, NodeId.NodeIdAny) ;
+        
+        Tuple<NodeId> t = Tuple.create(nodeIds) ;
 
         Iterator<Tuple<NodeId>> iter = tupleTable.find(t) ;
         for ( ; iter.hasNext() ; )

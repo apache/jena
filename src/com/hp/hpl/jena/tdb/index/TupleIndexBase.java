@@ -27,10 +27,13 @@ public abstract class TupleIndexBase implements TupleIndex
         this.colMap = colMapping ;
     }
     
-    
+    /** Add tuple worker: Tuple passed in unmaped (untouched) order */
     protected abstract boolean performAdd(Tuple<NodeId> tuple) ;
+    
+    /** Delete tuple worker: Tuple passed in unmaped (untouched) order */
     protected abstract boolean performDelete(Tuple<NodeId> tuple) ;
     
+    /** Find tuples worker: Tuple passed in unmaped (untouched) order */
     protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple) ;
 
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */

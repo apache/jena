@@ -37,7 +37,6 @@ import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -68,21 +67,14 @@ public class RunTDB
     }
 
     
-    
-    
     public static void main(String[] args) throws IOException
     {
-        Model m2 = TDBFactory.createModel() ;
-        PrefixMapping pm = m2.getGraph().getPrefixMapping() ;
-        pm.expandPrefix("spoo:flan") ;
-        System.out.println(pm) ;
-        pm.expandPrefix("spoo:flan") ;
-        System.out.println(pm) ;
-        System.out.println("Done") ;
-        System.exit(0) ;
-        
-        
-        
+        {
+            Tuple<String> tuple = Tuple.create("X", "Y", "Z") ; 
+            String[] x  = tuple.tupleCopy() ;
+            System.out.println(x) ;
+            System.exit(0) ;
+        }
         
         
         
