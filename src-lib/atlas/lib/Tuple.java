@@ -48,6 +48,15 @@ public final class Tuple<T> implements Iterable<T>
     public List<T> asList() { return Arrays.asList(tuple) ; }
     
     public T[] tuple() { return tuple ; }
+    
+    public T[] tupleCopy()
+    { 
+        // Arrays.copyOf in Java6
+        @SuppressWarnings("unchecked")
+        T[] tuple2 = (T[])new Object[tuple.length] ;
+        System.arraycopy(tuple, 0, tuple2, 0, tuple.length) ;
+        return tuple2 ;
+    }
 
     //@Override
     public Iterator<T> iterator()

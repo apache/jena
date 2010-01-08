@@ -6,13 +6,18 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import java.util.Iterator ;
+
 import atlas.lib.ColumnMap ;
 import atlas.lib.Tuple ;
 
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public abstract class TupleIndexBase implements TupleIndex
 {
+    private static final boolean Check = true ;
+
     protected final ColumnMap colMap ;
     protected final int tupleLength ;
     
@@ -20,6 +25,51 @@ public abstract class TupleIndexBase implements TupleIndex
     {
         this.tupleLength = N ;
         this.colMap = colMapping ;
+    }
+    
+    
+    protected abstract boolean performAdd(Tuple<NodeId> tuple) ;
+    protected abstract boolean performDelete(Tuple<NodeId> tuple) ;
+    
+    protected abstract Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> tuple) ;
+
+    /** Insert a tuple - return true if it was really added, false if it was a duplicate */
+    //@Override
+    public final boolean add(Tuple<NodeId> tuple) 
+    { 
+        if ( Check )
+        {
+            if ( tupleLength != tuple.size() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+        }
+        return performAdd(tuple) ;
+    }
+    /** Delete a tuple - return true if it was deleted, false if it didn't exist */
+    //@Override
+    public final boolean delete(Tuple<NodeId> tuple) 
+    { 
+        if ( Check )
+        {
+            if ( tupleLength != tuple.size() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
+        }
+
+        return performDelete(tuple) ;
+    }
+
+    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
+     *  Input pattern in natural order, not index order.
+     */
+    //@Override
+    public final Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
+    {
+        if ( Check )
+        {
+            if ( tupleLength != pattern.size() )
+            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.size(), tupleLength)) ;
+        } 
+        // null to NodeId.NodIdAny ??
+        return performFind(pattern) ;
     }
     
     //@Override
@@ -34,7 +84,7 @@ public abstract class TupleIndexBase implements TupleIndex
         }
         return tupleLength ;
     }
-
+    
 
     //@Override
     public final String getLabel()

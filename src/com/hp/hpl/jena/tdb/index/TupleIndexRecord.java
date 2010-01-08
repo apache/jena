@@ -40,28 +40,17 @@ public class TupleIndexRecord extends TupleIndexBase
     }
     
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    //@Override
-    public boolean add(Tuple<NodeId> tuple) 
+    @Override
+    protected boolean performAdd(Tuple<NodeId> tuple) 
     { 
-        if ( Check )
-        {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
-        }
-
         Record r = TupleLib.record(factory, tuple, colMap) ;
         return index.add(r) ;
     }
+    
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    //@Override
-    public boolean delete(Tuple<NodeId> tuple) 
+    @Override
+    protected boolean performDelete(Tuple<NodeId> tuple) 
     { 
-        if ( Check )
-        {
-            if ( tupleLength != tuple.size() )
-            throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
-        }
-
         Record r = TupleLib.record(factory, tuple, colMap) ;
         return index.delete(r) ;
     }
@@ -70,8 +59,8 @@ public class TupleIndexRecord extends TupleIndexBase
      *  Input pattern in natural order, not index order.
      */
     
-    //@Override
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
+    @Override
+    protected Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> pattern)
     {
         return findOrScan(pattern) ;
     }

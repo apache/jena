@@ -25,16 +25,19 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 public class TupleIndexMem extends TupleIndexBase
 {
     // Not used.
+    // Converty to TupleIndexBaseFind.
     // Simple in-memory structure.
     private Index3<NodeId, NodeId, NodeId, Tuple<NodeId>> index = new Index3<NodeId, NodeId, NodeId, Tuple<NodeId>>() ;
     
     public TupleIndexMem(int N, ColumnMap colMapping)
     {
         super(N, colMapping) ;
+        if ( N != 3 )
+            throw new UnsupportedOperationException("TupleIndexMem - triples only") ;
     }
     
-    //@Override
-    public boolean add(Tuple<NodeId> tuple)
+    @Override
+    protected boolean performAdd(Tuple<NodeId> tuple)
     {
         NodeId x1 = colMap.mapSlot(0, tuple) ;
         NodeId x2 = colMap.mapSlot(1, tuple) ;
@@ -42,14 +45,8 @@ public class TupleIndexMem extends TupleIndexBase
         return index.put(x1,x2,x3, tuple) ;  
     }
 
-    //@Override
-    public Iterator<Tuple<NodeId>> all()
-    {
-        return index.flatten() ;
-    }
-
-    //@Override
-    public boolean delete(Tuple<NodeId> tuple)
+    @Override
+    protected boolean performDelete(Tuple<NodeId> tuple)
     {
         NodeId x1 = colMap.mapSlot(0, tuple) ;
         NodeId x2 = colMap.mapSlot(1, tuple) ;
@@ -58,7 +55,13 @@ public class TupleIndexMem extends TupleIndexBase
     }
 
     //@Override
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
+    public Iterator<Tuple<NodeId>> all()
+    {
+        return index.flatten() ;
+    }
+
+    @Override
+    protected Iterator<Tuple<NodeId>> performFind(Tuple<NodeId> pattern)
     {
         NodeId x1 = colMap.mapSlot(0, pattern) ;
         if ( NodeId.doesNotExist(x1) )

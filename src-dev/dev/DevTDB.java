@@ -14,6 +14,8 @@ public class DevTDB
     //   UnionGraph + FROM NAMED.
     //   Documentation
     
+    // Java system properties to set TDB properties
+    
     // Add/Factor ivy-resolve/ivy-retrive target sin build-lib to make sure can execute ivy taks with property settings.
     
     // Change to an explicit op for NodeId to Node
