@@ -6,27 +6,30 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.*;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.lib.iterator.Iter;
-import com.hp.hpl.jena.sparql.procedure.ProcEval;
-import com.hp.hpl.jena.sparql.procedure.Procedure;
-
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.iterator.* ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.procedure.ProcEval ;
+import com.hp.hpl.jena.sparql.procedure.Procedure ;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -266,16 +269,16 @@ public class OpExecutor
         return new QueryIterService(input, opService, execCxt) ;
     }
     
+    // Quad form, "GRAPH ?g {}"  Flip back to OpGraph.
+    // Normally quad stores override this.
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
     { 
-        if ( true ) throw new ARQNotImplemented("OpDatasetNames") ;
-        
-        // Augment (join) iterator with a table.
-        Table t = null ;
-        Op left = null ; 
-        Op right = OpTable.create(t) ;
-        Op opJoin = OpJoin.create(left, right) ;
-        return executeOp(opJoin , input) ;    //??
+        if ( false )
+        {
+            OpGraph op = new OpGraph(dsNames.getGraphNode(), new OpBGP()) ;
+            return execute(op, input) ;
+        }
+        throw new ARQNotImplemented("execute/OpDatasetNames") ;
     }
 
     protected QueryIterator execute(OpTable opTable, QueryIterator input)
