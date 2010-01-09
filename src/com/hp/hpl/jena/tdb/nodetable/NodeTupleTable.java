@@ -118,6 +118,8 @@ public class NodeTupleTable implements Sync, Closeable
     {
         if ( node == null || node == Node.ANY )
             return NodeId.NodeIdAny ;
+        if ( node.isVariable() )
+            throw new TDBException("Can't pass variables to NodeTupleTable.find*") ; 
         return nodeTable.getNodeIdForNode(node) ;
     }
     

@@ -173,10 +173,10 @@ public class TestDynamicDataset extends BaseTest
                       "FROM <graph:1>"+
                       "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                       "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",    // Different in each graph
+                      // WHAT DOES THIS MEAN ??????!!!!!!!!!
                       1) ;
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
-    
     
     
     @Test public void dynamic99() {

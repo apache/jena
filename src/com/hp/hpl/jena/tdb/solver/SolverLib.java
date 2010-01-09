@@ -6,36 +6,36 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev ;
 
 import java.util.Collection ;
 import java.util.HashSet ;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 import java.util.Set ;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 import atlas.iterator.Filter ;
-import atlas.iterator.Iter;
-import atlas.iterator.Transform;
-import atlas.lib.Tuple;
+import atlas.iterator.Iter ;
+import atlas.iterator.Transform ;
+import atlas.lib.Tuple ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Utilities used within the TDB BGP solver : local TDB store */
 public class SolverLib
@@ -200,6 +200,50 @@ public class SolverLib
         } ;
     }
 
+    /** Find all the graph names in the quads table. */ 
+    public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode,
+                                           QueryIterator input, Filter<Tuple<NodeId>> filter,
+                                           ExecutionContext execCxt)
+    {
+        Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
+        if ( filter != null )
+            iter1 = Iter.filter(iter1, filter) ;
+        Iterator<NodeId> iter2 = Iter.map(iter1, extractGraphId) ;
+        Iterator<NodeId> iter3 = Iter.distinct(iter2) ;
+        Iterator<Node> iter4 = convertToNodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
+        
+        final Var var = Var.alloc(graphNode) ;
+        Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
+            public Binding convert(Node node)
+            {
+                return new Binding1(null, var, node) ;
+            }
+        } ;
+        
+        Iterator<Binding> iterBinding = Iter.map(iter4, bindGraphName) ;
+        
+        return new QueryIterTDB(iterBinding, input, execCxt) ;
+    }
+    
+    public static Iterator<Node> convertToNodes(final NodeTable nodeTable, Iterator<NodeId> iter)
+    {
+        Transform<NodeId, Node> action =  new Transform<NodeId, Node>(){
+            //@Override
+            public Node convert(NodeId nodeId)
+            {
+                return nodeTable.getNodeForNodeId(nodeId) ;
+            }} ;
+        return Iter.map(iter, action) ;
+    }
+    
+    private static Transform<Tuple<NodeId>, NodeId> extractGraphId = new Transform<Tuple<NodeId>, NodeId>(){
+        //@Override
+        public NodeId convert(Tuple<NodeId> tuple)
+        {
+            return tuple.get(0) ;
+        }
+    } ;
+    
     /** Turn a BasicPattern into an abbreviated string for debugging */  
     public static String strPattern(BasicPattern pattern)
     {

@@ -39,6 +39,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -68,10 +69,12 @@ public class RunTDB
     {
         {
             Dataset dataset = TDBFactory.createDataset() ;
+            dataset.getNamedModel("http;//example/").getGraph().add(SSE.parseTriple("(<x> <p> 123)")) ;
             Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
             QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
             ResultSet rs = qExec.execSelect() ;
             ResultSetFormatter.out(rs) ;
+            System.exit(0) ;
         }
         String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
         

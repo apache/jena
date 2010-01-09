@@ -65,7 +65,7 @@ public class Test_SPARQL_TDB
     
     @Test public void sparql3()
     {
-        // Requeires OpDatasetNames 
+        // Requires OpDatasetNames 
         Dataset dataset = TDBFactory.createDataset() ;
         Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;

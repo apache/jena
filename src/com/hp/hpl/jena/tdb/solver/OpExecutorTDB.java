@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.solver;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import atlas.iterator.Filter ;
-import atlas.lib.NotImplemented ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
@@ -323,7 +322,9 @@ public class OpExecutorTDB extends OpExecutor
     @Override
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
     { 
-        throw new NotImplemented("execute/OpDatasetNames") ;
+        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
+        Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
+        return SolverLib.graphNames(ds, dsNames.getGraphNode(), input, filter, execCxt) ;
     }
     
     // ---- OpExecute factories and plain executor.
