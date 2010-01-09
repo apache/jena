@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
     , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
+    , TestDynamicDataset.class
 } )
 public class TS_Store
 { 

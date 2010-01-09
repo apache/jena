@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * Additions Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -62,7 +63,15 @@ public class Test_SPARQL_TDB
         ResultSetFormatter.consume(rs) ;
     }
     
-
+    @Test public void sparql3()
+    {
+        // Requeires OpDatasetNames 
+        Dataset dataset = TDBFactory.createDataset() ;
+        Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+        ResultSet rs = qExec.execSelect() ;
+        ResultSetFormatter.out(rs) ;
+    }
 }
 
 /*

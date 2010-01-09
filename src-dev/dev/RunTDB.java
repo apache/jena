@@ -26,10 +26,7 @@ import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
@@ -70,15 +67,12 @@ public class RunTDB
     public static void main(String[] args) throws IOException
     {
         {
-            Tuple<String> tuple = Tuple.create("X", "Y", "Z") ; 
-            String[] x  = tuple.tupleCopy() ;
-            System.out.println(x) ;
-            System.exit(0) ;
+            Dataset dataset = TDBFactory.createDataset() ;
+            Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+            ResultSet rs = qExec.execSelect() ;
+            ResultSetFormatter.out(rs) ;
         }
-        
-        
-        
-        
         String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
         
         //String qs = "SELECT * "+desc+" { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://example/g1> { ?s ?p ?o } } }" ;
@@ -114,7 +108,7 @@ public class RunTDB
             divider() ;
             System.out.println("-- Triple forms") ;
             System.out.println() ;
-            Op opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), op) ;
+            Op opTriples = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs, false), op) ;
             System.out.print(opTriples) ;
             divider() ;
             System.out.println("-- Triples: optimized") ;
@@ -136,7 +130,7 @@ public class RunTDB
             System.out.println() ;
             Op opQuad = Algebra.toQuadForm(op) ;
             System.out.print(opQuad) ;
-            opQuad = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs), opQuad) ;
+            opQuad = Transformer.transform(new TransformDynamicDataset(defaultGraph, namedGraphs, false), opQuad) ;
             divider() ;
             System.out.println("-- Transformed") ;
             System.out.println() ;

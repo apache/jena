@@ -6,13 +6,18 @@
 
 package dev;
 
+
 public class DevTDB
 {
+    // BUG: protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
+    
     // == 0.8.5
     // + Dynamic datasets 
-    //   Tests (no FROM => default dataset!, not none? or use named default graph.)
-    //   UnionGraph + FROM NAMED.
-    //   Documentation
+    //   Tests [DONE}
+    //   UnionGraph + FROM NAMED. [DONE]
+    //   But .. just using FROM should not affect the 
+    
+    //   Documentation [DONE} ?Check
     
     // Java system properties to set TDB properties
     

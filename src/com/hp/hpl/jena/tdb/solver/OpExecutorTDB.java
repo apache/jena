@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.solver;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import atlas.iterator.Filter ;
+import atlas.lib.NotImplemented ;
 import atlas.lib.Tuple ;
 import atlas.logging.Log ;
 
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
@@ -316,6 +318,12 @@ public class OpExecutorTDB extends OpExecutor
             return true ;
     
         return false ;
+    }
+    
+    @Override
+    protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
+    { 
+        throw new NotImplemented("execute/OpDatasetNames") ;
     }
     
     // ---- OpExecute factories and plain executor.

@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -15,7 +15,6 @@ import org.junit.runners.Suite;
     , TestPrefixMappingTDB.class
     , TestBulkUpdateTDB.class
     , TestGraphs.class
-
 })
 public class TS_Graph
 {

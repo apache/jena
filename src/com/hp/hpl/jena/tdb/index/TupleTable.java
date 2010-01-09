@@ -8,19 +8,16 @@ package com.hp.hpl.jena.tdb.index;
 
 import static java.lang.String.format ;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import atlas.lib.Tuple;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import atlas.lib.Tuple ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.sparql.core.Closeable ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.lib.Sync ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
 public class TupleTable implements Sync, Closeable
@@ -28,16 +25,12 @@ public class TupleTable implements Sync, Closeable
     private static Logger log = LoggerFactory.getLogger(TupleTable.class) ;
     
     private final TupleIndex[] indexes ;
-    //private final Location location ;
-
-    private int tupleLen ;
-    private RecordFactory factory ;
+    private final int tupleLen ;
     
     public TupleTable(int tupleLen, TupleIndex[] indexes)
     {
         this.tupleLen = tupleLen ;
         this.indexes = indexes ;
-        //this.location = location ;
         if ( indexes[0] == null )
             throw new TDBException("TupleTable: no primary index") ;
         for ( TupleIndex index : indexes )
@@ -70,7 +63,7 @@ public class TupleTable implements Sync, Closeable
         return true ;
     }
 
-    private void duplicate(Tuple<NodeId> t)
+    protected void duplicate(Tuple<NodeId> t)
     { }
 
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */

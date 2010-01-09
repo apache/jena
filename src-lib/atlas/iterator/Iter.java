@@ -272,11 +272,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return Iter.print(System.out, stream) ;
     }
 
-    public static <T> Iterator<T> print(PrintStream out, final Iterator<? extends T> stream)
+    public static <T> Iterator<T> print(final PrintStream out, final Iterator<? extends T> stream)
     {
         Action<T> action = new Action<T>(){
             public void apply(T item)
-            { System.out.println(item) ; }
+            { out.println(item) ; }
         } ;
         return Iter.operate(stream, action) ;
     }

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.util.HashSet ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -35,10 +36,16 @@ public class TransformDynamicDataset extends TransformCopy
     private Set<Node> defaultGraphs ;
     private Set<Node> namedGraphs ;
 
-    public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs)
+    public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs, boolean defaultGraphIncludesNamedGraphUnion)
     {
         this.defaultGraphs = defaultGraphs ;
         this.namedGraphs = namedGraphs ;
+        if ( defaultGraphIncludesNamedGraphUnion )
+        {
+            this.defaultGraphs = new HashSet<Node>() ;
+            this.defaultGraphs.addAll(defaultGraphs) ;
+            this.defaultGraphs.addAll(namedGraphs) ;
+        }
     }
     
     @Override
@@ -71,6 +78,10 @@ public class TransformDynamicDataset extends TransformCopy
 
         if ( gn.isVariable() )
         {
+            // GRAPH ?g but no named graphs.
+            if (namedGraphs.size() == 0 )
+                return OpNull.create() ; 
+            
             Var v = Var.alloc(gn) ;
             Op union = null ;
             for ( Node n : namedGraphs )

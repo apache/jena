@@ -74,7 +74,9 @@ public class QueryEngineTDB extends QueryEngineMain
             Set<Node> defaultGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetDefaultGraphs)) ;
             Set<Node> namedGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetNamedGraphs)) ;
             if ( defaultGraphs != null || namedGraphs != null )
-                transform = new TransformDynamicDataset(defaultGraphs, namedGraphs) ;
+                transform = new TransformDynamicDataset(defaultGraphs, 
+                                                        namedGraphs, 
+                                                        context.isTrue(TDB.symUnionDefaultGraph)) ;
         } catch (ClassCastException ex)
         {
             Log.warn(this, "Bad dynamic dataset description (ClassCastException)", ex) ;
