@@ -5,17 +5,23 @@ ChangeLog for TDB
 
 + Dynamic datasets : use the dataset description in a query (FROM/FROM NAMED) to 
   restrict the behaviour of the query execution to just those graphs.
+  
     Default graph can be the set union of several graphs (use multiple FROM)
     Multiple named graphs (multiple FROM NAMED) restricts visibility of named graphs.
     
     This is a change in behvaiour from earlier versions where a dataset 
     description was ignored or a generalpurpose query executed (graphs pulled 
     from the web). 
+    
+    See wiki for details.
+    http://openjena.org/wiki/TDB/Datasets#Dynamic_Datasets
+    
 + Fix XML of the POM file.
 + Add a shutdown hook to sync datasets (don't rely on it!)
-+ Adding checking for concurrenct modification situations.
++ Adding checking for concurrent modification situations.
   TDB supports multiple readers OR single writer.
-  See also java.util collections.   
+  See also java.util collections.
++ Fix bug in "SELECT * { GRAPH ?g {} }"   
 
 ==== 0.8.4
 

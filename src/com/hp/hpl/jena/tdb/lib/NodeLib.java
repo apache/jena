@@ -155,7 +155,6 @@ public class NodeLib
         return b.toString() ;
     }
     
-    // See also nodeTable.all
     public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
     {
         return Iter.map(iter, new Transform<NodeId, Node>(){

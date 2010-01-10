@@ -7,24 +7,25 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import org.junit.Test;
+import org.junit.Test ;
+import atlas.test.BaseTest ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-public class Test_SPARQL_TDB
+public class Test_SPARQL_TDB extends BaseTest
 {
     
     @Test public void sparql1()
@@ -70,8 +71,28 @@ public class Test_SPARQL_TDB
         Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
         ResultSet rs = qExec.execSelect() ;
-        ResultSetFormatter.out(rs) ;
+        int n = ResultSetFormatter.consume(rs) ;
+        assertEquals(0, n) ;
     }
+    
+    @Test public void sparql4()
+    {
+        // Requires OpDatasetNames 
+        Dataset dataset = TDBFactory.createDataset() ;
+        
+        String graphName = "http://example/" ;
+        Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
+        Graph g2 = dataset.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        // Graphs only exists if they have a triple in them
+        g2.add(triple) ;
+        
+        Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+        ResultSet rs = qExec.execSelect() ;
+        int n = ResultSetFormatter.consume(rs) ;
+        assertEquals(1, n) ;
+    }
+
 }
 
 /*

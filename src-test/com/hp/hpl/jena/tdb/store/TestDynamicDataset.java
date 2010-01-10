@@ -167,18 +167,43 @@ public class TestDynamicDataset extends BaseTest
     }  
 
     @Test public void dynamicAndUnion5() {
+        testCount("SELECT * "+
+                  "FROM <graph:1>"+
+                  "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
+                  "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",    // Different in each graph
+                  1) ;
+    }  
+    
+    @Test public void dynamicAndUnion6() {
         try {
             TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
             testCount("SELECT * "+
                       "FROM <graph:1>"+
                       "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
-                      "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",    // Different in each graph
-                      // WHAT DOES THIS MEAN ??????!!!!!!!!!
+                      "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o } }",
                       1) ;
         } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
     }  
     
+    @Test public void dynamicAndUnion7() {
+        testCount("SELECT * "+
+                  "FROM <graph:1>"+
+                  "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
+                  "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
+                  2) ;
+    }  
     
+    @Test public void dynamicAndUnion8() {
+        try {
+            TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            testCount("SELECT * "+
+                      "FROM <graph:1>"+
+                      "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
+                      "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
+                      2) ;
+        } finally { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; } 
+    }  
+
     @Test public void dynamic99() {
         // Check we did not mess with the global context in getting previous tests to pass.
         testCount("SELECT * FROM NAMED <graph:3> { ?s ?p ?o }", 0) ;

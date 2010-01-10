@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1 ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -150,24 +151,29 @@ public class SolverLib
             //@Override
             public Binding convert(BindingNodeId bindingNodeIds)
             {
-                if ( true )
-                    return new BindingTDB(null, bindingNodeIds, nodeTable) ;
-                else
-                {
-                    // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
-                    Binding b = new BindingMap() ;
-                    for ( Var v : bindingNodeIds )
-                    {
-                        NodeId id = bindingNodeIds.get(v) ;
-                        Node n = nodeTable.getNodeForNodeId(id) ;
-                        b.add(v, n) ;
-                    }
-                    return b ;
-                }
+                return convToBinding(nodeTable, bindingNodeIds) ;
             }
         } ;
     }
 
+    public static Binding convToBinding(NodeTable nodeTable, BindingNodeId bindingNodeIds)
+    {
+        if ( true )
+            return new BindingTDB(null, bindingNodeIds, nodeTable) ;
+        else
+        {
+            // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
+            Binding b = new BindingMap() ;
+            for ( Var v : bindingNodeIds )
+            {
+                NodeId id = bindingNodeIds.get(v) ;
+                Node n = nodeTable.getNodeForNodeId(id) ;
+                b.add(v, n) ;
+            }
+            return b ;
+        }
+    }
+    
     // Transform : Binding ==> BindingNodeId
     private static Transform<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
     {
@@ -208,9 +214,9 @@ public class SolverLib
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter) ;
-        Iterator<NodeId> iter2 = Iter.map(iter1, extractGraphId) ;
+        Iterator<NodeId> iter2 = Tuple.project(0, iter1) ;
         Iterator<NodeId> iter3 = Iter.distinct(iter2) ;
-        Iterator<Node> iter4 = convertToNodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
+        Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
         
         final Var var = Var.alloc(graphNode) ;
         Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
@@ -224,25 +230,6 @@ public class SolverLib
         
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
-    
-    public static Iterator<Node> convertToNodes(final NodeTable nodeTable, Iterator<NodeId> iter)
-    {
-        Transform<NodeId, Node> action =  new Transform<NodeId, Node>(){
-            //@Override
-            public Node convert(NodeId nodeId)
-            {
-                return nodeTable.getNodeForNodeId(nodeId) ;
-            }} ;
-        return Iter.map(iter, action) ;
-    }
-    
-    private static Transform<Tuple<NodeId>, NodeId> extractGraphId = new Transform<Tuple<NodeId>, NodeId>(){
-        //@Override
-        public NodeId convert(Tuple<NodeId> tuple)
-        {
-            return tuple.get(0) ;
-        }
-    } ;
     
     /** Turn a BasicPattern into an abbreviated string for debugging */  
     public static String strPattern(BasicPattern pattern)

@@ -46,6 +46,8 @@ public class QueryIteratorIdToNode extends QueryIter
     {
         return iteratorBinding.next() ;
     }
+    
+    
 }
 
 /*

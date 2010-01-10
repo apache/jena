@@ -13,11 +13,10 @@ public class DevTDB
     
     // == 0.8.5
     // + Dynamic datasets 
-    //   Tests [DONE}
-    //   UnionGraph + FROM NAMED. [DONE]
-    //   But .. just using FROM should not affect the 
-    
     //   Documentation [DONE} ?Check
+    // BindingNodeId detection in input QueryIterators in OpExecutorTDB - avoid Node table access??
+    //    QueryIterTDB produces a stream of BindingTDB (delayed acess NodeId lookup).
+    //    BindingTDB - adds getBindingId and getNodeId
     
     // Java system properties to set TDB properties
     

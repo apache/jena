@@ -33,15 +33,21 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class TransformDynamicDataset extends TransformCopy
 {
+    // The graphs making up the usual default graph of the query.
     private Set<Node> defaultGraphs ;
+    // The graphs making up the default graph seen as <urn:x-arq:DefaultGraph>
+    // Often the same as above; not if union-of-named-graphs visible 
+    private Set<Node> defaultGraphsReal ;
     private Set<Node> namedGraphs ;
 
     public TransformDynamicDataset(Set<Node> defaultGraphs, Set<Node> namedGraphs, boolean defaultGraphIncludesNamedGraphUnion)
     {
         this.defaultGraphs = defaultGraphs ;
+        this.defaultGraphsReal = defaultGraphs ;
         this.namedGraphs = namedGraphs ;
         if ( defaultGraphIncludesNamedGraphUnion )
         {
+            // Named graph union. 
             this.defaultGraphs = new HashSet<Node>() ;
             this.defaultGraphs.addAll(defaultGraphs) ;
             this.defaultGraphs.addAll(namedGraphs) ;
@@ -52,7 +58,8 @@ public class TransformDynamicDataset extends TransformCopy
     public Op transform(OpBGP op)
     {
         // Bad - assume we work on the quad form.
-        // Other wise need to know the active graph at this point =>
+        // Otherwise need to know the active graph at this point
+        // toQuadForm transformation.
         throw new ARQException("Unexpected use of BGP in for a dynamic dataset") ;
         //return super.transform(op) ;
     }
@@ -68,11 +75,16 @@ public class TransformDynamicDataset extends TransformCopy
     {
         Node gn = opQuadPattern.getGraphNode() ;
 
-        if ( Quad.isDefaultGraph(gn) )  
+        if ( Quad.isQuadDefaultGraphNode(gn) )  
             // Quad pattern directed at the default graph. 
             return patternOver(defaultGraphs, opQuadPattern.getBasicPattern()) ;
 
+        if ( gn.equals(Quad.defaultGraphIRI) )
+            // <urn:x-arq:DefaultGraph>
+            return patternOver(defaultGraphsReal, opQuadPattern.getBasicPattern()) ;
+        
         if ( Quad.isQuadUnionGraph(gn) )  
+            // <urn:x-arq:UnionGraph>
             // Quad pattern directed at the union of (visible) named graphs 
             return patternOver(namedGraphs, opQuadPattern.getBasicPattern()) ;
 

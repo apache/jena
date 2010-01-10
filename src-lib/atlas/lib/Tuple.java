@@ -14,6 +14,7 @@ import java.util.List;
 
 import atlas.iterator.Iter;
 import atlas.iterator.IteratorArray;
+import atlas.iterator.Transform ;
 
 /** Tuple class - tuples are immutable and must be created initialized */
 public final class Tuple<T> implements Iterable<T>
@@ -29,6 +30,20 @@ public final class Tuple<T> implements Iterable<T>
     
     public static <X> Tuple<X> create(X ... elements)
     { return new Tuple<X>(elements) ; }
+    
+    
+   //TupleLib??
+    public static <T> Iterator<T> project(final int slot, Iterator<Tuple<T>> iter)
+    {
+        Transform<Tuple<T>, T> projection = new Transform<Tuple<T>, T>(){
+            //@Override
+            public T convert(Tuple<T> tuple)
+            {
+                return tuple.get(slot) ;
+            }
+        } ;
+        return Iter.map(iter, projection) ;
+    }
     
     // May need to be Object[] (+ cast on access)
     // to support 
