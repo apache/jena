@@ -12,6 +12,7 @@
 
   <!-- Version  -->
   <property name="version"              value="0.8.5-SNAPSHOT"/>
+  <property name="javadoc.window.title"   value="${Name}-0.8 Javadoc"/>
 
   <!-- Coordinate with ivysetting.xml -->
   <!-- repo-main, repo-dev, repo-local -->

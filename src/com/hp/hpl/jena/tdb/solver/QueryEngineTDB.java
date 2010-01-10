@@ -64,36 +64,20 @@ public class QueryEngineTDB extends QueryEngineMain
     }
     
     // Choose the algebra-level optimizations to invoke. 
-    @SuppressWarnings("unchecked")
     @Override
     protected Op modifyOp(Op op)
     {
-        Transform transform = null ;
-
-        try {
-            Set<Node> defaultGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetDefaultGraphs)) ;
-            Set<Node> namedGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetNamedGraphs)) ;
-            if ( defaultGraphs != null || namedGraphs != null )
-                transform = new TransformDynamicDataset(defaultGraphs, 
-                                                        namedGraphs, 
-                                                        context.isTrue(TDB.symUnionDefaultGraph)) ;
-        } catch (ClassCastException ex)
-        {
-            Log.warn(this, "Bad dynamic dataset description (ClassCastException)", ex) ;
-            transform = null ;
-        }
-
-        
+ 
         op = Substitute.substitute(op, initialInput) ;
         // Optimize (high-level)
         op = super.modifyOp(op) ;
         // Quadification
         op = Algebra.toQuadForm(op) ;
+
+        // Could apply dynamic dataset transform before everything else
+        // but default merged graphs works on quads. 
+        op = dynamicDatasetOp(op, context) ;
         
-        // Could apply dynamic dataset transform before everything else but default merged graphs works on quads. 
-        // Apply dynamic dataset
-        if ( transform != null )
-            op = Transformer.transform(transform, op) ;
         // Record it.
         setOp(op) ;
         
@@ -168,23 +152,17 @@ public class QueryEngineTDB extends QueryEngineMain
         {
             DatasetGraphTDB dataset = (DatasetGraphTDB)ds ;
             
-            if ( query.hasDatasetDescription() )
+            if ( false )
             {
-                Set<Node> defaultGraphs = SolverLib.convertToNodes(query.getGraphURIs()) ; 
-                Set<Node> namedGraphs = SolverLib.convertToNodes(query.getNamedGraphURIs()) ;
-                
-                context.set(SystemTDB.symDatasetDefaultGraphs, defaultGraphs) ;
-                context.set(SystemTDB.symDatasetNamedGraphs, namedGraphs) ;
-                
-                if ( false )
+                // Old behaviour - use the general purpose query engine.
+                if ( query.hasDatasetDescription() )
                 {
-                    // Ignore - for now!
-                    // Old-ish code.
-                    // Has a description - don't use the dataset, use the description via an all-purpose query engine.
                     QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
                     return engine.getPlan() ;
                 }
             }
+            
+            dynamicDatasetQE(query, context) ;
             
             Explain.explain("QUERY", query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
@@ -201,6 +179,45 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
     } ;
+    
+    private static void dynamicDatasetQE(Query query,  Context context)
+    {
+        if ( query.hasDatasetDescription() )
+        {
+            Set<Node> defaultGraphs = SolverLib.convertToNodes(query.getGraphURIs()) ; 
+            Set<Node> namedGraphs = SolverLib.convertToNodes(query.getNamedGraphURIs()) ;
+            
+            context.set(SystemTDB.symDatasetDefaultGraphs, defaultGraphs) ;
+            context.set(SystemTDB.symDatasetNamedGraphs, namedGraphs) ;
+        }
+    }
+    
+    private static Op dynamicDatasetOp(Op op,  Context context)
+    {
+        Transform transform = null ;
+    
+        try {
+            @SuppressWarnings("unchecked")
+            Set<Node> defaultGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetDefaultGraphs)) ;
+            @SuppressWarnings("unchecked")
+            Set<Node> namedGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetNamedGraphs)) ;
+            if ( defaultGraphs != null || namedGraphs != null )
+                transform = new TransformDynamicDataset(defaultGraphs, 
+                                                        namedGraphs, 
+                                                        context.isTrue(TDB.symUnionDefaultGraph)) ;
+        } catch (ClassCastException ex)
+        {
+            Log.warn(QueryEngineTDB.class, "Bad dynamic dataset description (ClassCastException)", ex) ;
+            transform = null ;
+            return op ;
+        }
+
+        // Apply dynamic dataset modifications.
+        if ( transform != null )
+            op = Transformer.transform(transform, op) ;
+        return op ;
+    }        
+    
 }
 
 /*

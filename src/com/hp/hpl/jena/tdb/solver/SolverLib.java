@@ -93,8 +93,6 @@ public class SolverLib
                                          ExecutionContext execCxt)
     {
         List<Triple> triples = pattern.getList() ;
-        
-        Iterator<Binding> iter = input ;
         boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode))) ;
         
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
@@ -106,8 +104,9 @@ public class SolverLib
                 throw new TDBException("SolverLib: Graph node specified but tuples are of length "+tupleLen) ;
         }
         
+        // Convert from a QueryIterator (Bindings of Var/Node) to BindingNodeId
         NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
-        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
+        Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
         {
@@ -140,7 +139,7 @@ public class SolverLib
                                                  Iterator<BindingNodeId> chain, Filter<Tuple<NodeId>> filter,
                                                  ExecutionContext execCxt)
     {
-        return new StageMatchTriple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt) ;
+        return new StageMatchTuple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding

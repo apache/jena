@@ -28,7 +28,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
+public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 {
     private final NodeTupleTable nodeTupleTable ;
     private final Tuple<Node> patternTuple ;
@@ -37,7 +37,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     private boolean anyGraphs ;
     private Filter<Tuple<NodeId>> filter ;
 
-    public StageMatchTriple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
+    public StageMatchTuple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, 
                             Tuple<Node> tuple, boolean anyGraphs, 
                             Filter<Tuple<NodeId>> filter, 
                             ExecutionContext execCxt)
