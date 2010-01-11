@@ -26,7 +26,10 @@ import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
@@ -39,7 +42,6 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -48,6 +50,7 @@ import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
+import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
@@ -67,13 +70,13 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
+        System.getProperties().setProperty("tdb:fileMode","mapped") ;
+        DevCmds.tdbloader("D.ttl") ;
+        System.exit(0) ;
+        
         {
-            Dataset dataset = TDBFactory.createDataset() ;
-            dataset.getNamedModel("http;//example/").getGraph().add(SSE.parseTriple("(<x> <p> 123)")) ;
-            Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
-            ResultSet rs = qExec.execSelect() ;
-            ResultSetFormatter.out(rs) ;
+            Context context = EnvTDB.processProperties(System.getProperties()) ;
+            System.out.println(context) ;
             System.exit(0) ;
         }
         String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 

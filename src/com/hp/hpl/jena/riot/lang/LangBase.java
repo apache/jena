@@ -111,7 +111,6 @@ public abstract class LangBase implements LangRIOT
     {
         return labelmap.asNode(label) ;
     }
-
     
     protected final void expectOrEOF(String msg, TokenType tokenType)
     {

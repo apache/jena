@@ -38,6 +38,7 @@ import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
 import com.hp.hpl.jena.tdb.solver.Explain.InfoLevel ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
@@ -179,6 +180,7 @@ public class TDB
         
         SystemTDB.init() ;
         ARQ.init() ;
+        EnvTDB.processGlobalSystemProperties() ;
         
         // Set management information.
         // Needs ARQ > 2.8.0

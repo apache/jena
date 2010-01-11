@@ -42,6 +42,8 @@ public abstract class CmdTDB extends CmdARQ
     
     public static void init()
     {
+        // This sets context based on system properties.
+        // ModSymbol can then override. 
         TDB.init() ;
         ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }

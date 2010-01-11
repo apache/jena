@@ -31,9 +31,8 @@ public class LangTurtle extends LangTurtleBase
         // TriplesSameSubject -> TriplesNode PropertyList?
         if ( peekTriplesNodeCompound() )
         {
-            if ( VERBOSE ) log.info(">> compound") ;
             Node n = triplesNodeCompound() ;
-            if ( VERBOSE ) log.info("<< compound") ;
+
             // May be followed by: 
             //   A predicateObject list
             //   A DOT or EOF.
@@ -56,9 +55,7 @@ public class LangTurtle extends LangTurtleBase
         // TriplesSameSubject -> Term PropertyListNotEmpty 
         if ( lookingAt(NODE) )
         {
-            if ( VERBOSE ) log.info(">> triples") ;
             triples() ;
-            if ( VERBOSE ) log.info("<< triples") ;
             return ;
         }
         exception("Out of place: %s", peekToken()) ;

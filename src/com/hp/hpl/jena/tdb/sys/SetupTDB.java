@@ -96,7 +96,7 @@ public class SetupTDB
     static public final String NodeTableLayout = "1" ;
     
     
-    /**  The JVM-wide parameters (these can change without a chnage to on-disk structure) */ 
+    /**  The JVM-wide parameters (these can change without a change to on-disk structure) */ 
     public final static Properties globalConfig = new Properties() ;
     static {
         globalConfig.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;

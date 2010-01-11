@@ -4,45 +4,52 @@
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.riot;
 
-import atlas.lib.SinkCounting ;
-import atlas.logging.Log ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import atlas.io.PeekReader ;
+import atlas.lib.Sink ;
+import atlas.lib.SinkNull ;
+
+import com.hp.hpl.jena.riot.lang.LangNQuads ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.util.FileUtils ;
 
-public class turtle extends LangParse
+
+/** Jena interface for RIOT/N-Quad */
+public class JenaReaderNQuads
 {
-    /** Run the N-triples parser - and produce N-triples */
-    public static void main(String... argv)
-    {
-        Log.setLog4j() ;
-        new turtle(argv).mainRun() ;
-    }    
+    // two cases - DataSource (explitct graph create needed) and Dataset (can just add quads) 
+//    //@Override
+//    protected void readWorker(Dataset dataset, Reader reader, String base) throws Exception
+//    {
+//        PeekReader peekReader = PeekReader.make(reader) ;
+//        Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
+//        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+//        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+//        parser.parse() ;
+//        peekReader.close();
+//    }
     
-    protected turtle(String[] argv)
+    /** Parse - but do nothing else */
+    public static void parse(InputStream input)
     {
-        super(argv) ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.classShortName(turtle.class) ;
-    }
-
-    @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI)
-    {
-        LangTurtle parser = new LangTurtle(baseURI, tokenizer, sink) ;
-        Checker checker = new Checker(null) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
+        Reader reader = FileUtils.asUTF8(input) ;
+        PeekReader peekReader = PeekReader.make(reader) ;
+        Sink<Quad> sink = new SinkNull<Quad>() ;
+        
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        LangNQuads parser = new LangNQuads(tokenizer, sink) ;
+        parser.parse() ;
+        try {
+            peekReader.close();
+            reader.close() ;
+        } catch (IOException ex) { ex.printStackTrace(System.err) ; }
     }
 }
 

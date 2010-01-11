@@ -11,23 +11,27 @@ import org.slf4j.LoggerFactory ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class LangNTriples extends LangNTuple<Triple>
+/**
+ * N-Quads.
+ * http://sw.deri.org/2008/07/n-quads/
+ */
+public class LangNQuads extends LangNTuple<Quad>
 {
-    private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
+    private static Logger messageLog = LoggerFactory.getLogger("N-Quads") ;
     
-    public LangNTriples(Tokenizer tokens, Sink<Triple> sink)
+    public LangNQuads(Tokenizer tokens, Sink<Quad> sink)
     {
         super(tokens, sink, messageLog) ;
     }
 
     @Override
-    protected Triple parseOne()
+    protected Quad parseOne()
     {
         Token sToken = nextToken() ;
         Node s = parseIRIOrBNode(sToken) ;
@@ -38,17 +42,30 @@ public class LangNTriples extends LangNTuple<Triple>
         Token oToken = nextToken() ;
         Node o = parseRDFTerm(oToken) ;
         
+        Node c = null ;
         Token x = nextToken() ;
+        
         if ( x.getType() != TokenType.DOT )
-            exception("Triple not terminated by DOT: %s", x, x) ;
+        {
+            c = parseRDFTerm(x) ;
+            x = nextToken() ;
+        }
+        
+        if ( x.getType() != TokenType.DOT )
+            exception("Quad not terminated by DOT: %s", x, x) ;
+        
         Checker checker = getChecker() ;
+        
         if ( checker != null )
         {
             checker.check(s) ;
             checker.check(p) ;
             checker.check(o) ;
+            if ( c != null )
+                checker.check(c) ;
         }
-        return new Triple(s, p, o) ;
+        // c may be null, meaning default graph in SPARQL.
+        return new Quad(c, s, p, o) ;
     }
 }
 

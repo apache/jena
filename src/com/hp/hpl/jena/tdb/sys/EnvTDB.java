@@ -4,51 +4,48 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.tdb.sys;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import atlas.lib.Sink ;
+import java.util.Properties ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.tokens.Token ;
-import com.hp.hpl.jena.riot.tokens.TokenType ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.TDB ;
 
-public class LangNTriples extends LangNTuple<Triple>
+public class EnvTDB
 {
-    private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
-    
-    public LangNTriples(Tokenizer tokens, Sink<Triple> sink)
+    public static void processGlobalSystemProperties()
     {
-        super(tokens, sink, messageLog) ;
+        Context context = processProperties(System.getProperties()) ;
+        TDB.getContext().setAll(context) ;
     }
-
-    @Override
-    protected Triple parseOne()
+    
+    static final String prefix = SystemTDB.tdbSymbolPrefix+":" ;
+    public static Context processProperties(Properties properties)
     {
-        Token sToken = nextToken() ;
-        Node s = parseIRIOrBNode(sToken) ;
-        
-        Token pToken = nextToken() ;
-        Node p = parseIRI(pToken) ;
-        
-        Token oToken = nextToken() ;
-        Node o = parseRDFTerm(oToken) ;
-        
-        Token x = nextToken() ;
-        if ( x.getType() != TokenType.DOT )
-            exception("Triple not terminated by DOT: %s", x, x) ;
-        Checker checker = getChecker() ;
-        if ( checker != null )
+        Context context = new Context() ;
+        Set<Object> keys = properties.keySet() ;
+        for ( Object key : keys )
         {
-            checker.check(s) ;
-            checker.check(p) ;
-            checker.check(o) ;
+            if ( key instanceof String )
+            {
+                String keyStr = (String)key ;
+                if ( keyStr.startsWith(prefix) )
+                    keyStr = SystemTDB.symbolNamespace+keyStr.substring(prefix.length()) ;
+                
+                
+                if ( ! keyStr.startsWith(SystemTDB.symbolNamespace) )
+                    continue ;
+                
+                Object value = properties.get(key) ;
+                
+                Symbol symbol = Symbol.create(keyStr) ;
+                
+                context.set(symbol, value) ;
+            }
         }
-        return new Triple(s, p, o) ;
+        return context ;
     }
 }
 

@@ -7,8 +7,6 @@
 package com.hp.hpl.jena.riot.lang;
 
 import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import atlas.event.Event ;
 import atlas.event.EventManager ;
 import atlas.lib.Sink ;
@@ -29,7 +27,6 @@ import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish. */
@@ -84,8 +81,6 @@ public abstract class LangTurtleBase extends LangBase
 [43]    lcharacter      ::=     echaracter | '\"' | #x9 | #xA | #xD  
      */
     
-    protected static final Logger log = LoggerFactory.getLogger("Turtle Parser") ;
-    
     // Predicates
     protected final static String KW_A              = "a" ;
     protected final static String KW_SAME_AS        = "=" ;
@@ -131,9 +126,7 @@ public abstract class LangTurtleBase extends LangBase
         {
             if ( lookingAt(DIRECTIVE) )
             {
-                if ( VERBOSE ) log.info(">> directive") ;
                 directive() ;
-                if ( VERBOSE ) log.info("<< directive") ;
                 continue ;
             }
             
@@ -156,17 +149,14 @@ public abstract class LangTurtleBase extends LangBase
         
         if ( x.equals("base") )
         {
-            if ( VERBOSE ) log.info("@base") ;
             directiveBase() ;
             return ;
         }
         
         if ( x.equals("prefix") )
         {
-            if ( VERBOSE ) log.info("@prefix") ;
             directivePrefix() ;
             return ;
-            
         }
         exception("Unregcognized directive: %s", x) ;
     }
@@ -185,10 +175,11 @@ public abstract class LangTurtleBase extends LangBase
         String iriStr = peekToken().getImage() ;
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
-        if ( getChecker() != null ) getChecker().checkIRI(iri) ;
+        if ( getChecker() != null ) 
+            getChecker().checkIRI(iri) ;
         prologue.getPrefixMap().add(prefix, iri) ;
+
         nextToken() ;
-        if ( VERBOSE ) log.info("@prefix "+prefix+":  "+iri.toString()) ;
         expect("Prefix directive not terminated by a dot", DOT) ;
     }
 
@@ -197,9 +188,9 @@ public abstract class LangTurtleBase extends LangBase
         String baseStr = peekToken().getImage() ;
         // CHECK
         IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
-        if ( getChecker() != null ) getChecker().checkIRI(baseIRI) ;
+        if ( getChecker() != null )
+            getChecker().checkIRI(baseIRI) ;
         
-        if ( VERBOSE ) log.info("@base <"+baseIRI+">") ;
         nextToken() ;
         
         expect("Base directive not terminated by a dot", DOT) ;
@@ -232,7 +223,6 @@ public abstract class LangTurtleBase extends LangBase
 
     protected final void predicateObjectList(Node subject)
     {
-        if ( VERBOSE ) log.info("predicateObjectList("+subject+")") ;
         predicateObjectItem(subject) ;
 
         for(;;)
@@ -311,7 +301,6 @@ public abstract class LangTurtleBase extends LangBase
     
     protected final void objectList(Node subject, Node predicate)
     {
-        if ( VERBOSE ) log.info("objectList("+subject+", "+predicate+")") ;
         for(;;)
         {
             Node object = triplesNode() ;
@@ -457,8 +446,6 @@ public abstract class LangTurtleBase extends LangBase
                 exception("Object is not a URI, blank node or literal") ;
         }
         Triple t = new Triple(subject, predicate, object) ;
-        if ( VERBOSE ) 
-            log.info(NodeFmtLib.str(t)) ;
         sink.send(new Triple(subject, predicate, object)) ;
     }
     

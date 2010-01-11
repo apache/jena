@@ -6,63 +6,38 @@
 
 package tdb;
 
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.InputStream ;
-import java.io.Reader ;
+import atlas.lib.SinkCounting ;
+import atlas.logging.Log ;
 
-import atlas.io.PeekReader ;
-
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
-import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class ntriples
+public class ntriples extends LangParse
 {
     /** Run the N-triples parser - and produce N-triples */
-    public static void main(String... args)
+    public static void main(String... argv)
     {
-        if ( args.length == 0 )
-        {
-            parse("http://example/BASE", System.in) ;
-            return ;
-        }
-
-        for ( int i = 0 ; i < args.length ; i++ )
-        {
-            String fn = args[i] ;
-            parse("http://base/", fn) ;
-        }
+        Log.setLog4j() ;
+        new ntriples(argv).mainRun() ;
     }        
 
-    public static void parse(String baseURI, String filename)
+    protected ntriples(String[] argv)
     {
-        InputStream in = null ;
-        try {
-            in = new FileInputStream(filename) ;
-        } catch (FileNotFoundException ex)
-        {
-            System.err.println("File not found: "+filename) ;
-            return ;
-        }
-        parse(baseURI, in) ;
+        super(argv) ;
     }
 
-    public static void parse(String baseURI, InputStream in)
-    {   
-        parseRIOT(baseURI, in) ;
+    @Override
+    protected String getCommandName()
+    {
+        return Utils.classShortName(ntriples.class) ;
     }
 
-    public static void parseRIOT(String baseURI, InputStream in)
+    @Override
+    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI)
     {
-        Reader r = FileUtils.asUTF8(in) ;
-        PeekReader peekReader = PeekReader.make(r) ;
-
-        SinkTripleOutput sink = new SinkTripleOutput(System.out) ; 
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangNTriples parser = new LangNTriples(tokenizer, sink) ;
         Checker checker = new Checker(null) ;
         parser.setChecker(checker) ;

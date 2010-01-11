@@ -17,7 +17,9 @@ public class DevTDB
     
     // Java system properties to set TDB properties
     
-    // Add/Factor ivy-resolve/ivy-retrive target sin build-lib to make sure can execute ivy taks with property settings.
+    // Bulkloader - generalise for N-Quads.
+    
+    // Add/Factor ivy-resolve/ivy-retrieve target sin build-lib to make sure can execute ivy taks with property settings.
     
     // Change to an explicit op for NodeId to Node
     // Then can push code through this more easily (e.g. filters, distinct).

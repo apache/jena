@@ -15,7 +15,11 @@ ChangeLog for TDB
     
     See wiki for details.
     http://openjena.org/wiki/TDB/Datasets#Dynamic_Datasets
-    
+
++ Can now set TDB context symbols via Java's system properties 
+  (-D when invoking Java).
+  e.g. -Dtdb:logExec=true to enable log query execution 
+       (in conjucntion with the logging level). 
 + Fix XML of the POM file.
 + Add a shutdown hook to sync datasets (don't rely on it!)
 + Adding checking for concurrent modification situations.
