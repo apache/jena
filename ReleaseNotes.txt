@@ -1,6 +1,26 @@
 Release Notes
 =============
 
+Model/Resource API:
+   o Took advantage of covariant return types to allow Resource.inModel() and
+     Property.inModel() to have Resource resp. Property return types, allowing
+     casts of calls to inModel() to (mostly) be eliminated.
+     
+   o As per request on mailing list, ModelGraphInterface now has a method
+     `Resource wrapAsResource(Node)` [name changed to fit better] which
+     wraps a node as a Resource and throws if the node is a Literal.
+     
+    o As per request on mailing list, added Resource method 
+        x.getPropertyResourceValue( Property p )
+      which answers some R such that x p R if any exists, otherwise null 
+      
+    o As per request on mailing list, there's now an OWL2 vocabulary class
+      with constants for the terms of OWL2. NOTE: there is no OWL2 ontology
+      support present or implied by this vocabulary class.
+      
+    o getModel() has been pulled up from Resource to RDFNode. This means that
+      Literal now supports getModel() and inModel().
+
 Misc:
    o Patched AnonId using UID when running in environments like GAE
 
