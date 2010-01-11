@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.text.DecimalFormat;
-
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.ARQException ;
 
 
 public class Timer
@@ -59,11 +57,11 @@ public class Timer
 
     static public String timeStr(long timeInterval)
     {
-        DecimalFormat f = new DecimalFormat("#0.###") ;
-        String s = f.format(timeInterval/1000.0) ;
-        return s ;
+//        DecimalFormat f = new DecimalFormat("#0.###") ;
+//        String s = f.format(timeInterval/1000.0) ;
+//        return s ;
         //Java5
-        //return format("%.3f", new Double(timeInterval/1000.0)) ;
+        return String.format("%.3f", timeInterval/1000.0) ;
     }
 
     protected String timeStr(long timePoint, long startTimePoint)
