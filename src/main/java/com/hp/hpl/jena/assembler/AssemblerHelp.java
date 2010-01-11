@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
+ $Id: AssemblerHelp.java,v 1.2 2010-01-11 09:17:06 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -36,7 +36,7 @@ public class AssemblerHelp
         model.
     */
     public static Resource withFullModel( Resource root )
-        { return (Resource) root.inModel( fullModel( root.getModel() ) ); }
+        { return root.inModel( fullModel( root.getModel() ) ); }
     
     /**
         Answer the full model of <code>m</code>, with all its imports included and

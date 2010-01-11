@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: TestStatements.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+	$Id: TestStatements.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -96,7 +96,7 @@ public class TestStatements extends ModelTestBase
         Model A = ModelFactory.createDefaultModel();
         Model B = ModelFactory.createDefaultModel();
         Resource anon = A.createResource();
-        Resource bAnon = (Resource) anon.inModel( B );
+        Resource bAnon = anon.inModel( B );
         assertTrue( "moved resource should still be blank", bAnon.isAnon() );
         assertEquals( "move resource should equal original", anon, bAnon );
         }

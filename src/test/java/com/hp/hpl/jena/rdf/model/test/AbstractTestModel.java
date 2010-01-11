@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: AbstractTestModel.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -113,7 +113,34 @@ public abstract class AbstractTestModel extends ModelTestBase
     
     public void testAsRDF()
         {
-        RDFNode r = model.asRDFNode( node( "a" ) );
+        testPresentAsRDFNode( node( "a" ), Resource.class );
+        testPresentAsRDFNode( node( "17" ), Literal.class );
+        testPresentAsRDFNode( node( "_b" ), Resource.class );
+        }
+
+    private void testPresentAsRDFNode( Node n, Class<? extends RDFNode> nodeClass )
+        {
+        RDFNode r = model.asRDFNode( n );
+        assertSame( n, r.asNode() );
+        assertInstanceOf( nodeClass, r );
+        }
+        
+    public void testURINodeAsResource()
+        {
+        Node n = node( "a" );
+        Resource r = model.wrapAsResource( n );
+        assertSame( n, r.asNode() );
+        }
+        
+    public void testLiteralNodeAsResourceFails()
+        {
+        try 
+            {
+            model.wrapAsResource( node( "17" ) );
+            fail( "should fail to convert literal to Resource" );
+            }
+        catch (UnsupportedOperationException e)
+            { pass(); }
         }
     
     public void testRemoveAll()

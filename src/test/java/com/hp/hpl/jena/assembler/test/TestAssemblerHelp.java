@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.1 2009-06-29 08:55:53 castagna Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -144,7 +144,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
     private void testSpecificType( String expected, String specification )
         { // TODO relies on fullModel, would be nice to remove this dependency
         Resource root = resourceInModel( specification );
-        Resource rooted = (Resource) root.inModel( AssemblerHelp.fullModel( root.getModel() ) );
+        Resource rooted = root.inModel( AssemblerHelp.fullModel( root.getModel() ) );
         Resource mst = AssemblerHelp.findSpecificType( rooted );
         assertEquals( resource( root.getModel(), expected ), mst );
         }

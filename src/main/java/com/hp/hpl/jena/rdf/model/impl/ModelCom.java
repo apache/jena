@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.3 2009-09-28 10:45:11 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.4 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -35,8 +35,7 @@ import java.util.*;
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
  */
 
-public class ModelCom 
-    extends EnhGraph
+public class ModelCom extends EnhGraph
     implements Model, PrefixMapping, Lock
 {
 
@@ -78,6 +77,13 @@ public class ModelCom
         return n.isLiteral() 
           ? (RDFNode) this.getNodeAs( n, Literal.class )
           : (RDFNode) this.getNodeAs( n, Resource.class );
+        }
+
+    public Resource wrapAsResource( Node n )
+        {
+        if (n.isLiteral()) 
+            throw new UnsupportedOperationException( "literal cannot be converted to Resource" );
+        return this.getNodeAs( n, Resource.class );
         }
 
     /**
@@ -685,7 +691,7 @@ public class ModelCom
     }
     
     public RDFNode getRDFNode( Node n )
-        {   return asRDFNode( n ); }
+        { return asRDFNode( n ); }
     
     public Resource getResource( String uri )  
         { return IteratorFactory.asResource(makeURI(uri),this); }

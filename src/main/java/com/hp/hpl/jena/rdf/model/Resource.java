@@ -63,7 +63,7 @@ import com.hp.hpl.jena.shared.PropertyNotFoundException;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-09-28 10:45:10 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2010-01-11 09:16:56 $'
 */
 public interface Resource extends RDFNode {
 
@@ -78,6 +78,12 @@ public interface Resource extends RDFNode {
      * @return A unique id for an anonymous resource.
      */
     public AnonId getId();
+    
+    /**
+        Override RDFNode.inModel() to produce a staticly-typed Resource
+        in the given Model.
+    */
+    public Resource inModel( Model m );
 
     /**
         Answer true iff this Resource is a URI resource with the given URI.
@@ -368,5 +374,11 @@ public interface Resource extends RDFNode {
      * @return The model associated with this resource.
      */
     public Model getModel();
+
+    /**
+       Answer some resource R for which this.hasProperty( p, R ),
+       or null if no such R exists.
+    */
+    public Resource getPropertyResourceValue( Property p );
 }
 

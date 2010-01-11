@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.1 2009-06-29 08:55:48 castagna Exp $
+ 	$Id: ModelAssembler.java,v 1.2 2010-01-11 09:17:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -96,7 +96,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     private Resource completedClone( Resource root, Resource newRoot, Model fragment )
         {
         Model typed = fragment.add( newRoot, RDF.type, JA.Content );
-        return (Resource) newRoot.inModel(  ModelFactory.createUnion( root.getModel(), typed ) );
+        return newRoot.inModel(  ModelFactory.createUnion( root.getModel(), typed ) );
         }
 
     private Resource oneLevelClone( Resource root )

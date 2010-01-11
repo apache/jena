@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2010-01-11 09:17:06 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1097,11 +1097,11 @@ public class TestBugReports
     public void test_sf_934528() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
 
-        Resource r = (Resource) OWL.Thing.inModel( m );
+        Resource r = OWL.Thing.inModel( m );
         OntClass thingClass = r.as( OntClass.class );
         assertNotNull( thingClass );
 
-        r = (Resource) OWL.Nothing.inModel( m );
+        r = OWL.Nothing.inModel( m );
         OntClass nothingClass = r.as( OntClass.class );
         assertNotNull( nothingClass );
 

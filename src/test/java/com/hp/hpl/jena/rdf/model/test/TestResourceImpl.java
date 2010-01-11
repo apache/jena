@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.3 2009-09-28 10:45:11 chris-dollin Exp $
+  $Id: TestResourceImpl.java,v 1.4 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -190,6 +190,21 @@ public class TestResourceImpl extends ModelTestBase
         assertTrue( r.hasLiteral( RDF.value, z ) ); 
         }
     
+    public void testGetPropertyResourceValueReturnsResource()
+        {
+        Model m = modelWithStatements( "x p 17; x p y" );
+        Resource r = m.createResource( "eh:/x" );
+        Resource value = r.getPropertyResourceValue( property( "p" ) );
+        assertEquals( resource( "y" ), value );
+        }
+    
+    public void testGetPropertyResourceValueReturnsNull()
+        {
+        Model m = modelWithStatements( "x p 17" );
+        Resource r = m.createResource( "eh:/x" );
+        assertNull( r.getPropertyResourceValue( property( "q" ) ) );
+        assertNull( r.getPropertyResourceValue( property( "p" ) ) );
+        }
     }    
 
 

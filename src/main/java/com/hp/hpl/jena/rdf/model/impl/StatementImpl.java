@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
+	$Id: StatementImpl.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:32 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2010-01-11 09:17:05 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -26,8 +26,8 @@ public class StatementImpl  extends StatementBase implements Statement {
 			ModelCom model)
 		{
 		super( model );
-		this.subject = (Resource) subject.inModel( model );
-		this.predicate = (Property) predicate.inModel( model );
+		this.subject = subject.inModel( model );
+		this.predicate = predicate.inModel( model );
 		this.object = object.inModel( model );
 		}
     
@@ -37,8 +37,8 @@ public class StatementImpl  extends StatementBase implements Statement {
 	public StatementImpl(Resource subject, Property predicate, RDFNode object)
 		{
 		super( empty );
-		this.subject = (Resource) subject.inModel( model );
-		this.predicate = (Property) predicate.inModel( model );
+		this.subject = subject.inModel( model );
+		this.predicate = predicate.inModel( model );
 		this.object = object.inModel( model );
 		}    
     

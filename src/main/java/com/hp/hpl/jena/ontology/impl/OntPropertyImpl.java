@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2010-01-11 09:17:06 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.3 2009-10-06 13:04:42 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.4 2010-01-11 09:17:06 chris-dollin Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -836,12 +836,9 @@ public class OntPropertyImpl
      * @param m A model
      * @return A property equal to this property that is attached to m.
      */
-    @Override
-    public RDFNode inModel( Model m ) {
+    @Override public Property inModel( Model m ) {
         return (getModel() == m) ? this : m.createProperty( getURI() );
     }
-
-
 
     //==============================================================================
     // Inner class definitions

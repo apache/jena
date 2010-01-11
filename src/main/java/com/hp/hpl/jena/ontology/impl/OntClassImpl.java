@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2009-10-06 13:04:42 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2010-01-11 09:17:06 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.3 2010-01-11 09:17:06 chris-dollin Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -416,7 +416,7 @@ public class OntClassImpl
             (cls.getModel() == null || !(cls.getModel() instanceof OntModel)))
         {
             // could be outside an ontmodel if a constant
-            cls = (Resource) cls.inModel( getModel() );
+            cls = cls.inModel( getModel() );
         }
         return cls.as( OntClass.class ).hasSuperClass( this, direct );
     }

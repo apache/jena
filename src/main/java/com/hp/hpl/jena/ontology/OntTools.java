@@ -88,7 +88,7 @@ public class OntTools
             throw new JenaException( "The given OntModel has a language profile that does not define a generic root class (such as owl:Thing)" );
         }
 
-        root = (Resource) root.inModel( m );
+        root = root.inModel( m );
         return getLCA( m, root.as( OntClass.class ), u, v );
     }
 

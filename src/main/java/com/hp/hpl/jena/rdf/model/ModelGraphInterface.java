@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ModelGraphInterface.java,v 1.1 2009-06-29 08:55:38 castagna Exp $
+  $Id: ModelGraphInterface.java,v 1.2 2010-01-11 09:16:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -40,6 +40,8 @@ public interface ModelGraphInterface
        with <code>n</code> as their value carrier.
     */
     RDFNode asRDFNode( Node n );
+    
+    Resource wrapAsResource( Node n );
     }
 
 /*

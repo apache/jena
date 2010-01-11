@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.1 2009-06-29 08:55:53 castagna Exp $
+ 	$Id: AssemblerTestBase.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -106,7 +106,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
         {
         Model m = model( string );
         Resource r = resource( m, string.substring( 0, string.indexOf( ' ' ) ) );
-        return (Resource) r.inModel( m );        
+        return r.inModel( m );        
         }
 
     protected void testDemandsMinimalType( Assembler a, Resource type )

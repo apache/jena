@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: TestRDFNodes.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -93,8 +93,8 @@ public class TestRDFNodes extends ModelTestBase
         assertFalse( r1.isAnon() );
         assertTrue( r2.isAnon() );
     /* */
-        assertTrue( ((Resource) r1.inModel( m2 )).getModel() == m2 );
-        assertTrue( ((Resource) r2.inModel( m2 )).getModel() == m2 );
+        assertTrue( r1.inModel( m2 ).getModel() == m2 );
+        assertTrue( r2.inModel( m2 ).getModel() == m2 );
     /* */
         assertEquals( r1, r1.inModel( m2 ) );
         assertEquals( r2, r2.inModel( m2 ) );

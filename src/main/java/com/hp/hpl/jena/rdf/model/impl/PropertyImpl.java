@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:32 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2010-01-11 09:17:05 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property
@@ -73,8 +73,7 @@ public class PropertyImpl extends ResourceImpl implements Property
         checkOrdinal();
         }
 
-    @Override
-    public RDFNode inModel( Model m )
+    @Override public Property inModel( Model m )
         { return getModel() == m ? this : m.createProperty( getURI() ); }
 
     private void checkLocalName()
