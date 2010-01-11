@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.3 2010-01-11 10:03:43 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -371,19 +371,21 @@ public class TestPackage extends GraphTestBase  {
 
         static final Implementation factory = new Implementation()
             {
-            @Override
-            public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
+            @Override public EnhNode wrap( Node n, EnhGraph g ) 
+                { return new EnhNode( n, g ); }
             
-            @Override
-            public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
+            @Override public boolean canWrap( Node n, EnhGraph g ) 
+                { return n.isURI(); }
             };
 
         public RDFNode inModel( Model m )
             { return null; }
 
         public Object visitWith( RDFVisitor rv )
-            { return null;
-            }
+            { return null; }
+
+        public Model getModel()
+            { return null; }
         }
     
     public void testSimple()

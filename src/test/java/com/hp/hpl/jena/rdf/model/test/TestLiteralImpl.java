@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestLiteralImpl.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+  $Id: TestLiteralImpl.java,v 1.2 2010-01-11 10:03:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -41,6 +41,31 @@ public class TestLiteralImpl extends ModelTestBase
     public void testAsLiteral()
         { Model m = ModelFactory.createDefaultModel();  
         literal( m, "17" ).as( Literal.class );  }
+    
+    public void testLiteralHasModel()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        testLiteralHasModel( m, m.createLiteral( "hello, world" ) );
+        testLiteralHasModel( m, m.createLiteral( "hello, world", "en-UK" ) );
+        testLiteralHasModel( m, m.createLiteral( "hello, world", true ) );
+        testLiteralHasModel( m, m.createTypedLiteral( "hello, world" ) );
+        testLiteralHasModel( m, m.createTypedLiteral( false ) );
+        testLiteralHasModel( m, m.createTypedLiteral( 17 ) );
+        testLiteralHasModel( m, m.createTypedLiteral( 'x' ) );
+        }
+
+    private void testLiteralHasModel( Model m, Literal lit )
+        { assertSame( m, lit.getModel() ); }
+    
+    public void testInModel()
+        {
+        Model m1 = ModelFactory.createDefaultModel();
+        Model m2 = ModelFactory.createDefaultModel();
+        Literal l1 = m1.createLiteral( "17" );
+        Literal l2 = l1.inModel( m2 );
+        assertEquals( l1, l2 );
+        assertSame( m2, l2.getModel() );
+        }
     }
 
 /*

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.1 2009-06-29 08:55:55 castagna Exp $
+  $Id: TestCommonImpl.java,v 1.2 2010-01-11 10:03:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -20,9 +21,17 @@ class TestCommonImpl extends EnhNode implements TestNode {
     TestCommonImpl(Node n, EnhGraph m ) {
         super(n,m);
     }
-    TestModel getModel() {
-        return (TestModel)enhGraph;
-    }
+    
+    /**
+       We can't return TestModel now, because it clashes with the getModel()
+       in RDFNode, which we have to inherit because of the personality tests.
+       Fortunately the EnhGraph test set doesn't /need/ getModel, so we give
+       it return type Model and throw an exception if it's ever called.
+       
+       @author chris
+    */
+    public Model getModel() 
+        { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
 
     Triple findSubject()
         { return findNode( node, null, null ); }
