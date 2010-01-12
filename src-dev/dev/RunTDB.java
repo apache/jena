@@ -29,6 +29,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -43,6 +45,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -190,6 +193,15 @@ public class RunTDB
         System.exit(0) ;
     }
 
+    static void genericQuery(Dataset ds)
+    {
+        String queryString = "prefix : <http://example/> SELECT * { ?s ?p 123 }" ;
+        Query query = QueryFactory.create(queryString) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+        QueryExecUtils.executeQuery(query, qExec) ;
+        qExec.close();
+    }
+    
     static void tupleFilter()
     {
         Dataset ds = TDBFactory.createDataset("DB") ;
