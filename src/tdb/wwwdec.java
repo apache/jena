@@ -7,7 +7,8 @@
 package tdb;
 
 import java.io.UnsupportedEncodingException ;
-import java.net.URLDecoder ;
+
+import atlas.lib.StrUtils ;
 
 public class wwwdec
 {
@@ -15,7 +16,7 @@ public class wwwdec
     {
         for ( String x : args)
         {
-            String y = URLDecoder.decode(x , "UTF-8") ;
+            String y = StrUtils.decode(x, '%') ;
             System.out.println(y) ;
         }
     }

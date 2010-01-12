@@ -122,8 +122,13 @@ public class NodeId
      * 8 bits of type
      * 56 bits of value
      * 
+     * (potential change
+     *   1 bit: 0 => reference, 1 => inline
+     *   7 bits of inline type.
+     *   56 bits fo value)  
+     *  
      *  Type 0 means the node is in the object table.
-     *  Types 1-4 store the value of the node in the 56 bits remaining.
+     *  Types 1+ store the value of the node in the 56 bits remaining.
      *  
      *  If a value would not fit, it will be stored externally so there is no
      *  guarantee that all integers, say, are store inline. 
@@ -136,8 +141,8 @@ public class NodeId
      *  Boolean format:
      */
     
-    
     // Type codes.
+    // Better would be high bit 1 => encoded value.
     public static final int NONE               = 0 ;
     public static final int INTEGER            = 1 ;
     public static final int DECIMAL            = 2 ;

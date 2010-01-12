@@ -24,6 +24,7 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.util.FileUtils ;
 
+/** Common framework for running RIOT parsers */
 public abstract class LangParse extends CmdGeneral
 {
 
