@@ -64,7 +64,9 @@ public class EventManager
         List<EventListener> x = find(object, type) ;
         if ( x == null ) 
             return ;
-        x.remove(listener); 
+        x.remove(listener);
+        if ( x.size() == 0 )
+            listeners.remove(object) ;
     }
     
     private void send$(Object dest, Event event)

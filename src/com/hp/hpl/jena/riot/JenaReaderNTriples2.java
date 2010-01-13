@@ -13,6 +13,7 @@ import java.io.Reader;
 import atlas.io.PeekReader;
 import atlas.lib.Sink;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.JenaReaderBase;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -35,6 +36,32 @@ public class JenaReaderNTriples2 extends JenaReaderBase
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangNTriples parser = new LangNTriples(tokenizer, sink) ;
         parser.parse() ;
+        sink.close();
+        peekReader.close();
+    }
+    
+    static class SinkInserter implements Sink<Triple> 
+    {
+        private Graph graph ;
+        SinkInserter(Graph graph) { this.graph = graph ; }
+        public void flush()
+        {}
+
+        public void send(Triple triple)
+        { graph.add(triple) ; }
+
+        public void close()
+        {}} ;
+    
+    /** Read into a model without any event handling */
+    public static void read_NoEvents(Model model, Reader reader, String base) throws Exception
+    {
+        PeekReader peekReader = PeekReader.make(reader) ;
+        Sink<Triple> sink = new SinkInserter(model.getGraph()) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        parser.parse() ;
+        sink.close();
         peekReader.close();
     }
     
@@ -52,6 +79,7 @@ public class JenaReaderNTriples2 extends JenaReaderBase
             peekReader.close();
             reader.close() ;
         } catch (IOException ex) { ex.printStackTrace(System.err) ; }
+        sink.close();
     }
 }
 

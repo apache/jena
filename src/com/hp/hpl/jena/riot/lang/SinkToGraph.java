@@ -46,10 +46,8 @@ public abstract class SinkToGraph implements Sink<Triple>
                 graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
             }
         } ;
-
         EventManager.register(this, startRead, el1) ;
         EventManager.register(this, finishRead, el2) ;
-
     }
 
     //@Override
@@ -58,8 +56,8 @@ public abstract class SinkToGraph implements Sink<Triple>
     //@Override
     public void close()
     {
+        EventManager.unregister(this, finishRead, el2) ;
         EventManager.unregister(this, startRead, el1) ;
-        EventManager.unregister(this, startRead, el2) ;
     }
 
 }

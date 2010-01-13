@@ -1,27 +1,27 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestCodec.class
-    , TestNodeTableStored.class
-    , TestNodeTable.class
-})
-public class TS_NodeTable
+public class TestNodeTableStored extends TestNodeTableBase
 {
-
+    @Override
+    protected NodeTable createEmptyNodeTable()
+    {
+        return SetupTDB.makeNodeTableBase(Location.mem(), Names.indexNode2Id, Names.indexId2Node) ;
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

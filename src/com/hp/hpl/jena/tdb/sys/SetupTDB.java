@@ -464,9 +464,8 @@ public class SetupTDB
         return new RecordFactory(keyLen, valLen) ;
     }
     
-    public static NodeTable makeNodeTable(Location location,
-                                          String indexNode2Id, int nodeToIdCacheSize,
-                                          String indexId2Node, int idToNodeCacheSize)
+    /** Make a NodeTable without cache and inline wrappers */ 
+    public static NodeTable makeNodeTableBase(Location location, String indexNode2Id, String indexId2Node)
     {
         if (location.isMem()) 
             return NodeTableFactory.createMem(IndexBuilder.mem()) ;
@@ -509,10 +508,17 @@ public class SetupTDB
         
         // -- Make the node table using the components established above.
         NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
-
+        return nodeTable ;
+    }
+    
+    /** Make a NodeTable with cache and inline wrappers */ 
+    public static NodeTable makeNodeTable(Location location,
+                                          String indexNode2Id, int nodeToIdCacheSize,
+                                          String indexId2Node, int idToNodeCacheSize)
+    {
+        NodeTable nodeTable = makeNodeTableBase(location, indexNode2Id, indexId2Node) ;
         nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
         nodeTable = NodeTableInline.create(nodeTable) ;
-
         return nodeTable ;
     }
 

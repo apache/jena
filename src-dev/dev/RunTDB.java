@@ -6,6 +6,7 @@
 
 package dev;
 
+import java.io.ByteArrayInputStream ;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -17,6 +18,7 @@ import java.util.Set ;
 import perf.Performance ;
 import atlas.io.PeekReader ;
 import atlas.iterator.Filter ;
+import atlas.lib.Bytes ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkPrint ;
@@ -34,6 +36,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
@@ -53,9 +56,9 @@ import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
-import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
@@ -71,17 +74,14 @@ public class RunTDB
     }
 
     
+    
     public static void main(String[] args) throws IOException
     {
+        
         System.getProperties().setProperty("tdb:fileMode","mapped") ;
         DevCmds.tdbloader("D.ttl") ;
         System.exit(0) ;
         
-        {
-            Context context = EnvTDB.processProperties(System.getProperties()) ;
-            System.out.println(context) ;
-            System.exit(0) ;
-        }
         String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
         
         //String qs = "SELECT * "+desc+" { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://example/g1> { ?s ?p ?o } } }" ;
@@ -193,6 +193,37 @@ public class RunTDB
         System.exit(0) ;
     }
 
+    static void report() 
+    {
+        String x ;
+        try
+        {
+            x = FileUtils.readWholeFileAsUTF8("D.nt") ;
+        } catch (IOException ex)
+        {
+            ex.printStackTrace(); return ;
+        } 
+        byte[] buff = Bytes.string2bytes(x) ;
+        
+        for ( int i = 0 ; i < 1000000 ; i++ )
+        {
+            
+             
+            if ( i%1000 == 1 )
+                System.out.print(".") ;
+            
+            if ( i%100000 == 1 )
+                System.out.println() ;
+            
+            InputStream in = new ByteArrayInputStream(buff) ;
+            JenaReaderNTriples2.parse(in) ;  
+        }
+        System.out.println() ;
+        System.out.println("Finished") ;
+        System.exit(0) ;
+
+    }
+    
     static void genericQuery(Dataset ds)
     {
         String queryString = "prefix : <http://example/> SELECT * { ?s ?p 123 }" ;
