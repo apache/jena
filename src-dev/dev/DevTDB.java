@@ -7,6 +7,7 @@
 package dev;
 
 
+
 public class DevTDB
 {
     // In-JVM caches - make a function of heap size.
@@ -18,6 +19,10 @@ public class DevTDB
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
     //   Materialized answers.
 
+    // Does not work for in-memory location
+    // FileSet knows it's mem but someone askls for a file name.
+    //IndexBuilder.createIndex(new FileSet(location, nodeId2nodeName), rf1) ;
+    
     // == 0.8.5
     // + Dynamic datasets 
     //   Documentation [DONE} ?Check

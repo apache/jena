@@ -50,13 +50,16 @@ public class NodeId
     
     public static NodeId create(long value)
     {
-        // All creatioin of NodeIds must go through this.
+        // All creation of NodeIds must go through this.
         if ( value == NodeDoesNotExist.value )
             return NodeDoesNotExist ;
         if ( value == NodeIdAny.value )
             return NodeIdAny ;
         return new NodeId(value) ;
     }
+    
+    public static NodeId create(byte[] b)       { return create(b, 0) ; } 
+    public static NodeId create(ByteBuffer b)   { return create(b, 0) ; } 
     
     // Chance for a cache? (Small Java objects are really not that expensive these days.)
     public static NodeId create(byte[] b, int idx)
@@ -70,7 +73,6 @@ public class NodeId
         long value = b.getLong(idx) ;
         return create(value) ;
     }
-    
     public NodeId(long v) { value = v ;}
     
     public void toByteBuffer(ByteBuffer b, int idx) { b.putLong(idx, value) ; }

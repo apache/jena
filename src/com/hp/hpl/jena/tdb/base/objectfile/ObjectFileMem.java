@@ -44,7 +44,7 @@ public class ObjectFileMem implements ObjectFile
     public ByteBuffer read(long id)
     {
         if ( id < 0 || id >= buffers.size() )
-            throw new IllegalArgumentException() ;
+            throw new IllegalArgumentException("Id "+id+" not in range [0, "+buffers.size()+"]") ;
         
         if ( closed )
             throw new IllegalStateException("Closed") ;
