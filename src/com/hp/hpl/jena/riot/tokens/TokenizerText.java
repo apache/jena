@@ -613,6 +613,7 @@ public final class TokenizerText implements Tokenizer
     }
 
     // Blank node label: A-Z,a-z0-9 and '-'
+    // Also possible: skip to space or EOF
     private String blankNodeLabel()
     {
         stringBuilder.setLength(0) ;
@@ -622,7 +623,7 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isA2ZN(ch) && ch != '-' )
+            if ( ! isA2ZN(ch) && ch != '-' && ch != ':' )
                 break ;
             stringBuilder.append((char)ch) ;
             seen = true ;
