@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -159,6 +160,9 @@ public class GraphNamedTDB extends GraphTDBBase
     {
         dataset.sync(force);
     }
+    
+    @Override
+    public String toString() { return Utils.className(this) ; }
 }
 
 /*

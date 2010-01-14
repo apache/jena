@@ -108,6 +108,10 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     //@Override
     public abstract void sync(boolean force) ;
     
+    @Override
+    // make submodels think about this.
+    public abstract String toString() ;
+    
     protected void duplicate(Triple t)
     {
         if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && getLog().isInfoEnabled() )
