@@ -20,6 +20,8 @@ public class DevARQ
     //   Tests
     
     // MicroAPI.
+    //   results = query().select(vars).pattern().filter().groupby().agg()
+    //    or build algebra this way.
     // ARQ warnings on cross product and unused project vars 
     
     // public class FmtUtils
