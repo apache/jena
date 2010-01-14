@@ -197,17 +197,24 @@ public class Log
     }
     
     //---- java.util.logging - because that's always present.
-    
     static String defaultProperties = 
         StrUtils.strjoinNL(
+                           // Handlers - output
+                           // All (comma separated)
+                           //"handlers=java.util.logging.ConsoleHandler,atlas.logging.java.ConsoleHandlerStdout",
+
                            // Atlas.
                            //"handlers=atlas.logging.java.ConsoleHandlerStdout" ,
-                           //"atlas.logging.java.ConsoleHandlerStdout.level=ALL",
-                           //"atlas.logging.java.ConsoleHandlerStdout.formatter=atlas.logging.java.TextFormatter",
 
                            // Provided by the JRE
                            "handlers=java.util.logging.ConsoleHandler" ,
+
+                           // Formatting and levels
+                           //"atlas.logging.java.ConsoleHandlerStdout.level=ALL",
+                           //"atlas.logging.java.ConsoleHandlerStdout.formatter=atlas.logging.java.TextFormatter",
+
                            "java.util.logging.ConsoleHandler.level=INFO"
+                           //, "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
         ) ;   
         
     
@@ -226,12 +233,13 @@ public class Log
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
     
-    public static void setJavaLoggingBuiltin()
+    static void setJavaLoggingDft()
     {
         try
         {
             InputStream details = new ByteArrayInputStream(defaultProperties.getBytes("UTF-8")) ;
             java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
+            
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
 }
