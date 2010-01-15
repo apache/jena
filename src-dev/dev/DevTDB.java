@@ -10,6 +10,10 @@ package dev;
 
 public class DevTDB
 {
+    // Per dataset context.  Merge into execution.
+    //   Set in assembler
+    //   Global context for this as well TDB.getDatasetDefault() ;
+    // 
     // In-JVM caches - make a function of heap size.
     //   NodeCache
     //   Block cache for 32 bit
