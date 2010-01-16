@@ -10,14 +10,12 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.Reader ;
 
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.util.FileUtils ;
 
-/** Parsing-centric reader.
- *  <p>Faster than using BufferedReader, sometimes a lot faster, when
+/** Parsing-centric input stream.
+ *  <p>Faster than using a BufferedInpoutStream, sometimes a lot faster, when
  *  tokenizing is the critical performance point.
  *  </p>
  *  <p>Supports a line and column
@@ -25,31 +23,23 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  </p>
  *  This class is not thread safe.
  * @see BufferingWriter
- * @see PeekInputStream
+ *  @see PeekReader
  */ 
 
-public abstract class PeekReader extends Reader
+
+public abstract class PeekInputStream extends InputStream
 {
-    // Remember to apply fixes to PeekInputStream as well.
-    
-    // Buffering is done in the subclass (e.g. PeekReaderSource)
-    // Does buffering here instead of using a BufferedReader help?
-    // YES.  A lot (Java6).
-    
-    // Possibly because BufferedReader internally uses synchronized,
-    // even on getting a single character.  This is not only an unnecessary cost
-    // but also possibly because it stops the JIT doing a better job.
-    // **** read(char[]) is a loop of single char operations.
+    // Essential Peekreader with s/char/byte/g ;
     
     private static final int PUSHBACK_SIZE = 10 ; 
-    static final byte CHAR0 = (char)0 ;
+    static final byte BYTE0 = (byte)0 ;
     static final int  EOF = -1 ;
     static final int  UNSET = -2 ;
     
-    private char[] pushbackChars ;
-    private int idxPushback ;                   // Index into pushbackChars: points to next pushBack. -1 => none.
+    private byte[] pushbackBytes ;
+    private int idxPushback ;                   // Index into pushbackBytes: points to next pushBack. -1 => none.
     
-    private int currChar = UNSET ;              // Next character to return when reading forwards.
+    private int currByte = UNSET ;              // Next byte to return when reading forwards.
     private long posn ;
     
     public static final int INIT_LINE = 1 ;
@@ -60,92 +50,78 @@ public abstract class PeekReader extends Reader
     
     // ---- static construction methods.
     
-    public static PeekReader make(Reader r)
+    public static PeekInputStream make(InputStream inputStream)
     {
-        if ( r instanceof PeekReader )
-            return (PeekReader)r ;
-//        if ( r instanceof BufferedReader )
-//            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
+        if ( inputStream instanceof PeekInputStream )
+            return (PeekInputStream)inputStream ;
+//        if ( r instanceof BufferedInputStream )
+//            Log.warn(PeekReader.class, "BufferedInputStream passed to PeekInputStream") ;
             
-        return new PeekReaderSource(r) ;
+        return new PeekInputStreamSource(inputStream) ;
     }
     
-    public static PeekReader make(Reader r, int bufferSize)
+    public static PeekInputStream make(InputStream inputStream, int bufferSize)
     {
-        if ( r instanceof PeekReader )
-            return (PeekReader)r ;
-        return new PeekReaderSource(r, bufferSize) ;
+        if ( inputStream instanceof PeekInputStream )
+            return (PeekInputStream)inputStream ;
+        return new PeekInputStreamSource(inputStream, bufferSize) ;
     }
 
-    public static PeekReader makeUTF8(InputStream in) 
-    {
-        Reader r = FileUtils.asUTF8(in) ;
-        return make(r) ;
-    }
+//    public static PeekInputStream readString(String string)
+//    {
+//        return new PeekReaderCharSequence(string) ;
+//    }
     
-    public static PeekReader readString(String string)
-    {
-        return new PeekReaderCharSequence(string) ;
-    }
-    
-    public static PeekReader open(String filename) 
+    public static PeekInputStream open(String filename) 
     {
         try {
             InputStream in = new FileInputStream(filename) ;
-            Reader r = FileUtils.asUTF8(in) ;
-            return make(r) ;
+            return make(in) ;
         } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
-    protected PeekReader()
+    protected PeekInputStream()
     {
-        this.pushbackChars = new char[PUSHBACK_SIZE] ; 
+        this.pushbackBytes = new byte[PUSHBACK_SIZE] ; 
         this.idxPushback = -1 ;
         
         this.colNum = INIT_COL ;
         this.lineNum = INIT_LINE ;
         this.posn = 0 ;
         
-        // We start at character "-1", i.e. just before the file starts.
-        // Advance always so that the peek character is valid (is character 0) 
-        // Returns the character before the file starts (i.e. UNSET).
+        // We start at byte "-1", i.e. just before the file starts.
+        // Advance always so that the peek byte is valid (is byte 0) 
+        // Returns the byte before the file starts (i.e. UNSET).
     }
 
-//    public static PeekReader test(String x)         { return new PeekReaderSource(new StringReader(x)) ; }
-//    
-//    // A bit slow in that it copies out of the string into the intermediate char array.
-//    // But happens in one block operations when less than buffer size.
-//    static PeekReader make(String x, int buffSize)
-//    { return new PeekReaderSource(new StringReader(x), buffSize) ; }
-    
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }
 
     public long getPosition()           { return posn; }
 
-    //---- Do not access currChar except with peekChar/setCurrChar.
-    public final int peekChar()
+    //---- Do not access currByte except with peekByte/setCurrByte.
+    public final int peekByte()
     { 
         if ( idxPushback >= 0 )
-            return pushbackChars[idxPushback] ;
+            return pushbackBytes[idxPushback] ;
         
         // If not started ... delayed initialization.
-        if ( currChar == UNSET )
+        if ( currByte == UNSET )
             init() ;
-        return currChar ;
+        return currByte ;
     }
     
-    // And the correct way to read the currChar is to call peekChar.
-    private final void setCurrChar(int ch)
+    // And the correct way to read the currByte is to call peekByte
+    private final void setCurrByte(int b)
     {
-        currChar = ch ;
+        currByte = b ;
     }
     
-    public final int readChar()               { return nextChar() ; }
+    public final int readByte()               { return nextByte() ; }
     
-    /** push back a character : does not alter underlying position, line or column counts*/  
-    public final void pushbackChar(int ch)    { unreadChar(ch) ; }
+    /** push back a byte : does not alter underlying position, line or column counts*/  
+    public final void pushbackByte(int b)    { unreadByte(b) ; }
     
     // Reader operations
     @Override
@@ -159,91 +135,90 @@ public abstract class PeekReader extends Reader
     {
         if ( eof() )
             return EOF ;
-        int x = readChar() ;
+        int x = readByte() ;
         return x ;
     }
     
     @Override
-    public final int read(char[] cbuf, int off, int len) throws IOException
+    public final int read(byte[] buf, int off, int len) throws IOException
     {
         if ( eof() )
             return EOF ;
-        // Note - need to preserve line count, so single char ops are reasonably efficient.
         for ( int i = 0 ; i < len ; i++ )
         {
-            int ch = readChar() ;
+            int ch = readByte() ;
             if ( ch == EOF )
                 return (i==0)? EOF : i ;
-            cbuf[i+off] = (char)ch ;
+            buf[i+off] = (byte)ch ;
         }
         return len ;
     }
 
-    public final boolean eof()   { return peekChar() == EOF ; }
+    public final boolean eof()   { return peekByte() == EOF ; }
 
     //protected abstract void init() ;
     protected abstract int advance() ;
     protected abstract void closeInput() ;
 
     // ----------------
-    // The methods below are the only ones to manipulate the character buffers.
+    // The methods below are the only ones to manipulate the byte buffers.
     // Other methods may read the state of variables.
     
-    private final void unreadChar(int ch)
+    private final void unreadByte(int b)
     {
         // The push back buffer is in the order where [0] is the oldest.
         // Does not alter the line number, column number or position count. 
         
-        if ( idxPushback >= pushbackChars.length )
+        if ( idxPushback >= pushbackBytes.length )
         {
             // Enlarge pushback buffer.
-            char[] pushbackChars2 = new char[pushbackChars.length*2] ;
-            System.arraycopy(pushbackChars, 0, pushbackChars2, 0, pushbackChars.length) ;
-            pushbackChars = pushbackChars2 ;
+            byte[] pushbackBytes2 = new byte[pushbackBytes.length*2] ;
+            System.arraycopy(pushbackBytes, 0, pushbackBytes2, 0, pushbackBytes.length) ;
+            pushbackBytes = pushbackBytes2 ;
             //throw new JenaException("Pushback buffer overflow") ;
         }
-        if ( ch == EOF || ch == UNSET )
-            throw new JenaException("Illegal character to push back: "+ch) ;
+        if ( b == EOF || b == UNSET )
+            throw new JenaException("Illegal byte to push back: "+b) ;
         
         idxPushback++ ;
-        pushbackChars[idxPushback] = (char)ch ;
+        pushbackBytes[idxPushback] = (byte)b ;
     }
     
     private final void init()
     {
         advanceAndSet() ;
-        if ( currChar == UNSET )
-            setCurrChar(EOF) ;
+        if ( currByte == UNSET )
+            setCurrByte(EOF) ;
     }
 
     private final void advanceAndSet() 
     {
         int ch = advance() ;
-        setCurrChar(ch) ;
+        setCurrByte(ch) ;
     }
     
     
     // Invariants.
-    // currChar is either chars[idx-1] or pushbackChars[idxPushback]
+    // currByte is either bytes[idx-1] or pushbackBytes[idxPushback]
     
-    /** Return the next character, moving on one place and resetting the peek character */ 
-    private final int nextChar()
+    /** Return the next byte, moving on one place and resetting the peek byte */ 
+    private final int nextByte()
     {
-        int ch = peekChar() ;
+        int b = peekByte() ;
         
-        if ( ch == EOF )
+        if ( b == EOF )
             return EOF ;
         
         if ( idxPushback >= 0 )
         {
-            char ch2 = pushbackChars[idxPushback] ;
+            byte b2 = pushbackBytes[idxPushback] ;
             idxPushback-- ;
-            return ch2 ;
+            return b2 ;
         }
 
         posn++ ;
         
-        if (ch == '\n')
+        if (b == '\n')
         {
             lineNum++;
             colNum = INIT_COL ;
@@ -252,7 +227,7 @@ public abstract class PeekReader extends Reader
             colNum++;
         
         advanceAndSet() ;
-        return ch ;
+        return b ;
     }
 }
 

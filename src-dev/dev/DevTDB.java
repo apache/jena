@@ -10,6 +10,9 @@ package dev;
 
 public class DevTDB
 {
+    // RIOT - change to own JenaReaderRIOT (copy over) no BufferedReaders!
+    // Allow reader creation (N-Triples = ASCII if strict)
+    
     // Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;

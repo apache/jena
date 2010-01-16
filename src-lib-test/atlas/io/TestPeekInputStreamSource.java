@@ -1,31 +1,36 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.ByteArrayInputStream ;
+import java.io.UnsupportedEncodingException ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestIndentedWriter.class
-    , TestPeekReaderSource.class
-    , TestPeekReaderCharSequence.class
-    , TestPeekInputStreamSource.class
-    //, TestPeekInputStreamBytes.class
-    , TestBufferingWriter.class
-    , TestPrintUtils.class
-} )
-public class TS_IO
+public class TestPeekInputStreamSource extends AbstractTestPeekInputStream
 {
-
+    @Override
+    PeekInputStream make(String contents, int size)
+    {
+        // Very carefuly ensure this is not a byte array-based PeekReader
+        ByteArrayInputStream bin ;
+        try
+        {
+            bin = new ByteArrayInputStream(contents.getBytes("ASCII")) ;
+        } catch (UnsupportedEncodingException ex)
+        {
+            ex.printStackTrace();
+            return null ;
+        }
+        
+        return PeekInputStream.make(bin, size) ;
+    }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -16,27 +16,12 @@ import atlas.lib.AtlasException ;
 import atlas.lib.Chars ;
 
 /** Parsing-centric reader.
- *  <p>Faster than using BufferedReader, sometimes a lot faster when
- *  tokenizing is the critical performance point.
- *  </p>
- *  <p>Supports a line and column
- *  count. Initially, line = 1, col = 1.  Columns go 1..N
- *  </p>
- *  This class is not thread safe.
- * @see BufferingWriter
+ * @see PeekReader
  */ 
 
 
 public final class PeekReaderSource extends PeekReader
 {
-    // Does buffering here instead of using a BufferedReader help?
-    // YES.  A lot (Java6).
-    
-    // Possibly because BufferedReader internally uses synchronized,
-    // even on getting a singe character.  Thisis not only an unnecessary cost
-    // but also possibly because it stops the JIT doing a better job.
-    // **** read(char[]) is a loop of single char operations.
-    
     private static final int CB_SIZE       = 32 * 1024 ;
     
     private final char[] chars ;            // CharBuffer?
@@ -139,7 +124,7 @@ public final class PeekReaderSource extends PeekReader
     protected final int advance()
     {
         if ( idx >= buffLen )
-            // Points outsize the array.  Refill it 
+            // Points outside the array.  Refill it 
             fillArray() ;
         
         // Advance one character.

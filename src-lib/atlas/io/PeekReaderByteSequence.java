@@ -1,31 +1,42 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestIndentedWriter.class
-    , TestPeekReaderSource.class
-    , TestPeekReaderCharSequence.class
-    , TestPeekInputStreamSource.class
-    //, TestPeekInputStreamBytes.class
-    , TestBufferingWriter.class
-    , TestPrintUtils.class
-} )
-public class TS_IO
+public final class PeekReaderByteSequence extends PeekReader
 {
+    private byte[] bytes ;
+    // Next character.
+    private int idx ;
 
+    public PeekReaderByteSequence(byte[] bytes)
+    {
+        this.bytes = bytes ;
+        this.idx = 0 ;
+    }
+
+    @Override
+    protected int advance()
+    {
+        if ( idx >= bytes.length )
+            return EOF ;
+        return bytes[idx++] ;
+    }
+
+    @Override
+    protected void closeInput()
+    {
+        bytes = null ;
+    }
 }
 
+
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

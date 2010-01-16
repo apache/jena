@@ -6,40 +6,39 @@
 
 package com.hp.hpl.jena.riot;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Map;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.util.Map ;
 
-import atlas.io.PeekReader;
-import atlas.lib.Sink;
+import atlas.io.PeekReader ;
+import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.n3.JenaReaderBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.riot.lang.LangTurtle;
-import com.hp.hpl.jena.riot.lang.SinkToGraphTriples;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
-import com.hp.hpl.jena.tdb.graph.GraphFactory;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.tdb.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 /** Jena's RDFReader interface for RIOT/Turtle */
-public class JenaReaderTurtle2 extends JenaReaderBase
+public class JenaReaderTurtle2 extends JenaReaderRIOT
 {
+    private LangTurtle parser = null ; 
+
     @Override
-    protected void readWorker(Model model, Reader reader, String base)
+    protected void readWorker(Model model, PeekReader reader, String base)
     {
         startRead(model, reader, base) ;
         parse() ;
         finishRead(model) ;
     }
     
-    private LangTurtle parser = null ; 
-    public void startRead(Model model, Reader reader, String base)
+    public void startRead(Model model, PeekReader peekReader, String base)
     {
-        PeekReader peekReader = PeekReader.make(reader) ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         parser = new LangTurtle(base, tokenizer, sink) ;

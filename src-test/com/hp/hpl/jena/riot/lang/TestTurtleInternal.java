@@ -5,10 +5,12 @@
 
 package com.hp.hpl.jena.riot.lang;
 
+import java.io.IOException ;
 import java.io.Reader;
 import java.io.StringReader;
 
 import org.junit.Test;
+import atlas.io.PeekReader ;
 import atlas.test.BaseTest;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -233,8 +235,9 @@ public class TestTurtleInternal extends BaseTest
 	    JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
 	    Model model = ModelFactory.createDefaultModel() ;
 	    Reader reader = new StringReader(testString) ;
+	    PeekReader peekReader = PeekReader.make(reader) ;  
 
-	    parser.startRead(model, reader, "http://example/base/") ;
+	    parser.startRead(model, peekReader, "http://example/base/") ;
 
 	    parser.getPrefixMap().add("a", "http://host/a#") ;
 	    parser.getPrefixMap().add("x", "http://host/a#") ;
@@ -247,6 +250,11 @@ public class TestTurtleInternal extends BaseTest
 	    parser.getPrefixMap().add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
 	    parser.parse();
 	    parser.finishRead(model) ;
+	    try {
+	        peekReader.close() ;
+	        reader.close() ;
+	    }
+	    catch (IOException ex) {}
 	    
 	}
 }
