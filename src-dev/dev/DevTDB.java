@@ -8,10 +8,16 @@ package dev;
 
 
 
+
 public class DevTDB
 {
-    // RIOT - change to own JenaReaderRIOT (copy over) no BufferedReaders!
-    // Allow reader creation (N-Triples = ASCII if strict)
+    // RIOT
+    // TokenizerByte
+    // Can generalize peekreader/PeekInputStream because they both return ints.
+    // Just using 
+    // PeekInputStream pin = PeekInputStream.make(in) ;
+    // Tokenizer tokenizer = new TokenizerBytes(pin) ;
+    // in LangParse.parseRIOT improves N-triples by 10% and still uses a StringBuilder.
     
     // Per dataset context.  Merge into execution.
     //   Set in assembler

@@ -6,6 +6,10 @@
 
 package tdb;
 
+import java.io.InputStream ;
+
+import atlas.io.PeekInputStream ;
+import atlas.io.PeekReader ;
 import atlas.lib.SinkCounting ;
 import atlas.logging.Log ;
 
@@ -13,6 +17,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerBytes ;
+import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class ntriples extends LangParse
@@ -29,6 +35,23 @@ public class ntriples extends LangParse
         super(argv) ;
     }
 
+    @Override
+    protected Tokenizer makeTokenizer(InputStream in)
+    {
+        // Assume strict ASCII: later, this will be fast UTF-8
+        // Quick test for byte-based.  Not currently UTF-8
+        if ( false )
+        {
+            PeekInputStream pin = PeekInputStream.make(in) ;
+            Tokenizer tokenizer = new TokenizerBytes(pin) ;
+            return tokenizer ;
+        }
+        PeekReader peekReader = PeekReader.makeUTF8(in) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
+    }
+
+    
     @Override
     protected String getCommandName()
     {

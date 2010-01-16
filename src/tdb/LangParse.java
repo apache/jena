@@ -7,7 +7,6 @@
 package tdb;
 
 import java.io.InputStream ;
-import java.io.Reader ;
 
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -22,7 +21,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** Common framework for running RIOT parsers */
 public abstract class LangParse extends CmdGeneral
@@ -74,7 +72,7 @@ public abstract class LangParse extends CmdGeneral
     {
         InputStream in = null ;
         if ( filename.equals("-") )
-            parse("http://base/", "stdin", in) ;
+            parse("http://base/", "stdin", System.in) ;
         else
         {
             try {
@@ -96,9 +94,8 @@ public abstract class LangParse extends CmdGeneral
     
     public void parseRIOT(String baseURI, String filename, InputStream in)
     {
-        Reader r = FileUtils.asUTF8(in) ;
-        PeekReader peekReader = PeekReader.make(r) ;
-
+        Tokenizer tokenizer = makeTokenizer(in) ;
+        
         Sink<Triple> s = new SinkNull<Triple>() ;
         
         if ( ! bitbucket )
@@ -106,7 +103,6 @@ public abstract class LangParse extends CmdGeneral
         
         SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
         
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
         
         modTime.startTimer() ;
         parseEngine(tokenizer, sink, baseURI) ;
@@ -119,6 +115,16 @@ public abstract class LangParse extends CmdGeneral
         if ( modTime.timingEnabled() )
             output(filename, n, x) ;
     }
+
+    protected Tokenizer makeTokenizer(InputStream in)
+    {
+//      PeekInputStream pin = PeekInputStream.make(in) ;
+//      Tokenizer tokenizer = new TokenizerBytes(pin) ;
+        PeekReader peekReader = PeekReader.makeUTF8(in) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
+    }
+
 
     protected abstract void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI) ;
 
