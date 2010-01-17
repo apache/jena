@@ -6,20 +6,17 @@
 
 package dev;
 
-
-
-
 public class DevTDB
 {
     // RIOT
-    // TokenizerByte
-    // Can generalize peekreader/PeekInputStream because they both return ints.
+    // TokenizerByte - next is to reenginner to do byte[] slicing.   ByteBuffers ++
+
     // Just using 
     // PeekInputStream pin = PeekInputStream.make(in) ;
     // Tokenizer tokenizer = new TokenizerBytes(pin) ;
     // in LangParse.parseRIOT improves N-triples by 10% and still uses a StringBuilder.
     
-    // Per dataset context.  Merge into execution.
+    // **** Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;
     // 

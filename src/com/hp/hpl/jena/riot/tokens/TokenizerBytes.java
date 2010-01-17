@@ -20,9 +20,10 @@ import com.hp.hpl.jena.riot.ParseException;
 public final class TokenizerBytes implements Tokenizer
 {
     // Byte-based tokenizer.
-    // Not full renamed from TokenizerText
+    // ** Not full renamed from TokenizerText
     // For all StringBuilder, do new String(bytes, offset, length, charset)
-    // NEXT StringBuilder => byte[] 
+    // ** NEXT StringBuilder => byte[]
+    
     // Currently, this code is only ASCII because it does byte->char 1:1 
     
     // Space for CURIEs, stricter Turtle QNames, sane Turtle (i.e. leading digits in local part).
