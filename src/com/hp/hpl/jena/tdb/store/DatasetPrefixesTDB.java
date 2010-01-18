@@ -117,10 +117,12 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     {
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
+        
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         if ( ! iter.hasNext() )
             return null ;
-        Node uri = iter.next().get(2) ;
+        Tuple<Node> t = iter.next() ;
+        Node uri = t.get(2) ;
         Iter.close(iter) ;
         return uri.getURI() ; 
     }

@@ -6,17 +6,14 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHashMem;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree ;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** A policy holder for making indexes and range indexes.  */
  
@@ -51,27 +48,7 @@ public class IndexBuilder
     
     private static IndexBuilder createIndexBuilderMem(IndexType indexType)
     {
-        switch (indexType)
-        {
-            case BTree:
-            {
-                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem() ;
-                return new IndexBuilder(idxFactory,idxFactory) ;
-            }
-            case BPlusTree:
-            {
-                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem() ;
-                return new IndexBuilder(idxFactory,idxFactory) ;
-            }
-            case ExtHash:
-            {
-                // Index files are Extendible hash indexes; range indexes are is B+Tree 
-                IndexFactoryExtHashMem idxFactory = new IndexFactoryExtHashMem() ;
-                IndexFactoryBPlusTreeMem idxRangeFactory = new IndexFactoryBPlusTreeMem() ;
-                return new IndexBuilder(idxFactory, idxRangeFactory) ;
-            }
-        }
-        throw new TDBException("Memory index builder: Unrecognized index type: " + indexType) ;
+        return createIndexBuilder(indexType) ;
     }
     
     private static IndexBuilder createIndexBuilder(IndexType indexType)

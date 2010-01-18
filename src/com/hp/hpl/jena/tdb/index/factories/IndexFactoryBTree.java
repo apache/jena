@@ -6,18 +6,17 @@
 
 package com.hp.hpl.jena.tdb.index.factories;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.btree.BTree;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexFactory ;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.btree.BTree ;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
 {
@@ -43,15 +42,9 @@ public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
         int order = BTreeParams.calcOrder(blockSize, recordFactory) ;
         BTreeParams params = new BTreeParams(order, recordFactory) ;
         String fn = fileset.filename(Names.btExt) ;
-        BTree bTree = new BTree(params, createBlockMgr(fn, blockSize)) ; 
+        BlockMgr blockMgr = IndexFactoryBPlusTree.createBlockMgr(fileset,Names.btExt, blockSize) ;
+        BTree bTree = new BTree(params, blockMgr) ; 
         return bTree ;
-    }
-    
-    protected BlockMgr createBlockMgr(String filename, int blockSize)
-    {
-        return BlockMgrFactory.createFile(filename, blockSize, 
-                                          SystemTDB.BlockReadCacheSize,
-                                          SystemTDB.BlockWriteCacheSize) ;
     }
 }
 

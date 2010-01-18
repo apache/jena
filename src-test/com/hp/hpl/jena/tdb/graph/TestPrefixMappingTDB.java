@@ -67,18 +67,33 @@ public class TestPrefixMappingTDB extends TestPrefixMapping2
         
         DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        
+        String x = pmap1.getNsPrefixURI("x") ;
+        assertNull(x) ;
+        prefixes.close();
+    }
+    
+    // Persistent.
+    @SuppressWarnings("deprecation")
+    @Test public void persistent2()
+    {
+        String dir = ConfigTest.getTestingDir() ;
+        FileOps.clearDirectory(dir) ;
+        
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
+        PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
+        
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
-        
         
         prefixes = DatasetPrefixesTDB.create(new Location(dir)) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
         prefixes.close();
     }
     
-    @Test public void persistent2()
+    @Test public void persistent3()
     {
-        // Test case from Holger Knublauch
+        // Test case from a report by Holger Knublauch
         if ( false )
         {
             //TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;

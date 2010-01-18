@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.tdb.graph.basics;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Place to put various "making" explicitly for testing */
 
@@ -38,17 +36,17 @@ class GraphTDBFactoryTesting
     }
 
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static GraphTriplesTDB createBTreeMem()
+    public static GraphTriplesTDB createBPlusTreeMem()
     { 
-        IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
+        IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTestMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return FactoryGraphTDB.createGraphMem(builder) ;
     }
     
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static GraphTriplesTDB createBPlusTreeMem()
+    public static GraphTriplesTDB createBTreeMem()
     { 
-        IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(SystemTDB.OrderMem) ;
+        IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTestMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return FactoryGraphTDB.createGraphMem(builder) ;
     }

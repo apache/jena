@@ -119,7 +119,10 @@ public class SystemTDB
 
     /** Size, in bytes, of a block for testing */
     public static final int BlockSizeTest           = 1024 ; // intValue("BlockSizeTest", 1024) ;
-    
+
+    /** Size, in bytes, of a block for testing */
+    public static final int BlockSizeTestMem         = 500 ;
+
 //    /** Size, in bytes, of a memory block */
 //    public static final int BlockSizeMem            = 32*8 ; //intValue("BlockSizeMem", 32*8 ) ;
 
