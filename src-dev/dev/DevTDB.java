@@ -33,6 +33,8 @@ public class DevTDB
     // FileSet knows it's mem but someone askls for a file name.
     //IndexBuilder.createIndex(new FileSet(location, nodeId2nodeName), rf1) ;
     
+    // Generative filters : e.g. FILTER(regex(str(?uri), "^http://") 
+    
     // == 0.8.5
     // + Dynamic datasets 
     //   Documentation [DONE} ?Check
