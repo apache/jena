@@ -31,6 +31,8 @@ public abstract class PeekInputStream extends InputStream
 {
     // Essential Peekreader with s/char/byte/g ;
     
+    // Change to looking at slices of a ByteBuffer and rework TokenizerBytes 
+    
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte BYTE0 = (byte)0 ;
     static final int  EOF = -1 ;

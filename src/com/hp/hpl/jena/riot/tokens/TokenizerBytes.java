@@ -107,10 +107,10 @@ public final class TokenizerBytes implements Tokenizer
     {
         token = new Token(getLine(), getColumn()) ;
         
-        int ch = inputStream.peekByte() ;
+        int chByte = inputStream.peekByte() ;
 
         // ---- IRI
-        if ( ch == CH_LT )
+        if ( chByte == CH_LT )
         {
             inputStream.readByte() ;
             token.setImage(allBetween(CH_LT, CH_GT, false, false)) ;
@@ -120,19 +120,19 @@ public final class TokenizerBytes implements Tokenizer
         }
 
         // ---- Literal
-        if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 )
+        if ( chByte == CH_QUOTE1 || chByte == CH_QUOTE2 )
         {
             inputStream.readByte() ;
             int ch2 = inputStream.peekByte() ;
-            if (ch2 == ch )
+            if (ch2 == chByte )
             {
                 inputStream.readByte() ; // Read potential second quote.
                 int ch3 = inputStream.peekByte() ;
-                if ( ch3 == ch )
+                if ( ch3 == chByte )
                 {
                     inputStream.readByte() ;
-                    token.setImage(readLong(ch, false)) ;
-                    TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
+                    token.setImage(readLong(chByte, false)) ;
+                    TokenType tt = (chByte == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
                     token.setType(tt) ;
                 }
                 else
@@ -143,15 +143,15 @@ public final class TokenizerBytes implements Tokenizer
                     //if ( ch2 != EOF ) inputStream.pushbackChar(ch2) ;
                     //if ( ch1 != EOF ) inputStream.pushbackChar(ch1) ;    // Must be '' or ""
                     token.setImage("") ;
-                    token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+                    token.setType( (chByte == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
                 }
             }
             else
             {
                 // Single quote character.
-                token.setImage(allBetween(ch, ch, true, false)) ;
+                token.setImage(allBetween(chByte, chByte, true, false)) ;
                 // Single quoted string.
-                token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+                token.setType( (chByte == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
             }
             
             // Literal.  Is it @ or ^^
@@ -190,7 +190,7 @@ public final class TokenizerBytes implements Tokenizer
             return token ;
         }
 
-        if ( ch == CH_UNDERSCORE )        // Blank node :label must be at least one char
+        if ( chByte == CH_UNDERSCORE )        // Blank node :label must be at least one char
         {
             expect("_:") ;
             token.setImage(blankNodeLabel()) ;
@@ -200,19 +200,19 @@ public final class TokenizerBytes implements Tokenizer
         }
 
         // Control
-        if ( ch == CTRL_CHAR )
+        if ( chByte == CTRL_CHAR )
         {
             inputStream.readByte() ;
             token.setType(TokenType.CNTRL) ;
-            ch = inputStream.readByte() ;
-            if ( ch == EOF )
+            chByte = inputStream.readByte() ;
+            if ( chByte == EOF )
                 exception("EOF found after "+CTRL_CHAR) ;
-            token.cntrlCode = (char)ch ;
+            token.cntrlCode = (char)chByte ;
             if ( Checking ) checkControl(token.cntrlCode) ;
             return token ;
         }
 
-        if ( ch == CH_AT )
+        if ( chByte == CH_AT )
         {
             inputStream.readByte() ;
             token.setType(TokenType.DIRECTIVE) ;
@@ -221,7 +221,7 @@ public final class TokenizerBytes implements Tokenizer
             return token ;
         }
         
-        if ( ch == CH_QMARK )
+        if ( chByte == CH_QMARK )
         {
             inputStream.readByte() ;
             token.setType(TokenType.VAR) ;
@@ -232,13 +232,13 @@ public final class TokenizerBytes implements Tokenizer
         }
         
         // Number?
-        switch(ch)
+        switch(chByte)
         { 
             // DOT can start a decimal.  Check for digit.
             case CH_DOT:
                 inputStream.readByte() ;
-                ch = inputStream.peekByte() ;
-                if ( range(ch, '0', '9') )
+                chByte = inputStream.peekByte() ;
+                if ( range(chByte, '0', '9') )
                 {
                     // Not a DOT after all.
                     inputStream.pushbackByte(CH_DOT) ;
@@ -275,7 +275,7 @@ public final class TokenizerBytes implements Tokenizer
         }
         
         
-        if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9'))
+        if ( chByte == CH_PLUS || chByte == CH_MINUS || range(chByte, '0', '9'))
         {
             readNumber() ;
             if ( Checking ) checkNumber(token.getImage(), token.getImage2() ) ;
