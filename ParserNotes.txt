@@ -1,0 +1,16 @@
+13/1/2010:
+
+N-Triples: 
+32 bit (home PC):  95KTPS
+64 bit (m1.large): 100K
+
+Turtle:
+32 bit (home PC):  62K
+64 bit (m1.large): 65K
+
+done by parsing to 
+
+ntriples --sink --time artists.nt artists.nt artists.nt 
+
+Repace with first TokenizerBytes (stil uses StringBuilder)
+==> 32 bit N-Triples 105 KTPS
