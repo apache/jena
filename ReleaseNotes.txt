@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+GraphBase:
+   o Added limits to the number of triples thatr GraphBase.toString() will
+     serialise.
+   
 Model/Resource API:
    o Took advantage of covariant return types to allow Resource.inModel() and
      Property.inModel() to have Resource resp. Property return types, allowing
