@@ -24,6 +24,10 @@ Model/Resource API:
       
     o getModel() has been pulled up from Resource to RDFNode. This means that
       Literal now supports getModel() and inModel().
+      
+    o RDFNode has .asLiteral() and .asResource() methods, which deliver
+      the Literal or Resource respectively if the RDF Node has that type,
+      and otherwise throw a *RequiredException.
 
 Misc:
    o Patched AnonId using UID when running in environments like GAE
