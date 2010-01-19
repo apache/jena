@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.2 2010-01-11 10:03:43 chris-dollin Exp $
+  $Id: TestCommonImpl.java,v 1.3 2010-01-19 10:06:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -32,6 +32,12 @@ class TestCommonImpl extends EnhNode implements TestNode {
     */
     public Model getModel() 
         { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
+    
+    public Resource asResource()
+        { throw new JenaException( "asResource() should not be called in the EnhGraph/Node tests" ); }
+    
+    public Literal asLiteral()
+        { throw new JenaException( "asLiteral() should not be called in the EnhGraph/Node tests" ); }
 
     Triple findSubject()
         { return findNode( node, null, null ); }

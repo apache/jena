@@ -123,4 +123,16 @@ public interface RDFNode extends FrontsNode
         @return the result returned by the selected method
     */
     public Object visitWith( RDFVisitor rv );
+
+    /**
+       If this node is a Resource, answer that resource; otherwise throw an
+       exception. 
+    */
+    public Resource asResource();
+    
+    /**
+        If this node is a Literal, answer that literal; otherwise throw an
+        exception. 
+     */
+    public Literal asLiteral();
     }

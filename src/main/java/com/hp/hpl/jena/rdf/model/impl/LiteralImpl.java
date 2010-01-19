@@ -43,7 +43,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2010-01-11 10:03:43 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2010-01-19 10:06:17 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
@@ -80,6 +80,12 @@ public class LiteralImpl extends EnhNode implements Literal {
             : (Literal) ((ModelCom) m).getRDFNode( asNode() )
             ;
          }
+    
+    public Literal asLiteral()
+        { return this; }
+    
+    public Resource asResource()
+        { throw new ResourceRequiredException( asNode() ); }
     
     /**
         Answer the model this literal was created in, if any, otherwise null.

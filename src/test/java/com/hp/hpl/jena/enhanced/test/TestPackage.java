@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.3 2010-01-11 10:03:43 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.4 2010-01-19 10:06:17 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -14,6 +14,7 @@ package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.enhanced.*;
 
 import junit.framework.*;
@@ -380,11 +381,17 @@ public class TestPackage extends GraphTestBase  {
 
         public RDFNode inModel( Model m )
             { return null; }
+        
+        public Model getModel() 
+            { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
+        
+        public Resource asResource()
+            { throw new JenaException( "asResource() should not be called in the EnhGraph/Node tests" ); }
+        
+        public Literal asLiteral()
+            { throw new JenaException( "asLiteral() should not be called in the EnhGraph/Node tests" ); }
 
         public Object visitWith( RDFVisitor rv )
-            { return null; }
-
-        public Model getModel()
             { return null; }
         }
     

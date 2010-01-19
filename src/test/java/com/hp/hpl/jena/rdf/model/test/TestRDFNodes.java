@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.2 2010-01-11 09:17:05 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.3 2010-01-19 10:06:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -134,6 +134,36 @@ public class TestRDFNodes extends ModelTestBase
         assertEquals( true, m.createResource().isResource() );
         assertEquals( false, m.createTypedLiteral( 17 ).isResource() );
         assertEquals( false, m.createTypedLiteral( "hello" ).isResource() );
+        }
+    
+    public void testRDFNodeAsResource()
+        {
+        Model m = modelWithStatements( "" );
+        Resource r = m.createResource( "eh:/spoo" );
+        assertSame( r, ((RDFNode) r).asResource() );
+        }
+    
+    public void testLiteralAsResourceThrows()
+        {
+        Model m = modelWithStatements( "" );
+        Resource r = m.createResource( "eh:/spoo" );
+        try { r.asLiteral(); fail( "should not be able to do Resource.asLiteral()" ); }
+        catch (LiteralRequiredException e) {}
+        }
+    
+    public void testRDFNodeAsLiteral()
+        {
+        Model m = modelWithStatements( "" );
+        Literal l = m.createLiteral( "hello, world" );
+        assertSame( l, ((RDFNode) l).asLiteral() );
+        }
+    
+    public void testResourceAsLiteralThrows()
+        {
+        Model m = modelWithStatements( "" );
+        Literal l = m.createLiteral( "hello, world" );
+        try { l.asResource(); fail( "should not be able to do Literal.asResource()" ); }
+        catch (ResourceRequiredException e) {}
         }
     }
 
