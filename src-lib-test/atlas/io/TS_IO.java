@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
     //, TestPeekInputStreamBytes.class
     , TestBufferingWriter.class
     , TestPrintUtils.class
+    , TestStreamUTF8.class
 } )
 public class TS_IO
 {

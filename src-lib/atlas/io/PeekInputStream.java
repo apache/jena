@@ -29,7 +29,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 
 public abstract class PeekInputStream extends InputStream
 {
-    // Essential Peekreader with s/char/byte/g ;
+    // Essential PeekReader with s/char/byte/g ;
     
     // Change to looking at slices of a ByteBuffer and rework TokenizerBytes 
     

@@ -6,13 +6,19 @@
 
 package dev;
 
+
 public class DevTDB
 {
     // RIOT
-    // TokenizerByte - next is to reenginner to do byte[] slicing.   ByteBuffers ++
+    // TokenizerByte - next is to re-enginner to do byte[] slicing.   ByteBuffers ++
 
-    // Just using 
-    // PeekInputStream pin = PeekInputStream.make(in) ;
+    // PeekReader reorganisation:
+    //   I/F: CharStream (buffered, unbuffered, charsequnce versions)
+    
+    // See also PeekReader.makeUTF(InputStream in) and StreamUTF8.
+    // This is StringBuilder to accumlate Strings. 
+    
+    // ?? PeekInputStream pin = PeekInputStream.make(in) ; (InputStreamBuffered??)
     // Tokenizer tokenizer = new TokenizerBytes(pin) ;
     // in LangParse.parseRIOT improves N-triples by 10% and still uses a StringBuilder.
     
@@ -29,12 +35,6 @@ public class DevTDB
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
     //   Materialized answers.
 
-    // Does not work for in-memory location
-    // FileSet knows it's mem but someone askls for a file name.
-    //IndexBuilder.createIndex(new FileSet(location, nodeId2nodeName), rf1) ;
-    
-    // Generative filters : e.g. FILTER(regex(str(?uri), "^http://") 
-    
     // == 0.8.5
     // + Dynamic datasets 
     //   Documentation [DONE} ?Check

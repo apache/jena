@@ -22,11 +22,11 @@ import atlas.lib.Chars ;
 
 public final class PeekReaderSource extends PeekReader
 {
-    private static final int CB_SIZE       = 32 * 1024 ;
+    private static final int CB_SIZE       = 16 * 1024 ;
     
     private final char[] chars ;            // CharBuffer?
-    private int buffLen ;
-    private int idx ;
+    private int buffLen = 0 ;
+    private int idx = 0 ;
 
     private final Source source;
     

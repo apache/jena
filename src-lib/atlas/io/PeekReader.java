@@ -66,7 +66,6 @@ public abstract class PeekReader extends Reader
             return (PeekReader)r ;
 //        if ( r instanceof BufferedReader )
 //            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
-            
         return new PeekReaderSource(r) ;
     }
     
@@ -81,6 +80,10 @@ public abstract class PeekReader extends Reader
     {
         Reader r = FileUtils.asUTF8(in) ;
         return make(r) ;
+        
+//        in = new InputStreamBuffered(in) ;
+//        Reader r = new StreamUTF8(in) ;
+//        return new PeekReaderSourceNoBuffering(r) ;
     }
     
     public static PeekReader readString(String string)
@@ -92,8 +95,7 @@ public abstract class PeekReader extends Reader
     {
         try {
             InputStream in = new FileInputStream(filename) ;
-            Reader r = FileUtils.asUTF8(in) ;
-            return make(r) ;
+            return makeUTF8(in) ;
         } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
@@ -111,13 +113,6 @@ public abstract class PeekReader extends Reader
         // Returns the character before the file starts (i.e. UNSET).
     }
 
-//    public static PeekReader test(String x)         { return new PeekReaderSource(new StringReader(x)) ; }
-//    
-//    // A bit slow in that it copies out of the string into the intermediate char array.
-//    // But happens in one block operations when less than buffer size.
-//    static PeekReader make(String x, int buffSize)
-//    { return new PeekReaderSource(new StringReader(x), buffSize) ; }
-    
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }

@@ -6,17 +6,12 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream ;
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.StringReader ;
-import java.io.StringWriter ;
+import java.io.* ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import perf.Performance ;
 import atlas.io.PeekReader ;
+import atlas.io.StreamUTF8 ;
 import atlas.iterator.Filter ;
 import atlas.lib.Bytes ;
 import atlas.lib.Sink ;
@@ -35,11 +30,13 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.riot.lang.LangNTriples ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -59,7 +56,6 @@ import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunTDB
 {
@@ -77,11 +73,58 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
+        InputStream in = new FileInputStream("/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
+        //InputStream in = new FileInputStream("D.nt") ;
+        OutputStream out = new FileOutputStream("X", false) ;
+        //PrintStream outp = new PrintStream(out) ;
+        PrintStream outp = System.out ;
+        
+        //in = PeekInputStream.make(in, 10) ;
+        //Reader r = FileUtils.asUTF8(in) ;
+        Reader r = new StreamUTF8(in) ;
+        
+        PeekReader pr = PeekReader.make(r) ;
+        while(true)
+        {
+            int x = pr.read() ;
+            if ( x ==-1 ) break ;
+            outp.print((char)x) ;
+            //outp.flush() ;
+        }
+        
+        outp.println("") ;
+        outp.println("EXIT") ;
+        outp.close();
+        System.exit(0) ;
+        
+        //PeekReader pr = PeekReader.make(r) ;
+        Tokenizer tokenizer = new TokenizerText(pr) ;
+        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        Checker checker = new Checker(null) ;
+        parser.setChecker(checker) ;
+        parser.parse();
+        sink.close() ;
+        
+        System.out.println("EXIT") ;
+        System.out.println("EXIT") ;
+        System.exit(0) ;
+        
+        //in = PeekInputStream.make(in) ;
+        //Reader r = new StreamUTF8(in) ;
+        
         
         System.getProperties().setProperty("tdb:fileMode","mapped") ;
         DevCmds.tdbloader("D.ttl") ;
         System.exit(0) ;
         
+        dynamicDataset() ;
+    }
+
+
+
+    private static void dynamicDataset()
+    {
         String desc = "FROM <http://example/dft1> FROM <http://example/dft2> FROM NAMED <http://example/g1> FROM NAMED <http://example/g2>" ; 
         
         //String qs = "SELECT * "+desc+" { { GRAPH ?g { ?s ?p ?g } } UNION { GRAPH <http://example/g1> { ?s ?p ?o } } }" ;
@@ -146,50 +189,6 @@ public class RunTDB
             System.out.print(opQuad) ;
         }
 
-        System.exit(0) ;
-        
-        
-        streamInference() ; System.exit(0) ;
-        
-        TDB.init();
-        Model m = ModelFactory.createDefaultModel();
-        m.createResource("http://example.org/#-1", RDFS.Resource);
-        
-        {
-            StringWriter w = new StringWriter() ;
-            m.write(w, "TURTLE");
-            String s = w.toString() ;
-            StringReader r = new StringReader(s) ;
-            m.read(r, null, "TURTLE");
-        }
-        
-//        m.write(new FileWriter("test.ttl"), "TURTLE");
-//        m.read(new FileReader("test.ttl"), null, "TURTLE");
-        {
-            StringWriter w = new StringWriter() ;
-            m.setNsPrefix("eg", "http://example.org/#");
-            m.write(w, "TURTLE");
-            String s = w.toString() ;
-
-            System.out.println(s) ;
-
-            StringReader r = new StringReader(s) ;
-            m.read(r, null, "TURTLE");
-            
-            m.write(System.out, "TURTLE");
-        }
-        System.exit(0) ;
-        
-        
-        if ( args.length == 0 )
-            args = new String[]{"/home/afs/Datasets/BSBM/bsbm-250k.nt.gz"} ;
-        
-        //Performance.tokenizer(args[0]) ; System.exit(0) ;
-        Performance.ntriples(args[0]) ; System.exit(0) ;
-        
-        tdb.turtle.main("D.ttl") ; System.exit(0) ;
-
-        DevCmds.tdbquery("--tdb=tdb.ttl", "--set=tdb:logExec=info", "SELECT * {GRAPH ?g { ?s ?p ?o}}") ;
         System.exit(0) ;
     }
 
