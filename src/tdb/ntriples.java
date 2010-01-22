@@ -44,7 +44,10 @@ public class ntriples extends LangParse
         if ( false )
         {
             // Hardwired byte parser.
+            // This is the fastest way but uses a cheat for bytes to chars
+            // About 20% faster.
             PeekInputStream pin = PeekInputStream.make(in) ;
+            // This cheats. 
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
             return tokenizer ;
         }

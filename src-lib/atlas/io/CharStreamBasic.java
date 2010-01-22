@@ -43,7 +43,6 @@ public final class CharStreamBasic extends CharStreamReader
             ex.printStackTrace();
         }
     }
-
 }
 
 /*

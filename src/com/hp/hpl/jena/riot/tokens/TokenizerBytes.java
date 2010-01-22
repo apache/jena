@@ -20,6 +20,8 @@ import com.hp.hpl.jena.riot.ParseException;
 public final class TokenizerBytes implements Tokenizer
 {
     // Byte-based tokenizer.
+    // Assumes bytes -> char by extension.  Bad.  Use a StreamXXX around inputStream
+    
     // ** Not full renamed from TokenizerText
     // For all StringBuilder, do new String(bytes, offset, length, charset)
     // ** NEXT StringBuilder => byte[]
@@ -34,6 +36,8 @@ public final class TokenizerBytes implements Tokenizer
     private Token token = null ; 
     private final StringBuilder stringBuilder = new StringBuilder(200) ;
     private final PeekInputStream inputStream ;
+    
+    
     private boolean finished = false ;
     private TokenChecker checker = null ; // new CheckerBase()  ;
     

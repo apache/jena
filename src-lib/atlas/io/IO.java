@@ -22,7 +22,8 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class IO
 {
     public static final int EOF = -1 ;
-    
+    public static final int UNSET = -2 ;
+       
     /** Java name for UTF-8 encoding */
     public static final String encodingUTF8     = "utf-8" ;
     public static final String encodingAscii    = "ascii" ;

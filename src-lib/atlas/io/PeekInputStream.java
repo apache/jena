@@ -6,6 +6,8 @@
 
 package atlas.io;
 
+import static atlas.io.IO.EOF ;
+import static atlas.io.IO.UNSET ;
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
@@ -15,30 +17,18 @@ import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.shared.JenaException ;
 
 /** Parsing-centric input stream.
- *  <p>Faster than using a BufferedInpoutStream, sometimes a lot faster, when
- *  tokenizing is the critical performance point.
- *  </p>
- *  <p>Supports a line and column
- *  count. Initially, line = 1, col = 1.  Columns go 1..N
- *  </p>
- *  This class is not thread safe.
- * @see BufferingWriter
  *  @see PeekReader
  */ 
 
 
-public abstract class PeekInputStream extends InputStream
+public class PeekInputStream extends InputStream
 {
-    // UNFINISHED
-    
-    // Essential PeekReader with s/char/byte/g ;
-    
     // Change to looking at slices of a ByteBuffer and rework TokenizerBytes 
+    
+    private final InputStream source ;
     
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte BYTE0 = (byte)0 ;
-    static final int  EOF = -1 ;
-    static final int  UNSET = -2 ;
     
     private byte[] pushbackBytes ;
     private int idxPushback ;                   // Index into pushbackBytes: points to next pushBack. -1 => none.
@@ -56,26 +46,21 @@ public abstract class PeekInputStream extends InputStream
     
     public static PeekInputStream make(InputStream inputStream)
     {
-        if ( inputStream instanceof PeekInputStream )
-            return (PeekInputStream)inputStream ;
-//        if ( r instanceof BufferedInputStream )
-//            Log.warn(PeekReader.class, "BufferedInputStream passed to PeekInputStream") ;
-            
-        return new PeekInputStreamSource(inputStream) ;
+        return make(inputStream, InputStreamBuffered.DFT_BUFSIZE) ;
     }
     
     public static PeekInputStream make(InputStream inputStream, int bufferSize)
     {
+        if ( inputStream instanceof InputStreamBuffered )
+        {
+            InputStreamBuffered in = (InputStreamBuffered)inputStream ;
+        }
         if ( inputStream instanceof PeekInputStream )
             return (PeekInputStream)inputStream ;
-        return new PeekInputStreamSource(inputStream, bufferSize) ;
+        inputStream = new InputStreamBuffered(inputStream, bufferSize) ;
+        return new PeekInputStream(inputStream) ;
     }
 
-//    public static PeekInputStream readString(String string)
-//    {
-//        return new PeekReaderCharSequence(string) ;
-//    }
-    
     public static PeekInputStream open(String filename) 
     {
         try {
@@ -84,8 +69,9 @@ public abstract class PeekInputStream extends InputStream
         } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
-    protected PeekInputStream()
+    private PeekInputStream(InputStream input)
     {
+        this.source = input ;
         this.pushbackBytes = new byte[PUSHBACK_SIZE] ; 
         this.idxPushback = -1 ;
         
@@ -127,11 +113,10 @@ public abstract class PeekInputStream extends InputStream
     /** push back a byte : does not alter underlying position, line or column counts*/  
     public final void pushbackByte(int b)    { unreadByte(b) ; }
     
-    // Reader operations
     @Override
     public final void close() throws IOException
     {
-        closeInput() ;
+        source.close() ;
     }
 
     @Override
@@ -159,10 +144,6 @@ public abstract class PeekInputStream extends InputStream
     }
 
     public final boolean eof()   { return peekByte() == EOF ; }
-
-    //protected abstract void init() ;
-    protected abstract int advance() ;
-    protected abstract void closeInput() ;
 
     // ----------------
     // The methods below are the only ones to manipulate the byte buffers.
@@ -197,8 +178,10 @@ public abstract class PeekInputStream extends InputStream
 
     private final void advanceAndSet() 
     {
-        int ch = advance() ;
-        setCurrByte(ch) ;
+        try {
+            int ch = source.read() ;
+            setCurrByte(ch) ;
+        } catch (IOException ex) { IO.exception(ex) ; }
     }
     
     

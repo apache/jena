@@ -7,7 +7,9 @@
 package atlas.io;
 
 
-/** A simplifed reader interface without IOExceptions. And it's an interface, not an  */
+/** A simplifed reader interface without IOExceptions. 
+ * And it's an interface, not an abstract class 
+ */
 public interface CharStream
 {
     public int advance() ;

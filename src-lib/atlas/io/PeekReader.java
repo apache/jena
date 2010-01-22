@@ -6,6 +6,8 @@
 
 package atlas.io;
 
+import static atlas.io.IO.EOF ;
+import static atlas.io.IO.UNSET ;
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
@@ -17,13 +19,6 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Parsing-centric reader.
-
- *  <p>Faster than using BufferedReader, sometimes a lot faster, when
- *  tokenizing is the critical performance point.
- *  </p>
- *  <p>Supports a line and column
- *  count. Initially, line = 1, col = 1.  Columns go 1..N
- *  </p>
  *  This class is not thread safe.
  * @see BufferingWriter
  * @see PeekInputStream
@@ -33,9 +28,8 @@ public final class PeekReader extends Reader
 {
     // Remember to apply fixes to PeekInputStream as well.
     
-    // Buffering is done in the subclass (e.g. PeekReaderSource)
-    // Does buffering here instead of using a BufferedReader help?
-    // YES.  A lot (Java6).
+    // Buffering is done by a CharStream - does i t make adifference?
+    // Yes.  A lot (Java6).
     
     // Possibly because BufferedReader internally uses synchronized,
     // even on getting a single character.  This is not only an unnecessary cost
@@ -46,8 +40,6 @@ public final class PeekReader extends Reader
     
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte CHAR0 = (char)0 ;
-    static final int  EOF = -1 ;
-    static final int  UNSET = -2 ;
     
     private char[] pushbackChars ;
     private int idxPushback ;                   // Index into pushbackChars: points to next pushBack. -1 => none.
@@ -65,6 +57,8 @@ public final class PeekReader extends Reader
     
     public static PeekReader make(Reader r)
     {
+        if ( r instanceof PeekReader )
+            return (PeekReader)r ;
         return make(r, CharStreamBuffered.CB_SIZE) ;
     }
     

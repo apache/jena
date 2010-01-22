@@ -20,7 +20,7 @@ import java.io.InputStream ;
  */
 public final class InputStreamBuffered extends InputStream 
 {
-    private static int DFT_BUFSIZE = 1024*1024 ;
+    public static int DFT_BUFSIZE = 16*1024 ;
     private InputStream source ;
     private byte[] buffer ;
     private int buffLen = 0 ;
