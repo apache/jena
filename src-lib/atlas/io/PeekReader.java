@@ -17,6 +17,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Parsing-centric reader.
+
  *  <p>Faster than using BufferedReader, sometimes a lot faster, when
  *  tokenizing is the critical performance point.
  *  </p>
@@ -28,7 +29,7 @@ import com.hp.hpl.jena.util.FileUtils ;
  * @see PeekInputStream
  */ 
 
-public abstract class PeekReader extends Reader
+public final class PeekReader extends Reader
 {
     // Remember to apply fixes to PeekInputStream as well.
     
@@ -40,6 +41,8 @@ public abstract class PeekReader extends Reader
     // even on getting a single character.  This is not only an unnecessary cost
     // but also possibly because it stops the JIT doing a better job.
     // **** read(char[]) is a loop of single char operations.
+    
+    private final CharStream source ;
     
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte CHAR0 = (char)0 ;
@@ -62,33 +65,47 @@ public abstract class PeekReader extends Reader
     
     public static PeekReader make(Reader r)
     {
-        if ( r instanceof PeekReader )
-            return (PeekReader)r ;
-//        if ( r instanceof BufferedReader )
-//            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
-        return new PeekReaderSource(r) ;
+        return make(r, CharStreamBuffered.CB_SIZE) ;
     }
     
     public static PeekReader make(Reader r, int bufferSize)
     {
-        if ( r instanceof PeekReader )
-            return (PeekReader)r ;
-        return new PeekReaderSource(r, bufferSize) ;
+//        if ( r instanceof BufferedReader )
+//        {
+//            // Already buffered - and we can't unbuffer it.
+//            // Still worth our bufering because of the synchronized on one char reads 
+//            return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
+//        }
+        return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
+        // Particularly slow to start with.
+        //return new PeekReader(new CharStreamBasic(new BufferedReader(r, bufferSize))) ;
     }
 
     public static PeekReader makeUTF8(InputStream in) 
     {
-        Reader r = FileUtils.asUTF8(in) ;
-        return make(r) ;
+        // This is the best route to make a PeekReader because it avoid
+        // chances of wrong charset for a Reader say.
+        if ( false )
+        {
+            // Seems to do buffering at UTF-8 translation then CharStreamBuffered (removes sync overhead).
+            Reader r = FileUtils.asUTF8(in) ;
+            return make(r) ;
+        }
         
-//        in = new InputStreamBuffered(in) ;
-//        Reader r = new StreamUTF8(in) ;
-//        return new PeekReaderSourceNoBuffering(r) ;
+        // This is a bit slower - despite seeming to do less copying.
+        InputStreamBuffered in2 = new InputStreamBuffered(in) ;
+        CharStream r = new StreamUTF8(in2) ;
+        return new PeekReader(r) ;
+    }
+    
+    public static PeekReader make(CharStream r) 
+    {
+        return new PeekReader(r) ;
     }
     
     public static PeekReader readString(String string)
     {
-        return new PeekReaderCharSequence(string) ;
+        return new PeekReader(new CharStreamSequence(string)) ;
     }
     
     public static PeekReader open(String filename) 
@@ -99,8 +116,9 @@ public abstract class PeekReader extends Reader
         } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
-    protected PeekReader()
+    private PeekReader(CharStream stream)
     {
+        this.source = stream ;
         this.pushbackChars = new char[PUSHBACK_SIZE] ; 
         this.idxPushback = -1 ;
         
@@ -146,7 +164,7 @@ public abstract class PeekReader extends Reader
     @Override
     public final void close() throws IOException
     {
-        closeInput() ;
+        source.closeStream() ;
     }
 
     @Override
@@ -175,10 +193,6 @@ public abstract class PeekReader extends Reader
     }
 
     public final boolean eof()   { return peekChar() == EOF ; }
-
-    //protected abstract void init() ;
-    protected abstract int advance() ;
-    protected abstract void closeInput() ;
 
     // ----------------
     // The methods below are the only ones to manipulate the character buffers.
@@ -213,7 +227,7 @@ public abstract class PeekReader extends Reader
 
     private final void advanceAndSet() 
     {
-        int ch = advance() ;
+        int ch = source.advance() ;
         setCurrChar(ch) ;
     }
     

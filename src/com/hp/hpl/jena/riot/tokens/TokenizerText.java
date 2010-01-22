@@ -307,7 +307,7 @@ public final class TokenizerText implements Tokenizer
             if ( Checking ) checkPrefixedName(token2.getImage(), token2.getImage2()) ;
         }
 
-        // If we made no progress, nothign found, not even a keyword -- it's an error.
+        // If we made no progress, nothing found, not even a keyword -- it's an error.
         if ( posn == reader.getPosition() )  
             exception(String.format("Unknown char: %c(%d)",ch,ch)) ;
 

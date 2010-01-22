@@ -6,23 +6,20 @@
 
 package atlas.io;
 
+import static atlas.io.IO.EOF ;
+
 import java.io.IOException ;
-import java.io.InputStream ;
 import java.io.Reader ;
-import java.nio.channels.ReadableByteChannel ;
-import java.nio.charset.CharsetDecoder ;
 
-import atlas.lib.AtlasException ;
-import atlas.lib.Chars ;
-
-/** Parsing-centric reader.
- * @see PeekReader
+/** Buffering reader without the (hidden) sync overhead in BufferedReader
+ * 
+ * @see java.io.BufferedReader
  */ 
 
 
-public final class PeekReaderSource extends PeekReader
+public final class CharStreamBuffered extends CharStreamReader
 {
-    private static final int CB_SIZE       = 16 * 1024 ;
+    /*package*/ static final int CB_SIZE       = 16 * 1024 ;
     
     private final char[] chars ;            // CharBuffer?
     private int buffLen = 0 ;
@@ -30,14 +27,14 @@ public final class PeekReaderSource extends PeekReader
 
     private final Source source;
     
-    /*package*/ PeekReaderSource(Reader r)
+    public CharStreamBuffered(Reader r)
     { this(r, CB_SIZE) ; }
 
     /**
-     * @param Reader
+     * @param r
      * @param buffSize
      */
-    /*package*/ PeekReaderSource(Reader r, int buffSize)
+    public CharStreamBuffered(Reader r, int buffSize)
     {
         super() ;
         source = new SourceReader(r) ;
@@ -59,69 +56,69 @@ public final class PeekReaderSource extends PeekReader
         //@Override
         public void close()
         { 
-            try { reader.close() ; } catch (IOException ex) { exception(ex) ; } 
+            try { reader.close() ; } catch (IOException ex) { IO.exception(ex) ; } 
         }
         
         //@Override
         public int fill(char[] array)
         {
-            try { return reader.read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+            try { return reader.read(array) ; } catch (IOException ex) { IO.exception(ex) ; return -1 ; }
         }
     }
     
-    /** Faster?? for ASCII */
-    static final class SourceASCII implements Source
-    {
-        final InputStream input ;
-        SourceASCII(InputStream r) { input = r ; }
-        public void close()
-        { try { input.close() ; } catch (IOException ex) { exception(ex) ; } } 
-        
-        public final int fill(char[] array)
-        {
-            try {
-                // Recycle.
-                byte[] buff = new byte[array.length] ;
-                int len = input.read(buff) ;
-                for ( int i = 0 ; i < len ; i++ )
-                {
-                    byte b = buff[i] ;
-                    if ( b < 0 )
-                        throw new AtlasException("Illegal ASCII charcater: "+b) ;
-                   array[i] = (char)b ;
-                }
-                return len ;
-            } catch (IOException ex) { exception(ex) ; return -1 ; }
-        }
-    }
-    
-    static final class SourceChannel implements Source
-    {
-        final ReadableByteChannel channel ;
-        CharsetDecoder decoder = Chars.createDecoder() ;
-        SourceChannel(ReadableByteChannel r) { channel = r ; }
-        
-        //@Override
-        public void close()
-        { 
-            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
-        }
-        
-        //@Override
-        public int fill(char[] array)
-        {
-            // Encoding foo.
-//             Bytes
-//             
-//            ByteBuffer b = ByteBuffer.wrap(null) ;
-//            
-//            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
-            return -1 ;
-        }
-    }
+//    /** Faster?? for ASCII */
+//    static final class SourceASCII implements Source
+//    {
+//        final InputStream input ;
+//        SourceASCII(InputStream r) { input = r ; }
+//        public void close()
+//        { try { input.close() ; } catch (IOException ex) { exception(ex) ; } } 
+//        
+//        public final int fill(char[] array)
+//        {
+//            try {
+//                // Recycle.
+//                byte[] buff = new byte[array.length] ;
+//                int len = input.read(buff) ;
+//                for ( int i = 0 ; i < len ; i++ )
+//                {
+//                    byte b = buff[i] ;
+//                    if ( b < 0 )
+//                        throw new AtlasException("Illegal ASCII charcater: "+b) ;
+//                   array[i] = (char)b ;
+//                }
+//                return len ;
+//            } catch (IOException ex) { exception(ex) ; return -1 ; }
+//        }
+//    }
+//    
+//    static final class SourceChannel implements Source
+//    {
+//        final ReadableByteChannel channel ;
+//        CharsetDecoder decoder = Chars.createDecoder() ;
+//        SourceChannel(ReadableByteChannel r) { channel = r ; }
+//        
+//        //@Override
+//        public void close()
+//        { 
+//            try { channel.close() ; } catch (IOException ex) { exception(ex) ; } 
+//        }
+//        
+//        //@Override
+//        public int fill(char[] array)
+//        {
+//            // Encoding foo.
+////             Bytes
+////             
+////            ByteBuffer b = ByteBuffer.wrap(null) ;
+////            
+////            try { return channel.read(null).read(array) ; } catch (IOException ex) { exception(ex) ; return -1 ; }
+//            return -1 ;
+//        }
+//    }
 
     @Override
-    protected final int advance()
+    public final int advance()
     {
         if ( idx >= buffLen )
             // Points outside the array.  Refill it 
@@ -150,14 +147,10 @@ public final class PeekReaderSource extends PeekReader
 
     
     @Override
-    protected void closeInput()
+    public void closeStream()
     {
         source.close() ;
     }
-
-    private static void exception(IOException ex)
-    { throw new AtlasException(ex) ; }
-
 }
 
 

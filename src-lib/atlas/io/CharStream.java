@@ -1,39 +1,23 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.io;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Basic classes
-    
-    TestIndentedWriter.class
-    , TestBufferingWriter.class
-    , TestStreamUTF8.class
-    , TestInputStreamBuffered.class
-
-    // Peek readers.
-    , TestPeekReaderSource.class
-    , TestPeekReaderCharSequence.class
-    , TestPeekInputStreamSource.class
-    //, TestPeekInputStreamBytes.class
-    
-    // Other
-    , TestPrintUtils.class
-} )
-public class TS_IO
+/** A simplifed reader interface without IOExceptions. And it's an interface, not an  */
+public interface CharStream
 {
-
+    public int advance() ;
+    
+    /** Close the stream - different name from java.io.Reader.close */
+    public void closeStream() ;     
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

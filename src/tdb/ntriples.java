@@ -8,8 +8,11 @@ package tdb;
 
 import java.io.InputStream ;
 
+import atlas.io.CharStream ;
+import atlas.io.InputStreamBuffered ;
 import atlas.io.PeekInputStream ;
 import atlas.io.PeekReader ;
+import atlas.io.StreamASCII ;
 import atlas.lib.SinkCounting ;
 import atlas.logging.Log ;
 
@@ -38,12 +41,20 @@ public class ntriples extends LangParse
     @Override
     protected Tokenizer makeTokenizer(InputStream in)
     {
-        // Assume strict ASCII: later, this will be fast UTF-8
-        // Quick test for byte-based.  Not currently UTF-8
         if ( false )
         {
+            // Hardwired byte parser.
             PeekInputStream pin = PeekInputStream.make(in) ;
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
+            return tokenizer ;
+        }
+        if ( false )
+        {
+            // ASCII
+            InputStream in2 = new InputStreamBuffered(in) ;
+            CharStream cs = new StreamASCII(in2) ;
+            PeekReader peekReader = PeekReader.make(cs) ;
+            Tokenizer tokenizer = new TokenizerText(peekReader) ;
             return tokenizer ;
         }
         PeekReader peekReader = PeekReader.makeUTF8(in) ;

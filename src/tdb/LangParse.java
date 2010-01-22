@@ -103,7 +103,6 @@ public abstract class LangParse extends CmdGeneral
         
         SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
         
-        
         modTime.startTimer() ;
         parseEngine(tokenizer, sink, baseURI) ;
         long x = modTime.endTimer() ;

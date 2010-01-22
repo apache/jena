@@ -10,6 +10,7 @@ import java.io.* ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import atlas.io.PeekInputStream ;
 import atlas.io.PeekReader ;
 import atlas.io.StreamUTF8 ;
 import atlas.iterator.Filter ;
@@ -38,6 +39,7 @@ import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerBytes ;
 import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -73,6 +75,29 @@ public class RunTDB
     
     public static void main(String[] args) throws IOException
     {
+        fastParse() ; System.exit(0) ;
+        
+        System.getProperties().setProperty("tdb:fileMode","mapped") ;
+        DevCmds.tdbloader("D.ttl") ;
+        System.exit(0) ;
+        
+        dynamicDataset() ;
+
+    }
+    
+    public static void fastParse() throws IOException
+    {
+        if ( false )
+        {
+            InputStream in = null ;
+            PeekInputStream pin = PeekInputStream.make(in) ;
+            Tokenizer tokenizer = new TokenizerBytes(pin) ;
+            //return tokenizer ;
+        }
+
+        tdb.ntriples.main("--time", "--sink", "/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
+        System.exit(0) ;
+
         InputStream in = new FileInputStream("/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
         //InputStream in = new FileInputStream("D.nt") ;
         OutputStream out = new FileOutputStream("X", false) ;
@@ -114,11 +139,6 @@ public class RunTDB
         //Reader r = new StreamUTF8(in) ;
         
         
-        System.getProperties().setProperty("tdb:fileMode","mapped") ;
-        DevCmds.tdbloader("D.ttl") ;
-        System.exit(0) ;
-        
-        dynamicDataset() ;
     }
 
 

@@ -7,6 +7,7 @@
 package atlas.io;
 
 import java.io.FileInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
 import java.io.Reader ;
@@ -20,6 +21,8 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class IO
 {
+    public static final int EOF = -1 ;
+    
     /** Java name for UTF-8 encoding */
     public static final String encodingUTF8     = "utf-8" ;
     public static final String encodingAscii    = "ascii" ;
@@ -69,6 +72,11 @@ public class IO
     {
         InputStream in = openFile(filename) ;
         return new InputStreamReader(in, charset) ;
+    }
+
+    public static void exception(IOException ex)
+    {
+        throw new AtlasException(ex) ;
     }
 }
 

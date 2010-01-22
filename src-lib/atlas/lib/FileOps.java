@@ -61,6 +61,9 @@ public class FileOps
     {
         File d = new File(dir) ;
         File[] entries = d.listFiles() ;
+        if ( entries == null )
+            // Not a directory
+            return false ;
         return entries.length > 0 ;
     }
 

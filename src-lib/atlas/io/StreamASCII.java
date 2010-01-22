@@ -6,87 +6,68 @@
 
 package atlas.io;
 
-import static atlas.io.IO.EOF ;
-
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.Reader ;
 
-/** InputStream optimizing for one byte at a time operation.
- *  BufferedInputStream operations have synchronization making 
- *  reading one byte at a time expensive.
- *  
- *  @see java.io.InputStream
- *  @see java.io.BufferedInputStream
+/** Fast and streaming.
  */
-public final class InputStreamBuffered extends InputStream 
+public final class StreamASCII extends Reader implements CharStream
 {
-    private static int DFT_BUFSIZE = 1024*1024 ;
-    private InputStream source ;
-    private byte[] buffer ;
-    private int buffLen = 0 ;
-    private int idx = 0 ;
-    
-    public InputStreamBuffered(InputStream input)
-    {
-        this(input, DFT_BUFSIZE) ;
-    }
-    
-    public InputStreamBuffered(InputStream input, int bufsize)
-    {
-        super() ;
-        this.source = input ;
-        this.buffer = new byte[bufsize] ;
-        this.idx = 0 ;
-        this.buffLen = 0 ;
-    }
+    private InputStreamBuffered input ;
+    private long count = 0 ;
 
-//    @Override
-//    public int read(byte b[], int off, int len) throws IOException
-//    {
-//    }
-    
-    @Override
-    public int read() throws IOException
+    public StreamASCII(InputStream in)
     {
-        return advance() ;
+        if ( in instanceof InputStreamBuffered )
+        {
+            input = (InputStreamBuffered)in ;
+            return ;
+        }
+        input = new InputStreamBuffered(in) ;
+    }
+    
+    public StreamASCII(InputStreamBuffered in) { input = in ; }
+
+    @Override
+    public boolean ready() throws IOException
+    {
+        return input.available() > 0 ;
     }
     
     @Override
     public void close() throws IOException
-    {
-        source.close() ;
-    }
-    
+    { input.close() ; }
+
     //@Override
-    public final int advance()
+    public void closeStream()
+    { try { close(); } catch (IOException ex) { IO.exception(ex) ; } }
+
+    @Override
+    public int read(char[] cbuf, int off, int len) throws IOException
     {
-        if ( idx >= buffLen )
-            // Points outside the array.  Refill it 
-            fillArray() ;
-        
-        // Advance one character.
-        if ( buffLen >= 0 )
+        for ( int i = off ; i < off+len ; i++ )
         {
-            byte ch = buffer[idx] ;
-            // Advance the lookahead character
-            idx++ ;
-            return ch & 0xFF ;
-        }  
-        else
-            // Buffer empty, end of stream.
-            return EOF ;
+            int x = read() ;
+            if ( x == -1 )
+            {
+                if ( i == off )
+                    return -1 ;
+                return (i-off) ;
+            }
+            cbuf[i] = (char)x ;
+        }
+        return len ; 
     }
 
-    private int fillArray()
+    @Override
+    public int read() throws IOException
+    { return advance() ; }
+    
+    public int advance()
     {
-        try
-        {
-            int x = source.read(buffer) ;
-            idx = 0 ;
-            buffLen = x ;   // Maybe -1
-            return x ;
-        } 
-        catch (IOException ex) { IO.exception(ex) ; return -1 ; }
+        count++ ;
+        return input.advance() ;
     }
 }
 

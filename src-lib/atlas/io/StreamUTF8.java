@@ -16,14 +16,19 @@ import atlas.lib.AtlasException ;
  *  Does not guarantee the character is legal or defined; 
  *  this is just the UTF-8 encoding rules.
  */
-public class StreamUTF8 extends Reader
+public final class StreamUTF8 extends Reader implements CharStream
 {
-    // The standard Java way of doign this is va charset decoders.
-    // They copy-convert a byte buffer into a char buffer.
+    // The standard Java way of doing this is via charset decoders.
+    // This class really just collects knowledge of how UTF-8 encoding works;
+    // the Java classes are usually faster compared to using this class and a
+    // with an InputStreamBuffered but the differenc is small.
+    
+    // The Java classes copy-convert a byte buffer into a char buffer.
     // Sometimes, for example in a parser, this isn't a convenient model
-    // because the app is looking one charcater at a time and accumulating
+    // because the app is looking one character at a time and accumulating
     // the chars until it sees the end of a token of arbitrary length
-    // or processes escape sequences.
+    // or processes escape sequences.  
+    // There may be ways of exploiting this for speed.
     //
     // The app might use a StringBuilder so the bytes get copied into
     // a char buffer and out again.  Instead, this code assumes the
@@ -60,17 +65,35 @@ public class StreamUTF8 extends Reader
     // of CharsetDecoder (sun.io.StreamDecoder) but it's not on all platforms
     // I want a known decoder specifically for UTF8
     
-    private InputStream input ;
+    private InputStreamBuffered input ;
     private long count = 0 ;
 
     public StreamUTF8(InputStream in)
     {
-        input = in ;
+        if ( in instanceof InputStreamBuffered )
+        {
+            input = (InputStreamBuffered)in ;
+            return ;
+        }
+        input = new InputStreamBuffered(in) ;
     }
+    
+    public StreamUTF8(InputStreamBuffered in) { input = in ; }
+    
 
     @Override
+    public boolean ready() throws IOException
+    {
+        return input.available() > 0 ;
+    }
+    
+    @Override
     public void close() throws IOException
-    {}
+    { input.close() ; }
+
+    //@Override
+    public void closeStream()
+    { try { close(); } catch (IOException ex) { IO.exception(ex) ; } }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException
@@ -88,18 +111,24 @@ public class StreamUTF8 extends Reader
         }
         return len ; 
     }
-    
-    @Override
-    public boolean ready() throws IOException
-    {
-        return input.available() > 0 ;
-    }
+
+//    public int advance()
+//    {
+//        try { return read() ; } catch (IOException ex) { IO.exception(ex) ; return -1 ; } 
+//    }
+//
+//    @Override
+//    public int read() throws IOException
+//    {
     
     @Override
     public int read() throws IOException
+    { return advance() ; }
+    
+    public int advance()
     {
         count++ ;
-        int x = input.read() ;
+        int x = input.advance() ;
         // Fastpath
         if ( x == -1 )
             return x ;
@@ -121,20 +150,20 @@ public class StreamUTF8 extends Reader
              y = read2(x & 0x08, 4) ;
 
         if ( y == -2 )
-            throw new IOException("Illegal UTF-8: "+x) ;
+            IO.exception(new IOException("Illegal UTF-8: "+x)) ;
         if ( y > Character.MAX_VALUE )
             throw new AtlasException("Out of range character (must use a surrogate pair)") ;
         return x ;
     }
     
-    private int read2(int start, int len) throws IOException
+    private int read2(int start, int len) //throws IOException
     {
         //System.out.print(" -("+len+")") ; p(start) ;
         
         int x = start ;
         for ( int i = 0 ; i < len-1 ; i++ )
         {
-            int x2 = input.read() ;
+            int x2 = input.advance() ;
             if ( x2 == -1 )
                 throw new AtlasException("Premature end to UTF-8 sequnce at end of input") ;
             

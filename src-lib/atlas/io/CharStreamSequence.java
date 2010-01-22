@@ -1,54 +1,42 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package atlas.io;
+import static atlas.io.IO.EOF ;
 
-import java.io.IOException ;
-import java.io.Reader ;
-
-/** A PeekReaderSource that does no buffering - just wraps a reader. */
-public final class PeekReaderSourceNoBuffering extends PeekReader
+public final class CharStreamSequence implements CharStream
 {
-    
-    private Reader reader ;
+    private CharSequence string ;
+    // Next character.
+    private int idx ;
 
-    PeekReaderSourceNoBuffering(Reader reader)
+    public CharStreamSequence(CharSequence string)
     {
-        this.reader = reader ;
-    }
-    
-    @Override
-    protected int advance()
-    {
-        try
-        {
-            return reader.read() ;
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-            return -1 ;
-        }
+        this.string = string ;
+        this.idx = 0 ;
     }
 
-    @Override
-    protected void closeInput()
+    //@Override
+    public int advance()
     {
-        try
-        {
-            reader.close() ;
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
+        if ( idx >= string.length() )
+            return EOF ;
+        return string.charAt(idx++);
     }
 
+    //@Override
+    public void closeStream()
+    {
+        string = null ;
+    }
 }
 
+
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

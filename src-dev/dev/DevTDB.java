@@ -12,16 +12,6 @@ public class DevTDB
     // RIOT
     // TokenizerByte - next is to re-enginner to do byte[] slicing.   ByteBuffers ++
 
-    // PeekReader reorganisation:
-    //   I/F: CharStream (buffered, unbuffered, charsequnce versions)
-    
-    // See also PeekReader.makeUTF(InputStream in) and StreamUTF8.
-    // This is StringBuilder to accumlate Strings. 
-    
-    // ?? PeekInputStream pin = PeekInputStream.make(in) ; (InputStreamBuffered??)
-    // Tokenizer tokenizer = new TokenizerBytes(pin) ;
-    // in LangParse.parseRIOT improves N-triples by 10% and still uses a StringBuilder.
-    
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;
