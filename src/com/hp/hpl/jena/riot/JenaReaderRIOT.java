@@ -14,12 +14,12 @@ import java.net.URLConnection ;
 
 import org.slf4j.LoggerFactory ;
 
-import atlas.io.PeekReader ;
-
 import com.hp.hpl.jena.graph.GraphEvents ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -37,41 +37,27 @@ public abstract class JenaReaderRIOT implements RDFReader
     public void read(Model model, Reader r, String base) 
 	{ 
         checkReader(r) ;
-        readImpl(model, makePeekReader(r), base) ;
+        readImpl(model, makeTokenizer(r), base) ;
 	}
 
     final
 	public void read(Model model, java.lang.String url) 
 	{
-           //Connection 
-        
-        /*
-         * https://sourceforge.net/mailarchive/message.php?msg_id=4B1D5C7F.3040109%40talis.com
-         * 
-         * Graph I/O
-         * https://sourceforge.net/mailarchive/message.php?msg_id=200906111051.44324.chris.dollin%40hp.com
-         * https://sourceforge.net/mailarchive/message.php?msg_id=B6CF1054FDC8B845BF93A6645D19BEA3646C65DC72%40GVW1118EXC.americas.hpqcorp.net
-            String actual = FileManager.get().mapURI(url) ;
-            TypedStream typedStream = FileManager.get().openNoMapOrNull(url) ;
-            typedStream.getCharset() ;
-            typedStream.getInput() ;
-            typedStream.getMimeType() ;
-            See AFS/dev.ContentNeg
-          */  
-        
-        
-	      try {
-        	URLConnection conn = new URL(url).openConnection();
-        	String encoding = conn.getContentEncoding();
-        	
-        	// Dispatch on MIME type.
-        	// Inc .gz streams.
-        	
-        	if ( encoding == null )
-               read(model, new InputStreamReader(conn.getInputStream(), FileUtils.encodingUTF8), url);
-        	else
+
+        // See AFS/dev.ContentNeg
+        try {
+            URLConnection conn = new URL(url).openConnection();
+            String encoding = conn.getContentEncoding();
+
+            // Dispatch on MIME type.
+            // Inc .gz streams.
+
+            if ( encoding == null )
+                read(model, new InputStreamReader(conn.getInputStream(), FileUtils.encodingUTF8), url);
+            else
             {
-                LoggerFactory.getLogger(this.getClass()).warn("URL content is not UTF-8") ;
+                if ( ! encoding.equalsIgnoreCase("UTF-8") )
+                    LoggerFactory.getLogger(this.getClass()).warn("URL content is not UTF-8") ;
                 read(model, new InputStreamReader(conn.getInputStream(),encoding), url);
             }
         }
@@ -91,20 +77,19 @@ public abstract class JenaReaderRIOT implements RDFReader
     final
     public void read(Model model, InputStream in, String base) 
 	{
-        readImpl(model, makePeekReader(in), base) ;
+        readImpl(model, makeTokenizer(in), base) ;
     }
 
-    /** Turn an InputStream into a PeekReader, default behaviour is an UTF-8 Peekreader. */   
-    protected PeekReader makePeekReader(InputStream in)
+    /** Turn an InputStream into a Tokenizer, default behaviour is UTF-8. */   
+    protected Tokenizer makeTokenizer(InputStream in)
     {
-        // Default - UTF-8
-        return PeekReader.makeUTF8(in) ;
+        return TokenizerFactory.makeTokenizer(in) ;
     }
     
     /** Turn a Reader into a PeekReader, default behaviour is an UTF-8 Peekreader. */   
-    protected PeekReader makePeekReader(Reader r)
+    protected Tokenizer makeTokenizer(Reader r)
     {
-        return PeekReader.make(r) ;
+        return TokenizerFactory.makeTokenizer(r) ;
     }
     
     final
@@ -129,7 +114,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         }
     }
 
-    private void readImpl(Model model, PeekReader reader, String base)
+    private void readImpl(Model model, Tokenizer tokenizer, String base)
     {
         // The reader has been checked, if possible, by now or
         // constructed correctly by code here. 
@@ -137,7 +122,8 @@ public abstract class JenaReaderRIOT implements RDFReader
             base = IRIResolver.resolveGlobal(base).toString() ;
         try {
             model.notifyEvent( GraphEvents.startRead );
-            readWorker(model, reader,  base) ;
+            readWorker(model, tokenizer,  base) ;
+            tokenizer.close() ;
         }
         catch (JenaException e)
         {
@@ -156,7 +142,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         }
     }
 
-    protected abstract void readWorker(Model model, PeekReader reader, String base) throws Exception;
+    protected abstract void readWorker(Model model, Tokenizer tokenizer, String base) throws Exception;
 }
 
 /*

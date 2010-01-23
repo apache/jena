@@ -1,52 +1,67 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package com.hp.hpl.jena.riot.tokens;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 
-import atlas.lib.Sink ;
+import atlas.io.CharStream ;
+import atlas.io.InputStreamBuffered ;
+import atlas.io.PeekInputStream ;
+import atlas.io.PeekReader ;
+import atlas.io.StreamASCII ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.tdb.graph.GraphFactory ;
-
-
-/** Jena reader for RIOT N-Triples */
-public class JenaReaderNTriples2 extends JenaReaderRIOT
+public class TokenizerFactory
 {
-    @Override
-    protected void readWorker(Model model, Tokenizer tokenizer, String base)
+    public static Tokenizer makeTokenizer(Reader reader)
     {
-        Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        LangNTriples parser = new LangNTriples(tokenizer, sink);
-        parser.parse() ;
-        tokenizer.close() ;
+        PeekReader peekReader = PeekReader.make(reader) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
     }
     
-    /** Parse - but do nothing else */
-    public static void parse(InputStream input)
+    public static Tokenizer makeTokenizer(InputStream in)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        Sink<Triple> sink = new SinkToGraphTriples(GraphFactory.sinkGraph()) ;
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
-        parser.parse() ;
-        tokenizer.close();
+        if ( false )
+        {
+            // Byte parser
+            // This is the fastest way but is less tested
+            // About 10% faster.
+            PeekInputStream pin = PeekInputStream.make(in) ;
+            Tokenizer tokenizer = new TokenizerBytes(pin) ;
+            return tokenizer ;
+        }
+        if ( false )
+        {
+            // ASCII
+            InputStream in2 = new InputStreamBuffered(in) ;
+            CharStream cs = new StreamASCII(in2) ;
+            PeekReader peekReader = PeekReader.make(cs) ;
+            Tokenizer tokenizer = new TokenizerText(peekReader) ;
+            return tokenizer ;
+        }
+        
+        // Most tested way
+        PeekReader peekReader = PeekReader.makeUTF8(in) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
+    }
+
+    public static Tokenizer makeTokenizerString(String str)
+    {
+        PeekReader peekReader = PeekReader.readString(str) ;
+        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        return tokenizer ;
     }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
  * (c) Copyright 2010 Talis Information Ltd.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

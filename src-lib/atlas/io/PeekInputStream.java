@@ -21,11 +21,11 @@ import com.hp.hpl.jena.shared.JenaException ;
  */ 
 
 
-public class PeekInputStream extends InputStream
+public final class PeekInputStream extends InputStream
 {
     // Change to looking at slices of a ByteBuffer and rework TokenizerBytes 
     
-    private final InputStream source ;
+    private final InputStreamBuffered source ;
     
     private static final int PUSHBACK_SIZE = 10 ; 
     static final byte BYTE0 = (byte)0 ;
@@ -51,14 +51,13 @@ public class PeekInputStream extends InputStream
     
     public static PeekInputStream make(InputStream inputStream, int bufferSize)
     {
-        if ( inputStream instanceof InputStreamBuffered )
-        {
-            InputStreamBuffered in = (InputStreamBuffered)inputStream ;
-        }
         if ( inputStream instanceof PeekInputStream )
             return (PeekInputStream)inputStream ;
-        inputStream = new InputStreamBuffered(inputStream, bufferSize) ;
-        return new PeekInputStream(inputStream) ;
+        
+        if ( inputStream instanceof InputStreamBuffered )
+            return new PeekInputStream((InputStreamBuffered)inputStream) ;
+        InputStreamBuffered in = new InputStreamBuffered(inputStream, bufferSize) ;
+        return new PeekInputStream(in) ;
     }
 
     public static PeekInputStream open(String filename) 
@@ -69,7 +68,7 @@ public class PeekInputStream extends InputStream
         } catch (FileNotFoundException ex){ throw new RiotException("File not found: "+filename) ; }
     }
     
-    private PeekInputStream(InputStream input)
+    private PeekInputStream(InputStreamBuffered input)
     {
         this.source = input ;
         this.pushbackBytes = new byte[PUSHBACK_SIZE] ; 
@@ -84,6 +83,8 @@ public class PeekInputStream extends InputStream
         // Returns the byte before the file starts (i.e. UNSET).
     }
 
+    public final InputStreamBuffered getInput()   { return source ; }
+    
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }

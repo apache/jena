@@ -6,20 +6,19 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import atlas.io.PeekReader;
-import atlas.lib.Bytes;
-import atlas.lib.Pool;
-import atlas.lib.PoolSync;
-import atlas.lib.StrUtils;
+import atlas.lib.Bytes ;
+import atlas.lib.Pool ;
+import atlas.lib.PoolSync ;
+import atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 /** Simple encoder/decoder for nodes that uses the SSE string encoding. */
@@ -100,8 +99,7 @@ public class NodecSSE implements Nodec
         // -- Old - expensive.
         // Node n = SSE.parseNode(str) ;
         
-        PeekReader r = PeekReader.readString(str) ;
-        Tokenizer tokenizer = new TokenizerText(r) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str) ;
         Node n = tokenizer.next().asNode() ;
         if ( n == null )
             throw new TDBException("Not a node: "+str) ;

@@ -10,7 +10,7 @@ import java.io.* ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import atlas.io.PeekInputStream ;
+import atlas.io.IO ;
 import atlas.io.PeekReader ;
 import atlas.io.StreamUTF8 ;
 import atlas.iterator.Filter ;
@@ -39,8 +39,7 @@ import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerBytes ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -71,8 +70,6 @@ public class RunTDB
         nextDivider = divider ;
     }
 
-    
-    
     public static void main(String[] args) throws IOException
     {
         fastParse() ; System.exit(0) ;
@@ -87,15 +84,7 @@ public class RunTDB
     
     public static void fastParse() throws IOException
     {
-        if ( false )
-        {
-            InputStream in = null ;
-            PeekInputStream pin = PeekInputStream.make(in) ;
-            Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            //return tokenizer ;
-        }
-
-        tdb.ntriples.main("--time", "--sink", "/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
+        tdb.ntriples.main("--time", "--sink", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         System.exit(0) ;
 
         InputStream in = new FileInputStream("/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
@@ -122,8 +111,8 @@ public class RunTDB
         outp.close();
         System.exit(0) ;
         
-        //PeekReader pr = PeekReader.make(r) ;
-        Tokenizer tokenizer = new TokenizerText(pr) ;
+        
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(r) ;
         Sink<Triple> sink = new SinkTripleOutput(System.out) ;
         LangNTriples parser = new LangNTriples(tokenizer, sink) ;
         Checker checker = new Checker(null) ;
@@ -331,7 +320,7 @@ public class RunTDB
         
         Sink<Triple> inputSink = inputSink2 ;
         
-        Tokenizer tokenizer = new TokenizerText(PeekReader.open("D.ttl")) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(IO.openFile("D.ttl")) ;
         LangRIOT parser = new LangTurtle("http://base/", tokenizer, inputSink) ;
         
         parser.parse() ;

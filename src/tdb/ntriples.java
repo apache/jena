@@ -6,13 +6,6 @@
 
 package tdb;
 
-import java.io.InputStream ;
-
-import atlas.io.CharStream ;
-import atlas.io.InputStreamBuffered ;
-import atlas.io.PeekInputStream ;
-import atlas.io.PeekReader ;
-import atlas.io.StreamASCII ;
 import atlas.lib.SinkCounting ;
 import atlas.logging.Log ;
 
@@ -20,8 +13,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerBytes ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class ntriples extends LangParse
@@ -37,34 +28,6 @@ public class ntriples extends LangParse
     {
         super(argv) ;
     }
-
-    @Override
-    protected Tokenizer makeTokenizer(InputStream in)
-    {
-        if ( false )
-        {
-            // Hardwired byte parser.
-            // This is the fastest way but uses a cheat for bytes to chars
-            // About 20% faster.
-            PeekInputStream pin = PeekInputStream.make(in) ;
-            // This cheats. 
-            Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            return tokenizer ;
-        }
-        if ( false )
-        {
-            // ASCII
-            InputStream in2 = new InputStreamBuffered(in) ;
-            CharStream cs = new StreamASCII(in2) ;
-            PeekReader peekReader = PeekReader.make(cs) ;
-            Tokenizer tokenizer = new TokenizerText(peekReader) ;
-            return tokenizer ;
-        }
-        PeekReader peekReader = PeekReader.makeUTF8(in) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
-    }
-
     
     @Override
     protected String getCommandName()

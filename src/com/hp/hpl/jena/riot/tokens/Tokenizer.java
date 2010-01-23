@@ -8,7 +8,9 @@ package com.hp.hpl.jena.riot.tokens;
 
 import java.util.Iterator;
 
-public interface Tokenizer extends Iterator<Token>
+import atlas.lib.Closeable ;
+
+public interface Tokenizer extends Iterator<Token>, Closeable
 {
     /** Is there another token? */
     public boolean hasNext() ;
@@ -18,7 +20,6 @@ public interface Tokenizer extends Iterator<Token>
     
     public long getLine() ;
     public long getColumn() ;
-    
 }
 
 /*

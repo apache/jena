@@ -79,14 +79,14 @@ public final class PeekReader extends Reader
     {
         // This is the best route to make a PeekReader because it avoid
         // chances of wrong charset for a Reader say.
-        if ( false )
+        if ( true )
         {
-            // Seems to do buffering at UTF-8 translation then CharStreamBuffered (removes sync overhead).
             Reader r = FileUtils.asUTF8(in) ;
+            // This adds reader-level buffering
             return make(r) ;
         }
         
-        // This is a bit slower - despite seeming to do less copying.
+        // This is a bit slower - reason unknown.
         InputStreamBuffered in2 = new InputStreamBuffered(in) ;
         CharStream r = new StreamUTF8(in2) ;
         return new PeekReader(r) ;

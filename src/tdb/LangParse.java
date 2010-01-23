@@ -12,7 +12,6 @@ import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
 import atlas.io.IO ;
-import atlas.io.PeekReader ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkNull ;
@@ -20,7 +19,7 @@ import atlas.lib.SinkNull ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
 /** Common framework for running RIOT parsers */
 public abstract class LangParse extends CmdGeneral
@@ -117,10 +116,7 @@ public abstract class LangParse extends CmdGeneral
 
     protected Tokenizer makeTokenizer(InputStream in)
     {
-//      PeekInputStream pin = PeekInputStream.make(in) ;
-//      Tokenizer tokenizer = new TokenizerBytes(pin) ;
-        PeekReader peekReader = PeekReader.makeUTF8(in) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         return tokenizer ;
     }
 

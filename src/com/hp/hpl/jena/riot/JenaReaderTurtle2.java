@@ -7,10 +7,8 @@
 package com.hp.hpl.jena.riot;
 
 import java.io.InputStream ;
-import java.io.Reader ;
 import java.util.Map ;
 
-import atlas.io.PeekReader ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Triple ;
@@ -19,53 +17,37 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.tdb.graph.GraphFactory ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 
-/** Jena's RDFReader interface for RIOT/Turtle */
+/** Jena reader for RIOT Turtle */
 public class JenaReaderTurtle2 extends JenaReaderRIOT
 {
     private LangTurtle parser = null ; 
 
     @Override
-    protected void readWorker(Model model, PeekReader reader, String base)
-    {
-        startRead(model, reader, base) ;
-        parse() ;
-        finishRead(model) ;
-    }
-    
-    public void startRead(Model model, PeekReader peekReader, String base)
+    protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
         parser = new LangTurtle(base, tokenizer, sink) ;
-    }
-
-    /** Access to the prefix map.  Valid after "startRead" */
-    public PrefixMap getPrefixMap() { return parser.getPrefixMap() ; }
-    public void parse() { parser.parse() ; }
-    
-    public void finishRead(Model model)
-    {
+        parser.parse() ;
+        tokenizer.close();
+        
         // Merge prefixes.
-        for ( Map.Entry<String,IRI> e : getPrefixMap().getMapping().entrySet() )
+        for ( Map.Entry<String,IRI> e : parser.getPrefixMap().getMapping().entrySet() )
             model.setNsPrefix(e.getKey(), e.getValue().toString()) ;
     }
     
     /** Parse - but do nothing else */
     public static void parse(InputStream input)
     {
-        Reader reader = FileUtils.asUTF8(input) ;
-        PeekReader peekReader = PeekReader.make(reader) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
         Sink<Triple> sink = new SinkToGraphTriples(GraphFactory.sinkGraph()) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangTurtle parser = new LangTurtle("http://test/base/", tokenizer, sink) ;
         parser.parse() ;
+        tokenizer.close();
     }
-
 }
 
 /*

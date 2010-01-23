@@ -9,7 +9,6 @@ package com.hp.hpl.jena.riot.lang;
 import java.io.StringReader ;
 
 import org.junit.Test ;
-import atlas.io.PeekReader ;
 import atlas.lib.SinkCounting ;
 import atlas.test.BaseTest ;
 
@@ -20,7 +19,7 @@ import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
 
 public class TestLangNTriples extends BaseTest
@@ -131,8 +130,7 @@ public class TestLangNTriples extends BaseTest
 
     private static SinkCounting<Triple> parse(String string)
     {
-        PeekReader reader = PeekReader.readString(string) ;
-        Tokenizer tokenizer = new TokenizerText(reader) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         
         LangNTriples x = new LangNTriples(tokenizer, sink) ;

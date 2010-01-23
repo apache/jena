@@ -40,10 +40,17 @@ public class TokenizerWrapper implements Tokenizer
         return other.next();
     }
 
-    //@Override
+    // @Override
     public void remove()
-    { other.remove() ; }
+    {
+        other.remove() ;
+    }
 
+    // @Override
+    public void close()
+    {
+        other.close() ;
+    }
 }
 
 /*

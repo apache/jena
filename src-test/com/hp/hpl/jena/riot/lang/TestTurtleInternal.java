@@ -5,17 +5,14 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.io.IOException ;
-import java.io.Reader;
-import java.io.StringReader;
+import org.junit.Test ;
+import atlas.lib.Sink ;
+import atlas.lib.SinkNull ;
+import atlas.test.BaseTest ;
 
-import org.junit.Test;
-import atlas.io.PeekReader ;
-import atlas.test.BaseTest;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
 public class TestTurtleInternal extends BaseTest
 {
@@ -231,31 +228,24 @@ public class TestTurtleInternal extends BaseTest
 	public static void parse(String testString)
 	{
 	    // Need to access the prefix mapping.
+	    
+	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
+	    Sink<Triple> sink = new SinkNull<Triple>() ;
 
-	    JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-	    Model model = ModelFactory.createDefaultModel() ;
-	    Reader reader = new StringReader(testString) ;
-	    PeekReader peekReader = PeekReader.make(reader) ;  
-
-	    parser.startRead(model, peekReader, "http://example/base/") ;
+	    LangTurtle parser = new LangTurtle("http://example/base/", tokenizer, sink) ;
 
 	    parser.getPrefixMap().add("a", "http://host/a#") ;
-	    parser.getPrefixMap().add("x", "http://host/a#") ;
-	    // Unicode 00E9 is e-acute
-	    // Unicode 03B1 is alpha
-	    parser.getPrefixMap().add("\u00E9", "http://host/e-acute/") ;
-	    parser.getPrefixMap().add("\u03B1", "http://host/alpha/") ;
-	    parser.getPrefixMap().add("", "http://host/") ;
-	    parser.getPrefixMap().add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
-	    parser.getPrefixMap().add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
-	    parser.parse();
-	    parser.finishRead(model) ;
-	    try {
-	        peekReader.close() ;
-	        reader.close() ;
-	    }
-	    catch (IOException ex) {}
-	    
+        parser.getPrefixMap().add("x", "http://host/a#") ;
+        // Unicode 00E9 is e-acute
+        // Unicode 03B1 is alpha
+        parser.getPrefixMap().add("\u00E9", "http://host/e-acute/") ;
+        parser.getPrefixMap().add("\u03B1", "http://host/alpha/") ;
+        parser.getPrefixMap().add("", "http://host/") ;
+        parser.getPrefixMap().add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
+        parser.getPrefixMap().add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
+        parser.parse();
+
+        tokenizer.close();
 	}
 }
 

@@ -6,30 +6,29 @@
 
 package dump;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.PrintStream ;
+import java.io.UnsupportedEncodingException ;
+import java.util.Iterator ;
 
-import atlas.io.PeekReader;
-import atlas.lib.Bytes;
-import atlas.lib.InternalErrorException;
+import atlas.lib.Bytes ;
+import atlas.lib.InternalErrorException ;
 
-import com.hp.hpl.jena.riot.tokens.Token;
-import com.hp.hpl.jena.riot.tokens.TokenType;
-import com.hp.hpl.jena.riot.tokens.Tokenizer;
-import com.hp.hpl.jena.riot.tokens.TokenizerText;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.riot.tokens.Token ;
+import com.hp.hpl.jena.riot.tokens.TokenType ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DumpIndex
@@ -113,8 +112,7 @@ public class DumpIndex
     public static void reload(InputStream in, Index index)
     {
         RecordFactory f = index.getRecordFactory() ;
-        PeekReader pr = PeekReader.makeUTF8(in) ;
-        Tokenizer tokenizer = new TokenizerText(pr) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         // Read name
         // Read sizes 
         // How do we tell whether it's "key" or "key,value"?
@@ -144,6 +142,7 @@ public class DumpIndex
             // But, hey, this is functionally correct.
             index.add(record) ;
         }
+        tokenizer.close();
     }
 
     private static byte[] hexTokenToBytes(Token token)

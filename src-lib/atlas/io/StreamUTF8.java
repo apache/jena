@@ -66,7 +66,7 @@ public final class StreamUTF8 extends Reader implements CharStream
     // I want a known decoder specifically for UTF8
     
     private InputStreamBuffered input ;
-    private long count = 0 ;
+    //private long count = 0 ;
 
     public StreamUTF8(InputStream in)
     {
@@ -122,13 +122,21 @@ public final class StreamUTF8 extends Reader implements CharStream
 //    {
     
     @Override
-    public int read() throws IOException
-    { return advance() ; }
+    public final int read() throws IOException
+    { return advance(input) ; }
     
-    public int advance()
+    public final int advance()
+    { return advance(input) ; }
+        
+    public static final int advance(InputStreamBuffered input)
     {
-        count++ ;
+        //count++ ;
         int x = input.advance() ;
+        return advance(input, x) ;
+    }
+    
+    public static final int advance(InputStreamBuffered input, int x)
+    {
         // Fastpath
         if ( x == -1 )
             return x ;
@@ -138,16 +146,16 @@ public final class StreamUTF8 extends Reader implements CharStream
         // 10 => extension byte
         // 110..... => 2 bytes
         if ( (x & 0xE0) == 0xC0 ) 
-            return read2(x & 0x1F, 2) ;
+            return read2(input, x & 0x1F, 2) ;
         //  1110.... => 3 bytes : 16 bits : not outside 16bit chars 
         if ( (x & 0xF0) == 0xE0 ) 
-            return read2(x & 0x0F, 3) ;
+            return read2(input, x & 0x0F, 3) ;
 
         // Looking like 4 byte charcater.
         int y = -2 ;
         // 11110zzz => 4 bytes 
         if ( (x & 0xF8) == 0xF0 ) 
-             y = read2(x & 0x08, 4) ;
+             y = read2(input, x & 0x08, 4) ;
 
         if ( y == -2 )
             IO.exception(new IOException("Illegal UTF-8: "+x)) ;
@@ -156,7 +164,7 @@ public final class StreamUTF8 extends Reader implements CharStream
         return x ;
     }
     
-    private int read2(int start, int len) //throws IOException
+    private static int read2(InputStreamBuffered input, int start, int len) //throws IOException
     {
         //System.out.print(" -("+len+")") ; p(start) ;
         
@@ -169,7 +177,8 @@ public final class StreamUTF8 extends Reader implements CharStream
             
             //p(x2) ;
             if ( (x2 & 0xC0) != 0x80 )
-                throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
+                //throw new AtlasException("Illegal UTF-8 processing character "+count+": "+x2) ;
+                throw new AtlasException("Illegal UTF-8 processing character: "+x2) ;
             // 6 bits of x2
             x = (x << 6) | (x2 & 0x3F); 
         }

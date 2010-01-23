@@ -8,8 +8,10 @@ package com.hp.hpl.jena.riot.tokens;
 
 import static com.hp.hpl.jena.riot.RiotChars.*;
 
+import atlas.io.IO ;
 import atlas.io.PeekReader;
 
+import java.io.IOException ;
 import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.riot.ParseException;
@@ -37,11 +39,12 @@ public final class TokenizerText implements Tokenizer
     private boolean finished = false ;
     private TokenChecker checker = null ; // new CheckerBase()  ;
     
-    public TokenizerText(PeekReader reader)
+    /*package*/ TokenizerText(PeekReader reader)
     {
         this.reader = reader ;
     }
     
+    //@Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -50,12 +53,23 @@ public final class TokenizerText implements Tokenizer
             return true ;
         skip() ;
         if (reader.eof())
+        {
+            //close() ;
+            finished = true ;
             return false ;
+        }
         token = parseToken() ;
-        return token != null ;
-    }
+        if ( token == null )
+        {
+            //close() ;
+            finished = true ;
+            return false ;
+        }
+        return true ;
+    }    
     
-    /** Move to next token */
+    
+    //@Override
     public final Token next()
     {
         if ( ! hasNext() )
@@ -72,6 +86,15 @@ public final class TokenizerText implements Tokenizer
     public TokenChecker getChecker() { return checker ; }
     public void setChecker(TokenChecker checker) { this.checker = checker ; }
 
+    //@Override
+    public void close()
+    { 
+        try { reader.close() ; }
+        catch (IOException ex) { IO.exception(ex) ; }
+    }
+
+
+    
     // ---- Machinary
     
     private void skip()
@@ -131,7 +154,7 @@ public final class TokenizerText implements Tokenizer
                 if ( ch3 == ch )
                 {
                     reader.readChar() ;
-                    token.setImage(readLong(ch, false)) ;
+                    token.setImage(readLongString(ch, false)) ;
                     TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
                     token.setType(tt) ;
                 }
@@ -315,7 +338,7 @@ public final class TokenizerText implements Tokenizer
         
     }
     
-    private String readLong(int quoteChar, boolean endNL)
+    private String readLongString(int quoteChar, boolean endNL)
     {
         stringBuilder.setLength(0) ;
         for ( ;; )
@@ -335,7 +358,7 @@ public final class TokenizerText implements Tokenizer
             
             if ( ch == '\\' )
                 ch = readLiteralEscape() ;
-            insertLiteralChar(stringBuilder, ch) ;
+            insertCodepoint(stringBuilder, ch) ;
         }
     }
 
@@ -673,29 +696,14 @@ public final class TokenizerText implements Tokenizer
                 if ( strEscapes )
                     ch = readLiteralEscape() ;
                 else
-                {
-                    ch = reader.readChar() ;
-                    if ( ch == EOF )
-                    {
-                        if ( endNL ) return stringBuilder.toString() ; 
-                        exception("Broken token: "+stringBuilder.toString(), y, x) ;
-                    }
-    
-                    switch (ch)
-                    {
-                        case 'u': ch = readUnicode4Escape(); break ;
-                        case 'U': ch = readUnicode4Escape(); break ;
-                        default:
-                            exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
-                            break ;
-                    }
-                }
+                    ch = readUnicodeEscape() ;
+                // Drop through.
             }
-            insertLiteralChar(stringBuilder, ch) ;
+            insertCodepoint(stringBuilder, ch) ;
         }
     }
     
-    private void insertLiteralChar(StringBuilder buffer, int ch)
+    private void insertCodepoint(StringBuilder buffer, int ch)
     {
         if ( Character.charCount(ch) == 1 )
             buffer.append((char)ch) ;

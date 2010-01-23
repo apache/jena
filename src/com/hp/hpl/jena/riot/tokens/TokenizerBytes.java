@@ -9,8 +9,11 @@ package com.hp.hpl.jena.riot.tokens;
 
 import static com.hp.hpl.jena.riot.RiotChars.*;
 
+import atlas.io.IO ;
 import atlas.io.PeekInputStream ;
+import atlas.io.StreamUTF8 ;
 
+import java.io.IOException ;
 import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.riot.ParseException;
@@ -19,33 +22,39 @@ import com.hp.hpl.jena.riot.ParseException;
 
 public final class TokenizerBytes implements Tokenizer
 {
-    // Byte-based tokenizer.
-    // Assumes bytes -> char by extension.  Bad.  Use a StreamXXX around inputStream
+    /* Better - TokenizerBase
+     * Abstract InputSource  
+     *   Iterator
+     *     abstract "int nextCharOrByte()" and "char nextChar"
+     *     CharConvert(inputstream) // CharConvert(chByte, inputstream) 
+     *     accumulate(stringBuffer,   
+     *     TokenizerBase works in int or char
+     *     abstract scanners.
+     *  insertLiteralChar
+     */
     
-    // ** Not full renamed from TokenizerText
-    // For all StringBuilder, do new String(bytes, offset, length, charset)
-    // ** NEXT StringBuilder => byte[]
+    // Byte-based tokenizer.
+    // Assumes that any marker chars are bytes (code points less than 128)
     
     // Currently, this code is only ASCII because it does byte->char 1:1 
     
     // Space for CURIEs, stricter Turtle QNames, sane Turtle (i.e. leading digits in local part).
-    public static final int CTRL_CHAR = CH_STAR ;
-    
+    public static final int CTRL_CHAR = B_STAR ;
     public static boolean Checking = false ;
-
     private Token token = null ; 
     private final StringBuilder stringBuilder = new StringBuilder(200) ;
     private final PeekInputStream inputStream ;
     
-    
     private boolean finished = false ;
     private TokenChecker checker = null ; // new CheckerBase()  ;
     
-    public TokenizerBytes(PeekInputStream inputStream)
+    /*package*/ TokenizerBytes(PeekInputStream inputStream)
     {
         this.inputStream = inputStream ;
     }
     
+    // Share with TokenizerText
+    //@Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -54,12 +63,22 @@ public final class TokenizerBytes implements Tokenizer
             return true ;
         skip() ;
         if (inputStream.eof())
+        {
+            //close() ;
+            finished = true ;
             return false ;
+        }
         token = parseToken() ;
-        return token != null ;
+        if ( token == null )
+        {
+            //close() ;
+            finished = true ;
+            return false ;
+        }
+        return true ;
     }
     
-    /** Move to next token */
+    //@Override
     public final Token next()
     {
         if ( ! hasNext() )
@@ -76,6 +95,13 @@ public final class TokenizerBytes implements Tokenizer
     public TokenChecker getChecker() { return checker ; }
     public void setChecker(TokenChecker checker) { this.checker = checker ; }
 
+    //@Override
+    public void close()
+    { 
+        try { inputStream.close() ; }
+        catch (IOException ex) { IO.exception(ex) ; }
+    }
+
     // ---- Machinary
     
     private void skip()
@@ -87,7 +113,7 @@ public final class TokenizerBytes implements Tokenizer
                 return ;
     
             ch = inputStream.peekByte() ;
-            if ( ch == CH_HASH )
+            if ( ch == B_HASH )
             {
                 inputStream.readByte() ;
                 // Comment.  Skip to NL
@@ -114,29 +140,29 @@ public final class TokenizerBytes implements Tokenizer
         int chByte = inputStream.peekByte() ;
 
         // ---- IRI
-        if ( chByte == CH_LT )
+        if ( chByte == B_LT )
         {
             inputStream.readByte() ;
-            token.setImage(allBetween(CH_LT, CH_GT, false, false)) ;
+            token.setImage(allBetween(B_LT, B_GT, false, false)) ;
             token.setType(TokenType.IRI) ;
             if ( Checking ) checkURI(token.getImage()) ;
             return token ;
         }
 
         // ---- Literal
-        if ( chByte == CH_QUOTE1 || chByte == CH_QUOTE2 )
+        if ( chByte == B_QUOTE1 || chByte == B_QUOTE2 )
         {
             inputStream.readByte() ;
             int ch2 = inputStream.peekByte() ;
             if (ch2 == chByte )
             {
-                inputStream.readByte() ; // Read potential second quote.
+                inputStream.readByte() ; // Read second quote.
                 int ch3 = inputStream.peekByte() ;
                 if ( ch3 == chByte )
                 {
                     inputStream.readByte() ;
-                    token.setImage(readLong(chByte, false)) ;
-                    TokenType tt = (chByte == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
+                    token.setImage(readLongString(chByte, false)) ;
+                    TokenType tt = (chByte == B_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
                     token.setType(tt) ;
                 }
                 else
@@ -147,7 +173,7 @@ public final class TokenizerBytes implements Tokenizer
                     //if ( ch2 != EOF ) inputStream.pushbackChar(ch2) ;
                     //if ( ch1 != EOF ) inputStream.pushbackChar(ch1) ;    // Must be '' or ""
                     token.setImage("") ;
-                    token.setType( (chByte == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+                    token.setType( (chByte == B_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
                 }
             }
             else
@@ -155,11 +181,11 @@ public final class TokenizerBytes implements Tokenizer
                 // Single quote character.
                 token.setImage(allBetween(chByte, chByte, true, false)) ;
                 // Single quoted string.
-                token.setType( (chByte == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
+                token.setType( (chByte == B_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
             }
             
             // Literal.  Is it @ or ^^
-            if ( inputStream.peekByte() == CH_AT )
+            if ( inputStream.peekByte() == B_AT )
             {
                 inputStream.readByte() ;
                 token.setImage2(langTag()) ;
@@ -194,7 +220,7 @@ public final class TokenizerBytes implements Tokenizer
             return token ;
         }
 
-        if ( chByte == CH_UNDERSCORE )        // Blank node :label must be at least one char
+        if ( chByte == B_UNDERSCORE )        // Blank node :label must be at least one char
         {
             expect("_:") ;
             token.setImage(blankNodeLabel()) ;
@@ -216,7 +242,7 @@ public final class TokenizerBytes implements Tokenizer
             return token ;
         }
 
-        if ( chByte == CH_AT )
+        if ( chByte == B_AT )
         {
             inputStream.readByte() ;
             token.setType(TokenType.DIRECTIVE) ;
@@ -225,7 +251,7 @@ public final class TokenizerBytes implements Tokenizer
             return token ;
         }
         
-        if ( chByte == CH_QMARK )
+        if ( chByte == B_QMARK )
         {
             inputStream.readByte() ;
             token.setType(TokenType.VAR) ;
@@ -239,47 +265,47 @@ public final class TokenizerBytes implements Tokenizer
         switch(chByte)
         { 
             // DOT can start a decimal.  Check for digit.
-            case CH_DOT:
+            case B_DOT:
                 inputStream.readByte() ;
                 chByte = inputStream.peekByte() ;
                 if ( range(chByte, '0', '9') )
                 {
                     // Not a DOT after all.
-                    inputStream.pushbackByte(CH_DOT) ;
+                    inputStream.pushbackByte(B_DOT) ;
                     readNumber() ;
                     return token ;
                 }
                 token.setType(TokenType.DOT) ;
                 return token ;
             
-            case CH_SEMICOLON:  inputStream.readByte() ; token.setType(TokenType.SEMICOLON) ; token.setImage(";") ; return token ;
-            case CH_COMMA:      inputStream.readByte() ; token.setType(TokenType.COMMA) ;     token.setImage(",") ; return token ;
-            case CH_LBRACE:     inputStream.readByte() ; token.setType(TokenType.LBRACE) ;    token.setImage("{") ; return token ;
-            case CH_RBRACE:     inputStream.readByte() ; token.setType(TokenType.RBRACE) ;    token.setImage("}") ; return token ;
-            case CH_LPAREN:     inputStream.readByte() ; token.setType(TokenType.LPAREN) ;    token.setImage("(") ; return token ;
-            case CH_RPAREN:     inputStream.readByte() ; token.setType(TokenType.RPAREN) ;    token.setImage(")") ; return token ;
-            case CH_LBRACKET:   inputStream.readByte() ; token.setType(TokenType.LBRACKET) ;  token.setImage("[") ; return token ;
-            case CH_RBRACKET:   inputStream.readByte() ; token.setType(TokenType.RBRACKET) ;  token.setImage("]") ; return token ;
+            case B_SEMICOLON:  inputStream.readByte() ; token.setType(TokenType.SEMICOLON) ; token.setImage(";") ; return token ;
+            case B_COMMA:      inputStream.readByte() ; token.setType(TokenType.COMMA) ;     token.setImage(",") ; return token ;
+            case B_LBRACE:     inputStream.readByte() ; token.setType(TokenType.LBRACE) ;    token.setImage("{") ; return token ;
+            case B_RBRACE:     inputStream.readByte() ; token.setType(TokenType.RBRACE) ;    token.setImage("}") ; return token ;
+            case B_LPAREN:     inputStream.readByte() ; token.setType(TokenType.LPAREN) ;    token.setImage("(") ; return token ;
+            case B_RPAREN:     inputStream.readByte() ; token.setType(TokenType.RPAREN) ;    token.setImage(")") ; return token ;
+            case B_LBRACKET:   inputStream.readByte() ; token.setType(TokenType.LBRACKET) ;  token.setImage("[") ; return token ;
+            case B_RBRACKET:   inputStream.readByte() ; token.setType(TokenType.RBRACKET) ;  token.setImage("]") ; return token ;
 
             // Specials (if processing off) -- FIX ME
-            //case CH_COLON:      inputStream.readByte() ; token.setType(TokenType.COLON) ; return token ;
-            case CH_UNDERSCORE: inputStream.readByte() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
-            case CH_LT:         inputStream.readByte() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
-            case CH_GT:         inputStream.readByte() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
+            //case B_COLON:      inputStream.readByte() ; token.setType(TokenType.COLON) ; return token ;
+            case B_UNDERSCORE: inputStream.readByte() ; token.setType(TokenType.UNDERSCORE) ; token.setImage("_") ; return token ;
+            case B_LT:         inputStream.readByte() ; token.setType(TokenType.LT) ; token.setImage("<") ; return token ;
+            case B_GT:         inputStream.readByte() ; token.setType(TokenType.GT) ; token.setImage(">") ; return token ;
             // TODO
             // GE, LE
             // Single character symbols for * / + -
 
-//            case CH_PLUS:
-//            case CH_MINUS:
-//            case CH_STAR:
-//            case CH_SLASH:
-//            case CH_RSLASH:
+//            case B_PLUS:
+//            case B_MINUS:
+//            case B_STAR:
+//            case B_SLASH:
+//            case B_RSLASH:
                 
         }
         
         
-        if ( chByte == CH_PLUS || chByte == CH_MINUS || range(chByte, '0', '9'))
+        if ( chByte == B_PLUS || chByte == B_MINUS || range(chByte, '0', '9'))
         {
             readNumber() ;
             if ( Checking ) checkNumber(token.getImage(), token.getImage2() ) ;
@@ -303,7 +329,7 @@ public final class TokenizerBytes implements Tokenizer
         token2.setImage(readWord(false)) ;
         token2.setType(TokenType.KEYWORD) ;
         int ch = inputStream.peekByte() ;
-        if ( ch == CH_COLON )
+        if ( ch == B_COLON )
         {
             inputStream.readByte() ;
             token2.setType(TokenType.PREFIXED_NAME) ;
@@ -319,7 +345,7 @@ public final class TokenizerBytes implements Tokenizer
         
     }
     
-    private String readLong(int quoteChar, boolean endNL)
+    private String readLongString(int quoteChar, boolean endNL)
     {
         stringBuilder.setLength(0) ;
         for ( ;; )
@@ -339,7 +365,7 @@ public final class TokenizerBytes implements Tokenizer
             
             if ( ch == '\\' )
                 ch = readLiteralEscape() ;
-            insertLiteralChar(stringBuilder, ch) ;
+            insertCodepoint(stringBuilder, ch) ;
         }
     }
 
@@ -399,7 +425,9 @@ public final class TokenizerBytes implements Tokenizer
             if ( Character.isLetterOrDigit(ch) || ch == '_' || ch == '.' || ch == '-' )
             {
                 inputStream.readByte() ;
-                stringBuilder.append((char)ch) ;
+                // UTF-8
+                int ch2 = StreamUTF8.advance(inputStream.getInput()) ;
+                stringBuilder.append((char)ch2) ;
                 continue ;
             }
             else
@@ -408,10 +436,10 @@ public final class TokenizerBytes implements Tokenizer
         }
         // BAD : assumes pushbackChar is infinite.
         // Check is ends in "."
-        while ( idx > 0 && stringBuilder.charAt(idx-1) == CH_DOT )
+        while ( idx > 0 && stringBuilder.charAt(idx-1) == B_DOT )
         {
             // Push back the dot.
-            inputStream.pushbackByte(CH_DOT) ;
+            inputStream.pushbackByte(B_DOT) ;
             stringBuilder.setLength(idx-1) ;
             idx -- ;
         }
@@ -451,6 +479,7 @@ public final class TokenizerBytes implements Tokenizer
         {
             x++ ;
             inputStream.readByte() ;
+            // Digit 0
             stringBuilder.append((char)ch) ;
             ch = inputStream.peekByte() ;
             if ( ch == 'x' || ch == 'X' )
@@ -475,10 +504,10 @@ public final class TokenizerBytes implements Tokenizer
 //            
 //        }
         ch = inputStream.peekByte() ;
-        if ( ch == CH_DOT )
+        if ( ch == B_DOT )
         {
             inputStream.readByte() ;
-            stringBuilder.append(CH_DOT) ;
+            stringBuilder.append(B_DOT) ;
             isDecimal = true ;  // Includes things that will be doubles.
             readDigits(stringBuilder) ;
         }
@@ -515,6 +544,7 @@ public final class TokenizerBytes implements Tokenizer
             if ( ! range(ch, '0', '9') && ! range(ch, 'a', 'f') && ! range(ch, 'A', 'F') )
                 break ;
             inputStream.readByte() ;
+            // Less than codepoint 128
             sb.append((char)ch) ;
             x++ ;
         }
@@ -555,6 +585,7 @@ public final class TokenizerBytes implements Tokenizer
             if ( ! range(ch, '0', '9' ) )
                 break ;
             inputStream.readByte() ;
+            // Less than code point 128
             buffer.append((char)ch) ;
             count ++ ;
         }
@@ -593,6 +624,7 @@ public final class TokenizerBytes implements Tokenizer
             if ( isA2Z(ch) )
             {
                 inputStream.readByte() ;
+                // Less than codepoint 128
                 stringBuilder.append((char)ch) ;
             }
             else
@@ -628,6 +660,7 @@ public final class TokenizerBytes implements Tokenizer
                 break ;
             if ( ! isA2ZN(ch) && ch != '-' && ch != ':' )
                 break ;
+            // Less than codepoint 128
             stringBuilder.append((char)ch) ;
             seen = true ;
         }
@@ -676,29 +709,24 @@ public final class TokenizerBytes implements Tokenizer
                 if ( strEscapes )
                     ch = readLiteralEscape() ;
                 else
-                {
-                    ch = inputStream.readByte() ;
-                    if ( ch == EOF )
-                    {
-                        if ( endNL ) return stringBuilder.toString() ; 
-                        exception("Broken token: "+stringBuilder.toString(), y, x) ;
-                    }
-    
-                    switch (ch)
-                    {
-                        case 'u': ch = readUnicode4Escape(); break ;
-                        case 'U': ch = readUnicode4Escape(); break ;
-                        default:
-                            exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
-                            break ;
-                    }
-                }
+                    ch = readUnicodeEscape() ;
+                insertCodepoint(stringBuilder, ch) ;
+                continue ;
             }
-            insertLiteralChar(stringBuilder, ch) ;
+            // Not special.
+            insertChar(stringBuilder, ch) ;
         }
     }
     
-    private void insertLiteralChar(StringBuilder buffer, int ch)
+    // Insert character, knowing the first byte.
+    private void insertChar(StringBuilder buffer, int first)
+    {
+        int ch2 = StreamUTF8.advance(inputStream.getInput(), first) ;
+        insertCodepoint(buffer, ch2) ;
+    }
+
+    // ch is already a unicode codepoint
+    private void insertCodepoint(StringBuilder buffer, int ch)
     {
         if ( Character.charCount(ch) == 1 )
             buffer.append((char)ch) ;
@@ -713,6 +741,8 @@ public final class TokenizerBytes implements Tokenizer
         }
     }
 
+    
+    
     public long getColumn()
     {
         return inputStream.getColNum() ;

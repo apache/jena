@@ -47,6 +47,40 @@ public class RiotChars
     public static final char CH_SLASH        = '/' ;
     public static final char CH_RSLASH       = '\\' ;
     
+    // Byte versions of the above
+    public static final byte B_NL           = NL ;
+    public static final byte B_CR           = CR ;
+    
+    public static final byte B_LBRACKET     = '[' ;
+    public static final byte B_RBRACKET     = ']' ;
+    
+    public static final byte B_LBRACE       = '{' ;
+    public static final byte B_RBRACE       = '}' ;
+
+    public static final byte B_LPAREN       = '(' ;
+    public static final byte B_RPAREN       = ')' ;
+
+    public static final byte B_LT           = '<' ;
+    public static final byte B_GT           = '>' ;
+    public static final byte B_UNDERSCORE   = '_' ;
+
+    public static final byte B_QUOTE1       = '\'' ;
+    public static final byte B_QUOTE2       = '"' ;
+
+    public static final byte B_STAR         = '*' ;
+    public static final byte B_DOT          = '.' ;
+    public static final byte B_COMMA        = ',' ;
+    public static final byte B_SEMICOLON    = ';' ;
+    public static final byte B_COLON        = ':' ;
+    public static final byte B_AT           = '@' ;
+    public static final byte B_QMARK        = '?' ;
+    public static final byte B_HASH         = '#' ;
+    public static final byte B_PLUS         = '+' ;
+    public static final byte B_MINUS        = '-' ;
+    public static final byte B_SLASH        = '/' ;
+    public static final byte B_RSLASH       = '\\' ;
+    
+    
     // ---- Character classes 
     
     public static boolean isA2Z(int ch)
@@ -66,6 +100,7 @@ public class RiotChars
     
     public static boolean isWhitespace(int ch)
     {
+        // ch = ch | 0xFF ;
         return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
     }
     

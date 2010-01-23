@@ -1,61 +1,53 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.riot;
 
-import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.Reader ;
 
-import atlas.io.PeekReader ;
+import atlas.lib.NotImplemented ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkNull ;
 
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.lang.LangNQuads ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerText ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 
-/** Jena interface for RIOT/N-Quad */
-public class JenaReaderNQuads
+/** Jena reader for RIOT N-Triples */
+public class JenaReaderNQuads extends JenaReaderRIOT
 {
-    // two cases - DataSource (explitct graph create needed) and Dataset (can just add quads) 
-//    //@Override
-//    protected void readWorker(Dataset dataset, Reader reader, String base) throws Exception
-//    {
-//        PeekReader peekReader = PeekReader.make(reader) ;
+    @Override
+    protected void readWorker(Model model, Tokenizer tokenizer, String base)
+    {
+        throw new NotImplemented() ;
 //        Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-//        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-//        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+//        LangNQuads parser = new LangNQuads(tokenizer, sink);
 //        parser.parse() ;
-//        peekReader.close();
-//    }
+//        tokenizer.close() ;
+    }
     
     /** Parse - but do nothing else */
     public static void parse(InputStream input)
     {
-        Reader reader = FileUtils.asUTF8(input) ;
-        PeekReader peekReader = PeekReader.make(reader) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
         Sink<Quad> sink = new SinkNull<Quad>() ;
-        
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
         LangNQuads parser = new LangNQuads(tokenizer, sink) ;
         parser.parse() ;
-        try {
-            peekReader.close();
-            reader.close() ;
-        } catch (IOException ex) { ex.printStackTrace(System.err) ; }
+        tokenizer.close();
     }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
+ * (c) Copyright 2010 Talis Information Ltd.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
