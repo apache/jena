@@ -10,7 +10,11 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    // TokenizerByte - next is to re-enginner to do byte[] slicing.   ByteBuffers ++
+    // ** Alt architecture (do separately) - simplify.
+    // 1 - PeekReader - around a Reader
+    // 2 - InputStreamBuffered adds a reader-like interface so it can do bytes->chars via StreamUTF8
+    // 3 - ?? TokenizerText does not use peeking. 
+    // Collapse to one Tokenizer working on a Reader.
 
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
@@ -26,11 +30,8 @@ public class DevTDB
     //   Materialized answers.
 
     // == 0.8.5
-    // + Dynamic datasets 
-    //   Documentation [DONE} ?Check
-    
-    // Bulkloader - generalise for N-Quads.
-    // + Dataset management
+    // + Dynamic datasets  [DONE] 
+    //   Documentation  [DONE] ?Check
     
     // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
     

@@ -51,13 +51,13 @@ public class QueryEngineTDB extends QueryEngineMain
     private Binding initialInput ;
 
     // ---- Object
-    private QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
+    protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
     {
         super(op, dataset, input, context) ;
         this.initialInput = input ;
     }
     
-    private QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
+    protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
     { 
         super(query, dataset, input, context) ; 
         this.initialInput = input ; 
@@ -67,7 +67,6 @@ public class QueryEngineTDB extends QueryEngineMain
     @Override
     protected Op modifyOp(Op op)
     {
- 
         op = Substitute.substitute(op, initialInput) ;
         // Optimize (high-level)
         op = super.modifyOp(op) ;

@@ -9,11 +9,8 @@ package com.hp.hpl.jena.riot.tokens;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import atlas.io.CharStream ;
-import atlas.io.InputStreamBuffered ;
 import atlas.io.PeekInputStream ;
 import atlas.io.PeekReader ;
-import atlas.io.StreamASCII ;
 
 public class TokenizerFactory
 {
@@ -33,15 +30,6 @@ public class TokenizerFactory
             // About 10% faster.
             PeekInputStream pin = PeekInputStream.make(in) ;
             Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            return tokenizer ;
-        }
-        if ( false )
-        {
-            // ASCII
-            InputStream in2 = new InputStreamBuffered(in) ;
-            CharStream cs = new StreamASCII(in2) ;
-            PeekReader peekReader = PeekReader.make(cs) ;
-            Tokenizer tokenizer = new TokenizerText(peekReader) ;
             return tokenizer ;
         }
         
