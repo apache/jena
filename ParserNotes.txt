@@ -1,4 +1,4 @@
-13/1/2010:
+13/01/2010:
 
 N-Triples: 
 32 bit (home PC):  95KTPS
@@ -14,3 +14,9 @@ ntriples --sink --time artists.nt artists.nt artists.nt
 
 Repace with first TokenizerBytes (stil uses StringBuilder)
 ==> 32 bit N-Triples 105 KTPS
+
+23/01/2010:
+N-Triples:
+32 bit (home PC):  98KTPS
+  Using bytes->chars  then TokenizerText
+104 KTPS using TokeizerBytes
