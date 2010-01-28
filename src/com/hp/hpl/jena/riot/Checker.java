@@ -21,7 +21,7 @@ import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.iri.ViolationCodes;
 import com.hp.hpl.jena.shared.JenaException;
 
-public class Checker
+public final class Checker
 {
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
     //static IRIFactory iriFactory = IRIFactory.iriImplementation();
@@ -41,8 +41,6 @@ public class Checker
 
         iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
         iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
-
-        iriFactory.create("");
     }
     
     private boolean allowRelativeIRIs = false ;
@@ -129,7 +127,7 @@ public class Checker
         violations(iri, handler, allowRelativeIRIs, warningsAreErrors) ;
     }
 
-    private Cache<Node, IRI> cache = CacheFactory.createSimpleCache(1000) ;
+    private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(1000) ;
     
     final private void checkURI(Node node)
     {

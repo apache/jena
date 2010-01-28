@@ -9,6 +9,7 @@ package tdb;
 import java.util.List;
 
 import tdb.cmdline.CmdTDB;
+import tdb.cmdline.ModModel ;
 import arq.cmdline.ArgDecl;
 import atlas.logging.Log;
 
@@ -25,6 +26,8 @@ public class tdbloader extends CmdTDB
     private static final ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     private static final ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
     private static final ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
+    
+    private static final ModModel modRDFS            = new ModModel("rdfs") ;
     
     private boolean timing = true ;
     private boolean doInParallel = false ;
@@ -44,6 +47,7 @@ public class tdbloader extends CmdTDB
         super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
         super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
         super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
+        //super.addModule(modRDFS) ;
     }
 
     @Override

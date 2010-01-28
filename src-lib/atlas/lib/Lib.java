@@ -6,6 +6,8 @@
 
 package atlas.lib;
 
+import atlas.logging.Log ;
+
 public class Lib
 {
     private Lib() {}
@@ -46,6 +48,12 @@ public class Lib
         if ( obj == null )
             return nullHashCode ; 
         return obj.hashCode() ;
+    }
+    
+    public static final void sleep(int milliSeconds)
+    {
+        try  { Thread.sleep(milliSeconds) ; }
+        catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
     }
 }
 

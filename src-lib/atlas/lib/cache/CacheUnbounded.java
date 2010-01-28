@@ -1,52 +1,81 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package tdb;
+package atlas.lib.cache;
 
-import atlas.lib.SinkCounting ;
-import atlas.logging.Log ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import atlas.lib.ActionKeyValue ;
+import atlas.lib.Cache ;
 
-public class ntriples extends LangParse
+public class CacheUnbounded<K,V> implements Cache<K,V>
 {
-    /** Run the N-triples parser - and produce N-triples */
-    public static void main(String... argv)
+    final Map<K,V> cache ;
+    private ActionKeyValue<K, V> dropHandler ;
+    
+    public CacheUnbounded()
     {
-        Log.setLog4j() ;
-        new ntriples(argv).mainRun() ;
-    }        
-
-    protected ntriples(String[] argv)
-    {
-        super(argv) ;
+        cache = new HashMap<K, V>() ;
     }
     
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.classShortName(ntriples.class) ;
+    public void clear()
+    { cache.clear() ; }
+
+    public boolean containsKey(K key)
+    { 
+       return cache.containsKey(key) ;
     }
 
-    @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker)
+    public V get(K key)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
+        return cache.get(key) ;
     }
+
+    public boolean isEmpty()
+    {
+        return cache.isEmpty() ;
+    }
+
+    public Iterator<K> keys()
+    {
+        return cache.keySet().iterator() ;
+    }
+
+    public V put(K key, V thing)
+    {
+        return cache.put(key, thing) ;
+    }
+
+    public boolean remove(K key)
+    {
+        V value = cache.get(key) ;
+        if ( value == null )
+            return false ;
+        
+        cache.remove(key) ;
+        dropHandler.apply(key, value) ;
+        return true ;
+    }
+
+    public void setDropHandler(ActionKeyValue<K, V> dropHandler)
+    {
+        this.dropHandler = dropHandler ;
+    }
+
+    public long size()
+    {
+        return cache.size() ;
+    }
+
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

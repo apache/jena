@@ -17,6 +17,7 @@ import atlas.lib.SinkCounting ;
 import atlas.lib.SinkNull ;
 
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -25,15 +26,20 @@ import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 public abstract class LangParse extends CmdGeneral
 {
 
-    private ModTime modTime = new ModTime() ;
-    private ArgDecl argSink = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
-    private boolean bitbucket = false ; 
+    private ModTime modTime     = new ModTime() ;
+    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
+    private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
+    private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
+    private boolean check       = false ;
+    private boolean bitbucket   = false ; 
     
     protected LangParse(String[] argv)
     {
         super(argv) ;
         super.addModule(modTime) ;
         super.add(argSink) ;
+        super.add(argCheck) ;
+        super.add(argNoCheck) ;
     }
 
 
@@ -46,6 +52,10 @@ public abstract class LangParse extends CmdGeneral
     @Override
     protected void processModulesAndArgs()
     {
+        if ( super.contains(argNoCheck) )
+            check = false ;
+        if ( super.contains(argCheck) )
+            check = true ;   
         bitbucket = super.contains(argSink) ; 
     }
 
@@ -103,7 +113,8 @@ public abstract class LangParse extends CmdGeneral
         SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
         
         modTime.startTimer() ;
-        parseEngine(tokenizer, sink, baseURI) ;
+        Checker checker = check ? null : new Checker(null) ;
+        parseEngine(tokenizer, sink, baseURI, checker) ;
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
 
@@ -121,7 +132,7 @@ public abstract class LangParse extends CmdGeneral
     }
 
 
-    protected abstract void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI) ;
+    protected abstract void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker) ;
 
 
     private static void output(String label, long numberTriples, long timeMillis)

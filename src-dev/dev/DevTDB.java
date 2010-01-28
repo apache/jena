@@ -15,6 +15,7 @@ public class DevTDB
     // 2 - InputStreamBuffered adds a reader-like interface so it can do bytes->chars via StreamUTF8
     // 3 - ?? TokenizerText does not use peeking. 
     // Collapse to one Tokenizer working on a Reader.
+    // Redo checker.
 
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
@@ -32,6 +33,7 @@ public class DevTDB
     // == 0.8.5
     // + Dynamic datasets  [DONE] 
     //   Documentation  [DONE] ?Check
+    // ++ RDFS inference??
     
     // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
     

@@ -15,9 +15,9 @@ import atlas.lib.ActionKeyValue ;
 import atlas.lib.Cache ;
 
 /**
- * A simple fixed size cache thatuses the hash code to address a slot.
+ * A simple fixed size cache that uses the hash code to address a slot.
  * Clash policy is to overwrite.
- * No object cretion during lookup or insert.
+ * No object creation during lookup or insert.
  */
 
 public class CacheSimple<K,V> implements Cache<K,V>

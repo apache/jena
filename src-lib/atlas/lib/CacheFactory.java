@@ -22,6 +22,11 @@ public class CacheFactory
         return createCache(0.75f, maxSize) ;
     }
     
+    public static <Key, Value> Cache<Key, Value> createCacheUnbounded()
+    {
+        return new CacheUnbounded<Key, Value>() ;
+    }
+    
     public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
         return new CacheLRU<Key, Value>(0.75f, maxSize) ;

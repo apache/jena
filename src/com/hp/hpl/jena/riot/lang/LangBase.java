@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 /** Stream of tokens, that can be seen as Nodes */
 public abstract class LangBase implements LangRIOT
 {
-    private Checker checker = null ;
+    protected Checker checker = null ;
     private ErrorHandler errorHandler = null ;
 
     protected final Tokenizer tokens ;

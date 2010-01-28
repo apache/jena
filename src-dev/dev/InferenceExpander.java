@@ -46,7 +46,6 @@ public class InferenceExpander implements Sink<Triple>
     //   rdfs:member
     //   list:member ???
     
-    
     // Expanded hierarchy:
     // If C < C1 < C2 then C2 is in the list for C 
     private final Sink<Triple> output ;

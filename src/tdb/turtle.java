@@ -36,10 +36,9 @@ public class turtle extends LangParse
     }
 
     @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI)
+    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker)
     {
         LangTurtle parser = new LangTurtle(baseURI, tokenizer, sink) ;
-        Checker checker = new Checker(null) ;
         parser.setChecker(checker) ;
         parser.parse();
         sink.close() ;

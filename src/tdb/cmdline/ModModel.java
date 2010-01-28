@@ -1,52 +1,58 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package tdb;
+package tdb.cmdline;
 
-import atlas.lib.SinkCounting ;
-import atlas.logging.Log ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.ArgModuleGeneral ;
+import arq.cmdline.CmdArgModule ;
+import arq.cmdline.CmdGeneral ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.util.FileManager ;
 
-public class ntriples extends LangParse
+/** Name a model */
+public class ModModel implements ArgModuleGeneral
 {
-    /** Run the N-triples parser - and produce N-triples */
-    public static void main(String... argv)
+    protected ArgDecl modelArgDecl = null ;
+    private Model model = null ;
+    
+    //public ModModel() { this("model") ; }
+    public ModModel(String argName, String ... altNames)
     {
-        Log.setLog4j() ;
-        new ntriples(argv).mainRun() ;
-    }        
+        modelArgDecl = new ArgDecl(ArgDecl.HasValue, argName) ;
+        for ( String x : altNames )
+            modelArgDecl.addName(x) ;
+    }
 
-    protected ntriples(String[] argv)
+    public ArgDecl getArg() 
     {
-        super(argv) ;
+        return modelArgDecl ;
     }
     
-    @Override
-    protected String getCommandName()
+    public void registerWith(CmdGeneral cmdLine)
     {
-        return Utils.classShortName(ntriples.class) ;
+        cmdLine.add(modelArgDecl, "--"+modelArgDecl.getKeyName()+"=filename", "Filename for a model") ;
     }
 
-    @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker)
+    public void processArgs(CmdArgModule cmdLine)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
+        if ( cmdLine.contains(modelArgDecl) )
+        {
+            String filename = cmdLine.getValue(modelArgDecl) ;
+            model = FileManager.get().loadModel(filename) ;
+        }
     }
+    
+    public Model getModel() { return model ; }
+    
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
