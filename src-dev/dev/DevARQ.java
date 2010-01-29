@@ -11,6 +11,8 @@ public class DevARQ
 {
     // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 
     
+    // Property paths: { ?x !rdf:type ?y } 
+    
     // De-duplicate aggregator code.
     // Junit3 ==> Junit4
     
