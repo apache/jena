@@ -35,6 +35,8 @@ public class DevTDB
     //   Documentation  [DONE] ?Check
     // ++ RDFS inference??
     
+    // Terminating queries with abort top to bottom.
+    
     // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
     
     // NodeFmtLib - expose safeBNodeLabel flag.
