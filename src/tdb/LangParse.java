@@ -30,7 +30,7 @@ public abstract class LangParse extends CmdGeneral
     private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
     private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
-    private boolean check       = false ;
+    private boolean check       = true ;
     private boolean bitbucket   = false ; 
     
     protected LangParse(String[] argv)
@@ -113,7 +113,8 @@ public abstract class LangParse extends CmdGeneral
         SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
         
         modTime.startTimer() ;
-        Checker checker = check ? null : new Checker(null) ;
+        Checker checker = check ? new Checker(null) : null ;
+        
         parseEngine(tokenizer, sink, baseURI, checker) ;
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;

@@ -106,8 +106,8 @@ public abstract class LangBase implements LangRIOT
 
     protected abstract Node tokenAsNode(Token token) ;
 
-    private LabelToNodeMap labelmap = LabelToNodeMap.createBNodeMap() ;
-    protected Node scopedBNode(String label)
+    private final LabelToNodeMap labelmap = LabelToNodeMap.createBNodeMap() ;
+    protected final Node scopedBNode(String label)
     {
         return labelmap.asNode(label) ;
     }

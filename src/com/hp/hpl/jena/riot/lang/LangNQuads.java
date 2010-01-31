@@ -30,6 +30,16 @@ public class LangNQuads extends LangNTuple<Quad>
         super(tokens, sink, messageLog) ;
     }
 
+//    @Override
+//    protected void parseAll(Sink<Quad> sink)
+//    {
+//        while(hasNext())
+//        {
+//            Quad q = parseOne() ; 
+//            sink.send(q) ;
+//        }
+//    }
+    
     @Override
     protected Quad parseOne()
     {

@@ -27,17 +27,17 @@ public class LangNTriples extends LangNTuple<Triple>
     }
 
     @Override
-    protected Triple parseOne()
-    {
+    protected final Triple parseOne() 
+    { 
         Token sToken = nextToken() ;
         Node s = parseIRIOrBNode(sToken) ;
-        
+
         Token pToken = nextToken() ;
         Node p = parseIRI(pToken) ;
-        
+
         Token oToken = nextToken() ;
         Node o = parseRDFTerm(oToken) ;
-        
+
         Token x = nextToken() ;
         if ( x.getType() != TokenType.DOT )
             exception("Triple not terminated by DOT: %s", x, x) ;
@@ -48,7 +48,7 @@ public class LangNTriples extends LangNTuple<Triple>
             checker.check(p) ;
             checker.check(o) ;
         }
-        return new Triple(s, p, o) ;
+        return new Triple(s, p, o) ; 
     }
 }
 

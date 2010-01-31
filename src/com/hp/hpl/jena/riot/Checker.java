@@ -127,7 +127,9 @@ public final class Checker
         violations(iri, handler, allowRelativeIRIs, warningsAreErrors) ;
     }
 
-    private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(1000) ;
+    // An LRU cache is slower.
+    // An unbounded cache is fastest but does not scale.
+    private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(5000) ;
     
     final private void checkURI(Node node)
     {

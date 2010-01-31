@@ -35,7 +35,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     //private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
-    private final Sink<X> sink ;
+    protected final Sink<X> sink ;
     
     protected LangNTuple(Tokenizer tokens, Sink<X> sink, Logger messageLog)
     { 
@@ -47,12 +47,17 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     public final void parse()
     {
         EventManager.send(sink, new Event(RIOT.startRead, null)) ;
+        parseAll(sink) ;
+        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
+    }
+
+    protected void parseAll(Sink<X> sink)
+    {
         while(hasNext())
         {
-           X t = parseOne() ;
-           sink.send(t) ;
+            X x = parseOne() ; 
+            sink.send(x) ;
         }
-        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
     }
 
     // Assumes no syntax errors.
@@ -73,6 +78,8 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     { throw new UnsupportedOperationException(); }
 
     protected abstract X parseOne() ;
+    
+
     
     @Override
     protected final Node tokenAsNode(Token token) 
