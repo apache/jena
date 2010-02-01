@@ -6,7 +6,7 @@
 
 package tdb;
 
-import atlas.lib.SinkCounting ;
+import atlas.lib.Sink ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Triple ;
@@ -36,9 +36,10 @@ public class turtle extends LangParse
     }
 
     @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker)
+    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Triple> sink, Checker checker,
+                               boolean skipOnError, boolean stopOnError)
     {
-        LangTurtle parser = new LangTurtle(baseURI, tokenizer, sink) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokens, checker, sink, skipOnError, stopOnError) ;
         parser.setChecker(checker) ;
         parser.parse();
         sink.close() ;

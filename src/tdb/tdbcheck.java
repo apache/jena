@@ -65,7 +65,7 @@ public class tdbcheck extends CmdARQ
 
     class GraphCheckingSink extends GraphSink
     {
-        Checker checker = new Checker(null) ;
+        Checker checker = new Checker() ;
         
             @Override
             public void performAdd( Triple triple )

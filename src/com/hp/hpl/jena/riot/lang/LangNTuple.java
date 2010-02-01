@@ -10,13 +10,10 @@ import java.util.Iterator ;
 
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import atlas.event.Event ;
-import atlas.event.EventManager ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.riot.ErrorHandlerLogger ;
-import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
@@ -29,29 +26,25 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
  * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
  *  </ul>  
  */
-public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
+public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
     //private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
-    protected final Sink<X> sink ;
     
-    protected LangNTuple(Tokenizer tokens, Sink<X> sink, Logger messageLog)
+    protected LangNTuple(Tokenizer tokens,
+                         Sink<X> sink,
+                         Checker checker,
+                         boolean skipOnError,
+                         boolean stopOnError)
     { 
-        super(null, new ErrorHandlerLogger(messageLog), tokens) ;
-        this.sink = sink ; 
-    }
-    
-    /** Method to parse the whole stream of triples, sending each to the sink */ 
-    public final void parse()
-    {
-        EventManager.send(sink, new Event(RIOT.startRead, null)) ;
-        parseAll(sink) ;
-        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
+        super(tokens, sink, checker, skipOnError, stopOnError) ;
     }
 
-    protected void parseAll(Sink<X> sink)
+    /** Method to parse the whole stream of triples, sending each to the sink */ 
+    @Override
+    protected final void runParser()
     {
         while(hasNext())
         {

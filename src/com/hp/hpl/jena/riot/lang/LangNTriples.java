@@ -21,9 +21,20 @@ public class LangNTriples extends LangNTuple<Triple>
 {
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
-    public LangNTriples(Tokenizer tokens, Sink<Triple> sink)
+    public LangNTriples(Tokenizer tokens,
+                        Sink<Triple> sink,
+                        Checker checker)
     {
-        super(tokens, sink, messageLog) ;
+        this(tokens, sink, checker, false, true) ;
+    }
+    
+    public LangNTriples(Tokenizer tokens,
+                        Sink<Triple> sink,
+                        Checker checker,
+                        boolean skipOnError,
+                        boolean stopOnError)
+    {
+        super(tokens, sink, checker, skipOnError, stopOnError) ;
     }
 
     @Override
@@ -47,6 +58,7 @@ public class LangNTriples extends LangNTuple<Triple>
             checker.check(s, sToken.getLine(), sToken.getColumn()) ;
             checker.check(p, pToken.getLine(), pToken.getColumn()) ;
             checker.check(o, oToken.getLine(), oToken.getColumn()) ;
+            // Skip or not?
         }
         return new Triple(s, p, o) ; 
     }

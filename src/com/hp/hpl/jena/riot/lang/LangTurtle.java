@@ -13,15 +13,23 @@ import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 
 /** Turtle language */
-public class LangTurtle extends LangTurtleBase
+public class LangTurtle extends LangTurtleBase<Triple>
 {
-    public LangTurtle(String baseURI, Tokenizer tokens, Sink<Triple> sink)
+    public LangTurtle(String baseURI, Tokenizer tokens, 
+                      Checker checker, 
+                      Sink<Triple> sink,
+                      boolean skipOnError,
+                      boolean stopOnError) 
     {
-        super(baseURI, tokens, sink) ;
+        super(baseURI, tokens, checker, sink, skipOnError, stopOnError) ;
     }
+
+    public LangTurtle(String baseURI, Tokenizer tokenizer, Checker checker,  Sink<Triple> sink)
+    { this(baseURI, tokenizer, checker, sink, false, true) ; }
 
     @Override
     protected final void oneTopLevelElement()
@@ -59,6 +67,13 @@ public class LangTurtle extends LangTurtleBase
             return ;
         }
         exception("Out of place: %s", peekToken()) ;
+    }
+
+    @Override
+    protected void emit(Node subject, Node predicate, Node object)
+    {
+        Triple t = new Triple(subject, predicate, object) ;
+        sink.send(t) ;
     }
 }
 

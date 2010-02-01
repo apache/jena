@@ -6,29 +6,24 @@
 
 package com.hp.hpl.jena.riot;
 
-import java.util.Iterator;
+import static com.hp.hpl.jena.riot.ErrorHandlerLib.errorHandlerStd ;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import java.util.Iterator ;
 
-import atlas.lib.Cache;
-import atlas.lib.CacheFactory;
+import atlas.lib.Cache ;
+import atlas.lib.CacheFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIComponents;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.Violation;
-import com.hp.hpl.jena.iri.ViolationCodes;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIComponents ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.Violation ;
+import com.hp.hpl.jena.iri.ViolationCodes ;
 
 public final class Checker
 {
-    static private final Logger stdLogger = LoggerFactory.getLogger("RIOT") ;
-    static private final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
-    
-    
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
     //static IRIFactory iriFactory = IRIFactory.iriImplementation();
     
@@ -53,14 +48,20 @@ public final class Checker
     private boolean warningsAreErrors = true ;
     private ErrorHandler handler ;
 
-    public Checker(ErrorHandler handler)
+    public Checker()
     {
-        this.handler = handler ;
-        if ( this.handler == null )
-            this.handler = errorHandlerStd ;
+        this(null) ;
     }
     
-    public ErrorHandler getHandler() { return handler ; } 
+    public Checker(ErrorHandler handler)
+    {
+        if ( handler == null )
+            handler = errorHandlerStd ;
+        this.handler = handler ;
+    }
+    
+    public ErrorHandler getHandler()                { return handler ; } 
+    public void setHandler(ErrorHandler handler)    { this.handler = handler ; }
     
     public void check(Node node, long line, long col)
     {
@@ -73,9 +74,18 @@ public final class Checker
     /** Check a triple - assumes individual nodes are legal */
     public void check(Triple triple, long line, long col) 
     {
-        check(triple.getSubject(), line, col) ;
-        check(triple.getPredicate(), line, col) ;
-        check(triple.getObject(), line, col) ;
+        checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ; 
+    }
+    
+    /** Check a triple - assumes individual nodes are legal */
+    public void checkTriple(Node subject, Node predicate, Node object, long line, long col) 
+    {
+        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
+            handler.error("Subject is not a URI or blank node", line, col) ;
+        if ( predicate == null || ( ! predicate.isURI() ) )
+            handler.error("Predicate not a URI", line, col) ;
+        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
+            handler.error("Object is not a URI, blank node or literal", line, col) ;
     }
     
     public static boolean validate(String msg, Triple triple)

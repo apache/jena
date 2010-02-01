@@ -6,15 +6,13 @@
 
 package dev;
 
-import java.io.* ;
+import java.io.IOException ;
+import java.io.InputStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
 import atlas.io.IO ;
-import atlas.io.PeekReader ;
-import atlas.io.StreamUTF8 ;
 import atlas.iterator.Filter ;
-import atlas.lib.Bytes ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkPrint ;
@@ -31,15 +29,8 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.riot.lang.LangTurtle ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -56,7 +47,6 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.TransformDynamicDataset ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class RunTDB
 {
@@ -72,6 +62,8 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        tdb.ntriples.main("--version") ;
+        
         fastParse() ; System.exit(0) ;
         
         System.getProperties().setProperty("tdb:fileMode","mapped") ;
@@ -86,48 +78,6 @@ public class RunTDB
     {
         tdb.ntriples.main("--time", "--sink", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         System.exit(0) ;
-
-        InputStream in = new FileInputStream("/home/afs/Datasets/MusicBrainz/tracks-1k.nt") ;
-        //InputStream in = new FileInputStream("D.nt") ;
-        OutputStream out = new FileOutputStream("X", false) ;
-        //PrintStream outp = new PrintStream(out) ;
-        PrintStream outp = System.out ;
-        
-        //in = PeekInputStream.make(in, 10) ;
-        //Reader r = FileUtils.asUTF8(in) ;
-        Reader r = new StreamUTF8(in) ;
-        
-        PeekReader pr = PeekReader.make(r) ;
-        while(true)
-        {
-            int x = pr.read() ;
-            if ( x ==-1 ) break ;
-            outp.print((char)x) ;
-            //outp.flush() ;
-        }
-        
-        outp.println("") ;
-        outp.println("EXIT") ;
-        outp.close();
-        System.exit(0) ;
-        
-        
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(r) ;
-        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
-        Checker checker = new Checker(null) ;
-        parser.setChecker(checker) ;
-        parser.parse();
-        sink.close() ;
-        
-        System.out.println("EXIT") ;
-        System.out.println("EXIT") ;
-        System.exit(0) ;
-        
-        //in = PeekInputStream.make(in) ;
-        //Reader r = new StreamUTF8(in) ;
-        
-        
     }
 
 
@@ -201,37 +151,6 @@ public class RunTDB
         System.exit(0) ;
     }
 
-    static void report() 
-    {
-        String x ;
-        try
-        {
-            x = FileUtils.readWholeFileAsUTF8("D.nt") ;
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(); return ;
-        } 
-        byte[] buff = Bytes.string2bytes(x) ;
-        
-        for ( int i = 0 ; i < 1000000 ; i++ )
-        {
-            
-             
-            if ( i%1000 == 1 )
-                System.out.print(".") ;
-            
-            if ( i%100000 == 1 )
-                System.out.println() ;
-            
-            InputStream in = new ByteArrayInputStream(buff) ;
-            JenaReaderNTriples2.parse(in) ;  
-        }
-        System.out.println() ;
-        System.out.println("Finished") ;
-        System.exit(0) ;
-
-    }
-    
     static void genericQuery(Dataset ds)
     {
         String queryString = "prefix : <http://example/> SELECT * { ?s ?p 123 }" ;
@@ -278,21 +197,6 @@ public class RunTDB
         DevCmds.tdbquery("--tdb=tdb.ttl", qs) ;
     }
     
-    public static void turtle2() throws IOException
-    {
-        // Also tdb.turtle.
-        //        TDB.init();
-        //        RDFWriter w = new JenaWriterNTriples2() ;
-        //        Model model = FileManager.get().loadModel("D.ttl") ;
-        //        w.write(model, System.out, null) ;
-        //        System.exit(0) ;
-
-        InputStream input = new FileInputStream("D.ttl") ;
-        JenaReaderTurtle2.parse(input) ;
-        System.out.println("END") ;
-        System.exit(0) ;
-    }
-    
     static class SinkGapper<T> extends SinkWrapper<T>
     {
         public SinkGapper(Sink<T> sink)
@@ -320,9 +224,9 @@ public class RunTDB
         
         Sink<Triple> inputSink = inputSink2 ;
         
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(IO.openFile("D.ttl")) ;
-        LangRIOT parser = new LangTurtle("http://base/", tokenizer, inputSink) ;
+        InputStream input = IO.openFile("D.ttl") ;
         
+        LangRIOT parser = Lang.createParserTurtle("http://base/", input, inputSink) ;
         parser.parse() ;
         inputSink.flush() ;
 

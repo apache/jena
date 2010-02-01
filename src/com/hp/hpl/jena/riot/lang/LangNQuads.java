@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -23,23 +21,15 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class LangNQuads extends LangNTuple<Quad>
 {
-    private static Logger messageLog = LoggerFactory.getLogger("N-Quads") ;
-    
-    public LangNQuads(Tokenizer tokens, Sink<Quad> sink)
+    public LangNQuads(Tokenizer tokens,
+                      Sink<Quad> sink,
+                      Checker checker,
+                      boolean skipOnError,
+                      boolean stopOnError)
     {
-        super(tokens, sink, messageLog) ;
+        super(tokens, sink, checker, skipOnError, stopOnError) ;
     }
 
-//    @Override
-//    protected void parseAll(Sink<Quad> sink)
-//    {
-//        while(hasNext())
-//        {
-//            Quad q = parseOne() ; 
-//            sink.send(q) ;
-//        }
-//    }
-    
     @Override
     protected Quad parseOne()
     {

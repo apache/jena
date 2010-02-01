@@ -10,12 +10,7 @@ public class ParseException extends RiotException
 {
     public ParseException(String msg, long line, long column)
     {
-        super(fmt(msg,line,column)); 
-    }
-
-    private static String fmt(String msg, long line, long column)
-    {
-        return "[Line:"+line+",Col:"+column+"] "+msg ;
+        super(RIOT.fmtMessage(msg,line,column)); 
     }
 }
 

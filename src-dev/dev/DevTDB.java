@@ -10,12 +10,9 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    // ** Alt architecture (do separately) - simplify.
-    // 1 - PeekReader - around a Reader
-    // 2 - InputStreamBuffered adds a reader-like interface so it can do bytes->chars via StreamUTF8
-    // 3 - ?? TokenizerText does not use peeking. 
-    // Collapse to one Tokenizer working on a Reader.
-    // Redo checker.
+    // Redo checker, combine with ErrorHandler.
+    // Skip on error (for NTriples)
+    // Set the logger for the checker (N-Triples, NQuads).
 
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler

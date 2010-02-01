@@ -1,22 +1,44 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.riot.Checker;
+import java.io.InputStream ;
 
-public interface LangRIOT
+import atlas.lib.Sink ;
+
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+
+
+public class Lang
 {
-    public Checker          getChecker() ;
-    public void             setChecker(Checker checker) ;
-    public void             parse() ;    
+    /** Create a parser for N-Triples, with default behaviour */
+    public static LangTurtle createParserTurtle(String baseIRI, InputStream input, Sink<Triple> sink)
+    {
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, new Checker(), sink, false, true) ; ;
+        return parser ;
+    }
+    
+    /** Create a parser forTurtle, with default behaviour */
+    public static LangRIOT createParserNTriples(InputStream input, Sink<Triple> sink)
+    {
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink, new Checker(), false, true) ; ;
+        return parser ;
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

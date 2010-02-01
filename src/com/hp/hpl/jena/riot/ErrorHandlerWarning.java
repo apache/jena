@@ -1,22 +1,24 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.riot.Checker;
+import org.slf4j.Logger ;
 
-public interface LangRIOT
+/** An error handler that logs messages only for errors and warnings */ 
+public class ErrorHandlerWarning extends ErrorHandlerLogger
 {
-    public Checker          getChecker() ;
-    public void             setChecker(Checker checker) ;
-    public void             parse() ;    
+    public ErrorHandlerWarning(Logger log)
+    {
+        super(log) ;
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

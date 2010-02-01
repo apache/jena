@@ -7,18 +7,14 @@
 
 package com.hp.hpl.jena.riot;
 
-import java.io.InputStream ;
-
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.tdb.graph.GraphFactory ;
-
 
 /** Jena reader for RIOT N-Triples */
 public class JenaReaderNTriples2 extends JenaReaderRIOT
@@ -26,20 +22,11 @@ public class JenaReaderNTriples2 extends JenaReaderRIOT
     @Override
     protected void readWorker(Model model, Tokenizer tokenizer, String base)
     {
+        Checker checker = new Checker() ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        LangNTriples parser = new LangNTriples(tokenizer, sink);
+        LangRIOT parser = new LangNTriples(tokenizer, sink, checker, false, true) ;
         parser.parse() ;
-        tokenizer.close() ;
-    }
-    
-    /** Parse - but do nothing else */
-    public static void parse(InputStream input)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        Sink<Triple> sink = new SinkToGraphTriples(GraphFactory.sinkGraph()) ;
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
-        parser.parse() ;
-        tokenizer.close();
+        sink.close();
     }
 }
 

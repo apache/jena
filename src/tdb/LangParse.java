@@ -8,56 +8,53 @@ package tdb;
 
 import java.io.InputStream ;
 
-import arq.cmdline.ArgDecl ;
+import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModTime ;
 import atlas.io.IO ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkNull ;
+import atlas.logging.Log ;
 
+import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Checker ;
+import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.tdb.TDB ;
 
 /** Common framework for running RIOT parsers */
 public abstract class LangParse extends CmdGeneral
 {
-
-    private ModTime modTime     = new ModTime() ;
-    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
-    private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
-    private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
-    private boolean check       = true ;
-    private boolean bitbucket   = false ; 
+    static { Log.setLog4j() ; }
+    // Module.
+    protected ModTime modTime                 = new ModTime() ;
+    protected ModLangParse modLangParse       = new ModLangParse() ;
     
     protected LangParse(String[] argv)
     {
         super(argv) ;
         super.addModule(modTime) ;
-        super.add(argSink) ;
-        super.add(argCheck) ;
-        super.add(argNoCheck) ;
+        super.addModule(modLangParse) ;
+        
+        super.modVersion.addClass(Jena.class) ;
+        super.modVersion.addClass(ARQ.class) ;
+        super.modVersion.addClass(TDB.class) ;
     }
-
 
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" [--time] file ..." ;
+        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--skip | --stopOnError] file ..." ;
     }
 
     @Override
     protected void processModulesAndArgs()
-    {
-        if ( super.contains(argNoCheck) )
-            check = false ;
-        if ( super.contains(argCheck) )
-            check = true ;   
-        bitbucket = super.contains(argSink) ; 
-    }
+    { }
 
     private long totalMillis = 0 ; 
     private long totalTriples = 0 ; 
@@ -107,15 +104,20 @@ public abstract class LangParse extends CmdGeneral
         
         Sink<Triple> s = new SinkNull<Triple>() ;
         
-        if ( ! bitbucket )
+        if ( ! modLangParse.toBitBucket() )
             s = new SinkTripleOutput(System.out) ;
         
         SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
         
         modTime.startTimer() ;
-        Checker checker = check ? new Checker(null) : null ;
         
-        parseEngine(tokenizer, sink, baseURI, checker) ;
+        
+        
+        Checker checker = null ;
+        if ( modLangParse.isCheck() )
+            checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
+        
+        parseEngine(tokenizer, baseURI, sink, checker, modLangParse.isSkipOnError(), modLangParse.isStopOnError()) ;
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
 
@@ -133,7 +135,13 @@ public abstract class LangParse extends CmdGeneral
     }
 
 
-    protected abstract void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker) ;
+    protected abstract void parseEngine(Tokenizer tokens,
+                                        String baseIRI,
+                                        Sink<Triple> sink,
+                                        Checker checker,
+                                        boolean skipOnError,
+                                        boolean stopOnError) ;
+                                        
 
 
     private static void output(String label, long numberTriples, long timeMillis)

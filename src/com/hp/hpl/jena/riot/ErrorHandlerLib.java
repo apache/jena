@@ -1,22 +1,24 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.riot.Checker;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-public interface LangRIOT
+public class ErrorHandlerLib
 {
-    public Checker          getChecker() ;
-    public void             setChecker(Checker checker) ;
-    public void             parse() ;    
+    static public final Logger          stdLogger = LoggerFactory.getLogger("RIOT") ;
+    static public final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
+    static public final ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
+    static public final ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

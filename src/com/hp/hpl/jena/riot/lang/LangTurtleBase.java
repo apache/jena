@@ -7,20 +7,16 @@
 package com.hp.hpl.jena.riot.lang;
 
 import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
-import atlas.event.Event ;
-import atlas.event.EventManager ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.PrefixMap ;
 import com.hp.hpl.jena.riot.Prologue ;
-import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
@@ -30,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish. */
-public abstract class LangTurtleBase extends LangBase
+public abstract class LangTurtleBase<X> extends LangBase<X>
 {
     /* See http://www.w3.org/TeamSubmission/turtle/ */
 
@@ -89,7 +85,7 @@ public abstract class LangTurtleBase extends LangBase
     protected final static String KW_FALSE          = "false" ;
     
     protected final static boolean VERBOSE          = false ;
-    protected final static boolean CHECKING         = true ;
+    //protected final static boolean CHECKING         = true ;
     protected final boolean strict                  = false ;
     
     protected final Prologue prologue ;
@@ -105,23 +101,23 @@ public abstract class LangTurtleBase extends LangBase
      */
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    private final Sink<Triple> sink ;
-    
 //    public LangTurtle(Tokenizer tokens)
 //    {
 //        this("http://example/", tokens, new PrintingSink(log)) ;
 //    }
     
-    public LangTurtleBase(String baseURI, Tokenizer tokens, Sink<Triple> sink)
+    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, 
+                          Sink<X> sink,
+                          boolean skipOnError,
+                          boolean stopOnError) 
     { 
-        super(new Checker(null), null, tokens) ;
-        this.sink = sink ;
+        super(tokens, sink, checker, skipOnError, stopOnError) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
-    public final void parse()
+    @Override
+    protected final void runParser()
     {
-        EventManager.send(sink, new Event(RIOT.startRead, null)) ;
         while(moreTokens())
         {
             if ( lookingAt(DIRECTIVE) )
@@ -134,12 +130,14 @@ public abstract class LangTurtleBase extends LangBase
             if ( lookingAt(EOF) )
                 break ;
         }
-        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
     }
     
     
     // Do one top level item for the language.
     protected abstract void oneTopLevelElement() ;
+
+    /** Emit a triple - nodes have been checked as has legality oif node type in location */
+    protected abstract void emit(Node subject, Node predicate, Node object) ;
 
     protected final void directive()
     {
@@ -304,7 +302,7 @@ public abstract class LangTurtleBase extends LangBase
         for(;;)
         {
             Node object = triplesNode() ;
-            emit(subject, predicate, object) ;
+            emitTriple(subject, predicate, object) ;
 
             if ( ! moreTokens() )
                 break ;
@@ -415,10 +413,10 @@ public abstract class LangTurtleBase extends LangBase
             if ( listHead == null )
                 listHead = nextCell ;
             if ( lastCell != null )
-                emit(lastCell, NodeConst.nodeRest, nextCell) ;
+                emitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
             lastCell = nextCell ;
             
-            emit(nextCell, NodeConst.nodeFirst, n) ;
+            emitTriple(nextCell, NodeConst.nodeFirst, n) ;
 
             if ( ! moreTokens() )   // Error.
                 break ;
@@ -430,25 +428,17 @@ public abstract class LangTurtleBase extends LangBase
             return NodeConst.nodeNil ;
         
         // Finish list.
-        emit(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
+        emitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
         return listHead ;
     }
    
-    protected final void emit(Node subject, Node predicate, Node object)
+    protected final void emitTriple(Node subject, Node predicate, Node object)
     {
-        if ( CHECKING )
-        {
-            if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-                exception("Subject is not a URI or blank node") ;
-            if ( predicate == null || ( ! predicate.isURI() ) )
-                exception("Predicate not a URI") ;
-            if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-                exception("Object is not a URI, blank node or literal") ;
-        }
-        Triple t = new Triple(subject, predicate, object) ;
-        sink.send(new Triple(subject, predicate, object)) ;
+        if ( checker != null )
+            checker.checkTriple(subject, predicate, object, currLine, currCol) ;
+        emit(subject, predicate, object) ;
     }
-    
+
     LabelToNodeMap lmap = LabelToNodeMap.createBNodeMap() ;
     
     @Override

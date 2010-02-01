@@ -7,17 +7,10 @@
 
 package com.hp.hpl.jena.riot;
 
-import java.io.InputStream ;
-
 import atlas.lib.NotImplemented ;
-import atlas.lib.Sink ;
-import atlas.lib.SinkNull ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.lang.LangNQuads ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 
 /** Jena reader for RIOT N-Triples */
@@ -31,16 +24,6 @@ public class JenaReaderNQuads extends JenaReaderRIOT
 //        LangNQuads parser = new LangNQuads(tokenizer, sink);
 //        parser.parse() ;
 //        tokenizer.close() ;
-    }
-    
-    /** Parse - but do nothing else */
-    public static void parse(InputStream input)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        Sink<Quad> sink = new SinkNull<Quad>() ;
-        LangNQuads parser = new LangNQuads(tokenizer, sink) ;
-        parser.parse() ;
-        tokenizer.close();
     }
 }
 

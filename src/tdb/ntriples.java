@@ -6,8 +6,7 @@
 
 package tdb;
 
-import atlas.lib.SinkCounting ;
-import atlas.logging.Log ;
+import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
@@ -20,7 +19,6 @@ public class ntriples extends LangParse
     /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
     {
-        Log.setLog4j() ;
         new ntriples(argv).mainRun() ;
     }        
 
@@ -34,11 +32,11 @@ public class ntriples extends LangParse
     {
         return Utils.classShortName(ntriples.class) ;
     }
-
     @Override
-    protected void parseEngine(Tokenizer tokenizer, SinkCounting<Triple> sink, String baseURI, Checker checker)
+    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker,
+                               boolean skipOnError, boolean stopOnError)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, sink) ;
+        LangNTriples parser = new LangNTriples(tokenizer, sink, checker, skipOnError, stopOnError) ;
         parser.setChecker(checker) ;
         parser.parse();
         sink.close() ;

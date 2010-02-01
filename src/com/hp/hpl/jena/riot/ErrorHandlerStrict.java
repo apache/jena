@@ -4,15 +4,34 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.riot.Checker;
+import org.slf4j.Logger ;
+import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 
-public interface LangRIOT
+/** An error handler that logs message for errors and warnings and throw exceptions on either */ 
+public class ErrorHandlerStrict extends ErrorHandlerLogger
 {
-    public Checker          getChecker() ;
-    public void             setChecker(Checker checker) ;
-    public void             parse() ;    
+    public ErrorHandlerStrict(Logger log)
+    {
+        super(log) ;
+    }
+    
+    /** report a warning  - do not carry on */
+    @Override
+    public void warning(String message, long line, long col)
+    { 
+        super.warning(message, line, col) ;
+        throw new RiotException(fmtMessage(message, line, col)) ;
+    }
+    
+    /** report an error - do not carry on */
+    @Override
+    public void error(String message, long line, long col)
+    { 
+        super.error(message, line, col) ;
+        throw new RiotException(fmtMessage(message, line, col)) ;
+    }
 }
 
 /*

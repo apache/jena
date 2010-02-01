@@ -8,30 +8,42 @@ package com.hp.hpl.jena.riot.lang;
 
 import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
+import atlas.event.Event ;
+import atlas.event.EventManager ;
 import atlas.iterator.PeekIterator ;
+import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.ErrorHandler ;
 import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
 /** Stream of tokens, that can be seen as Nodes */
-public abstract class LangBase implements LangRIOT
+public abstract class LangBase<X> implements LangRIOT
 {
     protected Checker checker = null ;
-    private ErrorHandler errorHandler = null ;
 
     protected final Tokenizer tokens ;
     private final PeekIterator<Token> peekIter ;
+
+    private boolean skipOnError = false ;
+    private boolean stopOnError = true ;
+    protected final Sink<X> sink ; 
     
-    public LangBase(Checker check, ErrorHandler errorHandler, Tokenizer tokens)
+    public LangBase(Tokenizer tokens,
+                    Sink<X> sink,
+                    Checker check, 
+                    boolean skipOnError,
+                    boolean stopOnError)
     {
         setChecker(check) ;
-        setErrorHandler(errorHandler) ;
+        this.sink = sink ;
+        this.skipOnError = skipOnError ;
+        this.stopOnError = stopOnError ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
     }
@@ -41,26 +53,25 @@ public abstract class LangBase implements LangRIOT
     //@Override
     public void    setChecker(Checker checker)  { this.checker = checker ; }
     
-    //@Override
-    public ErrorHandler getErrroHandler()       { return errorHandler ; }
-    //@Override
-    public void setErrorHandler(ErrorHandler handler) { this.errorHandler = handler  ; }
+    public void parse()
+    {
+        EventManager.send(sink, new Event(RIOT.startRead, null)) ;
+        runParser() ;
+        EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
+    }
+    
     
     // ---- Managing tokens.
     
+    /** Run the parser - events have been handled. */
+    protected abstract void runParser() ;
+
     protected final Token peekToken()
     {
         // Avoid repeating.
         if ( eof() ) return tokenEOF ;
         return peekIter.peek() ;
     }
-    
-    protected final long getLine() { return tokens.getLine() ; } 
-    protected final long getColumn() { return tokens.getColumn() ; } 
-
-    protected final long getLine(Token token) { return token.getLine() ; } 
-    protected final long getColumn(Token token) { return token.getColumn() ; } 
-
     
     // Set when we get to EOF to record line/col of the EOF.
     private Token tokenEOF = null ;
@@ -102,12 +113,18 @@ public abstract class LangBase implements LangRIOT
         return peekToken().hasType(tokenType) ;
     }
     
+    // Remembver line/col for messages.
+    protected long currLine = -1 ;
+    protected long currCol = -1 ;
+    
     protected final Token nextToken()
     {
         if ( eof() )
             return tokenEOF ;
         
         Token t = peekIter.next() ;
+        currLine = t.getLine() ;
+        currCol = t.getColumn() ;
         return t ;
     }
 
@@ -140,7 +157,10 @@ public abstract class LangBase implements LangRIOT
     }
 
     protected final void exceptionDirect(String msg, long line, long col)
-    { throw new ParseException(msg, line, col) ; }
+    { 
+        throw new ParseException(msg, line, col) ;
+    }
+
  
 }
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -7,8 +7,9 @@
 package com.hp.hpl.jena.riot;
 
 import org.slf4j.Logger ;
+import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 
-/** An error handler that throws exceptions for errors and logs for for warnings */ 
+/** An error handler that logs message then throws exceptions for errors but not warnings */ 
 public class ErrorHandlerStd extends ErrorHandlerLogger
 {
     public ErrorHandlerStd(Logger log)
@@ -26,20 +27,12 @@ public class ErrorHandlerStd extends ErrorHandlerLogger
     public void error(String message, long line, long col)
     { 
         super.error(message, line, col) ;
-        //throw new RiotException(fmtMessage(message, line, col)) ;
-    }
-    
-    /** report a catastrophic error.  Must not return. */    
-    @Override
-    public void fatal(String message, long line, long col)
-    { 
-        super.error(message, line, col) ;
         throw new RiotException(fmtMessage(message, line, col)) ;
     }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

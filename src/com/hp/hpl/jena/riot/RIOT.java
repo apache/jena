@@ -12,6 +12,19 @@ public class RIOT
 {
     public static final EventType startRead = new EventType(RIOT.class, "StartRead") ;
     public static final EventType finishRead = new EventType(RIOT.class, "FinishRead") ;
+    
+    static public String fmtMessage(String message, long line, long col)
+    {
+        if ( col == -1 && line == -1 )
+                return message ;
+        if ( col == -1 && line != -1 )
+            return String.format("[line: %d] %s", line, message) ;
+        if ( col != -1 && line == -1 )
+            return String.format("[col: %d] %s", col, message) ;
+        
+        return String.format("[line: %d, col: %d] %s", line, col, message) ;
+    }
+
 }
 
 /*

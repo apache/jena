@@ -7,24 +7,13 @@
 package com.hp.hpl.jena.riot;
 
 import org.slf4j.Logger;
+import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 
 /** An error handler that logs for errors and warnings. */ 
 public class ErrorHandlerLogger implements ErrorHandler
 {
     private Logger log ;
 
-    public static String fmtMessage(String message, long line, long col)
-    {
-        if ( col == -1 && line == -1 )
-                return message ;
-        if ( col == -1 && line != -1 )
-            return String.format("[line: %d] %s", line, message) ;
-        if ( col != -1 && line == -1 )
-            return String.format("[col: %d] %s", col, message) ;
-        
-        return String.format("[line: %d, col: %d] %s", line, col, message) ;
-    }
-    
     public ErrorHandlerLogger(Logger log)
     {
         this.log = log ;
@@ -37,7 +26,11 @@ public class ErrorHandlerLogger implements ErrorHandler
     public void error(String message, long line, long col)       { log.error(fmtMessage(message, line, col)) ; }
     
     /** report a catastrophic error.  Must not return. */    
-    public void fatal(String message, long line, long col)  { throw new RiotException(fmtMessage(message, line, col)) ; }
+    public void fatal(String message, long line, long col)
+    { 
+        error(message, line, col) ;
+        throw new RiotException(fmtMessage(message, line, col)) ;
+    }
 }
 
 /*
