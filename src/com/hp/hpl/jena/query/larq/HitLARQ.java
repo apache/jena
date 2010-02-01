@@ -14,12 +14,14 @@ public class HitLARQ
 {
     protected Node node ;
     protected float score ;
+    protected int docId ;
 
     public HitLARQ(Hit hit)
     {
         try {
             node = LARQ.build(hit.getDocument()) ;
             score = hit.getScore() ;
+            docId = hit.getId() ;
         }
         catch (Exception e)
         { throw new ARQLuceneException("node conversion error", e) ; }
@@ -33,6 +35,11 @@ public class HitLARQ
     public float getScore()
     {
         return score ;
+    }
+    
+    public int getLuceneDocId()
+    {
+        return docId ;
     }
 }
 

@@ -9,6 +9,8 @@ package dev;
 
 public class DevARQ
 {
+    // Check version info works
+    
     // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 
     
     // Property paths: { ?x !rdf:type ?y } 
