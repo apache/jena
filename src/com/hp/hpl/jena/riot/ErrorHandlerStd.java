@@ -6,32 +6,36 @@
 
 package com.hp.hpl.jena.riot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
 
 /** An error handler that throws exceptions for errors and logs for for warnings */ 
-public class ErrorHandlerStd implements ErrorHandler
+public class ErrorHandlerStd extends ErrorHandlerLogger
 {
-    private Logger log ;
-
-    public ErrorHandlerStd()
-    {
-        this(LoggerFactory.getLogger("Warning")) ;
-    }
-    
     public ErrorHandlerStd(Logger log)
     {
-        this.log = log ;
+        super(log) ;
     }
-
-    /** report a warning */
-    public void warning(String message)     { log.warn(message) ; }
     
-    /** report an error */
-    public void error(String message)       { throw new RiotException(message) ; }
+    /** report a warning */
+    @Override
+    public void warning(String message, long line, long col)
+    { super.warning(message, line, col) ; }
+    
+    /** report an error but carry on */
+    @Override
+    public void error(String message, long line, long col)
+    { 
+        super.error(message, line, col) ;
+        //throw new RiotException(fmtMessage(message, line, col)) ;
+    }
     
     /** report a catastrophic error.  Must not return. */    
-    public void fatalError(String message)  { throw new RiotException(message) ; }
+    @Override
+    public void fatal(String message, long line, long col)
+    { 
+        super.error(message, line, col) ;
+        throw new RiotException(fmtMessage(message, line, col)) ;
+    }
 }
 
 /*

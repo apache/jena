@@ -8,6 +8,9 @@ package com.hp.hpl.jena.riot;
 
 import java.util.Iterator;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
 import atlas.lib.Cache;
 import atlas.lib.CacheFactory;
 
@@ -19,10 +22,13 @@ import com.hp.hpl.jena.iri.IRIComponents;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.iri.ViolationCodes;
-import com.hp.hpl.jena.shared.JenaException;
 
 public final class Checker
 {
+    static private final Logger stdLogger = LoggerFactory.getLogger("RIOT") ;
+    static private final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
+    
+    
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
     //static IRIFactory iriFactory = IRIFactory.iriImplementation();
     
@@ -51,103 +57,133 @@ public final class Checker
     {
         this.handler = handler ;
         if ( this.handler == null )
-            this.handler = new ErrorHandlerStd() ;
+            this.handler = errorHandlerStd ;
     }
     
     public ErrorHandler getHandler() { return handler ; } 
     
-    public void check(Node node)
+    public void check(Node node, long line, long col)
     {
-        if ( node.isURI() )             checkURI(node) ;
-        else if ( node.isBlank() )      checkBlank(node) ;
-        else if ( node.isLiteral() )    checkLiteral(node) ;
-        else if ( node.isVariable() )   checkVar(node) ;
+        if ( node.isURI() )             checkURI(node, line, col) ;
+        else if ( node.isBlank() )      checkBlank(node, line, col) ;
+        else if ( node.isLiteral() )    checkLiteral(node, line, col) ;
+        else if ( node.isVariable() )   checkVar(node, line, col) ;
     }
 
     /** Check a triple - assumes individual nodes are legal */
-    public void check(Triple triple) 
+    public void check(Triple triple, long line, long col) 
     {
-        validate(null, triple) ;
+        check(triple.getSubject(), line, col) ;
+        check(triple.getPredicate(), line, col) ;
+        check(triple.getObject(), line, col) ;
     }
     
-    public static void validate(String msg, Triple triple)
+    public static boolean validate(String msg, Triple triple)
     {
-        validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
+        return validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
     }
     
-    public static void validate(String msg, Node subject, Node predicate, Node object)
+    public static boolean validate(String msg, Node subject, Node predicate, Node object)
     {
         if ( msg == null )
             msg = "Validation" ;
         if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-            throw new RiotException(msg+": Subject is not a URI or blank node") ;
+        {
+            errorHandlerStd.error(msg+": Subject is not a URI or blank node", -1, -1) ;
+            return false ;
+        }
+            
+            
         if ( predicate == null || ( ! predicate.isURI() ) )
-            throw new RiotException(msg+": Predicate not a URI") ;
+        {
+            errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
+            return false ;
+        }
         if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-            throw new RiotException(msg+": Object is not a URI, blank node or literal") ;
+        {
+            errorHandlerStd.error(msg+": Object is not a URI, blank node or literal", -1 ,-1) ;
+            return false ;
+        }
+        return true ;
     }
 
     
-    final private void checkVar(Node node)
+    final private void checkVar(Node node, long line, long col)
     {}
 
-    final private void checkLiteral(Node node)
+    final private void checkLiteral(Node node, long line, long col)
     {
         LiteralLabel lit = node.getLiteral() ;
 
         // Datatype check (and plain literals are always well formed)
         if ( lit.getDatatype() != null && ! lit.isWellFormed() )
-            throw new JenaException("Lexical not valid for datatype: "+node) ;
-
-        //        // Not well formed.
-        //        if ( lit.getDatatype() != null )
-        //        {
-        //            if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
-        //                throw new JenaException("Lexical not valid for datatype: "+node) ;
-        //        }
+        {
+            handler.error("Lexical not valid for datatype: "+node, line, col) ;
+            return ; 
+        }
 
         if (lit.language() != null )
         {
             // Not a pefect test.
             String lang = lit.language() ;
             if ( lang.length() > 0 && ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
-                throw new JenaException("Language not valid: "+node) ;
+            {
+                handler.error("Language not valid: "+node, line, col) ;
+                return ;
+            }
+        }
+        
+        if ( lit.getDatatype() != null  && (lit.language() != null && ! lit.language().equals("")) )
+        {
+            handler.error("Illegal: Both language and datatype: "+node, line, col) ;
+            return ;
         }
     }
 
-    final private void checkBlank(Node node)
+    final private void checkBlank(Node node, long line, long col)
     {
         String x =  node.getBlankNodeLabel() ;
         if ( x.indexOf(' ') >= 0 )
-            throw new JenaException("Illegal blank node label (contains a space): "+node) ;
+        {
+            handler.error("Illegal blank node label (contains a space): "+node, line, col) ;
+            return ; 
+        }
+        
     }
 
-    public void checkIRI(IRI iri)
+    public void checkIRI(IRI iri, long l, long m)
     {
-        violations(iri, handler, allowRelativeIRIs, warningsAreErrors) ;
+        violations(iri, handler, allowRelativeIRIs, warningsAreErrors, l,m) ;
     }
 
     // An LRU cache is slower.
     // An unbounded cache is fastest but does not scale.
     private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(5000) ;
     
-    final private void checkURI(Node node)
+    final private void checkURI(Node node, long line, long col)
     {
         if ( cache != null && cache.containsKey(node) )
             return ;
         
         IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
-        checkIRI(iri) ;
+        checkIRI(iri, line, col) ;
         // If OK, put in cache.
         if ( cache != null && ! iri.hasViolation(true) )
             cache.put(node, iri) ;
+    }
+
+    public static void violationsIRI(IRI iri, ErrorHandler handler, boolean allowRelativeIRIs, boolean warningsAreErrors)
+    {
+        violations(iri, handler, allowRelativeIRIs, warningsAreErrors, -1, -1) ;
     }
 
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning) then
      *  calls the errorHandler for an error.   
      */
-    public static void violations(IRI iri, ErrorHandler handler, boolean allowRelativeIRIs, boolean warningsAreErrors)
+    public static void violations(IRI iri, ErrorHandler handler, 
+                                  boolean allowRelativeIRIs, boolean warningsAreErrors, 
+                                  long line, long col)
     {
         if ( iri.hasViolation(true) )
         {
@@ -197,10 +233,10 @@ public final class Checker
                     v.getComponent() == IRIComponents.SCHEME)
                 {
                     if (! allowRelativeIRIs )
-                        handler.warning("Relative URIs are not permitted in RDF: specifically <"+iriStr+">");
+                        handler.warning("Relative URIs are not permitted in RDF: specifically <"+iriStr+">", line, col);
                 } 
                 else
-                    handler.warning("Bad IRI: "+msg);
+                    handler.warning("Bad IRI: "+msg, line, col);
             }
             
             // and report our choosen error.
@@ -210,11 +246,9 @@ public final class Checker
                 if ( vError != null ) msg = vError.getShortMessage() ;
                 if ( msg == null && vWarning != null ) msg = vWarning.getShortMessage() ;
                 if ( msg == null )
-                    handler.error("Bad IRI: "+iri) ;
+                    handler.error("Bad IRI: "+iri, line, col) ;
                 else
-                    handler.error("Bad IRI: "+iri+" : "+msg) ;
-                
-                
+                    handler.error("Bad IRI: "+iri+" : "+msg, line, col) ;
             }
         }
     

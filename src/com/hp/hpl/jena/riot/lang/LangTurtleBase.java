@@ -176,7 +176,7 @@ public abstract class LangTurtleBase extends LangBase
         // CHECK
         IRI iri = prologue.getResolver().resolveSilent(iriStr) ;
         if ( getChecker() != null ) 
-            getChecker().checkIRI(iri) ;
+            getChecker().checkIRI(iri, peekToken().getLine(), peekToken().getColumn()) ;
         prologue.getPrefixMap().add(prefix, iri) ;
 
         nextToken() ;
@@ -189,7 +189,7 @@ public abstract class LangTurtleBase extends LangBase
         // CHECK
         IRI baseIRI = prologue.getResolver().resolve(baseStr) ;
         if ( getChecker() != null )
-            getChecker().checkIRI(baseIRI) ;
+            getChecker().checkIRI(baseIRI, peekToken().getLine(), peekToken().getColumn()) ;
         
         nextToken() ;
         
@@ -295,7 +295,7 @@ public abstract class LangTurtleBase extends LangBase
         // Token to Node
         Node n = tokenAsNode(peekToken()) ;
         if ( getChecker() != null )
-            getChecker().check(n) ; 
+            getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 
         return n ;
     }
     

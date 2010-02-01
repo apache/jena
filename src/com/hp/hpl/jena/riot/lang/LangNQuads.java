@@ -53,26 +53,26 @@ public class LangNQuads extends LangNTuple<Quad>
         Node o = parseRDFTerm(oToken) ;
         
         Node c = null ;
-        Token x = nextToken() ;
+        Token cToken = nextToken() ;
         
-        if ( x.getType() != TokenType.DOT )
+        if ( cToken.getType() != TokenType.DOT )
         {
-            c = parseRDFTerm(x) ;
-            x = nextToken() ;
+            c = parseRDFTerm(cToken) ;
+            cToken = nextToken() ;
         }
         
-        if ( x.getType() != TokenType.DOT )
-            exception("Quad not terminated by DOT: %s", x, x) ;
+        if ( cToken.getType() != TokenType.DOT )
+            exception("Quad not terminated by DOT: %s", cToken, cToken) ;
         
         Checker checker = getChecker() ;
         
         if ( checker != null )
         {
-            checker.check(s) ;
-            checker.check(p) ;
-            checker.check(o) ;
+            checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+            checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+            checker.check(o, oToken.getLine(), oToken.getColumn()) ;
             if ( c != null )
-                checker.check(c) ;
+                checker.check(c, cToken.getLine(), cToken.getColumn()) ;
         }
         // c may be null, meaning default graph in SPARQL.
         return new Quad(c, s, p, o) ;

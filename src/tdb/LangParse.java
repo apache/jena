@@ -140,7 +140,7 @@ public abstract class LangParse extends CmdGeneral
     {
         double timeSec = timeMillis/1000.0 ;
         
-        System.out.printf(label+" : %,.2f sec  %,d triples  %,.2f TPS\n",
+        System.out.printf(label+" : %,5.2f sec  %,d triples  %,.2f TPS\n",
                           timeMillis/1000.0, numberTriples,
                           timeSec == 0 ? 0.0 : numberTriples/timeSec ) ;
     }

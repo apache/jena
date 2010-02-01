@@ -22,15 +22,15 @@ public class TestIRI
 
     static ErrorHandler handler = new ErrorHandler()
     {
-        public void error(String message)
+        public void error(String message, long line, long col)
         { throw new ExError() ; }
 
-        public void fatalError(String message)
+        public void fatal(String message, long line, long col)
         { throw new ExFatal() ; }
 
-        public void warning(String message)
+        public void warning(String message, long line, long col)
         { throw new ExWarning() ; }
-        
+
     } ;
     static Checker checker = new Checker(handler) ;
     
@@ -49,7 +49,7 @@ public class TestIRI
     private void test(String uriStr)
     {
         IRI iri = factory.create(uriStr) ;
-        checker.checkIRI(iri) ;
+        checker.checkIRI(iri, -1, -1) ;
     }
     
 }

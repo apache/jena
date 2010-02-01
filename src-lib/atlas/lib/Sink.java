@@ -11,6 +11,8 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 /** Interface for the destination of things */
 public interface Sink<T> extends Closeable
 {
+    // Can't help but think it should be "Pipe"
+    // If Sync looses Sync(boolean), the make this "extends Sync"
     void send(T item) ;
     void flush() ;
 }

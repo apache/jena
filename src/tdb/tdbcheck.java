@@ -70,7 +70,7 @@ public class tdbcheck extends CmdARQ
             @Override
             public void performAdd( Triple triple )
             {
-                checker.check(triple) ;
+                checker.check(triple, -1, -1) ;
             }
     }
     

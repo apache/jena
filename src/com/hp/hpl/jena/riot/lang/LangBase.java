@@ -55,6 +55,13 @@ public abstract class LangBase implements LangRIOT
         return peekIter.peek() ;
     }
     
+    protected final long getLine() { return tokens.getLine() ; } 
+    protected final long getColumn() { return tokens.getColumn() ; } 
+
+    protected final long getLine(Token token) { return token.getLine() ; } 
+    protected final long getColumn(Token token) { return token.getColumn() ; } 
+
+    
     // Set when we get to EOF to record line/col of the EOF.
     private Token tokenEOF = null ;
 

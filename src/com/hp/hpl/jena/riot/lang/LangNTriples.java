@@ -44,9 +44,9 @@ public class LangNTriples extends LangNTuple<Triple>
         Checker checker = getChecker() ;
         if ( checker != null )
         {
-            checker.check(s) ;
-            checker.check(p) ;
-            checker.check(o) ;
+            checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+            checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+            checker.check(o, oToken.getLine(), oToken.getColumn()) ;
         }
         return new Triple(s, p, o) ; 
     }

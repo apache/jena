@@ -13,19 +13,31 @@ public class ErrorHandlerLogger implements ErrorHandler
 {
     private Logger log ;
 
+    public static String fmtMessage(String message, long line, long col)
+    {
+        if ( col == -1 && line == -1 )
+                return message ;
+        if ( col == -1 && line != -1 )
+            return String.format("[line: %d] %s", line, message) ;
+        if ( col != -1 && line == -1 )
+            return String.format("[col: %d] %s", col, message) ;
+        
+        return String.format("[line: %d, col: %d] %s", line, col, message) ;
+    }
+    
     public ErrorHandlerLogger(Logger log)
     {
         this.log = log ;
     }
 
     /** report a warning */
-    public void warning(String message)     { log.warn(message) ; }
+    public void warning(String message, long line, long col)     { log.warn(fmtMessage(message, line, col)) ; }
     
     /** report an error */
-    public void error(String message)       { log.error(message) ; }
+    public void error(String message, long line, long col)       { log.error(fmtMessage(message, line, col)) ; }
     
     /** report a catastrophic error.  Must not return. */    
-    public void fatalError(String message)  { throw new RiotException(message) ; }
+    public void fatal(String message, long line, long col)  { throw new RiotException(fmtMessage(message, line, col)) ; }
 }
 
 /*

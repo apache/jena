@@ -9,13 +9,13 @@ package com.hp.hpl.jena.riot;
 public interface ErrorHandler
 {
     /** report a warning */
-    public void warning(String message) ;
+    public void warning(String message, long line, long col) ;
     
-    /** report an error */
-    public void error(String message) ;
+    /** report an error : May not return (depends on error handler policy) */
+    public void error(String message, long line, long col) ;
     
     /** report a catastrophic error.  Must not return. */    
-    public void fatalError(String message);
+    public void fatal(String message, long line, long col);
 }
 
 /*
