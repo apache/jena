@@ -13,6 +13,7 @@ public class DevTDB
     // Redo checker, combine with ErrorHandler.
     // Skip on error (for NTriples)
     // Set the logger for the checker (N-Triples, NQuads).
+    // Validator .error, .warning, .check
 
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler

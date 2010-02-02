@@ -13,7 +13,7 @@ import arq.cmdline.CmdGeneral ;
 
 public class ModLangParse implements ArgModuleGeneral
 {
-    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
+    private ArgDecl argCheck    = new ArgDecl(ArgDecl.HasValue, "check") ;
     private ArgDecl argNoCheck    = new ArgDecl(ArgDecl.NoValue, "nocheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
 
@@ -21,52 +21,52 @@ public class ModLangParse implements ArgModuleGeneral
     private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
 
-    private boolean check       = true ;
-    private boolean skipOnError = false ;
-    private boolean stopOnError = false ;
-    private boolean bitbucket   = false ; 
-
+    private boolean check           = true ;
+    private boolean skipOnBadTerm   = false ;
+    private boolean stopOnBadTerm   = false ;
+    private boolean bitbucket       = false ; 
     
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Parser control") ;
-        cmdLine.add(argSink,    "--sink",       "Parse but throw away output") ;
-        cmdLine.add(argCheck,   "--check",      "Addition checking of RDF terms") ;
-        cmdLine.add(argNoCheck, "--nocheck",    "Turn off checking of RDF terms") ;
-        cmdLine.add(argSkip,    "--skip",       "Skip (do not output) triples failing the RDF term tests") ;
-        cmdLine.add(argNoSkip,  "--noSkip",     "Include triples failing the RDF term tests (not recommended)") ;
-        cmdLine.add(argStop,    "--stop",       "Stop parsing if an RDF term fails testing") ;
+        cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
+        cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms (default true)") ;
+        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
+        cmdLine.add(argSkip,    "--skip",           "Skip (do not output) triples failing the RDF term tests (N-Triples, NQuads only)") ;
+        cmdLine.add(argNoSkip,  "--noSkip",         "Include triples failing the RDF term tests (not recommended) (N-Triples, NQuads only)") ;
+        cmdLine.add(argStop,    "--stop",           "Stop parsing on encoutering a bad RDF term") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(argNoCheck) )
             check = false ;
+        
         if ( cmdLine.contains(argCheck) )
-            check = true ;   
+            check = ! cmdLine.getArg(argCheck).getValue().equalsIgnoreCase("false") ;
         
         if ( cmdLine.contains(argSkip) )
-            skipOnError = true ; 
+            skipOnBadTerm = true ; 
         if ( cmdLine.contains(argNoSkip) )
-            skipOnError = false ;
+            skipOnBadTerm = false ;
         
-        stopOnError = cmdLine.contains(argStop) ;
+        stopOnBadTerm = cmdLine.contains(argStop) ;
         bitbucket = cmdLine.contains(argSink) ; 
     }
 
-    public boolean isCheck()
+    public boolean checking()
     {
         return check ;
     }
 
-    public boolean isSkipOnError()
+    public boolean skipOnBadTerm()
     {
-        return skipOnError ;
+        return skipOnBadTerm ;
     }
 
-    public boolean isStopOnError()
+    public boolean stopOnBadTerm()
     {
-        return stopOnError ;
+        return stopOnBadTerm ;
     }
 
     public boolean toBitBucket()

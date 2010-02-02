@@ -12,7 +12,7 @@ import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 /** An error handler that logs for errors and warnings. */ 
 public class ErrorHandlerLogger implements ErrorHandler
 {
-    private Logger log ;
+    protected final Logger log ;
 
     public ErrorHandlerLogger(Logger log)
     {

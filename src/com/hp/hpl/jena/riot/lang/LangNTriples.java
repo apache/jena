@@ -25,16 +25,7 @@ public class LangNTriples extends LangNTuple<Triple>
                         Sink<Triple> sink,
                         Checker checker)
     {
-        this(tokens, sink, checker, false, true) ;
-    }
-    
-    public LangNTriples(Tokenizer tokens,
-                        Sink<Triple> sink,
-                        Checker checker,
-                        boolean skipOnError,
-                        boolean stopOnError)
-    {
-        super(tokens, sink, checker, skipOnError, stopOnError) ;
+        super(tokens, sink, checker) ;
     }
 
     @Override
@@ -55,10 +46,14 @@ public class LangNTriples extends LangNTuple<Triple>
         Checker checker = getChecker() ;
         if ( checker != null )
         {
-            checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-            checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-            checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            // Skip or not?
+            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
+            if ( !b && skipOnBadTerm )
+            {
+                skipOne(new Triple(s, p, o)) ;
+                return null ;
+            }
         }
         return new Triple(s, p, o) ; 
     }

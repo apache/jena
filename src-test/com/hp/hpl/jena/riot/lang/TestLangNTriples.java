@@ -16,8 +16,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -134,7 +134,7 @@ public class TestLangNTriples extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         
-        LangNTriples x = new LangNTriples(tokenizer, sink, new Checker(), false, true) ;
+        LangNTriples x = Lang.createParserNTriples(tokenizer, sink) ;
         x.parse() ;
         return sink ;
     }

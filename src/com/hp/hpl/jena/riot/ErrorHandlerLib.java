@@ -7,11 +7,11 @@
 package com.hp.hpl.jena.riot;
 
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 public class ErrorHandlerLib
 {
-    static public final Logger          stdLogger = LoggerFactory.getLogger("RIOT") ;
+    static public final Logger stdLogger = RIOT.getLogger() ;
+    
     static public final ErrorHandler errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
     static public final ErrorHandler errorHandlerStrict = new ErrorHandlerStd(stdLogger) ;
     static public final ErrorHandler errorHandlerWarn = new ErrorHandlerWarning(stdLogger) ;

@@ -21,15 +21,10 @@ public class LangTurtle extends LangTurtleBase<Triple>
 {
     public LangTurtle(String baseURI, Tokenizer tokens, 
                       Checker checker, 
-                      Sink<Triple> sink,
-                      boolean skipOnError,
-                      boolean stopOnError) 
+                      Sink<Triple> sink) 
     {
-        super(baseURI, tokens, checker, sink, skipOnError, stopOnError) ;
+        super(baseURI, tokens, checker, sink) ;
     }
-
-    public LangTurtle(String baseURI, Tokenizer tokenizer, Checker checker,  Sink<Triple> sink)
-    { this(baseURI, tokenizer, checker, sink, false, true) ; }
 
     @Override
     protected final void oneTopLevelElement()

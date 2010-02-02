@@ -24,22 +24,29 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
  * <li>The {@link #parse} method processes the whole stream of tokens, 
  *   sending each to a {@link atlas.lib.Sink} object.</li>
  * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
- *  </ul>  
+ *  </ul> 
+ * 
+ * Normally, bad terms causes the parser to stop (i.e. treat them as errors).
+ * In addition, the NTuples subsystem allows triples/quads with "bad" terms
+ * to be skipped.
+ * 
+ * Checking can be switched off completely. if the dat is known to be correct,
+ * no checking can be a large performance gain. <i>Caveat emptor</i>.
  */
+
 public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
     //private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
+    protected boolean skipOnBadTerm = false ;
     
     protected LangNTuple(Tokenizer tokens,
                          Sink<X> sink,
-                         Checker checker,
-                         boolean skipOnError,
-                         boolean stopOnError)
+                         Checker checker)
     { 
-        super(tokens, sink, checker, skipOnError, stopOnError) ;
+        super(tokens, sink, checker) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
@@ -48,8 +55,9 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     {
         while(hasNext())
         {
-            X x = parseOne() ; 
-            sink.send(x) ;
+            X x = parseOne() ;
+            if ( x != null )
+                sink.send(x) ;
         }
     }
 
@@ -70,8 +78,14 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     public final void remove()
     { throw new UnsupportedOperationException(); }
 
+    /** Parse one tuple - return object to be sent to the sink or null for none */ 
     protected abstract X parseOne() ;
     
+    /** Note a tuple not being output */
+    protected void skipOne(X object)
+    {
+        checker.getHandler().warning("Skip: "+object, -1, -1) ;
+    }
 
     
     @Override
@@ -118,6 +132,11 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
             
         return tokenAsNode(o) ;
     }
+
+    /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
+    public boolean  getSkipOnBadTerm()                      { return skipOnBadTerm ; }
+    /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
+    public void     setSkipOnBadTerm(boolean skipOnBadTerm) { this.skipOnBadTerm = skipOnBadTerm ; }
 }
 
 /*

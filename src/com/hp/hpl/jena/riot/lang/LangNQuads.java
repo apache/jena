@@ -23,11 +23,9 @@ public class LangNQuads extends LangNTuple<Quad>
 {
     public LangNQuads(Tokenizer tokens,
                       Sink<Quad> sink,
-                      Checker checker,
-                      boolean skipOnError,
-                      boolean stopOnError)
+                      Checker checker)
     {
-        super(tokens, sink, checker, skipOnError, stopOnError) ;
+        super(tokens, sink, checker) ;
     }
 
     @Override
@@ -58,11 +56,16 @@ public class LangNQuads extends LangNTuple<Quad>
         
         if ( checker != null )
         {
-            checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-            checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-            checker.check(o, oToken.getLine(), oToken.getColumn()) ;
+            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
+            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
+            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
             if ( c != null )
-                checker.check(c, cToken.getLine(), cToken.getColumn()) ;
+                b &= checker.check(c, cToken.getLine(), cToken.getColumn()) ;
+            if ( !b && skipOnBadTerm )
+            {
+                skipOne(new Quad(c, s, p, o)) ;
+                return null ;
+            }
         }
         // c may be null, meaning default graph in SPARQL.
         return new Quad(c, s, p, o) ;

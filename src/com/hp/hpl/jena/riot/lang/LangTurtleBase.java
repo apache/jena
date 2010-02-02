@@ -107,11 +107,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
 //    }
     
     public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, 
-                          Sink<X> sink,
-                          boolean skipOnError,
-                          boolean stopOnError) 
+                          Sink<X> sink) 
     { 
-        super(tokens, sink, checker, skipOnError, stopOnError) ;
+        super(tokens, sink, checker) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
@@ -131,7 +129,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 break ;
         }
     }
-    
     
     // Do one top level item for the language.
     protected abstract void oneTopLevelElement() ;
@@ -292,6 +289,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     {
         // Token to Node
         Node n = tokenAsNode(peekToken()) ;
+        // CHECK
         if ( getChecker() != null )
             getChecker().check(n, peekToken().getLine(), peekToken().getColumn()) ; 
         return n ;
@@ -434,6 +432,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
    
     protected final void emitTriple(Node subject, Node predicate, Node object)
     {
+        // The syntax should make this impossible.
         if ( checker != null )
             checker.checkTriple(subject, predicate, object, currLine, currCol) ;
         emit(subject, predicate, object) ;

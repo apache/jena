@@ -22,6 +22,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
+import com.hp.hpl.jena.riot.RIOT ;
+import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -63,15 +65,31 @@ public abstract class LangParse extends CmdGeneral
     @Override
     protected void exec()
     {
-        if ( super.getPositional().isEmpty() )
-            parse("-") ;
-        else
-        {
-            for ( String fn : super.getPositional() )
-                parse(fn) ;
+        try {
+            if ( super.getPositional().isEmpty() )
+                parse("-") ;
+            else
+            {
+                for ( String fn : super.getPositional() )
+                {
+                    try {
+                        parse(fn) ;
+                    } catch (RiotException ex)
+                    {
+                        if ( ! modLangParse.stopOnBadTerm() )
+                            // otherwise the checker sent the error message  
+                            RIOT.getLogger().error(ex.getMessage()) ;
+                        return ;
+                    }
+                }
+            }
+        } finally {
+            System.err.flush() ;
+            System.out.flush() ;
+            if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
+                output("Total", totalTriples, totalMillis) ;
         }
-        if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
-            output("Total", totalTriples, totalMillis) ;
+        
     }
 
     public void parse(String filename)
@@ -111,13 +129,26 @@ public abstract class LangParse extends CmdGeneral
         
         modTime.startTimer() ;
         
-        
-        
         Checker checker = null ;
-        if ( modLangParse.isCheck() )
-            checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
+        if ( modLangParse.checking() )
+        {
+            // Skip on bad terms is done include the N-Tuples parser
+            // Not available for Turtle etc.
+            if ( modLangParse.stopOnBadTerm() )
+                checker = new Checker(ErrorHandlerLib.errorHandlerStd)  ;
+            else
+                checker = new Checker(ErrorHandlerLib.errorHandlerWarn) ;
+        }
         
-        parseEngine(tokenizer, baseURI, sink, checker, modLangParse.isSkipOnError(), modLangParse.isStopOnError()) ;
+        try
+        {
+            parseEngine(tokenizer, baseURI, sink, checker, modLangParse.skipOnBadTerm()) ;
+        }
+        finally {
+            tokenizer.close() ;
+            s.close() ;
+        }
+        
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
 
@@ -139,8 +170,7 @@ public abstract class LangParse extends CmdGeneral
                                         String baseIRI,
                                         Sink<Triple> sink,
                                         Checker checker,
-                                        boolean skipOnError,
-                                        boolean stopOnError) ;
+                                        boolean skipOnBadTerms) ;
                                         
 
 

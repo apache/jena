@@ -22,7 +22,7 @@ import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
-/** Stream of tokens, that can be seen as Nodes */
+/** Common operations for RIOT parsers */
 public abstract class LangBase<X> implements LangRIOT
 {
     protected Checker checker = null ;
@@ -30,20 +30,14 @@ public abstract class LangBase<X> implements LangRIOT
     protected final Tokenizer tokens ;
     private final PeekIterator<Token> peekIter ;
 
-    private boolean skipOnError = false ;
-    private boolean stopOnError = true ;
     protected final Sink<X> sink ; 
     
     public LangBase(Tokenizer tokens,
                     Sink<X> sink,
-                    Checker check, 
-                    boolean skipOnError,
-                    boolean stopOnError)
+                    Checker checker)
     {
-        setChecker(check) ;
+        setChecker(checker) ;
         this.sink = sink ;
-        this.skipOnError = skipOnError ;
-        this.stopOnError = stopOnError ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
     }

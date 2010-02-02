@@ -6,6 +6,14 @@
 
 package com.hp.hpl.jena.riot;
 
+/**
+ * An Error handler captures the policy for dealing with warnings, errors and
+ * fatal errors. Fatal errors mean termination of processing and must throw a
+ * RiotException. Errors and warnings may throw an exception to terminate of
+ * processing or may return after, for example, logging a message. The exact
+ * policy is determined the error handler itself.
+ */
+
 public interface ErrorHandler
 {
     /** report a warning */

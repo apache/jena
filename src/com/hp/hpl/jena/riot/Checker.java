@@ -22,6 +22,7 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.iri.ViolationCodes ;
 
+/** A checker validates RDF terms. */
 public final class Checker
 {
     //static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
@@ -63,29 +64,43 @@ public final class Checker
     public ErrorHandler getHandler()                { return handler ; } 
     public void setHandler(ErrorHandler handler)    { this.handler = handler ; }
     
-    public void check(Node node, long line, long col)
+    public boolean check(Node node, long line, long col)
     {
-        if ( node.isURI() )             checkURI(node, line, col) ;
-        else if ( node.isBlank() )      checkBlank(node, line, col) ;
-        else if ( node.isLiteral() )    checkLiteral(node, line, col) ;
-        else if ( node.isVariable() )   checkVar(node, line, col) ;
+        if ( node.isURI() )             return checkURI(node, line, col) ;
+        else if ( node.isBlank() )      return checkBlank(node, line, col) ;
+        else if ( node.isLiteral() )    return checkLiteral(node, line, col) ;
+        else if ( node.isVariable() )   return checkVar(node, line, col) ;
+        handler.warning("Not a recognized node: ", line, col) ;
+        return false ;
     }
 
     /** Check a triple - assumes individual nodes are legal */
-    public void check(Triple triple, long line, long col) 
+    public boolean check(Triple triple, long line, long col) 
     {
-        checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ; 
+        return checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col) ; 
     }
     
-    /** Check a triple - assumes individual nodes are legal */
-    public void checkTriple(Node subject, Node predicate, Node object, long line, long col) 
+    /** Check a triple against the RDF rules for a triple : subject is a IRI or bnode, predicate is a IRI and object is an bnode, literal or IRI */
+    public boolean checkTriple(Node subject, Node predicate, Node object, long line, long col) 
     {
+        boolean rc = true ;
+    
         if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
+        {
             handler.error("Subject is not a URI or blank node", line, col) ;
+            rc = false ;
+        }
         if ( predicate == null || ( ! predicate.isURI() ) )
+        {
             handler.error("Predicate not a URI", line, col) ;
+            rc = false ;
+        }
         if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
+        {
             handler.error("Object is not a URI, blank node or literal", line, col) ;
+            rc = false ;
+        }
+        return rc ;
     }
     
     public static boolean validate(String msg, Triple triple)
@@ -118,10 +133,10 @@ public final class Checker
     }
 
     
-    final private void checkVar(Node node, long line, long col)
-    {}
+    final private boolean checkVar(Node node, long line, long col)
+    { return true ; }
 
-    final private void checkLiteral(Node node, long line, long col)
+    final private boolean checkLiteral(Node node, long line, long col)
     {
         LiteralLabel lit = node.getLiteral() ;
 
@@ -129,7 +144,7 @@ public final class Checker
         if ( lit.getDatatype() != null && ! lit.isWellFormed() )
         {
             handler.error("Lexical not valid for datatype: "+node, line, col) ;
-            return ; 
+            return false; 
         }
 
         if (lit.language() != null )
@@ -139,47 +154,50 @@ public final class Checker
             if ( lang.length() > 0 && ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
             {
                 handler.error("Language not valid: "+node, line, col) ;
-                return ;
+                return false; 
             }
         }
         
         if ( lit.getDatatype() != null  && (lit.language() != null && ! lit.language().equals("")) )
         {
             handler.error("Illegal: Both language and datatype: "+node, line, col) ;
-            return ;
+            return false; 
         }
+        return true ;
     }
 
-    final private void checkBlank(Node node, long line, long col)
+    final private boolean checkBlank(Node node, long line, long col)
     {
         String x =  node.getBlankNodeLabel() ;
         if ( x.indexOf(' ') >= 0 )
         {
             handler.error("Illegal blank node label (contains a space): "+node, line, col) ;
-            return ; 
+            return false ; 
         }
-        
+        return true ;
     }
 
-    public void checkIRI(IRI iri, long l, long m)
+    public boolean checkIRI(IRI iri, long l, long m)
     {
         violations(iri, handler, allowRelativeIRIs, warningsAreErrors, l,m) ;
+        return ! iri.hasViolation(true) ;
     }
 
     // An LRU cache is slower.
     // An unbounded cache is fastest but does not scale.
     private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(5000) ;
     
-    final private void checkURI(Node node, long line, long col)
+    final private boolean checkURI(Node node, long line, long col)
     {
         if ( cache != null && cache.containsKey(node) )
-            return ;
+            return true ;
         
         IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
-        checkIRI(iri, line, col) ;
+        boolean b = checkIRI(iri, line, col) ;
         // If OK, put in cache.
-        if ( cache != null && ! iri.hasViolation(true) )
+        if ( cache != null && b )
             cache.put(node, iri) ;
+        return b ;
     }
 
     public static void violationsIRI(IRI iri, ErrorHandler handler, boolean allowRelativeIRIs, boolean warningsAreErrors)

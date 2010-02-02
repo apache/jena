@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.riot;
 
+import static com.hp.hpl.jena.riot.RIOT.fmtMessage ;
 import org.slf4j.Logger ;
 
 /** An error handler that logs messages only for errors and warnings */ 
@@ -15,6 +16,10 @@ public class ErrorHandlerWarning extends ErrorHandlerLogger
     {
         super(log) ;
     }
+    
+    /** report an error */
+    @Override
+    public void error(String message, long line, long col)       { log.warn(fmtMessage(message, line, col)) ; }
 }
 
 /*
