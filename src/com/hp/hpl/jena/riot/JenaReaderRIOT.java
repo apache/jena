@@ -41,7 +41,7 @@ public abstract class JenaReaderRIOT implements RDFReader
 	}
 
     final
-	public void read(Model model, java.lang.String url) 
+	public void read(Model model, String url) 
 	{
 
         // See AFS/dev.ContentNeg
@@ -142,6 +142,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         }
     }
 
+    // Called after decisions have been made.
     protected abstract void readWorker(Model model, Tokenizer tokenizer, String base) throws Exception;
 }
 
