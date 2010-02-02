@@ -190,12 +190,33 @@ public class ParserBase
     
     protected String resolvePName(String qname, int line, int column)
     {
-        String s = prefixMapping.expandPrefix(qname) ;
-        if ( s == null || s.equals(qname) )
+        String s = myExpandPrefix(prefixMapping, qname) ;
+        if ( s == null )
             throwParseException("Unresolved prefixed name: "+qname, line, column) ;
         return s ;
     }
 
+    private static String myExpandPrefix(PrefixMapping prefixMapping, String qname)
+    {
+        String s = prefixMapping.expandPrefix(qname) ;
+        if ( s == null )
+            return null ;
+        if ( s.equals(qname) )
+        {
+            // The contract of expandPrefix is to return the original name if
+            // there is no prefix but what s the expanded and original form are
+            // actually the same character string ?
+            int colon = qname.indexOf( ':' );
+            if (colon < 0) 
+                return null ;
+            String prefix = qname.substring( 0, colon ) ;
+            if ( prefixMapping.getNsPrefixURI(prefix) != null )
+                // The original and resolved forms are the same.
+                return s ;
+            return null ;
+        }
+        return s ;
+    }
     
     final static String bNodeLabelStart = "_:" ;
     
