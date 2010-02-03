@@ -51,7 +51,7 @@ public class Quad
     public Node getPredicate()  { return predicate ; }
     public Node getObject()     { return object ; }
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
-    public Triple asTriple()   { return new Triple(subject, predicate, object) ; }
+    public Triple asTriple()    { return new Triple(subject, predicate, object) ; }
     
     /** node used by the quad generator for the default graph */
     public static boolean isQuadDefaultGraphNode(Node node)

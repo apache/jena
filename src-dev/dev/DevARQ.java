@@ -9,6 +9,9 @@ package dev;
 
 public class DevARQ
 {
+    // Example of OpExecutor
+    // Deprecate StageGenerator
+    
     // Check version info works
     
     // SPARQL/Update of a ja:RDFDataset - new graphs don't appear? 

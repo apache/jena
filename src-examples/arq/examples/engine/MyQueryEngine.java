@@ -23,8 +23,8 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
 /** Example skeleton for a query engine.
- *  To just enxtend ARQ by custom basic graph pattern matching (a very common case)
- *  see the arq.examples.extend.bgp package 
+ *  To just extend ARQ by custom basic graph pattern matching (a very common case)
+ *  see the arq.examples.bgpmatching package 
  * 
  * @author Andy Seaborne
  */
