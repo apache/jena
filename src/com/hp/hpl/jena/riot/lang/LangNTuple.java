@@ -43,8 +43,8 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     protected boolean skipOnBadTerm = false ;
     
     protected LangNTuple(Tokenizer tokens,
-                         Sink<X> sink,
-                         Checker checker)
+                         Checker checker,
+                         Sink<X> sink)
     { 
         super(tokens, sink, checker) ;
     }

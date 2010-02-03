@@ -7,6 +7,7 @@
 package tdb;
 
 import java.io.InputStream ;
+import java.io.PrintStream ;
 
 import tdb.cmdline.ModLangParse ;
 import arq.cmdline.CmdGeneral ;
@@ -18,19 +19,17 @@ import atlas.lib.SinkNull ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
 import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
 
 /** Common framework for running RIOT parsers */
-public abstract class LangParse extends CmdGeneral
+public abstract class LangParse<X> extends CmdGeneral
 {
     static { Log.setLog4j() ; }
     // Module.
@@ -120,12 +119,12 @@ public abstract class LangParse extends CmdGeneral
     {
         Tokenizer tokenizer = makeTokenizer(in) ;
         
-        Sink<Triple> s = new SinkNull<Triple>() ;
+        Sink<X> s = new SinkNull<X>() ;
         
         if ( ! modLangParse.toBitBucket() )
-            s = new SinkTripleOutput(System.out) ;
+            s =  makePrintSink(System.out) ;
         
-        SinkCounting<Triple> sink = new SinkCounting<Triple>(s) ;
+        SinkCounting<X> sink = new SinkCounting<X>(s) ;
         
         modTime.startTimer() ;
         
@@ -168,11 +167,12 @@ public abstract class LangParse extends CmdGeneral
 
     protected abstract void parseEngine(Tokenizer tokens,
                                         String baseIRI,
-                                        Sink<Triple> sink,
+                                        Sink<X> sink,
                                         Checker checker,
                                         boolean skipOnBadTerms) ;
                                         
-
+    protected abstract Sink<X> makePrintSink(PrintStream out) ;
+    
 
     private static void output(String label, long numberTriples, long timeMillis)
     {

@@ -22,10 +22,10 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class LangNQuads extends LangNTuple<Quad>
 {
     public LangNQuads(Tokenizer tokens,
-                      Sink<Quad> sink,
-                      Checker checker)
+                      Checker checker,
+                      Sink<Quad> sink)
     {
-        super(tokens, sink, checker) ;
+        super(tokens, checker, sink) ;
     }
 
     @Override
@@ -48,6 +48,9 @@ public class LangNQuads extends LangNTuple<Quad>
             c = parseRDFTerm(cToken) ;
             cToken = nextToken() ;
         }
+        // TEMP until ARQ updated
+        else
+            c = Quad.defaultGraphNodeGenerated ;
         
         if ( cToken.getType() != TokenType.DOT )
             exception("Quad not terminated by DOT: %s", cToken, cToken) ;
@@ -59,7 +62,8 @@ public class LangNQuads extends LangNTuple<Quad>
             boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
             b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
             b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            if ( c != null )
+            // TEMP until ARQ updated
+            if ( c!= null && c != Quad.defaultGraphNodeGenerated )
                 b &= checker.check(c, cToken.getLine(), cToken.getColumn()) ;
             if ( !b && skipOnBadTerm )
             {
@@ -67,7 +71,7 @@ public class LangNQuads extends LangNTuple<Quad>
                 return null ;
             }
         }
-        // c may be null, meaning default graph in SPARQL.
+        // c may be Quad.defaultGraphNodeGenerated, meaning default graph in SPARQL.
         return new Quad(c, s, p, o) ;
     }
 }

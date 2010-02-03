@@ -24,7 +24,7 @@ public class JenaReaderNTriples2 extends JenaReaderRIOT
     {
         Checker checker = new Checker() ;
         Sink<Triple> sink = new SinkToGraphTriples(model.getGraph()) ;
-        LangRIOT parser = new LangNTriples(tokenizer, sink, checker) ;
+        LangRIOT parser = new LangNTriples(tokenizer, checker, sink) ;
         parser.parse() ;
         sink.close();
     }

@@ -1,66 +1,61 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package tdb;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import java.io.PrintStream ;
+
 import atlas.lib.Sink ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
-import com.hp.hpl.jena.riot.tokens.Token ;
-import com.hp.hpl.jena.riot.tokens.TokenType ;
+import com.hp.hpl.jena.riot.lang.LangNQuads ;
+import com.hp.hpl.jena.riot.out.SinkQuadOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class LangNTriples extends LangNTuple<Triple>
+public class nquads extends LangParse<Quad>
 {
-    private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
-    
-    public LangNTriples(Tokenizer tokens,
-                        Checker checker,
-                        Sink<Triple> sink)
+    /** Run the N-triples parser - and produce N-triples */
+    public static void main(String... argv)
     {
-        super(tokens, checker, sink) ;
+        Log.setLog4j() ;
+        new nquads(argv).mainRun() ;
+    }    
+    
+    protected nquads(String[] argv)
+    {
+        super(argv) ;
     }
 
     @Override
-    protected final Triple parseOne() 
-    { 
-        Token sToken = nextToken() ;
-        Node s = parseIRIOrBNode(sToken) ;
+    protected String getCommandName()
+    {
+        return Utils.classShortName(nquads.class) ;
+    }
 
-        Token pToken = nextToken() ;
-        Node p = parseIRI(pToken) ;
+    @Override
+    protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
+    {
+        LangNQuads parser = new LangNQuads(tokens, checker, sink) ;
+        parser.setChecker(checker) ;
+        parser.parse();
+        sink.close() ;
+    }
 
-        Token oToken = nextToken() ;
-        Node o = parseRDFTerm(oToken) ;
-
-        Token x = nextToken() ;
-        if ( x.getType() != TokenType.DOT )
-            exception("Triple not terminated by DOT: %s", x, x) ;
-        Checker checker = getChecker() ;
-        if ( checker != null )
-        {
-            boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
-            b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
-            b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            if ( !b && skipOnBadTerm )
-            {
-                skipOne(new Triple(s, p, o)) ;
-                return null ;
-            }
-        }
-        return new Triple(s, p, o) ; 
+    @Override
+    protected Sink<Quad> makePrintSink(PrintStream out)
+    {
+        return new SinkQuadOutput(out) ;
     }
 }
 
 /*
- * (c) Copyright 2010 Talis Information Ltd.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

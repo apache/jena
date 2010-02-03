@@ -125,6 +125,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             }
             
             oneTopLevelElement() ;
+            
             if ( lookingAt(EOF) )
                 break ;
         }
@@ -228,8 +229,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         }
         exception("Out of place: %s", peekToken()) ;
     }
-
-
 
     // Must be at least one triple. 
     protected final void triples()

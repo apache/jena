@@ -6,15 +6,18 @@
 
 package tdb;
 
+import java.io.PrintStream ;
+
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangNTriples ;
+import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class ntriples extends LangParse
+public class ntriples extends LangParse<Triple>
 {
     /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
@@ -32,13 +35,20 @@ public class ntriples extends LangParse
     {
         return Utils.classShortName(ntriples.class) ;
     }
+    
     @Override
     protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnError)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, sink, checker) ;
+        LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
         parser.setSkipOnBadTerm(skipOnError) ;
         parser.parse();
         sink.close() ;
+    }
+
+    @Override
+    protected Sink<Triple> makePrintSink(PrintStream out)
+    {
+        return new SinkTripleOutput(out) ;
     }
 }
 

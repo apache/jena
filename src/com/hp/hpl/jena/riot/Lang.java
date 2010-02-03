@@ -45,7 +45,7 @@ public class Lang
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, sink, new Checker()) ;
+        LangNTriples parser = new LangNTriples(tokenizer, new Checker(), sink) ;
         return parser ;
     }
     
@@ -59,7 +59,7 @@ public class Lang
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, sink, new Checker()) ;
+        LangNQuads parser = new LangNQuads(tokenizer, new Checker(), sink) ;
         return parser ;
     }
     

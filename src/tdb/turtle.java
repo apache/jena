@@ -6,16 +6,19 @@
 
 package tdb;
 
+import java.io.PrintStream ;
+
 import atlas.lib.Sink ;
 import atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.lang.LangTurtle ;
+import com.hp.hpl.jena.riot.out.SinkTripleOutput ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class turtle extends LangParse
+public class turtle extends LangParse<Triple>
 {
     /** Run the N-triples parser - and produce N-triples */
     public static void main(String... argv)
@@ -42,6 +45,12 @@ public class turtle extends LangParse
         parser.setChecker(checker) ;
         parser.parse();
         sink.close() ;
+    }
+
+    @Override
+    protected Sink<Triple> makePrintSink(PrintStream out)
+    {
+        return new SinkTripleOutput(out) ;
     }
 }
 

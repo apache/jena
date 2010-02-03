@@ -77,7 +77,20 @@ public class LangTriG extends LangTurtleBase<Quad>
         
         if ( token.getType() != TokenType.LBRACE )
             exception("Expected start of graph: got %s", peekToken()) ;
-
+        nextToken() ;
+        
+        // **** Turtle but no directives.
+        
+        while(true)
+        {
+            token = peekToken() ;
+            if ( token.getType() != TokenType.RBRACE )
+                break ;
+            // No - this has Turtle termination rules.
+            // Assume this is fixed then ....
+            triplesSameSubject() ;
+        }
+        
         // **** Turtle.
         
         if ( token.getType() != TokenType.RBRACE )
