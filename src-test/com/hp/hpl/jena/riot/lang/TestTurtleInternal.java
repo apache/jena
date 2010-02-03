@@ -233,7 +233,7 @@ public class TestTurtleInternal extends BaseTest
 	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
 	    Sink<Triple> sink = new SinkNull<Triple>() ;
 
-	    LangTurtle parser = Lang.createParserTurtle(testString, tokenizer, sink) ;
+	    LangTurtle parser = Lang.createParserTurtle("http://base/", tokenizer, sink) ;
 
 	    parser.getPrefixMap().add("a", "http://host/a#") ;
         parser.getPrefixMap().add("x", "http://host/a#") ;

@@ -309,6 +309,16 @@ public final class Token
         return tokenType.equals(TokenType.INTEGER) ;
     }
     
+    public boolean isIRI()
+    {
+        return tokenType.equals(TokenType.IRI) || tokenType.equals(TokenType.PREFIXED_NAME);
+    }
+
+    public boolean isBNode()
+    {
+        return tokenType.equals(TokenType.BNODE) ;
+    }
+
     // Validation of URIs?
     
     /** Token to Node, a very direct form that is purely driven off the token.

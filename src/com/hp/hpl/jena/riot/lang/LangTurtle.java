@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.DOT ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.EOF ;
-import static com.hp.hpl.jena.riot.tokens.TokenType.NODE ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -29,41 +26,9 @@ public class LangTurtle extends LangTurtleBase<Triple>
     @Override
     protected final void oneTopLevelElement()
     {
-        // Triples node.
-
-        // TriplesSameSubject -> TriplesNode PropertyList?
-        if ( peekTriplesNodeCompound() )
-        {
-            Node n = triplesNodeCompound() ;
-
-            // May be followed by: 
-            //   A predicateObject list
-            //   A DOT or EOF.
-            if ( lookingAt(EOF) )
-                return ;
-            if ( lookingAt(DOT) )
-            {
-                nextToken() ;
-                return ;
-            }
-            if ( peekPredicate() )
-            {
-                predicateObjectList(n) ;
-                expectEndOfTriples() ;
-                return ;
-            }
-            exception("Unexpected token : %s", peekToken()) ;
-        }
-
-        // TriplesSameSubject -> Term PropertyListNotEmpty 
-        if ( lookingAt(NODE) )
-        {
-            triples() ;
-            return ;
-        }
-        exception("Out of place: %s", peekToken()) ;
+        triplesSameSubject() ;
     }
-
+    
     @Override
     protected void emit(Node subject, Node predicate, Node object)
     {

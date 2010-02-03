@@ -279,6 +279,7 @@ public final class TokenizerText implements Tokenizer
             case CH_RPAREN:     reader.readChar() ; token.setType(TokenType.RPAREN) ;    token.setImage(")") ; return token ;
             case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  token.setImage("[") ; return token ;
             case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  token.setImage("]") ; return token ;
+            case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    token.setImage("=") ; return token ;
 
             // Specials (if processing off) -- FIX ME
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;

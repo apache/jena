@@ -34,6 +34,7 @@ public class RiotChars
     public static final char CH_QUOTE1       = '\'' ;
     public static final char CH_QUOTE2       = '"' ;
 
+    public static final char CH_EQUALS       = '=' ;
     public static final char CH_STAR         = '*' ;
     public static final char CH_DOT          = '.' ;
     public static final char CH_COMMA        = ',' ;
@@ -67,6 +68,7 @@ public class RiotChars
     public static final byte B_QUOTE1       = '\'' ;
     public static final byte B_QUOTE2       = '"' ;
 
+    public static final byte B_EQUALS       = '=' ;
     public static final byte B_STAR         = '*' ;
     public static final byte B_DOT          = '.' ;
     public static final byte B_COMMA        = ',' ;

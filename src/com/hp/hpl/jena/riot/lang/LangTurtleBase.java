@@ -133,7 +133,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     // Do one top level item for the language.
     protected abstract void oneTopLevelElement() ;
 
-    /** Emit a triple - nodes have been checked as has legality oif node type in location */
+    /** Emit a triple - nodes have been checked as has legality of node type in location */
     protected abstract void emit(Node subject, Node predicate, Node object) ;
 
     protected final void directive()
@@ -191,11 +191,50 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         expect("Base directive not terminated by a dot", DOT) ;
         prologue.setBaseURI(new IRIResolver(baseIRI)) ;
     }
+    
+    protected final void triplesSameSubject()
+    {
+        // Either a IRI/prefixed name or a construct that generates triples  
+        
+        // TriplesSameSubject -> Term PropertyListNotEmpty 
+        if ( lookingAt(NODE) )
+        {
+            triples() ;
+            return ;
+        }
+        
+        // TriplesSameSubject -> TriplesNode PropertyList?
+        if ( peekTriplesNodeCompound() )
+        {
+            Node n = triplesNodeCompound() ;
+
+            // May be followed by: 
+            //   A predicateObject list
+            //   A DOT or EOF.
+            if ( lookingAt(EOF) )
+                return ;
+            if ( lookingAt(DOT) )
+            {
+                nextToken() ;
+                return ;
+            }
+            if ( peekPredicate() )
+            {
+                predicateObjectList(n) ;
+                expectEndOfTriples() ;
+                return ;
+            }
+            exception("Unexpected token : %s", peekToken()) ;
+        }
+        exception("Out of place: %s", peekToken()) ;
+    }
+
+
 
     // Must be at least one triple. 
     protected final void triples()
     {
-        // Lookin at a node.
+        // Looking at a node.
         Node subject = node() ;
         if ( subject == null )
             exception("Not recognized: expected node: %s", peekToken().text()) ;

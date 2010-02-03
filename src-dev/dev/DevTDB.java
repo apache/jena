@@ -10,16 +10,13 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    // Redo checker, combine with ErrorHandler.
-    // Skip on error (for NTriples)
-    // Set the logger for the checker (N-Triples, NQuads).
-    // Validator .error, .warning, .check
 
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;
     // 
     // In-JVM caches - make a function of heap size.
+    // Settable in this.info.
     //   NodeCache
     //   Block cache for 32 bit
     //   Run with 32 bit block cache on 64 bit large machine to measure difference.

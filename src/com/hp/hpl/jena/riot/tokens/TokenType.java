@@ -35,7 +35,7 @@ public enum TokenType
     LBRACE, RBRACE,     // {} 
     LPAREN, RPAREN,     // ()
     LBRACKET, RBRACKET, // []
-    PLUS, MINUS, STAR, SLASH, RSLASH,
+    EQUALS, PLUS, MINUS, STAR, SLASH, RSLASH,
     EOF
 }
 
