@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class Quad
 {
@@ -36,7 +37,8 @@ public class Quad
     
     public Quad(Node g, Node s, Node p, Node o)
     {
-        if ( g == null ) throw new UnsupportedOperationException("Quad: graph cannot be null");
+        // Null means it's a triple really.
+        //if ( g == null ) throw new UnsupportedOperationException("Quad: graph cannot be null");
         if ( s == null ) throw new UnsupportedOperationException("Quad: subject cannot be null");
         if ( p == null ) throw new UnsupportedOperationException("Quad: predicate cannot be null");
         if ( o == null ) throw new UnsupportedOperationException("Quad: object cannot be null");
@@ -73,17 +75,22 @@ public class Quad
         return node.equals(unionGraph) ;
     }
     
-    public boolean isDefaultGraph()         { return isQuadDefaultGraphNode(graph) ; }
+    public boolean isDefaultGraph()         { return graph == null || isQuadDefaultGraphNode(graph) ; }
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
     public boolean isUnionGraph()           { return isQuadUnionGraph(graph) ; }
     
     @Override
     public int hashCode() 
     { 
-        return (graph.hashCode()>>2) ^
+        int x = 
                (subject.hashCode() >> 1) ^ 
                predicate.hashCode() ^ 
                (object.hashCode() << 1);
+        if ( graph != null )
+            x ^= (graph.hashCode()>>2) ;
+        else
+            x++ ;
+        return x ;
     }
     
     @Override
@@ -95,7 +102,7 @@ public class Quad
             return false ;
         Quad quad = (Quad)other ;
         
-        if ( ! graph.equals(quad.graph) ) return false ;
+        if ( ! Utils.equals(graph, quad.graph) ) return false ;
         if ( ! subject.equals(quad.subject) ) return false ;
         if ( ! predicate.equals(quad.predicate) ) return false ;
         if ( ! object.equals(quad.object) ) return false ;
@@ -105,7 +112,8 @@ public class Quad
     @Override
     public String toString()
     {
-        return "["+graph.toString()+" "+subject.toString()+" "+predicate.toString()+" "+object.toString()+"]" ;
+        String str = (graph==null)?"_":graph.toString() ;
+        return "["+str+" "+subject.toString()+" "+predicate.toString()+" "+object.toString()+"]" ;
     }
 }
 
