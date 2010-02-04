@@ -18,36 +18,48 @@ public class OpWalker
 {
     public static void walk(Op op, OpVisitor visitor)
     {
-        op.visit(new WalkerVisitor(visitor, null, null)) ;
+        walk(new WalkerVisitor(visitor, null, null), op, visitor) ;
     }
     
     public static void walk(Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        op.visit(new WalkerVisitor(visitor, beforeVisitor, afterVisitor)) ;
+        walk(new WalkerVisitor(visitor, beforeVisitor, afterVisitor), op, visitor, beforeVisitor, afterVisitor) ;
     }
     
-    private static final class WalkerVisitor extends OpVisitorByType
+    public static void walk(WalkerVisitor walkerVisitor, Op op, OpVisitor visitor)
     {
-        private OpVisitor beforeVisitor = null ;
-        private OpVisitor afterVisitor = null ;
-        private OpVisitor visitor ;
+        op.visit(walkerVisitor) ;
+    }
+    
+    public static void walk(WalkerVisitor walkerVisitor, Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        op.visit(walkerVisitor) ;
+    }
+
+    
+    
+    public static class WalkerVisitor extends OpVisitorByType
+    {
+        private final OpVisitor beforeVisitor ;
+        private final OpVisitor afterVisitor ;
+        protected final OpVisitor visitor ;
 
         public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
         { 
-            this(visitor) ;
+            this.visitor = visitor ;
             this.beforeVisitor = beforeVisitor ;
             this.afterVisitor = afterVisitor ;
         }
 
-        public WalkerVisitor(OpVisitor visitor) { this.visitor = visitor ; }
+        public WalkerVisitor(OpVisitor visitor) { this(visitor, null, null) ; }
         
-        private void before(Op op)
+        protected final void before(Op op)
         { 
             if ( beforeVisitor != null )
                 op.visit(beforeVisitor) ;
         }
 
-        private void after(Op op)
+        protected final void after(Op op)
         {
             if ( afterVisitor != null )
                 op.visit(afterVisitor) ;

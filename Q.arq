@@ -1,11 +1,25 @@
-PREFIX : <http://people.example/>
-SELECT *
-WHERE {
-    ?s :p ?x .
-    OPTIONAL {
-        FILTER (?x = :Q) .
-        LET (?disabled1 := "true") .
+prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
+prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+select ?label ?lat ?long where {
+    geo:X rdfs:label ?X .
+    geo:X rdfs:label ?Y .
+    FILTER(?X < <x> )
+    FILTER(?Y < <y> )
+
+
+    service <http://dbpedia.org/sparql> {
+     
+        ?center rdfs:label "<SOME LOCATION>"@en .
+        ?center geo:lat ?clat .
+        ?center geo:long ?clong .
+
+        ?loc rdfs:label ?label .
+        ?loc geo:lat ?lat .
+        ?loc geo:long ?long .
+        FILTER (?lat < ?clat + 0.1) .
+        FILTER (?lat > ?clat - 0.1) .
+        FILTER (?long < ?clong + 0.1) .
+        FILTER (?long > ?clong - 0.1)
     }
-
-
 }

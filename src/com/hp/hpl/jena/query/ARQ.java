@@ -127,12 +127,73 @@ public class ARQ
     /** Symbol to name the Xerces-J regular expression engine */ 
     public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
     
+    // Optimizer controls.
+    
+    /** 
+     *  Globally switch the default optimizer on and off : 
+     *  Note that storage subsystems may also be applying 
+     *  separately controlled optimizations.
+     */
+    
+    public static void enableOptimizer(boolean state) 
+    {
+        enableOptimizer(ARQ.getContext(), state) ;
+    }
+    
+    /** 
+     *  Switch the default optimizer on and off for a specific Context. 
+     *  Note that storage subsystems may also be applying 
+     *  separately controlled optimizations.
+     */
+    public static void enableOptimizer(Context context, boolean state) 
+    {
+        context.set(ARQ.optimization, state) ;
+    }
+    
+    /** 
+     *  Context key controlling whether the main query engine applies the
+     *  default optimization transformations.
+     */  
+    public static final Symbol optimization = ARQConstants.allocSymbol("optimization") ;
+    
     /** 
      *  Context key controlling whether the main query engine moves filters to the "best" place.
      *  Default is "true" - filter placement is done.
      */  
-    public static final Symbol filterPlacement = ARQConstants.allocSymbol("filterPlacement") ;
-   
+    public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
+    
+    @Deprecated
+    /** Use optFilterPlacement */
+    public static final Symbol filterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
+    
+    /** 
+     *  Context key controlling whether the standard optimizer applies
+     *  optimizations to equalities in FILTERs.
+     *  This optimization is conservative - it does not take place if
+     *  there is a potential risk of changing query semantics. 
+     */  
+    public static final Symbol optFilterEquality = ARQConstants.allocSymbol("optFilterEquality") ;
+
+    /** 
+     *  Context key controlling whether the standard optimizer applies
+     *  optimizations to conjunctions (&&) in filters.
+     */  
+    public static final Symbol optFilterConjunction = ARQConstants.allocSymbol("optFilterConjunction") ;
+
+    /** 
+     *  Context key controlling whether the standard optimizer applies
+     *  optimizations to disjunctions (||) in filters.
+     */  
+    public static final Symbol optFilterDisjunction = ARQConstants.allocSymbol("optFilterDisjunction") ;
+    
+    /** 
+     *  Context key controlling whether the main query engine 
+     *  
+     */  
+    public static final Symbol propertyFunctions = ARQConstants.allocSymbol("propertyFunctions") ;
+    
+    
+    
     /**
      * Use a simple (and non-scalable) graph implementation that does no
      * value testing.  Needed for DAWG tests where matching is exact

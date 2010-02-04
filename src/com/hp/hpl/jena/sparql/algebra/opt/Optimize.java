@@ -1,24 +1,27 @@
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpWalker;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpWalker ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.TransformWrapper ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
+import com.hp.hpl.jena.sparql.algebra.op.OpService ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class Optimize implements Rewrite
 {
@@ -104,10 +107,18 @@ public class Optimize implements Rewrite
         this.context = context ;
     }
 
-    public static boolean disjunctionOptimization = true ;
+    /** Alternative name for compatibility only */
+    public static final Symbol filterPlacement2 = ARQConstants.allocSymbol("filterPlacement") ;
     
+    @SuppressWarnings("deprecation")
     public Op rewrite(Op op)
     {
+        if ( context.isDefined(filterPlacement2) ) 
+        {
+            if ( context.isUndef(ARQ.filterPlacement) )
+                context.set(ARQ.filterPlacement, context.get(filterPlacement2)) ;
+        }
+        
         if ( false )
         {
             // Simplify is always applied by the AlgebraGenerator
@@ -120,21 +131,24 @@ public class Optimize implements Rewrite
         
         // Need to allow subsystems to play with this list.
         
-        op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
-        op = apply("Break up conjunctions", new TransformFilterImprove(), op) ;
+        if ( context.isTrueOrUndef(ARQ.propertyFunctions) )
+            op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
+        if ( context.isTrueOrUndef(ARQ.optFilterConjunction) )
+            op = apply("Break up filter conjunctions", new TransformFilterConjunction(), op) ;
 
         // TODO Improve filter placement to go through assigns that have no effect.
         // Do this before filter placement and other sequence generating transformations.
-        // or improve to place in a sequence. 
-
-        op = apply("Filter Equality", new TransformFilterEquality(), op) ;
+        // or improve to place in a sequence.
         
-        if ( disjunctionOptimization)
-         op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
+        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
+            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
+        
+        if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
+            op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
         
         op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
         
-        if ( context.isTrueOrUndef(ARQ.filterPlacement) )
+        if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
             // This can be done too early (breaks up BGPs).
             op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
@@ -147,6 +161,8 @@ public class Optimize implements Rewrite
 
     private static Op apply(String label, Transform transform, Op op)
     {
+        // Skip SERVICE
+        transform = new TransformSkipService(transform) ;
         Op op2 = Transformer.transform(transform, op) ;
         
         final boolean debug = false ;
@@ -170,10 +186,29 @@ public class Optimize implements Rewrite
         }
         return op2 ;
     }
+
+    // Skip OpService.
+    // USed by teh optimizer to leave OpService alone.
+    static class TransformSkipService extends TransformWrapper
+    {
+        public TransformSkipService(Transform transform)
+        {
+            super(transform) ;
+        }
+        
+        @Override
+        public Op transform(OpService opService, Op subOp)
+        { return opService ; } 
+
+        
+    }
+
 }
 
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
+ * 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

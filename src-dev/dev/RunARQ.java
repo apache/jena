@@ -75,8 +75,14 @@ public class RunARQ
 //        
 //    }
     
+    //@SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        
+        arq.qparse.main("--print=opt", "--query=Q.arq") ;
+        System.exit(0) ;
+        
+        //ARQ.getContext().setFalse(ARQ.filterPlacement) ;
         
         {
             System.out.println(ARQ.VERSION); 

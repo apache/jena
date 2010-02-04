@@ -9,6 +9,10 @@ package dev;
 
 public class DevARQ
 {
+    // BGP ordering and filter placement in memory models. 
+    // Every optimization operation needs an on/ioff switch.
+    // Stats handler enough?
+    
     // Example of OpExecutor
     // Deprecate StageGenerator
     

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
-
+/** A vistor helper that maps all vists to a few general ones */ 
 public abstract class OpVisitorByType implements OpVisitor
 {
     protected abstract void visitN(OpN op) ;

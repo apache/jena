@@ -11,23 +11,23 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-/** Improvements to filters that do not change the rest of the tree 
+/* Improvements to filters that do not change the rest of the tree 
  * (so, for example, not filter replacement or equality/assignment
- *  which both do change the sub opof the filter).  
- * 
- * Currently:
- * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
- *    via multiple elements of the exprList of the OpFilter.
- *    This allows them to be placed independently.
+ *  which both do change the sub op of the filter).  
  * 
  * Filter placment and equality/assignment interact.
  * Maybe need one place for all filter-related stuff, in which case this is becomes a library of code,
  * hence the statics for the real work. 
  */
 
-public class TransformFilterImprove extends TransformCopy
+/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
+ *    via multiple elements of the exprList of the OpFilter.
+ *    This allows them to be placed independently.
+ */
+
+public class TransformFilterConjunction extends TransformCopy
 {
-    public TransformFilterImprove() {}
+    public TransformFilterConjunction() {}
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)

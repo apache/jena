@@ -52,10 +52,14 @@ public class Quad
     public Node getSubject()    { return subject ; }
     public Node getPredicate()  { return predicate ; }
     public Node getObject()     { return object ; }
+
+    /** Get as a triple - useful because quads often come in blocks for the same graph */  
+    public boolean isTriple()    { return isDefaultGraph() ; } 
+
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
     public Triple asTriple()    { return new Triple(subject, predicate, object) ; }
     
-    /** node used by the quad generator for the default graph */
+    /** Test whether this is a quad for the default graph */
     public static boolean isQuadDefaultGraphNode(Node node)
     {
         // The node used by the quad generator for the default graph 

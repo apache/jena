@@ -66,7 +66,11 @@ public class QueryEngineMain extends QueryEngineBase
     
     @Override
     protected Op modifyOp(Op op)
-    { return Algebra.optimize(op, super.context) ; }
+    { 
+        if ( context.isFalse(ARQ.optimization) )
+            return op ;
+        return Algebra.optimize(op, super.context) ;
+    }
     
 //    @Override
 //    public void close()

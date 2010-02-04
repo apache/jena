@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -32,7 +33,14 @@ public class Transformer
         return get().transformation(transform, op, beforeVisitor, afterVisitor) ;
     }
     
-    protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    public Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        TransformApply v = new TransformApply(transform) ;
+        return transformation(v, op, beforeVisitor, afterVisitor) ;
+    }
+    
+    public Op transformation(TransformApply transformApply,
+                                Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
@@ -40,25 +48,24 @@ public class Transformer
             return op ;
         }
 
-        TransformApply v = new TransformApply(transform) ;
-        OpWalker.walk(op, v, beforeVisitor, afterVisitor) ;
-        Op r = v.result() ;
+        OpWalker.walk(op, transformApply, beforeVisitor, afterVisitor) ;
+        Op r = transformApply.result() ;
         return r ;
-        
     }
+
     
     protected Transformer() { }
     
     protected static boolean noDupIfSame = true ;
     
-    private static final 
+    public static
     class TransformApply extends OpVisitorByType
     {
-        private Transform transform = null ;
-        private Stack<Op> stack = new Stack<Op>() ;
-        private Op pop() { return stack.pop(); }
+        protected final Transform transform ;
+        private final Stack<Op> stack = new Stack<Op>() ;
+        protected final Op pop() { return stack.pop(); }
         
-        private void push(Op op)
+        protected final void push(Op op)
         { 
             // Including nulls
             stack.push(op) ;
@@ -69,7 +76,7 @@ public class Transformer
             this.transform = transform ;
         }
         
-        public Op result()
+        public final Op result()
         { 
             if ( stack.size() != 1 )
                 ALog.warn(this, "Stack is not aligned") ;
@@ -131,7 +138,6 @@ public class Transformer
             push(transform.transform(op)) ;
         }
     }
-
 }
 
 /*

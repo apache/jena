@@ -13,8 +13,8 @@
   <url>http://openjena.org/ARQ</url>
 
   <organization>
-    <name>Hewlett-Packard</name>
-    <url>http://www.hp.com/</url>
+    <name>OpenJena</name>
+    <url>http://www.openjena.org/</url>
   </organization>
 
   <licenses>
@@ -102,7 +102,7 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>[1.2.12,)</version>
+      <version>[1.2.12]</version>
     </dependency>
 
   </dependencies>
@@ -139,7 +139,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <include>com/hp/hpl/jena/sparql/test/ARQTestSuite.java</include>
+	    <include>com/hp/hpl/jena/sparql/ARQTestSuite.java</include>
           </includes>
         </configuration>
       </plugin>
