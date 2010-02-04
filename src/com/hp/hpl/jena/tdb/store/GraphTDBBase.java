@@ -259,7 +259,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
             Quad q = iter.next();
             if ( graphNode != null && ! q.getGraph().equals(graphNode))
                 throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph") ;
-            return q.getTriple() ;
+            return q.asTriple() ;
         }
         //@Override
         public void remove() { iter.remove(); }

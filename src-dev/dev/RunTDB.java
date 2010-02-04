@@ -62,7 +62,7 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        tdb.ntriples.main("D.nt") ;
+        tdb.trig.main("D.trig") ; System.exit(0) ;
         
         fastParse() ; System.exit(0) ;
         

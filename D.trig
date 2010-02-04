@@ -1,13 +1,22 @@
 @prefix : <http://example/> .
 
 {
-  :x :p 123 .
-  :x :q 123 .
+  :x1 :p 123 .
+  :x2 :q 123 .
 }
 
 <http://example/graph>
 {
-  :y :p 123 .
-  :y :q 123 .
+  :y1 :p 123 .
+  :y2 :q 123 .
 }
 	
+{
+  :x1 :p 123 .
+  :x2 :q 123 .
+}
+
+<http://example/graphZZZZ>
+{
+  :y1 :p 123 .
+}

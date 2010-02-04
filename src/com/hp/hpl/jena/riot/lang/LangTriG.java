@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.riot.lang;
 
 import atlas.lib.InternalErrorException ;
-import atlas.lib.NotImplemented ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -43,7 +42,9 @@ public class LangTriG extends LangTurtleBase<Quad>
     @Override
     protected final void oneTopLevelElement()
     {
-        throw new NotImplemented() ;
+        // XXX BNode labels.
+        // Per graph seen??
+        oneNamedGraphBlock() ;
     }
     
     protected final void oneNamedGraphBlock()
@@ -84,18 +85,22 @@ public class LangTriG extends LangTurtleBase<Quad>
         while(true)
         {
             token = peekToken() ;
-            if ( token.getType() != TokenType.RBRACE )
+            if ( token.hasType(TokenType.RBRACE) )
                 break ;
             // No - this has Turtle termination rules.
             // Assume this is fixed then ....
+            
+            // Unlike many operations in this parser suite 
+            // this does not assume that we are definitel entering
+            // this sttae throws an error if the first token 
             triplesSameSubject() ;
         }
         
         // **** Turtle.
-        
+        token = peekToken() ;
         if ( token.getType() != TokenType.RBRACE )
             exception("Expected end of graph: got %s", peekToken()) ;
-        
+        nextToken() ;
         currentGraph = null ;
     }
 

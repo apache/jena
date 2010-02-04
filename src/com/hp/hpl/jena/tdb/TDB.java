@@ -223,7 +223,7 @@ public class TDB
     private static void wireIntoExecution()
     {
         // TDB does it itself.
-        TDB.getContext().set(ARQ.filterPlacement, false) ;
+        TDB.getContext().set(ARQ.optFilterPlacement, false) ;
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
         

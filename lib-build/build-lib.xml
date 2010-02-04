@@ -533,7 +533,7 @@ deploy
 
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init" 
-          description="Resolve and fetch dependences with Ivy">
+          description="Download dependences in dir lib2/ with Ivy">
     <ivy:resolve conf="dev"/>
     <!-- sync causes artifacts and versions no longer need to be deleted -->
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>

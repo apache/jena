@@ -408,7 +408,7 @@ public class BulkLoader
                 {
                     String timestamp = Utils.nowAsString() ;
                     String x = StringUtils.str(elapsed/1000F) ;
-                    // XXX Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
+                    // Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
                     printf("  Elapsed: %s seconds [%s]\n", x, timestamp) ;
                     //now(label) ; 
                 }

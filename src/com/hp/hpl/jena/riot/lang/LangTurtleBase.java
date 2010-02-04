@@ -118,6 +118,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     {
         while(moreTokens())
         {
+            Token t = peekToken() ;
             if ( lookingAt(DIRECTIVE) )
             {
                 directive() ;
@@ -193,6 +194,10 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         prologue.setBaseURI(new IRIResolver(baseIRI)) ;
     }
     
+    // Unlike many operations in this parser suite 
+    // this does not assume that we are definitely
+    // entering this state throws an error if the first token 
+
     protected final void triplesSameSubject()
     {
         // Either a IRI/prefixed name or a construct that generates triples  
