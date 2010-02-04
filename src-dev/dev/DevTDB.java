@@ -10,7 +10,8 @@ package dev;
 public class DevTDB
 {
     // RIOT
-
+    // Tests for N-Quads and Trig
+    
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;
