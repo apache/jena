@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c)  Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -11,6 +11,9 @@ public class DevTDB
 {
     // RIOT
     // Tests for N-Quads and Trig
+    // Sort out test vocabulary
+    // Copy from 
+    // TestLangNQuads -- add quads
     
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler

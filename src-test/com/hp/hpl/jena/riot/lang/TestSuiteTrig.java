@@ -1,47 +1,36 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package com.hp.hpl.jena.riot.lang;
 
+import com.hp.hpl.jena.riot.TestVocabRIOT ;
+
+import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runners.AllTests ;
 
-import com.hp.hpl.jena.riot.lang.* ;
-import com.hp.hpl.jena.riot.out.TestOutputNTriples ;
-import com.hp.hpl.jena.riot.tokens.TestTokenForNode ;
-import com.hp.hpl.jena.riot.tokens.TestTokenizer ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestTokenForNode.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    
-    , TestTurtleTerms.class
-
-    , TestLangNTriples.class
-    , TestLangNQuads.class
-
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-
-    , TestLangTrig.class
-    , TestSuiteTrig.class
-
-    , TestOutputNTriples.class
-})
-
-public class TS_Riot
+@RunWith(AllTests.class)
+public class TestSuiteTrig extends TestSuite
 {
-
+    private static final String manifest1 = "testing/RIOT/TriG/manifest.ttl" ;
+    private static final String manifest2 = "testing/RIOT/TriG/manifest-bad.ttl" ;
+    
+    static public TestSuite suite()
+    {
+        TestSuite ts = new TestSuite("TriG") ;
+        // The good ..
+        ts.addTest(FactoryTestRiotTriG.make(manifest1, TestVocabRIOT.TestInOut, "TriG-")) ;
+        // .. the bad ...
+        ts.addTest(FactoryTestRiotTriG.make(manifest2, TestVocabRIOT.TestBadSyntax, "TriG-")) ;
+        return ts ;
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,30 +6,27 @@
 
 package com.hp.hpl.jena.riot.lang;
 
+import com.hp.hpl.jena.riot.TestVocabRIOT ;
+
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
-
-import com.hp.hpl.jena.n3.turtle.TurtleTestVocab ;
 
 @RunWith(AllTests.class)
 public class TestSuiteTurtle extends TestSuite
 {
     // The base URI of the test directory in the submission
     // NB The test results use http://www.w3.org/2001/sw/DataAccess/df1/tests/ in N-Triples (??!!)
-    
-    public static final String assumedBaseURI = "http://www.w3.org/2001/sw/DataAccess/df1/tests/" ;
-    // private static final String baseURI = "http://www.w3.org/TeamSubmission/turtle/tests/" ;
-    private static final String manifest1 = "testing/TurtleStd/manifest.ttl" ;
-    private static final String manifest2 = "testing/TurtleStd/manifest-bad.ttl" ;
+    private static final String manifest1 = "testing/RIOT/TurtleStd/manifest.ttl" ;
+    private static final String manifest2 = "testing/RIOT/TurtleStd/manifest-bad.ttl" ;
 
     static public TestSuite suite()
     {
         TestSuite ts = new TestSuite("Turtle") ;
         // The good ..
-        ts.addTest(FactoryTestRiotTurtle.make(manifest1, TurtleTestVocab.TestInOut, "Turtle-")) ;
+        ts.addTest(FactoryTestRiotTurtle.make(manifest1, TestVocabRIOT.TestInOut, "Turtle-")) ;
         // .. the bad ...
-        ts.addTest(FactoryTestRiotTurtle.make(manifest2, TurtleTestVocab.TestInOut, "Turtle-")) ;
+        ts.addTest(FactoryTestRiotTurtle.make(manifest2, TestVocabRIOT.TestInOut, "Turtle-")) ;
         return ts ;
     }
 }

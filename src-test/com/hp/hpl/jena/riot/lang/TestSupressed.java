@@ -1,42 +1,33 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.riot.lang;
 
-import junit.framework.TestCase;
+import junit.framework.Test ;
+import junit.framework.TestResult ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.riot.ParseException;
-
-
-public class UnitTestSyntax extends TestCase
+public class TestSupressed implements Test
 {
-    String uri ;
-    public UnitTestSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
-    
-    @Override
-    public void runTest()
+    public TestSupressed(String testName, Object object)
+    {}
+
+    public int countTestCases()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new JenaReaderTurtle2() ;
-        try {
-            t.read(model, uri) ;
-        } catch (ParseException ex)
-        {
-            throw ex ;    
-        }
+        return 0 ;
+    }
+
+    public void run(TestResult arg0)
+    {
+        
     }
 
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

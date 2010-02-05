@@ -2,6 +2,7 @@
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix t:      <http://openjena.org/test/riot#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:comment "Turtle good syntax test cases (must pass)" ;

@@ -1,47 +1,43 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package com.hp.hpl.jena.riot.lang;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import junit.framework.TestCase;
 
-import com.hp.hpl.jena.riot.lang.* ;
-import com.hp.hpl.jena.riot.out.TestOutputNTriples ;
-import com.hp.hpl.jena.riot.tokens.TestTokenForNode ;
-import com.hp.hpl.jena.riot.tokens.TestTokenizer ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2;
+import com.hp.hpl.jena.shared.JenaException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestTokenizer.class
-    , TestTokenForNode.class
-    , TestPrefixMap.class
-    , TestIRI.class
-    
-    , TestTurtleTerms.class
 
-    , TestLangNTriples.class
-    , TestLangNQuads.class
-
-    , TestLangTurtle.class
-    , TestSuiteTurtle.class
-
-    , TestLangTrig.class
-    , TestSuiteTrig.class
-
-    , TestOutputNTriples.class
-})
-
-public class TS_Riot
+public class UnitTestTrigBadSyntax extends TestCase
 {
+    String uri ;
+    public UnitTestTrigBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    
+    @Override
+    public void runTest()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader t = new JenaReaderTurtle2() ;
+        try {
+            t.read(model, uri) ;
+            fail("Bad syntax test succeed in parsing the file") ;
+        } catch (JenaException ex)
+        {
+            return ;    
+        }
 
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

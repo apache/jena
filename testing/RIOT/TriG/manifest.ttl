@@ -1,0 +1,17 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix t:      <http://openjena.org/test/riot#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "TriG good syntax test cases (must pass)" ;
+    mf:entries
+    (
+     [  rdf:type    t:TestInOut ;
+        mf:name      "test-00" ;
+        rdfs:comment "" ;
+        mf:action [ qt:data   <trig-test-00.trig> ] ;
+        mf:result  <trig-test-00.nq>
+     ]
+   ).

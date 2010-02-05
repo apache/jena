@@ -6,35 +6,19 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.io.PeekReader;
-
-import java.io.InputStream;
-import java.io.Reader;
-
 import junit.framework.TestCase;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.riot.ParseException;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.JenaException;
 
-public class UnitTestTurtle extends TestCase
+
+public class UnitTestTurtleBadSyntax extends TestCase
 {
-    String input ;
-    String output ;
-    String baseIRI ;
-    
-    public UnitTestTurtle(String name, String input, String output, String baseIRI)
-    {
-        super(name) ;
-        this.input = input ;
-        this.output = output ;
-        this.baseIRI = baseIRI ;
-    }
+    String uri ;
+    public UnitTestTurtleBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
     @Override
     public void runTest()
@@ -42,47 +26,13 @@ public class UnitTestTurtle extends TestCase
         Model model = ModelFactory.createDefaultModel() ;
         RDFReader t = new JenaReaderTurtle2() ;
         try {
-            if ( baseIRI != null )
-            {
-                InputStream in =  FileManager.get().open(input) ;
-                Reader r = PeekReader.makeUTF8(in) ;
-                t.read(model, r, baseIRI) ;
-            }
-            else
-                t.read(model, input) ;  
-            // "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl"
-
-            String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
-            
-            //Model results = FileManager.get().loadModel(output, syntax);
-
-            Model results = ModelFactory.createDefaultModel() ;
-            // Supports \ U escapes
-            // But the tokenizer had better be right! (they share the same tokenizer)
-            new JenaReaderNTriples2().read(results, output) ;
-
-            boolean b = model.isIsomorphicWith(results) ;
-            if ( !b )
-            {
-                model.isIsomorphicWith(results) ;
-                System.out.println("---- Input");
-                model.write(System.out, "TTL") ;
-                System.out.println("---- Output");
-                results.write(System.out, "TTL") ;
-                System.out.println("--------");
-            }
-            
-            if ( !b )
-                assertTrue("Models not isomorphic", b) ;
-        } catch (ParseException ex)
+            t.read(model, uri) ;
+            fail("Bad syntax test succeed in parsing the file") ;
+        } catch (JenaException ex)
         {
-            // Catch and retrhow - debugging.
-            throw ex ;    
+            return ;    
         }
-        catch (RuntimeException ex) 
-        { 
-            ex.printStackTrace(System.err) ;
-            throw ex ; }
+
     }
 }
 

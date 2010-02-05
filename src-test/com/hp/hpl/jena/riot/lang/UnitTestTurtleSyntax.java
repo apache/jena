@@ -12,13 +12,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.riot.ParseException;
 
 
-public class UnitTestBadSyntax extends TestCase
+public class UnitTestTurtleSyntax extends TestCase
 {
     String uri ;
-    public UnitTestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    public UnitTestTurtleSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
     @Override
     public void runTest()
@@ -27,13 +27,12 @@ public class UnitTestBadSyntax extends TestCase
         RDFReader t = new JenaReaderTurtle2() ;
         try {
             t.read(model, uri) ;
-            fail("Bad syntax test succeed in parsing the file") ;
-        } catch (JenaException ex)
+        } catch (ParseException ex)
         {
-            return ;    
+            throw ex ;    
         }
-
     }
+
 }
 
 /*

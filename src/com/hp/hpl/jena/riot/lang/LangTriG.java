@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class LangTriG extends LangTurtleBase<Quad>
 {
     /*
-     *  TriGDoc     ::=      ws* (statement ws*)*
+        TriGDoc     ::=      ws* (statement ws*)*
         statement   ::=     directive ws* '.' | graph
         graph       ::=     graphName? ws* '='? ws* '{' ws* (triples ws* ('.' ws* triples ws*)* '.'? ws*)? '}' ws* '.'?
         graphName   ::=     resource

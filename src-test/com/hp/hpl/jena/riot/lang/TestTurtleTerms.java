@@ -15,7 +15,7 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
-public class TestTurtleInternal extends BaseTest
+public class TestTurtleTerms extends BaseTest
 {
 
 	static public final String QUOTE3 = "\"\"\"" ;

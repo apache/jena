@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
@@ -22,13 +22,13 @@ import com.hp.hpl.jena.riot.ParseException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-public class UnitTestTurtle extends TestCase
+public class UnitTestTrig extends TestCase
 {
     String input ;
     String output ;
     String baseIRI ;
     
-    public UnitTestTurtle(String name, String input, String output, String baseIRI)
+    public UnitTestTrig(String name, String input, String output, String baseIRI)
     {
         super(name) ;
         this.input = input ;
@@ -87,7 +87,7 @@ public class UnitTestTurtle extends TestCase
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

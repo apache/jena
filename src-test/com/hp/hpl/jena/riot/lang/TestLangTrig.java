@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -18,62 +18,30 @@ import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.shared.JenaException ;
 
-public class TestLangTurtle extends BaseTest
+public class TestLangTrig extends BaseTest
 {
     @Test public void blankNodes()
     {
-        String s = "_:a <http://example/p> 'foo' . " ;
-        StringReader r = new StringReader(s) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        
-        RDFReader reader = new JenaReaderTurtle2() ;
-        reader.read(m, r, null) ;
-        assertEquals(1, m.size()) ;
-        
-        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
-        assertNotEquals(x, "a") ;
-
-        // reset - reread -  new bNode.
-        r = new StringReader(s) ;
-        reader.read(m, r, null) ;
-        assertEquals(2, m.size()) ;
+//        String s = "_:a <http://example/p> 'foo' . " ;
+//        StringReader r = new StringReader(s) ;
+//        Model m = ModelFactory.createDefaultModel() ;
+//        
+//        RDFReader reader = new JenaReaderTurtle2() ;
+//        reader.read(m, r, null) ;
+//        assertEquals(1, m.size()) ;
+//        
+//        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
+//        assertNotEquals(x, "a") ;
+//
+//        // reset - reread -  new bNode.
+//        r = new StringReader(s) ;
+//        reader.read(m, r, null) ;
+//        assertEquals(2, m.size()) ;
     }
-    
-    
-    @Test public void updatePrefixMapping()
-    {
-        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-        Model model = ModelFactory.createDefaultModel() ;
-        Reader reader = new StringReader("@prefix x: <http://example/x>.") ;
-        parser.read(model, reader, "http://example/base/") ;
-        
-        assertEquals(1, model.getNsPrefixMap().size()) ;
-        assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
-    }
-    
-    @Test(expected=JenaException.class)
-    public void errorJunk()
-    {
-        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-        Model model = ModelFactory.createDefaultModel() ;
-        Reader reader = new StringReader("<p>") ;
-        parser.read(model, reader, "http://example/base/") ;
-    }
-    
-    @Test(expected=JenaException.class)
-    public void errorNoPrefixDef()
-    {
-        JenaReaderTurtle2 parser = new JenaReaderTurtle2() ;
-        Model model = ModelFactory.createDefaultModel() ;
-        Reader reader = new StringReader("x:p <p> 'q' .") ;
-        parser.read(model, reader, "http://example/base/") ;
-    }
-    
-    
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

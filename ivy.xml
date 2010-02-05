@@ -29,7 +29,7 @@
     <!-- rev="latest.integration" -->
     
     <!-- We need the "tests" classifier but we then need to name all the bits we want. -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.8.3-SNAPSHOT">
+    <dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration">
       <artifact name="arq"/>
       <artifact name="arq" mvn:classifier="tests"/>
       <artifact name="arq" mvn:classifier="javadoc"/>

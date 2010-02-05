@@ -1,6 +1,6 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP All rights
- * reserved. [See end of file]
+ * (c) Copyright 2010 Talis Information Ltd.
+ * All rights reserved. [See end of file]
  */
 
 package com.hp.hpl.jena.riot.lang ;
@@ -15,18 +15,18 @@ import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-public class FactoryTestRiotTurtle extends TestFactoryManifest
+public class FactoryTestRiotTriG extends TestFactoryManifest
 {
 
     public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix)
     {
-        return new FactoryTestRiotTurtle(dftTestType, labelPrefix).process(manifest) ;
+        return new FactoryTestRiotTriG(dftTestType, labelPrefix).process(manifest) ;
     }
 
     private Resource dftTestType ;
     private String labelPrefix ;
 
-    public FactoryTestRiotTurtle(Resource dftTestType, String labelPrefix)
+    public FactoryTestRiotTriG(Resource dftTestType, String labelPrefix)
     {
         // FileManager? 
         
@@ -47,10 +47,6 @@ public class FactoryTestRiotTurtle extends TestFactoryManifest
             
             Resource input = TestUtils.getResource(action, VocabTestQuery.data) ;
             Resource output = result ; 
-//            // Convert baseIRI.
-//            Resource inputIRIr = TestUtils.getResource(action, TestVocabRIOT.inputIRI) ;
-//            String baseIRI = (inputIRIr == null) ? null : inputIRIr.getURI() ;
-            // !!
             
             String baseIRI = TestVocabRIOT.assumedBaseURI ;
             String x = input.getLocalName() ;
@@ -60,23 +56,23 @@ public class FactoryTestRiotTurtle extends TestFactoryManifest
 
             if (r.equals(TestVocabRIOT.TestInOut))
             {
-                return new UnitTestTurtle(testName, input.getURI(), output.getURI(), baseIRI) ;
+                return new UnitTestTrig(testName, input.getURI(), output.getURI(), baseIRI) ;
             }
 
             if (r.equals(TestVocabRIOT.TestSyntax))
             {
-                return new UnitTestTurtleSyntax(testName, input.getURI()) ;
+                return new UnitTestTrigSyntax(testName, input.getURI()) ;
             }
 
             if (r.equals(TestVocabRIOT.TestBadSyntax))
             {
-                return new UnitTestTurtleBadSyntax(testName, input.getURI()) ;
+                return new UnitTestTrigBadSyntax(testName, input.getURI()) ;
             }
 
-            // if ( r.equals(TestVocabRIOT.TestSurpeessed ))
-            // return new TestSupressed(testName, null) ;
+            if ( r.equals(TestVocabRIOT.TestSurpressed ))
+                return new TestSupressed(testName, null) ;
 
-            System.err.println("Unrecognized turtle test : " + testName) ;
+            System.err.println("Unrecognized test : " + testName) ;
             return null ;
 
         } catch (Exception ex)
@@ -90,8 +86,8 @@ public class FactoryTestRiotTurtle extends TestFactoryManifest
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP All rights
- * reserved.
+ * (c) Copyright 2010 Talis Information Ltd.
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
