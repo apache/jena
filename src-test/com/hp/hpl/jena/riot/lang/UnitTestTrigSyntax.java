@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import junit.framework.TestCase;
+import java.io.IOException ;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.riot.ParseException;
+import junit.framework.TestCase ;
+import atlas.io.IO ;
+import atlas.lib.SinkNull ;
+
+import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 
 public class UnitTestTrigSyntax extends TestCase
@@ -23,14 +25,25 @@ public class UnitTestTrigSyntax extends TestCase
     @Override
     public void runTest()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new JenaReaderTurtle2() ;
-        try {
-            t.read(model, uri) ;
-        } catch (ParseException ex)
-        {
-            throw ex ;    
-        }
+        InputStream in = IO.openFile(uri) ;
+        assertNotNull(in) ;
+        LangRIOT parser = Lang.createParserTriG(uri, in, new SinkNull<Quad>()) ;
+        parser.parse() ;
+        // Check EOF.
+        try { 
+            int eof = in.read() ;
+            assertEquals(-1, eof) ;
+        } catch (IOException ex) { IO.exception(ex) ; }
+
+        
+//        Model model = ModelFactory.createDefaultModel() ;
+//        RDFReader t = new JenaReaderTurtle2() ;
+//        try {
+//            t.read(model, uri) ;
+//        } catch (ParseException ex)
+//        {
+//            throw ex ;    
+//        }
     }
 
 }

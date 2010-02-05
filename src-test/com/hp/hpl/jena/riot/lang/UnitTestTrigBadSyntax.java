@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import junit.framework.TestCase;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.shared.JenaException;
+import junit.framework.TestCase ;
+import atlas.io.IO ;
+import atlas.lib.SinkNull ;
+
+import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.RiotException ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 
 public class UnitTestTrigBadSyntax extends TestCase
@@ -23,16 +25,13 @@ public class UnitTestTrigBadSyntax extends TestCase
     @Override
     public void runTest()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new JenaReaderTurtle2() ;
+        InputStream in = IO.openFile(uri) ;
+        assertNotNull(in) ;
+        LangRIOT parser = Lang.createParserTriG(uri, in, new SinkNull<Quad>()) ;
         try {
-            t.read(model, uri) ;
-            fail("Bad syntax test succeed in parsing the file") ;
-        } catch (JenaException ex)
-        {
-            return ;    
-        }
-
+            parser.parse() ;
+        } catch (RiotException ex) { return ; }
+        fail("Bad syntax trig test succeed in parsing the file") ;
     }
 }
 

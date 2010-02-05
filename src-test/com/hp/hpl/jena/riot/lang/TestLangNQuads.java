@@ -21,6 +21,7 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 
 public class TestLangNQuads extends BaseTest
@@ -30,37 +31,37 @@ public class TestLangNQuads extends BaseTest
     
     @Test public void nt0()
     {
-        SinkCounting<Triple> sink = parse("") ;
+        SinkCounting<Quad> sink = parse("") ;
         assertEquals(0, sink.getCount()) ;
     }
     
     @Test public void nt1()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> <z>.") ;
+        SinkCounting<Quad> sink = parse("<x> <y> <z>.") ;
         assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt2()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"z\".") ;
+        SinkCounting<Quad> sink = parse("<x> <y> \"z\".") ;
         assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt3()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> <z>. <x> <y> <z>.") ;
+        SinkCounting<Quad> sink = parse("<x> <y> <z>. <x> <y> <z>.") ;
         assertEquals(2, sink.getCount()) ;
     }
 
     @Test public void nt4()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"123\"^^<int>.") ;
+        SinkCounting<Quad> sink = parse("<x> <y> \"123\"^^<int>.") ;
         assertEquals(1, sink.getCount()) ;
     }
 
     @Test public void nt5()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"123\"@lang.") ;
+        SinkCounting<Quad> sink = parse("<x> <y> \"123\"@lang.") ;
         assertEquals(1, sink.getCount()) ;
     }
     
@@ -130,12 +131,13 @@ public class TestLangNQuads extends BaseTest
     }
     
 
-    private static SinkCounting<Triple> parse(String string)
+    private static SinkCounting<Quad> parse(String string)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
         
-        LangNTriples x = Lang.createParserNTriples(tokenizer, sink) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
+        SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
+        
+        LangNQuads x = Lang.createParserNQuads(tokenizer, sink) ;
         x.parse() ;
         return sink ;
     }

@@ -6,21 +6,23 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import atlas.io.PeekReader;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-import java.io.InputStream;
-import java.io.Reader;
+import junit.framework.TestCase ;
+import atlas.io.PeekReader ;
+import atlas.lib.SinkNull ;
 
-import junit.framework.TestCase;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2;
-import com.hp.hpl.jena.riot.ParseException;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
+import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
+import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class UnitTestTrig extends TestCase
 {
@@ -39,50 +41,10 @@ public class UnitTestTrig extends TestCase
     @Override
     public void runTest()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new JenaReaderTurtle2() ;
-        try {
-            if ( baseIRI != null )
-            {
-                InputStream in =  FileManager.get().open(input) ;
-                Reader r = PeekReader.makeUTF8(in) ;
-                t.read(model, r, baseIRI) ;
-            }
-            else
-                t.read(model, input) ;  
-            // "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl"
-
-            String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
-            
-            //Model results = FileManager.get().loadModel(output, syntax);
-
-            Model results = ModelFactory.createDefaultModel() ;
-            // Supports \ U escapes
-            // But the tokenizer had better be right! (they share the same tokenizer)
-            new JenaReaderNTriples2().read(results, output) ;
-
-            boolean b = model.isIsomorphicWith(results) ;
-            if ( !b )
-            {
-                model.isIsomorphicWith(results) ;
-                System.out.println("---- Input");
-                model.write(System.out, "TTL") ;
-                System.out.println("---- Output");
-                results.write(System.out, "TTL") ;
-                System.out.println("--------");
-            }
-            
-            if ( !b )
-                assertTrue("Models not isomorphic", b) ;
-        } catch (ParseException ex)
-        {
-            // Catch and retrhow - debugging.
-            throw ex ;    
-        }
-        catch (RuntimeException ex) 
-        { 
-            ex.printStackTrace(System.err) ;
-            throw ex ; }
+        InputStream in =  FileManager.get().open(input) ;
+        LangRIOT parser = Lang.createParserTriG(baseIRI, in, new SinkNull<Quad>()) ; 
+        parser.parse() ;
+        // XXX Isomorphism on each graph
     }
 }
 
