@@ -9,9 +9,15 @@
     mf:entries
     (
      [  rdf:type    t:TestInOut ;
-        mf:name      "test-00" ;
+        mf:name      "trig-test-00" ;
         rdfs:comment "" ;
         mf:action [ qt:data   <trig-test-00.trig> ] ;
         mf:result  <trig-test-00.nq>
+     ]
+     [  rdf:type    t:TestInOut ;
+        mf:name      "trig-test-01" ;
+        rdfs:comment "" ;
+        mf:action [ qt:data   <trig-test-01.trig> ] ;
+        mf:result  <trig-test-01.nq>
      ]
    ).
