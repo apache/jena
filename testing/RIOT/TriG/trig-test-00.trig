@@ -1,4 +1,1 @@
-@prefix : <http://example> .
-{
-    :x :p 123 .
-}
+# Empty
