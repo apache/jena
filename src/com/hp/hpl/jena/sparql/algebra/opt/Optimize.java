@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.TransformWrapper ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
+import com.hp.hpl.jena.sparql.algebra.Transformer.ApplyTransformVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -159,11 +162,25 @@ public class Optimize implements Rewrite
         return op ;
     }
 
-    private static Op apply(String label, Transform transform, Op op)
+    public static Op apply(String label, Transform transform, Op op)
     {
+        Op op2 ;
         // Skip SERVICE
-        transform = new TransformSkipService(transform) ;
-        Op op2 = Transformer.transform(transform, op) ;
+        if ( true )
+        {
+            transform = new TransformSkipService(transform) ;
+            op2 = Transformer.transform(transform, op) ;
+        }
+        else
+        {
+            // Better ....
+            // Walk but skip SERVICE
+            ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
+            WalkerVisitorSkipService walker = null ;
+            OpWalker.walk(walker, op, v) ;
+            op2 = v.result() ;
+        }
+
         
         final boolean debug = false ;
         
@@ -186,9 +203,31 @@ public class Optimize implements Rewrite
         }
         return op2 ;
     }
+    
+    static class WalkerVisitorSkipService extends WalkerVisitor
+    {
+        public WalkerVisitorSkipService(OpVisitor visitor)
+        {
+            super(visitor) ;
+        }
+        
+        @Override
+        public void visit(OpService op)
+        { 
+            before(op) ;
+            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
+            if ( visitor != null ) 
+                op.visit(visitor) ; 
+            after(op) ;
+        }
+        
+    }
 
+    // Need to chnage the walker.
+    
     // Skip OpService.
-    // USed by teh optimizer to leave OpService alone.
+    // XXX Does not skip - it transforms then ignores the result.
+    // Used by the optimizer to leave OpService alone.
     static class TransformSkipService extends TransformWrapper
     {
         public TransformSkipService(Transform transform)

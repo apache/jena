@@ -35,12 +35,12 @@ public class Transformer
     
     public Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        TransformApply v = new TransformApply(transform) ;
+        ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
     
-    public Op transformation(TransformApply transformApply,
-                                Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    public Op transformation(ApplyTransformVisitor transformApply,
+                             Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
@@ -59,7 +59,7 @@ public class Transformer
     protected static boolean noDupIfSame = true ;
     
     public static
-    class TransformApply extends OpVisitorByType
+    class ApplyTransformVisitor extends OpVisitorByType
     {
         protected final Transform transform ;
         private final Stack<Op> stack = new Stack<Op>() ;
@@ -71,7 +71,7 @@ public class Transformer
             stack.push(op) ;
         }
         
-        public TransformApply(Transform transform)
+        public ApplyTransformVisitor(Transform transform)
         { 
             this.transform = transform ;
         }
@@ -116,8 +116,7 @@ public class Transformer
         @Override
         protected void visitN(OpN op)
         {
-            List<Op> x = new ArrayList<Op>(op.size()) ;     // Maybe be slightly too many.
-            
+            List<Op> x = new ArrayList<Op>(op.size()) ;
             
             for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {
