@@ -78,6 +78,7 @@ public abstract class LangBase<X> implements LangRIOT
         if ( ! moreTokens() )
         {
             tokenEOF = new Token(tokens.getLine(), tokens.getColumn()) ;
+            tokenEOF.setType(EOF) ;
             return true ;
         }
         return false ;

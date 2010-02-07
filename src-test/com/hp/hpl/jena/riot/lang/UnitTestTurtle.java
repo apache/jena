@@ -64,16 +64,15 @@ public class UnitTestTurtle extends TestCase
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )
             {
-                model.isIsomorphicWith(results) ;
-                System.out.println("---- Input");
+                //model.isIsomorphicWith(results) ;
+                System.out.println("---- Parsed");
                 model.write(System.out, "TTL") ;
-                System.out.println("---- Output");
+                System.out.println("---- Expected");
                 results.write(System.out, "TTL") ;
                 System.out.println("--------");
             }
             
-            if ( !b )
-                assertTrue("Models not isomorphic", b) ;
+            assertTrue("Models not isomorphic", b) ;
         } catch (ParseException ex)
         {
             // Catch and retrhow - debugging.

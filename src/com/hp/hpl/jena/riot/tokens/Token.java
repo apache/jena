@@ -24,6 +24,7 @@ import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_DT ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.LITERAL_LANG ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.STRING ;
 import static com.hp.hpl.jena.riot.tokens.TokenType.VAR ;
+import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -378,10 +379,10 @@ public final class Token
     {
         if ( ! ( other instanceof Token ) ) return false ;
         Token t = (Token)other ;
-        return  Utils.equals(tokenType, t.tokenType) &&
-                Utils.equals(tokenImage, t.tokenImage) &&
-                Utils.equals(tokenImage2, t.tokenImage2) &&
-                Utils.equals(cntrlCode, t.cntrlCode) ;
+        return  equal(tokenType, t.tokenType) &&
+                equal(tokenImage, t.tokenImage) &&
+                equal(tokenImage2, t.tokenImage2) &&
+                equal(cntrlCode, t.cntrlCode) ;
     }
     
     public static Token tokenForChar(char character)

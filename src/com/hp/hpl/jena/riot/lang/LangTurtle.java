@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.riot.lang;
 
+import static com.hp.hpl.jena.riot.tokens.TokenType.DOT ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-
 /** Turtle language */
 public class LangTurtle extends LangTurtleBase<Triple>
 {
@@ -27,6 +27,17 @@ public class LangTurtle extends LangTurtleBase<Triple>
     protected final void oneTopLevelElement()
     {
         triplesSameSubject() ;
+    }
+    
+    @Override
+    protected void expectEndOfTriples()
+    {
+        // The DOT is required by Turtle (strictly).
+        // It is not in N3 and SPARQL.
+        if ( strict )
+            expect("Triples not terminated by DOT", DOT) ;
+        else
+            expectOrEOF("Triples not terminated by DOT", DOT) ;
     }
     
     @Override

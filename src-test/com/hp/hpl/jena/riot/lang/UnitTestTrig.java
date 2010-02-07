@@ -7,22 +7,16 @@
 package com.hp.hpl.jena.riot.lang;
 
 import java.io.InputStream ;
-import java.io.Reader ;
 
 import junit.framework.TestCase ;
-import atlas.io.PeekReader ;
-import atlas.lib.SinkNull ;
+import atlas.io.IO ;
+import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParseException ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 
 public class UnitTestTrig extends TestCase
 {
@@ -41,10 +35,43 @@ public class UnitTestTrig extends TestCase
     @Override
     public void runTest()
     {
-        InputStream in =  FileManager.get().open(input) ;
-        LangRIOT parser = Lang.createParserTriG(baseIRI, in, new SinkNull<Quad>()) ; 
-        parser.parse() ;
-        // XXX Isomorphism on each graph
+        try {
+            DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+            Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
+            InputStream in =  IO.openFile(input) ;
+            LangRIOT parser = Lang.createParserTriG(baseIRI, in, sink) ; 
+            parser.parse() ;
+            sink.flush();
+
+            //DatasetLib.dump(dsg) ;
+            
+            DatasetGraph dsg2 = DatasetLib.createDatasetGraphMem() ;
+            DatasetLib.read(IO.openFile(output), dsg2, "NQUADS") ;
+
+            // Compare with expected.
+
+            boolean b = DatasetLib.isomorphic(dsg, dsg2) ;
+            if ( ! b )
+            {
+                System.out.println("---- Parsed");
+                DatasetLib.dump(dsg) ;
+                System.out.println("---- Expected");
+                DatasetLib.dump(dsg2) ;
+                System.out.println("--------");
+            }
+
+            assertTrue("Datasets are not isomorphic", b) ;
+        } 
+        // Catch and retrhow - debugging.
+        catch (ParseException ex) 
+        {
+            throw ex ;
+        }
+        catch (RuntimeException ex) 
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ;
+        }
     }
 }
 

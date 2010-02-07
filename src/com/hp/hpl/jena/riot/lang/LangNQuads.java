@@ -5,7 +5,7 @@
  */
 
 package com.hp.hpl.jena.riot.lang;
-
+import static com.hp.hpl.jena.sparql.util.Utils.equal ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -48,8 +48,8 @@ public class LangNQuads extends LangNTuple<Quad>
             c = parseRDFTerm(cToken) ;
             cToken = nextToken() ;
         }
-//        else
-//            c = Quad.defaultGraphNodeGenerated ;
+        else
+            c = Quad.tripleInQuad ;
         
         if ( cToken.getType() != TokenType.DOT )
             exception("Quad not terminated by DOT: %s", cToken, cToken) ;
@@ -61,9 +61,7 @@ public class LangNQuads extends LangNTuple<Quad>
             boolean b = checker.check(s, sToken.getLine(), sToken.getColumn()) ;
             b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
             b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
-            // TEMP until ARQ updated
-//            if ( c!= null && c != Quad.defaultGraphNodeGenerated )
-            if ( c != null )
+            if ( ! equal(c, Quad.tripleInQuad) ) 
                 b &= checker.check(c, cToken.getLine(), cToken.getColumn()) ;
             if ( !b && skipOnBadTerm )
             {

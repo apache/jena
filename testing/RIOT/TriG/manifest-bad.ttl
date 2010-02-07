@@ -8,9 +8,14 @@
     rdfs:comment "TriG bad syntax test cases (must fail)" ;
     mf:entries
     (
+##      [  rdf:type t:TestBadSyntax ; 
+##         mf:name      "No DOT at end of graph block" ;
+##         rdfs:comment "" ;
+##         mf:action [ qt:data   <trig-bad-00.trig> ] ;
+##      ]
      [  rdf:type t:TestBadSyntax ; 
-        mf:name      "trig-bad-00.trig" ;
+        mf:name      "No DOT after a triples block but not end of a graph block" ;
         rdfs:comment "" ;
-        mf:action [ qt:data   <trig-bad-00.trig> ] ;
+        mf:action [ qt:data   <trig-bad-01.trig> ] ;
      ]
    ).

@@ -10,14 +10,8 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    // Tests for N-Quads and Trig
-    // TestLangNQuads -- add quads
-    // TestLangTrig
-    // UnitTestTrig --> Need to isomorphism check across graphs : needs dataset.read
-    // UnitTestTrigBadSyntax (share) -- scripts
-    // UnitTestTrigSyntax -- need dataset.read  -- scripts
-    // 
-    // *TriG* -- use trig parser.
+    // BNode tests
+    // TriG extensions
     
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler

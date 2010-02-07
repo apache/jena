@@ -153,7 +153,7 @@ public class MetaFile implements Sync, Closeable
     /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(String key, String value)
     {
-        return Utils.equals(getProperty(key), value) ;
+        return Utils.equal(getProperty(key), value) ;
     }
 
     /** Set property if not already set. */
@@ -194,7 +194,7 @@ public class MetaFile implements Sync, Closeable
     {
         String value = getProperty(key) ;
         
-        if ( ! Utils.equals(value, value) )
+        if ( ! Utils.equal(value, value) )
             inconsistent(key, value, expected) ;
     }
 

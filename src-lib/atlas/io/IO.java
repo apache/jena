@@ -49,6 +49,8 @@ public class IO
         try {
             if ( filename == null || filename.equals("-") )
                 return System.in ;
+            if ( filename.startsWith("file:") )
+                filename = filename.substring("file:".length()) ;
             InputStream in = new FileInputStream(filename) ;
             if ( filename.endsWith(".gz") )
                 in = new GZIPInputStream(in) ;

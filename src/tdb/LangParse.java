@@ -22,7 +22,6 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ErrorHandlerLib ;
-import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -76,8 +75,11 @@ public abstract class LangParse<X> extends CmdGeneral
                     } catch (RiotException ex)
                     {
                         if ( ! modLangParse.stopOnBadTerm() )
+                        {
                             // otherwise the checker sent the error message  
-                            RIOT.getLogger().error(ex.getMessage()) ;
+                            System.err.println(ex.getMessage()) ;
+                            //ex.printStackTrace(System.err) ;
+                        }
                         return ;
                     }
                 }

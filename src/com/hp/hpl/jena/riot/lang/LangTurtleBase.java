@@ -101,13 +101,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
      */
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-//    public LangTurtle(Tokenizer tokens)
-//    {
-//        this("http://example/", tokens, new PrintingSink(log)) ;
-//    }
-    
-    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, 
-                          Sink<X> sink) 
+    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, Sink<X> sink) 
     { 
         super(tokens, sink, checker) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
@@ -248,16 +242,18 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         expectEndOfTriples() ;
     }
 
-    protected final void expectEndOfTriples()
-    {
-        // The DOT is required by Turtle (strictly).
-        // It is not in N3 and SPARQL.
-    
-        if ( strict )
-            expect("Triples not terminated by DOT", DOT) ;
-        else
-            expectOrEOF("Triples not terminated by DOT", DOT) ;
-    }
+    protected abstract void expectEndOfTriples() ;
+//    {
+//        // The DOT is required by Turtle (strictly).
+//        // It is not in N3 and SPARQL.
+//
+//        //expect("Triples not terminated by DOT", DOT) ;
+//        
+//        if ( strict )
+//            expect("Triples not terminated by DOT", DOT) ;
+//        else
+//            expectOrEOF("Triples not terminated by DOT", DOT) ;
+//    }
 
     protected final void predicateObjectList(Node subject)
     {

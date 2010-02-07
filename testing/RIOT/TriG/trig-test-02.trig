@@ -1,0 +1,11 @@
+@prefix : <http://example/> .
+
+{
+    :x :p 123 .
+}
+
+:g { :x :p 456 . }
+
+{ :x :p 789 . } 
+
+:g { :x :p "abc" . }

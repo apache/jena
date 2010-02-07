@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.riot.lang;
 
+import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
 import atlas.lib.InternalErrorException ;
 import atlas.lib.Sink ;
 
@@ -49,8 +50,8 @@ public class LangTriG extends LangTurtleBase<Quad>
     
     protected final void oneNamedGraphBlock()
     {
-        // Directives are only between graphs.  Yipee.
-        Node graphNode = null ; 
+        // Directives are only between graphs.
+        Node graphNode = Quad.tripleInQuad ;
         Token token = peekToken() ;
 
         // <foo> = { ... }
@@ -104,6 +105,32 @@ public class LangTriG extends LangTurtleBase<Quad>
         currentGraph = null ;
     }
 
+    @Override
+    protected void expectEndOfTriples()
+    {
+        // The DOT is required by Turtle (strictly).
+        // It is not in N3 and SPARQL.
+        
+        if ( strict )
+        {
+            expect("Triples not terminated by DOT", DOT) ;
+            return ;
+        }
+        
+        if ( lookingAt(DOT) )
+        {
+            nextToken() ;
+            return ;
+        }
+        
+        // Loose - DOT optional.
+        if ( lookingAt(RBRACE) )
+            // Don't consume the RBRACE
+            return ;
+        exception("Triples not terminated properly") ;
+    }
+
+    
     @Override
     protected void emit(Node subject, Node predicate, Node object)
     {

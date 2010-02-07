@@ -12,7 +12,6 @@ import org.junit.Test ;
 import atlas.lib.SinkCounting ;
 import atlas.test.BaseTest ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
@@ -27,8 +26,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class TestLangNQuads extends BaseTest
 {
     // TODO Quads
-    // Test streaming interface.
-    
     @Test public void nt0()
     {
         SinkCounting<Quad> sink = parse("") ;
@@ -128,6 +125,18 @@ public class TestLangNQuads extends BaseTest
     public void nt_bad_7()
     {
         parse("<x> <p> x:y .") ;        // No prefixed names 
+    }
+    
+    @Test
+    public void quad_1()
+    {
+        parse("<x> <p> <s> <g> .") ; 
+    }
+    
+    @Test(expected=ParseException.class)
+    public void quad_2()
+    {
+        parse("<x> <p> <s> <g>") ;        // No trailing DOT
     }
     
 

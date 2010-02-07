@@ -70,7 +70,7 @@ public class Cache1<K, V> implements Cache<K,V>
     //@Override
     public V put(K key, V thing)
     {
-        if ( Utils.equals(cacheKey, key) && Utils.equals(cacheValue, thing) )
+        if ( Utils.equal(cacheKey, key) && Utils.equal(cacheValue, thing) )
             // No change.
             return cacheValue ;
 

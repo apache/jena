@@ -1,0 +1,8 @@
+
+@prefix : <http://example/> .
+{
+    # No trailing dot in first block.
+    :x :p 123 ;
+       :q :o
+    :x :p 123 .
+}

@@ -67,7 +67,7 @@ public class PropertyUtils
     /** Test whether a property has a value.  Null tests equal to not present. */
     public boolean propertyEquals(Properties properties, String key, String value)
     {
-        return Utils.equals(properties.getProperty(key), value) ;
+        return Utils.equal(properties.getProperty(key), value) ;
     }
 
     /** Set property if not already set. */
@@ -108,7 +108,7 @@ public class PropertyUtils
     {
         String value = properties.getProperty(key) ;
         
-        if ( ! Utils.equals(value, value) )
+        if ( ! Utils.equal(value, value) )
             inconsistent(properties, key, value, expected) ;
     }
 
