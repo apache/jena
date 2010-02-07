@@ -11,12 +11,14 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
+import atlas.io.IO ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.riot.IRIResolver ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
@@ -73,21 +75,45 @@ public class DatasetLib
         return true ;
     }
     
-    public static void read(InputStream input, DatasetGraph dataset, String language)
+    public static DatasetGraph load(String filename, String language)
+    {
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        read(filename, dsg, language, null) ;
+        return dsg ;
+    } 
+    
+    public static DatasetGraph load(String filename, String language, String baseURI)
+    {
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        read(filename, dsg, language, baseURI) ;
+        return dsg ;
+    } 
+    
+    public static void read(String filename, DatasetGraph dataset, String language, String basedURI)
+    {
+        InputStream input = IO.openFile(filename) ;
+        String baseURI = IRIResolver.resolveGlobal(filename).toString() ;
+        read(input, dataset, language, baseURI) ;
+    }
+    
+    public static void read(InputStream input, DatasetGraph dataset, String language, String basedURI)
     {
         Sink<Quad> sink = datasetSink(dataset) ;
-        
-        
         // NAMES!
-        if ( language.equalsIgnoreCase("NQUADS") || language.equalsIgnoreCase("N-QUADS") )
+        if ( language.equalsIgnoreCase("NQUADS") || language.equalsIgnoreCase(Lang.langNQuads) )
         {
             LangRIOT parser = Lang.createParserNQuads(input, sink) ;
             parser.parse() ;
             sink.flush();
             return ;
         }
-//        if ( language.equalsIgnoreCase("TRIG") )
-//        {}
+        if ( language.equalsIgnoreCase(Lang.langTrig) )
+        {
+            LangRIOT parser = Lang.createParserTriG(basedURI, input, sink) ;
+            parser.parse() ;
+            sink.flush();
+            return ;
+        }
         throw new RiotException("Language not supported for quads: "+language) ;
     }
     

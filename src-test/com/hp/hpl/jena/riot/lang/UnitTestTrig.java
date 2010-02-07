@@ -37,16 +37,11 @@ public class UnitTestTrig extends TestCase
     {
         try {
             DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-            Sink<Quad> sink = DatasetLib.datasetSink(dsg) ;
-            InputStream in =  IO.openFile(input) ;
-            LangRIOT parser = Lang.createParserTriG(baseIRI, in, sink) ; 
-            parser.parse() ;
-            sink.flush();
-
+            DatasetLib.read(input, dsg, "TRIG", baseIRI) ;
             //DatasetLib.dump(dsg) ;
             
             DatasetGraph dsg2 = DatasetLib.createDatasetGraphMem() ;
-            DatasetLib.read(IO.openFile(output), dsg2, "NQUADS") ;
+            DatasetLib.read(output, dsg2, "NQUADS", null) ;
 
             // Compare with expected.
 

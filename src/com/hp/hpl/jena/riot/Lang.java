@@ -18,10 +18,19 @@ import com.hp.hpl.jena.riot.lang.LangTurtle ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class Lang
 {
+    public static final String langXML          = FileUtils.langXML ;
+    public static final String langNTriple      = "N-TRIPLES" ; // FileUtils is wrong.
+    public static final String langN3           = FileUtils.langN3 ;
+    public static final String langTurtle       = FileUtils.langTurtle ;
+    
+    public static final String langNQuads       = "N-QUADS" ;
+    public static final String langTrig         = "TRIG" ;
+    
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(String baseIRI, InputStream input, Sink<Triple> sink)
     {
