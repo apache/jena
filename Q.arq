@@ -2,13 +2,13 @@ prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
 prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 
 select ?label ?lat ?long where {
-##     geo:X rdfs:label ?X .
-##     geo:X rdfs:label ?Y .
-##     FILTER(?X < <x> )
-##     FILTER(?Y < <y> )
+    geo:X rdfs:label ?X .
+    geo:X rdfs:label ?Y .
+    FILTER(?X < <x> )
+    FILTER(?Y < <y> )
 
 
-    service <http://dbpedia.org/sparql> {
+    SERVICE <http://dbpedia.org/sparql> {
      
         ?center rdfs:label "<SOME LOCATION>"@en .
         ?center geo:lat ?clat .
