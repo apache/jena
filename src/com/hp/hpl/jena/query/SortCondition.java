@@ -100,7 +100,7 @@ public class SortCondition extends PrintSerializableBase
         if ( sc.getDirection() != this.getDirection() )
             return false ;
         
-        if ( ! Utils.equals(this.getExpression(), sc.getExpression()) )
+        if ( ! Utils.equal(this.getExpression(), sc.getExpression()) )
             return false ;
         
 //        if ( ! Utils.eq(this.getVariable(), sc.getVariable()) )

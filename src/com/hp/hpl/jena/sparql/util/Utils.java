@@ -139,8 +139,9 @@ public class Utils
     
     /** Compare two object-things for quality - allow null to be equals to null */
     
-    public static boolean equals(Object obj1, Object obj2)
+    public static boolean equal(Object obj1, Object obj2)
     {
+        // Don't call this equals because static import does nto work very well with it (looks like local object.equals)
         if ( obj1 == obj2) return true ;
         if ( obj1 == null )
             return obj2 == null ;

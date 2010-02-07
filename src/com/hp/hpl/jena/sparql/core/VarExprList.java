@@ -110,7 +110,7 @@ public class VarExprList
         if ( ! ( other instanceof VarExprList ) )
             return false ;
         VarExprList x = (VarExprList)other ;
-        return Utils.equals(vars, x.vars) &&  Utils.equals(exprs, x.exprs) ;
+        return Utils.equal(vars, x.vars) &&  Utils.equal(exprs, x.exprs) ;
     }
     
     @Override

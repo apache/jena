@@ -146,7 +146,7 @@ public class QueryCompare implements QueryVisitor
     
     private void check(String msg, Object obj1, Object obj2)
     {
-        check(msg, Utils.equals(obj1,obj2)) ;
+        check(msg, Utils.equal(obj1,obj2)) ;
     }
     
     private void check(String msg, boolean b)

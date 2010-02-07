@@ -3,7 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.3
 
-+ Bug fix: some multiplely nested OPTIONALs could result in only naive, unoptimized execution. 
++ Bug fix: some multiply nested OPTIONALs could result in only naive, unoptimized execution. 
++ Bug fix: SERVICE body for complex query patterns. 
 
 ==== ARQ 2.8.2
 

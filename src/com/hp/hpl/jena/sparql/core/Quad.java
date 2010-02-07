@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import static com.hp.hpl.jena.sparql.util.Utils.* ;
 
 public class Quad
 {
@@ -23,7 +23,11 @@ public class Quad
     // interpretation to these "named" graphs.  
     
     /** Name of the default for explict use in GRAPH */
-    public static final Node defaultGraphIRI      =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    public static final Node defaultGraphIRI        =  Node.createURI("urn:x-arq:DefaultGraph") ;
+
+    /** Name of the non-graph when a quad is really a triple -- the default graph when parsing N-Quads or TriG for example */
+    public static final Node tripleInQuad           =  null ;
+
     
     /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
     public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
@@ -53,11 +57,14 @@ public class Quad
     public Node getPredicate()  { return predicate ; }
     public Node getObject()     { return object ; }
 
+    private Triple triple = null ;
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
-    public boolean isTriple()    { return isDefaultGraph() ; } 
-
-    /** Get as a triple - useful because quads often come in blocks for the same graph */  
-    public Triple asTriple()    { return new Triple(subject, predicate, object) ; }
+    public Triple asTriple()
+    { 
+        if ( triple == null )
+            triple = new Triple(subject, predicate, object) ;
+        return triple ;
+    }
     
     /** Test whether this is a quad for the default graph */
     public static boolean isQuadDefaultGraphNode(Node node)
@@ -79,7 +86,10 @@ public class Quad
         return node.equals(unionGraph) ;
     }
     
-    public boolean isDefaultGraph()         { return graph == null || isQuadDefaultGraphNode(graph) ; }
+    /** Is it really a triple? */  
+    public boolean isTriple()               { return equal(graph, tripleInQuad) ; } 
+
+    //public boolean isDefaultGraph()         { return isQuadDefaultGraphNode(graph) ; }
     public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
     public boolean isUnionGraph()           { return isQuadUnionGraph(graph) ; }
     
@@ -106,7 +116,7 @@ public class Quad
             return false ;
         Quad quad = (Quad)other ;
         
-        if ( ! Utils.equals(graph, quad.graph) ) return false ;
+        if ( ! equal(graph, quad.graph) ) return false ;
         if ( ! subject.equals(quad.subject) ) return false ;
         if ( ! predicate.equals(quad.predicate) ) return false ;
         if ( ! object.equals(quad.object) ) return false ;

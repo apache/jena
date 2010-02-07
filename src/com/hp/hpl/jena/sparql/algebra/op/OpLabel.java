@@ -44,10 +44,10 @@ public class OpLabel extends Op1
         if ( ! ( other instanceof OpLabel) )
             return false ;
         OpLabel opLabel = (OpLabel)other ;
-        if ( ! Utils.equals(object, opLabel.object) )
+        if ( ! Utils.equal(object, opLabel.object) )
             return false ;
         
-        return Utils.equals(getSubOp(), opLabel.getSubOp()) ;
+        return Utils.equal(getSubOp(), opLabel.getSubOp()) ;
     }
 
     @Override

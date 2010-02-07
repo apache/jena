@@ -12,17 +12,26 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.sparql.syntax.ElementService ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpService extends Op1
 {
-    Node serviceNode = null ;    
+    Node serviceNode = null ;
+    private ElementService serviceElement = null ;    
     public OpService(Node serviceNode, Op subOp)
     {
         super(subOp) ;
         this.serviceNode = serviceNode ;
     }
 
+    public OpService(Node serviceNode, Op subOp, ElementService elt)
+    {
+        super(subOp) ;
+        this.serviceNode = serviceNode ;
+        this.serviceElement = elt ;
+    }
+    
     @Override
     public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
 
@@ -31,6 +40,7 @@ public class OpService extends Op1
     public String getName()                     { return Tags.tagService ; }
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     public Node getService()                    { return serviceNode ;  }
+    public ElementService getServiceElement()   { return serviceElement ;  }
 
     @Override
     public int hashCode()

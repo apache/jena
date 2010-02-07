@@ -23,10 +23,17 @@ public class Service
 {
     public static QueryIterator exec(OpService op)
     {
-        Query query = OpAsQuery.asQuery(op.getSubOp()) ;
-        
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
+        
+        Query query = OpAsQuery.asQuery(op.getSubOp()) ;
+        
+        // Alternative: use the original syntax.
+        // Can't always do this - may be built programmatically.
+        // Not also teh optimizer tries not to optimize OpService,
+        // so leaving the algebre in the original generated form. 
+//        if ( op.getServiceElement() != null )
+//            query.setQueryPattern(op.getServiceElement()) ;
         
         HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
         httpQuery.addParam(HttpParams.pQuery, query.toString() );

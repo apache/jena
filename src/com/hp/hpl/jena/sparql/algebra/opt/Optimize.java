@@ -166,17 +166,18 @@ public class Optimize implements Rewrite
     {
         Op op2 ;
         // Skip SERVICE
+        // This avoids needing to ensure every optimizer transform knows not to touch OpService. 
         if ( true )
         {
+            // Simplest way but still walks the OpService subtree (and throws away the transformation).
             transform = new TransformSkipService(transform) ;
             op2 = Transformer.transform(transform, op) ;
         }
         else
         {
-            // Better ....
-            // Walk but skip SERVICE
-            ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
-            WalkerVisitorSkipService walker = null ;
+            // Don't transform OpService and don'e walk the sub-op 
+            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform) ;
+            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v) ;
             OpWalker.walk(walker, op, v) ;
             op2 = v.result() ;
         }
@@ -204,6 +205,27 @@ public class Optimize implements Rewrite
         return op2 ;
     }
     
+
+    // --------------------------------
+    // Modified classes to avoid transforming SERVICE/OpService.
+    
+    /** Treat OpService as a leaf of the tree */
+    static class ApplyTransformVisitorServiceAsLeaf  extends  ApplyTransformVisitor
+    {
+        public ApplyTransformVisitorServiceAsLeaf(Transform transform)
+        {
+            super(transform) ;
+        }
+        
+        @Override
+        public void visit(OpService op)
+        {
+            // Treat as a leaf that does not change.
+            push(op) ;
+        }
+    }
+    
+    /** Don't walk down an OpService sub-operation */
     static class WalkerVisitorSkipService extends WalkerVisitor
     {
         public WalkerVisitorSkipService(OpVisitor visitor)
@@ -215,19 +237,21 @@ public class Optimize implements Rewrite
         public void visit(OpService op)
         { 
             before(op) ;
-            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
-            if ( visitor != null ) 
-                op.visit(visitor) ; 
+            // visit1 code from WalkerVisitor
+//            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
+            
+            // Just visit the OpService node itself.
+            // The transformer needs to push teh code as a result (see ApplyTransformVisitorSkipService)
+            if ( visitor != null ) op.visit(visitor) ;
+            
             after(op) ;
         }
         
     }
-
-    // Need to chnage the walker.
     
-    // Skip OpService.
-    // XXX Does not skip - it transforms then ignores the result.
-    // Used by the optimizer to leave OpService alone.
+    // --------------------------------
+    // Plan B: ignore transformation of OpService and return the original.
+    // Still walks the sub-op of OpService 
     static class TransformSkipService extends TransformWrapper
     {
         public TransformSkipService(Transform transform)

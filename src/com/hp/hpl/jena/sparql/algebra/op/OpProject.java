@@ -49,7 +49,7 @@ public class OpProject extends OpModifier
     {
         if ( ! (other instanceof OpProject) ) return false ;
         OpProject opProject = (OpProject)other ;
-        if ( ! Utils.equals(vars, opProject.vars ) )
+        if ( ! Utils.equal(vars, opProject.vars ) )
             return false ;
         return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
     }

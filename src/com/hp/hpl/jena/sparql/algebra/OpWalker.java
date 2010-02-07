@@ -66,15 +66,19 @@ public class OpWalker
         }
         
         @Override
-        protected void visitN(OpN op)
+        protected void visit0(Op0 op)         
+        {  
+            before(op) ;
+            if ( visitor != null ) op.visit(visitor) ;
+            after(op) ;
+        }
+
+        @Override
+        protected void visit1(Op1 op)
         {
             before(op) ;
-            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
-            {
-                Op sub = iter.next() ;
-                sub.visit(this) ;
-            }
-            if ( visitor != null ) op.visit(visitor) ;
+            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
+            if ( visitor != null ) op.visit(visitor) ; 
             after(op) ;
         }
 
@@ -89,22 +93,18 @@ public class OpWalker
         }
         
         @Override
-        protected void visit1(Op1 op)
+        protected void visitN(OpN op)
         {
             before(op) ;
-            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
-            if ( visitor != null ) op.visit(visitor) ; 
-            after(op) ;
-        }
-        
-        @Override
-        protected void visit0(Op0 op)         
-        {  
-            before(op) ;
+            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
+            {
+                Op sub = iter.next() ;
+                sub.visit(this) ;
+            }
             if ( visitor != null ) op.visit(visitor) ;
             after(op) ;
         }
-        
+
         @Override
         protected void visitExt(OpExt op)
         {
