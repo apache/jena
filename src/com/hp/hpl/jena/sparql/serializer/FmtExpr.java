@@ -104,21 +104,49 @@ public class FmtExpr
                 visitFunction1((ExprFunction1)func) ;
                 return ;
             }
+            
+            if ( func instanceof E_OneOf )
+            {
+                E_OneOf oneOf = (E_OneOf)func ;
+                out.print("( ") ;
+                oneOf.getLHS().visit(this) ;
+                out.print(" IN ") ;
+                printExprList(oneOf.getRHS()) ;
+                out.print(" )") ;
+                return ;
+            }
+
+            if ( func instanceof E_NotOneOf )
+            {
+                E_NotOneOf oneOf = (E_NotOneOf)func ;
+                out.print("( ") ;
+                oneOf.getLHS().visit(this) ;
+                out.print(" NOT IN ") ;
+                printExprList(oneOf.getRHS()) ;
+                out.print(" )") ;
+                return ;
+            }
 
             out.print( func.getFunctionPrintName(context) ) ;
-            out.print("(") ;
-            for ( int i = 1 ; ; i++ )
-            {
-                Expr expr = func.getArg(i) ;
-                if ( expr == null )
-                    break ; 
-                if ( i != 1 )
-                    out.print(", ") ;
-                expr.visit(this) ;
-            }
-            out.print(")");
+            printExprList(func.getArgs()) ;
         }
 
+        private void printExprList(Iterable<Expr> exprs)
+        {
+            out.print("(") ;
+            boolean first = true ;
+            for ( Expr expr : exprs )
+            {
+                if ( expr == null )
+                    break ; 
+                if ( ! first )
+                    out.print(", ") ;
+                first = false ;
+                expr.visit(this) ;
+            }  
+            out.print(")");
+        }
+        
         public void visit(ExprFunctionOp funcOp)
         {
             FormatterElement fmtElt = new FormatterElement(out, context) ;

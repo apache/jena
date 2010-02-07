@@ -1387,7 +1387,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
   final public Expr RelationalExpression() throws ParseException {
-                                Expr expr1, expr2 ;
+                                Expr expr1, expr2 ; ExprList a ;
     expr1 = NumericExpression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQ:

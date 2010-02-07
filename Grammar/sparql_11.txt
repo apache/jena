@@ -82,6 +82,8 @@ TOKENS
 | <FILTER: "filter">
 | <BOUND: "bound">
 | <COALESCE: "coalesce">
+| <IN: "in">
+| <NOT_IN: "not" (<WS>)* "in">
 | <IF: "if">
 | <STR: "str">
 | <DTYPE: "datatype">
@@ -309,11 +311,11 @@ NON-TERMINALS
 // Weakest outermost
 	Path	:=	PathAlternative
 	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
-	PathSequence	:=	PathEltOrReverse ( <SLASH> PathEltOrReverse | <CARROT> PathElt )*
-// Path unit element, no reverse
+	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse | <CARROT> PathElt )*
+// Path unit element, no inverse
 	PathElt	:=	PathPrimary ( PathMod )?
-// Path unit element, include reverse.
-	PathEltOrReverse	:=	( PathElt | <CARROT> PathElt )
+// Path unit element, including inverse.
+	PathEltOrInverse	:=	( PathElt | <CARROT> PathElt )
 	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) ) )
 	PathPrimary	:=	( IRIref | <KW_A> | <LPAREN> Path <RPAREN> )
 	Integer	:=	<INTEGER>
@@ -344,7 +346,7 @@ NON-TERMINALS
 	ConditionalOrExpression	:=	ConditionalAndExpression ( <SC_OR> ConditionalAndExpression )*
 	ConditionalAndExpression	:=	ValueLogical ( <SC_AND> ValueLogical )*
 	ValueLogical	:=	RelationalExpression
-	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression )?
+	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ArgList | <NOT_IN> ArgList )?
 	NumericExpression	:=	AdditiveExpression
 	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( <STAR> UnaryExpression ) | ( <SLASH> UnaryExpression ) )? )*
 	MultiplicativeExpression	:=	UnaryExpression ( <STAR> UnaryExpression | <SLASH> UnaryExpression )*

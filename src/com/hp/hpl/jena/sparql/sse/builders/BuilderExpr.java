@@ -236,6 +236,8 @@ public class BuilderExpr
         dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
         dispatch.put(Tags.tagExists, buildExists) ;
         dispatch.put(Tags.tagNotExists, buildNotExists) ;
+        dispatch.put(Tags.tagIn, buildIn) ;
+        dispatch.put(Tags.tagNotIn, buildNotIn) ;
         
         dispatch.put(Tags.tagCount, buildCount) ;
         dispatch.put(Tags.tagSum, buildSum) ;
@@ -601,6 +603,30 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "notexists: wanted 1 arguments: got: "+list.size()) ;
             Op op = BuilderOp.build(list.get(1)) ;
             return new E_NotExists(op) ;
+        }
+    };
+    
+    final protected Build buildIn = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLengthAtLeast(1, list, "in: wanted 1 or more arguments: got: "+list.size()) ;
+            Item lhs = list.car() ;
+            Expr expr = buildExpr(list.get(1)) ;
+            ExprList eList = buildExprListUntagged(list, 2) ;
+            return new E_OneOf(expr, eList) ;
+        }
+    };
+    
+    final protected Build buildNotIn = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLengthAtLeast(1, list, "notin: wanted 1 or more arguments: got: "+list.size()) ;
+            Item lhs = list.car() ;
+            Expr expr = buildExpr(list.get(1)) ;
+            ExprList eList = buildExprListUntagged(list, 2) ;
+            return new E_NotOneOf(expr, eList) ;
         }
     };
     

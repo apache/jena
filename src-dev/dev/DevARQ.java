@@ -11,6 +11,9 @@ public class DevARQ
 {
     // DatasetGraphMem
     
+    // Optimize E_OneOf, E_NotOneOf
+    // Tests
+    
     // BGP ordering and filter placement in memory models. 
     // Every optimization operation needs an on/ioff switch.
     // Stats handler enough?

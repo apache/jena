@@ -79,7 +79,7 @@ public class RunARQ
     public static void main(String[] argv) throws Exception
     {
         
-        arq.qparse.main("--print=opt", "--query=Q.arq") ;
+        arq.qparse.main("--print=op", "--print=query", "--query=IN.arq") ;
         System.exit(0) ;
         
         //ARQ.getContext().setFalse(ARQ.filterPlacement) ;

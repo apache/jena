@@ -597,7 +597,7 @@ Expr ValueLogical() : { Expr expr ; }
     { return expr ; }
 }
 
-Expr RelationalExpression() : { Expr expr1, expr2 ; }
+Expr RelationalExpression() : { Expr expr1, expr2 ; ExprList a ; }
 {
   expr1 = NumericExpression()
   (
@@ -613,6 +613,12 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; }
       { expr1 = new E_LessThanOrEqual(expr1, expr2) ; }
   | <GE> expr2 = NumericExpression()
       { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
+
+
+
+
+
+
   )?
     { return expr1 ; }
 }
@@ -647,6 +653,7 @@ Expr AdditiveExpression() : { Expr expr1, expr2, expr3 ; boolean addition ; Node
 //     }
 //   )*
 
+  // Expression - no + or -
   |
     (
       n = NumericLiteralPositive()
@@ -662,7 +669,8 @@ Expr AdditiveExpression() : { Expr expr1, expr2, expr3 ; boolean addition ; Node
          expr2 = asExpr(n) ;
          addition = false ;
      }
-    )
+     )
+
     (
       ( <STAR> expr3 = UnaryExpression() { expr2 = new E_Multiply(expr2, expr3) ; } )
     |
@@ -756,6 +764,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprL
 
   | <IS_LITERAL> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsLiteral(expr) ; }
+
 
   | // Regular expression matcher
     expr = RegexExpression() { return expr ; }
@@ -961,6 +970,8 @@ TOKEN [IGNORE_CASE] :
 
 // Expression operators
 | < BOUND: "bound" >
+
+
 
 
 
