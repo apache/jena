@@ -266,7 +266,7 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int VBAR = 130;
   /** RegularExpression Id. */
-  int CARROT = 131;
+  int CARAT = 131;
   /** RegularExpression Id. */
   int FPATH = 132;
   /** RegularExpression Id. */

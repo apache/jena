@@ -151,11 +151,13 @@ public class Utils
         return obj1.equals(obj2) ;
     }
     
+    /** Do two lists have the same elements? */ 
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2)
     {
         return list1.containsAll(list2) && list2.containsAll(list1) ;
     }
-
+    
+    
     /** HashCode - allow nulls */
     public static int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
     

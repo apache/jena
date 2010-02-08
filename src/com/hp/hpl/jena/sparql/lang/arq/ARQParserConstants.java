@@ -272,7 +272,7 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int VBAR = 133;
   /** RegularExpression Id. */
-  int CARROT = 134;
+  int CARAT = 134;
   /** RegularExpression Id. */
   int FPATH = 135;
   /** RegularExpression Id. */

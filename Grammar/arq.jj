@@ -873,7 +873,7 @@ Path PathSequence() : { Path p1 , p2 ; }
     p1 = PathEltOrInverse()
     ( <SLASH> p2 = PathEltOrInverse()
       { p1 = new P_Seq(p1, p2) ; }
-    | <CARROT> p2 = PathElt()
+    | <CARAT> p2 = PathElt()
       { p1 = new P_Seq(p1, new P_Inverse(p2)) ; }
     )*
    { return p1; }
@@ -891,7 +891,7 @@ Path PathElt() : { String str ; Node n ; Path p ; }
 Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
 {
    ( p = PathElt()
-   | <CARROT>
+   | <CARAT>
      p = PathElt()
      { p = new P_Inverse(p) ; }
    )
@@ -921,16 +921,40 @@ Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
    )
 }
 
-Path PathPrimary() : { String str ; Path p ; }
+Path PathPrimary() : { String str ; Path p ; Node n ; }
 {
   (
     str = IRIref()
-     { Node n = Node.createURI(str) ; p = new P_Link(n) ; }
+     { n = createNode(str) ; p = new P_Link(n) ; }
   | <KW_A>
      { p = new P_Link(nRDFtype) ; }
+  | <BANG> p = PathNegatedPropertyClass()
   | <LPAREN> p = Path() <RPAREN>
   )
     { return p ; }
+}
+
+Path PathNegatedPropertyClass() : {String str ; P_Path0 p ; P_NegPropClass pNegClass ; Node n ; }
+{
+  { pNegClass = new P_NegPropClass() ; }
+  ( p = PathOneInPropertyClass()
+    { pNegClass.add(p) ; }
+  | <LPAREN>
+    ( p = PathOneInPropertyClass() { pNegClass.add(p) ; }
+      (<VBAR> p = PathOneInPropertyClass() { pNegClass.add(p) ; }) *
+    )?
+    <RPAREN>
+  )
+  { return pNegClass ; }
+}
+
+P_Path0 PathOneInPropertyClass() : { String str ; Node n ; }
+{
+  (
+    str = IRIref() { n = createNode(str) ; return new P_Link(n) ; }
+  |
+    <CARAT> str = IRIref() { n = createNode(str) ; return new P_ReverseLink(n) ; }
+  )
 }
 
 
@@ -1674,7 +1698,7 @@ TOKEN :
 
 // Path related
 | < VBAR: "|" >
-| < CARROT: "^" >
+| < CARAT: "^" >
 | < FPATH: "->" >
 | < RPATH: "<-" >
 | < QMARK: "?" >

@@ -6,17 +6,16 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.path.*;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.path.* ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class BuilderPath
 {
@@ -51,7 +50,9 @@ public class BuilderPath
         dispatch.put(Tags.tagPathSeq, buildSeq) ;
         dispatch.put(Tags.tagPathAlt, buildAlt) ;
         dispatch.put(Tags.tagPathMod, buildMod) ;
-        dispatch.put(Tags.tagPathReverse, buildRev) ;
+        dispatch.put(Tags.tagPathReverse, buildReverse) ;
+        dispatch.put(Tags.tagPathRev, buildRev) ;
+        dispatch.put(Tags.pathNotOneOf, buildNotOneOf) ;
     }
     
     private Path build(Item item)
@@ -100,6 +101,26 @@ public class BuilderPath
     {
         return build(list.get(idx)) ;
     }
+    
+    final protected Build buildNotOneOf = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLengthAtLeast(1, list, "path: negative property set: must be at least one element") ;
+            P_NegPropClass pNegClass = new P_NegPropClass() ;
+            for ( int i = 1 ; i < list.size() ; i++ )
+            {
+                Item item = list.get(i) ;
+                // Node or reverse?
+                Path p = build(item) ;
+                if ( ! ( p instanceof P_Path0 ) )
+                    BuilderLib.broken(item, "Not a property or reverse property") ;
+                pNegClass.add((P_Path0)p) ;
+            }
+            return pNegClass ;
+        }
+    } ;
+    
     final protected Build buildSeq = new Build()
     {
         public Path make(ItemList list)
@@ -143,13 +164,22 @@ public class BuilderPath
         return BuilderNode.buildInt(item) ;
     }
     
-    final protected Build buildRev = new Build()
+    final protected Build buildReverse = new Build()
     {
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path reverse: wanted 1 argument") ;
             Path path = build(list, 1) ;
             return new P_Inverse(path) ;
+        }
+    };
+    
+    final protected Build buildRev = new Build()
+    {
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path reverse link: wanted 1 argument") ;
+            return new P_ReverseLink(list.get(1).getNode()) ;
         }
     };
 

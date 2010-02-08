@@ -167,7 +167,7 @@ TOKENS
 | <DATATYPE: "^^">
 | <AT: "@">
 | <VBAR: "|">
-| <CARROT: "^">
+| <CARAT: "^">
 | <FPATH: "->">
 | <RPATH: "<-">
 | <QMARK: "?">
@@ -311,13 +311,15 @@ NON-TERMINALS
 // Weakest outermost
 	Path	:=	PathAlternative
 	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
-	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse | <CARROT> PathElt )*
+	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse | <CARAT> PathElt )*
 // Path unit element, no inverse
 	PathElt	:=	PathPrimary ( PathMod )?
 // Path unit element, including inverse.
-	PathEltOrInverse	:=	( PathElt | <CARROT> PathElt )
+	PathEltOrInverse	:=	( PathElt | <CARAT> PathElt )
 	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) ) )
-	PathPrimary	:=	( IRIref | <KW_A> | <LPAREN> Path <RPAREN> )
+	PathPrimary	:=	( IRIref | <KW_A> | <BANG> PathNegatedPropertyClass | <LPAREN> Path <RPAREN> )
+	PathNegatedPropertyClass	:=	( PathOneInPropertyClass | <LPAREN> ( PathOneInPropertyClass ( <VBAR> PathOneInPropertyClass )* )? <RPAREN> )
+	PathOneInPropertyClass	:=	( IRIref | <CARAT> IRIref )
 	Integer	:=	<INTEGER>
 // -------- Triple expansions
 

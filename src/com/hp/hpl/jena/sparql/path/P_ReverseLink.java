@@ -1,55 +1,47 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-public abstract class PathBase implements Path
+/** Reverse link - used in P_NotOneOf */
+public class P_ReverseLink extends P_Path0
 {
-    protected static final int hashAlt          = 0x190 ;
-    protected static final int hashSeq          = 0x191 ;
-    protected static final int hashMod          = 0x193 ;
-    protected static final int hashInverse      = 0x193 ;
-    protected static final int hashNegPropClass = 0x194 ;
-    protected static final int hashLink         = 0x195 ;
-    protected static final int hashRevLink      = 0x196 ;
+    public P_ReverseLink(Node n)
+    {
+        super(n) ;
+    }
     
     @Override
-    public abstract int hashCode() ;
+    public boolean isForward()  { return false ; }
     
-    // If the labeMap is null, do .equals() on nodes, else map from
-    // bNode varables in one to bNodes variables in the other 
-    public abstract boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
-    
-    @Override
-    final public boolean equals(Object path2)
-    { 
-        if ( this == path2 ) return true ;
+    //@Override
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
 
-        if ( ! ( path2 instanceof Path ) )
-            return false ;
-        return equalTo((Path)path2, null) ;
-    }
-    
     @Override
-    public String toString()
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        return PathWriter.asString(this) ;
+        if ( ! ( path2 instanceof P_ReverseLink ) ) return false ;
+        P_ReverseLink other = (P_ReverseLink)path2 ;
+        return Utils.nodeIso(node, other.node, isoMap) ;
     }
-    
-    public String toString(Prologue prologue)
+
+    @Override
+    public int hashCode()
     {
-        return PathWriter.asString(this, prologue) ;
+        return node.hashCode() ^ hashRevLink ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

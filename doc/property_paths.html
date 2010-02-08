@@ -116,6 +116,16 @@ prefixed name.</p>
 		<td><i><code>elt{,n}</code></i></td>
 		<td>Between 0 and <i><code>n</code></i> occurrences of <i><code>elt</code></i>.</td>
 	</tr>
+	<tr>
+		<td><code><i>!uri</i></code></td>
+		<td>A path matching a property which isn't <code><i>uri</i></code> 
+		(negated property set)</td>
+	</tr>
+	<tr>
+		<td><code><i>!(uri1|...|uriN)</i></code></td>
+		<td>A path matching a property which isn't <code><i>any of uri1 ... uriN</i></code> 
+		(negated property set)</td>
+	</tr>
 </table>
 
 </div>
@@ -125,6 +135,7 @@ prefixed name.</p>
 <p>Precedence:</p>
 <ol>
 	<li>URI, prefixed names</li>
+	<li>Negated property set</li>
 	<li>Groups</li>
 	<li>Unary ^ reverse links</li>
 	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{}</code> forms</li>
@@ -201,6 +212,17 @@ who knows <code>?x</code></p>
 <pre class="box">{
   ?x foaf:knows^foaf:knows ?x .  
 }</pre>
+<p>Negated property sets define matching by naming one or more properties that 
+must not match. Match if there is a triple from <code>?x</code> to <code>?y</code> 
+which is not <code>rdf:type</code>.</p>
+<pre class="box">{
+  ?x !rdf:type ?y .  
+}</pre>
+<pre class="box">{
+  ?x !(rdf:type|^rdf:type) ?y .  
+}</pre>
+<p>Only properties and reverse properties are allowed in a negated property set, 
+not a full path expression.</p>
 <h3>Complex Paths</h3>
 <p>Find the names of all the people can be reached from Alice by <code>
 foaf:knows</code>:</p>

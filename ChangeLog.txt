@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.3
 
++ Add "negative property classed"
+  !rdf:type matches anything except rdf:type
+  !(rdf:type|rdfs:label) matches some thing that isn't rdf:type or rdfs:label
 + Bug fix: some multiply nested OPTIONALs could result in only naive, unoptimized execution. 
 + Bug fix: SERVICE body for complex query patterns. 
 

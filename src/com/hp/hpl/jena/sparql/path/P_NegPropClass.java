@@ -1,55 +1,64 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import java.util.ArrayList ;
+import java.util.List ;
 
-public abstract class PathBase implements Path
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+
+public class P_NegPropClass extends PathBase
 {
-    protected static final int hashAlt          = 0x190 ;
-    protected static final int hashSeq          = 0x191 ;
-    protected static final int hashMod          = 0x193 ;
-    protected static final int hashInverse      = 0x193 ;
-    protected static final int hashNegPropClass = 0x194 ;
-    protected static final int hashLink         = 0x195 ;
-    protected static final int hashRevLink      = 0x196 ;
+    List<P_Path0> nodes ;
+    List<Node> forwardNodes ;
+    List<Node> backwardNodes ;
     
-    @Override
-    public abstract int hashCode() ;
+    public P_NegPropClass()
+    {
+        nodes = new ArrayList<P_Path0>() ;
+        forwardNodes = new ArrayList<Node>() ;
+        backwardNodes = new ArrayList<Node>() ;
+    }
     
-    // If the labeMap is null, do .equals() on nodes, else map from
-    // bNode varables in one to bNodes variables in the other 
-    public abstract boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
-    
-    @Override
-    final public boolean equals(Object path2)
-    { 
-        if ( this == path2 ) return true ;
+    public void add(P_Path0 p)
+    {
+        nodes.add(p) ;
+        if ( p.isForward() )
+            forwardNodes.add(p.getNode()) ;
+        else
+            backwardNodes.add(p.getNode()) ;
+    }
 
-        if ( ! ( path2 instanceof Path ) )
-            return false ;
-        return equalTo((Path)path2, null) ;
-    }
-    
+    public List<P_Path0> getNodes() { return nodes ; }
+    public List<Node> getFwdNodes() { return forwardNodes ; }
+    public List<Node> getBwdNodes() { return backwardNodes ; }
+
+    //@Override
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
+
     @Override
-    public String toString()
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        return PathWriter.asString(this) ;
+        if ( ! ( path2 instanceof P_NegPropClass ) ) return false ;
+        P_NegPropClass other = (P_NegPropClass)path2 ;
+        return nodes.equals(other.nodes) ;
     }
-    
-    public String toString(Prologue prologue)
+
+    @Override
+    public int hashCode()
     {
-        return PathWriter.asString(this, prologue) ;
+        return nodes.hashCode() ^ hashNegPropClass  ;
     }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

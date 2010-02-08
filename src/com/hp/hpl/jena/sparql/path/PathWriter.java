@@ -6,10 +6,14 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import java.util.List ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 public class PathWriter
 {
@@ -65,11 +69,56 @@ public class PathWriter
         }
         
         //@Override
+        private void output(Node node)
+        {
+            out.print(FmtUtils.stringForNode(node, prologue)) ;
+        }
+        
+      //@Override
+        private void output(P_Path0 path0)
+        {
+            if ( ! path0.isForward() )
+                out.print("^") ;
+            out.print(FmtUtils.stringForNode(path0.getNode(), prologue)) ;
+        }
+        
+        //@Override
         public void visit(P_Link pathNode)
         {
-            out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
+            output(pathNode.getNode()) ;
+        }
+        
+        public void visit(P_ReverseLink pathNode)
+        {
+            out.println("^") ;
+            output(pathNode.getNode()) ;
         }
 
+        //@Override
+        public void visit(P_NegPropClass pathNotOneOf)
+        {
+            List<P_Path0> props = pathNotOneOf.getNodes()  ;
+            if ( props.size() == 0 )
+                throw new ARQException("Bad path element: NotOneOf found with no elements") ;
+            out.print("!") ;
+            if ( props.size() == 1 )
+                output(props.get(0)) ;
+            else
+            {
+                out.print("(") ;
+                boolean first = true ;
+                for (P_Path0 p : props)
+                {
+                    if (!first) out.print("|") ;
+                    first = false ;
+                    output(p) ;
+                }
+                out.print(")") ;
+            }
+        }
+
+        
+        
         //@Override
         public void visit(P_Alt pathAlt)
         {

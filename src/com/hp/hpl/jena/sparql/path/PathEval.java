@@ -6,40 +6,45 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.LinkedHashSet ;
+import java.util.List ;
+import java.util.Set ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
-
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.NodeIterator ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.lib.iterator.Filter ;
+import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
+import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
 public class PathEval
 {
     static private Logger log = LoggerFactory.getLogger(PathEval.class) ; 
     
+    // Graph to Model.
     static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {
-        Map1<Node, RDFNode> conv = new Map1<Node, RDFNode>(){
-            public RDFNode map1(Node obj)
+        Transform<Node, RDFNode> conv = new Transform<Node, RDFNode>(){
+            public RDFNode convert(Node obj)
             {
                 return ModelUtils.convertGraphNodeToRDFNode(obj, model) ;
-            }} ;
-        
-        return new NodeIteratorImpl(new Map1Iterator<Node, RDFNode>(conv, iter), null) ;
+            }
+        } ;
+        Iterator<RDFNode> iterRDF = Iter.map(iter, conv) ;
+        return new NodeIteratorImpl(iterRDF, null) ;
     }
     
     // Possible API usages.
@@ -73,12 +78,8 @@ public class PathEval
 
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)
     {
-        //return eval(graph, new SingletonIterator(node), path) ;
-        // Avoid the singleton creation.
         Set<Node> acc = new LinkedHashSet<Node>() ;
         eval(graph, node, path, forward, acc);
-//        if ( log.isDebugEnabled() )
-//            log.debug("Eval("+node+", "+path+") => "+acc) ;
         return acc.iterator() ;
     }
     
@@ -122,6 +123,24 @@ public class PathEval
         public void visit(P_Link pathNode)
         {
             Iterator<Node> nodes = doOne(pathNode.getNode()) ;
+            fill(nodes) ;
+        }
+        
+        public void visit(P_ReverseLink pathNode)
+        {
+            forwardMode = ! forwardMode ;
+            Iterator<Node> nodes = doOne(pathNode.getNode()) ;
+            forwardMode = ! forwardMode ;
+            fill(nodes) ;
+        }
+
+        //@Override
+        public void visit(P_NegPropClass pathNotOneOf)
+        {
+            List<P_Path0> props = pathNotOneOf.getNodes()  ;
+            if ( props.size() == 0 )
+                throw new ARQException("Bad path element: Negative property class found with no elements") ;
+            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
             fill(nodes) ;
         }
         
@@ -208,36 +227,73 @@ public class PathEval
                 output.add(iter.next()) ;
         }
 
-        private static Map1<Triple, Node> selectObject = new Map1<Triple, Node>()
+        private static Transform<Triple, Node> selectObject = new Transform<Triple, Node>()
         {
-            public Node map1(Triple triple)
+            public Node convert(Triple triple)
             { return triple.getObject() ; }
         } ;
 
-        private static Map1<Triple, Node> selectSubject = new Map1<Triple, Node>()
+        private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
         {
-            public Node map1(Triple triple)
+            public Node convert(Triple triple)
             {
                 return triple.getSubject() ;
             }
         } ;
-        
+
+        // --- Where we touch the graph
         private final Iterator<Node> doOne(Node property)
         {
-            // The only point to actually touch the graph 
             Iterator<Node> iter2 = null ;
             if ( forwardMode )
             {
-                Iterator<Triple> iter1 = graph.find(node, property, Node.ANY) ;
-                iter2 = new Map1Iterator<Triple, Node>(selectObject, iter1) ;
+                Iter<Triple> iter1 = Iter.iter(graph.find(node, property, Node.ANY)) ;
+                iter2 = iter1.map(selectObject) ;
             }
             else
             {
-                Iterator<Triple> iter1 = graph.find(Node.ANY, property, node) ;
-                iter2 = new Map1Iterator<Triple, Node>(selectSubject, iter1) ;
+                Iter<Triple> iter1 = Iter.iter(graph.find(Node.ANY, property, node)) ;
+                iter2 = iter1.map(selectSubject) ;
             }
             
             return iter2 ;
+        }
+
+        private static class FilterExclude implements Filter<Triple>
+        {
+            private Collection<Node> excludes ;
+            public FilterExclude(Collection <Node> excludes) { this.excludes = excludes ; }
+            public boolean accept(Triple triple)
+            {
+                return ! excludes.contains(triple.getPredicate()) ;
+            }
+        }
+        
+        private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
+        {
+            Iter<Node> iter2 = forwardLinks(node, fwdNodes) ;
+            
+            // Backward
+            if ( bwdNodes.size() > 0 )
+                throw new ARQNotImplemented() ;
+            
+            // Reverse
+            
+            return iter2 ;
+        }
+        
+        private Iter<Node> forwardLinks(Node x, Collection<Node> excludeProperties)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, Node.ANY)) ;
+            iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1.map(selectObject) ;
+        }
+
+        private Iter<Node> backwardLinks(Node x, Collection<Node> excludeProperties)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(Node.ANY, Node.ANY, x)) ;
+            iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1.map(selectSubject) ;
         }
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }

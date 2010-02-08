@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.sparql.sse.writers;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.path.*;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.path.* ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 /** SSE Writer */
 public class WriterPath
@@ -112,10 +113,37 @@ public class WriterPath
             path.visit(this) ;
         }
 
+        private void output(Node node)
+        {
+            out.print(FmtUtils.stringForNode(node, prologue)) ;
+        }
+        
         //@Override
         public void visit(P_Link pathNode)
         {
-            out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
+            output(pathNode.getNode()) ;
+        }
+
+        public void visit(P_ReverseLink pathNode)
+        {
+            out.print("(") ;
+            out.print(Tags.tagPathRev) ;
+            out.print(" ") ;
+            output(pathNode.getNode()) ;
+            out.print(")") ;
+        }
+
+        //@Override
+        public void visit(P_NegPropClass pathNotOneOf)
+        {
+            out.print("(") ;
+            out.print(Tags.pathNotOneOf) ;
+            for ( P_Path0 p : pathNotOneOf.getNodes() )
+            {
+                out.print(" ") ;
+                output(p) ;
+            }
+            out.print(")") ;
         }
 
         //@Override

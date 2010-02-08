@@ -1,55 +1,25 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.graph.Node ;
 
-public abstract class PathBase implements Path
+
+public abstract class P_Path0 extends PathBase
 {
-    protected static final int hashAlt          = 0x190 ;
-    protected static final int hashSeq          = 0x191 ;
-    protected static final int hashMod          = 0x193 ;
-    protected static final int hashInverse      = 0x193 ;
-    protected static final int hashNegPropClass = 0x194 ;
-    protected static final int hashLink         = 0x195 ;
-    protected static final int hashRevLink      = 0x196 ;
+    protected Node node ;
+    protected P_Path0(Node n) { this.node = n ; } 
     
-    @Override
-    public abstract int hashCode() ;
-    
-    // If the labeMap is null, do .equals() on nodes, else map from
-    // bNode varables in one to bNodes variables in the other 
-    public abstract boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
-    
-    @Override
-    final public boolean equals(Object path2)
-    { 
-        if ( this == path2 ) return true ;
-
-        if ( ! ( path2 instanceof Path ) )
-            return false ;
-        return equalTo((Path)path2, null) ;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return PathWriter.asString(this) ;
-    }
-    
-    public String toString(Prologue prologue)
-    {
-        return PathWriter.asString(this, prologue) ;
-    }
+    public abstract boolean isForward() ;
+    public  Node getNode() { return node ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

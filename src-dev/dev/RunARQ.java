@@ -78,7 +78,7 @@ public class RunARQ
     //@SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
-        
+        execQuery("D.ttl", "P.arq") ;
         arq.qparse.main("--print=op", "--print=query", "--query=IN.arq") ;
         System.exit(0) ;
         
