@@ -6,22 +6,10 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.io.Reader ;
-import java.io.StringReader ;
-
-import org.junit.Test ;
 import atlas.test.BaseTest ;
-
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.riot.JenaReaderTurtle2 ;
-import com.hp.hpl.jena.shared.JenaException ;
 
 public class TestLangTrig extends BaseTest
 {
-    @Test public void blankNodes()
-    {
 //        String s = "_:a <http://example/p> 'foo' . " ;
 //        StringReader r = new StringReader(s) ;
 //        Model m = ModelFactory.createDefaultModel() ;
@@ -37,7 +25,7 @@ public class TestLangTrig extends BaseTest
 //        r = new StringReader(s) ;
 //        reader.read(m, r, null) ;
 //        assertEquals(2, m.size()) ;
-    }
+//    }
 }
 
 /*

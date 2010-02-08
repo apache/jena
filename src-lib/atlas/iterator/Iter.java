@@ -196,7 +196,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return true ;
     }
 
-    /** Return true if every element of stream passes the filter (reads the stream) */
+    /** Return true if every element of stream passes the filter (reads the stream until the first element passing the filter) */
     public static <T> boolean some(Iterable<? extends T> stream, Filter<T> filter)
     { 
         for ( T item : stream )

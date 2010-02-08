@@ -10,8 +10,11 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    // BNode tests
-    // TriG extensions
+    //   Bnode scopes
+    //   BNode tests
+    //   TriG extensions
+    //     NQuads in Trig.
+    //     Trailling dots.
     
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler

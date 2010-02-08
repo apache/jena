@@ -6,16 +6,10 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import java.io.InputStream ;
-
 import junit.framework.TestCase ;
-import atlas.io.IO ;
-import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 
 public class UnitTestTrig extends TestCase
