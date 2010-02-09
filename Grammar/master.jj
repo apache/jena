@@ -1306,7 +1306,8 @@ Expr BrackettedExpression() : { Expr expr ; }
     <LPAREN> expr = Expression() <RPAREN>  { return expr ; }
 }
 
-Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprList a ; }
+Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ; 
+                       Node gn ; Token t ; ExprList a ; }
 {
     // STR
     <STR> <LPAREN> expr = Expression() <RPAREN>
@@ -1327,6 +1328,16 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprL
     { return new E_Bound(new ExprVar(gn)) ; }
 
 #ifdef SPARQL_11
+
+  | <IRI> <LPAREN> expr = Expression() <RPAREN>
+    { return E_IRI(expr) ; }
+  | <URI> <LPAREN> expr = Expression() <RPAREN>
+    { return E_URI(expr) ; }
+  | <BNODE> <LPAREN> expr = Expression() <RPAREN>
+    { return E_BNODE(expr) ; }
+  | <LITERAL> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression()) <RPAREN> 
+    { return E_Literal(expr1, expr2) ; }
+
   | <COALESCE> a = ArgList()
     { return new E_Coalesce(a) ; }
 
@@ -1648,6 +1659,10 @@ TOKEN [IGNORE_CASE] :
 |  < IN:          "in" >
 |  < NOT_IN:      "not" (<WS>)* "in" >
 |  < IF:          "if" >
+|  < BNODE:       "bnode" >
+|  < IRI:         "iri" >
+|  < URI:         "uri" >
+|  < LITERAL:     "literal" >
 #endif
 
 |  < STR:         "str" >

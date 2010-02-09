@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.path;
 
+import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.LinkedHashSet ;
@@ -227,20 +228,24 @@ public class PathEval
                 output.add(iter.next()) ;
         }
 
+        private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
+        {
+            public Node convert(Triple triple)
+            { return triple.getSubject() ; }
+        } ;
+
+        private static Transform<Triple, Node> selectPredicate = new Transform<Triple, Node>()
+        {
+            public Node convert(Triple triple)
+            { return triple.getPredicate() ; }
+        } ;
+
         private static Transform<Triple, Node> selectObject = new Transform<Triple, Node>()
         {
             public Node convert(Triple triple)
             { return triple.getObject() ; }
         } ;
-
-        private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
-        {
-            public Node convert(Triple triple)
-            {
-                return triple.getSubject() ;
-            }
-        } ;
-
+        
         // --- Where we touch the graph
         private final Iterator<Node> doOne(Node property)
         {
@@ -271,15 +276,42 @@ public class PathEval
         
         private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
         {
+            // Better - choose forward or backward first based on size.
             Iter<Node> iter2 = forwardLinks(node, fwdNodes) ;
+            List<Node> x = iter2.toList();
+            // Now have a set of candidates
+            // Check not excluded in reverse direction.
             
-            // Backward
             if ( bwdNodes.size() > 0 )
                 throw new ARQNotImplemented() ;
             
+            // ????????????????
+            
+            for ( ; iter2.hasNext() ; )
+            {
+                Node n = iter2.next();
+                for ( Node p : between(n, node) )
+                {
+                    if ( ! bwdNodes.contains(p) )
+                        x.add(n) ;
+                    else
+                        break ;
+                }
+            }
+            
+//            // Backward
+//            if ( bwdNodes.size() > 0 )
+//                throw new ARQNotImplemented() ;
+            
             // Reverse
             
-            return iter2 ;
+            return x.iterator() ;
+        }
+        
+        private Iter<Node> between(Node x, Node z)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
+            return iter1.map(selectPredicate) ;
         }
         
         private Iter<Node> forwardLinks(Node x, Collection<Node> excludeProperties)

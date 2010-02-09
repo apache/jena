@@ -55,8 +55,6 @@ public class ElementAssign extends Element
     {
         v.visit(this) ;
     }
-    
-    
 }
 
 /*

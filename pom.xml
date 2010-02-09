@@ -16,6 +16,11 @@
     <name>OpenJena</name>
     <url>http://www.openjena.org/</url>
   </organization>
+  <developers>
+  	<developer>
+  		<name>Andy Seaborne</name>
+  	</developer>
+  </developers>
 
   <licenses>
     <license>
@@ -350,7 +355,7 @@ build.time.txt=${build.time.txt}
 
       <!--<url>sftp://openjena.org/var/repo</url>-->
 
-      <!-- Because RC's aren't snapshots IMHO -->
+      <!-- Because RC's are snapshots IMHO -->
       <url>sftp://openjena.org/var/repo-dev</url>
 
       <!--<url>file:tmp</url>-->
