@@ -290,30 +290,22 @@ public class PathEval
                 iter1 = Iter.iter(x) ;
             }
 
-            if ( bwdNodes.size() > 0 )
-                return iter1.map(selectObject) ;
+            Iter<Node> r1 = iter1.map(selectObject) ; 
             
-            if ( false )
+            if ( bwdNodes.size() == 0 )
+                return r1 ;
+            
+            if ( true )
             {
                 if ( bwdNodes.size() > 0 )
                     throw new ARQNotImplemented() ;
-                return iter1.map(selectObject) ;
             }
             
-            // Now have a set of candidates
-            // Check not excluded in reverse direction.
-            // ????????????????
-
-            List<Triple> z = new ArrayList<Triple>() ;
-
-            for ( ; iter1.hasNext() ; )
-            {
-                Triple t = iter1.next() ;
-                if ( testConnected(t.getObject(), t.getSubject(), bwdNodes) )
-                    z.add(t) ;
-            }
-
-            return Iter.map(z, selectObject) ;
+            Iter<Triple> iter2 = backwardLinks(node, bwdNodes) ;
+            Iter<Node> r2 = iter1.map(selectSubject) ;
+            
+            return Iter.concat(r1, r2) ;
+            
         }
     
         private boolean testConnected(Node x, Node z, List<Node> excludeProperties)

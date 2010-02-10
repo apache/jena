@@ -7,3 +7,5 @@
 
 :x a :A .
 :z a :A .
+
+:a :prop :b .
