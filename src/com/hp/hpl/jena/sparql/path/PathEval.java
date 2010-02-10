@@ -276,11 +276,14 @@ public class PathEval
         
         private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
         {
-            // FORWARD
+//            if ( forwardMode )
+//            { }
+//            else
+//            {}
             
-            // Better - choose forward or backward first based on size.
+            // FORWARD MODE
             Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
-            
+
             if ( false )
             {
                 System.out.println("Node: "+node) ;
