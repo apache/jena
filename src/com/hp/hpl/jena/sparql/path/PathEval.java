@@ -276,56 +276,71 @@ public class PathEval
         
         private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
         {
+            System.out.println("Node: "+node) ;
+            // FORWARD
+            
             // Better - choose forward or backward first based on size.
-            Iter<Node> iter2 = forwardLinks(node, fwdNodes) ;
-            List<Node> x = iter2.toList();
-            // Now have a set of candidates
-            // Check not excluded in reverse direction.
+            Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
             
-            if ( bwdNodes.size() > 0 )
-                throw new ARQNotImplemented() ;
-            
-            // ????????????????
-            
-            for ( ; iter2.hasNext() ; )
+            if ( false )
             {
-                Node n = iter2.next();
-                for ( Node p : between(n, node) )
-                {
-                    if ( ! bwdNodes.contains(p) )
-                        x.add(n) ;
-                    else
-                        break ;
-                }
+                List<Triple> x = iter1.toList() ;
+                for ( Triple _t : x )
+                    System.out.println("    "+_t) ;
+                iter1 = Iter.iter(x) ;
+            }
+
+            if ( false )
+            {
+                if ( bwdNodes.size() > 0 )
+                    throw new ARQNotImplemented() ;
+                return iter1.map(selectObject) ;
             }
             
-//            // Backward
-//            if ( bwdNodes.size() > 0 )
-//                throw new ARQNotImplemented() ;
-            
-            // Reverse
-            
-            return x.iterator() ;
+            // Now have a set of candidates
+            // Check not excluded in reverse direction.
+            // ????????????????
+
+            List<Triple> z = new ArrayList<Triple>() ;
+
+            for ( ; iter1.hasNext() ; )
+            {
+                Triple t = iter1.next() ;
+                if ( testConnected(t.getObject(), t.getSubject(), bwdNodes) )
+                    z.add(t) ;
+            }
+
+            return Iter.map(z, selectObject) ;
         }
-        
-        private Iter<Node> between(Node x, Node z)
+    
+        private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
         {
             Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
-            return iter1.map(selectPredicate) ;
-        }
-        
-        private Iter<Node> forwardLinks(Node x, Collection<Node> excludeProperties)
-        {
-            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, Node.ANY)) ;
-            iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
-            return iter1.map(selectObject) ;
+            if ( excludeProperties != null )
+                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1.hasNext() ;
         }
 
-        private Iter<Node> backwardLinks(Node x, Collection<Node> excludeProperties)
+        private Iter<Triple> between(Node x, Node z)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
+            return iter1 ;
+        }
+        
+        private Iter<Triple> forwardLinks(Node x, Collection<Node> excludeProperties)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, Node.ANY)) ;
+            if ( excludeProperties != null )
+                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1 ;
+        }
+
+        private Iter<Triple> backwardLinks(Node x, Collection<Node> excludeProperties)
         {
             Iter<Triple> iter1 = Iter.iter(graph.find(Node.ANY, Node.ANY, x)) ;
-            iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
-            return iter1.map(selectSubject) ;
+            if ( excludeProperties != null )
+                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1 ;
         }
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }

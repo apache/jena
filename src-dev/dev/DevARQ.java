@@ -8,6 +8,10 @@ package dev;
 public class DevARQ
 {
     // DatasetGraphMem
+    // DatasetGraph - include PUT/DELETE style operations
+    
+    
+    //LARQ index building command line tool
     
     // Optimize E_OneOf, E_NotOneOf
     // Tests
