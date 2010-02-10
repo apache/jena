@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.riot.JenaReaderNTriples2 ;
-import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
@@ -146,7 +146,7 @@ public class TestLangNQuads extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Quad> sink = new SinkCounting<Quad>() ;
         
-        LangNQuads x = Lang.createParserNQuads(tokenizer, sink) ;
+        LangNQuads x = ParserFactory.createParserNQuads(tokenizer, sink) ;
         x.parse() ;
         return sink ;
     }

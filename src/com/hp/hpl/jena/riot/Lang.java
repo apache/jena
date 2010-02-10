@@ -6,23 +6,23 @@
 
 package com.hp.hpl.jena.riot;
 
-import java.io.InputStream ;
-
-import atlas.lib.Sink ;
-
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.lang.LangNQuads ;
-import com.hp.hpl.jena.riot.lang.LangNTriples ;
-import com.hp.hpl.jena.riot.lang.LangTriG ;
-import com.hp.hpl.jena.riot.lang.LangTurtle ;
-import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-
-public class Lang
+public enum Lang
 {
+    RDFXML("RDF/XML", true) ,
+    NTRIPLES("N-Triples", true) ,
+    N3("N3", true) ,
+    TURTLE("Turtle", true) ,
+    
+    NQUADS("N-Quads", false) ,
+    TRIG("TriG", false)
+    ;
+    
+    
+    private final String name ;
+    private final boolean isTriples ;
+
     public static final String langXML          = FileUtils.langXML ;
     public static final String langNTriple      = "N-TRIPLES" ; // FileUtils is wrong.
     public static final String langN3           = FileUtils.langN3 ;
@@ -31,63 +31,33 @@ public class Lang
     public static final String langNQuads       = "N-QUADS" ;
     public static final String langTrig         = "TRIG" ;
     
-    /** Create a parser for Turtle, with default behaviour */
-    public static LangTurtle createParserTurtle(String baseIRI, InputStream input, Sink<Triple> sink)
+    private Lang(String name, boolean isTriples)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        return createParserTurtle(baseIRI, tokenizer, sink) ;
+        this.name = name ;
+        this.isTriples = isTriples ;
     }
     
-    /** Create a parser for Turtle, with default behaviour */
-    public static LangTurtle createParserTurtle(String baseIRI, Tokenizer tokenizer, Sink<Triple> sink)
+    
+    public String getName() { return name ; }
+    
+    public boolean isTriples() { return isTriples ; }
+    public boolean isQuads() { return !isTriples ; }
+    
+    @Override
+    public String toString() { return "lang:"+name ; }
+    
+    public static Lang get(String name)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, new Checker(), sink) ;
-        return parser ;
-    }
-
-    /** Create a parser for Trig, with default behaviour */
-    public static LangTriG createParserTriG(String baseIRI, InputStream input, Sink<Quad> sink)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        return createParserTriG(baseIRI, tokenizer, sink) ;
+        if ( name.equalsIgnoreCase(langXML) )                   return RDFXML ;
+        if ( name.equalsIgnoreCase(FileUtils.langXMLAbbrev) )   return RDFXML ;
+        if ( name.equalsIgnoreCase(langNTriple) )               return NTRIPLES ;
+        if ( name.equalsIgnoreCase(FileUtils.langNTriple) )     return NTRIPLES ;
+        if ( name.equalsIgnoreCase(langTurtle) )                return TURTLE ;
+        if ( name.equalsIgnoreCase(langNQuads) )                return NQUADS ;
+        if ( name.equalsIgnoreCase(langTrig) )                  return TRIG ;
+        throw new RiotException("No such language: "+name) ;
     }
     
-    /** Create a parser for Trig, with default behaviour */
-    public static LangTriG createParserTriG(String baseIRI, Tokenizer tokenizer, Sink<Quad> sink)
-    {
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, new Checker(), sink) ;
-        return parser ;
-    }
-
-/** Create a parser for N-Triples, with default behaviour */
-    public static LangNTriples createParserNTriples(InputStream input, Sink<Triple> sink)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        return createParserNTriples(tokenizer, sink) ;
-    }
-    
-    /** Create a parser for N-Triples, with default behaviour */
-    public static LangNTriples createParserNTriples(Tokenizer tokenizer, Sink<Triple> sink)
-    {
-        LangNTriples parser = new LangNTriples(tokenizer, new Checker(), sink) ;
-        return parser ;
-    }
-    
-    /** Create a parser for NQuads, with default behaviour */
-    public static LangNQuads createParserNQuads(InputStream input, Sink<Quad> sink)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(input) ;
-        return createParserNQuads(tokenizer, sink) ;
-    }
-    
-    /** Create a parser for NQuads, with default behaviour */
-    public static LangNQuads createParserNQuads(Tokenizer tokenizer, Sink<Quad> sink)
-    {
-        LangNQuads parser = new LangNQuads(tokenizer, new Checker(), sink) ;
-        return parser ;
-    }
-    
-        
 }
 
 /*

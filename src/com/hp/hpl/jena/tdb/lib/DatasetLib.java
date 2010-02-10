@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.riot.IRIResolver ;
+import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
@@ -75,41 +75,40 @@ public class DatasetLib
         return true ;
     }
     
-    public static DatasetGraph load(String filename, String language)
+    public static DatasetGraph load(String filename, Lang lang)
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        read(filename, dsg, language, null) ;
+        read(filename, dsg, lang, null) ;
         return dsg ;
     } 
     
-    public static DatasetGraph load(String filename, String language, String baseURI)
+    public static DatasetGraph load(String filename, Lang lang, String baseURI)
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        read(filename, dsg, language, baseURI) ;
+        read(filename, dsg, lang, baseURI) ;
         return dsg ;
     } 
     
-    public static void read(String filename, DatasetGraph dataset, String language, String basedURI)
+    public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
     {
         InputStream input = IO.openFile(filename) ;
-        String baseURI = IRIResolver.resolveGlobal(filename).toString() ;
-        read(input, dataset, language, baseURI) ;
+        read(input, dataset, lang, baseURI) ;
     }
-    
-    public static void read(InputStream input, DatasetGraph dataset, String language, String basedURI)
+
+    public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
     {
         Sink<Quad> sink = datasetSink(dataset) ;
         // NAMES!
-        if ( language.equalsIgnoreCase("NQUADS") || language.equalsIgnoreCase(Lang.langNQuads) )
+        if ( language == Lang.NQUADS )
         {
-            LangRIOT parser = Lang.createParserNQuads(input, sink) ;
+            LangRIOT parser = ParserFactory.createParserNQuads(input, sink) ;
             parser.parse() ;
             sink.flush();
             return ;
         }
-        if ( language.equalsIgnoreCase(Lang.langTrig) )
+        if ( language == Lang.TRIG )
         {
-            LangRIOT parser = Lang.createParserTriG(basedURI, input, sink) ;
+            LangRIOT parser = ParserFactory.createParserTriG(input, baseURI, sink) ;
             parser.parse() ;
             sink.flush();
             return ;
@@ -129,6 +128,11 @@ public class DatasetLib
         return new DatasetGraphMem() ;
     }
     
+    /** Implementation of a DatasetGraph weher all graphs "exist".
+     * New inmemory graphs are created when a getGraph call is 
+     * made to a graph that has not been allocated.
+     *  
+     */
     private static class DatasetGraphMem implements DatasetGraph
     {
         Graph defaultGraph = newGraph() ;
@@ -185,7 +189,6 @@ public class DatasetLib
     /** @See SinkToGraphTriples */ 
     private static class QuadsToDataset implements Sink<Quad>
     {
-        
         private final DatasetGraph dataset ;
         private Node graphNode = null ;
         private Graph graph = null ;
@@ -217,7 +220,6 @@ public class DatasetLib
 
         public void close()
         {}
-        
     }
 }
 

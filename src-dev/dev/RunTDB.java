@@ -29,7 +29,7 @@ import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -226,7 +226,7 @@ public class RunTDB
         
         InputStream input = IO.openFile("D.ttl") ;
         
-        LangRIOT parser = Lang.createParserTurtle("http://base/", input, inputSink) ;
+        LangRIOT parser = ParserFactory.createParserTurtle(input, "http://base/", inputSink) ;
         parser.parse() ;
         inputSink.flush() ;
 

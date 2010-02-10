@@ -11,7 +11,7 @@ import atlas.lib.SinkNull ;
 import atlas.test.BaseTest ;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 
@@ -233,7 +233,7 @@ public class TestTurtleTerms extends BaseTest
 	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
 	    Sink<Triple> sink = new SinkNull<Triple>() ;
 
-	    LangTurtle parser = Lang.createParserTurtle("http://base/", tokenizer, sink) ;
+	    LangTurtle parser = ParserFactory.createParserTurtle(tokenizer, "http://base/", sink) ;
 
 	    parser.getPrefixMap().add("a", "http://host/a#") ;
         parser.getPrefixMap().add("x", "http://host/a#") ;

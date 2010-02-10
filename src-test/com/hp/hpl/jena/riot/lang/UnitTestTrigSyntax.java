@@ -13,7 +13,7 @@ import junit.framework.TestCase ;
 import atlas.io.IO ;
 import atlas.lib.SinkNull ;
 
-import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 
@@ -27,7 +27,7 @@ public class UnitTestTrigSyntax extends TestCase
     {
         InputStream in = IO.openFile(uri) ;
         assertNotNull(in) ;
-        LangRIOT parser = Lang.createParserTriG(uri, in, new SinkNull<Quad>()) ;
+        LangRIOT parser = ParserFactory.createParserTriG(in, uri, new SinkNull<Quad>()) ;
         parser.parse() ;
         // Check EOF.
         try { 

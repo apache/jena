@@ -8,6 +8,7 @@ package com.hp.hpl.jena.riot.lang;
 
 import junit.framework.TestCase ;
 
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.lib.DatasetLib ;
@@ -31,11 +32,11 @@ public class UnitTestTrig extends TestCase
     {
         try {
             DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-            DatasetLib.read(input, dsg, "TRIG", baseIRI) ;
+            DatasetLib.read(input, dsg, Lang.TRIG, baseIRI) ;
             //DatasetLib.dump(dsg) ;
             
             DatasetGraph dsg2 = DatasetLib.createDatasetGraphMem() ;
-            DatasetLib.read(output, dsg2, "NQUADS", null) ;
+            DatasetLib.read(output, dsg2, Lang.NQUADS, null) ;
 
             // Compare with expected.
 

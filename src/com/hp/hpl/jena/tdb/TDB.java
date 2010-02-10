@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.mgt.ARQMgt;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
@@ -105,6 +106,7 @@ public class TDB
     public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.
+    // Real initializtion happnes due to class static blocks.
     /** TDB System initialization - normally, this is not explicitly called because
      * all routes to use TDB will cause initialization to occur.  However, calling it
      * repeatedly is safe and low cost.
@@ -188,7 +190,7 @@ public class TDB
         ARQMgt.register(NS+".system:type=SystemInfo", new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE)) ;
 
         AssemblerUtils.init() ;
-        VocabTDB.init();
+        AssemblerTDB.init();
         QueryEngineTDB.register() ;
         UpdateProcessorTDB.register() ;
 

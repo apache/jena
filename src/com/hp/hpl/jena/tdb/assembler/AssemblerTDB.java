@@ -4,34 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.tdb.assembler;
 
-import java.io.InputStream ;
-
-import junit.framework.TestCase ;
-import atlas.io.IO ;
-import atlas.lib.SinkNull ;
-
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-
-public class UnitTestTrigBadSyntax extends TestCase
+public class AssemblerTDB
 {
-    String uri ;
-    public UnitTestTrigBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
-    
-    @Override
-    public void runTest()
+    public static void init()
     {
-        InputStream in = IO.openFile(uri) ;
-        assertNotNull(in) ;
-        LangRIOT parser = ParserFactory.createParserTriG(in, uri, new SinkNull<Quad>()) ;
-        try {
-            parser.parse() ;
-        } catch (RiotException ex) { return ; }
-        fail("Bad syntax trig test succeed in parsing the file") ;
+        VocabTDB.init();
+        //tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+        //tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     }
 }
 

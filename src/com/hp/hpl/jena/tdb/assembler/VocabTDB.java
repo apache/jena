@@ -73,11 +73,11 @@ public class VocabTDB
         assemblerClass(g, tNodeTable,         new NodeTableAssembler()) ;
     }
     
-    public static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
+    public static void assemblerClass(AssemblerGroup group, Resource r, Assembler a)
     {
-        if ( g == null )
-            g = Assembler.general ;
-        g.implementWith(r, a) ;
+        if ( group == null )
+            group = Assembler.general ;
+        group.implementWith(r, a) ;
         //assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
 }
