@@ -276,7 +276,6 @@ public class PathEval
         
         private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
         {
-            System.out.println("Node: "+node) ;
             // FORWARD
             
             // Better - choose forward or backward first based on size.
@@ -284,12 +283,16 @@ public class PathEval
             
             if ( false )
             {
+                System.out.println("Node: "+node) ;
                 List<Triple> x = iter1.toList() ;
                 for ( Triple _t : x )
                     System.out.println("    "+_t) ;
                 iter1 = Iter.iter(x) ;
             }
 
+            if ( bwdNodes.size() > 0 )
+                return iter1.map(selectObject) ;
+            
             if ( false )
             {
                 if ( bwdNodes.size() > 0 )
