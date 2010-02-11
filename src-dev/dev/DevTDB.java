@@ -16,6 +16,11 @@ public class DevTDB
     //     NQuads in Trig.
     //     Trailling dots.
     
+    // Early truncation of patterns
+    //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
+    // If <r> has no solutions fall back to triple pattern 1
+    // (Idea from Alisdair)
+    
     // **** Per dataset context.  Merge into execution.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;

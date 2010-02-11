@@ -1,31 +1,18 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package com.hp.hpl.jena.riot;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
-
-
-public class SinkToGraphTriples extends SinkToGraph
+public interface Allocator<T>
 {
-    public SinkToGraphTriples(Graph g)
-    {
-        super(g) ;
-    }
-
-    //@Override
-    public void send(Triple triple)
-    {
-        graph.add(triple) ;
-    }
+    public T create() ;
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
