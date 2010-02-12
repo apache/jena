@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.lib.Cache;
 
 /** 
  * DatasetGraph that caches graphs created.
- * Move to ARQ.
  */
 abstract public class DatasetGraphBase implements DatasetGraph
 {

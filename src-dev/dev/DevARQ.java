@@ -9,6 +9,9 @@ public class DevARQ
 {
     // DatasetGraphMem
     // DatasetGraph - include PUT/DELETE style operations
+    // Tidy up:
+    // DatasetGraphMem() to sparql.core
+    // DataSource/DataSourceGraph == general purpose model/graph bundler 
     
     
     //LARQ index building command line tool
