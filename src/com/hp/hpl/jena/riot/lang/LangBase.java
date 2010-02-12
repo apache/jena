@@ -31,7 +31,7 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Sink<X> sink ; 
     
-    private final LabelToNode labelmap ;
+    protected LabelToNode labelmap ;
 
 //    protected LangBase(Tokenizer tokens,
 //                    Sink<X> sink,

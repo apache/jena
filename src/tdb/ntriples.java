@@ -37,10 +37,10 @@ public class ntriples extends LangParse<Triple>
     }
     
     @Override
-    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnError)
+    protected void parseEngine(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink, Checker checker, boolean skipOnBadTerm)
     {
         LangNTriples parser = new LangNTriples(tokenizer, checker, sink) ;
-        parser.setSkipOnBadTerm(skipOnError) ;
+        parser.setSkipOnBadTerm(skipOnBadTerm) ;
         parser.parse();
         sink.close() ;
     }

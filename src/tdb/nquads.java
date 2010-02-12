@@ -42,6 +42,7 @@ public class nquads extends LangParse<Quad>
     protected void parseEngine(Tokenizer tokens, String baseIRI, Sink<Quad> sink, Checker checker, boolean skipOnBadTerm)
     {
         LangNQuads parser = new LangNQuads(tokens, checker, sink) ;
+        parser.setSkipOnBadTerm(skipOnBadTerm) ;
         parser.setChecker(checker) ;
         parser.parse();
         sink.close() ;

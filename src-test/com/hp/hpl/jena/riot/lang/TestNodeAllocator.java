@@ -19,7 +19,7 @@ public class TestNodeAllocator extends BaseTest
     // ---- One Scope
     @Test public void allocOneScope1()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "xyz" ) ;
         // SAME
@@ -29,7 +29,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope2()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "123" ) ;
         // DIFFERENT
@@ -38,7 +38,7 @@ public class TestNodeAllocator extends BaseTest
 
     @Test public void allocOneScope3()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
@@ -47,7 +47,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope4()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
@@ -56,7 +56,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope5()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME
@@ -94,7 +94,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope4()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // DIFFERENT
@@ -103,7 +103,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope5()
     {
-        LabelToNode alloc = LabelToNode.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME

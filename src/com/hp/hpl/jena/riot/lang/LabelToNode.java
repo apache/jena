@@ -22,7 +22,7 @@ public class LabelToNode
     // Replaces LabelToNodeMap
     
     /** Allocation from a single scope; just the label matters. */
-    public static LabelToNode createOneScope()
+    public static LabelToNode createScopeByDocument()
     { return new LabelToNode(new SingleScopePolicy(), nodeMaker) ; }
 
     /** Allocation scoped by graph and label. */

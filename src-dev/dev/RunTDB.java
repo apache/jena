@@ -62,7 +62,7 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        tdb.trig.main("D.trig") ; System.exit(0) ;
+        //tdb.trig.main("D.trig") ; System.exit(0) ;
         
         fastParse() ; System.exit(0) ;
         
@@ -76,7 +76,9 @@ public class RunTDB
     
     public static void fastParse() throws IOException
     {
-        tdb.ntriples.main("--time", "--sink", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
+        //String fn = "/home/afs/Datasets/MusicBrainz/artists.nt" ;
+        String fn = "/home/afs/Datasets/MusicBrainz/tracks.nt" ;
+        tdb.ntriples.main("--time", "--sink", fn) ;
         System.exit(0) ;
     }
 

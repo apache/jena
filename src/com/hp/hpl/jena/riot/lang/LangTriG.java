@@ -40,7 +40,21 @@ public class LangTriG extends LangTurtleBase<Quad>
 
     static LabelToNode chooseLabelScoping()
     {
-        return LabelToNode.createOneScope() ;
+        return LabelToNode.createScopeByDocument() ;
+    }
+    
+    public enum BNodeLabelScope { document , graph }  
+    
+    public void setBNodeLabelScoping(BNodeLabelScope labelscope)
+    {
+        switch (labelscope) {
+            case document : 
+                super.labelmap = LabelToNode.createScopeByDocument() ;
+                break ;
+            case graph :
+                super.labelmap = LabelToNode.createScopeByGraph() ;
+                break ;
+        }
     }
     
     @Override

@@ -45,7 +45,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
                          Checker checker,
                          Sink<X> sink)
     { 
-        super(tokens, sink, checker, LabelToNode.createOneScope()) ;
+        super(tokens, sink, checker, LabelToNode.createScopeByDocument()) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 

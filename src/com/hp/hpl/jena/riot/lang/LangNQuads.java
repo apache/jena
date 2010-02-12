@@ -24,9 +24,7 @@ public class LangNQuads extends LangNTuple<Quad>
     // Null for no graph.
     private Node currentGraph = null ;
     
-    public LangNQuads(Tokenizer tokens,
-                      Checker checker,
-                      Sink<Quad> sink)
+    public LangNQuads(Tokenizer tokens, Checker checker, Sink<Quad> sink)
     {
         super(tokens, checker, sink) ;
     }

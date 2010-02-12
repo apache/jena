@@ -13,7 +13,6 @@ public class DevTDB
     //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)
     //   Check for LabelToNodeMap - replace with NodeAllocator.
     //   In LangTurtleBase
-    //   nquads is slower than ntriples on the same NT file.  Why? 
     //
     //   Switchable scopes in TriG.
     //   TriG extensions
