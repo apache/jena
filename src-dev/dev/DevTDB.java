@@ -9,15 +9,14 @@ package dev;
 
 public class DevTDB
 {
+    // == 0.8.5 / ARQ 2.8.3
+    
     // RIOT
     //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)
-    //   Check for LabelToNodeMap - replace with NodeAllocator.
-    //   In LangTurtleBase
-    //
-    //   Switchable scopes in TriG.
     //   TriG extensions
     //     NQuads in Trig.
     //     Trailling dots ??
+    // Document
     
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
@@ -26,6 +25,10 @@ public class DevTDB
     // DatasetGraphMem() to sparql.core
     // DataSource/DataSourceGraph == general purpose model/graph bundler 
 
+    // --------
+
+    // Pipeline.
+    
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1
@@ -44,11 +47,6 @@ public class DevTDB
     // Special cases
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
     //   Materialized answers.
-
-    // == 0.8.5
-    // + Dynamic datasets  [DONE] 
-    //   Documentation  [DONE] ?Check
-    // ++ RDFS inference??
     
     // Terminating queries with abort top to bottom.
     
