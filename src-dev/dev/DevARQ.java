@@ -7,12 +7,15 @@ package dev;
 
 public class DevARQ
 {
+    // ARQ 2.8.3
+    
     // DatasetGraphMem
     // DatasetGraph - include PUT/DELETE style operations
     // Tidy up:
     // DatasetGraphMem() to sparql.core
     // DataSource/DataSourceGraph == general purpose model/graph bundler 
     
+    // ----------
     
     //LARQ index building command line tool
     
@@ -29,6 +32,7 @@ public class DevARQ
     // Property paths: { ?x !rdf:type ?y }
     // What about ^ reverse?
     //{ ?x !(^rdf:type|rdf:type) ?y }
+    // ^ not needed (either it's forward mode adnd can't match else backwars mode further out)
     // Test with grounded ?x and ?y
     
     // De-duplicate aggregator code.
