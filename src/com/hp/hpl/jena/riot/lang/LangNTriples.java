@@ -32,12 +32,11 @@ public class LangNTriples extends LangNTuple<Triple>
     protected final Triple parseOne() 
     { 
         Token sToken = nextToken() ;
-        Node s = parseIRIOrBNode(sToken) ;
-
         Token pToken = nextToken() ;
-        Node p = parseIRI(pToken) ;
-
         Token oToken = nextToken() ;
+        
+        Node s = parseIRIOrBNode(sToken) ;
+        Node p = parseIRI(pToken) ;
         Node o = parseRDFTerm(oToken) ;
 
         Token x = nextToken() ;
@@ -56,6 +55,15 @@ public class LangNTriples extends LangNTuple<Triple>
             }
         }
         return new Triple(s, p, o) ; 
+    }
+    
+    @Override
+    protected final Node tokenAsNode(Token token) 
+    {
+        if ( token.hasType(TokenType.BNODE) )
+            return scopedBNode(null, token.getImage()) ;
+        // Leave IRIs alone (don't resolve)
+        return token.asNode() ;
     }
 }
 

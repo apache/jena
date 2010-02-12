@@ -20,7 +20,8 @@ public class LangTurtle extends LangTurtleBase<Triple>
                       Checker checker, 
                       Sink<Triple> sink) 
     {
-        super(baseURI, tokens, checker, sink) ;
+        super(baseURI, tokens, checker, sink, LabelToNode.createOneScope()) ;
+        setCurrentGraph(null) ;
     }
 
     @Override

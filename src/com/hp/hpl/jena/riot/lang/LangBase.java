@@ -13,7 +13,6 @@ import atlas.event.EventManager ;
 import atlas.iterator.PeekIterator ;
 import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ParseException ;
@@ -32,16 +31,27 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected final Sink<X> sink ; 
     
-    public LangBase(Tokenizer tokens,
-                    Sink<X> sink,
-                    Checker checker)
+    private final LabelToNode labelmap ;
+
+//    protected LangBase(Tokenizer tokens,
+//                    Sink<X> sink,
+//                    Checker checker)
+//    {
+//        this(tokens, sink, checker, LabelToNode.createOneScope()) ;
+//    }
+    
+    protected LangBase(Tokenizer tokens,
+                       Sink<X> sink,
+                       Checker checker, 
+                       LabelToNode map)
     {
         setChecker(checker) ;
         this.sink = sink ;
         this.tokens = tokens ;
         this.peekIter = new PeekIterator<Token>(tokens) ;
+        this.labelmap = map ;
     }
-    
+        
     //@Override
     public Checker getChecker()                 { return checker ; }
     //@Override
@@ -53,7 +63,6 @@ public abstract class LangBase<X> implements LangRIOT
         runParser() ;
         EventManager.send(sink, new Event(RIOT.finishRead, null)) ;
     }
-    
     
     // ---- Managing tokens.
     
@@ -125,11 +134,9 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected abstract Node tokenAsNode(Token token) ;
 
-    private final NodeAllocator labelmap = NodeAllocator.createOneScope() ;
-    
-    protected final Node scopedBNode(Graph graph, String label)
+    protected final Node scopedBNode(Node scopeNode, String label)
     {
-        return labelmap.get(graph, label) ;
+        return labelmap.get(scopeNode, label) ;
     }
     
     protected final void expectOrEOF(String msg, TokenType tokenType)

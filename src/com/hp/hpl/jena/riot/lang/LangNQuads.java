@@ -21,6 +21,9 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class LangNQuads extends LangNTuple<Quad>
 {
+    // Null for no graph.
+    private Node currentGraph = null ;
+    
     public LangNQuads(Tokenizer tokens,
                       Checker checker,
                       Sink<Quad> sink)
@@ -29,30 +32,36 @@ public class LangNQuads extends LangNTuple<Quad>
     }
 
     @Override
-    protected Quad parseOne()
+    protected final Quad parseOne()
     {
         Token sToken = nextToken() ;
-        Node s = parseIRIOrBNode(sToken) ;
-        
         Token pToken = nextToken() ;
-        Node p = parseIRI(pToken) ;
-        
         Token oToken = nextToken() ;
-        Node o = parseRDFTerm(oToken) ;
+        Token xToken = nextToken() ;    // Maybe DOT
         
+        // Process graph node first to set bnode label scope (if not global)
         Node c = null ;
-        Token cToken = nextToken() ;
-        
-        if ( cToken.getType() != TokenType.DOT )
+        if ( xToken.getType() != TokenType.DOT )
         {
-            c = parseRDFTerm(cToken) ;
-            cToken = nextToken() ;
+            //c = parseRDFTerm(cToken) ;
+            c = parseIRI(xToken) ;
+            xToken = nextToken() ;
+            currentGraph = c ;
         }
         else
+        {
             c = Quad.tripleInQuad ;
+            currentGraph = null ;
+        }
         
-        if ( cToken.getType() != TokenType.DOT )
-            exception("Quad not terminated by DOT: %s", cToken, cToken) ;
+        Node s = parseIRIOrBNode(sToken) ;
+        Node p = parseIRI(pToken) ;
+        Node o = parseRDFTerm(oToken) ;
+        
+        // Check end of tuple.
+        
+        if ( xToken.getType() != TokenType.DOT )
+            exception("Quad not terminated by DOT: %s", xToken) ;
         
         Checker checker = getChecker() ;
         
@@ -62,15 +71,23 @@ public class LangNQuads extends LangNTuple<Quad>
             b &= checker.check(p, pToken.getLine(), pToken.getColumn()) ;
             b &= checker.check(o, oToken.getLine(), oToken.getColumn()) ;
             if ( ! equal(c, Quad.tripleInQuad) ) 
-                b &= checker.check(c, cToken.getLine(), cToken.getColumn()) ;
+                b &= checker.check(c, xToken.getLine(), xToken.getColumn()) ;
             if ( !b && skipOnBadTerm )
             {
                 skipOne(new Quad(c, s, p, o)) ;
                 return null ;
             }
         }
-        // c may be Quad.defaultGraphNodeGenerated, meaning default graph in SPARQL.
         return new Quad(c, s, p, o) ;
+    }
+    
+    @Override
+    protected final Node tokenAsNode(Token token) 
+    {
+        if ( token.hasType(TokenType.BNODE) )
+            return scopedBNode(currentGraph, token.getImage()) ;
+        // Leave IRIs alone (don't resolve)
+        return token.asNode() ;
     }
 }
 

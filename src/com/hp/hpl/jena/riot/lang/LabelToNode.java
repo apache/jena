@@ -5,44 +5,43 @@
  */
 
 package com.hp.hpl.jena.riot.lang;
-import static java.lang.String.format; 
+import static java.lang.String.format ;
+
 import java.util.HashMap ;
 import java.util.Map ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
-
-/** Allocation Nodes (Bnodes usually) based on teh graph and label 
+/** Allocation Nodes (Bnodes usually) based on the graph and label 
  * Various different policies.
  */  
 
-public class NodeAllocator
+public class LabelToNode
 {
     // Replaces LabelToNodeMap
     
     /** Allocation from a single scope; just the label matters. */
-    public static NodeAllocator createOneScope()
-    { return new NodeAllocator(new SingleScopePolicy(), nodeMaker) ; }
+    public static LabelToNode createOneScope()
+    { return new LabelToNode(new SingleScopePolicy(), nodeMaker) ; }
 
     /** Allocation scoped by graph and label. */
-    public static NodeAllocator createScopeByGraph()
-    { return new NodeAllocator(new GraphScopePolicy(), nodeMaker) ; }
+    public static LabelToNode createScopeByGraph()
+    { return new LabelToNode(new GraphScopePolicy(), nodeMaker) ; }
 
     /** Allocation using syntax label. */
-    public static NodeAllocator createUseLabelAsGiven()
-    { return new NodeAllocator(new SingleScopePolicy(), nodeMakerByLabel) ; }
+    public static LabelToNode createUseLabelAsGiven()
+    { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabel) ; }
 
     /** Allocation, globallay scoped, that uses a incrementing field to create new nodes */  
-    public static NodeAllocator createIncremental()
-    { return new NodeAllocator(new SingleScopePolicy(), nodeMakerDeterministic) ; } 
+    public static LabelToNode createIncremental()
+    { return new LabelToNode(new SingleScopePolicy(), nodeMakerDeterministic) ; } 
     
     // ======== Interfaces
     
     private interface ScopePolicy
     {
-        Map<String, Node> getScope(Graph scope) ;
+        Map<String, Node> getScope(Node scope) ;
         void clear() ;
     }
     private interface Allocator<T>
@@ -56,14 +55,14 @@ public class NodeAllocator
     private final ScopePolicy scopePolicy ;
     private final Allocator<Node> allocator ;
 
-    private NodeAllocator(ScopePolicy scopePolicy, Allocator<Node> allocator)
+    private LabelToNode(ScopePolicy scopePolicy, Allocator<Node> allocator)
     {
         this.scopePolicy = scopePolicy ;
         this.allocator = allocator ;
     }
     
-    /** Get a node for a label, given the graph as scope */
-    public Node get(Graph scope, String label)
+    /** Get a node for a label, given the node (for the graph) as scope */
+    public Node get(Node scope, String label)
     {
         Map<String, Node> map = scopePolicy.getScope(scope) ;
         Node n = map.get(label) ;
@@ -87,7 +86,7 @@ public class NodeAllocator
     private static class SingleScopePolicy implements ScopePolicy
     { 
         private Map<String, Node> map = new HashMap<String, Node>() ;
-        public Map<String, Node> getScope(Graph scope) { return map ; }
+        public Map<String, Node> getScope(Node scope) { return map ; }
         public void clear() { map.clear(); }
     }
     
@@ -95,8 +94,8 @@ public class NodeAllocator
     private static class GraphScopePolicy  implements ScopePolicy
     { 
         private Map<String, Node> dftMap = new HashMap<String, Node>() ;
-        private Map<Graph, Map<String, Node>> map = new HashMap<Graph, Map<String, Node>>() ;
-        public Map<String, Node> getScope(Graph scope)
+        private Map<Node, Map<String, Node>> map = new HashMap<Node, Map<String, Node>>() ;
+        public Map<String, Node> getScope(Node scope)
         {
             if ( scope == null )
                 return dftMap ;

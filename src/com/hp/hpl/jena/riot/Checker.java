@@ -133,10 +133,10 @@ public final class Checker
     }
 
     
-    final private boolean checkVar(Node node, long line, long col)
+    final public boolean checkVar(Node node, long line, long col)
     { return true ; }
 
-    final private boolean checkLiteral(Node node, long line, long col)
+    final public boolean checkLiteral(Node node, long line, long col)
     {
         LiteralLabel lit = node.getLiteral() ;
 
@@ -166,7 +166,7 @@ public final class Checker
         return true ;
     }
 
-    final private boolean checkBlank(Node node, long line, long col)
+    final public boolean checkBlank(Node node, long line, long col)
     {
         String x =  node.getBlankNodeLabel() ;
         if ( x.indexOf(' ') >= 0 )
@@ -177,9 +177,9 @@ public final class Checker
         return true ;
     }
 
-    public boolean checkIRI(IRI iri, long l, long m)
+    final public boolean checkIRI(IRI iri, long line, long col)
     {
-        violations(iri, handler, allowRelativeIRIs, warningsAreErrors, l,m) ;
+        violations(iri, handler, allowRelativeIRIs, warningsAreErrors, line, col) ;
         return ! iri.hasViolation(true) ;
     }
 
@@ -187,7 +187,7 @@ public final class Checker
     // An unbounded cache is fastest but does not scale.
     private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(5000) ;
     
-    final private boolean checkURI(Node node, long line, long col)
+    public final boolean checkURI(Node node, long line, long col)
     {
         if ( cache != null && cache.containsKey(node) )
             return true ;

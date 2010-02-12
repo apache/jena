@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import static com.hp.hpl.jena.riot.tokens.TokenType.* ;
-import atlas.lib.InternalErrorException ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.DOT ;
+import static com.hp.hpl.jena.riot.tokens.TokenType.RBRACE ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class LangTriG extends LangTurtleBase<Quad>
 {
-    // TODO BNode scoping
     /*
         TriGDoc     ::=      ws* (statement ws*)*
         statement   ::=     directive ws* '.' | graph
@@ -36,12 +35,13 @@ public class LangTriG extends LangTurtleBase<Quad>
                     Checker checker, 
                     Sink<Quad> sink) 
     {
-        super(baseURI, tokens, checker, sink) ;
+        super(baseURI, tokens, checker, sink, chooseLabelScoping()) ;
     }
 
-    Node currentGraph = null ;
-    
-    
+    static LabelToNode chooseLabelScoping()
+    {
+        return LabelToNode.createOneScope() ;
+    }
     
     @Override
     protected final void oneTopLevelElement()
@@ -63,12 +63,12 @@ public class LangTriG extends LangTurtleBase<Quad>
             token = peekToken() ;
 
             if ( graphNode.isURI() )
-                currentGraph = graphNode ; 
+                setCurrentGraph(graphNode) ; 
             else
                 exception("Not a legal graph name: "+graphNode) ;
         }
         else
-            currentGraph = Quad.defaultGraphNodeGenerated ;
+            setCurrentGraph(Quad.tripleInQuad) ;
 
         // = is optional
         if ( token.getType() == TokenType.EQUALS )
@@ -103,7 +103,8 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( token.getType() != TokenType.RBRACE )
             exception("Expected end of graph: got %s", peekToken()) ;
         nextToken() ;
-        currentGraph = null ;
+        // End graph block.
+        setCurrentGraph(Quad.tripleInQuad) ;
     }
 
     @Override
@@ -135,13 +136,12 @@ public class LangTriG extends LangTurtleBase<Quad>
     @Override
     protected void emit(Node subject, Node predicate, Node object)
     {
-        if ( currentGraph == null )
-            throw new InternalErrorException("Not inside a graph block but trying to generate a quad") ;
+        Node graph = getCurrentGraph() ;
         
-        Node g = currentGraph ;
-        if ( g ==  Quad.defaultGraphNodeGenerated )
-            g = null ;
-        Quad quad = new Quad(g, subject, predicate, object) ;
+        if ( graph == Quad.defaultGraphNodeGenerated )
+            graph = Quad.tripleInQuad ;
+        
+        Quad quad = new Quad(graph, subject, predicate, object) ;
         sink.send(quad) ;
     }
 }

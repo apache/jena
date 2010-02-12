@@ -6,22 +6,20 @@
 
 package com.hp.hpl.jena.riot.lang;
 
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-
 import org.junit.Test ;
 import atlas.test.BaseTest ;
 
+import com.hp.hpl.jena.graph.Node ;
+
 public class TestNodeAllocator extends BaseTest
 {
-    static Graph gragh1 = Factory.createGraphMem() ;
-    static Graph gragh2 = Factory.createGraphMem() ;
+    static Node gragh1 = Node.createURI("g1") ;
+    static Node gragh2 = Node.createURI("g2") ;
     
     // ---- One Scope
     @Test public void allocOneScope1()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "xyz" ) ;
         // SAME
@@ -31,7 +29,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope2()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "123" ) ;
         // DIFFERENT
@@ -40,7 +38,7 @@ public class TestNodeAllocator extends BaseTest
 
     @Test public void allocOneScope3()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
@@ -49,7 +47,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope4()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
@@ -58,7 +56,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope5()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME
@@ -68,7 +66,7 @@ public class TestNodeAllocator extends BaseTest
     // ---- Graph Scope
     @Test public void allocGraphScope1()
     {
-        NodeAllocator alloc = NodeAllocator.createScopeByGraph() ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "xyz" ) ;
         // SAME
@@ -78,7 +76,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope2()
     {
-        NodeAllocator alloc = NodeAllocator.createScopeByGraph() ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "123" ) ;
         // DIFFERENT
@@ -87,7 +85,7 @@ public class TestNodeAllocator extends BaseTest
 
     @Test public void allocGraphScope3()
     {
-        NodeAllocator alloc = NodeAllocator.createScopeByGraph() ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // DIFFERENT
@@ -96,7 +94,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope4()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // DIFFERENT
@@ -105,7 +103,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope5()
     {
-        NodeAllocator alloc = NodeAllocator.createOneScope() ;
+        LabelToNode alloc = LabelToNode.createOneScope() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME

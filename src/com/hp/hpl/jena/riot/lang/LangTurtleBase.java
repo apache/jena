@@ -22,10 +22,9 @@ import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.sparql.core.NodeConst ;
-import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
-/** The main engine for all things Turtle-ish. */
+/** The main engine for all things Turtle-ish (Turtle, TriG). */
 public abstract class LangTurtleBase<X> extends LangBase<X>
 {
     /* See http://www.w3.org/TeamSubmission/turtle/ */
@@ -90,6 +89,23 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     
     protected final Prologue prologue ;
     
+    // Current graph - null for default graph
+    private Node currentGraph = null ;
+    
+    
+    public final Node getCurrentGraph()
+    {
+        return currentGraph ;
+    }
+
+    public final void setCurrentGraph(Node graph)
+    {
+        // The syntax of the language determines this. 
+//        if ( graph != null )
+//            checker.check(graph, -1, -1) ;
+        this.currentGraph = graph ;
+    }
+
     /** Provide access to the prologue.  
      * Use with care.
      */
@@ -101,9 +117,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
      */
     public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, Sink<X> sink) 
+    public LangTurtleBase(String baseURI, Tokenizer tokens, Checker checker, Sink<X> sink, LabelToNode labelMap) 
     { 
-        super(tokens, sink, checker) ;
+        super(tokens, sink, checker, labelMap) ;
         this.prologue = new Prologue(new PrefixMap(), new IRIResolver(baseURI)) ;
     }
     
@@ -339,7 +355,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         for(;;)
         {
             Node object = triplesNode() ;
-            emitTriple(subject, predicate, object) ;
+            checkEmitTriple(subject, predicate, object) ;
 
             if ( ! moreTokens() )
                 break ;
@@ -450,10 +466,10 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             if ( listHead == null )
                 listHead = nextCell ;
             if ( lastCell != null )
-                emitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
+                checkEmitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
             lastCell = nextCell ;
             
-            emitTriple(nextCell, NodeConst.nodeFirst, n) ;
+            checkEmitTriple(nextCell, NodeConst.nodeFirst, n) ;
 
             if ( ! moreTokens() )   // Error.
                 break ;
@@ -465,11 +481,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             return NodeConst.nodeNil ;
         
         // Finish list.
-        emitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
+        checkEmitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
         return listHead ;
     }
    
-    protected final void emitTriple(Node subject, Node predicate, Node object)
+    protected final void checkEmitTriple(Node subject, Node predicate, Node object)
     {
         // The syntax should make this impossible.
         if ( checker != null )
@@ -477,19 +493,15 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         emit(subject, predicate, object) ;
     }
 
-    LabelToNodeMap lmap = LabelToNodeMap.createBNodeMap() ;
-    
     @Override
     protected final Node tokenAsNode(Token token) 
     {
         switch(token.getType())
         {
-            // Assumes that bnode labels have been sorted out already.
             case BNODE : 
             {
                 String label = token.getImage() ;
-                // Fix up ":" and "-" to produce a N-Triples safe label? 
-                Node n = lmap.asNode(label) ;
+                Node n = scopedBNode(currentGraph, label) ;
                 return n ;
             }
             case IRI :

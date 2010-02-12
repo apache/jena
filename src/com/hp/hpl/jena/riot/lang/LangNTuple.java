@@ -12,7 +12,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Token ;
@@ -38,19 +37,15 @@ import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
-    //private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
     public static final boolean STRICT = false ;
     protected boolean skipOnBadTerm = false ;
-    
-    // XXX
-    private Graph currentGraph = null ;
     
     protected LangNTuple(Tokenizer tokens,
                          Checker checker,
                          Sink<X> sink)
     { 
-        super(tokens, sink, checker) ;
+        super(tokens, sink, checker, LabelToNode.createOneScope()) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
@@ -92,33 +87,24 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     }
 
     
-    @Override
-    protected final Node tokenAsNode(Token token) 
+    protected final Node parseIRIOrBNode(Token token)
     {
-        if ( token.hasType(TokenType.BNODE) )
-            return scopedBNode(currentGraph, token.getImage()) ;
-        // Leave IRIs alone (don't resolve)
-        return token.asNode() ;
-    }
-    
-    protected final Node parseIRIOrBNode(Token s)
-    {
-        if ( ! ( s.hasType(TokenType.BNODE) ||
-                 s.hasType(TokenType.IRI) ) )
-            exception("Expected BNode or IRI", s) ;
-        return tokenAsNode(s) ;
+        if ( ! ( token.hasType(TokenType.BNODE) ||
+                 token.hasType(TokenType.IRI) ) )
+            exception("Expected BNode or IRI", token) ;
+        return tokenAsNode(token) ;
     }
 
-    protected final Node parseIRI(Token p)
+    protected final Node parseIRI(Token token)
     {
-        if ( ! p.hasType(TokenType.IRI) )
-            exception("Expected IRI", p) ;
-        return tokenAsNode(p) ;
+        if ( ! token.hasType(TokenType.IRI) )
+            exception("Expected IRI", token) ;
+        return tokenAsNode(token) ;
     }
 
-    protected final Node parseRDFTerm(Token o)
+    protected final Node parseRDFTerm(Token token)
     {
-        switch(o.getType())
+        switch(token.getType())
         {
             case IRI:
             case BNODE:
@@ -128,13 +114,13 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
                 break ;
             case STRING1:
                 if ( STRICT )
-                    exception("Illegal single quoted string", o) ;
+                    exception("Illegal single quoted string", token) ;
                 break ;
             default:
-                exception("Illegal object", o) ;
+                exception("Illegal object", token) ;
         }
             
-        return tokenAsNode(o) ;
+        return tokenAsNode(token) ;
     }
 
     /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 

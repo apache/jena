@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.lib.Sync ;
 import com.hp.hpl.jena.tdb.modify.UpdateProcessorTDB ;
 import com.hp.hpl.jena.tdb.solver.Explain ;
