@@ -32,6 +32,7 @@ public class DevTDB
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1
+    // Just need to keep var -> first def mapping but all mentions may be useful. 
     // (Idea from Alisdair)
     
     // **** Per dataset context.  Merge into execution.
