@@ -13,6 +13,7 @@ import atlas.event.EventManager ;
 import atlas.iterator.PeekIterator ;
 import atlas.lib.Sink ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.ParseException ;
@@ -20,7 +21,6 @@ import com.hp.hpl.jena.riot.RIOT ;
 import com.hp.hpl.jena.riot.tokens.Token ;
 import com.hp.hpl.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
-import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
 /** Common operations for RIOT parsers */
 public abstract class LangBase<X> implements LangRIOT
@@ -125,10 +125,11 @@ public abstract class LangBase<X> implements LangRIOT
 
     protected abstract Node tokenAsNode(Token token) ;
 
-    private final LabelToNodeMap labelmap = LabelToNodeMap.createBNodeMap() ;
-    protected final Node scopedBNode(String label)
+    private final NodeAllocator labelmap = NodeAllocator.createOneScope() ;
+    
+    protected final Node scopedBNode(Graph graph, String label)
     {
-        return labelmap.asNode(label) ;
+        return labelmap.get(graph, label) ;
     }
     
     protected final void expectOrEOF(String msg, TokenType tokenType)

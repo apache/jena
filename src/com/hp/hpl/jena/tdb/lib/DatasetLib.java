@@ -122,7 +122,7 @@ public class DatasetLib
         return new QuadsToDataset(dataset) ;
     }
     
-    // A DatasetGraph that creates memort graphs on mention */
+    // A DatasetGraph that creates memory graphs on mention */
     public static DatasetGraph createDatasetGraphMem()
     {
         return new DatasetGraphMem() ;

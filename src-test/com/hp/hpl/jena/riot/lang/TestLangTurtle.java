@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 
 public class TestLangTurtle extends BaseTest
 {
-    @Test public void blankNodes()
+    @Test public void blankNodes1()
     {
         String s = "_:a <http://example/p> 'foo' . " ;
         StringReader r = new StringReader(s) ;
@@ -39,6 +39,18 @@ public class TestLangTurtle extends BaseTest
         assertEquals(2, m.size()) ;
     }
     
+    @Test public void blankNodes2()
+    {
+        // Duplicate.
+        String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' ." ;
+        StringReader r = new StringReader(s) ;
+        Model m = ModelFactory.createDefaultModel() ;
+        
+        RDFReader reader = new JenaReaderTurtle2() ;
+        reader.read(m, r, null) ;
+        assertEquals(1, m.size()) ;
+    }
+
     
     @Test public void updatePrefixMapping()
     {

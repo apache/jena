@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class LangTriG extends LangTurtleBase<Quad>
 {
+    // TODO BNode scoping
     /*
         TriGDoc     ::=      ws* (statement ws*)*
         statement   ::=     directive ws* '.' | graph
@@ -40,11 +41,11 @@ public class LangTriG extends LangTurtleBase<Quad>
 
     Node currentGraph = null ;
     
+    
+    
     @Override
     protected final void oneTopLevelElement()
     {
-        // XXX BNode labels.
-        // Per graph seen??
         oneNamedGraphBlock() ;
     }
     

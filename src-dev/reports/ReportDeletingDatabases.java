@@ -4,17 +4,57 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.lang;
+package reports;
 
-import org.junit.Test ;
-import atlas.test.BaseTest ;
+import java.io.File ;
 
-public class TestLangTrig extends BaseTest
+import atlas.lib.FileOps ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+
+public class ReportDeletingDatabases
 {
-    // Every test suite needs at least one test 
-    @Test public void dummy() {}
+    public static void main(String ...argv)
+    {
+        String DB = "TDBTest7";
+        FileOps.clearDirectory(DB) ;
+        
+        SystemTDB.setFileMode(FileMode.mapped);
+        
+        if ( false )
+        {
+            // Create new DB (assuming it's empty now)
+            Dataset ds = TDBFactory.createDataset(DB);
+            PrefixMapping pm = ds.getDefaultModel() ;
+            pm.setNsPrefix("test", "http://test");
+            ds.close();
+        }
+
+        if ( true )
+        {
+            // Create new DB (assuming it's empty now)
+            Graph g = TDBFactory.createGraph(DB);
+            PrefixMapping pm = g.getPrefixMapping() ;
+            pm.setNsPrefix("test", "http://test");
+            g.close();
+            ((GraphTDB)g).getDataset().close() ;
+        }
     
-    // Something on bnodes.
+        TDB.closedown();
+    
+        File file = new File(DB + "/prefixIdx.dat");
+        System.out.println("File exists " + file.exists());
+        //FileOps.clearDirectory(DB) ;
+        file.delete();
+        System.out.println("File exists " + file.exists());
+    }
 }
 
 /*

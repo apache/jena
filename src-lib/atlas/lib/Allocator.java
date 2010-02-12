@@ -4,11 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot;
+package atlas.lib;
 
 public interface Allocator<T>
 {
+    /** Allocate a new T, different from others allocated */ 
     public T create() ;
+    
+//    /** Reset the process of allocation - may cause equivalent objects to be created from before the reset */  
+//    public void reset() ;
 }
 
 /*

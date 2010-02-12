@@ -8,7 +8,10 @@ package com.hp.hpl.jena.tdb.base.block;
 
 public enum FileMode
 {
-    mapped, direct ;
+    /** Use memory mapped files */
+    mapped,
+    /** Use in-JVM caching */
+    direct ;
 }
 
 /*

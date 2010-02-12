@@ -20,6 +20,7 @@ import com.hp.hpl.jena.riot.tokens.TestTokenizer ;
     , TestTokenForNode.class
     , TestPrefixMap.class
     , TestIRI.class
+    , TestNodeAllocator.class
     
     , TestTurtleTerms.class
 

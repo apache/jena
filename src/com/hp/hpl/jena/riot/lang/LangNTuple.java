@@ -12,6 +12,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import atlas.lib.Sink ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.riot.Checker ;
 import com.hp.hpl.jena.riot.tokens.Token ;
@@ -41,6 +42,9 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     
     public static final boolean STRICT = false ;
     protected boolean skipOnBadTerm = false ;
+    
+    // XXX
+    private Graph currentGraph = null ;
     
     protected LangNTuple(Tokenizer tokens,
                          Checker checker,
@@ -92,7 +96,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     protected final Node tokenAsNode(Token token) 
     {
         if ( token.hasType(TokenType.BNODE) )
-            return scopedBNode(token.getImage()) ;
+            return scopedBNode(currentGraph, token.getImage()) ;
         // Leave IRIs alone (don't resolve)
         return token.asNode() ;
     }

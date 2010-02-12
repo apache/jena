@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -29,41 +30,41 @@ public class TestLangNTriples extends BaseTest
     
     @Test public void nt0()
     {
-        SinkCounting<Triple> sink = parse("") ;
+        SinkCounting<Triple> sink = parseToSink("") ;
         assertEquals(0, sink.getCount()) ;
     }
     
     @Test public void nt1()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> <z>.") ;
+        SinkCounting<Triple> sink = parseToSink("<x> <y> <z>.") ;
         assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt2()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"z\".") ;
+        SinkCounting<Triple> sink = parseToSink("<x> <y> \"z\".") ;
         assertEquals(1, sink.getCount()) ;
     }
     
     @Test public void nt3()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> <z>. <x> <y> <z>.") ;
+        SinkCounting<Triple> sink = parseToSink("<x> <y> <z>. <x> <y> <z>.") ;
         assertEquals(2, sink.getCount()) ;
     }
 
     @Test public void nt4()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"123\"^^<int>.") ;
+        SinkCounting<Triple> sink = parseToSink("<x> <y> \"123\"^^<int>.") ;
         assertEquals(1, sink.getCount()) ;
     }
 
     @Test public void nt5()
     {
-        SinkCounting<Triple> sink = parse("<x> <y> \"123\"@lang.") ;
+        SinkCounting<Triple> sink = parseToSink("<x> <y> \"123\"@lang.") ;
         assertEquals(1, sink.getCount()) ;
     }
     
-    @Test public void nt6()
+    @Test public void nt_reader_twice()
     {
         String s = "_:a <p> 'foo' . " ;
         StringReader r = new StringReader(s) ;
@@ -76,60 +77,67 @@ public class TestLangNTriples extends BaseTest
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
         assertNotEquals(x, "a") ;
         
-
         // reset - reread -  new bNode.
         r = new StringReader(s) ;
         reader.read(m, r, null) ;
         assertEquals(2, m.size()) ;
     }
-    
+
     // Test iterator interface.
 
     // Test parse errors interface.
     @Test(expected=ParseException.class)
     public void nt_bad_01()
     {
-        parse("<x> <y> <z>") ;          // No DOT
+        parseToSink("<x> <y> <z>") ;          // No DOT
     }
     
     @Test(expected=ParseException.class)
     public void nt_bad_02()
     {
-        parse("<x> _:a <z> .") ;        // Bad predicate
+        parseToSink("<x> _:a <z> .") ;        // Bad predicate
     }
 
     @Test(expected=ParseException.class)
     public void nt_bad_03()
     {
-        parse("<x> \"p\" <z> .") ;      // Bad predicate 
+        parseToSink("<x> \"p\" <z> .") ;      // Bad predicate 
     }
 
     @Test(expected=ParseException.class)
     public void nt_bad_4()
     {
-        parse("\"x\" <p> <z> .") ;      // Bad subject
+        parseToSink("\"x\" <p> <z> .") ;      // Bad subject
     }
 
     @Test(expected=ParseException.class)
     public void nt_bad_5()
     {
-        parse("<x> <p> ?var .") ;        // No variables 
+        parseToSink("<x> <p> ?var .") ;        // No variables 
     }
     
     @Test(expected=ParseException.class)
     public void nt_bad_6()
     {
-        parse("<x> <p> 123 .") ;        // No abbreviations. 
+        parseToSink("<x> <p> 123 .") ;        // No abbreviations. 
     }
     
     @Test(expected=ParseException.class)
     public void nt_bad_7()
     {
-        parse("<x> <p> x:y .") ;        // No prefixed names 
+        parseToSink("<x> <p> x:y .") ;        // No prefixed names 
     }
     
+    @Test
+    public void nt_model_1()
+    {
+        Model m1 = parseToModel("<x> <p> \"abc\". ") ;
+        assertEquals(1, m1.size()) ;
+        Model m2 = parseToModel("<x> <p> \"abc\". ") ;
+        assertTrue(m1.isIsomorphicWith(m2)) ;
+    }
 
-    private static SinkCounting<Triple> parse(String string)
+    private static SinkCounting<Triple> parseToSink(String string)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         SinkCounting<Triple> sink = new SinkCounting<Triple>() ;
@@ -138,10 +146,21 @@ public class TestLangNTriples extends BaseTest
         x.parse() ;
         return sink ;
     }
+    
+    private static Model parseToModel(String string)
+    {
+        StringReader r = new StringReader(string) ;
+        Model model = ModelFactory.createDefaultModel() ;
+        
+        RDFReader reader = new JenaReaderNTriples2() ;
+        reader.read(model, r, null) ;
+        return model ;
+    }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

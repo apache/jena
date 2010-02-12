@@ -10,12 +10,22 @@ package dev;
 public class DevTDB
 {
     // RIOT
-    //   Bnode scopes
-    //   BNode tests
+    //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)
+    //   Check for LabelToNodeMap - replace with NodeAllocator.
+    //   In LangTurtleBase
+    //
+    //   Switchable scopes in TriG.
     //   TriG extensions
     //     NQuads in Trig.
-    //     Trailling dots.
+    //     Trailling dots ??
     
+    // Documentation: Update
+    // http://openjena.org/wiki/TDB/Commands
+    
+    // Tidy up:
+    // DatasetGraphMem() to sparql.core
+    // DataSource/DataSourceGraph == general purpose model/graph bundler 
+
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
     // If <r> has no solutions fall back to triple pattern 1
