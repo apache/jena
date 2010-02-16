@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.1 2009-06-29 08:55:40 castagna Exp $i
+  $Id: AbstractTestGraph.java,v 1.2 2010-02-16 21:19:24 jeremy_carroll Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.*;
@@ -815,7 +816,9 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         testRemoveAll( "a R b" );
         testRemoveAll( "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'" );
         }
-    
+
+ 
+ 
     public void testRemoveAll( String triples )
         {
         Graph g = getGraph();
@@ -823,6 +826,25 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         g.getBulkUpdateHandler().removeAll();
         assertTrue( g.isEmpty() );
         }
+    
+    public void failingTestDoubleRemoveAll() {
+    	final Graph g = getGraph();
+    	if (g.getCapabilities().iteratorRemoveAllowed() ) {
+    		graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
+    		Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)){
+    			@Override
+    			public void remove() {
+    				super.remove(); // removes current
+    				g.delete(current); // no-op.
+    			}
+    		};
+    		while (it.hasNext()) {
+    			it.next();
+    			it.remove();
+    		}
+    		assertTrue( g.isEmpty() );
+    	}
+    }
     
     public void testGetStatisticsHandler()
         {
