@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>0.8.5-SNAPSHOT</version>
+
+  <description>TDB is a storgae subsystem for Jena and ARQ</description>
+  <url>http://openjena.org/TDB</url>
+
+  <organization>
+    <name>OpenJena</name>
+    <url>http://www.openjena.org/</url>
+  </organization>
+  <developers>
+    <developer>
+      <name>Andy Seaborne</name>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>BSD-style license</name>
+      <url>http://openjena.org/license.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/TDB/</connection>
+    <url>http://jena.svn.sourceforge.net/viewvc/jena/TDB/</url>
+  </scm>
+
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <ver.jena>2.6.2</ver.jena>
+    <ver.arq>2.8.3-SNAPSHOT</ver.arq>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <type>test-jar</type>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Brings in sources -->
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>iri</artifactId>
+      <version>0.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <!-- <scope>test</scope> -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+
+    <!-- Choose your logging provider 
+         But note ARQ confgures log4j (and java.util.logging)
+         in its logging support utilities so needs it to 
+         compile.
+    -->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+
+    <dependency>
+      <!-- Some of log4j dependencies are broken -->
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>javax.jms</groupId>
+	  <artifactId>jms</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>com.sun.jdmk</groupId>
+	  <artifactId>jmxtools</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>com.sun.jmx</groupId>
+	  <artifactId>jmxri</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>javax.mail</groupId>
+	  <artifactId>mail</artifactId>
+	</exclusion>
+      </exclusions> 
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <!-- temp -->
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>src-test</testSourceDirectory>
+    
+    <!-- The filter file is written by antrun -->
+    <filters>
+      <filter>${project.basedir}/target/filter.properties</filter>
+    </filters>
+
+    <resources>
+      <resource>
+        <targetPath>com/hp/hpl/jena/tdb/</targetPath>
+        <filtering>true</filtering>
+        <directory>resources</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+	    <include>com/hp/hpl/jena/tdb/**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <!-- Maven v2.2.0 jar-no-fork does not exist
+                   contrary to the documentation
+              -->
+              <goal>jar</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+	  <includePackageNames>com.hp.hpl.jena.tdb</includePackageNames>
+          <bottom>
+	    Copyright &#169; 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+	    Copyright &#169; 2010 Talis Information Ltd.
+	  </bottom> 
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+            <descriptor>assembly-testing.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <!-- Better after package because of javadoc, source and test-jar-->
+            <phase>verify</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-timestamp</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
+                </tstamp>
+                <echo file="${project.basedir}/target/filter.properties">
+#begin
+build.time.xsd=${build.time.xsd}
+build.time.txt=${build.time.txt}
+#end
+                </echo>
+                <echo message="version=${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <!-- Another task, another execution -->
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <outputDirectory>lib2</outputDirectory>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteSnapshots>false</overWriteSnapshots>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <reporting>
+    <!-- Does not include the script outputs!
+         <plugins>
+         <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-report-plugin</artifactId>
+         <configuration>
+         <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+         </configuration>
+         </plugin>
+         </plugins>
+    -->
+  </reporting>
+
+ <repositories>
+
+    <!-- jena-repo is mirrored to Maven central repository -->
+    <!-- In case mirroring has not happened yet ... -->
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- jena-repo-dev is where SNAPSHOTs and RCs are published -->  
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
+
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+
+      <!--<url>sftp://openjena.org/var/repo</url>-->
+
+      <!-- Because RC's are snapshots IMHO -->
+      <url>sftp://openjena.org/var/repo-dev</url>
+
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </repository> 
+
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </snapshotRepository>
+
+  </distributionManagement>
+
+</project>

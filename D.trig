@@ -3,3 +3,8 @@
     # No trailing dot
     :x :p "123" 
 }
+:graph1
+
+{
+    :x :p "456"
+}

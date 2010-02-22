@@ -1,7 +1,7 @@
 PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX : <http://example/>
 
-select DISTINCT *
-where { ?s ?p ?o.
-        Filter (?s = <#person.93> )
-        optional { ?o foaf:name ?on }.
+select *
+where { ?s :p ?o.
+        optional { ?o :q ?z }.
       }

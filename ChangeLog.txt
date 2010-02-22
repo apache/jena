@@ -3,6 +3,10 @@ ChangeLog for TDB
 
 ==== 0.8.5
 
++ Partial support for TriG and NQuads input (no loading messages, not fully optimized)
+  tdbloader loads Trig and NQuads
+  tdbdump output NQuads (N-Triples, if only the default graph contains any triples) 
+
 + Dynamic datasets : use the dataset description in a query (FROM/FROM NAMED) to 
   restrict the behaviour of the query execution to just those graphs.
   

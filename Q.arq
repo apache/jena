@@ -1,4 +1,8 @@
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
 PREFIX : <http://example/>
-SELECT (count(*) AS ?c)
-{ ?s ?p ?o 
-}
+
+SELECT *
+WHERE { 
+   LET(?x := :xyz)
+   OPTIONAL { ?x1 :q ?z }.
+   }

@@ -1,7 +1,5 @@
-<x> <p> "123"^^<http://www.w3.org/2001/XMLSchema#int> .
-
-
-<x> <p> "123"^^<http://www.w3.org/2001/XMLSchema#int> <http://example/graph2> .
-<http://example/x> <http://example/p> "foo" <http://example/graph3> .
-<http://example/x> <http://example/p> "foo"@en .
-<http://example/x> <http://example/p> "foo"@en-uk <http://example/graph3> .
+<http://example/x> <http://example/p> <http://example/z> .
+<http://example/x> <http://example/p> "123" .
+<http://example/z> <http://example/q> <http://example/r> .
+<http://example/x1> <http://example/p> <http://example/z1> .
+<http://example/x> <http://example/p> "456" <http://example/graph1> .
