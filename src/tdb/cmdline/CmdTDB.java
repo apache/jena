@@ -25,9 +25,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public abstract class CmdTDB extends CmdARQ
 {
     private static final ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
+    protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
+
     protected String graphName = null ;
-    
-    protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
     
     protected CmdTDB(String[] argv)
     {

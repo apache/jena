@@ -62,6 +62,10 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        tdb.tdbdump.main() ; System.exit(0) ;
+        
+        DevCmds.tdbquery("--query=Q.arq") ;
+        
         //tdb.trig.main("D.trig") ; System.exit(0) ;
         
         fastParse() ; System.exit(0) ;

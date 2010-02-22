@@ -8,6 +8,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.io.FileOutputStream ;
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.Date ;
 import java.util.HashMap ;
@@ -16,14 +17,18 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.Semaphore ;
 
+import atlas.io.IO ;
 import atlas.lib.ArrayUtils ;
+import atlas.lib.InternalErrorException ;
 import atlas.lib.MapUtils ;
 import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemWriter ;
 import com.hp.hpl.jena.sparql.util.ALog ;
@@ -34,8 +39,10 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase ;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.sys.Names ;
@@ -65,13 +72,18 @@ public class BulkLoader
     
     private Item statsItem = null ;
     private NodeTupleTable nodeTupleTable ; 
-
+    
+    // ---- Load graph
+    /** @deprecated Use {@link TDBLoader} */
+    @Deprecated
     public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
     {
         BulkLoader loader = new BulkLoader(graph, showProgress) ;
         loader.load(urls) ;
     }
     
+    /** @deprecated Use {@link TDBLoader} */
+    @Deprecated
     public static void load(GraphTDB graph, String url, boolean showProgress)
     {
         List<String> list = new ArrayList<String>() ;
@@ -80,6 +92,29 @@ public class BulkLoader
         loader.load(list) ;
     }
     
+    // --------
+    
+    /** @deprecated Use {@link TDBLoader} */
+    @Deprecated
+    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
+    {
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        long count = 0 ;
+        
+        for ( String s : urls )
+        {
+            if ( showProgress ) 
+                System.out.printf("Load: %s\n", s) ;
+            count += load(model, s, showProgress) ;
+        }
+
+        //long time = timer.endTimer() ;
+        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
+        model.close();
+    }
+    
+
     public BulkLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
@@ -92,6 +127,7 @@ public class BulkLoader
         // Bulk loading restricted to triple indexes
         // Assumes that the NodeTupleTable is 3-way at the moment
         this.graph = graph ;
+        
         this.nodeTupleTable = graph.getNodeTupleTable() ;
         
         if ( nodeTupleTable.getTupleTable().getTupleLen() != 3 )
@@ -101,10 +137,44 @@ public class BulkLoader
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
         this.generateStats = generateStats ;
+        
+        if ( graph.getGraphNode() != null )
+            // Can only do smarts for the defaul graph currently.
+            this.doIncremental = true ; 
     }
     
+    // --------
+    
+//    /** Load a graph - with manipulating indexes first */
+//    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
+//    {
+//        Timer timer = new Timer() ;
+//        timer.startTimer() ;
+//        long count = 0 ;
+//        
+//        for ( String s : urls )
+//        {
+//            if ( showProgress ) 
+//                System.out.printf("Load: %s\n", s) ;
+//            count += loadOne(model, s, showProgress) ;
+//        }
+//    
+//        //long time = timer.endTimer() ;
+//        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
+//        model.close();
+//    }
+
     public void load(List<String> urls)
     {
+        // This is the model-only loader
+        for ( String url : urls )
+        {
+            Lang lang = Lang.guess(url) ;
+            if ( lang != null && lang.isQuads() )
+                throw new InternalErrorException("Unexpected: quads format: "+url) ;
+        }
+
+        
         Model model = ModelFactory.createModelForGraph(graph) ;
         
         boolean rebuildIndexes = ! doIncremental ;
@@ -137,7 +207,7 @@ public class BulkLoader
         {
             statsStart(model) ;
             now("-- Start data phase") ;
-            count += loadOne(model, url, showProgress) ;
+            count += load(model, url, showProgress) ;
             now("-- Finish data phase") ;
             statsFinish(model) ;
         }
@@ -192,15 +262,66 @@ public class BulkLoader
             println() ;
             printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
         }
-        
     }
 
     
+    /** Load a model, with monitoring */ 
+    public static long load(Model model, String url, boolean showProgress)
+    {
+        // TODO Switch to better event system
+        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
+        if ( showProgress )
+            model.getGraph().getEventManager().register(monitor) ;
+        
+        if ( ! url.equals("-") )
+            FileManager.get().readModel(model, url) ;
+        else
+            // MUST BE N-TRIPLES
+            model.read(System.in, null, "N-TRIPLES") ;
+        
+        if ( showProgress )
+            model.getGraph().getEventManager().unregister(monitor) ;
+        return showProgress ? monitor.getAddCount() : -1 ;
+    }
+    
+    /** Load a dataset, with monitoring */ 
+    public static long load(Dataset dataset, String url, boolean showProgress)
+    {
+        // Bad name.
+//        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
+//        if ( showProgress )
+//            model.getGraph().getEventManager().register(monitor) ;
+        
+        
+        Lang lang ;
+        InputStream input ;
+        String baseURI = null ;
+        if ( url.equals("-") )
+        {
+            // MUST BE N-Quads
+            lang = Lang.NQUADS ;
+            input = System.in ;
+        }
+        else
+        {
+            lang = Lang.guess(url) ;
+            input = IO.openFile(url) ;
+            baseURI = url ;
+        }
+            
+        DatasetLib.read(input, dataset.asDatasetGraph(), lang, baseURI) ;  
+//        if ( showProgress )
+//            model.getGraph().getEventManager().unregister(monitor) ;
+//        return showProgress ? monitor.getAddCount() : -1 ;
+        return -1 ;
+    }
+
+
     // --------
     // TODO Unique triples only.
-    GraphStatsCollector statsMonitor = new GraphStatsCollector() ;
+    private GraphStatsCollector statsMonitor = new GraphStatsCollector() ;
         
-    static class GraphStatsCollector extends GraphListenerBase
+    private static class GraphStatsCollector extends GraphListenerBase
     {
         Map<Node, Integer> predicates = new HashMap<Node, Integer>() ;
         long count = 0 ;
@@ -238,22 +359,6 @@ public class BulkLoader
     /** Tick point for messages during secodnary index creation */
     public static long IndexTickPoint = 100000 ;
     
-    private static long loadOne(Model model, String s, boolean showProgress)
-    {
-        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
-        if ( showProgress )
-            model.getGraph().getEventManager().register(monitor) ;
-        if ( ! s.equals("-") )
-            FileManager.get().readModel(model, s) ;
-        else
-            // MUST BE N-TRIPLES
-            model.read(System.in, null, "N-TRIPLES") ;
-        
-        if ( showProgress )
-            model.getGraph().getEventManager().unregister(monitor) ;
-        return showProgress ? monitor.getAddCount() : -1 ;
-    }
-
     private <T> T[] copy(T[] array)
     {
         @SuppressWarnings("unchecked")
@@ -474,27 +579,6 @@ public class BulkLoader
             System.out.print(" : ") ;
         }
         System.out.println(StringUtils.str(new Date())) ;
-    }
-    
-    
-    // --------
-    
-    public static void loadSimple(Model model, List<String> urls, boolean showProgress)
-    {
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
-        long count = 0 ;
-        
-        for ( String s : urls )
-        {
-            if ( showProgress ) 
-                System.out.printf("Load: %s\n", s) ;
-            count += loadOne(model, s, showProgress) ;
-        }
-
-        //long time = timer.endTimer() ;
-        //System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, (triples/time)) ;
-        model.close();
     }
     
     

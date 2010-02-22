@@ -12,11 +12,14 @@ import java.util.Map;
 
 import atlas.iterator.Iter;
 
-/** Map with parent sharing. */
+/**
+ * A map with parent sharing. New entries go into a map but lookup is passed to
+ * the parent map if nothing is found at this level.
+ */
 public class Map2<K, V> implements Iterable<K>
 {
-    private Map<K, V> map1 ; 
-    private Map2<K, V> map2 ;
+    private final Map<K, V> map1 ; 
+    private final Map2<K, V> map2 ;
 
     public Map2(Map<K,V> map1, Map2<K,V> map2)
     {

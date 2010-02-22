@@ -19,6 +19,7 @@ import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.IRIRelativize ;
 import com.hp.hpl.jena.riot.PrefixMap ;
 import com.hp.hpl.jena.riot.Prologue ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 /** Utilites for formatter output (N-Triples and Turtle formats) */
@@ -30,26 +31,45 @@ public class OutputLangUtils
     
     private static boolean asciiOnly = true ;
 
-    static public void output(Writer out, Triple triple, Prologue prologue)
+    static public void output(Writer out, Quad quad, Prologue prologue)
     {
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
-        
-//        if ( ! ( s.isURI() || s.isBlank() ) )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
-//        if ( ! p.isURI() )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
-//        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
-      
+        Node s = quad.getSubject() ;
+        Node p = quad.getPredicate() ;
+        Node o = quad.getObject() ;
+        Node g = quad.getObject() ;
+        output(out, s, p, o, g, prologue) ;
+    }
+    
+    static public void output(Writer out, Node s, Node p, Node o, Node g, Prologue prologue)
+    {
         output(out, s, prologue) ;
         print(out," ") ;
         output(out, p, prologue) ;
         print(out," ") ;
         output(out, o, prologue) ;
+        if ( g != null )
+        {
+            print(out," ") ;
+            output(out, g, prologue) ;
+        }
         print(out," .") ;
         println(out) ;
+    }
+    
+    static public void output(Writer out, Triple triple, Node graphNode, Prologue prologue)
+    {
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        output(out, s, p, o, graphNode, prologue) ;
+    }
+    
+    static public void output(Writer out, Triple triple, Prologue prologue)
+    {
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+        output(out, s, p, o, null, prologue) ;
     }
     
     static public void output(Writer out, Node node, Prologue prologue)

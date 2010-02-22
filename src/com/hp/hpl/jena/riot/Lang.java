@@ -30,6 +30,14 @@ public enum Lang
     
     public static final String langNQuads       = "N-QUADS" ;
     public static final String langTrig         = "TRIG" ;
+
+    public static final String[] extRDFXML      = { "rdf", "owl", "xml" } ;
+    public static final String[] extNTriples    = { "nt" } ;
+    public static final String[] extNTurtle     = { "ttl" } ;
+    public static final String[] extN3          = { "n3" } ;
+    public static final String[] extNQuads      = { "nq" } ;
+    public static final String[] extTrig        = { "trig" } ;
+
     
     private Lang(String name, boolean isTriples)
     {
@@ -46,6 +54,9 @@ public enum Lang
     @Override
     public String toString() { return "lang:"+name ; }
     
+    /** Translate a name into a Lang
+     * Throws RiotException is the name is not recognized.
+     */
     public static Lang get(String name)
     {
         if ( name.equalsIgnoreCase(langXML) )                   return RDFXML ;
@@ -56,6 +67,33 @@ public enum Lang
         if ( name.equalsIgnoreCase(langNQuads) )                return NQUADS ;
         if ( name.equalsIgnoreCase(langTrig) )                  return TRIG ;
         throw new RiotException("No such language: "+name) ;
+    }
+    
+    /** Guess the filetype, based on filename, or URL, extenstion.
+     * Returns null if there isn't a guess available
+     */
+    public static Lang guess(String resourceIRI)
+    {
+        String ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
+        
+        if ( isOneOf(ext, extRDFXML) )      return RDFXML ;
+        if ( isOneOf(ext, extNTriples) )    return NTRIPLES ;
+        if ( isOneOf(ext, extNTurtle) )     return TURTLE ;
+        if ( isOneOf(ext, extN3) )          return N3 ;
+        if ( isOneOf(ext, extNQuads) )      return NQUADS ;
+        if ( isOneOf(ext, extTrig) )        return TRIG ;
+        return null ;
+    }
+
+
+    private static boolean isOneOf(String ext, String[] names)
+    {
+        for ( String x : names )
+        {
+            if ( ext.equals(x) )
+                return true ;
+        }
+        return false ;
     }
     
 }

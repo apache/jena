@@ -13,29 +13,39 @@ import atlas.lib.Map2;
 
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-/** Class for a Binding-like structure excep tit works on NodeIds, not on Nodes */  
+/** Class for a Binding-like structure except it works on NodeIds, not on Nodes */  
 public class BindingNodeId extends Map2<Var, NodeId>
 {
+    // This is the parent binding - which may be several steps up the chain. 
+    // This just carried around for later use when we go BindingNodeId back to Binding.
+    private final Binding parentBinding ;
+
     // Possible optimization: there are at most 3 possible values so HashMap is overkill.
     // Use a chain of small objects.
     
-    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2)
+    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2, Binding parentBinding)
     {
         super(map1, map2) ;
+        this.parentBinding = parentBinding ;
+    }
+
+    // Make from an existing BindingNodeId 
+    public BindingNodeId(BindingNodeId other)
+    {
+        this(new HashMap<Var, NodeId>(), other, other.getParentBinding()) ;
     }
     
-    public BindingNodeId(Map2<Var, NodeId> map2)
+    // Make from an existing Binding 
+    public BindingNodeId(Binding binding)
     {
-        super(new HashMap<Var, NodeId>(), map2) ;
+        this(new HashMap<Var, NodeId>(), null, binding) ;
     }
     
-    public BindingNodeId()
-    {
-        super(new HashMap<Var, NodeId>(), null) ;
-    }
+    public Binding getParentBinding()    { return parentBinding ; } 
     
     //@Override public NodeId get(Var v)    { return super.get(v) ; } 
     

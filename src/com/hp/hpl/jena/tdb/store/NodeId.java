@@ -145,6 +145,7 @@ public class NodeId
     
     // Type codes.
     // Better would be high bit 1 => encoded value.
+    // enums.
     public static final int NONE               = 0 ;
     public static final int INTEGER            = 1 ;
     public static final int DECIMAL            = 2 ;
@@ -236,15 +237,17 @@ public class NodeId
     /** Decode an inline nodeID, return null if not an inline node */
     public static Node extract(NodeId nodeId)
     {
-        //if ( ! enableInlineLiterals ) return null ; 
+        if ( nodeId == NodeId.NodeDoesNotExist )
+            return null ;
         
         long v = nodeId.value ;
         int type = nodeId.type() ;
 
         switch (type)
         {
-            case NONE:
-                return null ;
+            case NONE:      return null ;
+            case SPECIAL:   return null ;
+                
             case INTEGER:
             {
                 long val = IntegerNode.unpack(v) ;

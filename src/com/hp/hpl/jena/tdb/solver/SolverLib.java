@@ -106,6 +106,8 @@ public class SolverLib
         
         // Convert from a QueryIterator (Bindings of Var/Node) to BindingNodeId
         NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
+        
+        
         Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
@@ -129,7 +131,12 @@ public class SolverLib
                 System.out.println("No results") ;
         }
         
+        // XXX
+        
+        // Need to make sure the bindings here point to parent.
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
+        
+        // "input" = wil be closed by QueryIterTDB but is otherwise unused.
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
     
@@ -158,7 +165,7 @@ public class SolverLib
     public static Binding convToBinding(NodeTable nodeTable, BindingNodeId bindingNodeIds)
     {
         if ( true )
-            return new BindingTDB(null, bindingNodeIds, nodeTable) ;
+            return new BindingTDB(bindingNodeIds, nodeTable) ;
         else
         {
             // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
@@ -184,7 +191,8 @@ public class SolverLib
                 if ( binding instanceof BindingTDB )
                     return ((BindingTDB)binding).getBindingId() ;
                 
-                BindingNodeId b = new BindingNodeId() ;
+                BindingNodeId b = new BindingNodeId(binding) ;
+                // and copy over, getting NodeIds.
                 Iterator<Var> vars = binding.vars() ;
     
                 for ( ; vars.hasNext() ; )
@@ -198,7 +206,8 @@ public class SolverLib
                     
                     // Rely on the node table cache. 
                     NodeId id = nodeTable.getNodeIdForNode(n) ;
-                    b.put(v, id) ;
+                    if ( ! NodeId.doesNotExist(id) )
+                        b.put(v, id) ;
                 }
                 return b ;
             }

@@ -16,7 +16,10 @@ import atlas.logging.Log;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.tdb.store.BulkLoader;
+import com.hp.hpl.jena.riot.Lang ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
+import com.hp.hpl.jena.tdb.lib.DatasetLib ;
+import com.hp.hpl.jena.tdb.store.BulkLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class tdbloader extends CmdTDB
@@ -82,17 +85,46 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        if ( graphName == null )
+        boolean allTriples = true ;
+        for ( String url : urls )
+        {
+            Lang lang = Lang.guess(url) ;
+            if ( lang != null && lang.isQuads() )
+            {
+                allTriples = false ;
+                break ; 
+            }
+        }
+        
+        if ( allTriples && graphName == null )
         {
             Graph graph = getGraph() ;
             BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
             loader.load(urls) ;
+            return ;
         }
-        else
+        
+        if ( graphName == null )
         {
-            Model model = getModel() ;
-            BulkLoader.loadSimple(model, urls, timing) ;
+            // Quads
+            for ( String url : urls )
+            {
+                Lang lang = Lang.guess(url) ;
+                DatasetLib.read(url, getDatasetGraph(), lang, url) ;
+            }
+            return ;
         }
+
+        // Explicitly named graph
+        Model model = getModel() ;
+        for ( String url : urls )
+        {
+            Lang lang = Lang.guess(url) ;
+            if ( lang != null && ! lang.isTriples() )
+                cmdError("Can only load triples into a named model: "+url) ;
+        }
+
+        TDBLoader.loadSimple(model, urls, timing) ;
     }
 }
 

@@ -9,6 +9,12 @@ package dev;
 
 public class DevTDB
 {
+    // BUG:
+    // (?lit ?score ) apf:textMatch '+text'
+    // ?doc ?p ?lit .
+    // i.e. nodes not in the store at second TP.
+    // Call to BindingTDB ignore parent.
+    
     // == 0.8.5 / ARQ 2.8.3
     
     // RIOT

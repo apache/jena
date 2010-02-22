@@ -101,7 +101,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
             iterMatches = Iter.distinct(iterMatches) ;  // WRT only three varying slots.
         }
         
-        // Map to BindingNodeId
+        // Map Tuple<NodeId> to BindingNodeId
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
         {
             //@Override
