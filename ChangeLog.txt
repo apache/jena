@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.3
 
++ Add built-in function IRI(string) to make an IRI.
 + Add "negative property classed"
   !rdf:type matches anything except rdf:type
   !(rdf:type|rdfs:label) matches some thing that isn't rdf:type or rdfs:label

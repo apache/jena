@@ -138,11 +138,17 @@ public class WriterPath
         {
             out.print("(") ;
             out.print(Tags.pathNotOneOf) ;
-            for ( P_Path0 p : pathNotOneOf.getNodes() )
-            {
-                out.print(" ") ;
-                output(p) ;
-            }
+          for ( Node p : pathNotOneOf.getExcludedNodes() )
+          {
+              out.print(" ") ;
+              output(p) ;
+          }
+
+//            for ( P_Path0 p : pathNotOneOf.getNodes() )
+//            {
+//                out.print(" ") ;
+//                output(p) ;
+//            }
             out.print(")") ;
         }
 

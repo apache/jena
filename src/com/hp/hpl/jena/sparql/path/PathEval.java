@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.LinkedHashSet ;
@@ -24,7 +23,6 @@ import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.lib.iterator.Filter ;
 import com.hp.hpl.jena.sparql.lib.iterator.Iter ;
 import com.hp.hpl.jena.sparql.lib.iterator.Transform ;
@@ -138,10 +136,11 @@ public class PathEval
         //@Override
         public void visit(P_NegPropClass pathNotOneOf)
         {
-            List<P_Path0> props = pathNotOneOf.getNodes()  ;
+            List<Node> props = pathNotOneOf.getExcludedNodes()  ;
             if ( props.size() == 0 )
                 throw new ARQException("Bad path element: Negative property class found with no elements") ;
-            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
+            //Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
+            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getExcludedNodes()) ;
             fill(nodes) ;
         }
         
@@ -274,15 +273,10 @@ public class PathEval
             }
         }
         
-        private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
+        private final Iterator<Node> doOneExclude(List<Node> excludedNodes)
         {
-//            if ( forwardMode )
-//            { }
-//            else
-//            {}
-            
-            // FORWARD MODE
-            Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
+            // Forward mode only
+            Iter<Triple> iter1 = forwardLinks(node, excludedNodes) ;
 
             if ( false )
             {
@@ -293,23 +287,45 @@ public class PathEval
                 iter1 = Iter.iter(x) ;
             }
 
-            Iter<Node> r1 = iter1.map(selectObject) ; 
-            
-            if ( bwdNodes.size() == 0 )
-                return r1 ;
-            
-            if ( true )
-            {
-                if ( bwdNodes.size() > 0 )
-                    throw new ARQNotImplemented() ;
-            }
-            
-            Iter<Triple> iter2 = backwardLinks(node, bwdNodes) ;
-            Iter<Node> r2 = iter1.map(selectSubject) ;
-            
-            return Iter.concat(r1, r2) ;
-            
+            Iter<Node> r1 = iter1.map(selectObject) ;
+            return r1 ;
         }
+        
+//        private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
+//        {
+////            if ( forwardMode )
+////            { }
+////            else
+////            {}
+//            
+//            // FORWARD MODE
+//            Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
+//
+//            if ( false )
+//            {
+//                System.out.println("Node: "+node) ;
+//                List<Triple> x = iter1.toList() ;
+//                for ( Triple _t : x )
+//                    System.out.println("    "+_t) ;
+//                iter1 = Iter.iter(x) ;
+//            }
+//
+//            Iter<Node> r1 = iter1.map(selectObject) ; 
+//            
+//            if ( bwdNodes.size() == 0 )
+//                return r1 ;
+//            
+//            if ( true )
+//            {
+//                if ( bwdNodes.size() > 0 )
+//                    throw new ARQNotImplemented() ;
+//            }
+//            
+//            Iter<Triple> iter2 = backwardLinks(node, bwdNodes) ;
+//            Iter<Node> r2 = iter1.map(selectSubject) ;
+//            
+//            return Iter.concat(r1, r2) ;
+//        }
     
         private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
         {

@@ -85,6 +85,10 @@ TOKENS
 | <IN: "in">
 | <NOT_IN: "not" (<WS>)* "in">
 | <IF: "if">
+| <BNODE: "bnode">
+| <IRI: "iri">
+| <URI: "uri">
+| <CAST: "cast">
 | <STR: "str">
 | <DTYPE: "datatype">
 | <LANG: "lang">
@@ -319,7 +323,7 @@ NON-TERMINALS
 	PathMod	:=	( <STAR> | <QMARK> | <PLUS> | <LBRACE> ( Integer ( <COMMA> ( <RBRACE> | Integer <RBRACE> ) | <RBRACE> ) ) )
 	PathPrimary	:=	( IRIref | <KW_A> | <BANG> PathNegatedPropertyClass | <LPAREN> Path <RPAREN> )
 	PathNegatedPropertyClass	:=	( PathOneInPropertyClass | <LPAREN> ( PathOneInPropertyClass ( <VBAR> PathOneInPropertyClass )* )? <RPAREN> )
-	PathOneInPropertyClass	:=	( IRIref | <CARAT> IRIref )
+	PathOneInPropertyClass	:=	( IRIref | <KW_A> )
 	Integer	:=	<INTEGER>
 // -------- Triple expansions
 
@@ -363,6 +367,10 @@ NON-TERMINALS
 		|	<LANGMATCHES> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<DTYPE> <LPAREN> Expression <RPAREN>
 		|	<BOUND> <LPAREN> Var <RPAREN>
+		|	<IRI> <LPAREN> Expression <RPAREN>
+		|	<URI> <LPAREN> Expression <RPAREN>
+		|	<BNODE> <LPAREN> ( Expression )? <RPAREN>
+		|	<CAST> <LPAREN> Expression ( <COMMA> Expression ) <RPAREN>
 		|	<COALESCE> ArgList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
 		|	<SAME_TERM> <LPAREN> Expression <COMMA> Expression <RPAREN>

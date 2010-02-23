@@ -7,18 +7,24 @@ package dev;
 
 public class DevARQ
 {
-    // ARQ 2.8.3
+    // ==== ARQ 2.8.3
     
-    // DatasetGraphMem
+    // DatasetGraphMem (from TDB DatasetLib)
     // DatasetGraph - include PUT/DELETE style operations
-    // Tidy up:
-    // DatasetGraphMem() to sparql.core
-    // DataSource/DataSourceGraph == general purpose model/graph bundler 
+    
+    // Down play DataSource[Graph]
+    // Contexts for datasets.
+    
+    // ==== Later
+    // Implement IRI(str), BNODE(str?) IN, NOT IN, 
+    // Tests of same
     
     // ----------
     
     //LARQ index building command line tool
     
+    // E_NewIRI
+    // E_NewBNode.
     // Optimize E_OneOf, E_NotOneOf
     // Tests
 

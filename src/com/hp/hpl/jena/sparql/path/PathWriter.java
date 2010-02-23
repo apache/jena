@@ -97,7 +97,7 @@ public class PathWriter
         //@Override
         public void visit(P_NegPropClass pathNotOneOf)
         {
-            List<P_Path0> props = pathNotOneOf.getNodes()  ;
+            List<Node> props = pathNotOneOf.getExcludedNodes() ;
             if ( props.size() == 0 )
                 throw new ARQException("Bad path element: NotOneOf found with no elements") ;
             out.print("!") ;
@@ -107,7 +107,7 @@ public class PathWriter
             {
                 out.print("(") ;
                 boolean first = true ;
-                for (P_Path0 p : props)
+                for (Node p : props)
                 {
                     if (!first) out.print("|") ;
                     first = false ;
@@ -115,6 +115,25 @@ public class PathWriter
                 }
                 out.print(")") ;
             }
+
+//            List<P_Path0> props = pathNotOneOf.getNodes()  ;
+//            if ( props.size() == 0 )
+//                throw new ARQException("Bad path element: NotOneOf found with no elements") ;
+//            out.print("!") ;
+//            if ( props.size() == 1 )
+//                output(props.get(0)) ;
+//            else
+//            {
+//                out.print("(") ;
+//                boolean first = true ;
+//                for (P_Path0 p : props)
+//                {
+//                    if (!first) out.print("|") ;
+//                    first = false ;
+//                    output(p) ;
+//                }
+//                out.print(")") ;
+//            }
         }
 
         

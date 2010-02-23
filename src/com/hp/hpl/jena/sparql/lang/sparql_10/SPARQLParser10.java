@@ -1716,7 +1716,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
   final public Expr BuiltInCall() throws ParseException {
-                       Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ; ExprList a ;
+                       Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+                       Node gn ; Token t ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STR:
       jj_consume_token(STR);
@@ -1840,8 +1841,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
       jj_la1[68] = jj_gen;
       ;
     }
-      if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
-      {if (true) return new E_Function(iri, a) ;}
+    if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
+    {if (true) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
   }
 

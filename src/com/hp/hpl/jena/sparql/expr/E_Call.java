@@ -1,53 +1,41 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.expr;
 
-import org.apache.lucene.index.IndexReader ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.query.larq.IndexLARQ ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
-
-public class AssemblerLARQ extends AssemblerBase implements Assembler
+public class E_Call extends ExprFunctionN
 {
-    /** Vocabulary
-     *     ja:luceneIndex ....
-     */
+    private static final String symbol = "CALL" ;
+
+    public E_Call(ExprList args)
+    {
+        this(symbol, args) ;
+    }
+    
+    protected E_Call(String sym, ExprList args)
+    {
+        super(sym, args) ;
+    }
+
+    @Override
+    public NodeValue eval(Binding binding, FunctionEnv env)
+    {
+        throw new ARQNotImplemented() ;
+    }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
-    {
-        try
-        {
-            if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
-                throw new AssemblerException(root, "Required: exactly one index property" ) ;
-
-            String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            IndexReader indexReader = IndexReader.open(index) ;
-            IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
-            return indexLARQ ;
-
-        } catch (Exception ex)
-        {
-            throw new ARQException("Failed to assemble Lucene index", ex) ;
-        }
-    }
+    protected Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
 }
 
-
-
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

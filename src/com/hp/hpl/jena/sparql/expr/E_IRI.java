@@ -1,53 +1,52 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.expr;
 
-import org.apache.lucene.index.IndexReader ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.query.larq.IndexLARQ ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
-
-public class AssemblerLARQ extends AssemblerBase implements Assembler
+public class E_IRI extends ExprFunction1
 {
-    /** Vocabulary
-     *     ja:luceneIndex ....
-     */
+    private static final String symbol = "IRI" ;
+    private static final IRIFactory iriFactory = IRIFactory.iriImplementation() ;
+
+    public E_IRI(Expr expr)
+    {
+        super(expr, symbol) ;
+    }
+
+    public E_IRI(Expr expr, String altSymbol)
+    {
+        super(expr, altSymbol) ;
+    }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
-    {
-        try
+    public NodeValue eval(NodeValue v)
+    { 
+        if ( v.getNode().isURI() )
+            return v ;
+        if ( v.isString() )
         {
-            if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
-                throw new AssemblerException(root, "Required: exactly one index property" ) ;
-
-            String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            IndexReader indexReader = IndexReader.open(index) ;
-            IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
-            return indexLARQ ;
-
-        } catch (Exception ex)
-        {
-            throw new ARQException("Failed to assemble Lucene index", ex) ;
+            // Level of checking?
+            IRI iri = iriFactory.create(v.getString()) ;
+            if ( ! iri.isAbsolute() )
+                throw new ExprEvalException("Relative IRI string: "+v.getString()) ;
+            return NodeValue.makeNode(Node.createURI(iri.toString())) ;
         }
+        throw new ExprEvalException("Can't make an IRI from "+v) ;
     }
+    
+    @Override
+    public Expr copy(Expr expr) { return new E_IRI(expr) ; } 
 }
 
-
-
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

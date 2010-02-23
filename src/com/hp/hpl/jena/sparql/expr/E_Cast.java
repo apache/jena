@@ -1,53 +1,40 @@
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.expr;
 
-import org.apache.lucene.index.IndexReader ;
 
-import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.query.larq.IndexLARQ ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
-
-public class AssemblerLARQ extends AssemblerBase implements Assembler
+public class E_Cast extends E_Call
 {
-    /** Vocabulary
-     *     ja:luceneIndex ....
-     */
+    private static final String symbol = "CAST" ;
+
+    public E_Cast(Expr expr1, Expr expr2)
+    {
+        this(makeArgList(expr1, expr2)) ;
+    }
+    
+    protected E_Cast(ExprList args)
+    {
+        super(symbol, args) ;
+    }
+
+    private static ExprList makeArgList(Expr expr1, Expr expr2)
+    {
+        ExprList a = new ExprList() ;
+        if ( expr1 != null ) a.add(expr1) ; 
+        if ( expr2 != null ) a.add(expr2) ; 
+        return a ;
+    }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
-    {
-        try
-        {
-            if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
-                throw new AssemblerException(root, "Required: exactly one index property" ) ;
-
-            String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-            IndexReader indexReader = IndexReader.open(index) ;
-            IndexLARQ indexLARQ = new IndexLARQ(indexReader) ;
-            return indexLARQ ;
-
-        } catch (Exception ex)
-        {
-            throw new ARQException("Failed to assemble Lucene index", ex) ;
-        }
-    }
+    protected Expr copy(ExprList newArgs)       { return new E_Cast(newArgs) ; }
 }
 
-
-
 /*
- * (c) Copyright 2010 Talis Information Ltd
- * All rights reserved.
+ * (c) 2010 Talis Information Ltd
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
