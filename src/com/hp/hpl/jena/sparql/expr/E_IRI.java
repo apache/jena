@@ -27,7 +27,7 @@ public class E_IRI extends ExprFunction1
     @Override
     public NodeValue eval(NodeValue v)
     { 
-        if ( v.asNode().isURI() )
+        if ( v.isIRI() )
             return v ;
         if ( v.isString() )
         {

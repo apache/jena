@@ -790,6 +790,7 @@ public abstract class NodeValue extends ExprNode
     }
     protected abstract Node makeNode() ;
     
+    /** getNode - return the node form - may be null (use .asNode() to force to a node) */
     public Node getNode() { return node ; }
     
     public boolean hasNode() { return node != null ; }
