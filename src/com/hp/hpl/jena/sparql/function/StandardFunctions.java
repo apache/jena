@@ -52,6 +52,9 @@ public class StandardFunctions
 
         addCast(registry, XSDDatatype.XSDanyURI) ;
         
+        addCast(registry, XSDDatatype.XSDgYear) ;
+        addCast(registry, XSDDatatype.XSDgYear) ;
+        
         //TODO op:numeric-greater-than etc.
         
         add(registry, xfn+"boolean", BEV.class) ;

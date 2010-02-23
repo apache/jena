@@ -1,20 +1,8 @@
-prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
-prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-
-select ?label ?lat ?long where {
-    service <http://dbpedia.org/sparql> {
-     {
-        ?center rdfs:label "<SOME LOCATION>"@en .
-        ?center geo:lat ?clat .
-        ?center geo:long ?clong .
-
-        ?loc rdfs:label ?label .
-        ?loc geo:lat ?lat .
-        ?loc geo:long ?long .
-     }
-        FILTER (?lat < ?clat + 0.1) .
-        FILTER (?lat > ?clat - 0.1) .
-        FILTER (?long < ?clong + 0.1) .
-        FILTER (?long > ?clong - 0.1)
-    }
-}
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+        SELECT * 
+        WHERE { 
+          ?x a foaf:Person . 
+          ?x foaf:name ?name . 
+        } 
+LIMIT 5

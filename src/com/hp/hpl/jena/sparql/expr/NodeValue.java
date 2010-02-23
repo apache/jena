@@ -365,6 +365,14 @@ public abstract class NodeValue extends ExprNode
 
     @Override
     public NodeValue getConstant()     { return this ; }
+
+    //@Override
+    public boolean isIRI()
+    {
+        forceToNode() ;
+        return node.isURI() ;
+    }
+
     
     // ----------------------------------------------------------------
     // ---- sameValueAs

@@ -67,6 +67,8 @@ TOKENS
 | <FILTER: "filter">
 | <BOUND: "bound">
 | <STR: "str">
+| <STRLANG: "strlang">
+| <STRDT: "strdt">
 | <DTYPE: "datatype">
 | <LANG: "lang">
 | <LANGMATCHES: "langmatches">

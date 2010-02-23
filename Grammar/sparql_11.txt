@@ -90,6 +90,8 @@ TOKENS
 | <URI: "uri">
 | <CAST: "cast">
 | <STR: "str">
+| <STRLANG: "strlang">
+| <STRDT: "strdt">
 | <DTYPE: "datatype">
 | <LANG: "lang">
 | <LANGMATCHES: "langmatches">
@@ -364,6 +366,8 @@ NON-TERMINALS
 	BrackettedExpression	:=	<LPAREN> Expression <RPAREN>
 	BuiltInCall	:=	<STR> <LPAREN> Expression <RPAREN>
 		|	<LANG> <LPAREN> Expression <RPAREN>
+		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRDT> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<LANGMATCHES> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<DTYPE> <LPAREN> Expression <RPAREN>
 		|	<BOUND> <LPAREN> Var <RPAREN>
