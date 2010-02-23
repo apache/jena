@@ -7,6 +7,8 @@ ChangeLog for TDB
   tdbloader loads Trig and NQuads
   tdbdump output NQuads (N-Triples, if only the default graph contains any triples) 
 
++ Bug fixes for peoprty functions and TDB.  apf:textMatch now works properly 
+
 + Dynamic datasets : use the dataset description in a query (FROM/FROM NAMED) to 
   restrict the behaviour of the query execution to just those graphs.
   

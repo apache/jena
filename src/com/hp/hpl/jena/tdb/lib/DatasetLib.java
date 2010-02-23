@@ -119,25 +119,40 @@ public class DatasetLib
     /** Work in progress */
     public static Sink<Quad> datasetSink(DatasetGraph dataset)
     {
-        return new QuadsToDataset(dataset) ;
+        return new SinkQuadsToDataset(dataset) ;
     }
     
     // A DatasetGraph that creates memory graphs on mention */
     public static DatasetGraph createDatasetGraphMem()
     {
-        return new DatasetGraphMem() ;
+        return new DatasetGraphMem(memGraphMaker) ;
     }
     
-    /** Implementation of a DatasetGraph weher all graphs "exist".
-     * New inmemory graphs are created when a getGraph call is 
+    private interface GraphMaker { Graph create() ; }
+    
+    private static GraphMaker memGraphMaker = new GraphMaker(){
+        public Graph create()
+        {
+            return Factory.createDefaultGraph() ;
+        }
+    } ;
+    
+    /** Implementation of a DatasetGraph where all graphs "exist".
+     * New in-memory graphs are created when a getGraph call is 
      * made to a graph that has not been allocated.
-     *  
      */
     private static class DatasetGraphMem implements DatasetGraph
     {
-        Graph defaultGraph = newGraph() ;
-        Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
-        
+        private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
+        private Graph defaultGraph ;
+        private GraphMaker graphMaker ;
+
+        protected DatasetGraphMem(GraphMaker graphMaker)
+        {
+            this.graphMaker = graphMaker ;
+            defaultGraph = graphMaker.create() ;
+        }
+
         public boolean containsGraph(Node graphNode)
         {
             return true ;
@@ -187,13 +202,13 @@ public class DatasetLib
     
     // Not sure yet where this wil go.
     /** @See SinkToGraphTriples */ 
-    private static class QuadsToDataset implements Sink<Quad>
+    private static class SinkQuadsToDataset implements Sink<Quad>
     {
         private final DatasetGraph dataset ;
         private Node graphNode = null ;
         private Graph graph = null ;
 
-        QuadsToDataset(DatasetGraph dataset)
+        SinkQuadsToDataset(DatasetGraph dataset)
         {
             this.dataset = dataset ;
         }
