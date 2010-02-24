@@ -24,7 +24,7 @@ public class E_StrDatatype extends ExprFunction2
         if ( ! v2.isIRI() ) throw new ExprEvalException("Not an IRI (arg 2): "+v2) ;
         
         String lex = v1.asString() ;
-        Node dt = v2.getNode() ;
+        Node dt = v2.asNode() ;
         // Check?
         
         Node n = Node.createLiteral(lex, null, Node.getType(dt.getURI())) ;
