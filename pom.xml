@@ -9,7 +9,7 @@
   <name>TDB</name>
   <version>0.8.5-SNAPSHOT</version>
 
-  <description>TDB is a storgae subsystem for Jena and ARQ</description>
+  <description>TDB is a storage subsystem for Jena and ARQ</description>
   <url>http://openjena.org/TDB</url>
 
   <organization>
