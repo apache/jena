@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 
 public class E_Cast extends ExprFunction2
 {
+    // See E_StrDatatype
     private static final String symbol = "cast" ;
 
     private E_Cast(Expr expr1, Expr expr2)

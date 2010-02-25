@@ -366,17 +366,16 @@ NON-TERMINALS
 	BrackettedExpression	:=	<LPAREN> Expression <RPAREN>
 	BuiltInCall	:=	<STR> <LPAREN> Expression <RPAREN>
 		|	<LANG> <LPAREN> Expression <RPAREN>
-		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
-		|	<STRDT> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<LANGMATCHES> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<DTYPE> <LPAREN> Expression <RPAREN>
 		|	<BOUND> <LPAREN> Var <RPAREN>
 		|	<IRI> <LPAREN> Expression <RPAREN>
 		|	<URI> <LPAREN> Expression <RPAREN>
 		|	<BNODE> <LPAREN> ( Expression )? <RPAREN>
-		|	<CAST> <LPAREN> Expression ( <COMMA> Expression ) <RPAREN>
 		|	<COALESCE> ArgList
 		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
+		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRDT> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<SAME_TERM> <LPAREN> Expression <COMMA> Expression <RPAREN>
 		|	<IS_IRI> <LPAREN> Expression <RPAREN>
 		|	<IS_URI> <LPAREN> Expression <RPAREN>
