@@ -78,8 +78,10 @@ public class RunARQ
     //@SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
-        execQuery("D.ttl", "P.arq") ;
-        arq.qparse.main("--print=op", "--print=query", "--query=IN.arq") ;
+        //execQuery("D.ttl", "P.arq") ;
+        arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(?x IN (<x>,2,3) && ?x NOT IN (7,8,9)) }") ;
+        //arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(1234 && (?x = <x> || ?z = <2> )) }") ;
+        //arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(?x IN (1,2,3) ) }") ;
         System.exit(0) ;
         
         //ARQ.getContext().setFalse(ARQ.filterPlacement) ;

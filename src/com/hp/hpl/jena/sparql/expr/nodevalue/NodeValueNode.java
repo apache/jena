@@ -23,7 +23,7 @@ public class NodeValueNode extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return getNode() ; } 
+    { return asNode() ; } 
     
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }

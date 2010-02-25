@@ -136,9 +136,13 @@ public class Optimize implements Rewrite
         
         if ( context.isTrueOrUndef(ARQ.propertyFunctions) )
             op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
+
         if ( context.isTrueOrUndef(ARQ.optFilterConjunction) )
             op = apply("Break up filter conjunctions", new TransformFilterConjunction(), op) ;
 
+        if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
+            op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+        
         // TODO Improve filter placement to go through assigns that have no effect.
         // Do this before filter placement and other sequence generating transformations.
         // or improve to place in a sequence.

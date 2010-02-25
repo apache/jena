@@ -9,6 +9,9 @@ public class DevARQ
 {
     // ==== ARQ 2.8.3
     
+    // Potential bug: discjunction in composite filter expessions. 
+    // TestFunctions
+    
     // DatasetGraphMem (from TDB DatasetLib)
     // DatasetGraph - include PUT/DELETE style operations
     

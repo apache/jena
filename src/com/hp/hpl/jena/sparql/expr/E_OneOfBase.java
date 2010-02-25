@@ -9,28 +9,54 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class E_NotOneOf extends E_OneOfBase
+public abstract class E_OneOfBase extends ExprFunctionN
 {
-    private static final String printName = "notin" ;
     private Expr expr ;
     private ExprList possibleValues ;
     
-    public E_NotOneOf(Expr expr, ExprList args)
+    protected E_OneOfBase(String name, Expr expr, ExprList args)
     {
-        super(printName, expr, args) ;
+        super(name, fixup(expr, args)) ;
+        this.expr = expr ;
+        this.possibleValues = args ;
+    }
+    
+    private static ExprList fixup(Expr expr2, ExprList args)
+    {
+        ExprList allArgs = new ExprList(expr2) ;
+        allArgs.addAll(args) ;
+        return allArgs ;
     }
 
-    @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        boolean b = super.evalNotOneOf(binding, env) ;
-        return NodeValue.booleanReturn(b) ;
-    }
+    public Expr getLHS() { return expr ; }
+    public ExprList getRHS() { return possibleValues ; }
 
-    @Override
-    protected Expr copy(ExprList newArgs)
+    protected boolean evalOneOf(Binding binding, FunctionEnv env)
     {
-        return new E_NotOneOf(expr, newArgs) ;
+        // Special form.
+        // Like ( expr = expr1 ) || ( expr = expr2 ) || ...
+
+        NodeValue nv = expr.eval(binding, env) ;
+        ExprEvalException error = null ;
+        for ( Expr inExpr : possibleValues )
+        {
+            try {
+                NodeValue maybe = inExpr.eval(binding, env) ;
+                if ( NodeValue.sameAs(nv, maybe) )
+                    return true ;
+            } catch (ExprEvalException ex)
+            {
+                error = ex ;
+            }
+        }
+        if ( error != null )
+            throw error ;
+        return false ;
+    }
+    
+    protected boolean evalNotOneOf(Binding binding, FunctionEnv env)
+    {
+        return ! evalOneOf(binding, env) ;
     }
 }
 

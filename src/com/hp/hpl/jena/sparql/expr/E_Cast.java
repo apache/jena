@@ -5,31 +5,27 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 
-public class E_Cast extends E_Call
+
+public class E_Cast extends ExprFunction2
 {
-    private static final String symbol = "CAST" ;
+    private static final String symbol = "cast" ;
 
     public E_Cast(Expr expr1, Expr expr2)
     {
-        this(makeArgList(expr1, expr2)) ;
-    }
-    
-    protected E_Cast(ExprList args)
-    {
-        super(symbol, args) ;
+        super(expr1, expr2, symbol) ;
     }
 
-    private static ExprList makeArgList(Expr expr1, Expr expr2)
-    {
-        ExprList a = new ExprList() ;
-        if ( expr1 != null ) a.add(expr1) ; 
-        if ( expr2 != null ) a.add(expr2) ; 
-        return a ;
-    }
-    
     @Override
-    protected Expr copy(ExprList newArgs)       { return new E_Cast(newArgs) ; }
+    public NodeValue eval(NodeValue x, NodeValue y)
+    {
+        throw new ARQNotImplemented() ;
+    }
+
+    @Override
+    public Expr copy(Expr arg1, Expr arg2)
+    { return new E_Cast(arg1, arg2) ; }
 }
 
 /*

@@ -26,7 +26,7 @@ public class TransformFilterDisjunction extends TransformCopy
     public TransformFilterDisjunction() {}
     
     @Override
-    public Op transform(OpFilter opFilter, Op subOp)
+    public Op transform(OpFilter opFilter, final Op subOp)
     {
         ExprList exprList = opFilter.getExprs() ;
         
@@ -46,6 +46,7 @@ public class TransformFilterDisjunction extends TransformCopy
             return super.transform(opFilter, subOp) ;
         
         ExprList exprList2 = new ExprList() ;
+        Op newOp = subOp ;
         
         for ( Expr expr : exprList )
         {
@@ -55,17 +56,23 @@ public class TransformFilterDisjunction extends TransformCopy
                 exprList2.add(expr) ;
                 continue ;
             }
-            Op op2 = expandDisjunction(expr, subOp) ;
+            Op op2 = expandDisjunction(expr, newOp) ;
             
             if ( op2 != null )
-                subOp = op2 ;
+                newOp = op2 ;
         }
 
         if ( exprList2.isEmpty() )
-            return subOp ;
+            return newOp ;
         
-        Op opNew = OpFilter.filter(exprList2, subOp) ;
-        return super.transform((OpFilter)opNew, subOp) ;
+        // Failed.  These a was one or more expressions we coudln't handle.
+        // So the full pattern is going to be executed anyway. 
+        return super.transform(opFilter, subOp) ;
+        
+//        // Put the non-disjunctions outside the disjunction and the pattern rewrite. 
+//        Op opNew = OpFilter.filter(exprList2, subOp) ;
+//        return opNew ;
+        //return super.transform((OpFilter)opNew, subOp) ;
     }
     
     private boolean isDisjunction(Expr expr)
@@ -82,11 +89,12 @@ public class TransformFilterDisjunction extends TransformCopy
 //        if ( !( expr instanceof E_LogicalOr ) )
 //            return null ;
 
-        List<Expr> exprList = explodeDisjunction(null, expr) ;
-        if ( exprList == null )
-            return null ;
+        List<Expr> exprList = explodeDisjunction(new ArrayList<Expr>(), expr) ;
         
         // All disjunctions - some can be done efficiently via assignments, some can not.
+        // Really should only do if every disjunction can turned into a assign-grounded pattern
+        // otherwise the full is done anyway. 
+        
         List<Expr> exprList2 = null ;
         Op op = null ;
         for ( Expr e : exprList )
@@ -94,10 +102,16 @@ public class TransformFilterDisjunction extends TransformCopy
             Op op2 = TransformFilterEquality.processFilter(e, subOp) ;
             if ( op2 == null )
             {
+                // Not done.
                 if ( exprList2 == null )
                     exprList2 = new ArrayList<Expr>() ;
                 exprList2.add(e) ;
-                continue ;
+                //continue ;
+                // Can't do one so don't do any as the original pattern is still executed. 
+                
+                
+                
+                
             }
 
             op = OpDisjunction.create(op, op2) ;
@@ -133,8 +147,6 @@ public class TransformFilterDisjunction extends TransformCopy
         E_LogicalOr exprOr = (E_LogicalOr)expr ;
         Expr e1 =  exprOr.getArg1() ;
         Expr e2 =  exprOr.getArg2() ;
-        if ( exprList == null )
-            exprList = new ArrayList<Expr>() ;
         explodeDisjunction(exprList, e1) ; 
         explodeDisjunction(exprList, e2) ;
         return exprList ;

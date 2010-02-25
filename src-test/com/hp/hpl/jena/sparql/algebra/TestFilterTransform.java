@@ -102,26 +102,32 @@ public class TestFilterTransform
              (String[])null) ;
     }
     
+    // There is an expression we can't do anything about.
     @Test public void disjunction05()
     {
         test("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)) (lang ?x))    (bgp ( ?s ?p ?x)) )",
              t_disjunction,
-             "(filter (lang ?x)", 
-             "  (disjunction",
-             "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-             "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-             "))") ;
+//             "(filter (lang ?x)", 
+//             "  (disjunction",
+//             "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
+//             "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
+//             "))"
+             "(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)) (lang ?x))    (bgp ( ?s ?p ?x)) )"
+        ) ;
     }
     
+    // There is an expression we can't do anything about.
     @Test public void disjunction06()
     {
         test("(filter (exprlist (lang ?x) (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
              t_disjunction,
-             "(filter (lang ?x)", 
-             "  (disjunction",
-             "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-             "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-             "))") ;
+             "(filter (exprlist (lang ?x) (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )"
+//             "(filter (lang ?x)", 
+//             "  (disjunction",
+//             "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
+//             "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
+//             "))"
+             ) ;
     }
     
     @Test public void placement01()

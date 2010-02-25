@@ -456,8 +456,8 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_LANG:
             {
                 // two literals, both with a language tag
-                Node node1 = nv1.getNode() ;
-                Node node2 = nv2.getNode() ;
+                Node node1 = nv1.asNode() ;
+                Node node2 = nv2.asNode() ;
                 return node1.getLiteralLexicalForm().equals(node2.getLiteralLexicalForm()) &&
                        node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage()) ;
             }
@@ -550,9 +550,7 @@ public abstract class NodeValue extends ExprNode
                 return x ;
         } catch (ExprNotComparableException ex)
         { /* Drop through */ }
-        nv1.forceToNode() ;
-        nv2.forceToNode() ;
-        return NodeUtils.compareRDFTerms(nv1.getNode(), nv2.getNode()) ;
+        return NodeUtils.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
     }
     
     /** Compare by value (and only value) if possible.

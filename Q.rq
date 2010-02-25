@@ -1,8 +1,4 @@
-PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-        SELECT * 
-        WHERE { 
-          ?x a foaf:Person . 
-          ?x foaf:name ?name . 
-        } 
-LIMIT 5
+
+SELECT * 
+FROM <http://mmt.me.uk/foaf.rdf>
+{ ?s ?p ?o }

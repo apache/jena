@@ -29,8 +29,10 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class TransformFilterEquality extends TransformCopy
 {
+    // TODO E_OneOf
+    
     // TODO (Carefully) Two forms - aggressive and strict
-    //Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
+    // Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
     // Extend to disjunctions of equalties.
     
     public TransformFilterEquality() {}
@@ -118,7 +120,6 @@ public class TransformFilterEquality extends TransformCopy
         
         Var var = null ;
         NodeValue constant = null ;
-        
 
         if ( left.isVariable() && right.isConstant() )
         {

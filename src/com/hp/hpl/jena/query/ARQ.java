@@ -182,6 +182,12 @@ public class ARQ
 
     /** 
      *  Context key controlling whether the standard optimizer applies
+     *  optimizations to IN and NOT IN.
+     */  
+    public static final Symbol optFilterExpandOneOf = ARQConstants.allocSymbol("optFilterExpandOneOf") ;
+
+    /** 
+     *  Context key controlling whether the standard optimizer applies
      *  optimizations to disjunctions (||) in filters.
      */  
     public static final Symbol optFilterDisjunction = ARQConstants.allocSymbol("optFilterDisjunction") ;

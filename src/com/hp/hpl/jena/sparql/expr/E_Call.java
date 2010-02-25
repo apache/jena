@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class E_Call extends ExprFunctionN
 {
-    private static final String symbol = "CALL" ;
+    private static final String symbol = "call" ;
 
     public E_Call(ExprList args)
     {

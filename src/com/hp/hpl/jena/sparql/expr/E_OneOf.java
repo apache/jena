@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-public class E_OneOf extends ExprFunctionN
+public class E_OneOf extends E_OneOfBase
 {
     private static final String printName = "in" ;
     private Expr expr ;
@@ -17,44 +17,14 @@ public class E_OneOf extends ExprFunctionN
     
     public E_OneOf(Expr expr, ExprList args)
     {
-        // Transform to a list of arguments.
-        super(printName, fixup(expr, args)) ;
-        this.expr = expr ;
-        this.possibleValues = args ;
+        super(printName, expr, args) ;
     }
 
-    private static ExprList fixup(Expr expr2, ExprList args)
-    {
-        ExprList allArgs = new ExprList(expr2) ;
-        allArgs.addAll(args) ;
-        return allArgs ;
-    }
-
-    public Expr getLHS() { return expr ; }
-    public ExprList getRHS() { return possibleValues ; }
-    
     @Override
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        // Special form.
-        // Like ( expr = expr1 ) || ( expr = expr2 ) || ...
-
-        NodeValue nv = expr.eval(binding, env) ;
-        ExprEvalException error = null ;
-        for ( Expr inExpr : possibleValues )
-        {
-            try {
-                NodeValue maybe = inExpr.eval(binding, env) ;
-                if ( NodeValue.sameAs(nv, maybe) )
-                    return NodeValue.booleanReturn(true) ;
-            } catch (ExprEvalException ex)
-            {
-                error = ex ;
-            }
-        }
-        if ( error != null )
-            throw error ;
-        return NodeValue.booleanReturn(false) ;
+        boolean b = super.evalOneOf(binding, env) ;
+        return NodeValue.booleanReturn(b) ;
     }
 
     @Override
