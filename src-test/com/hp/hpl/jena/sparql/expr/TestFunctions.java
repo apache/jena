@@ -102,9 +102,6 @@ public class TestFunctions
     @Test public void exprSameTerm5()     { test("sameTerm(<x>, <x>)",      TRUE) ; }
     @Test public void exprSameTerm6()     { test("sameTerm(<x>, <y>)",      FALSE) ; }
     
-    //@Test public void exprCast1()     { test("cast(xsd:integer, '123')",   NodeValue.makeInteger(123)   ) ; }
-    //@Test public void exprCast2()     { testEvalException("cast(xsd:integer, 'abc')") ; }
-    
     @Test public void exprOneOf_01()     { test("57 in (xsd:integer, '123')",   FALSE) ; }
     @Test public void exprOneOf_02()     { test("57 in (57)",                   TRUE) ; }
     @Test public void exprOneOf_03()     { test("57 in (123, 57)",              TRUE) ; }

@@ -12,7 +12,7 @@ public class E_Cast extends ExprFunction2
 {
     private static final String symbol = "cast" ;
 
-    public E_Cast(Expr expr1, Expr expr2)
+    private E_Cast(Expr expr1, Expr expr2)
     {
         super(expr1, expr2, symbol) ;
     }
@@ -20,6 +20,12 @@ public class E_Cast extends ExprFunction2
     @Override
     public NodeValue eval(NodeValue x, NodeValue y)
     {
+        if ( ! x.isString() ) throw new ExprEvalException("cast: arg 2 is not a string: "+x) ;
+        if ( ! y.isIRI() ) throw new ExprEvalException("cast: arg 2 is not a URI: "+y) ;
+        
+        String lex = x.getString() ;
+        y.asNode().getURI() ;
+        
         throw new ARQNotImplemented() ;
     }
 
