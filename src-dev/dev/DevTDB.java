@@ -17,7 +17,7 @@ public class DevTDB
     //     NQuads in Trig.
     //     Trailling dots ??
     // Document
-    // NTriples - trailig dot.
+    // NTriples - trailing dot.
     
     // <x> <p> _:x.
     
