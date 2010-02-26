@@ -30,6 +30,8 @@ checking these scripts are suitable.</p>
   <li><p><code><a href="#arq.rset">arq.rset</a></code> : transform result sets.</p></li>
   <li><p><code><a href="#arq.qtest">arq.qtest</a></code> : run a test set.</p></li>
   <li><p><code><a href="#arq.qexpr">arq.qexpr</a></code> : evaluate and print an expression.</p></li>
+  <li><p><code><a href="#arq.larqbuilder">arq.larqbuilder</a></code> : Update a LARQ/Lucene index</p></li>
+  <li><p><code><a href="#arq.larq">arq.larq</a></code> : Query a LARQ/Lucene index</p></li>
 </ul>
 
 <p>All commands have a <code>--help</code> command for a summary of the arguments.</p>
@@ -108,7 +110,6 @@ See the working group page
 <p>In particular,</p>
 <pre>java -cp ... arq.rset --in xml --out text</pre>
 <p>will translate a SPARQL XML Result Set into a tabular text form.</p>
-</p>
 
 <h3><a id="arq.qexpr" name="arq.qexpr"><code>arq.qexpr</code></a></h3>
 
@@ -123,10 +124,30 @@ clause).  Indicates whether an evaluation exception occured.
 	<li><code>--service URL</code> : The endpoint.</li>
 	<li><code>--data FILE</code> : Dataset description (default graph) added to the request.</li>
 	<li><code>--namedgraph FILE</code> : Dataset description (named graph) added to the request.</li>
-	<li><code>--results FORMAT</code> : Wriet results in specificed format. Does not change the
+	<li><code>--results FORMAT</code> : Write results in specified format. Does not change the
 		request to the server which is always for an XML form.</li>
 </ul>
 
+
+<h3><a id="arq.larqbuilder"><code>arq.larqbuilder</code></a></h3>
+<p>Build or update a <a href="lucene-arq.html">LARQ index</a>. If a dataset is 
+given to the command, all graphs are indexed. if a single graph is given to the 
+command, that graph is indexed.</p>
+<ul>
+	<li><code>--larq</code> : Name of the directory for the Lucene index files.</li>
+	<li><code>--subjects</code> : By default literals are indexed against the 
+	literal RDF node (<a href="cmds.htm#lPattern_1">pattern 1</a>). Using this 
+	argument cause the subject RDF terms to be indexed (<a href="cmds.htm#lPattern_2">pattern 
+	2</a>).</li>
+	<li>Dataset description using <code>--data FILE</code> or <code>--desc.</code></li>
+</ul>
+
+<h3><a id="arq.larq"><code>arq.larq</code></a></h3>
+<p>Issue a Lucene query and print the nodes found (objects or subjects as 
+appropriate).</p>
+<ul>
+	<li><code>--larq</code> : Name of the directory for the Lucene index files.</li>
+</ul>
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>

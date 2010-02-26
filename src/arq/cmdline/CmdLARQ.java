@@ -4,10 +4,15 @@
  * [See end of file]
  */
 
-package arq;
+package arq.cmdline;
 
-public class larqquery
+
+public abstract class CmdLARQ extends CmdARQ
 {
+    protected CmdLARQ(String[] argv)
+    {
+        super(argv) ;
+    }
 
 }
 

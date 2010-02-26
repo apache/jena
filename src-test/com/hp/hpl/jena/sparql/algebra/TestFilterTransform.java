@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformExpandOneOf ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterDisjunction ;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement ;
@@ -31,6 +32,7 @@ public class TestFilterTransform
     private Transform t_equality    = new TransformFilterEquality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;
+    private Transform t_expandOneOf = new TransformExpandOneOf() ;
     
     @Test public void equality01()
     {
@@ -186,6 +188,29 @@ public class TestFilterTransform
         Assert.assertEquals(op3, op2) ;
     }
     
+    @Test public void oneOf1()
+    {
+        test(
+             "(filter (in ?x <x> 2 3) (bgp (?s ?p ?x)))",
+             t_expandOneOf,
+             "(filter (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3)) (bgp (?s ?p ?x)))") ;
+    }
+
+    @Test public void oneOf2()
+    {
+        test(
+             "(filter (exprlist (= ?x 99) (in ?x <x> 2 3)) (bgp (?s ?p ?x)))",
+             t_expandOneOf,
+             "(filter (exprlist (= ?x 99) (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3))) (bgp (?s ?p ?x)))") ;
+    }
+    
+    @Test public void oneOf3()
+    {
+        test(
+             "(filter (notin ?x <x> 2 3) (bgp (?s ?p ?x)))",
+             t_expandOneOf,
+             "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
+    }
 
     static void test(String input, Transform transform, String... output)
     {

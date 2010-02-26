@@ -13,18 +13,21 @@ It gives ARQ the ability to perform free text searches. Lucene indexes are addit
 not storage for the graph itself.</p>
 <p>Some example code is available in directory <code>src-examples/arq/examples</code> 
 in the <a href="download.html">ARQ distribution</a>.</p>
+<p>Two helper commands are provided:&nbsp; <a href="cmds.html#arq.larqbuilder">
+<code>arq.larqbuilder</code></a> and <a href="cmds.html#arq.larq"><code>arq.larq</code></a>. 
+These are support the updating and query of LARQ indexes.</p>
 <p>A full description of the free text query language syntax is given in the
-<a href="http://lucene.apache.org/java/docs/queryparsersyntax.html">Lucene query 
+<a href="http://lucene.apache.org/java/3_0_0/queryparsersyntax.html">Lucene query 
 syntax</a> document.</p>
 
 <h2>Usage Patterns</h2>
 <p>There are two basic usage patterns supported:</p>
 <ul>
-	<li>Pattern 1 : index string literals. The index will 
+	<li><a name="Pattern_1">Pattern 1</a> : index string literals. The index will 
 	return the literals matching the Lucene search pattern.</li>
-	<li>Pattern 2 : index subject resources by string literal. 
+	<li><a name="Pattern_2">Pattern 2</a> : index subject resources by string literal. 
 	The index returns the subjects with property value matching a text query.</li>
-    <li>Pattern 3 : index graph nodes based on strings not present in the graph.</li>
+    <li><a name="Pattern_3">Pattern 3</a> : index graph nodes based on strings not present in the graph.</li>
 </ul>
 <p>Patterns 1 and 2 have the indexed content in the graph. Both 1 and 2 can be modified by specifying a property so that only values of a 
 given property are indexed. Pattern 2 is less flexible as

@@ -8,77 +8,68 @@ package arq;
 
 import java.util.Iterator ;
 
-import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdLARQ ;
-import arq.cmdline.ModDatasetAssembler ;
 import arq.cmdline.ModLARQindex ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.larq.IndexBuilderModel ;
+import com.hp.hpl.jena.query.larq.HitLARQ ;
 import com.hp.hpl.jena.query.larq.IndexBuilderString ;
-import com.hp.hpl.jena.query.larq.IndexBuilderSubject ;
+import com.hp.hpl.jena.query.larq.IndexLARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class larqbuilder extends CmdLARQ
+public class larq extends CmdLARQ
 {
-    ModDatasetAssembler modDataset = new ModDatasetAssembler() ;
     ModLARQindex modIndex = new ModLARQindex() ;
     
-    ArgDecl argNodes = new ArgDecl(ArgDecl.NoValue, "nodes", "subjects")  ;
-    private boolean indexSubjects ;
-    
-    // --larq filename 
     public static void main(String... argv)
     {
-        new larqbuilder(argv).mainRun() ;
+        new larq(argv).mainRun() ;
     }
     
-    protected larqbuilder(String[] argv)
+    protected larq(String[] argv)
     {
         super(argv) ;
-        super.addModule(modDataset) ;
         super.addModule(modIndex) ;
-        super.add(argNodes, "--subjects", "Index literals to subject nodes") ;
     }
 
     @Override
     protected String getSummary()
     {
-        return "larqbuilder --larq DIR [--subjects] --data RDF" ;
+        return "larqquery --larq DIR LuceneQueryString" ;
     }
 
     @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        indexSubjects = super.contains(argNodes) ;
     }
     
     @Override
     protected void exec()
     {
-        // ---- Read and index all literal strings.
-        IndexBuilderModel larqBuilder = 
-            indexSubjects ? new IndexBuilderSubject(modIndex.getIndexWriter()) :
-                            new IndexBuilderString(modIndex.getIndexWriter()) ; 
-        Dataset ds = modDataset.getDataset() ;
-        index(larqBuilder, ds.getDefaultModel()) ;
-        for ( Iterator<String> iter = ds.listNames() ; iter.hasNext() ; )
+        IndexLARQ index = modIndex.getIndexLARQ() ;
+        for ( String s : super.getPositional() )
         {
-            String g = iter.next() ;
-            index(larqBuilder, ds.getNamedModel(g)) ;
+            System.out.println("Search : "+s) ;
+            Iterator<HitLARQ> hits = index.search(s) ;
+            for ( ; hits.hasNext() ; )
+            {
+                HitLARQ h = hits.next() ;
+                String str = FmtUtils.stringForNode(h.getNode()) ;
+                if ( super.isVerbose() )
+                    System.out.printf("  %-20s %.2f\n", str, h.getScore()) ;
+                else
+                    System.out.printf("  %-20s\n",str) ;
+            }
         }
-        
-        larqBuilder.closeWriter() ;
     }
 
-    private void index(IndexBuilderModel larqBuilder, Model model)
+    private void index(IndexBuilderString larqBuilder, Model model)
     {
         StmtIterator sIter = model.listStatements() ;
         larqBuilder.indexStatements(sIter) ;
     }
-
 }
 
 /*
