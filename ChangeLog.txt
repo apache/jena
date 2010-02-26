@@ -12,6 +12,7 @@ ChangeLog for ARQ
   !(rdf:type|rdfs:label) matches some thing that isn't rdf:type or rdfs:label
 + Bug fix: some multiply nested OPTIONALs could result in only naive, unoptimized execution. 
 + Bug fix: SERVICE body for complex query patterns. 
++ Results output in CSV and TSV.
 
 ==== ARQ 2.8.2
 
