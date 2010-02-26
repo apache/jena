@@ -20,13 +20,7 @@ public class DevARQ
     // Tests of same
     
     // ----------
-    
-    //LARQ index building command line tool
-    
-    // E_NewIRI
-    // E_NewBNode.
-    // Optimize E_OneOf, E_NotOneOf
-    // Tests
+    // Abstract ValueSpace for extensibility
 
     // Example of OpExecutor
     // Deprecate StageGenerator
