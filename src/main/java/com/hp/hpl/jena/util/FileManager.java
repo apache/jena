@@ -54,7 +54,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
+ * @version    $Id: FileManager.java,v 1.2 2010-02-26 10:58:45 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -479,7 +479,7 @@ public class FileManager
             Reader r = FileUtils.asBufferedUTF8(in) ;
             StringWriter sw = new StringWriter(1024);
             char buff[] = new char[1024];
-            while (r.ready()) {
+            while (true) {
                 int l = r.read(buff);
                 if (l <= 0)
                     break;
