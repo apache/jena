@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.3
 
++ Added commands arq.larq and arq.larqbuilder to query and build Lucense indexes for ARQ.
 + Added IN and NOT IN operators
 + Add built-in function LANG(string, string) to make a literal with a language tag.
 + Add built-in function IRI(string) to make an IRI.
