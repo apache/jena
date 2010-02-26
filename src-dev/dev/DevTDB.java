@@ -17,6 +17,10 @@ public class DevTDB
     //     NQuads in Trig.
     //     Trailling dots ??
     // Document
+    // NTriples - trailig dot.
+    
+    // <x> <p> _:x.
+    
     
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
