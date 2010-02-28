@@ -20,12 +20,12 @@ import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.migrate.DatasetGraphMem ;
 
 public class DatasetLib
 {

@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.TDB ;
 
@@ -93,7 +92,7 @@ Document:
             // Careful - currently ARQ version needed
             IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
             //iBuff.getIndentedWriter().setFlatMode(true) ;
-            query.serialize(iBuff.getIndentedWriter()) ;
+            query.serialize(iBuff) ;
             String x = iBuff.asString() ;
             
             _explain(logExec, message, x, true) ;
@@ -140,8 +139,7 @@ Document:
     
     private static String formatQuads(QuadPattern quads)
     {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
+        IndentedLineBuffer out = new IndentedLineBuffer() ;
 
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
 
@@ -165,7 +163,7 @@ Document:
             out.print(")") ;
         }
         out.flush();
-        return buff.getBuffer().toString() ;
+        return out.toString() ;
     }    
     // ----
     
