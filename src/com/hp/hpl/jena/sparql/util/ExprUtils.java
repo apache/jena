@@ -141,7 +141,7 @@ public class ExprUtils
     public static String fmtSPARQL(Expr expr)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        fmtSPARQL(buff.getIndentedWriter(), expr) ;
+        fmtSPARQL(buff, expr) ;
         return buff.toString() ; 
     }
     
@@ -167,7 +167,7 @@ public class ExprUtils
     public static String fmtSPARQL(ExprList exprs)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        fmtSPARQL(buff.getIndentedWriter(), exprs) ;
+        fmtSPARQL(buff, exprs) ;
         return buff.toString() ; 
     }
 

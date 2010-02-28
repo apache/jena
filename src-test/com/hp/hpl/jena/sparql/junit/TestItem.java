@@ -6,22 +6,24 @@
  
 package com.hp.hpl.jena.sparql.junit;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.junit.TestUtils;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.RDF;
-
-import java.util.* ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.sparql.core.DataFormat ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
+import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery ;
+import com.hp.hpl.jena.util.iterator.ClosableIterator ;
+import com.hp.hpl.jena.util.junit.TestUtils ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 
 /** Wrapper class for individual test items.
@@ -115,8 +117,7 @@ public class TestItem
     {
         if ( resultFile == null )
             return null ;
-        //Model model = GraphUtils.makeDefaultModel() ;
-        Model model = GraphUtils.makeJenaDefaultModel() ;
+        Model model = GraphFactory.makeJenaDefaultModel() ;
         // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
         ResultSetFactory.loadAsModel(model, resultFile) ;
         return model ; 

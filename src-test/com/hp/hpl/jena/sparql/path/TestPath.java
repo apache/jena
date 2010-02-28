@@ -6,34 +6,29 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.fail ;
 
-import junit.framework.JUnit4TestAdapter;
+import java.util.Arrays ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Set ;
 
-import org.junit.Test;
-import static org.junit.Assert.* ;
+import junit.framework.JUnit4TestAdapter ;
+import org.junit.Test ;
 
-//import junit.framework.Test;
-//import junit.framework.TestCase;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.path.Path;
-import com.hp.hpl.jena.sparql.path.PathEval;
-import com.hp.hpl.jena.sparql.path.PathParser;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderPath;
-import com.hp.hpl.jena.sparql.sse.writers.WriterPath;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterPath ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class TestPath
 {
@@ -45,8 +40,8 @@ public class TestPath
 //        return ts ;
     }
 
-    static Graph graph1 = GraphUtils.makeDefaultGraph() ;
-    static Graph graph2 = GraphUtils.makeDefaultGraph() ;
+    static Graph graph1 = GraphFactory.createDefaultGraph() ;
+    static Graph graph2 = GraphFactory.createDefaultGraph() ;
     
     static Node n1 = Node.createURI("n1") ;
     static Node n2 = Node.createURI("n2") ;

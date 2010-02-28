@@ -8,14 +8,17 @@
  */
 
 package com.hp.hpl.jena.sparql.util;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class Closure
 {
@@ -40,7 +43,7 @@ public class Closure
 
     public static Model closure(Statement statement, ClosureTest test)
     {
-        return closure(statement, test, GraphUtils.makeJenaDefaultModel()) ;
+        return closure(statement, test, GraphFactory.makeJenaDefaultModel()) ;
     }
 
     /** Calculate the bNode closure from a statement .
@@ -96,7 +99,7 @@ public class Closure
 
     public static Model closure(Resource resource, ClosureTest test, boolean testThisNode)
     {
-        return closure(resource, test, testThisNode, GraphUtils.makeJenaDefaultModel()) ;
+        return closure(resource, test, testThisNode, GraphFactory.makeJenaDefaultModel()) ;
     }
 
 

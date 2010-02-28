@@ -6,15 +6,18 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 public class RDFOutput
@@ -33,7 +36,7 @@ public class RDFOutput
 
     public Model toModel(ResultSet resultSet)
     {
-        Model m = GraphUtils.makeJenaDefaultModel() ;
+        Model m = GraphFactory.makeJenaDefaultModel() ;
         asRDF(m, resultSet) ;
         if ( m.getNsPrefixURI("rs") == null )
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;
@@ -102,7 +105,7 @@ public class RDFOutput
     
     public Model toModel(boolean result)
     {
-        Model m = GraphUtils.makeJenaDefaultModel() ;
+        Model m = GraphFactory.makeJenaDefaultModel() ;
         asRDF(m, result) ;
         if ( m.getNsPrefixURI("rs") == null )
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI() ) ;

@@ -35,7 +35,7 @@ public class PathWriter
     public static String asString(Path path, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        PathWriterWorker w = new PathWriterWorker(buff.getIndentedWriter(), prologue) ;
+        PathWriterWorker w = new PathWriterWorker(buff, prologue) ;
         path.visit(w) ;
         w.out.flush();
         return buff.asString() ;

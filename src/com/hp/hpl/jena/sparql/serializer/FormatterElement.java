@@ -88,7 +88,7 @@ public class FormatterElement extends FormatterBase
     {
         SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        FormatterElement.format(b.getIndentedWriter(), cxt, el) ;
+        FormatterElement.format(b, cxt, el) ;
         return b.toString() ;
     }
 

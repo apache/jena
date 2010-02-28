@@ -6,22 +6,19 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.LockMRSW;
-
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.sparql.lib.iterator.NullIterator;
-
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.shared.LockMRSW ;
+import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** Graph-level dataset.
  *  @see com.hp.hpl.jena.sparql.core.DatasetGraph
@@ -54,7 +51,7 @@ public class DataSourceGraphImpl implements DataSourceGraph
     { cloneDatasetGraph(dataset) ; }    // Clone - 
 
     public DataSourceGraphImpl()
-    { this(GraphUtils.makeDefaultGraph()) ; }
+    { this(GraphFactory.createDefaultGraph()) ; }
     
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph()

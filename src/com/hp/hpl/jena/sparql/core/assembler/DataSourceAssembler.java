@@ -18,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 import com.hp.hpl.jena.query.DataSource;
@@ -43,7 +44,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
             dftModel = a.openModel(dftGraph) ;
         else
             // Assembler description did not define one - make a dummy.
-            dftModel = GraphUtils.makePlainModel() ;
+            dftModel = GraphFactory.makePlainModel() ;
 
         ds.setDefaultModel(dftModel) ;
 

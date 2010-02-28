@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.update.*;
+import junit.framework.TestCase ;
 
-import junit.framework.TestCase;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateAction ;
 
 public abstract class TestUpdateBase extends TestCase
 {
@@ -30,7 +31,7 @@ public abstract class TestUpdateBase extends TestCase
         Graph g = gStore.getGraph(uri) ;
         if ( g == null )
         {
-            gStore.addGraph(uri, GraphUtils.makeJenaDefaultGraph()) ;
+            gStore.addGraph(uri, GraphFactory.createJenaDefaultGraph()) ;
             g = gStore.getGraph(uri) ;
         }
         else

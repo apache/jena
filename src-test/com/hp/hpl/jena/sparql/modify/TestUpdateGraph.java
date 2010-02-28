@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup ;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -251,7 +251,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         script(gStore, "data-2.rup") ;
         
         
-        Graph g = GraphUtils.makePlainGraph() ;
+        Graph g = GraphFactory.createPlainGraph() ;
         Node b = Node.createAnon() ;
         
         g.add(new Triple(s, p, b)) ;

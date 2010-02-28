@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 
 
 /** A class whose purpose is to give a name to a collection of quads
@@ -53,8 +52,7 @@ public class QuadPattern implements Iterable<Quad>
     @Override
     public String toString()
     { 
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
+        IndentedLineBuffer out = new IndentedLineBuffer() ;
         
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
         
@@ -72,7 +70,7 @@ public class QuadPattern implements Iterable<Quad>
             out.print(")") ;
         }
         out.flush();
-        return buff.getBuffer().toString() ;
+        return out.toString() ;
     }
 }
 

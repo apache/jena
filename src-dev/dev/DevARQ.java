@@ -9,11 +9,11 @@ public class DevARQ
 {
     // ==== ARQ 2.8.3
     
-    // GraphFactory and track down any Factory.create.
-    
-    // DatasetGraphMem (from TDB DatasetLib)
-    // DatasetGraph - include PUT/DELETE style operations
-    
+    // == Migration:
+    // JSON (via RIOT?)
+
+    // Sort out DatasetGraph:
+    // DatasetGraphMem 
     // Down play DataSource[Graph]
     // Contexts for datasets.
     

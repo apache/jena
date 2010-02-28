@@ -6,18 +6,23 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.resultset.XMLInput;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.resultset.XMLInput ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 
 public class QueryEngineHTTP implements QueryExecution
@@ -119,11 +124,11 @@ public class QueryEngineHTTP implements QueryExecution
         return rs ;
     }
 
-    public Model execConstruct()             { return execConstruct(GraphUtils.makeJenaDefaultModel()) ; }
+    public Model execConstruct()             { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
     
     public Model execConstruct(Model model)  { return execModel(model) ; }
 
-    public Model execDescribe()              { return execDescribe(GraphUtils.makeJenaDefaultModel()) ; }
+    public Model execDescribe()              { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
     
     public Model execDescribe(Model model)   { return execModel(model) ; }
 

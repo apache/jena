@@ -33,8 +33,8 @@ public class QueryUtils
         Op op = Algebra.compile(query) ;
         if ( optimizeAlgebra )
             op = Algebra.optimize(op) ;
-        WriterSSE.out(buff.getIndentedWriter(), op, query) ;
-        String str = buff.getBuffer().toString() ;
+        WriterSSE.out(buff, op, query) ;
+        String str = buff.toString() ;
         
         try {
             Op op2 = SSE.parseOp(str) ;

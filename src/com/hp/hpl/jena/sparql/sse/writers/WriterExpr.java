@@ -26,7 +26,7 @@ public class WriterExpr
     public static String asString(Expr expr)
     {
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        output(b.getIndentedWriter(), expr, null) ;
+        output(b, expr, null) ;
         return b.asString() ;
     }
     

@@ -346,7 +346,7 @@ public class Item extends ItemLocation
     public String toString()
     {
         IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
-        ItemWriter.write(iBuff.getIndentedWriter(), this, null) ;
+        ItemWriter.write(iBuff, this, null) ;
         //iBuff.getIndentedWriter().ensureStartOfLine() ;
         //iBuff.getIndentedWriter().flush() ;
         return iBuff.asString() ;

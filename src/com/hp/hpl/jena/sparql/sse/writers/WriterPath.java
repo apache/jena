@@ -90,7 +90,7 @@ public class WriterPath
     public static String asString(Path path, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        WriterPathVisitor w = new WriterPathVisitor(buff.getIndentedWriter(), prologue) ;
+        WriterPathVisitor w = new WriterPathVisitor(buff, prologue) ;
         path.visit(w) ;
         w.out.flush();
         return buff.asString() ;

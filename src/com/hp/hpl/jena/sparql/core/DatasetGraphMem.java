@@ -1,50 +1,32 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.core;
 
-import java.io.* ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-/** IndentLineBuffer is a buffer that records an indent level 
- *  and uses that to insert a prefix at each line.
- *  It can also insert line numbers at the beginning of lines.
- * 
- *  <Insert rant about StringBuffer being final here>
- *  Also, Java 1.5, StringBuilding is fatser than StringBuffer (not sync'ed)
- *  so could switch to that (exxept we are really using a StringWriter)  
- * 
- * @author Andy Seaborne
+/** Implementation of a DatasetGraph where all graphs "exist".
+ * New graphs are created in-memory when a getGraph call is 
+ * made to a graph that has not been allocated.
  */
-
-public class IndentedLineBuffer extends IndentedWriter
+public class DatasetGraphMem extends DatasetGraphOpen
 {
-    StringWriter sw ;
-    public IndentedLineBuffer() { this(false) ; }
+    static DatasetGraphOpen.GraphMaker memGraphMaker = new GraphMaker(){
+        public Graph create()
+        {
+            return GraphFactory.createGraph() ;
+        }
+    } ;
     
-    public IndentedLineBuffer(boolean withLineNumbers)
-    {
-        super(new StringWriter(), withLineNumbers) ;
-        sw = (StringWriter)super.out ;
-    }
-    
-    public StringBuffer getBuffer() { return sw.getBuffer(); }
-    
-    public String asString() { return sw.toString() ; }
-    @Override
-    public String toString() { return asString() ; }
-
-    // Names more usually used for a buffer.
-    public void append(String fmt, Object... args) { printf(fmt, args) ; }
-    public void append(char ch)  { print(ch) ;}
-    
-    public void clear() { sw.getBuffer().setLength(0) ; }
+    public DatasetGraphMem() { super(memGraphMaker) ; }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

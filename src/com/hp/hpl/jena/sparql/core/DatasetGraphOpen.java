@@ -1,56 +1,83 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core ;
+package com.hp.hpl.jena.sparql.core;
 
+import java.util.HashMap ;
 import java.util.Iterator ;
+import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.shared.LockMRSW ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** Restrict a DataSourceGraph to a DatasetGraph */
-public class DatasetGraphFixed implements DatasetGraph
+/** Implementation of a DatasetGraph where all graphs "exist".
+ * New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
+ * made to a graph that has not been allocated.
+ */
+public class DatasetGraphOpen implements DatasetGraph
 {
-
-    final private DataSourceGraph dsg ;
-
-    public DatasetGraphFixed(DataSourceGraph dsg) { this.dsg = dsg ; }
+    public interface GraphMaker { public Graph create() ; }
     
+    private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
+    private Graph defaultGraph ;
+    private GraphMaker graphMaker ;
+
+    public DatasetGraphOpen(GraphMaker graphMaker)
+    {
+        this.graphMaker = graphMaker ;
+        defaultGraph = graphMaker.create() ;
+    }
+
     public boolean containsGraph(Node graphNode)
-    { 
-        return dsg.containsGraph(graphNode) ;
+    {
+        return true ;
     }
 
     public Graph getDefaultGraph()
     {
-        return dsg.getDefaultGraph() ;
+        return defaultGraph ;
     }
 
     public Graph getGraph(Node graphNode)
     {
-        return dsg.getGraph(graphNode) ;
+        Graph g = graphs.get(graphNode) ;
+        if ( g == null )
+        {
+            g = graphMaker.create() ;
+            graphs.put(graphNode, g) ;
+        }
+        
+        return g ;
     }
 
+    private Lock lock = new LockMRSW() ;
     public Lock getLock()
     {
-        return dsg.getLock() ;
+        return lock ;
     }
 
     public Iterator<Node> listGraphNodes()
     {
-        return dsg.listGraphNodes() ;
+        return graphs.keySet().iterator() ;
     }
 
-    public int size()       { return dsg.size() ; }
+    public int size()
+    {
+        return graphs.size() ;
+    }
 
-    public void close()     { dsg.close() ; }
+    public void close()
+    {}
 }
+
 /*
- * (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

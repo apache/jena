@@ -31,8 +31,7 @@ public class PrintUtils
     public static String toString(Printable f)
     { 
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
-        f.output(out) ;
+        f.output(buff) ;
         return buff.toString() ;
     }
     
@@ -40,9 +39,8 @@ public class PrintUtils
     public static String toString(PrintSerializable item, PrefixMapping pmap)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
         SerializationContext sCxt = new SerializationContext(pmap) ;
-        item.output(out, sCxt) ;
+        item.output(buff, sCxt) ;
         return buff.toString() ;
     }
 

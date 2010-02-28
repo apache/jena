@@ -23,10 +23,9 @@ public class TableWriter
 {
     public static String asSSE(Table table)
     {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
+        IndentedLineBuffer out = new IndentedLineBuffer() ;
         TableWriter.output(table, out) ;
-        return buff.asString() ;
+        return out.asString() ;
     }
     
     public static void output(Table table, IndentedWriter out)

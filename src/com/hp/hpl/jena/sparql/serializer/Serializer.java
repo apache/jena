@@ -67,7 +67,7 @@ public class Serializer
     
     static public void serialize(Query query, IndentedLineBuffer buff, Syntax outSyntax)
     {
-        serialize(query, buff.getIndentedWriter(), outSyntax) ;
+        _serialize(query, buff, outSyntax) ;
     }
     
     /** Format the query
@@ -90,6 +90,11 @@ public class Serializer
      */
     
     static public void serialize(Query query, IndentedWriter writer, Syntax outSyntax)
+    {
+        _serialize(query, writer, outSyntax) ;
+    }
+    
+    static private void _serialize(Query query, IndentedWriter writer, Syntax outSyntax)
     {
         if ( outSyntax == null )
             outSyntax = Syntax.syntaxSPARQL ;

@@ -5,11 +5,14 @@
  */
 
 package com.hp.hpl.jena.sparql.util;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import static java.lang.String.format ;
 
-import com.hp.hpl.jena.util.FileUtils;
+import java.io.IOException ;
+import java.io.OutputStream ;
+import java.io.Writer ;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
@@ -29,7 +32,7 @@ public class IndentedWriter
     // 1/ incIndent - decIndent with no output should not cause any padding
     // 2/ newline() then no text, then finish should not cause a line number.
     
-    protected PrintWriter out = null ;
+    protected Writer out = null ;
     
     protected static final int INDENT = 2 ;
     protected int unitIndent = INDENT ;
@@ -38,22 +41,35 @@ public class IndentedWriter
     protected int row = 1 ;
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
+    private char padChar = ' ' ;
+    private String padString = null ;
+    
     protected boolean flatMode = false ;
     
     public IndentedWriter() { this(System.out, false) ; }
     
-    public IndentedWriter(OutputStream outStream)
-    { this(outStream, false) ; }
+    // Temp: Adaption from old world to new -
+    protected IndentedWriter(IndentedWriter other)
+    { 
+        out = other.out ;
+        lineNumbers = other.lineNumbers ;
+        if ( other.column != column || other.row != row )
+            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
+        
+    }
+    
+    public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
-    { this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ; }
-
-    public IndentedWriter(StringWriter sw, boolean withLineNumbers)
-    { this(new PrintWriter(sw), withLineNumbers) ; }
-    
-    private IndentedWriter(PrintWriter printWriter, boolean withLineNumbers)
     {
-        out = printWriter ;
+        this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
+    }
+    
+    protected IndentedWriter(Writer writer) { this(writer, false) ; }
+    
+    protected IndentedWriter(Writer writer, boolean withLineNumbers)
+    {
+        out = writer ;
         lineNumbers = withLineNumbers ;
         startingNewLine = true ;
     }
@@ -68,20 +84,24 @@ public class IndentedWriter
         if ( obj != null )
             s = obj.toString() ;
         for ( int i = 0 ; i < s.length() ; i++ )
-            printChWorker(s.charAt(i)) ;
+            printOneChar(s.charAt(i)) ;
     }
     
-    public void print(char ch) { printChWorker(ch) ; }
+    public void printf(String formatStr, Object... args)
+    {
+        print(format(formatStr, args)) ;
+    }
+    
+    public void print(char ch) { printOneChar(ch) ; }
     
     public void println(Object obj) { print(obj) ; newline() ; }
     public void println(char ch)  { print(ch) ; newline() ; }
 
     public void println() { newline() ; }
     
-    char lastChar = '\0' ;
-
+    private char lastChar = '\0' ;
     // Worker
-    private void printChWorker(char ch) 
+    private void printOneChar(char ch) 
     {
         // Turn \r\n into a single newline call.
         // Assumes we don't get \r\r\n etc 
@@ -100,10 +120,16 @@ public class IndentedWriter
             newline() ;
             return ;
         }
-        out.print(ch) ;
+        write(ch) ;
         column += 1 ;
     }
 
+    private void write(char ch) 
+    { try { out.write(ch) ; } catch (IOException ex) {} }
+    
+    private void write(String s) 
+    { try { out.write(s) ; } catch (IOException ex) {} }
+    
     /** Print a string N times */
     public void print(String s, int n)
     {
@@ -114,18 +140,20 @@ public class IndentedWriter
     public void print(char ch, int n)
     {
         lineStart() ;
-        for ( int i = 0 ; i < n ; i++ ) printChWorker(ch) ;
+        for ( int i = 0 ; i < n ; i++ ) printOneChar(ch) ;
     }
     
     public void newline()
     {
         lineStart() ; 
+        
         if ( ! flatMode )
-            out.println() ;
+            write('\n') ;
         startingNewLine = true ;
         row++ ;
         column = 0 ;
-        // PrintWriters do not autoflush by default.
+        // Note that PrintWriters do not autoflush by default
+        // so if layered over a PrintWirter, need to flush that as well.  
         flush() ;
     }
     
@@ -137,8 +165,8 @@ public class IndentedWriter
             newline() ;
     }
     
-    public void close() { out.flush(); }
-    public void flush() { out.flush(); }
+    public void close() { try { out.close(); } catch (IOException ex) {} }
+    public void flush() { try { out.flush(); } catch (IOException ex) {} }
     
     public void pad()
     {
@@ -153,7 +181,7 @@ public class IndentedWriter
      */
     public void pad(int col) { pad(col, false) ; }
     
-    /** Pad to a given number of columns maybe including the the indent.
+    /** Pad to a given number of columns maybe including the indent.
      * 
      * @param col Column number (first column is 1).
      * @param absoluteColumn Whether to include the indent
@@ -164,10 +192,9 @@ public class IndentedWriter
         if ( !absoluteColumn )
             col = col+currentIndent ;
         int spaces = col - column  ;
-        
         for ( int i = 0 ; i < spaces ; i++ )
         {
-            out.print(' ') ;
+            write(' ') ;        // Always a space.
             column++ ;
         }
     }
@@ -175,11 +202,21 @@ public class IndentedWriter
     
     private void padInt() 
     {
-        for ( int i = column ; i < currentIndent ; i++ )
+        if ( padString == null )
         {
-            // Avoids infinite recursion using this.print()
-            out.print(' ') ;
-            column++ ;
+            for ( int i = column ; i < currentIndent ; i++ )
+            {
+                write(padChar) ;
+                column++ ;
+            }
+        }
+        else
+        {
+            for ( int i = column ; i < currentIndent ; i += padString.length() )
+            {
+                write(padString) ;
+                column += padString.length() ;
+            }
         }
     }
     
@@ -197,14 +234,26 @@ public class IndentedWriter
         return 0 ;
     }
     
-    public boolean hasLineNumbers() { return lineNumbers ; }
-    public void setLineNumbers(boolean lineNumbers) { this.lineNumbers = lineNumbers ; }
+    
+    public boolean hasLineNumbers()
+    {
+        return lineNumbers ;
+    }
 
+    public void setLineNumbers(boolean lineNumbers)
+    {
+        this.lineNumbers = lineNumbers ;
+    }
+    
     /** Flat mode - print without NL, for a more compact representation - depends on caller */  
     public boolean inFlatMode() { return flatMode ; }
     public void setFlatMode(boolean flatMode) { this.flatMode = flatMode ; }
-
     
+    public char getPadChar()                { return padChar ; }
+    public void setPadChar(char ch)         { this.padChar  = ch ; }
+    public String getPadString()            { return padString ; }
+    public void setPadString(String str)    { this.padString = str ; unitIndent = str.length(); }
+
     public void incIndent()      { incIndent(unitIndent) ; }
     public void incIndent(int x)
     {
@@ -217,20 +266,20 @@ public class IndentedWriter
     {
         if (!flatMode) currentIndent -= x ;
     }
-
+    
     public void setUnitIndent(int x) { unitIndent = x ; }
     public int  getUnitIndent() { return unitIndent ; }
     public void setAbsoluteIndent(int x) { currentIndent = x ; }
     
     public boolean atLineStart() { return startingNewLine ; }
     
-    protected void lineStart()
+    private void lineStart()
     {
         if ( flatMode )
         {
             if ( startingNewLine && row > 1 )
                 // Space between each line.
-                out.print(' ') ;
+                write(' ') ;
             startingNewLine = false ;
             return ;
         }
@@ -251,9 +300,9 @@ public class IndentedWriter
             return ;
         String s = Integer.toString(row) ;
         for ( int i = 0 ; i < WidthLineNumber-s.length() ; i++ )
-            out.print(' ') ;
-        out.print(s) ;
-        out.print(' ') ;
+            write(' ') ;
+        write(s) ;
+        write(' ') ;
     }
 }
 

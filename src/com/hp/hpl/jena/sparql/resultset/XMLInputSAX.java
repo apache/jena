@@ -6,29 +6,33 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.Attributes ;
+import org.xml.sax.ContentHandler ;
+import org.xml.sax.InputSource ;
+import org.xml.sax.Locator ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.XMLReader ;
+import org.xml.sax.helpers.XMLReaderFactory ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.vocabulary.RDF;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
  * 
@@ -57,7 +61,7 @@ class XMLInputSAX extends SPARQLResult
     private void worker(InputSource in, Model model)
     {
         if ( model == null )
-            model = GraphUtils.makeJenaDefaultModel() ;
+            model = GraphFactory.makeJenaDefaultModel() ;
 
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader() ;

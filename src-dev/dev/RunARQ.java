@@ -244,8 +244,8 @@ public class RunARQ
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         if ( optimizeAlgebra )
             op =  Algebra.optimize(op) ;
-        WriterSSE.out(buff.getIndentedWriter(), op, prologue) ;
-        String str = buff.getBuffer().toString() ;
+        WriterSSE.out(buff, op, prologue) ;
+        String str = buff.toString() ;
         
         try {
             Op op2 = SSE.parseOp(str) ;

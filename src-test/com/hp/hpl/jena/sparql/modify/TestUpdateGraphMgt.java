@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.DoesNotExist ;
 import com.hp.hpl.jena.sparql.modify.op.Update ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.op.UpdateDrop ;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -78,7 +78,7 @@ public abstract class TestUpdateGraphMgt extends TestUpdateBase
     @Test public void testCreateDrop4()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.addGraph(graphIRI, GraphUtils.makeDefaultGraph()) ;
+        gStore.addGraph(graphIRI, GraphFactory.createDefaultGraph()) ;
         script(gStore, "drop-1.rup") ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
     }

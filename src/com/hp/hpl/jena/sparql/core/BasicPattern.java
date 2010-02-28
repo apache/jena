@@ -6,18 +6,17 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** A class whose purpose is to give a name to a collection of triples.
  * Reduces the use of bland "List" in APIs (Java 1.4) 
@@ -86,8 +85,7 @@ public class BasicPattern implements Iterable<Triple>
     @Override
     public String toString() 
     { 
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
+        IndentedLineBuffer out = new IndentedLineBuffer() ;
         
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
         
@@ -105,7 +103,7 @@ public class BasicPattern implements Iterable<Triple>
             out.print(")") ;
         }
         out.flush();
-        return buff.getBuffer().toString() ;
+        return out.toString() ;
     }
 }
 

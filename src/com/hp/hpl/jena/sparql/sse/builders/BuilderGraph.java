@@ -7,36 +7,33 @@
 package com.hp.hpl.jena.sparql.sse.builders;
 
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class BuilderGraph
 {
     public static Graph buildGraph(Item item)
     { 
-        Graph graph = Factory.createDefaultGraph() ;
+        Graph graph = GraphFactory.createDefaultGraph() ;
         buildGraph(graph, item) ;
         return graph ;
     }
     
     public static Graph buildGraph(ItemList itemList)
     { 
-        Graph graph = Factory.createDefaultGraph() ;
+        Graph graph = GraphFactory.createDefaultGraph() ;
         buildGraph(graph, itemList) ;
         return graph ;
     }
@@ -137,7 +134,7 @@ public class BuilderGraph
             BuilderLib.broken(item, "Not expected in dataset") ;
         }
         if ( ds.getDefaultGraph() == null )
-            ds.setDefaultGraph(GraphUtils.makeDefaultGraph()) ;
+            ds.setDefaultGraph(GraphFactory.createDefaultGraph()) ;
             
         return ds ;
     }

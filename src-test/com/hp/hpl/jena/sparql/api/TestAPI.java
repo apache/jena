@@ -6,13 +6,16 @@
 
 package com.hp.hpl.jena.sparql.api;
 
-import junit.framework.*;
-import org.junit.Test;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
@@ -35,7 +38,7 @@ public class TestAPI extends TestCase
     
     private static final String ns = "http://example/ns#" ;
     
-    static Model m = GraphUtils.makeJenaDefaultModel() ;
+    static Model m = GraphFactory.makeJenaDefaultModel() ;
     static Resource r1 = m.createResource() ;
     static Property p1 = m.createProperty(ns+"p1") ;
     static Property p2 = m.createProperty(ns+"p2") ;

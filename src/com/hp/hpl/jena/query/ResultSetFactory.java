@@ -6,24 +6,21 @@
 
 package com.hp.hpl.jena.query;
 
-import java.io.InputStream;
-import java.util.List;
+import java.io.InputStream ;
+import java.util.List ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.shared.NotFoundException;
-
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.resultset.*;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.resultset.* ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** ResultSetFactory - make result sets from places other than a query.
  * 
@@ -168,7 +165,7 @@ public class ResultSetFactory
     public static Model loadAsModel(Model model, String filenameOrURI, ResultSetFormat format)
     {
         if ( model == null )
-            model = GraphUtils.makeDefaultModel() ;
+            model = GraphFactory.makeDefaultModel() ;
         
         if ( format == null )
             format = ResultSetFormat.guessSyntax(filenameOrURI) ;
@@ -198,9 +195,9 @@ public class ResultSetFactory
             SPARQLResult x = null ;
             
             if ( format.equals(ResultSetFormat.syntaxJSON) )
-                x = JSONInput.make(in, GraphUtils.makeDefaultModel()) ;
+                x = JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
             else
-                x = XMLInput.make(in, GraphUtils.makeDefaultModel()) ;
+                x = XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
                     
             if ( x.isResultSet() )
                 ResultSetFormatter.asRDF(model, x.getResultSet() ) ;

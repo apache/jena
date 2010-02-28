@@ -6,34 +6,29 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.*;
+import java.util.* ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.AlreadyExists;
-import com.hp.hpl.jena.sparql.DoesNotExist;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.modify.op.*;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-
-import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.AlreadyExists ;
+import com.hp.hpl.jena.sparql.DoesNotExist ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.modify.op.* ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.Template ;
+import com.hp.hpl.jena.sparql.util.ALog ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** A general processor for executing SPARQL/Updates on GraphStoreBasic objects*/ 
 public class UpdateProcessorVisitor implements UpdateVisitor
@@ -164,7 +159,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             throw new AlreadyExists("Named graph: "+n) ;
         }
         // Create an in-memory graph.  Persistent layers need to modify this operation.  
-        Graph graph = Factory.createDefaultGraph() ;
+        Graph graph = GraphFactory.createDefaultGraph() ;
         graphStore.addGraph(n, graph) ;
     }
 

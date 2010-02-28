@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /** Base class for RDF related parsers */ 
@@ -383,7 +383,7 @@ public class ParserBase
         List<Triple> acc = new ArrayList<Triple>() ;
         TriplesDataCollector collector = new TriplesDataCollector(acc, line, col) ;
         template.visit(collector) ;
-        Graph g = GraphUtils.makePlainGraph() ;
+        Graph g = GraphFactory.createPlainGraph() ;
         g.getBulkUpdateHandler().add(acc) ;
         return g ;
     }

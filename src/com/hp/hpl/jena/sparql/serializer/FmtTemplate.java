@@ -41,7 +41,7 @@ public class FmtTemplate extends FormatterBase
     {
         SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        FmtTemplate.format(b.getIndentedWriter(), cxt, template) ;
+        FmtTemplate.format(b, cxt, template) ;
         return b.toString() ;
     }
 

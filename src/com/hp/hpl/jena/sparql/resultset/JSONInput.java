@@ -6,31 +6,32 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import com.hp.hpl.jena.sparql.lib.org.json.*;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.ResultBinding;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.util.FileUtils;
-
 import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.NoSuchElementException ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.ResultBinding ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONArray ;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONException ;
+import com.hp.hpl.jena.sparql.lib.org.json.JSONObject ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /**
  * Code that reads a JSON Result Set and builds the ARQ structure for the same.
@@ -47,7 +48,7 @@ public class JSONInput extends SPARQLResult
     public JSONInput(InputStream in, Model model)
     {
         if ( model == null )
-            model = GraphUtils.makeJenaDefaultModel() ;
+            model = GraphFactory.makeJenaDefaultModel() ;
         JSONObject obj = toJSON(in) ;
         JSONResultSet r = new JSONResultSet(obj, model) ;
         if ( r.isResultSet() )

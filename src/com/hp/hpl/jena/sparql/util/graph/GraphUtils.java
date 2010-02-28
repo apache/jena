@@ -6,60 +6,42 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.*;
+import java.util.ArrayList ;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.sparql.util.NotUniqueException ;
+import com.hp.hpl.jena.sparql.util.PropertyRequiredException ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.sparql.util.StringUtils ;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.sparql.util.NotUniqueException;
-import com.hp.hpl.jena.sparql.util.PlainGraphMem;
-import com.hp.hpl.jena.sparql.util.PropertyRequiredException;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.RefBoolean;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-
-/** Graph utilities. 
+/** Graph utilities.  See also GraphFactory. 
  * @author Andy Seaborne
  */ 
 
 public class GraphUtils
 {
-    private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
 
-    // These functions control creating models for datasets.
-    
-    // ---- Model
-    
-    public static Model makeDefaultModel()
-    {
-        return ModelFactory.createModelForGraph(makeDefaultGraph()) ;
-    }
-
-    public static Model makePlainModel()
-    {
-        return ModelFactory.createModelForGraph(makePlainGraph()) ;
-    }
-
-    
-    public static Model makeJenaDefaultModel() { return ModelFactory.createDefaultModel() ; }
-    
-    // ---- Graph
-    
-    public static Graph makeDefaultGraph()
-    { return usePlainGraph.getValue() ? makePlainGraph() : makeJenaDefaultGraph() ; }
-
-    public static Graph makeJenaDefaultGraph() { return Factory.createDefaultGraph() ; }
-    
-    public static Graph makePlainGraph() { return new PlainGraphMem() ; } 
-    
-    // ------- List utilities
-    
     public static List<String> multiValueString(Resource r, Property p)
     {
         List<RDFNode> nodes = multiValue(r, p) ;

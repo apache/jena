@@ -4,49 +4,65 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.util.graph;
 
+import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.util.PlainGraphMem ;
+import com.hp.hpl.jena.sparql.util.RefBoolean ;
 
-public class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
+/** Ways to make graphs and models */
+public class GraphFactory
 {
-    public GraphStoreBasic() { super.setDefaultGraph(GraphFactory.createDefaultGraph()) ; }
+    private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
     
-    public GraphStoreBasic(Dataset ds) { super(ds) ; }
-    
-    public GraphStoreBasic(Graph graph)
+    public static Graph createGraph()
     {
-        super(graph) ;
+        return Factory.createGraphMem() ;
     }
 
-    
-    
-    public Dataset toDataset()
+    /** Create a graph - ARQ-wide default type */
+    public static Graph createDefaultGraph()
     {
-        // This is a shallow structure copy.
-        return new DataSourceImpl(this) ;
+        return usePlainGraph.getValue() ? createPlainGraph() : createJenaDefaultGraph() ;
     }
 
-    public void startRequest()
-    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
-    public void finishRequest()
-    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
-    
-    @Override
-    public void close()
+    /** Create a graph - always the Jena default graph type */
+    public static Graph createJenaDefaultGraph()
     {
-        GraphStoreUtils.actionAll(this, 
-                                  new GraphStoreAction()
-        {
-            public void exec(Graph graph){ graph.close() ; }
-        }) ;
+        return Factory.createDefaultGraph() ;
+    }
+    
+    /** Very simple graph that uses same-term for find() (small-scale use only) */
+    public static Graph createPlainGraph()
+    {
+        return new PlainGraphMem() ;
+    }
+
+    public static Graph sinkGraph()
+    {
+        return new GraphSink() ;
+    }
+
+    /** Guaranteed call-through to Jena's ModelFactory operation */
+    public static Model makeJenaDefaultModel() { return ModelFactory.createDefaultModel() ; }
+    
+    /** Create a model over a default graph (ARQ-wide for degault graph type) */ 
+    public static Model makeDefaultModel()
+    {
+        return ModelFactory.createModelForGraph(createDefaultGraph()) ;
+    }
+
+    /** Create a model over a plain graph (small-scale use only) */ 
+    public static Model makePlainModel()
+    {
+        return ModelFactory.createModelForGraph(createPlainGraph()) ;
     }
 }
+
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
