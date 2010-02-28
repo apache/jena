@@ -31,6 +31,8 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.riot.tokens.Tokenizer ;
+import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -62,6 +64,13 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        Tokenizer tokenizer =TokenizerFactory.makeTokenizerString("_:abc.abc") ;
+        
+        for ( ; tokenizer.hasNext() ; )
+        {
+            System.out.println(tokenizer.next()) ;
+        }
+        System.exit(0) ;
         tdb.tdbdump.main() ; System.exit(0) ;
         
         DevCmds.tdbquery("--query=Q.arq") ;

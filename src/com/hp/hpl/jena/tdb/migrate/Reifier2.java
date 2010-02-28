@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package com.hp.hpl.jena.tdb.migrate;
 
 
 import java.util.Collection;

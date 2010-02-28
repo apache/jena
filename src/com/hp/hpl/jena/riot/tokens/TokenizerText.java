@@ -644,11 +644,12 @@ public final class TokenizerText implements Tokenizer
         boolean seen = false ;
         for(;;)
         {
-            int ch = reader.readChar() ;
+            int ch = reader.peekChar() ;
             if ( ch == EOF )
                 break ;
             if ( ! isA2ZN(ch) && ch != '-' && ch != ':' )
                 break ;
+            reader.readChar() ;
             stringBuilder.append((char)ch) ;
             seen = true ;
         }

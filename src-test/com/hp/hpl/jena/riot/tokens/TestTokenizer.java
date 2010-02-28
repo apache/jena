@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Limited
  * All rights reserved.
  * [See end of file]
  */
@@ -388,6 +389,23 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_bNode5()
     {
+        Tokenizer tokenizer = tokenizer("_:x.    ") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.BNODE, token.getType()) ;
+        assertEquals("x", token.getImage()) ;
+        
+        token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.DOT, token.getType()) ;
+        
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void tokenUnit_cntrl1()
+    {
         Tokenizer tokenizer = tokenizer("*S") ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
@@ -400,7 +418,7 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
-    public void tokenUnit_cntrl1()
+    public void tokenUnit_cntr2()
     {
         Tokenizer tokenizer = tokenizer("*SXYZ") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -413,7 +431,7 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
-    public void tokenUnit_cntrl2()
+    public void tokenUnit_cntrl3()
     {
         Tokenizer tokenizer = tokenizer("*S<x>") ;
         assertTrue(tokenizer.hasNext()) ;
@@ -1054,8 +1072,9 @@ private void pnameToken(Token token, String string1, String string2)
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP All rights
- * reserved.
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP 
+ * (c) Copyright 2010 Talis Information Limited
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

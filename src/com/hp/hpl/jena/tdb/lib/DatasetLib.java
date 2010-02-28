@@ -7,14 +7,11 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import java.io.InputStream ;
-import java.util.HashMap ;
 import java.util.Iterator ;
-import java.util.Map ;
 
 import atlas.io.IO ;
 import atlas.lib.Sink ;
 
-import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -22,14 +19,13 @@ import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.RiotException ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
-import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.migrate.DatasetGraphMem ;
 
 public class DatasetLib
 {
@@ -125,82 +121,11 @@ public class DatasetLib
     // A DatasetGraph that creates memory graphs on mention */
     public static DatasetGraph createDatasetGraphMem()
     {
-        return new DatasetGraphMem(memGraphMaker) ;
+        return new DatasetGraphMem() ;
     }
+
     
-    private interface GraphMaker { Graph create() ; }
-    
-    private static GraphMaker memGraphMaker = new GraphMaker(){
-        public Graph create()
-        {
-            return Factory.createDefaultGraph() ;
-        }
-    } ;
-    
-    /** Implementation of a DatasetGraph where all graphs "exist".
-     * New in-memory graphs are created when a getGraph call is 
-     * made to a graph that has not been allocated.
-     */
-    private static class DatasetGraphMem implements DatasetGraph
-    {
-        private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
-        private Graph defaultGraph ;
-        private GraphMaker graphMaker ;
-
-        protected DatasetGraphMem(GraphMaker graphMaker)
-        {
-            this.graphMaker = graphMaker ;
-            defaultGraph = graphMaker.create() ;
-        }
-
-        public boolean containsGraph(Node graphNode)
-        {
-            return true ;
-        }
-
-        public Graph getDefaultGraph()
-        {
-            return defaultGraph ;
-        }
-
-        public Graph getGraph(Node graphNode)
-        {
-            Graph g = graphs.get(graphNode) ;
-            if ( g == null )
-            {
-                g = newGraph() ;
-                graphs.put(graphNode, g) ;
-            }
-            
-            return g ;
-        }
-
-        private Lock lock = new LockMRSW() ;
-        public Lock getLock()
-        {
-            return lock ;
-        }
-
-        public Iterator<Node> listGraphNodes()
-        {
-            return graphs.keySet().iterator() ;
-        }
-
-        public int size()
-        {
-            return graphs.size() ;
-        }
-
-        public void close()
-        {}
-        
-        private static Graph newGraph()
-        {
-            return Factory.createDefaultGraph() ; 
-        }
-    }
-    
-    // Not sure yet where this wil go.
+     // Not sure yet where this wil go.
     /** @See SinkToGraphTriples */ 
     private static class SinkQuadsToDataset implements Sink<Quad>
     {

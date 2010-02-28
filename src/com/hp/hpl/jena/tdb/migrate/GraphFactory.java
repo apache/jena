@@ -1,41 +1,36 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package com.hp.hpl.jena.tdb.migrate;
 
-import java.util.Map;
-import java.util.Set;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.util.graph.GraphSink;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector.StatsGraph;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.tdb.lib.Sync;
-
-/** Abstract of prefix storage for graphs in an RDF dataset */
-
-public interface DatasetPrefixStorage extends Closeable, Sync
+public class GraphFactory
 {
-    public Set<String> graphNames() ;
-    public String readPrefix(String graphName, String prefix) ;
-    public String readByURI(String graphName, String uriStr) ;
-    public Map<String, String> readPrefixMap(String graphName) ;
+    public static Graph createGraph()
+    {
+        return Factory.createGraphMem() ;
+    }
     
-    public void insertPrefix(String graphName, String prefix, String uri) ;
+    public static StatsGraph statsGraph()
+    {
+        return new StatsGraph() ;
+    }
     
-    public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
-    public void removeFromPrefixMap(String graphName, String prefix, String uri) ;
-    
-    
-    /** Return a PrefixMapping for the unamed graph */ 
-    public PrefixMapping getPrefixMapping() ;
-
-    /** Return a PrefixMapping for a named graph */ 
-    public PrefixMapping getPrefixMapping(String graphName) ;
+    public static Graph sinkGraph()
+    {
+        return new GraphSink() ;
+    }
 }
+
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

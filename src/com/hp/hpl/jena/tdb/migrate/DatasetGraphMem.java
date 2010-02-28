@@ -1,30 +1,31 @@
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package com.hp.hpl.jena.tdb.migrate;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.util.graph.GraphSink;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector.StatsGraph;
+import com.hp.hpl.jena.graph.Graph ;
 
-public class GraphFactory
+/** Implementation of a DatasetGraph where all graphs "exist".
+ * New graphs are created in-memory when a getGraph call is 
+ * made to a graph that has not been allocated.
+ */
+public class DatasetGraphMem extends DatasetGraphOpen
 {
-    public static StatsGraph statsGraph()
-    {
-        return new StatsGraph() ;
-    }
+    static DatasetGraphOpen.GraphMaker memGraphMaker = new GraphMaker(){
+        public Graph create()
+        {
+            return GraphFactory.createGraph() ;
+        }
+    } ;
     
-    public static Graph sinkGraph()
-    {
-        return new GraphSink() ;
-    }
+    public DatasetGraphMem() { super(memGraphMaker) ; }
 }
 
 /*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,11 @@
-#<x> <p> "abc"^^<http://www.w3.org/2001/XMLSchema#int> .
-<x> <p> "123"^^<http://www.w3.org/2001/XMLSchema#int> .
-<http://example/x> <http://example/p> "foo" .
-<http://example/x> <http://example/p> "foo"@en .
-#<http://example/x> <http://example/p> "foo"@en1223 .
+## #<x> <p> "abc"^^<http://www.w3.org/2001/XMLSchema#int> .
+## <x> <p> "123"^^<http://www.w3.org/2001/XMLSchema#int> .
+## <http://example/x> <http://example/p> "foo" .
+## <http://example/x> <http://example/p> "foo"@en .
+## #<http://example/x> <http://example/p> "foo"@en1223 .
+
+<x> <p> _:x .
+<x> <p> _:x.
+
 
 

@@ -1,36 +1,41 @@
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package com.hp.hpl.jena.tdb.migrate;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.util.Map;
+import java.util.Set;
 
-/** Count adds */
-public class CountingSinkGraph extends GraphBase
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.tdb.lib.Sync;
+
+/** Abstract of prefix storage for graphs in an RDF dataset */
+
+public interface DatasetPrefixStorage extends Closeable, Sync
 {
-    public long count = 0 ;
-    @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
-    {
-        return null ;
-    }
-
-    @Override
-    public void performAdd( Triple t ) 
-    { 
-        count++ ;
-    }
+    public Set<String> graphNames() ;
+    public String readPrefix(String graphName, String prefix) ;
+    public String readByURI(String graphName, String uriStr) ;
+    public Map<String, String> readPrefixMap(String graphName) ;
     
-}
+    public void insertPrefix(String graphName, String prefix, String uri) ;
+    
+    public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
+    public void removeFromPrefixMap(String graphName, String prefix, String uri) ;
+    
+    
+    /** Return a PrefixMapping for the unamed graph */ 
+    public PrefixMapping getPrefixMapping() ;
 
+    /** Return a PrefixMapping for a named graph */ 
+    public PrefixMapping getPrefixMapping(String graphName) ;
+}
 /*
- * (c) Copyright 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

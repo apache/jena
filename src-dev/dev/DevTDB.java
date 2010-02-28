@@ -17,10 +17,6 @@ public class DevTDB
     //     NQuads in Trig.
     //     Trailling dots ??
     // Document
-    // NTriples - trailing dot.
-    
-    // <x> <p> _:x.
-    
     
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
@@ -29,6 +25,8 @@ public class DevTDB
     // DatasetGraphMem() to sparql.core
     // DataSource/DataSourceGraph == general purpose model/graph bundler 
 
+    // DatsetGraphTDB via DatasetGraphOpen
+    
     // --------
 
     // Pipeline.

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.graph;
+package com.hp.hpl.jena.tdb.migrate;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.impl.AllCapabilities ;
