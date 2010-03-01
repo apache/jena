@@ -12,6 +12,8 @@ public class DevTDB
     // == 0.8.5 / ARQ 2.8.3
     
     // RIOT
+    //  Test ErrorHandlerStd.
+    //  Bad lexical form ==> exception when parsing (ErrorHandlerStd.error) 
     //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)
     //   TriG extensions
     //     NQuads in Trig.
@@ -22,11 +24,7 @@ public class DevTDB
     // http://openjena.org/wiki/TDB/Commands
     
     // Tidy up:
-    // DatasetGraphMem() to sparql.core
-    // DataSource/DataSourceGraph == general purpose model/graph bundler 
 
-    // DatsetGraphTDB via DatasetGraphOpen
-    
     // --------
 
     // Pipeline.

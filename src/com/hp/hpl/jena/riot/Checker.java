@@ -143,17 +143,17 @@ public final class Checker
         // Datatype check (and plain literals are always well formed)
         if ( lit.getDatatype() != null && ! lit.isWellFormed() )
         {
-            handler.error("Lexical not valid for datatype: "+node, line, col) ;
+            handler.warning("Lexical not valid for datatype: "+node, line, col) ;
             return false; 
         }
 
         if (lit.language() != null )
         {
-            // Not a pefect test.
+            // Not a perfect test.
             String lang = lit.language() ;
-            if ( lang.length() > 0 && ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
+            if ( lang.length() > 0 && ! lang.matches("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") )
             {
-                handler.error("Language not valid: "+node, line, col) ;
+                handler.warning("Language not valid: "+node, line, col) ;
                 return false; 
             }
         }
