@@ -73,6 +73,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( token.isNode() )
         {
             graphNode = node() ;
+            checker.check(graphNode,  token.getLine(), token.getColumn()) ;
             nextToken() ;
             token = peekToken() ;
 
