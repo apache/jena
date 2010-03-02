@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.riot;
 
+import static com.hp.hpl.jena.riot.WebContent.* ;
+
 import com.hp.hpl.jena.util.FileUtils ;
 
 public enum Lang
@@ -23,13 +25,13 @@ public enum Lang
     private final String name ;
     private final boolean isTriples ;
 
-    public static final String langXML          = FileUtils.langXML ;
-    public static final String langNTriple      = "N-TRIPLES" ; // FileUtils is wrong.
-    public static final String langN3           = FileUtils.langN3 ;
-    public static final String langTurtle       = FileUtils.langTurtle ;
-    
-    public static final String langNQuads       = "N-QUADS" ;
-    public static final String langTrig         = "TRIG" ;
+//    public static final String langXML          = langXML ;
+//    public static final String langNTriple      = langNTriple ; // FileUtils is wrong.
+//    public static final String langN3           = FileUtils.langN3 ;
+//    public static final String langTurtle       = FileUtils.langTurtle ;
+//    
+//    public static final String langNQuads       = "N-QUADS" ;
+//    public static final String langTrig         = "TRIG" ;
 
     public static final String[] extRDFXML      = { "rdf", "owl", "xml" } ;
     public static final String[] extNTriples    = { "nt" } ;
@@ -55,18 +57,28 @@ public enum Lang
     public String toString() { return "lang:"+name ; }
     
     /** Translate a name into a Lang
-     * Throws RiotException is the name is not recognized.
+     * Throws RiotException if the name is not recognized.
      */
     public static Lang get(String name)
     {
-        if ( name.equalsIgnoreCase(langXML) )                   return RDFXML ;
-        if ( name.equalsIgnoreCase(FileUtils.langXMLAbbrev) )   return RDFXML ;
+        Lang lang = get(name, null) ;
+        if ( lang == null )
+            throw new RiotException("No such language: "+name) ;
+        return lang ;
+    }
+    
+    /** Translate a name into a Lang, rturn the default if no match found.
+     */
+    public static Lang get(String name, Lang dftLang)
+    {
+        if ( name.equalsIgnoreCase(langRDFXML) )                return RDFXML ;
+        if ( name.equalsIgnoreCase(langRDFXMLAbbrev) )          return RDFXML ;
         if ( name.equalsIgnoreCase(langNTriple) )               return NTRIPLES ;
-        if ( name.equalsIgnoreCase(FileUtils.langNTriple) )     return NTRIPLES ;
+        if ( name.equalsIgnoreCase(langNTriples) )              return NTRIPLES ;
         if ( name.equalsIgnoreCase(langTurtle) )                return TURTLE ;
         if ( name.equalsIgnoreCase(langNQuads) )                return NQUADS ;
-        if ( name.equalsIgnoreCase(langTrig) )                  return TRIG ;
-        throw new RiotException("No such language: "+name) ;
+        if ( name.equalsIgnoreCase(langTriG) )                  return TRIG ;
+        return dftLang ;
     }
     
     /** Guess the filetype, based on filename, or URL, extenstion.

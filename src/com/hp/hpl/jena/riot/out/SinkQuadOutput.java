@@ -112,7 +112,7 @@ public class SinkQuadOutput implements Sink<Quad>
         OutputLangUtils.output(out, p, prologue) ;
         out.output(" ") ;
         OutputLangUtils.output(out, o, prologue) ;
-        if ( g != null )
+        if ( g != Quad.tripleInQuad )
         {
             out.output(" ") ;
             OutputLangUtils.output(out, g, prologue) ;

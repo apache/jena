@@ -216,7 +216,7 @@ public final class TokenizerText implements Tokenizer
         if ( ch == CH_UNDERSCORE )        // Blank node :label must be at least one char
         {
             expect("_:") ;
-            token.setImage(blankNodeLabel()) ;
+            token.setImage(readBlankNodeLabel()) ;
             token.setType(TokenType.BNODE) ;
             if ( Checking ) checkBlankNode(token.getImage()) ;
             return token ;
@@ -636,9 +636,9 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Blank node label: A-Z,a-z0-9 and '-'
+    // Blank node label: A-Z,a-z0-9 and '-' and ':'
     // Also possible: skip to space or EOF
-    private String blankNodeLabel()
+    private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;
         boolean seen = false ;
