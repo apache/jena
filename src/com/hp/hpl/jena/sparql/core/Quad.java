@@ -27,7 +27,6 @@ public class Quad
 
     /** Name of the non-graph when a quad is really a triple -- the default graph when parsing N-Quads or TriG for example */
     public static final Node tripleInQuad           =  null ;
-
     
     /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
     public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
