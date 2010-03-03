@@ -13,6 +13,7 @@ import java.util.Set ;
 
 import atlas.io.IO ;
 import atlas.iterator.Filter ;
+import atlas.lib.FileOps ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkCounting ;
 import atlas.lib.SinkPrint ;
@@ -28,11 +29,13 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.ParserFactory ;
 import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.riot.tokens.TokenizerFactory ;
+import com.hp.hpl.jena.shared.uuid.JenaUUID ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
@@ -42,6 +45,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -64,7 +68,24 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
-        Tokenizer tokenizer =TokenizerFactory.makeTokenizerString("_:abc.abc") ;
+        //UUID uuid = UUID.randomUUID() ;
+        JenaUUID uuid = JenaUUID.generate() ;
+
+        AnonId aid = new AnonId(uuid.toString()) ;
+        
+        
+        Node n = Node.createAnon(aid) ;
+        
+        String $ = NodeFmtLib.serialize(n) ;
+        System.out.println($) ;
+        System.exit(0) ;
+        
+        FileOps.clearDirectory("DB") ;
+        tdb.tdbloader.main("--loc=D", "tmp/cofog-provenance.trig") ;
+        System.exit(0) ;
+        
+        
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("_:abc.abc") ;
         
         for ( ; tokenizer.hasNext() ; )
         {

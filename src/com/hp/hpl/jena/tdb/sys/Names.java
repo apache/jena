@@ -43,9 +43,10 @@ public class Names
     public static final String indexPrefix              = "prefixIdx";      // Primary key on the prefixes table.
     
     /** Optimizer / stats */
-    public static final String optStats                 = "stats.opt";
-    public static final String optDefault               = "fixed.opt";      // Currently, it's just the presence of this file that matters.
-    public static final String optNone                  = "none.opt"; 
+    public static final String optStats                 = "stats.opt" ;
+    public static final String optFixed                 = "fixed.opt" ;
+    public static final String optNone                  = "none.opt" ; 
+    public static final String optDefault               = optFixed ;
     
     public static final String extMeta                  = "info" ;
     public static final String directoryMetafile        = "this" ;          // Root name of the directory for a metafile.  

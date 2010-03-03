@@ -88,6 +88,8 @@ public class QuadTable implements Sync, Closeable
     public void sync(boolean force)
     { table.sync(force) ; }
 
+    public boolean isEmpty()        { return table.isEmpty() ; }
+    
     //@Override
     public void close()
     { table.close() ; }

@@ -41,7 +41,7 @@ public class StatsCollector
 {
     private static Item ZERO = Item.createNode(NodeFactory.intToNode(0)) ;
     
-    public static class StatsGraph extends GraphBase
+    public static class StatsGraph_OLD extends GraphBase
     {
         // Connect to StatsWriter.
         

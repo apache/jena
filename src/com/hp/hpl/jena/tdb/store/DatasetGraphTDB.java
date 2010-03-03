@@ -145,6 +145,10 @@ public class DatasetGraphTDB extends DatasetGraphBase
 
     //@Override
     public int size()                   { return (int)Iter.count(listGraphNodes()) ; }
+
+    //@Override
+    public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
+
     
     public Location getLocation()       { return location ; }
 

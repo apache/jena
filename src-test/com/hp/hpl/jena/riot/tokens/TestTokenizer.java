@@ -404,6 +404,28 @@ public class TestTokenizer extends BaseTest
     }
 
     @Test
+    public void tokenUnit_bNode6()
+    {
+        Tokenizer tokenizer = tokenizer("_:x:a.    ") ;
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.BNODE, token.getType()) ;
+        assertEquals("x", token.getImage()) ;
+        
+        token = tokenizer.next() ;
+        assertEquals(TokenType.PREFIXED_NAME, token.getType()) ;
+        assertEquals("", token.getImage()) ;
+        assertEquals("a", token.getImage2()) ;
+        
+        token = tokenizer.next() ;
+        assertNotNull(token) ;
+        assertEquals(TokenType.DOT, token.getType()) ;
+        
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
     public void tokenUnit_cntrl1()
     {
         Tokenizer tokenizer = tokenizer("*S") ;

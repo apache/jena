@@ -24,8 +24,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph ;
 import com.hp.hpl.jena.sparql.util.IndentedWriter ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
 
 public class DatasetLib
 {
@@ -122,44 +120,6 @@ public class DatasetLib
     public static DatasetGraph createDatasetGraphMem()
     {
         return new DatasetGraphMem() ;
-    }
-
-    
-     // Not sure yet where this wil go.
-    /** @See SinkToGraphTriples */ 
-    private static class SinkQuadsToDataset implements Sink<Quad>
-    {
-        private final DatasetGraph dataset ;
-        private Node graphNode = null ;
-        private Graph graph = null ;
-
-        SinkQuadsToDataset(DatasetGraph dataset)
-        {
-            this.dataset = dataset ;
-        }
-        
-        public void send(Quad quad)
-        {
-            if ( graph == null || ! Utils.equal(quad.getGraph(), graphNode) )
-            {
-                // graph == null ==> Uninitialized
-                // not equals ==> different graph to last time.
-                graphNode = quad.getGraph() ;
-                if ( quad.isTriple() )
-                    graph = dataset.getDefaultGraph() ;
-                else
-                    graph = dataset.getGraph(graphNode) ;
-            }
-            graph.add(quad.asTriple()) ;
-        }
-
-        public void flush()
-        {
-            TDB.sync(dataset) ;
-        }
-
-        public void close()
-        {}
     }
 }
 

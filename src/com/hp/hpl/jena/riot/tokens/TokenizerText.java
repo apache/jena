@@ -194,7 +194,7 @@ public final class TokenizerText implements Tokenizer
                 int nextCh = reader.peekChar() ;
                 if ( isWhitespace(nextCh) )
                     exception("No whitespace after ^^ in literal with datatype") ;
-                if ( nextCh != '<' && ! isA2Z(nextCh) )
+                if ( nextCh != '<' && ! isAlpha(nextCh) )
                     exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
 
                 // Stash current token.
@@ -606,6 +606,7 @@ public final class TokenizerText implements Tokenizer
         return stringBuilder.toString();
     }
     
+    // ASCII-only e.g. in lang tags.
     private void a2z(StringBuilder sb2)
     {
         for ( ;; )
@@ -636,8 +637,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Blank node label: A-Z,a-z0-9 and '-' and ':'
-    // Also possible: skip to space or EOF
+    // Blank node label: letters, numbers and '-'
     private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;
@@ -647,7 +647,7 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.peekChar() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isA2ZN(ch) && ch != '-' && ch != ':' )
+            if ( ! isAlphaNumeric(ch) && ch != '-' )
                 break ;
             reader.readChar() ;
             stringBuilder.append((char)ch) ;

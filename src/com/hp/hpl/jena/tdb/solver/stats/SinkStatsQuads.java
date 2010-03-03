@@ -4,47 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.tokens;
+package com.hp.hpl.jena.tdb.solver.stats;
 
-import java.io.InputStream ;
-import java.io.Reader ;
+import atlas.lib.Sink ;
 
-import atlas.io.PeekInputStream ;
-import atlas.io.PeekReader ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class TokenizerFactory
+public class SinkStatsQuads extends SinkStatsBase implements Sink<Quad>
 {
-    public static Tokenizer makeTokenizer(Reader reader)
-    {
-        PeekReader peekReader = PeekReader.make(reader) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
-    }
+    public SinkStatsQuads() {}
     
-    public static Tokenizer makeTokenizer(InputStream in)
+    public void send(Quad quad)
     {
-        if ( false )
-        {
-            // Byte parser
-            // This is the fastest way but is less tested
-            // At most 10% faster.
-            PeekInputStream pin = PeekInputStream.make(in) ;
-            Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            return tokenizer ;
-        }
-        
-        // Most tested way
-        PeekReader peekReader = PeekReader.makeUTF8(in) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
+        super.count(quad.getGraph(), quad.getPredicate()) ;
     }
 
-    public static Tokenizer makeTokenizerString(String str)
-    {
-        PeekReader peekReader = PeekReader.readString(str) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
-    }
+    public void flush()
+    {}
+
+    public void close()
+    {}
 }
 
 /*

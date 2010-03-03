@@ -6,21 +6,21 @@
 
 package tdb;
 
-import java.util.List;
+import java.util.List ;
 
-import tdb.cmdline.CmdTDB;
+import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.ModModel ;
-import arq.cmdline.ArgDecl;
-import atlas.logging.Log;
+import arq.cmdline.ArgDecl ;
+import atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
-import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 import com.hp.hpl.jena.tdb.store.BulkLoader ;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.BulkLoaderDataset ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 public class tdbloader extends CmdTDB
 {
@@ -106,13 +106,17 @@ public class tdbloader extends CmdTDB
         
         if ( graphName == null )
         {
-            // Quads
-            for ( String url : urls )
-            {
-                Lang lang = Lang.guess(url) ;
-                DatasetLib.read(url, getDatasetGraph(), lang, url) ;
-            }
+            BulkLoaderDataset loader = new BulkLoaderDataset(getDatasetGraph(), timing, generateStats) ;
+            loader.load(urls) ;
             return ;
+//            // Quads
+//            for ( String url : urls )
+//            {
+//                
+//                Lang lang = Lang.guess(url) ;
+//                DatasetLib.read(url, getDatasetGraph(), lang, url) ;
+//            }
+//            return ;
         }
 
         // Explicitly named graph
@@ -124,7 +128,7 @@ public class tdbloader extends CmdTDB
                 cmdError("Can only load triples into a named model: "+url) ;
         }
 
-        TDBLoader.loadSimple(model, urls, timing) ;
+        TDBLoader.loadModel(model, urls, timing) ;
     }
 }
 

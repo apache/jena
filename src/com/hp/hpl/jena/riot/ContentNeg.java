@@ -157,7 +157,7 @@ public class ContentNeg
     static Map<String, String> readers = new HashMap<String, String>() ;
     static { init(); }
     
-    // See also Lang and WebContent.
+    // XXX See also Lang and WebContent.
     private static void init()
     {
         extToMimeType.put("n3",     contentTypeN3) ;

@@ -4,46 +4,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.riot.tokens;
+package com.hp.hpl.jena.tdb.solver.stats;
 
-import java.io.InputStream ;
-import java.io.Reader ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import atlas.io.PeekInputStream ;
-import atlas.io.PeekReader ;
+import atlas.lib.MapUtils ;
 
-public class TokenizerFactory
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+
+public class SinkStatsBase
 {
-    public static Tokenizer makeTokenizer(Reader reader)
+    private Map<Node, Integer> predicates = new HashMap<Node, Integer>() ;
+    private long count = 0 ;
+
+    public void count(Node graph, Node predicate)
     {
-        PeekReader peekReader = PeekReader.make(reader) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
+        MapUtils.increment(predicates, predicate) ;
     }
     
-    public static Tokenizer makeTokenizer(InputStream in)
+    public Item stats()
     {
-        if ( false )
-        {
-            // Byte parser
-            // This is the fastest way but is less tested
-            // At most 10% faster.
-            PeekInputStream pin = PeekInputStream.make(in) ;
-            Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            return tokenizer ;
-        }
-        
-        // Most tested way
-        PeekReader peekReader = PeekReader.makeUTF8(in) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
-    }
-
-    public static Tokenizer makeTokenizerString(String str)
-    {
-        PeekReader peekReader = PeekReader.readString(str) ;
-        Tokenizer tokenizer = new TokenizerText(peekReader) ;
-        return tokenizer ;
+        count = predicates.keySet().size() ;
+        return StatsCollector.format(predicates, count) ;
     }
 }
 

@@ -49,52 +49,65 @@ public class RiotChars
     public static final char CH_RSLASH       = '\\' ;
     
     // Byte versions of the above
-    public static final byte B_NL           = NL ;
-    public static final byte B_CR           = CR ;
+    public static final byte B_NL            = NL ;
+    public static final byte B_CR            = CR ;
     
-    public static final byte B_LBRACKET     = '[' ;
-    public static final byte B_RBRACKET     = ']' ;
+    public static final byte B_LBRACKET      = '[' ;
+    public static final byte B_RBRACKET      = ']' ;
     
-    public static final byte B_LBRACE       = '{' ;
-    public static final byte B_RBRACE       = '}' ;
+    public static final byte B_LBRACE        = '{' ;
+    public static final byte B_RBRACE        = '}' ;
 
-    public static final byte B_LPAREN       = '(' ;
-    public static final byte B_RPAREN       = ')' ;
+    public static final byte B_LPAREN        = '(' ;
+    public static final byte B_RPAREN        = ')' ;
 
-    public static final byte B_LT           = '<' ;
-    public static final byte B_GT           = '>' ;
-    public static final byte B_UNDERSCORE   = '_' ;
+    public static final byte B_LT            = '<' ;
+    public static final byte B_GT            = '>' ;
+    public static final byte B_UNDERSCORE    = '_' ;
 
-    public static final byte B_QUOTE1       = '\'' ;
-    public static final byte B_QUOTE2       = '"' ;
+    public static final byte B_QUOTE1        = '\'' ;
+    public static final byte B_QUOTE2        = '"' ;
 
-    public static final byte B_EQUALS       = '=' ;
-    public static final byte B_STAR         = '*' ;
-    public static final byte B_DOT          = '.' ;
-    public static final byte B_COMMA        = ',' ;
-    public static final byte B_SEMICOLON    = ';' ;
-    public static final byte B_COLON        = ':' ;
-    public static final byte B_AT           = '@' ;
-    public static final byte B_QMARK        = '?' ;
-    public static final byte B_HASH         = '#' ;
-    public static final byte B_PLUS         = '+' ;
-    public static final byte B_MINUS        = '-' ;
-    public static final byte B_SLASH        = '/' ;
-    public static final byte B_RSLASH       = '\\' ;
+    public static final byte B_EQUALS        = '=' ;
+    public static final byte B_STAR          = '*' ;
+    public static final byte B_DOT           = '.' ;
+    public static final byte B_COMMA         = ',' ;
+    public static final byte B_SEMICOLON     = ';' ;
+    public static final byte B_COLON         = ':' ;
+    public static final byte B_AT            = '@' ;
+    public static final byte B_QMARK         = '?' ;
+    public static final byte B_HASH          = '#' ;
+    public static final byte B_PLUS          = '+' ;
+    public static final byte B_MINUS         = '-' ;
+    public static final byte B_SLASH         = '/' ;
+    public static final byte B_RSLASH        = '\\' ;
     
     
     // ---- Character classes 
     
+    public static boolean isAlpha(int codepoint)
+    {
+        return Character.isLetter(codepoint) ;
+    }
+    
+    public static boolean isAlphaNumeric(int codepoint)
+    {
+        return Character.isLetterOrDigit(codepoint) ;
+    }
+    
+    /** ASCII A-Z */
     public static boolean isA2Z(int ch)
     {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
     }
 
+    /** ASCII A-Z or 0-9 */
     public static boolean isA2ZN(int ch)
     {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
     }
 
+    /** ASCII 0-9 */
     public static boolean isDigit(int ch)
     {
         return range(ch, '0', '9') ;

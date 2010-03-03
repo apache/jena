@@ -47,22 +47,25 @@ public class NodeFmtLib
     public static String displayStr(Node n) { return FmtUtils.stringForNode(n) ; }
 
     public static String serialize(Node n)
-    { return  serialize(n, null, null) ; }
+    { return serialize(n, null, null) ; }
 
     public static String serialize(Node n, Prologue prologue)
-    { return  serialize(n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
+    { return serialize(n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
 
     
     /** Encoding of a node so it can be reconstructed */ 
     public static String serialize(Node n, String base, PrefixMap prefixMap)
     {
         // See also Nodec.
+        // See also OutputLangUtils - merge and this is a buffering call.
+        
         if ( n == null )
             return "<<null>>" ;
         
         if ( n.isBlank() )
         {
             String str = n.getBlankNodeLabel() ;
+            // c.f. OutputLangUtils
             if ( onlySafeBNodeLabels )
                 str = safeBNodeLabel(str) ;
             return "_:"+str ;
@@ -109,7 +112,7 @@ public class NodeFmtLib
     
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X' ;
-    // The charactsers 
+    // The characters 
     static char[] invalidBNodeLabelChars = new char[]{encodeMarkerChar, ':', '-'} ;  
 
     public static String safeBNodeLabel(String label)

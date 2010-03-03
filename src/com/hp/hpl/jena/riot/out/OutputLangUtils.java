@@ -28,6 +28,7 @@ public class OutputLangUtils
     // Make an object so it can have per-instance flags
     // ASCII vs UTF-8
     // Abbreviate numbers or not.
+    // Avoids creating intermediate strings.
     
     private static boolean asciiOnly = true ;
 

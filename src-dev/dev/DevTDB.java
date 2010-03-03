@@ -10,8 +10,14 @@ package dev;
 public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
+    // TDB loader - triples version does not take .gz
+    // Redo triples loader to be like dataset loader and have common superclass.
+    
+    // Stats and datasets
+    //   tdbstats
     
     // RIOT
+    // RiotChars.isA2Z etc - check usage - and use Character.isLetterOrDigit
     //  Test ErrorHandlerStd.
     //  Bad lexical form ==> exception when parsing (ErrorHandlerStd.error) 
     //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)

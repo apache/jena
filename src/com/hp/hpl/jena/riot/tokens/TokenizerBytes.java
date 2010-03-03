@@ -22,6 +22,14 @@ import com.hp.hpl.jena.riot.ParseException;
 
 public final class TokenizerBytes implements Tokenizer
 {
+    // UNFINISHED: ASCII only.
+    
+    // This class works directly on bytes but can't handle some multi-byte
+    // cases (e.g. start of a prefixed name).  Better to work in character space
+    // (conversion has to be done anyway) even if it's over a very simple
+    // a simple UTF-8 decoder or the standard Java one (which is quite 
+    // efficient if done in large blocks of bytes).
+    
     /* Better - TokenizerBase
      * Abstract InputSource  
      *   Iterator
@@ -201,6 +209,7 @@ public final class TokenizerBytes implements Tokenizer
                 int nextCh = inputStream.peekByte() ;
                 if ( isWhitespace(nextCh) )
                     exception("No whitespace after ^^ in literal with datatype") ;
+                // ASCII assumed here.
                 if ( nextCh != '<' && ! isA2Z(nextCh) )
                     exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
 
@@ -223,7 +232,7 @@ public final class TokenizerBytes implements Tokenizer
         if ( chByte == B_UNDERSCORE )        // Blank node :label must be at least one char
         {
             expect("_:") ;
-            token.setImage(blankNodeLabel()) ;
+            token.setImage(readBlankNodeLabel()) ;
             token.setType(TokenType.BNODE) ;
             if ( Checking ) checkBlankNode(token.getImage()) ;
             return token ;
@@ -649,7 +658,7 @@ public final class TokenizerBytes implements Tokenizer
 
     // Blank node label: A-Z,a-z0-9 and '-'
     // Also possible: skip to space or EOF
-    private String blankNodeLabel()
+    private String readBlankNodeLabel()
     {
         stringBuilder.setLength(0) ;
         boolean seen = false ;
@@ -658,9 +667,8 @@ public final class TokenizerBytes implements Tokenizer
             int ch = inputStream.readByte() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isA2ZN(ch) && ch != '-' && ch != ':' )
+            if ( ! isAlphaNumeric(ch) && ch != '-' )
                 break ;
-            // Less than codepoint 128
             stringBuilder.append((char)ch) ;
             seen = true ;
         }

@@ -17,7 +17,6 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.Semaphore ;
 
-import atlas.io.IO ;
 import atlas.lib.ArrayUtils ;
 import atlas.lib.InternalErrorException ;
 import atlas.lib.MapUtils ;
@@ -25,7 +24,6 @@ import atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.riot.Lang ;
@@ -39,10 +37,9 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase ;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor ;
-import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.lib.DatasetLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.sys.Names ;
@@ -71,7 +68,12 @@ public class BulkLoader
     private TupleIndex[] secondaryIndexes ;
     
     private Item statsItem = null ;
-    private NodeTupleTable nodeTupleTable ; 
+    private NodeTupleTable nodeTupleTable ;
+    
+    // Variables acorss load operations
+    private boolean dropAndRebuildIndexes ;
+    private Timer timer ;
+    private long count ; 
     
     // ---- Load graph
     /** @deprecated Use {@link TDBLoader} */
@@ -169,19 +171,47 @@ public class BulkLoader
         // This is the model-only loader
         for ( String url : urls )
         {
+            if ( url.equals("-") )
+                continue ;
             Lang lang = Lang.guess(url) ;
             if ( lang != null && lang.isQuads() )
                 throw new InternalErrorException("Unexpected: quads format: "+url) ;
         }
+        
+        
+        loadPrepare() ;
+        
+        timer = new Timer() ;
+        timer.startTimer() ;
+        
+        doLoad(urls) ;
+        
+        timer.endTimer() ;
 
+        loadFinalize() ;
+    }
+    
+    public void load(InputStream input)
+    {
+        loadPrepare() ;
         
-        Model model = ModelFactory.createModelForGraph(graph) ;
+        timer = new Timer() ;
+        timer.startTimer() ;
         
-        boolean rebuildIndexes = ! doIncremental ;
+        doLoad(input) ;
+        
+        timer.endTimer() ;
+        
+        loadFinalize() ;
+    }
+    
+    private void loadPrepare()
+    {
+        dropAndRebuildIndexes = ! doIncremental ;
         if ( ! graph.isEmpty() )
-            rebuildIndexes = false ;
+            dropAndRebuildIndexes = false ;
         
-        if ( rebuildIndexes )
+        if ( dropAndRebuildIndexes )
         {
             println("** Load empty graph") ;
             // SPO only.
@@ -192,16 +222,31 @@ public class BulkLoader
             println("** Load graph with existing data") ;
             generateStats = false ;
         }
+    }
         
+    private void doLoad(InputStream input)
+    {
         graph.startUpdate() ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
         
-        Timer timer = new Timer() ;
-        timer.startTimer() ;
+        count = 0 ;
+        statsStart(model) ;
+        now("-- Start data phase") ;
+        count += load(model, input, showProgress) ;
+        now("-- Finish data phase") ;
+        statsFinish(model) ;
         
-//        // Side effect : with no files to load, it copies the SPO index to the secondary indexes.
-//        if ( timing && super.getPositional().size() > 0 )
-//            println("** Load data") ;
-        long count = 0 ;
+        graph.finishUpdate() ;
+        graph.sync(true) ;
+        
+    }
+
+    private void doLoad(List<String> urls)
+    {
+        graph.startUpdate() ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        
+        count = 0 ;
         
         for ( String url : urls )
         {
@@ -212,6 +257,15 @@ public class BulkLoader
             statsFinish(model) ;
         }
         
+        graph.finishUpdate() ;
+        // Especially the node table.
+        graph.sync(true) ;
+        // Close other resourses (node table).
+    }
+    
+        
+    private void loadFinalize()
+    {
         if ( generateStats && statsItem != null )
         {
             String fn = graph.getLocation().getPath(Names.optStats) ;
@@ -228,13 +282,8 @@ public class BulkLoader
             }
         }
         
-        // Especially the node table.
-        graph.sync(true) ;
-        // Close other resourses (node table).
-        
         println() ;
-        
-        if ( rebuildIndexes )
+        if ( dropAndRebuildIndexes )
         {
             now("-- Start index phase") ;
             if ( showProgress )
@@ -254,7 +303,6 @@ public class BulkLoader
         // ??
         //graph.close() ;
 
-        timer.endTimer() ;
         long time = timer.getTimeInterval() ;
         if ( showProgress )
         {
@@ -264,6 +312,21 @@ public class BulkLoader
         }
     }
 
+    /** Load a model, with monitoring */ 
+    public static long load(Model model, InputStream input, boolean showProgress)
+    {
+        // TODO Switch to better event system
+        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
+        if ( showProgress )
+            model.getGraph().getEventManager().register(monitor) ;
+        
+        // MUST BE N-TRIPLES
+        model.read(input, null, "N-TRIPLES") ;
+        
+        if ( showProgress )
+            model.getGraph().getEventManager().unregister(monitor) ;
+        return showProgress ? monitor.getAddCount() : -1 ;
+    }
     
     /** Load a model, with monitoring */ 
     public static long load(Model model, String url, boolean showProgress)
@@ -284,41 +347,7 @@ public class BulkLoader
         return showProgress ? monitor.getAddCount() : -1 ;
     }
     
-    /** Load a dataset, with monitoring */ 
-    public static long load(Dataset dataset, String url, boolean showProgress)
-    {
-        // Bad name.
-//        GraphLoadMonitor monitor = new GraphLoadMonitor(LoadTickPoint, false) ;
-//        if ( showProgress )
-//            model.getGraph().getEventManager().register(monitor) ;
-        
-        
-        Lang lang ;
-        InputStream input ;
-        String baseURI = null ;
-        if ( url.equals("-") )
-        {
-            // MUST BE N-Quads
-            lang = Lang.NQUADS ;
-            input = System.in ;
-        }
-        else
-        {
-            lang = Lang.guess(url) ;
-            input = IO.openFile(url) ;
-            baseURI = url ;
-        }
-            
-        DatasetLib.read(input, dataset.asDatasetGraph(), lang, baseURI) ;  
-//        if ( showProgress )
-//            model.getGraph().getEventManager().unregister(monitor) ;
-//        return showProgress ? monitor.getAddCount() : -1 ;
-        return -1 ;
-    }
-
-
     // --------
-    // TODO Unique triples only.
     private GraphStatsCollector statsMonitor = new GraphStatsCollector() ;
         
     private static class GraphStatsCollector extends GraphListenerBase
