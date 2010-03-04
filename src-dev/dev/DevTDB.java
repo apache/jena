@@ -1,4 +1,4 @@
-package dev;
+package dev ;
 
 public class DevTDB
 {
@@ -11,14 +11,13 @@ public class DevTDB
     //   tdbstats
     
     // RIOT
-    //  Test ErrorHandlerStd.
-    //   Bnode scopes ==> testing (NT, TTL, TRIG, NQ)
     //     NQuads in Trig ??
     //     Trailling dots ??
     // Document
     
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
+    //   and point to ARQ commands.
     
     // Tidy up:
 
