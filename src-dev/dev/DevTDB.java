@@ -17,7 +17,6 @@ public class DevTDB
     
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
-    //   and point to ARQ commands.
     
     // Tidy up:
 
@@ -31,7 +30,7 @@ public class DevTDB
     // Just need to keep var -> first def mapping but all mentions may be useful. 
     // (Idea from Alisdair)
     
-    // **** Per dataset context.  Merge into execution.
+    // **** Per dataset context.  Need ARQ change.
     //   Set in assembler
     //   Global context for this as well TDB.getDatasetDefault() ;
     // 
@@ -40,6 +39,20 @@ public class DevTDB
     //   NodeCache
     //   Block cache for 32 bit
     //   Run with 32 bit block cache on 64 bit large machine to measure difference.
+
+    // ** Advanced block work - free chain management.
+    // Negative count? No 
+    // Block is currently (B+Tree block)
+    //  final public static int COUNT      = 0 ;
+    //  final public static int LINK       = 4 ;
+    // HashBucket
+    //   final public static int TRIE        = COUNT+4 ;
+    //   final public static int BITLEN      = TRIE+4 ;
+    // On-disk: first 4 bytes is type << 24 | count
+    //   ?? Allocate a type for a free block.
+    //   ?? Maintain a free block disk
+    //   ==> recordfile level.
+    
     
     // Special cases
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
