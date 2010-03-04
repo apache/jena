@@ -15,6 +15,7 @@ import java.util.List ;
 import atlas.io.IO ;
 import atlas.lib.Sink ;
 import atlas.lib.SinkSplit ;
+import atlas.logging.Log ;
 
 import com.hp.hpl.jena.riot.Lang ;
 import com.hp.hpl.jena.riot.ParserFactory ;
@@ -86,7 +87,7 @@ public class BulkLoaderDataset
     {
         setupLoad() ;
         SinkQuadsToDataset sink = new SinkQuadsToDataset(dataset) ;
-        load(sink, input, null, baseURI, showProgress) ;
+        load(sink, input, lang, baseURI, showProgress) ;
         finalizeLoad() ;
     }
 
@@ -114,8 +115,13 @@ public class BulkLoaderDataset
         return ;
     }
     
-    static LangRIOT parser(Sink<Quad> sink, InputStream input, Lang lang, String baseURI)
+    private static LangRIOT parser(Sink<Quad> sink, InputStream input, Lang lang, String baseURI)
     {
+        if ( lang == null )
+        {
+            Log.warn(BulkLoaderDataset.class, "Lang argument is null - guessing "+Lang.NQUADS.getName()) ;
+            lang = Lang.NQUADS ;
+        }
         switch(lang)
         {
             case NQUADS :
