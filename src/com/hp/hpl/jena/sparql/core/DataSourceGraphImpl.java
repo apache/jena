@@ -17,6 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.lib.iterator.NullIterator ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
@@ -29,10 +30,10 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class DataSourceGraphImpl implements DataSourceGraph
 {
-    Graph defaultGraph = null ;
-    // Caution: this is unbounded.
-    Map<Node, Graph> namedGraphs = null ;
-    Lock lock = null ;
+    private Context context = new Context() ;
+    private Graph defaultGraph = null ;
+    private Map<Node, Graph> namedGraphs = null ;
+    private Lock lock = null ;
 
     public DataSourceGraphImpl(Graph graph)
     { 
@@ -101,6 +102,11 @@ public class DataSourceGraphImpl implements DataSourceGraph
         return namedGraphs.keySet().iterator() ;
     }
     
+    public Context getContext()
+    {
+        return context ;
+    }
+
     public int size()
     {
         return namedGraphs.size() ;

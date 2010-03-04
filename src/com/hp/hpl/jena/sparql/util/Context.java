@@ -17,10 +17,6 @@ import java.util.*;
 
 public class Context
 {
-    // In Java 1.5. this could extend Map<Symbol, Object> + helper functions
-    // Like java.util.Properties except not String-centric
-    // (which is also why RDF isn't useful here)
-    
     protected Map<Symbol, Object> context = new HashMap<Symbol, Object>() ;
     protected List<Callback> callbacks = new ArrayList<Callback>() ;
     
@@ -33,9 +29,6 @@ public class Context
      */ 
     public Context(Context cxt)
     { setAll(cxt) ; }
-    // Alternative - have a "default" context but then what if the default
-    // context changes after being made the default of this context?
-
     
     /** Return a copy of this context.  Modifications of the copy 
      * do not affect the original context.
@@ -72,7 +65,7 @@ public class Context
     }
 
     /** Store a named value only if it is not currently set */
-    public void   setIfUndef(Symbol property, Object value)
+    public void  setIfUndef(Symbol property, Object value)
     { 
         Object x = context.get(property) ;
         if ( x == null )
@@ -96,7 +89,6 @@ public class Context
     public boolean isUndef(Symbol property) { return ! isDefined(property) ; }
     
     // -- as string
-    
 
     /** Get the value a string (uses .toString() if the value is not null) - supply a default string value */
     public String getAsString(Symbol property, String defaultValue)
@@ -107,7 +99,6 @@ public class Context
         return x ;
     }
 
-    
     /** Get the value a string (uses .toString() if the value is not null) */
     public String getAsString(Symbol property)
     { 
@@ -119,8 +110,11 @@ public class Context
 
     public void setAll(Context other)
     {
-        context.putAll(other.context) ;
-        callbacks.addAll(other.callbacks) ;
+        if ( other != null )
+        {
+            context.putAll(other.context) ;
+            callbacks.addAll(other.callbacks) ;
+        }
     }
     
     // -- true/false

@@ -11,6 +11,7 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class DatasetGraphWrapper implements DatasetGraph
 {
@@ -20,9 +21,6 @@ public class DatasetGraphWrapper implements DatasetGraph
     {
         this.dsg = dsg ;
     }
-
-    //@Override
-    public void close() { dsg.close() ; }
 
     //@Override
     public boolean containsGraph(Node graphNode)
@@ -45,8 +43,16 @@ public class DatasetGraphWrapper implements DatasetGraph
     { return dsg.listGraphNodes() ; }
 
     //@Override
+    public Context getContext()
+    { return dsg.getContext() ; }
+
+    //@Override
     public int size()
     { return dsg.size() ; }
+
+    //@Override
+    public void close()
+    { dsg.close() ; }
 }
 
 /*

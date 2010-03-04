@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Implementation of a DatasetGraph where all graphs "exist".
  * New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
@@ -24,7 +25,9 @@ public class DatasetGraphOpen implements DatasetGraph
 {
     public interface GraphMaker { public Graph create() ; }
     
+    private Context context = new Context() ;
     private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
+    
     private Graph defaultGraph ;
     private GraphMaker graphMaker ;
 
@@ -65,6 +68,11 @@ public class DatasetGraphOpen implements DatasetGraph
     public Iterator<Node> listGraphNodes()
     {
         return graphs.keySet().iterator() ;
+    }
+
+    public Context getContext()
+    {
+        return context ;
     }
 
     public int size()

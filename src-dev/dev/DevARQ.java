@@ -9,18 +9,27 @@ public class DevARQ
 {
     // ==== ARQ 2.8.3
     
-    // == Migration:
-    // JSON (via RIOT?)
-
     // Sort out DatasetGraph:
     // DatasetGraphMem 
     // Down play DataSource[Graph]
     // Contexts for datasets.
     
-    // ==== Later
-    // Implement IRI(str), BNODE(str?) IN, NOT IN, 
-    // Tests of same
+    // DatasetGraph
+    //   DatasetGraphBase (abstract - caching - wraps persistent layers)
+    //   DatasetGraphOpen (all graphs exist - GraphMaker - not caching)
+    //     DatasetGraphMem
+    //   DatasetGraphWrapper
+    //   DataSourceGraph -- adds setDefaultGraph, addGraph, removeGraph
+    //     DataSourceGraphImpl
+    //       GraphStoreBasic
+    //    GraphStore
+    //       GraphStoreBasic
     
+    
+    
+    // == Migration:
+    // JSON (via RIOT?)
+
     // ----------
     // Abstract ValueSpace for extensibility
 

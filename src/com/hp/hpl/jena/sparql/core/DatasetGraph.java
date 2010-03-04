@@ -11,6 +11,7 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public interface DatasetGraph extends Closeable
 {
@@ -24,6 +25,9 @@ public interface DatasetGraph extends Closeable
     public Iterator<Node> listGraphNodes() ;
 
     public Lock getLock() ;
+    
+    /** Get the context associated with this object - may be null */
+    public Context getContext() ; 
     
     /** Get the size (number of graphs) - may be -1 for unknown */ 
     public int size() ;
