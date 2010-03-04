@@ -24,8 +24,8 @@ import com.hp.hpl.jena.tdb.sys.Session ;
 /** BPlusTreePageMgr = BPlusTreeNode manager */
 public final class BPTreeNodeMgr implements Session
 {
- // Only "public" for external very low level tools in development to access this class.
- // Assume package access.
+    // Only "public" for external very low level tools in development to access this class.
+    // Assume package access.
 
     private BPlusTree bpTree ;
     private BlockMgr blockMgr ;

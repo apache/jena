@@ -24,7 +24,7 @@ import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
- * This class adds not peristent state to a RecordBufferPage */
+ * This class adds no peristent state to a RecordBufferPage */
 final class BPTreeRecords extends BPTreePage
 {
     // Could require all Page operations to the RecordBufferPage
