@@ -30,6 +30,12 @@ public class LangTriG extends LangTurtleBase<Quad>
         statement   ::=     directive ws* '.' | graph
         graph       ::=     graphName? ws* '='? ws* '{' ws* (triples ws* ('.' ws* triples ws*)* '.'? ws*)? '}' ws* '.'?
         graphName   ::=     resource
+        
+        We may add:
+        statement   ::=     directive ws* '.' | graph | quad
+        quad        ::=     subject predicate object resource?
+          (i.e. raw inline nquads except with preifx names.
+        
      */
     public LangTriG(String baseURI, Tokenizer tokens, 
                     Checker checker, 

@@ -6,34 +6,31 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_BRANCH;
-import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_LEAF;
-//import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
-import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_BRANCH ;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.BPTREE_LEAF ;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockConverter;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockType;
-import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.index.btree.BTreeException;
-import com.hp.hpl.jena.tdb.sys.Session ;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
+import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.index.btree.BTreeException ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
-public final class BPTreeNodeMgr implements Session
+public final class BPTreeNodeMgr extends BPTreePageMgr
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    private BPlusTree bpTree ;
     private BlockMgr blockMgr ;
     private Block2BPTreeNode converter ;
 
     public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
     {
-        this.bpTree = bpTree ;
+        super(bpTree) ;
         this.blockMgr = blockMgr ;
         this.converter = new Block2BPTreeNode() ;
     }

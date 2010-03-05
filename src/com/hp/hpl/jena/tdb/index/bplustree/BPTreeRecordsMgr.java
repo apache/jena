@@ -6,23 +6,21 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
 
 /** Bridge for making, getting and putting BPTreeRecords over a RecordBufferPageMgr */
-final public class BPTreeRecordsMgr
+final public class BPTreeRecordsMgr extends BPTreePageMgr
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    private BPlusTree bpTree ;
     private RecordBufferPageMgr rBuffPageMgr ;
     
     BPTreeRecordsMgr(BPlusTree bpTree, RecordBufferPageMgr rBuffPageMgr)
     {
-        this.bpTree = bpTree ;
+        super(bpTree) ;
         this.rBuffPageMgr = rBuffPageMgr ;
     }
     
@@ -60,6 +58,12 @@ final public class BPTreeRecordsMgr
     {
         rBuffPageMgr.dump() ;
     }
+
+    public void startRead()         { rBuffPageMgr.startRead() ; }
+    public void finishRead()        { rBuffPageMgr.finishRead() ; }
+
+    public void startUpdate()       { rBuffPageMgr.startUpdate() ; }
+    public void finishUpdate()      { rBuffPageMgr.finishUpdate() ; }
 }
 
 /*

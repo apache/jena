@@ -4,6 +4,7 @@ public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
     // TDB loader - triples version does not take .gz (yet)
+    // BulkLoaderBase > BuldLoaderTriples, BulkLoaderDataset  
     //    Redo triples loader to be like dataset loader and have common superclass.
     //  Testframework for both loaders
     
@@ -12,7 +13,7 @@ public class DevTDB
     
     // RIOT
     //     NQuads in Trig ??
-    //     Trailling dots ??
+    //     Trailing dots ??
     // Document
     
     // Documentation: Update
@@ -22,7 +23,7 @@ public class DevTDB
 
     // --------
 
-    // Pipeline.
+    // *** Pipeline (Where?)
     
     // Early truncation of patterns
     //  ?s <p> <foo> . ?s <q> ?v . ?s <r> ?x
@@ -41,6 +42,7 @@ public class DevTDB
     //   Run with 32 bit block cache on 64 bit large machine to measure difference.
 
     // ** Advanced block work - free chain management.
+    // Where does the head of the free chain go?  In .info? c.f. moving root. In roor link field?!
     // Negative count? No 
     // Block is currently (B+Tree block)
     //  final public static int COUNT      = 0 ;
@@ -58,12 +60,7 @@ public class DevTDB
     //   <s> p1 ?o1 ; p2 ?o2 ; p3 ?o3 ... and do ((<s> 0 0)->(<s>+1 0 0)]
     //   Materialized answers.
     
-    // Terminating queries with abort top to bottom.
-    
     // Dataset.close() always calls TDBMaker.releaseDataset - shouldn't there be a reference count?
-    
-    // NodeFmtLib - expose safeBNodeLabel flag.
-    // And a decode operation.
     
     // NodeId:  
     // Bit 0: 0 - 63 bits of id (hash!) or block allocation for cluster.
@@ -96,14 +93,6 @@ public class DevTDB
     //   IndexMakers?
     // ?? DatasetGraphSetupMem == TDBMakerFactoryGraphMem
 
-    // Rethink/check cache synchronization (ByteBuffer)  [No outstanding reported problems]
-    //   RecordBufferPageMgr / BPTreeNodeMgr / BTreeNodeMgr / HashBucketMgr -> fromByteBuffer
-    //   Why/what does the sync in fromByteBuffer do?
-    // Why not BlockConverter.get on block mgr?  Hhow many blockMgrs are there?
-    
-    // == Atlas
-    // Separate out atlas properly.
-    
     // ----
     // B+Tree checking utility.
     // Dataset checking utility.
@@ -111,16 +100,9 @@ public class DevTDB
     // IndexFactory understanding index type name
     //    Registry<String->T>("bplustree", IndexBuilder)
     
-    // Longer: packaging of TDB and Joseki for an unpack-and-go solution.
-    // At least, specific documentation.
-    
     // == Misc
     // Node cache on 64bit machines needs to be bigger or rebalence
     // Cache stats counters (prep for JMX but useful now)
-    
-    // ==== RIOT
-    // Properties on the readers
-    // TriG
     
     // == tdbdump && tdbrestore
     // ---- Optimizer
@@ -129,8 +111,4 @@ public class DevTDB
     
     // ---- Misc
     // Inlines => Inline56, Inline64, ??
-
-    // ---- tdbloader: 
-    //   ** (script) to work on gzip files
-    // See IO.openFile.
 }

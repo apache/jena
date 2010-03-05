@@ -45,6 +45,8 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
@@ -68,6 +70,11 @@ public class RunTDB
 
     public static void main(String[] args) throws IOException
     {
+        TupleIndexRecord idx = (TupleIndexRecord)((DatasetGraphTDB)TDBFactory.createDataset().asDatasetGraph()).getQuadTable().getNodeTupleTable().getTupleTable().getIndex(0) ;
+        BPlusTree bpt = (BPlusTree)idx.getRangeIndex() ;
+       System.out.println(bpt.getParams()) ;
+        System.exit(0) ;
+        
         //UUID uuid = UUID.randomUUID() ;
         JenaUUID uuid = JenaUUID.generate() ;
 

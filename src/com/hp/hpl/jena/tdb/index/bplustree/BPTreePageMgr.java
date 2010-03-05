@@ -1,41 +1,30 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.index.bplustree;
 
-import atlas.lib.BitsLong;
+import com.hp.hpl.jena.tdb.sys.Session ;
 
-public class IntegerNode
+abstract class BPTreePageMgr implements Session
 {
-    public static long pack(long v) 
-    {
-        // 56 bits of value, including sign bit.
-        if ( Math.abs(v) < (1L<<55) )
-        {
-            v = BitsLong.clear(v, 56, 64) ;
-            v = NodeId.setType(v, NodeId.INTEGER) ;
-            return v ;
-        }
-        else
-            return -1 ;
-    }
+    // This a "missing" class
+    // BPTreeRecordMgr works on a RecordBufferPageMgr
+    // BPTreeNodeMgr works on a BPTreeNodeMgr 
+    // so they share very little.
     
-    public static long unpack(long v) 
+    protected final BPlusTree bpTree ;
+    
+    BPTreePageMgr(BPlusTree bpTree)
     {
-        long val = BitsLong.clear(v, 56, 64) ;
-        // Sign extends to 64 bits.
-        if ( BitsLong.isSet(val, 55) )
-            val = BitsLong.set(v, 56, 64) ;
-        return val ;
+        this.bpTree = bpTree ;
     }
-
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
