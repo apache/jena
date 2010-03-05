@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 public class ResultSetFormatter
 {
+    private ResultSetFormatter() {}
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
