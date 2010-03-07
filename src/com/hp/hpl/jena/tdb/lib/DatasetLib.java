@@ -6,19 +6,13 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import java.io.InputStream ;
 import java.util.Iterator ;
 
-import atlas.io.IO ;
 import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.riot.ParserFactory ;
-import com.hp.hpl.jena.riot.Lang ;
-import com.hp.hpl.jena.riot.RiotException ;
-import com.hp.hpl.jena.riot.lang.LangRIOT ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMem ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -67,47 +61,6 @@ public class DatasetLib
         }
         
         return true ;
-    }
-    
-    public static DatasetGraph load(String filename, Lang lang)
-    {
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        read(filename, dsg, lang, null) ;
-        return dsg ;
-    } 
-    
-    public static DatasetGraph load(String filename, Lang lang, String baseURI)
-    {
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        read(filename, dsg, lang, baseURI) ;
-        return dsg ;
-    } 
-    
-    public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
-    {
-        InputStream input = IO.openFile(filename) ;
-        read(input, dataset, lang, baseURI) ;
-    }
-
-    public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
-    {
-        Sink<Quad> sink = datasetSink(dataset) ;
-        // NAMES!
-        if ( language == Lang.NQUADS )
-        {
-            LangRIOT parser = ParserFactory.createParserNQuads(input, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return ;
-        }
-        if ( language == Lang.TRIG )
-        {
-            LangRIOT parser = ParserFactory.createParserTriG(input, baseURI, sink) ;
-            parser.parse() ;
-            sink.flush();
-            return ;
-        }
-        throw new RiotException("Language not supported for quads: "+language) ;
     }
     
     /** Work in progress */

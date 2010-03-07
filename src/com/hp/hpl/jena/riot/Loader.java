@@ -6,12 +6,71 @@
 
 package com.hp.hpl.jena.riot;
 
+import java.io.InputStream ;
+
+import atlas.io.IO ;
+import atlas.lib.Sink ;
+
+import com.hp.hpl.jena.riot.lang.LangRIOT ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.lib.DatasetLib ;
+
 public class Loader
 {
     
-    static private Loader loader = new Loader() ;
-    static public Loader get() { return loader ; }
+//    static private Loader loader = new Loader() ;
+//    static public Loader get() { return loader ; }
     
+    /** Parse a file and return the quads in a dataset (in-memory) */ 
+    public static DatasetGraph load(String filename, Lang lang)
+    {
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        read(filename, dsg, lang, null) ;
+        return dsg ;
+    }
+    
+    /** Parse a file and return the quads in a dataset (in-memory) */ 
+    public static DatasetGraph load(String filename, Lang lang, String baseURI)
+    {
+        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        read(filename, dsg, lang, baseURI) ;
+        return dsg ;
+    }
+    
+    /** Parse a file and send the quads to a dataset */ 
+    public static void read(String filename, DatasetGraph dataset, Lang lang, String baseURI)
+    {
+        InputStream input = IO.openFile(filename) ;
+        read(input, dataset, lang, baseURI) ;
+    }
+    
+    /** Parse an input stream and send the quads to a dataset */ 
+    public static void read(InputStream input, DatasetGraph dataset, Lang language, String baseURI)
+    {
+        Sink<Quad> sink = DatasetLib.datasetSink(dataset) ;
+        read(input, language, baseURI, sink) ;
+    }
+    
+    /** Parse an input stream and send the quads to the sink */ 
+    public static void read(InputStream input, Lang language, String baseURI, Sink<Quad> sink)
+    {
+        if ( language == Lang.NQUADS )
+        {
+            LangRIOT parser = ParserFactory.createParserNQuads(input, sink) ;
+            parser.parse() ;
+            sink.flush();
+            return ;
+        }
+        if ( language == Lang.TRIG )
+        {
+            LangRIOT parser = ParserFactory.createParserTriG(input, baseURI, sink) ;
+            parser.parse() ;
+            sink.flush();
+            return ;
+        }
+        throw new RiotException("Language not supported for quads: "+language) ;
+    }
     
     
     
