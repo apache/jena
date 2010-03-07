@@ -11,7 +11,7 @@ import com.hp.hpl.jena.shared.Lock;
 import junit.framework.*;
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.1 2009-06-29 08:55:33 castagna Exp $
+ * @version 	$Id: TestConcurrency.java,v 1.2 2010-03-07 21:06:25 andy_seaborne Exp $
  */
 public class TestConcurrency  extends TestSuite
 {
@@ -46,13 +46,13 @@ public class TestConcurrency  extends TestSuite
                     model1, Lock.WRITE, Lock.READ, false)) ;
     
             // Different  model: inner and outer
-            addTest(new Nesting("Lock nesting 1 - defifferent models", 
+            addTest(new Nesting("Lock nesting 1 - different models", 
                     model1, Lock.READ, model2, Lock.READ, false)) ;
-            addTest(new Nesting("Lock nesting 2 - defifferent models",
+            addTest(new Nesting("Lock nesting 2 - different models",
                     model1, Lock.WRITE, model2, Lock.WRITE, false)) ;
-            addTest(new Nesting("Lock nesting 3 - defifferent models",
+            addTest(new Nesting("Lock nesting 3 - different models",
                     model1, Lock.READ, model2, Lock.WRITE, false)) ;
-            addTest(new Nesting("Lock nesting 4 - defifferent models",
+            addTest(new Nesting("Lock nesting 4 - different models",
                     model1, Lock.WRITE, model2, Lock.READ, false)) ;
         }
         if ( true )
