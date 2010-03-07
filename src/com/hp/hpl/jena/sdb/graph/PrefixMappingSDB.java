@@ -30,6 +30,8 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public class PrefixMappingSDB extends PrefixMappingImpl
 {
+    // Use DatasetPrefixStorage as move to Per-graph prefix mappings. (schema change)
+    
     // See PrefixMappingPersistent
     static private Logger log = LoggerFactory.getLogger(PrefixMappingSDB.class) ;
     
