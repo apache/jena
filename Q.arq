@@ -1,6 +1,17 @@
-PREFIX : <http://example/>
+PREFIX  :     <http://example/>
 
-SELECT *
-{
-    ?x :p/:q ?z
-}
+##SELECT  ?x (count(*) AS ?C)
+
+SELECT  ?x (sum(?v) AS ?C) (1/0 as ?V)
+
+## SELECT  ?x (count(?v) AS ?C) 
+##SELECT *
+
+WHERE
+  { ?x a :T
+    OPTIONAL
+      { ?x ?any ?v}
+  }
+GROUP BY ?x
+ORDER BY str(?x)
+ 

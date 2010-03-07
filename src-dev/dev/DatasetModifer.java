@@ -1,48 +1,32 @@
 /*
- * (c) Copyright 2009 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package reports;
+package dev;
 
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 
-public class ReportUnclosedIterator
+public class DatasetModifer
 {
-    public static void main(String...argv)
-    {
-        // Analysis
-        // Aggregation reads whole results and then "replaces" the root iterator."
-        // Order does the same? No, because ORDER is over everyting, this is per group. 
-        
-        Model model = ModelFactory.createDefaultModel();
-        // Insert one triple here.
-        //model.getGraph().add(SSE.parseTriple("(<x> <p> <y>)")) ;
-        
-        String str = "SELECT count(?object) WHERE { ?subject ?p ?object }";
-        Query query = QueryFactory.create(str, Syntax.syntaxARQ);
-        QueryExecution qexec = QueryExecutionFactory.create(query, model);
-        ResultSet rs = qexec.execSelect();
-//        ResultSetFormatter.out(rs) ;
-//        if ( rs.hasNext() ) 
-//            rs.next();
-        //rs.hasNext() ; // If this, forcing iteraors to finish neatly, it works.
-        
-        qexec.close();
-        System.out.println("Exit") ;
-    }
+    public static Graph doGet() { return null ; } 
+    public static Graph doGet(Node graphName) { return null ; }
+    
+    public static void doPut(Graph graph) {  }
+    public static void doPut(Node graphName, Graph graph) {  }
+
+    public static void doDelete() {  }
+    public static void doDelete(Node graphName) {  }
+
+    public static void doPost(Graph graph) {  }
+    public static void doPost(Node graphName, Graph graph) {  }
+
 }
 
 /*
- * (c) Copyright 2009 Talis Information Ltd.
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

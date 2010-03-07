@@ -1,7 +1,18 @@
 @prefix : <http://example/> .
 @prefix  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:x :p "foo" .
-:x :p "bar" .
-:x :p "baz" .
+:x1 a :T .
+:x1 :p 1 .
+:x1 :p 2 .
+
+:x2 a :T .
+:x2 :p 9 .
+
+:x3 a :T .
+:x3 :p 5 .
+:x3 :q "x" .
+
+:x4 a :T .
+:x4 :q "z".
+
 
