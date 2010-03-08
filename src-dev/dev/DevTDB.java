@@ -3,10 +3,19 @@ package dev ;
 public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
+    
+    // ----
+    
+    // Weak inferencing (in query rewriting):
+    // owl:equivalentClass, owl:equivalentProperty,
+    // owl:inverseOf, owl:SymmetricProperty, owl:TransitiveProperty
+    // rdfs:subClassOf (aux table).
+    // rdfs:subPropertyOf (aux table).
+    
     // TDB loader - triples version does not take .gz (yet)
     // BulkLoaderBase > BuldLoaderTriples, BulkLoaderDataset  
     //    Redo triples loader to be like dataset loader and have common superclass.
-    //  Testframework for both loaders
+    //  Test framework for both loaders
     
     // Stats and datasets
     //   tdbstats
@@ -19,8 +28,6 @@ public class DevTDB
     // Documentation: Update
     // http://openjena.org/wiki/TDB/Commands
     
-    // Tidy up:
-
     // --------
 
     // *** Pipeline (Where?)
@@ -42,7 +49,13 @@ public class DevTDB
     //   Run with 32 bit block cache on 64 bit large machine to measure difference.
 
     // ** Advanced block work - free chain management.
-    // Where does the head of the free chain go?  In .info? c.f. moving root. In roor link field?!
+    // Where does the head of the free chain go?  In .info? c.f. moving root. In root link field?!
+    //   Separate control file (allows swicth bewteen two very different block files)
+    //   Header block (a bit big!)
+    //   Virtual to physical block system. **
+    // Block* is currently physical blocks.
+    // VBlocks.
+    
     // Negative count? No 
     // Block is currently (B+Tree block)
     //  final public static int COUNT      = 0 ;

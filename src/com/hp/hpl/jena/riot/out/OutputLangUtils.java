@@ -37,7 +37,7 @@ public class OutputLangUtils
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
-        Node g = quad.getObject() ;
+        Node g = quad.getGraph() ;
         output(out, s, p, o, g, prologue) ;
     }
     
