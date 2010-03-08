@@ -9,10 +9,13 @@ public class DevARQ
 {
     // ==== ARQ 2.8.3
     
+    // ----
+    
     // Sort out DatasetGraph:
     // DatasetGraphMem 
     // Down play DataSource[Graph]
     // Contexts for datasets.
+    //    Adding quads to a DatasetGraph?
     
     // DatasetGraph
     //   DatasetGraphBase (abstract - caching - wraps persistent layers)

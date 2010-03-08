@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -16,12 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCount;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCountDistinct;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVar;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
-import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
+import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -241,6 +237,8 @@ public class BuilderExpr
         
         dispatch.put(Tags.tagCount, buildCount) ;
         dispatch.put(Tags.tagSum, buildSum) ;
+        dispatch.put(Tags.tagMin, buildMin) ;
+        dispatch.put(Tags.tagMax, buildMax) ;
     }
 
     // See exprbuilder.rb
@@ -688,11 +686,41 @@ public class BuilderExpr
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };
+    
+    final protected Build buildMin = new Build()
+    {
+        public Expr make(final ItemList list)
+        {
+            ItemList x = list.cdr();
+            if ( x.size() != 1 )
+                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
+            // (sum ?var) 
+            Expr expr = buildExpr(x.get(0)) ;
+            AggregateFactory agg = new AggMin(expr) ;
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+    
+    final protected Build buildMax = new Build()
+    {
+        public Expr make(final ItemList list)
+        {
+            ItemList x = list.cdr();    // drop "sum"
+            if ( x.size() != 1 )
+                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
+            // (sum ?var) 
+            Expr expr = buildExpr(x.get(0)) ;
+            AggregateFactory agg = new AggMax(expr) ;
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+
 }
 
 
 /*
  * (c) Copyright 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

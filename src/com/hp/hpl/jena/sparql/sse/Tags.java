@@ -133,6 +133,8 @@ public class Tags
     
     public static final String tagCount         = "count" ;
     public static final String tagSum           = "sum" ;
+    public static final String tagMin           = "min" ;
+    public static final String tagMax           = "max" ;
 }
 
 /*
