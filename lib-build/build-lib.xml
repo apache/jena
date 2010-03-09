@@ -480,9 +480,6 @@ deploy
         <fileset dir="${src.test.dir}">
           <include name="**/TS_*.java" />
         </fileset>
-        <fileset dir="${src.lib.test.dir}">
-          <include name="**/TS_*.java" />
-        </fileset>
       </batchtest>
     </junit>
   </target>
