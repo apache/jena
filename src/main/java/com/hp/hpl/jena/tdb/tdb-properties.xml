@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties version="1.0">
+  <comment>TDB Properties</comment>
+  <entry key="com.hp.hpl.jena.tdb.version">DEV</entry>
+  <entry key="com.hp.hpl.jena.tdb.build.datetime">&lt;unknown&gt;</entry>
+</properties>
