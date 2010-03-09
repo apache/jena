@@ -78,12 +78,6 @@ public class DevCmds
         System.exit(0) ;
     }
     
-    static void tdbtest(String...args)
-    {
-        tdb.tdbtest.main(args) ;
-        System.exit(0) ;
-    }
-    
     static void tdbconfig(String... args) 
     {
         tdb.tdbconfig.main(args) ;

@@ -27,10 +27,8 @@
   <target name="main" depends="jar"/>
 
   <!-- Sources as a path -->
-  <property name="src.dir"              value="src"/>
-  <property name="src.test.dir"         value="src-test"/>
-  <property name="src.lib.dir"          value="src-lib"/>
-  <property name="src.lib.test.dir"     value="src-lib-test"/>
+  <property name="src.dir"              value="src/main/java"/>
+  <property name="src.test.dir"         value="src/test/java"/>
   <property name="src.examples.dir"     value="src-examples"/>
   <property name="src.dev.dir"          value="src-dev"/>
 
@@ -41,12 +39,10 @@
   <!-- Source code -->
   <path id="java.source.path.main">
     <pathelement path="${src.dir}"/>
-    <pathelement path="${src.lib.dir}"/>
   </path>    
 
   <path id="java.source.path.test">
     <pathelement path="${src.test.dir}"/>
-    <pathelement path="${src.lib.test.dir}"/>
   </path>    
 
   <!--
@@ -61,8 +57,6 @@
   <fileset dir="." id="fileset.src">
     <include name="${src.dir}/**/*.java"/>
     <include name="${src.test.dir}/**/*.java"/>
-    <include name="${src.lib.dir}/**/*.java"/>
-    <include name="${src.lib.test.dir}/**/*.java"/>
   </fileset>
 
 <!--
@@ -78,6 +72,8 @@
   <import file="lib-build/build-dist.xml"/>
 
   <target name="publish-release" depends="clean-once,publish,release"/>
+  <!-- Redefine to include zip making -->
+  <target name="deploy" depends="publish-release"/>
 
   <target name="pre-run-junit">
     <mkdir dir="tmp/testing"/>
