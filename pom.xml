@@ -130,10 +130,10 @@
   </dependencies>
 
   <build>
-    <!-- temp -->
+    <!--
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>src-test</testSourceDirectory>
-    
+    -->
     <!-- The filter file is written by antrun -->
     <filters>
       <filter>${project.basedir}/target/filter.properties</filter>

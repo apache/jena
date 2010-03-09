@@ -4,6 +4,9 @@ public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
     
+    // mavenization
+    //    Tests run: 655, Failures: 0, Errors: 0, Skipped: 0
+    //    Warnign on execution
     // ----
     
     // Weak inferencing (in query rewriting):
