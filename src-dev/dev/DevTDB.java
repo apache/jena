@@ -9,6 +9,13 @@ public class DevTDB
     //      Only 655? No atlas?
     //    Warning re optimizer - more than one place.
     //    Default optimzer to fixed?
+    // JSON to atlas, not-RIOT
+    
+    // 2 store dataset
+    // Compact B+Trees
+    // ARQ: dataset - quad interface (see graph)
+    // TDB - wrapper version
+    //   Uses RIOT for I/O
     // ----
     
     // Weak inferencing (in query rewriting):
