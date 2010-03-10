@@ -6,7 +6,9 @@ public class DevTDB
     
     // mavenization
     //    Tests run: 655, Failures: 0, Errors: 0, Skipped: 0
-    //    Warnign on execution
+    //      Only 655? No atlas?
+    //    Warning re optimizer - more than one place.
+    //    Default optimzer to fixed?
     // ----
     
     // Weak inferencing (in query rewriting):

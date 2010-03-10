@@ -1,7 +1,7 @@
-<!-- The ARQ distibution -->
+<!-- The distibution -->
 
 <assembly>
-  <baseDirectory>TDB-${project.version}</baseDirectory>
+  <baseDirectory>${project.name}-${project.version}</baseDirectory>
   <formats>
     <!--
     <format>tar.gz</format>
