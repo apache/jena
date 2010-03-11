@@ -163,6 +163,14 @@ public class TestBytes extends BaseTest
         Bytes.toByteBuffer(str, bb) ;
         bb.flip() ;
         String str2 = Bytes.fromByteBuffer(bb) ;
+        if ( ! str.equals(str2) )
+        {
+            System.err.println("Code error:") ;
+            System.err.println("  "+str) ;
+            System.err.println("  "+str2) ;
+        }
+        
+        
         assertEquals(str, str2) ;
     }
     

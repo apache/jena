@@ -475,7 +475,6 @@ deploy
       <classpath>
         <path refid="java.test.class.path" />
       </classpath>
-      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
       <batchtest todir="${reports.dir.xml}">
         <fileset dir="${src.test.dir}">
           <include name="**/TS_*.java" />
