@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
+import com.hp.hpl.jena.tdb.junit.BaseTest_TS ;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -14,7 +16,7 @@ import org.junit.runners.Suite;
      TestTDBAssembler.class
 
 })
-public class TS_TDBAssembler
+public class TS_TDBAssembler extends BaseTest_TS
 {
 
 }

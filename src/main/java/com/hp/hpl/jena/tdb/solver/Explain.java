@@ -32,8 +32,8 @@ import com.hp.hpl.jena.tdb.TDB ;
  *  Caution: logging can be a significant cost for small queries
  *  because of disk or console output overhead.
  *  
- *  @see{TDB.logExec}
- *  @see{TDB.setExecutionLogging}
+ *  @see TDB#logExec
+ *  @see TDB#setExecutionLogging
  */
 
 public class Explain

@@ -232,7 +232,6 @@ public class IRIResolver
 
     /**
         To allow Eyeball to bypass IRI checking (because it's doing its own)
-        @author kers
     */
     public static void suppressExceptions()
         { showExceptions = false; }

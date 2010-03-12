@@ -57,6 +57,10 @@
       <directory>bin2</directory>
     </fileSet>
 
+    <fileSet>
+      <directory>Store</directory>
+    </fileSet>
+
     <!-- For testing the deployment -->
     <fileSet>
       <directory>testing</directory>

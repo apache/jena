@@ -4,11 +4,10 @@ public class DevTDB
 {
     // == 0.8.5 / ARQ 2.8.3
     
-    // mavenization
-    //    Tests run: 655, Failures: 0, Errors: 0, Skipped: 0
-    //      Only 655? No atlas?
-    //    Warning re optimizer - more than one place.
-    //    Default optimzer to fixed?
+    // mavenization: modularization?
+    //   many subproject, different version and releases.
+    // ----
+
     // JSON to atlas, not-RIOT
     
     // 2 store dataset

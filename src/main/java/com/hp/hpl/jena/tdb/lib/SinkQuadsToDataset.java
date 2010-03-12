@@ -4,12 +4,13 @@ import atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.riot.lang.SinkToGraphTriples ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 
-/** @See SinkToGraphTriples */ 
+/** @see SinkToGraphTriples */ 
 public class SinkQuadsToDataset implements Sink<Quad>
 {
     /* See also SinkToGraphTriples */ 

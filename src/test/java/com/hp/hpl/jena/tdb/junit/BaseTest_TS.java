@@ -4,63 +4,33 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.junit;
 
-import java.util.Iterator ;
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public interface DSG
+public class BaseTest_TS
 {
-    // Writing:
-    // DSGWriter.write(System.out, DSG)
+    static Level level = null ;
     
-    // Events:
-    //  1/ Wrapper that knows to call the event system.
-    //     DSGFcatory.addEventHandler -> DSG
-    //  2/ Get event handler (and one that links std event system) 
-    //  3/ ??
+    // Turn off optimizer warnings.
+    @BeforeClass static public void beforeClass()   
+    {
+        level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
+        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+    }
     
-    // Extends DatasetGraph (name?)
-    public void add(Quad quad) ;
-    public void delete(Quad quad) ;
-    public Iterator<Quad> find(Quad quad) ;    // ??
-    public Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
-    public boolean isEmpty() ;
-    
-    // Graph getters
-    
-    public boolean contains(Node g, Node s, Node p , Node o) ; // Quad?
-    
-    boolean isIsomorphicWith(DSG g); //??
-    
-    // ---
-    /*
-    public Graph getDefaultGraph() ;
-
-    public Graph getGraph(Node graphNode) ;
-
-    public boolean containsGraph(Node graphNode) ;
-
-    public Iterator<Node> listGraphNodes() ;
-
-    public Lock getLock() ;
-    
-    /** Get the context associated with this object - may be null * /
-    public Context getContext() ; 
-    
-    /** Get the size (number of graphs) - may be -1 for unknown * / 
-    public int size() ;
-    
-    public void close() ;     
-    */
-    
-    // Sync
-    // Close
-    
-    
-    
+    @AfterClass static public void afterClass()
+    {
+        if ( level != null )
+            Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
+    }
 }
 
 /*
