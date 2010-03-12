@@ -153,6 +153,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+	  <encoding>UTF-8</encoding>
+	  <debug>true</debug>
+	  <debuglevel>source,lines,vars</debuglevel>
+	  <optimize>true</optimize>
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
@@ -163,7 +167,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-	    <include>com/hp/hpl/jena/sparql/ARQTestSuite.java</include>
+            <include>**/TS_*.java</include>
           </includes>
         </configuration>
       </plugin>

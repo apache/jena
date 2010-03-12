@@ -7,12 +7,13 @@ ChangeLog for ARQ
 + Added IN and NOT IN operators
 + Add built-in function LANG(string, string) to make a literal with a language tag.
 + Add built-in function IRI(string) to make an IRI.
-+ Add "negative property classed"
++ Results output in CSV and TSV.
++ Add "negative property classed" (experimental)
   !rdf:type matches anything except rdf:type
   !(rdf:type|rdfs:label) matches some thing that isn't rdf:type or rdfs:label
 + Bug fix: some multiply nested OPTIONALs could result in only naive, unoptimized execution. 
-+ Bug fix: SERVICE body for complex query patterns. 
-+ Results output in CSV and TSV.
++ Bug fix: SERVICE body for complex query patterns.
++ Bug fix: XML literals in SPARQL XML Results had the end of lines mangled. 
 
 ==== ARQ 2.8.2
 

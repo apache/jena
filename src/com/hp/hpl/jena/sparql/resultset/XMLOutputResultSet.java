@@ -213,8 +213,8 @@ public class XMLOutputResultSet
         s = s.replaceAll("&", "&amp;") ;
         s = s.replaceAll("<", "&lt;") ;
         s = s.replaceAll(">", "&gt;") ;
-        s = s.replaceAll("\r", "&#x0A;") ;  // Safe - excessively safe
-        s = s.replaceAll("\n", "&#x0D;") ;
+        s = s.replaceAll("\r", "&#x0D;") ;
+        s = s.replaceAll("\n", "&#x0A;") ;  // Safe - excessively safe
         return s ;
     }
 
