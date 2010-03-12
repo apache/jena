@@ -99,7 +99,7 @@ public class QueryEngineTDB extends QueryEngineMain
 
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
-            ds.setDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
+            ds.setEffectiveDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
             dsg = ds ;
         }
         return super.eval(op, dsg, input, context) ;

@@ -205,7 +205,7 @@ public class OpExecutorTDB extends OpExecutor
 
         gn = decideGraphNode(gn, execCxt) ;
         if ( gn == null )
-            return optimizeExecuteTriples(ds.getDefaultGraphTDB(), input, bgp, exprs, execCxt) ;
+            return optimizeExecuteTriples(ds.getEffectiveDefaultGraph(), input, bgp, exprs, execCxt) ;
         
         // ---- Execute quads+filters
         ReorderTransformation transform = ds.getTransform() ;

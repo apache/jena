@@ -40,6 +40,8 @@ public class DatasetGraphTDB extends DatasetGraphBase
     private final ReorderTransformation transform ;
     private final Location location ;
     private final Properties config ;
+    
+    private GraphTDB effectiveDefaultGraph ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
                            ReorderTransformation transform, Location location, Properties config)
@@ -50,6 +52,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
         this.transform = transform ;
         this.location = location ;
         this.config = config ;
+        this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
     
     protected DatasetGraphTDB(DatasetGraphTDB other)
@@ -86,7 +89,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
     {
         return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
     }
-    
+
     public GraphTDB getDefaultGraphTDB()
     {
         return (GraphTDB)getDefaultGraph() ;
@@ -95,6 +98,17 @@ public class DatasetGraphTDB extends DatasetGraphBase
     public GraphTDB getGraphTDB(Node graphNode)
     {
         return (GraphTDB)getGraph(graphNode) ;
+    }
+
+    // The effective graph may not be the concrete storage one (e.g. union)
+    
+    //@Override
+    public void setEffectiveDefaultGraph(GraphTDB g) { effectiveDefaultGraph = g ; }
+
+    //@Override
+    public GraphTDB getEffectiveDefaultGraph() 
+    {
+        return effectiveDefaultGraph ;
     }
 
     public Properties getConfig()
@@ -135,6 +149,7 @@ public class DatasetGraphTDB extends DatasetGraphBase
         }
     } ;
     
+
     //@Override
     public Iterator<Node> listGraphNodes()
     {
@@ -188,6 +203,8 @@ public class DatasetGraphTDB extends DatasetGraphBase
     //@Override
     public Dataset toDataset()      { return new DatasetImpl(this) ; }
 
+    // ---- DataSourceGraph
+    
     //@Override
     public void addGraph(Node graphName, Graph graph)
     {
@@ -204,13 +221,11 @@ public class DatasetGraphTDB extends DatasetGraphBase
         return null ;
     }
 
+    
     //@Override
     public void setDefaultGraph(Graph g)
     { 
-        if ( ! ( g instanceof GraphTDBBase ) )
-            throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
-        GraphTDBBase tg = (GraphTDBBase)g ;
-        super.defaultGraph = g ;
+        throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }    
 }
 
