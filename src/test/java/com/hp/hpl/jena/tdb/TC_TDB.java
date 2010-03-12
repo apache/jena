@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import atlas.event.TS_Event;
 import atlas.io.TS_IO;
 import atlas.iterator.TS_Iterator;
+import atlas.json.TS_JSON ;
 import atlas.lib.TS_Lib;
 
 import com.hp.hpl.jena.riot.TS_Riot;
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
     , TS_Iterator.class
     , TS_Event.class
     , TS_IO.class
-    
+    , TS_JSON.class
     // RIOT
     , TS_Riot.class
     
