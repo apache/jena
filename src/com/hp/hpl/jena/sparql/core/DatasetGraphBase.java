@@ -13,6 +13,7 @@ import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.lib.CacheFactory;
 import com.hp.hpl.jena.sparql.lib.Cache;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** 
  * DatasetGraph that caches graphs created.
@@ -20,16 +21,20 @@ import com.hp.hpl.jena.sparql.lib.Cache;
 abstract public class DatasetGraphBase implements DatasetGraph
 {
     private final Lock lock = new LockMRSW() ;
-    protected Graph defaultGraph = null ;
+    private Context context = new Context() ;
+
     
     private final boolean caching = true ;
     // read synchronised in this class, not need for a sync wrapper.
-    private Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
+    protected Graph defaultGraph = null ;
+    protected Cache<Node, Graph> namedGraphs = CacheFactory.createCache(100) ;
     
     abstract protected void _close() ;
     abstract protected Graph _createNamedGraph(Node graphNode) ;
     abstract protected Graph _createDefaultGraph() ;
     abstract protected boolean _containsGraph(Node graphNode) ;
+    
+    protected DatasetGraphBase() {}
     
     //@Override
     public boolean containsGraph(Node graphNode)
@@ -48,7 +53,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
             return _createDefaultGraph() ;
         
         synchronized(this)
-        {   // MRSW - need to create and update the cache atomically.
+        {
             if ( defaultGraph == null )
                 defaultGraph = _createDefaultGraph() ;
         }
@@ -78,6 +83,12 @@ abstract public class DatasetGraphBase implements DatasetGraph
     {
         return lock ;
     }
+    
+    public Context getContext()
+    {
+        return context ;
+    }
+    
     //@Override
     public final void close()
     {
