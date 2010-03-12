@@ -7,20 +7,14 @@
 package com.hp.hpl.jena.tdb;
 
 
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMem ;
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBPlusTreeMemNew ;
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMem ;
 import com.hp.hpl.jena.tdb.graph.basics.TestGraphBTreeMemNew ;
-import com.hp.hpl.jena.tdb.junit.BaseTest_TS ;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.tdb.junit.Base_TS ;
 
 // Tests using Jena graph tests
 
@@ -32,22 +26,9 @@ import org.junit.runners.Suite;
     , TestGraphBTreeMemNew.class
 })
 
-public class TS_Jena extends BaseTest_TS
+public class TS_Jena extends Base_TS
 {
-    static Level level = null ;
-    
-    @BeforeClass static public void beforeClass()   
-    {
-        level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
-        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
-    }
-    
-    @AfterClass static public void afterClass()
-    {
-        if ( level != null )
-            Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
-    }
+
 }
 
 /*
