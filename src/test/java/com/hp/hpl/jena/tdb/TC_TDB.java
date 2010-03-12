@@ -6,30 +6,26 @@
 
 package com.hp.hpl.jena.tdb;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import atlas.event.TS_Event;
-import atlas.io.TS_IO;
-import atlas.iterator.TS_Iterator;
-import atlas.json.TS_JSON ;
-import atlas.lib.TS_Lib;
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import atlas.TC_Atlas ;
 
-import com.hp.hpl.jena.riot.TS_Riot;
-import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler;
-import com.hp.hpl.jena.tdb.base.TC_Base;
-import com.hp.hpl.jena.tdb.graph.TS_Graph;
-import com.hp.hpl.jena.tdb.index.TS_Index;
-import com.hp.hpl.jena.tdb.lib.TS_LibTDB;
+import com.hp.hpl.jena.riot.TS_Riot ;
+import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
+import com.hp.hpl.jena.tdb.base.TC_Base ;
+import com.hp.hpl.jena.tdb.graph.TS_Graph ;
+import com.hp.hpl.jena.tdb.index.TS_Index ;
+import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
 import com.hp.hpl.jena.tdb.nodetable.TS_NodeTable ;
-import com.hp.hpl.jena.tdb.solver.TS_Solver;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.store.TS_Store;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.tdb.sys.TS_Sys;
+import com.hp.hpl.jena.tdb.solver.TS_Solver ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.store.TS_Store ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TS_Sys ;
 
 // Naming conventions.
 // TS_* - Test sets: collections of testing files (Often Test*)
@@ -37,15 +33,11 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
+    TC_Atlas.class
+    
     // RIOT
     , TS_Riot.class
-    
+
     // TDB
 
     , TC_Base.class         // Test Collection.    
