@@ -152,6 +152,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+	      <encoding>UTF-8</encoding>
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
@@ -162,6 +163,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
+	    <include>com/hp/hpl/jena/tdb/**/TS_*.java</include>
+	    <include>atlas/**/TS_*.java</include>
 	    <include>**/TS_*.java</include>
           </includes>
         </configuration>
@@ -208,7 +211,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-	  <includePackageNames>com.hp.hpl.jena.tdb</includePackageNames>
+	      <excludePackageNames>com.hp.hpl.jena.tdb.*,atlas.*</excludePackageNames>
           <bottom>
 	    Copyright &#169; 2007, 2008, 2009 Hewlett-Packard Development Company, LP
 	    Copyright &#169; 2010 Talis Information Ltd.
