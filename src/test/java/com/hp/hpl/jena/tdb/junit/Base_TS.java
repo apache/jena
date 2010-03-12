@@ -1,28 +1,39 @@
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.assembler;
+package com.hp.hpl.jena.tdb.junit;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.log4j.Level ;
+import org.apache.log4j.Logger ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.tdb.junit.Base_TS ;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-     TestTDBAssembler.class
-})
-
-public class TS_TDBAssembler extends Base_TS
+public class Base_TS
 {
-
+ static Level level = null ;
+    
+    @BeforeClass static public void beforeClass()   
+    {
+        level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
+        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+    }
+    
+    @AfterClass static public void afterClass()
+    {
+        if ( level != null )
+            Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
+    }
 }
 
 /*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2010 Talis Information Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
