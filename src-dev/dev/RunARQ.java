@@ -44,13 +44,7 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExec ;
-import com.hp.hpl.jena.sparql.util.ALog ;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer ;
-import com.hp.hpl.jena.sparql.util.IndentedWriter ;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.StrUtils ;
-import com.hp.hpl.jena.sparql.util.StringUtils ;
-import com.hp.hpl.jena.sparql.util.Timer ;
+import com.hp.hpl.jena.sparql.util.* ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class RunARQ
@@ -78,6 +72,22 @@ public class RunARQ
     //@SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        String q = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT * FROM <http://xsparql.deri.org/data/relations.ttl> WHERE { $Person foaf:name $Name }";
+
+        Dataset d1 = null ;
+
+        {
+        Query query = QueryFactory.create(q) ;
+        d1 = DatasetUtils.createDataset(query.getGraphURIs(), query.getNamedGraphURIs()) ;
+        }
+        QueryExecution qe = QueryExecutionFactory.create(q);
+        d1 = qe.getDataset();
+        ResultSet rs = qe.execSelect() ;
+        d1 = qe.getDataset();
+        rs.hasNext() ;
+        d1 = qe.getDataset();
+        System.exit(0) ;
+        
         //execQuery("D.ttl", "P.arq") ;
         arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(?x IN (<x>,2,3) && ?x NOT IN (7,8,9)) }") ;
         //arq.qparse.main("--print=opt", "--print=op", "--print=query", "SELECT * { ?x ?p ?o FILTER(1234 && (?x = <x> || ?z = <2> )) }") ;
