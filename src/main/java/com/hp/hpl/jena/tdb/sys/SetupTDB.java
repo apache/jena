@@ -688,7 +688,7 @@ public class SetupTDB
             }
         }
         
-        if ( reorder == null && location.exists(Names.optDefault) )
+        if ( reorder == null && location.exists(Names.optFixed) )
         {
             // Not as good but better than nothing.
             reorder = ReorderLib.fixed() ;
