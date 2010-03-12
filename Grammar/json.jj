@@ -1,0 +1,259 @@
+#if 0
+// (Run through cpp -P -C first)
+#endif
+
+#define PACKAGE     atlas.json.io.parserjavacc.javacc
+#define CLASS       JSON_Parser
+#define PARSERBASE  JSON_ParserBase
+
+options
+{
+   JAVA_UNICODE_ESCAPE   = true ;
+   UNICODE_INPUT         = false ;
+
+  STATIC                = false ;
+//  DEBUG_PARSER          = true ;
+//  DEBUG_TOKEN_MANAGER   = true ;
+}
+
+
+PARSER_BEGIN(CLASS)
+/*
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ */
+
+package PACKAGE ;
+
+public class CLASS extends PARSERBASE
+{
+}
+PARSER_END(CLASS)
+
+
+SKIP : { <" " | "\t" | "\n" | "\r" | "\f"> }
+TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
+
+// Do \ u inside JavaCC??
+
+//TOKEN [IGNORE_CASE] :
+TOKEN :
+{
+  <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #QUOTE_3D: "\"\"\"">
+| < #QUOTE_3S: "'''">
+| < STRING_LITERAL1: 
+      // Single quoted string
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+| < STRING_LITERAL2:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+| < STRING_LITERAL_LONG1:
+     <QUOTE_3S> 
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+     <QUOTE_3S> >
+
+| < STRING_LITERAL_LONG2: 
+     <QUOTE_3D> 
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+     <QUOTE_3D> >
+
+
+
+
+| < #DIGITS: (["0"-"9"])+>
+| < INTEGER: <DIGITS> >
+| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
+| < DOUBLE:   // Required exponent.
+      (
+        (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+        | "." (["0"-"9"])+ (<EXPONENT>)
+        | (["0"-"9"])+ <EXPONENT>
+      )
+      >
+
+| < POSITIVE_INTEGER: <PLUS> <INTEGER> >
+| < POSITIVE_DECIMAL: <PLUS> <DECIMAL> >
+| < POSITIVE_DOUBLE:  <PLUS> <DOUBLE> >
+
+| < NEGATIVE_INTEGER: <MINUS> <INTEGER> >
+| < NEGATIVE_DECIMAL: <MINUS> <DECIMAL> >
+| < NEGATIVE_DOUBLE:  <MINUS> <DOUBLE> >
+
+| < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+
+
+|  <TRUE: "true">
+|  <FALSE: "false">
+|  <NULL: "null">
+
+| < LBRACE:    "{" >
+| < RBRACE:    "}" >
+
+| < LBRACKET:  "[" >
+| < RBRACKET:  "]" >
+
+| < LPAREN:    "(" >
+| < RPAREN:    ")" >
+
+| <COMMA: 	"," >
+| <COLON: 	":" >
+
+| <PLUS:	"+" >
+| <MINUS:	"-" >
+}
+
+// ---- Parser entry points
+
+void unit() : {}
+{
+    { startParse() ; }
+    object()
+    { finishParse() ; }
+    <EOF>
+}
+ 
+
+void any() : {}
+{
+    { startParse() ; }
+    (Value())?
+    { finishParse() ; }
+    <EOF>
+}
+
+
+// ---- Structures
+
+void Value() : {}
+{
+ SimpleValue()
+| object()
+| Array()
+}
+
+void object() : { }
+{
+  <LBRACE> 
+  { startObject() ; }
+  (Members())?
+  { finishObject(); }
+  <RBRACE>
+}
+
+void Members() : {}
+{
+  Pair() 
+  (<COMMA> Pair())* 
+}
+
+void Pair() : {}
+{
+  { startPair() ; }
+  String()
+  { keyPair() ; }
+  <COLON>
+  Value()
+  { finishPair() ; }
+}
+
+void Array() : {}
+{
+   <LBRACKET> 
+    { startArray() ; }
+	(Elements())?
+    { finishArray() ; }
+   <RBRACKET>
+}
+
+void Elements() : { }
+{
+    ArrayValue()
+    (<COMMA> ArrayValue())*
+}
+
+void ArrayValue() : { }
+{
+    Value() { element() ; }
+}
+
+// ---- 
+
+void SimpleValue() : {}
+{
+  String()
+| Number()
+| True()
+| False()
+| Null()
+}
+
+void Number() : { Token t ; }
+{
+  t = <INTEGER> 		    { valueInteger(t.image) ; }
+| t = <DECIMAL>			    { valueDecimal(t.image) ; }
+| t = <DOUBLE>			    { valueDouble(t.image) ; }
+| t = <POSITIVE_INTEGER>	{ valueInteger(t.image) ; }
+| t = <POSITIVE_DECIMAL>	{ valueDecimal(t.image) ; }
+| t = <POSITIVE_DOUBLE>		{ valueDouble(t.image) ; }
+| t = <NEGATIVE_INTEGER>	{ valueInteger(t.image) ; }
+| t = <NEGATIVE_DECIMAL>	{ valueDecimal(t.image) ; }
+| t = <NEGATIVE_DOUBLE>		{ valueDouble(t.image) ; }
+}
+
+// Token to Java Object : These  rules exist to inject the 
+// necessary Java objects and code for the tokens.
+void String() : { Token t ; }
+{
+  t = <STRING_LITERAL2> { valueString(t.image); } 
+	//  <STRING>
+}
+
+void True() : { Token t ; }
+{
+  <TRUE> { valueBoolean(true) ; }
+}
+
+void False() : { Token t ; }
+{
+  <FALSE> { valueBoolean(false) ; }
+}
+
+void Null() : { Token t ; }
+{
+  <NULL> { valueNull() ; }
+}
+
+
+/*
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

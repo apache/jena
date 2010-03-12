@@ -50,7 +50,7 @@ public class RunJSON
             //System.exit(0) ;
         }
         
-        if ( true )
+        if ( false )
         {
                 JsonValue obj = JSON.read("data.json") ;
                 obj.output(IndentedWriter.stdout) ;
